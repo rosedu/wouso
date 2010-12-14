@@ -1,0 +1,34 @@
+body {
+    background: url('stele.jpg');
+    color: white;
+}
+a, a:visited {
+    color: #FFC200
+}
+.block {
+    background: #000 url(gradient.jpg) repeat-x;
+    margin: 10px 0px 10px 0px;
+	padding: 6px;
+    border: none;
+	border-bottom: 1px solid #FFC200;
+}
+
+.block h4 {
+    margin: 0px;
+    padding-bottom: 4px;
+    font-weight: bold;
+    font-size: 1.4em
+}
+#fundal {
+    background-image: url(bg_header-small.jpg);
+	background-position: top;
+	background-repeat: repeat-x;
+}
+#logo {
+    height: 200px;
+    background-image: url(header-small.jpg);
+}
+#logo > a {
+    margin-top:30px;
+	margin-left:200px;
+}

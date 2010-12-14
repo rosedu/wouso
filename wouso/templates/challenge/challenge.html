@@ -1,0 +1,27 @@
+{% extends 'site_base.html' %}
+
+{% block title %}Challenge #{{ challenge.id }}{% endblock %}
+
+{% block content %}
+
+<h1>Challenge</h1>
+
+{% ifequal challenge.user_to user %}
+{{ challenge.user_from.get_profile.real_name }} has challenged you on {{ challenge.date }}.
+{% endifequal %}
+
+{% ifequal challenge.user_from user %}
+You challenged {{ challenge.user_to.get_profile.real_name }} on {{ challenge.date }}.
+{% endifequal %}
+
+<hr>
+<form action="{% url games.challenge.views.challenge challenge.id %}" method="post" >
+<table class=answers>
+{% for f in forms %}
+    <tr><td colspan=2>{{ f.question.text }}</td></tr>
+    {{ f }}
+{% endfor %}
+</table>
+<input type="submit" value="Submit" />
+</form>
+{% endblock %}

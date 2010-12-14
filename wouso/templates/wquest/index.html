@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Quest{% endblock %}
+
+{% block content %}
+
+<h1>Quest</h1>
+
+{% if progress.finished %}
+<p>Quest finished!</p>
+{% else %}
+<p style="color:red">{{ message }}</p>
+<p>
+{{ quest }} available until {{ quest.end }}
+</p>
+<p>{{ progress.question }}</p>
+<form method="post" action="{% url wouso.games.wquest.views.index %}">
+<table>
+{{ form }}
+</table>
+<input type="submit" value="Send" />
+</form>
+{% endif %}
+{% endblock %}

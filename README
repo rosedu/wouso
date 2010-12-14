@@ -1,0 +1,14 @@
+
+Mini HOWTO:
+
+cd wouso
+# configurare locală
+edit settings.py
+# crează baza de date
+python manage.py syncdb
+# rulează server de test
+python manage.py runserver
+
+# Pentru a crea un modul nou (app)
+python manage.py startapp <nume_modul>
+

@@ -1,0 +1,11 @@
+<VirtualHost wouso.local:80>
+	ServerAdmin webmaster@localhost
+
+	WSGIScriptAlias / /home/alex/Documente/store/svn/wouso/django/django.wsgi
+	Alias /media /var/lib/python-support/python2.5/django/contrib/admin/media/
+	
+	# Logs:
+	ErrorLog /var/log/apache2/wouso_error.log
+        LogLevel warn
+        CustomLog /var/log/apache2/wouso_access.log combined
+</VirtualHost>

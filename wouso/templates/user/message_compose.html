@@ -1,0 +1,17 @@
+{% extends "site_base.html" %}
+
+{% block content %}
+
+<h1>Compose</h1>
+
+<form action="{% url core.profile.views.message_compose user_to.id %}" method="post">
+<table>
+<tr>
+<td><strong>To:</strong></td><td>{{ user_to }}</td></tr>
+{{ form }}
+</table>
+<input type="submit" value="Send" />
+</form>
+
+<a href="{% url core.profile.views.messages %}">back to Messaging</a>
+{% endblock %}

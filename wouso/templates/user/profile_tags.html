@@ -1,0 +1,21 @@
+{% spaceless %}
+    {% for o in format %}      
+        {% ifequal o "large_gravatar" %}
+            <img style="margin:0px;border:0px;padding:0px" src="{{ gravatar_link }}" title="{{ user_full_name }}">
+        {% endifequal %}
+        
+        {% ifequal o "small_gravatar" %}
+            <img width="40" style="margin:0px;border:0px;padding:0px" src="{{ gravatar_link }}" title="{{ user_full_name }}">
+        {% endifequal %}
+        
+        {% ifequal o "linked_name" %}
+            <a href="{{ user_profile_link }}">{{ user_full_name }}</a>
+        {% endifequal %}
+        
+        {% ifequal o "level" %}
+        {% endifequal %}
+        
+        {% ifequal o "level_icon" %}
+        {% endifequal %}
+    {% endfor %}
+{% endspaceless %}

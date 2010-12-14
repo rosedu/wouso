@@ -1,0 +1,20 @@
+= Installation on Ubuntu =
+
+Add a local alias in /etc/hosts 
+	127.0.0.1 wouso.local
+
+Install django, mysql, apache and mod-wsgi.
+
+:~# apt-get install libapache2-mod-wsgi python-django apache2 mysql-server python-ldap python-mysqldb
+
+Install pyfacebook and django-facebookconnect:
+	git clone git://github.com/ryanmark/django-facebookconnect.git
+	git clone git://github.com/sciyoshi/pyfacebook.git
+	(python setup.py install)
+
+Edit wouso.local and place it in /etc/apache2/sites-available
+
+:~# a2ensite wouso.local
+:~# service apache2 reload
+
+Go to http://wouso.local .
