@@ -101,7 +101,7 @@ INSTALLED_APPS = (
     'wouso.games.challenge',
     'wouso.games.wquest',
     'wouso.extra.activity',
-    'wouso.core.profile.templatetags.profile_tags',
+#    'wouso.core.profile.templatetags.profile_tags',
     'facebookconnect'
 )
 
