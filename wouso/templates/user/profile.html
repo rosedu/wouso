@@ -1,9 +1,11 @@
 {% extends "site_base.html" %}
 
+{% load profile_tags %}
+
 {% block content %}
 
 <h1>Profile: {{ profile.user }}</h1>
-
+{% user profile "large_gravatar" %}
 <p>{{ profile.real_name }}</p>
 <p>Points: {{ profile.points }}</p>
 
