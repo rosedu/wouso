@@ -1,5 +1,6 @@
 *~
 *.swp
 *.pyc
+*.db
 /wouso/localsettings.py
 /wouso/settings.py

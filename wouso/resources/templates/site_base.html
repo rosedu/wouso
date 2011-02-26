@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HTML xmlns="http://www.w3.org/1999/xhtml">
+<HEAD>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<TITLE>{% block title %}World of USO: piranha{% endblock %}</TITLE>
+<LINK rel="stylesheet" type="text/css" href="/static/css/style.css" />
+<LINK rel="stylesheet" type="text/css" href="/static/theme/{{ config.theme }}/theme.css" />
+</HEAD>
+
+<BODY>
+<div id="fundal">
+<div id="container">
+<div id="logo">
+    <div id="topbar">
+    {% if user.is_authenticated %}
+    ({{ user }})
+    <a href="{% url django.contrib.auth.views.logout %}">logout</a>.
+    {% if user.is_staff %}
+    <a href="{% url admin:index %}">Admin</a>
+    {% endif %}
+    {% else %}
+    Anonimous, <a href="{% url django.contrib.auth.views.login %}">login</a>.
+    {% endif %}
+    </div>
+        
+    </a>
+</div>
+
+<div id="search">
+<form method="get" action="">
+<input type="text" name="query" /></form>
+</div>
+
+<div id="content">
+{% block content %}
+<h1>World of USO: A new start</h1>
+{% endblock %}
+</div>
+
+<div id="footer">
+&copy; <a href="http://www.rosedu.org/">ROSEdu</a></div>
+</div>
+</div>
+</BODY>
+</HTML>
