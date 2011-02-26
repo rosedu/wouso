@@ -1,14 +1,4 @@
+This is the new wouso-django code base, as started on 2011/02/26.
 
-Mini HOWTO:
-
-cd wouso
-# configurare locală
-edit settings.py
-# crează baza de date
-python manage.py syncdb
-# rulează server de test
-python manage.py runserver
-
-# Pentru a crea un modul nou (app)
-python manage.py startapp <nume_modul>
+More details on: http://projects.rosedu.org/projects/wousodjango/
 
