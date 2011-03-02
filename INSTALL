@@ -1,0 +1,12 @@
+WoUSO Installation
+==================
+
+	* TODO
+
+First run:
+	cp settings.py.example settings.py #and customize for your needs
+	./manage.py syncdb
+	./manage.py runserver
+
+Requirements:
+	* easy install django-logdb
