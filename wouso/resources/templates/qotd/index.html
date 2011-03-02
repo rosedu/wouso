@@ -1,0 +1,25 @@
+{% extends 'site_base.html' %}
+
+{% block title %}Question of the Day{% endblock %}
+
+{% block content %}
+
+{% if form.errors %}
+<p style="color:red">You must provide an answer.</p>
+{% endif %}
+
+{% if text %}
+<h1>Question</h1>
+<p>{{ text }}</p>
+<form method="post" action="{% url games.qotd.views.index %}">
+<div class="answers">
+    {{ form.answers }}
+</div>
+<input type="submit" value="Send" />
+{% csrf_token %} 
+</form>
+{% else %}
+    No question for today.
+{% endif %}
+
+{% endblock %}

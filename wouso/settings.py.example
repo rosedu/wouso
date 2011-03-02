@@ -109,6 +109,8 @@ INSTALLED_APPS = (
     'wouso.core.user',
     'wouso.core.game',
     'wouso.core.scoring',
+    
+    'wouso.games.qotd',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 	'djangologdb',
@@ -116,6 +118,8 @@ INSTALLED_APPS = (
 
 LOGIN_URL = '/user/login/'
 LOGIN_REDIRECT_URL = '/'
+
+AUTH_PROFILE_MODULE = 'user.UserProfile'
 
 # please don't remove this yet
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
