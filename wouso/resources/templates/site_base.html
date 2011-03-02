@@ -13,7 +13,7 @@
 <div id="logo">
     <div id="topbar">
     {% if user.is_authenticated %}
-    ({{ user }})
+    [{{ user }}]
     <a href="{% url django.contrib.auth.views.logout %}">logout</a>.
     {% if user.is_staff %}
     <a href="{% url admin:index %}">Admin</a>

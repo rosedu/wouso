@@ -8,5 +8,10 @@ First run:
 	./manage.py syncdb
 	./manage.py runserver
 
+Hints:
+    * for active development, you may "ln -s" settings.py instead of copying.
+    * also, if you want to drop tables for one app, i.e. core.user, use:
+		./manage.py sqlclear user | ./manage.py dbshell
+
 Requirements:
-	* easy install django-logdb
+	# easy install django-logdb

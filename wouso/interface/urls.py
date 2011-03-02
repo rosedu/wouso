@@ -2,12 +2,16 @@ from django.conf.urls.defaults import *
 from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
+import wouso.games
 
 urlpatterns = patterns('',
 	(r'^$', 'interface.views.homepage'),
 
 	(r'^user/login/$', 'django.contrib.auth.views.login'),
     (r'^user/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}), 
+
+	# Games
+	(r'^g/', include('wouso.games.urls')),
 
 	# Admin related
     (r'^admin/', include(admin.site.urls)),
