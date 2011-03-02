@@ -9,8 +9,11 @@ urlpatterns = patterns('',
 	(r'^user/login/$', 'django.contrib.auth.views.login'),
     (r'^user/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}), 
 
+	# Admin related
     (r'^admin/', include(admin.site.urls)),
+	(r'^admin/djangologdb/', include('djangologdb.urls')),
 
+	# Static: not in a real deployment
 	(r'^static/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
 

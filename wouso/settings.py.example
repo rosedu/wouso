@@ -1,7 +1,20 @@
 # Django settings for wouso project.
+# TODO: more descriptive text about what to modify and what not
+
+# Global debug switch
+DEBUG = True
+
+# Setup logging
+import logging
+from djangologdb.handlers import DjangoDatabaseHandler, add_handler
+logging.basicConfig(level=logging.DEBUG if DEBUG else logging.INFO)
+# This will get the default (root) logger; any further getLogger calls will inherit root
+logger = logging.getLogger()
+add_handler(logger, DjangoDatabaseHandler())
+
+# Configuration
 import os.path
 
-DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -74,6 +87,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+	# If we want to log exceptions, uncomment next line:
+	# 'djangologdb.middleware.LoggingMiddleware',
 )
 
 ROOT_URLCONF = 'wouso.interface.urls'
@@ -92,10 +107,12 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+	'djangologdb',
 )
 
 LOGIN_URL = '/user/login/'
 LOGIN_REDIRECT_URL = '/'
 
+# please don't remove this yet
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
     from localsettings import *
