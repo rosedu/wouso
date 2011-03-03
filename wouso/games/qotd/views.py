@@ -22,5 +22,8 @@ def index(request):
 @login_required
 def done(request):
     # Do not show results until done
-    if not request.user.get_profile().has_answered_qotd:
-        return HttpResponseRedirect("/qotd/")
+    if not request.user.get_profile().get_extension(QotdUser).has_answered:
+        return HttpResponseRedirect(reverse("games.qotd.views.index"))
+    return render_to_response('qotd/done.html',
+            {},
+            context_instance=RequestContext(request))
