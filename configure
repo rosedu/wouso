@@ -1,0 +1,37 @@
+#!/bin/bash
+
+EASY_INSTALL_MODULES=django-logdb
+APT_PACKAGES=python-django
+
+# This configure script should run just fine on ubuntu 10.10 and newer
+
+# Apts
+sudo apt-get install $APT_PACKAGES
+
+# Easy install
+which easy_install &> /dev/null
+if [ ! $? == 0 ]; then
+	sudo apt-get install python-setuptools
+fi
+
+# Requirements
+sudo easy_install $EASY_INSTALL_MODULES
+
+# Django parts
+cd wouso
+
+if [ ! -f settings.py ]; then
+	echo "Linking settings.py.example to settings.py"
+	ln -sf settings.py.example settings.py
+fi
+
+# Syncdb
+./manage.py syncdb
+
+# Scoring
+python core/scoring/default_setup.py
+
+# Done
+echo "Done!"
+echo "Now run:"
+echo "    cd wouso; ./manage.py runserver"
