@@ -12,7 +12,8 @@ class QotdTestCase(unittest.TestCase):
         
     def testUserCreate(self):
         user = User.objects.create()
-        profile, new = UserProfile.objects.get_or_create(user=user)
         
-        new = QotdUser.objects.create(user=user)
-        self.assertEqual(new, profile.get_extension(QotdUser))
+        profile = user.get_profile()
+        
+        self.assertTrue(isinstance(profile, UserProfile))
+        self.assertTrue(isinstance(profile.get_extension(QotdUser), QotdUser))

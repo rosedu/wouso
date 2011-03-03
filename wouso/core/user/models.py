@@ -7,10 +7,19 @@ class UserProfile(models.Model):
     
     def get_extension(self, cls):
         """ Search for an extension of this object, with the type cls
-        Creat instance if there isn't any
+        Create instance if there isn't any.
+        
+        Using an workaround, while: http://code.djangoproject.com/ticket/7623 gets fixed.
+        Also see: http://code.djangoproject.com/ticket/11618
         """
-        profile, new = cls.objects.get_or_create(user=self.user)    
-        return profile
+        try:
+            extension = cls.objects.get(user=self.user)    
+        except cls.DoesNotExist:
+            extension = cls(userprofile_ptr = self)
+            for f in self._meta.local_fields: 
+                setattr(extension, f.name, getattr(self, f.name))
+                
+        return extension
         
 # Hack for having user and user's profile always in sync
 def user_post_save(sender, instance, **kwargs):
