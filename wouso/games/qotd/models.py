@@ -9,3 +9,7 @@ class QotdUser(UserProfile):
     """ Extension of the User object, customized for qotd """
     has_answered = models.BooleanField(default=False)
     
+class QotdGame(Game):
+    """ Each game must extend Game """
+    class Meta:
+        verbose_name = "Question of the Day"
