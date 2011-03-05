@@ -8,9 +8,9 @@
 <p style="color:red">You must provide an answer.</p>
 {% endif %}
 
-{% if text %}
+{% if question %}
 <h1>Question</h1>
-<p>{{ text }}</p>
+<p>{{ question.text }}</p>
 <form method="post" action="{% url games.qotd.views.index %}">
 <div class="answers">
     {{ form.answers }}

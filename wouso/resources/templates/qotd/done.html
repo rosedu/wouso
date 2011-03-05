@@ -1,0 +1,24 @@
+{% extends 'site_base.html' %}
+
+{% block title %}Question of the Day{% endblock %}
+
+{% block content %}
+
+{% if question %}
+<h1>Question</h1>
+<p>{{ question.text }}</p>
+<div class="answers">
+<ul>
+{% for a in question.answers %}
+    <li><input type=radio disabled {% ifequal a.id choice %}checked{% endifequal %} /> 
+    {{ a.text }} {% if a.correct %}[correct]{% endif %}</li>
+{% endfor %}
+</ul>
+</div>
+Your choice: {{ choice }}
+{% if valid %} correct{% else %} wrong{% endif %}
+{% else %}
+    No question for today.
+{% endif %}
+
+{% endblock %}

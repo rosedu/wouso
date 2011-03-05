@@ -18,6 +18,7 @@ class UserProfile(models.Model):
             extension = cls(userprofile_ptr = self)
             for f in self._meta.local_fields: 
                 setattr(extension, f.name, getattr(self, f.name))
+            extension.save()
                 
         return extension
         

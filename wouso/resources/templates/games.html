@@ -5,7 +5,10 @@
 {% block content %}
 <h2>Games</h2>
 
+<ul>
 {% for g in games %}
-    {{g}}
+    <li><a href="./{{g.link}}/">{{g.name}}</a></li>
 {% endfor %}
+</ul>
+
 {% endblock %}

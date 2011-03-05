@@ -11,6 +11,7 @@
 <div id="fundal">
 <div id="container">
 <div id="logo">
+    <a href="{% url interface.views.homepage %}" id="logoa"></a>
     <div id="topbar">
     {% if user.is_authenticated %}
     [{{ user }}]
@@ -34,6 +35,10 @@
 <div id="content">
 {% block content %}
 <h1>World of USO: A new start</h1>
+
+<p>
+See <a href="{% url games.views.games %}">a list of available games</a>.
+</p>
 {% endblock %}
 </div>
 
