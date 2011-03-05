@@ -1,26 +1,49 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+def validate_dynq_code():
+    # TODO: code should be validate here so we don't break the site
+    # by executing bad code
+    pass
+
 class Tag(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=256)
     # tags could have different types ("date" for questions tagged with a date for qotd)
-    type = models.CharField(default="default")
+    type = models.CharField(max_length=256, default="default")
+    
+    def __unicode__(self):
+        return self.name + " (" + self.type + ")"
     
 class Question(models.Model):
     text = models.TextField()
-    proposedby = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_related")
-    endorsedby = models.ForeignKey(User, null=True, related_name="%(app_label)s_%(class)s_related")
+    proposed_by = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_proposedby_related")
+    endorsed_by = models.ForeignKey(User, null=True, blank=True, related_name="%(app_label)s_%(class)s_endorsedby_related")
     active = models.BooleanField()
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True, related_name="%(app_label)s_%(class)s_related")
+    answer_type = models.CharField(max_length=1, choices=(("R", "single choice"), ("C", "multiple choice")), default="R")
     # a dynamic question would have its code run before returning it to the caller
-    type = models.CharField(max_length=1, choices=(("S", "static"), ("D", "dynamic")))
-    code = models.TextField(blank=True)
+    type = models.CharField(max_length=1, choices=(("S", "static"), ("D", "dynamic")), default="S")
+    code = models.TextField(blank=True, validators=[validate_dynq_code], 
+                            help_text="Use %text for initial text, %user for the user that sees the question.")
+
+    def __unicode__(self):
+        tags = [t for t in self.tags.all()]
+        res = str(self.text) + " ["
+        
+        # no tags assigned to the question
+        if not tags:
+            return self.text
+        
+        for t in tags:
+            res += str(t) + ", "
+        
+        return res[:-2] + "]"
     
-    class Meta:
-        abstract = True
-
-class RadioQuestion(Question):
-    pass
-
-class CheckQuestion(Question):
-    pass
+class Answer(models.Model):
+    question = models.ForeignKey(Question, related_name="answers")
+    text = models.TextField()
+    explanation = models.TextField()
+    correct = models.BooleanField()
+    
+    def __unicode__(self):
+        return self.text
