@@ -2,8 +2,9 @@
 
 from datetime import datetime
 from django.db import models
+from django.contrib.auth.models import User
+from wouso.core.game import get_games
 from wouso.core.game.models import Game
-from wouso.core.user.models import User
 
 class ScoringModel:
     @classmethod
@@ -48,4 +49,16 @@ class History(models.Model):
     formula = models.ForeignKey(Formula, blank=True, null=True, default=None)
     coin = models.ForeignKey(Coin)
     amount = models.FloatField(default=0)
+    
+    @staticmethod
+    def user_coins(user):
+        coins = {}
+        for game in get_games():
+            hs = list(History.objects.filter(user=user, game=game.get_instance()))
+            for h in hs:
+                if h.coin.id in coins.keys():
+                    coins[h.coin.id] += h.amount
+                else:
+                    coins[h.coin.id] = h.amount
 
+        return coins

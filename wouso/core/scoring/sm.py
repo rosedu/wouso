@@ -102,13 +102,6 @@ def history_for(user, game, external_id=None, formula=None, coin=None):
         
 def user_coins(user):
     """ Returns a dictionary with user coins """
-    coins = {}
-    for game in get_games():
-        hs = list(history_for(user, game))
-        for h in hs:
-            if h.coin.id in coins.keys():
-                coins[h.coin.id] += h.amount
-            else:
-                coins[h.coin.id] = h.amount
-    
-    return coins
+    if not isinstance(user, User):
+        user = user.user
+    return History.user_coins(user)

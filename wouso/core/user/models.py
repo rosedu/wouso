@@ -1,10 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
+from core.scoring.models import History
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, 
         related_name="%(class)s_related")
     
+    @property
+    def coins(self):
+        return History.user_coins(self.user)
+        
     def get_extension(self, cls):
         """ Search for an extension of this object, with the type cls
         Create instance if there isn't any.
