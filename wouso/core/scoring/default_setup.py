@@ -6,8 +6,17 @@ import settings
 setup_environ(settings)
 
 from wouso.core import scoring
+from wouso.core.scoring.models import *
 
 if __name__ == '__main__':
     print 'Setting up the Scoring module...',
     scoring.setup()
     print 'done!'
+
+    # Dump
+    print "Coins: "
+    for c in Coin.objects.all():
+        print " ", c
+    print "Formulas: "
+    for f in Formula.objects.all():
+        print " ", f

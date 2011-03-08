@@ -9,7 +9,7 @@ from core import scoring
 class ScoringTestCase(unittest.TestCase):
     def setUp(self):
         self.user = User.objects.create()
-        self.game = Game.objects.create()
+        self.game = Game.get_instance()
         self.coin = Coin.objects.create(id='_test')
         
     def tearDown(self):

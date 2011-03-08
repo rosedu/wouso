@@ -1,3 +1,5 @@
+from django.contrib.auth.models import User
+from wouso.core.game import get_games
 from wouso.core.scoring.models import *
 from wouso.core import logger
 
@@ -21,10 +23,15 @@ def check_setup():
 
 def setup():
     """ Prepare database for Scoring """
-    
     for cc in CORE_POINTS:
         if not Coin.get(cc):
             Coin.add(cc, name=cc)
+    
+    # iterate through games and register formulas
+    for game in get_games():
+        for formula in game.get_formulas():
+            if not Formula.get(formula.id):
+                Formula.add(formula)
 
 def calculate(formula, **params):
     """ Calculate formula """
@@ -51,7 +58,7 @@ def calculate(formula, **params):
     
 def score(user, game, formula, external_id=None, **params):
     ret = calculate(formula, **params)
-    
+        
     if isinstance(ret, dict):
         for coin, amount in ret.items():
             score_simple(user, coin, amount, game, formula, external_id)
@@ -59,7 +66,14 @@ def score(user, game, formula, external_id=None, **params):
 def score_simple(user, coin, amount, game=None, formula=None, 
     external_id=None):
     
+    if not isinstance(game, Game):
+        game = game.get_instance()
+    
+    if not isinstance(user, User):
+        user = user.user
+            
     coin = Coin.get(coin)
+    formula = Formula.get(formula) 
     
     hs = History.objects.create(user=user, coin=coin, amount=amount,
         game=game, formula=formula, external_id=external_id)
@@ -75,7 +89,26 @@ def history_for(user, game, external_id=None, formula=None, coin=None):
     if coin:
         fltr['coin'] = Coin.get(coin)
     
+    if not isinstance(game, Game):
+        game = game.get_instance()
+    
+    if not isinstance(user, User):
+        user = user.user
+        
     try:
         return History.objects.filter(user=user, game=game, **fltr)
     except History.DoesNotExist:
         return None
+        
+def user_coins(user):
+    """ Returns a dictionary with user coins """
+    coins = {}
+    for game in get_games():
+        hs = list(history_for(user, game))
+        for h in hs:
+            if h.coin.id in coins.keys():
+                coins[h.coin.id] += h.amount
+            else:
+                coins[h.coin.id] = h.amount
+    
+    return coins

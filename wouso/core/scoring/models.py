@@ -8,7 +8,10 @@ from wouso.core.user.models import User
 class ScoringModel:
     @classmethod
     def add(kls, id, **data):
-        c = kls.objects.create(id=id, **data)
+        if isinstance(id, kls):
+            id.save()
+        else:
+            c = kls.objects.create(id=id, **data)
     
     @classmethod
     def get(kls, id):
@@ -41,7 +44,7 @@ class History(models.Model):
     timestamp = models.DateTimeField(default=datetime.now, blank=True)
     user = models.ForeignKey(User)
     game = models.ForeignKey(Game, blank=True, null=True, default=None)
-    external_id = models.IntegerField(default=0)
+    external_id = models.IntegerField(default=0, null=True)
     formula = models.ForeignKey(Formula, blank=True, null=True, default=None)
     coin = models.ForeignKey(Coin)
     amount = models.FloatField(default=0)

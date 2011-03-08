@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 from django.db import models
 from core.user.models import UserProfile
 from core.game.models import Game
+from core import scoring
+from core.scoring.models import Formula
 
 # Qotd will use models (question) from qpool
 # Please implement wouso.core.qpool
@@ -17,6 +19,10 @@ class QotdUser(UserProfile):
             self.last_answered = datetime.now()
             self.save()
         
+    def reset_answered(self):
+        self.last_answered = None
+        self.save()
+        
     @property
     def has_answered(self):
         """ Check if last_answered was today """
@@ -28,7 +34,10 @@ class QotdUser(UserProfile):
 class QotdGame(Game):
     """ Each game must extend Game """
     class Meta:
+        # The verbose_name is used in fine printing
         verbose_name = "Question of the Day"
+        # A Game extending core.game.models.Game should be set as proxy
+        proxy = True
     
     @staticmethod
     def get_for_today():
@@ -53,5 +62,17 @@ class QotdGame(Game):
                 break
         
         user.set_answered(correct)
-        # TODO: use scoring
-            
+        
+        if correct:
+            scoring.score(user, QotdGame, 'qotd-ok')
+    
+    @classmethod
+    def get_formulas(kls):
+        """ Returns a list of formulas used by qotd """
+        fs = []
+        qotd_game = kls.get_instance()
+        fs.append(Formula(id='qotd-ok', formula='points=3', 
+            owner=qotd_game.game, 
+            description='Points earned on a correct answer')
+        )
+        return fs
