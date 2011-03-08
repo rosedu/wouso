@@ -36,6 +36,9 @@ def done(request):
         return HttpResponseRedirect(reverse("games.qotd.views.index"))
     
     qotd = QotdGame.get_for_today()
+    choice = request.user.get_profile().get_extension(QotdUser).last_answer
     return render_to_response('qotd/done.html',
-            {'question': qotd, 'choice': request.user.get_profile().get_extension(QotdUser).last_answer},
+            {'question': qotd, 'choice': choice, 
+            'valid': qotd.answers[choice].correct
+            },
             context_instance=RequestContext(request))

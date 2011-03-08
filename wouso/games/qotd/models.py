@@ -61,7 +61,7 @@ class QotdGame(Game):
                 correct = True
                 break
         
-        user.set_answered(correct)
+        user.set_answered(choice)
         
         if correct:
             scoring.score(user, QotdGame, 'qotd-ok')
