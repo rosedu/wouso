@@ -1,8 +1,7 @@
 from django.core.urlresolvers import reverse
-from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
-from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from wouso.interface import render_response
 from models import QotdUser, QotdGame
 from forms import QotdForm
 
@@ -25,9 +24,9 @@ def index(request):
     else:
         form = QotdForm(qotd) 
         
-    return render_to_response('qotd/index.html', 
-            {'question': qotd, 'form': form}, 
-            context_instance=RequestContext(request))
+    return render_response('qotd/index.html', 
+            request,
+            {'question': qotd, 'form': form})
             
 @login_required
 def done(request):
@@ -37,8 +36,8 @@ def done(request):
     
     qotd = QotdGame.get_for_today()
     choice = request.user.get_profile().get_extension(QotdUser).last_answer
-    return render_to_response('qotd/done.html',
+    return render_response('qotd/done.html',
+            request,
             {'question': qotd, 'choice': choice, 
             'valid': qotd.answers[choice].correct
-            },
-            context_instance=RequestContext(request))
+            })

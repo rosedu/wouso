@@ -1,10 +1,7 @@
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-from wouso.interface import logger
+from wouso.interface import logger, render_response
 
 def homepage(request):
     """ First page shown """
     logger.debug('Everything is fine')
 
-    return render_to_response('site_base.html', 
-            context_instance=RequestContext(request))
+    return render_response('site_base.html', request)

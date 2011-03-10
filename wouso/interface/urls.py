@@ -5,20 +5,20 @@ admin.autodiscover()
 import wouso.games
 
 urlpatterns = patterns('',
-	(r'^$', 'interface.views.homepage'),
+    (r'^$', 'interface.views.homepage'),
 
-	(r'^user/login/$', 'django.contrib.auth.views.login'),
+    (r'^user/login/$', 'django.contrib.auth.views.login'),
     (r'^user/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}), 
 
-	# Games
-	(r'^g/', include('wouso.games.urls')),
+    # Games
+    (r'^g/', include('wouso.games.urls')),
 
-	# Admin related
+    # Admin related
     (r'^admin/', include(admin.site.urls)),
-	(r'^admin/djangologdb/', include('djangologdb.urls')),
+    (r'^admin/djangologdb/', include('djangologdb.urls')),
 
-	# Static: not in a real deployment
-	(r'^static/(?P<path>.*)$', 'django.views.static.serve',
+    # Static: not in a real deployment
+    (r'^static/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
 
 )
