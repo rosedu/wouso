@@ -15,6 +15,7 @@
     <div id="topbar">
     {% if user.is_authenticated %}
     [{{ user }}] {{user.get_profile.coins}}
+    <a href="{% url interface.profile.views.profile %}"> My Profile </a>
     <a href="{% url django.contrib.auth.views.logout %}">logout</a>.
     {% if user.is_staff %}
     <a href="{% url admin:index %}">Admin</a>
