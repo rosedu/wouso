@@ -62,3 +62,6 @@ class History(models.Model):
                     coins[h.coin.id] = h.amount
 
         return coins
+    
+    def __unicode__(self):
+        return "{user} {date}-{formula}[{ext}]: {amount}{coin}".format(user=self.user, date=self.timestamp, formula=self.formula, ext=self.external_id, amount=self.amount, coin=self.coin)

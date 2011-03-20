@@ -50,7 +50,7 @@ class Question(models.Model):
     
     def __unicode__(self):
         tags = [t for t in self.tags.all()]
-        res = str(self.text) + " ["
+        res = unicode(self.text) + " ["
         
         # no tags assigned to the question
         if not tags:
@@ -64,7 +64,7 @@ class Question(models.Model):
 class Answer(models.Model):
     question = models.ForeignKey(Question, related_name="answers")
     text = models.TextField()
-    explanation = models.TextField(null=True, default='')
+    explanation = models.TextField(null=True, default='', blank=True)
     correct = models.BooleanField()
     
     def __unicode__(self):

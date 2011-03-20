@@ -6,9 +6,14 @@ class ChallengeForm(forms.Form):
         
         for q in challenge.questions.all():
             field = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, label=q.text)
-            field.choices = [(a.id, a.text) for a in question.answers]
+            field.choices = [(a.id, a.text) for a in q.answers.all()]
             self.fields['answer_{id}'.format(id=q.id)] = field
         self.data = data
     
     def get_response(self):
-        return self.data
+        """ Parse response and return comprehensive list of ids """
+        res = {}
+        for f in filter(lambda name: name.startswith('answer_'), self.data):
+            id = int(f[len('answer_'):])
+            res[id] = [int(i) for i in self.data.getlist(f)]
+        return res

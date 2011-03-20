@@ -41,11 +41,11 @@ def challenge(request, id):
         
     if request.method == "POST":
         form = ChallengeForm(chall, request.POST)
-        chall.set_played(chall_user, form.get_response())
+        results = chall.set_played(chall_user, form.get_response())
         
         return render_response('challenge/result.html',
             request,
-            {'challenge': chall, 'results': None})
+            {'challenge': chall, 'results': results})
     else:
         form = ChallengeForm(chall)
     return render_response('challenge/challenge.html',
