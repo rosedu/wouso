@@ -64,14 +64,8 @@ def launch(request, to_id):
     user_from = request.user.get_profile().get_extension(ChallengeUser)
     
     if user_from.can_challenge(user_to):
-        uf, ut = Participant(user=user_from), Participant(user=user_to)
-        uf.save(), ut.save()
-        c = Challenge(user_from=uf, user_to=ut, date=datetime.now())
-        c.save()
-        
-        if not c.create():
+        if not Challenge.create(user_from=user_from, user_to=user_to):
             """ Some error occurred during question fetch. Clean up, and display error """
-            c.delete()
             return do_error(request, 'couldnotcreate')
         
         return HttpResponseRedirect(reverse('games.challenge.views.index'))

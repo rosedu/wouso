@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from django.db.models import Q, Max
 from core.user.models import UserProfile
@@ -57,11 +58,16 @@ class Challenge(models.Model):
     winner = models.ForeignKey(UserProfile, related_name="winner", null=True, blank=True)
     questions = models.ManyToManyField(Question)
         
-    def create(self):
+    @staticmethod
+    def create(user_from, user_to):
         """ Assigns questions, and returns the number of assigned q """
+        uf, ut = Participant(user=user_from), Participant(user=user_to)
+        uf.save(), ut.save()
+        
+        c = Challenge(user_from=uf, user_to=ut, date=datetime.now())
+        c.save()
         # TODO: qpool.get_by_tag()
-        self.save()
-        return True
+        return c
     
     def accept(self):
         self.status = 'A'
@@ -109,6 +115,9 @@ class Challenge(models.Model):
     
     def is_runnable(self):
         return self.status == 'A'
+        
+    def is_refused(self):
+        return self.status == 'R'
         
     def __unicode__(self):
         return "%s vs %s (%s) - %s " % (
