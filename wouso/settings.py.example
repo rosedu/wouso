@@ -109,8 +109,10 @@ INSTALLED_APPS = (
     'wouso.core.user',
     'wouso.core.game',
     'wouso.core.scoring',
+    'wouso.core.qpool',
     
     'wouso.games.qotd',
+    'wouso.games.challenge',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 	'djangologdb',

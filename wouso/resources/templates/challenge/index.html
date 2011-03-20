@@ -1,0 +1,39 @@
+{% extends 'site_base.html' %}
+
+{% block title %}Challenges{% endblock %}
+
+{% block content %}
+
+<h1>Challenges</h1>
+
+<h2>Active</h2>
+{% for c in challenges %}
+    {{ c }} 
+    
+    {% ifequal c.user_to.user challuser %}
+        {% if c.is_launched %}<a href="{% url games.challenge.views.accept c.id %}">Accept</a>{% endif %}
+        {% if c.is_launched %}<a href="{% url games.challenge.views.refuse c.id %}">Refuse</a>{% endif %}
+    {% endifequal %}
+    
+    {% if c.is_runnable %}
+        <a href="{% url games.challenge.views.challenge c.id %}">Play</a>
+    {% endif %}
+    
+    {% ifequal c.user_from.user challuser %}
+        {% if c.is_launched %}<a href="{% url games.challenge.views.cancel c.id %}">Cancel</a>{% endif %}
+    {% endifequal %}
+    <br/>
+{% endfor %}
+
+{% ifequal c|length 0 %}
+    No challenges.
+{% endifequal %}
+
+{% if played %}
+<h2>Played</h2>
+{% for c in played %}
+    {{ c }} <br/>
+{% endfor %}
+{% endif %}
+
+{% endblock %}
