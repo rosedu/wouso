@@ -78,8 +78,6 @@ class Challenge(models.Model):
         self.save()
         
     def cancel(self):
-        self.user_from.delete()
-        self.user_to.delete()
         self.delete()
         
     def set_played(self, user, responses):
@@ -152,4 +150,15 @@ class ChallengeGame(Game):
         except Participant.DoesNotExist:
             challs = []
         return challs
+
+# Hack for having participants in sync
+def challenge_post_delete(sender, instance, **kwargs):
+    """ For some reason, this is called twice. Needs investigantion
+    Also, in django devele, on_delete=cascade will fix this hack
+    """
+    try:
+        instance.user_from.delete()
+        instance.user_to.delete()
+    except: pass
+models.signals.post_delete.connect(challenge_post_delete, Challenge)
 
