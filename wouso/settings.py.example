@@ -113,6 +113,7 @@ INSTALLED_APPS = (
     
     'wouso.games.qotd',
     'wouso.games.challenge',
+    'wouso.games.quest',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 	'djangologdb',

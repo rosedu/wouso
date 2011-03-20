@@ -1,0 +1,25 @@
+{% extends 'site_base.html' %}
+
+{% block title %}Quest{% endblock %}
+
+{% block content %}
+
+<h1>Quest</h1>
+
+{% if progress.finished %}
+<p>Quest finished!</p>
+{% else %}
+<p style="color:red">{{ message }}</p>
+<p>
+{{ quest }} available until {{ quest.end }}
+</p>
+<p>{{ progress.current_question }}</p>
+<form method="post" action="{% url games.quest.views.index %}">
+<table>
+{{ form }}
+</table>
+{% csrf_token %}
+<input type="submit" value="Send" />
+</form>
+{% endif %}
+{% endblock %}
