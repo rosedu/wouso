@@ -60,3 +60,13 @@ h1 {
 .answers ul {
     list-style-type: none
 }
+.artifact {
+    vertical-align: middle;
+    width: 24px;
+    height: 24px;
+    background-color: whiteSmoke;
+    display: inline-block;
+}
+.artifact-default-level-1 {
+    background-image:url(../art/default/level-1.png);
+}

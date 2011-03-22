@@ -31,6 +31,9 @@ fi
 # Scoring
 python core/scoring/default_setup.py
 
+# Artifacts
+python core/artifacts/default_setup.py
+
 # Done
 echo "Done!"
 echo "Now run:"

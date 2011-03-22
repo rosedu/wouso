@@ -119,6 +119,7 @@ INSTALLED_APPS = (
     'wouso.core.game',
     'wouso.core.scoring',
     'wouso.core.qpool',
+    'wouso.core.artifacts',
     
     'wouso.games.qotd',
     'wouso.games.challenge',
@@ -132,6 +133,9 @@ LOGIN_URL = '/user/login/'
 LOGIN_REDIRECT_URL = '/'
 
 AUTH_PROFILE_MODULE = 'user.UserProfile'
+
+MEDIA_ARTIFACTS_DIR = os.path.dirname(__file__) + "/resources/static/upload/"
+MEDIA_ARTIFACTS_URL = "/static/upload/"
 
 # please don't remove this yet
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):

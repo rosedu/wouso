@@ -1,10 +1,19 @@
 {% extends 'site_base.html' %}
+{% load artifacts %}
 
 {% block title %}{{ profile.user }}{% endblock %}
 
 {% block content %}
 <h2>{{ profile.user }}</h2>
 
+Title: {{profile.level.title}}<br/>
+Points: {{profile.points}}
+
+<ul class="artifacts">
+{% for a in profile.artifacts.all %}
+    <li>{% artifact a %}</li>
+{% endfor %}
+</ul>
 <p> Here the activity module will kick in </p>
 
 {% endblock %}

@@ -1,13 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import User
 from core.scoring.models import History
+from core.artifacts.models import Artifact
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, 
         related_name="%(class)s_related")
     
     # Unique differentiator for ladder
+    # Do not modify it manually, use scoring.score instead
     points = models.FloatField(default=0, blank=True, null=True)
+    
+    artifacts = models.ManyToManyField(Artifact, blank=True)
+    level_no = models.IntegerField(default=1, blank=True, null=True)
+    level = models.ForeignKey(Artifact, default=Artifact.get_level_1, related_name='user_level')
     
     @property
     def coins(self):

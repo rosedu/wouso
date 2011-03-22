@@ -1,3 +1,4 @@
+{% load artifacts %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <HTML xmlns="http://www.w3.org/1999/xhtml">
 <HEAD>
@@ -13,8 +14,8 @@
     <div id="header">
         <div id="topbar">
             {% if user.is_authenticated %}
-            [{{ user }}] {{user.get_profile.coins}}
-            <a href="{% url interface.profile.views.profile %}"> My Profile </a>
+            {% artifact user.get_profile.level %}
+            <a href="{% url interface.profile.views.profile %}">{{ user.first_name }} {{ user.last_name }}</a>
             <a href="{% url django.contrib.auth.views.logout %}">logout</a>.
             {% if user.is_staff %}
             <a href="{% url admin:index %}">Admin</a>
