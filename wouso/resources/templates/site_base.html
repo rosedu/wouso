@@ -4,53 +4,54 @@
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>{% block title %}World of USO: piranha{% endblock %}</TITLE>
 <LINK rel="stylesheet" type="text/css" href="/static/css/style.css" />
-<LINK rel="stylesheet" type="text/css" href="/static/theme/{{ config.theme }}/theme.css" />
+<LINK rel="stylesheet" type="text/css" href="/static/themes/{{ config.theme }}/styles.css" />
 </HEAD>
 
 <BODY>
 <div id="fundal">
 <div id="container">
-<div id="logo">
-    <a href="{% url interface.views.homepage %}" id="logoa"></a>
-    <div id="topbar">
-    {% if user.is_authenticated %}
-    [{{ user }}] {{user.get_profile.coins}}
-    <a href="{% url interface.profile.views.profile %}"> My Profile </a>
-    <a href="{% url django.contrib.auth.views.logout %}">logout</a>.
-    {% if user.is_staff %}
-    <a href="{% url admin:index %}">Admin</a>
-    {% endif %}
-    {% else %}
-    Anonimous, <a href="{% url django.contrib.auth.views.login %}">login</a>.
-    {% endif %}
+    <div id="header">
+        <div id="topbar">
+            {% if user.is_authenticated %}
+            [{{ user }}] {{user.get_profile.coins}}
+            <a href="{% url interface.profile.views.profile %}"> My Profile </a>
+            <a href="{% url django.contrib.auth.views.logout %}">logout</a>.
+            {% if user.is_staff %}
+            <a href="{% url admin:index %}">Admin</a>
+            {% endif %}
+            {% else %}
+            Anonimous, <a href="{% url django.contrib.auth.views.login %}">login</a>.
+            {% endif %}
+        </div> 
+        <div id="logo">
+            <a href="{% url interface.views.homepage %}" id="logoa"></a>
+        </div>
     </div>
-        
-    </a>
-</div>
 
-<div id="search">
-<form method="get" action="">
-<input type="text" name="query" /></form>
-</div>
+    <div id="search">
+    <form method="get" action="">
+    <input type="text" name="query" /></form>
+    </div>
 
-<div id="sidebar">
-    {% for w in sidebar %}
-        {{ w }}
-    {% endfor %}
-</div>
-<div id="content">
-{% block content %}
-<h1>World of USO: A new start</h1>
+    <div id="sidebar">
+        {% for w in sidebar %}
+            {{ w }}
+        {% endfor %}
+    </div>
 
-<p>
-See <a href="{% url games.views.games %}">a list of available games</a>.
-</p>
-{% endblock %}
-</div>
+    <div id="content">
+    {% block content %}
+    <h1>World of USO: A new start</h1>
 
-<div id="footer">
-&copy; <a href="http://www.rosedu.org/">ROSEdu</a></div>
-</div>
+    <p>
+    See <a href="{% url games.views.games %}">a list of available games</a>.
+    </p>
+    {% endblock %}
+    </div>
+
+    <div id="footer">
+    &copy; <a href="http://www.rosedu.org/">ROSEdu</a></div>
+    </div>
 </div>
 </BODY>
 </HTML>

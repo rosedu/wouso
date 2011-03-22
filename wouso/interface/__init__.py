@@ -12,7 +12,7 @@ GAME_THEME='default'    # TODO: move it in God, or game settings
 def render_response(template, request, data=None):
     """ Provide game context render_to response """
     config = {}
-    config['theme'] = GAME_THEME
+    config['theme'] = request.GET.get('theme', GAME_THEME)
     
     context_instance = RequestContext(request, {'config': config})
         

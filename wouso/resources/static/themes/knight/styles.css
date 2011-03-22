@@ -1,0 +1,109 @@
+body {
+	color:white;
+	background: black;
+	font-family: sans-serif, Ubuntu, Georgia;
+	font-size: 11pt;
+}
+
+body a , body a:visited {
+	color:#b90000;
+	font-weight:bold;
+}
+
+body a:hover {
+	color:red;
+}
+
+#topbar {
+	width:910px;
+	padding-top:3px;
+	color:black;
+}
+
+#fundal {
+	background: black;
+}
+
+#logo {
+	background:url('logo-header.jpg');
+	margin:0px;
+	padding:0px;
+	height:121px;
+	width:930px;
+}
+
+#logo a {
+	background: none;
+	height:60px;
+	width:620px;
+	padding-top:40px;
+	margin-left:180px;
+
+}
+
+#search_box form {
+	margin-right:20px;
+}
+
+#container {
+	background: url('wouso-bg.jpg') black no-repeat;
+	min-height:800px;
+}
+
+#line {
+	height: 50px;
+}
+
+#content {
+	min-height:550px;
+	padding-right:20px;
+}
+
+#content .box .title, .box_title {
+	color: white;
+	text-align:left;
+	font-weight:bold;
+	font-variant:normal;
+	font-size: 1.1em;
+	border: none;
+	text-shadow: 2px 2px 3px #444;
+}
+.box_text {
+	border: none;
+	margin-bottom: 20px;
+}
+#box {
+	margin: 0;
+}
+div.sh {
+	display: none;
+}
+#navbox {
+	color:white;
+}
+.shadow, #topbar a, #user-info {
+	text-shadow: 2px 2px 3px #444;
+}
+#user-info {
+	display: block;
+	margin-top: -6px;
+}
+.negru {
+	color: #b00;
+}
+.msg_title, .msg_text {
+	color: #08d;
+}
+.msg_table {
+	background-color: #444;
+}
+tr.msg_header {
+	background-color: #555;
+}
+tr.msg_unread {
+	background-color: #a55;
+}
+span.current {
+	color: white;
+}
+

@@ -26,6 +26,11 @@ h1 {
 #topbar {
     padding-top: 5px;
     text-align: right;
+    position: absolute;
+    margin: 0px auto;
+    width: 930px;
+    float: right;
+    text-align: right;
 }
 #search input {
     float: right
@@ -35,7 +40,7 @@ h1 {
     float: left;
 }
 #content {
-    width: 640px;
+    width: 600px;
     float: right;
 }
 #footer {
