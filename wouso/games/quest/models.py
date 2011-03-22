@@ -3,6 +3,7 @@ import datetime
 from django.db import models
 from core.user.models import UserProfile
 from core.game.models import Game
+from core.scoring.models import Formula
 from core.qpool.models import Question
 from core.qpool import get_questions_with_tags
 
