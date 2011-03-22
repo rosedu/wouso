@@ -36,6 +36,8 @@ class QotdTestCase(unittest.TestCase):
         self.assertTrue(isinstance(profile, UserProfile))
         self.assertTrue(isinstance(profile.get_extension(QotdUser), QotdUser))
         
+        user.delete()
+        
     def testAnswered(self):
         correct = 2
         q = self._get_foo_question(correct)

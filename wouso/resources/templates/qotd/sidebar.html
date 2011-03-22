@@ -5,7 +5,7 @@
 {% block content %}
 
 {% if question %}
-    {% if user.has_answered %}
+    {% if quser.has_answered %}
     You have answered Qotd
     {% else %}
     <a href="{% url games.qotd.views.index %}">Answer qotd</a>!

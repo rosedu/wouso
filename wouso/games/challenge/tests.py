@@ -39,6 +39,8 @@ class ChallengeTestCase(unittest.TestCase):
         self.assertTrue(isinstance(profile, UserProfile))
         self.assertTrue(isinstance(profile.get_extension(ChallengeUser), ChallengeUser))
         
+        user.delete()
+        
     def testLaunch(self):
         chall = Challenge.create(user_from=self.chall_user, user_to=self.chall_user2)
         

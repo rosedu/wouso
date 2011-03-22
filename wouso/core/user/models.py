@@ -7,7 +7,7 @@ class UserProfile(models.Model):
         related_name="%(class)s_related")
     
     # Unique differentiator for ladder
-    points = models.FloatField(default=0, blank=True)
+    points = models.FloatField(default=0, blank=True, null=True)
     
     @property
     def coins(self):
