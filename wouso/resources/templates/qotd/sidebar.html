@@ -1,0 +1,17 @@
+{% extends 'sidebar_widget.html' %}
+
+{% block title %}Question of the Day{% endblock %}
+
+{% block content %}
+
+{% if question %}
+    {% if user.has_answered %}
+    You have answered Qotd
+    {% else %}
+    <a href="{% url games.qotd.views.index %}">Answer qotd</a>!
+    {% endif %}
+{% else %}
+    No question for today.
+{% endif %}
+
+{% endblock %}

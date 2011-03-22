@@ -33,6 +33,11 @@
 <input type="text" name="query" /></form>
 </div>
 
+<div id="sidebar">
+    {% for w in sidebar %}
+        {{ w }}
+    {% endfor %}
+</div>
 <div id="content">
 {% block content %}
 <h1>World of USO: A new start</h1>

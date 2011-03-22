@@ -1,6 +1,7 @@
 import logging
 from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.template.loader import render_to_string
+from django.template import RequestContext, Context
 
 # Get a specific logger for this module
 logger = logging.getLogger('interface')
@@ -19,3 +20,11 @@ def render_response(template, request, data=None):
             data,
             context_instance=context_instance
         )
+
+def render_string(template, request, data=None):
+    """ Provide game context render_to_string, used by widget generators """
+    context_instance = Context(request)
+    
+    return render_to_string(template,
+            data,
+            context_instance=context_instance)

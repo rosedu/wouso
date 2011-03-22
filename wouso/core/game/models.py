@@ -19,3 +19,8 @@ class Game(models.Model):
         """ Returns a list of game-specific coins """
         return []
     
+    @classmethod
+    def get_sidebar_widget(kls, request):
+        """ Return the sidebar widget, for current HttpRequest request.
+        This is called in interface.context_processors.sidebar """
+        return None

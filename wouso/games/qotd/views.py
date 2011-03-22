@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from wouso.interface import render_response
+from wouso.interface import render_response, render_string
 from models import QotdUser, QotdGame
 from forms import QotdForm
 
@@ -41,3 +41,9 @@ def done(request):
             {'question': qotd, 'choice': choice, 
             'valid': qotd.answers[choice].correct
             })
+
+def sidebar_widget(request):
+    qotd = QotdGame.get_for_today()
+    qotd_user = request.user.get_profile().get_extension(QotdUser)
+    
+    return render_string('qotd/sidebar.html', request, {'question': qotd, 'user': qotd_user})

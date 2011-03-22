@@ -76,3 +76,10 @@ class QotdGame(Game):
             description='Points earned on a correct answer')
         )
         return fs
+    
+    @classmethod
+    def get_sidebar_widget(kls, request):
+        if not request.user.is_anonymous():
+            from views import sidebar_widget
+            return sidebar_widget(request)
+        return None
