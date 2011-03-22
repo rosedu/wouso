@@ -9,6 +9,7 @@ urlpatterns = patterns('',
 
     (r'^user/login/$', 'django.contrib.auth.views.login'),
     (r'^user/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}),
+    (r'^user/profile/(?P<id>.*)/$', 'interface.profile.views.user_profile'),
     (r'^user/profile/$', 'interface.profile.views.profile'),
 
     # Games

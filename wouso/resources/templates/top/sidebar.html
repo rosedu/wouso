@@ -1,0 +1,14 @@
+
+{% extends 'sidebar_widget.html' %}
+
+{% block title %}Top{% endblock %}
+
+{% block content %}
+
+<ul>
+{% for u in topusers %}
+    <li><a href="{% url interface.profile.views.user_profile u.id %}">{{ u.user }}</a> <span class="points">{{ u.points }}</span></li>
+{% endfor %}
+</ul>
+
+{% endblock %}

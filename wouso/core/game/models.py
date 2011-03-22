@@ -1,6 +1,7 @@
 from django.db import models
+from core.app import App
 
-class Game(models.Model):
+class Game(models.Model, App):
     name = models.CharField(max_length=100, primary_key=True)
     
     @classmethod
@@ -19,8 +20,3 @@ class Game(models.Model):
         """ Returns a list of game-specific coins """
         return []
     
-    @classmethod
-    def get_sidebar_widget(kls, request):
-        """ Return the sidebar widget, for current HttpRequest request.
-        This is called in interface.context_processors.sidebar """
-        return None

@@ -21,10 +21,8 @@ def render_response(template, request, data=None):
             context_instance=context_instance
         )
 
-def render_string(template, request, data=None):
+def render_string(template, data=None):
     """ Provide game context render_to_string, used by widget generators """
-    context_instance = Context(request)
     
     return render_to_string(template,
-            data,
-            context_instance=context_instance)
+            dictionary=data)

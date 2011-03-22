@@ -6,6 +6,9 @@ class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, 
         related_name="%(class)s_related")
     
+    # Unique differentiator for ladder
+    points = models.FloatField(default=0, blank=True)
+    
     @property
     def coins(self):
         return History.user_coins(self.user)

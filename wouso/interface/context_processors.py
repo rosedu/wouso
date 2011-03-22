@@ -1,4 +1,5 @@
 from wouso.core.game import get_games
+from top.models import Top
 
 def sidebar(request):
     """ For each registered game, get a widget to be displayed in sidebar 
@@ -9,8 +10,15 @@ def sidebar(request):
     """
     
     sidebar = []
+    # Request blocks from games
     for game in get_games():
         w = game.get_sidebar_widget(request)
+        if w:
+            sidebar.append(w)
+    
+    # Request blocks from apps
+    for app in (Top,):
+        w = app.get_sidebar_widget(request)
         if w:
             sidebar.append(w)
     

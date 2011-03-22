@@ -65,3 +65,17 @@ class History(models.Model):
     
     def __unicode__(self):
         return "{user} {date}-{formula}[{ext}]: {amount}{coin}".format(user=self.user, date=self.timestamp, formula=self.formula, ext=self.external_id, amount=self.amount, coin=self.coin)
+
+# Hack(?) for keeping User points in sync
+def sync_user_points(sender, instance, **kwargs):
+    user = instance.user
+    coin = Coin.get('points')
+    result = History.objects.filter(user=user,coin=coin).aggregate(points=models.Sum('amount'))
+    user.get_profile().points = result['points']
+    #print user.get_profile().points, "aici"
+    # TODO: check why is this called twice
+    # TODO: update points only if instance.coin = points
+    # TODO: write a test for this signal handler
+    user.get_profile().save()
+models.signals.post_save.connect(sync_user_points, History)
+models.signals.post_delete.connect(sync_user_points, History)

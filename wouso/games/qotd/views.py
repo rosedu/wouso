@@ -46,4 +46,4 @@ def sidebar_widget(request):
     qotd = QotdGame.get_for_today()
     qotd_user = request.user.get_profile().get_extension(QotdUser)
     
-    return render_string('qotd/sidebar.html', request, {'question': qotd, 'user': qotd_user})
+    return render_string('qotd/sidebar.html', {'question': qotd, 'user': qotd_user})
