@@ -2,6 +2,7 @@
 from wouso.interface import render_response
 from wouso.core.user.models import UserProfile
 from django.http import Http404
+from wouso.interface.top.models import History, TopUser
 
 PERPAGE = 5;
 def gettop(request):
@@ -14,7 +15,7 @@ def gettop(request):
     if (page < 1):
         raise Http404;
 
-    allUsers = UserProfile.objects.all()[(page - 1)*PERPAGE:page*PERPAGE];
+    allUsers = TopUser.objects.all()[(page - 1)*PERPAGE:page*PERPAGE];
     if (allUsers.count() == 0):
         raise Http404;
 
