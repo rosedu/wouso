@@ -10,23 +10,23 @@ class Tag(models.Model):
     name = models.CharField(max_length=256)
     # tags could have different types ("date" for questions tagged with a date for qotd)
     type = models.CharField(max_length=256, default="default")
-            
+
     def __unicode__(self):
         return self.name + " (" + self.type + ")"
-    
+
 class Question(models.Model):
     text = models.TextField()
     proposed_by = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_proposedby_related")
     endorsed_by = models.ForeignKey(User, null=True, blank=True, related_name="%(app_label)s_%(class)s_endorsedby_related")
     active = models.BooleanField(default=False)
-    
+
     tags = models.ManyToManyField(Tag, blank=True, related_name="%(app_label)s_%(class)s_related")
     answer_type = models.CharField(max_length=1, choices=(("R", "single choice"), ("C", "multiple choice")), default="R")
     # a dynamic question would have its code run before returning it to the caller
     type = models.CharField(max_length=1, choices=(("S", "static"), ("D", "dynamic")), default="S")
     code = models.TextField(blank=True, validators=[validate_dynq_code], 
                             help_text="Use %text for initial text, %user for the user that sees the question.")
-    
+
     def is_valid(self):
         if self.answers.count() == 0:
             return False

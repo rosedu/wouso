@@ -91,7 +91,7 @@ MIDDLEWARE_CLASSES = (
 	# 'djangologdb.middleware.LoggingMiddleware',
 )
 AUTHENTICATION_BACKENDS = (
-    'wouso.middleware.ldap_connection.LDAPBackend',
+    #'wouso.middleware.ldap_connection.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'wouso.games.qotd',
     'wouso.games.challenge',
     'wouso.games.quest',
+    'wouso.interface.top',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 	'djangologdb',

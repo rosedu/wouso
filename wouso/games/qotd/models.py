@@ -12,7 +12,6 @@ class QotdUser(UserProfile):
     """ Extension of the User object, customized for qotd """
     last_answered = models.DateTimeField(null=True, blank=True, default=None)
     last_answer = models.IntegerField(default=0, blank=True)
-    
     def set_answered(self, correct):
         if not self.has_answered:
             self.last_answer = correct
