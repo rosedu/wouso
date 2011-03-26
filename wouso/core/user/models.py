@@ -13,7 +13,7 @@ class UserProfile(models.Model):
     
     artifacts = models.ManyToManyField(Artifact, blank=True)
     level_no = models.IntegerField(default=1, blank=True, null=True)
-    level = models.ForeignKey(Artifact, default=Artifact.get_level_1, related_name='user_level')
+    level = models.ForeignKey(Artifact, default=Artifact.get_level_1, related_name='user_level', blank=True, null=True)
     
     @property
     def coins(self):
