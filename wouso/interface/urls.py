@@ -6,6 +6,7 @@ import wouso.games
 
 urlpatterns = patterns('',
     (r'^$', 'interface.views.homepage'),
+    (r'^top/$', 'interface.top.views.gettop'),
 
     (r'^user/login/$', 'django.contrib.auth.views.login'),
     (r'^user/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}),
