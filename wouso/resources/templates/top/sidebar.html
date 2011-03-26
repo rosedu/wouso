@@ -1,7 +1,6 @@
-
 {% extends 'sidebar_widget.html' %}
 
-{% block title %}Top{% endblock %}
+{% block title %} Top {% endblock %}
 
 {% block content %}
 
@@ -10,5 +9,7 @@
     <li><a href="{% url interface.profile.views.user_profile u.id %}">{{ u.user }}</a> <span class="points">{{ u.points }}</span></li>
 {% endfor %}
 </ul>
+
+<a href="{% url interface.top.views.gettop %}"> Clasament </a>
 
 {% endblock %}

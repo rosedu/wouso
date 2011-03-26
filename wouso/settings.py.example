@@ -90,6 +90,10 @@ MIDDLEWARE_CLASSES = (
 	# If we want to log exceptions, uncomment next line:
 	# 'djangologdb.middleware.LoggingMiddleware',
 )
+AUTHENTICATION_BACKENDS = (
+    'wouso.middleware.ldap_connection.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 ROOT_URLCONF = 'wouso.interface.urls'
 
