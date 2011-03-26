@@ -28,11 +28,7 @@ fi
 # Syncdb
 ./manage.py syncdb
 
-# Scoring
-python core/scoring/default_setup.py
-
-# Artifacts
-python core/artifacts/default_setup.py
+bash default_setup.bash
 
 # Done
 echo "Done!"
