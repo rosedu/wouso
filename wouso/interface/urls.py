@@ -12,6 +12,8 @@ urlpatterns = patterns('',
     (r'^user/profile/(?P<id>.*)/$', 'interface.profile.views.user_profile'),
     (r'^user/profile/$', 'interface.profile.views.profile'),
 
+    (r'^search/$', 'interface.views.search'),
+
     # Games
     (r'^g/', include('wouso.games.urls')),
 

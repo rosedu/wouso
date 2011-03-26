@@ -1,0 +1,15 @@
+{% extends 'site_base.html' %}
+
+{% block title %}{{block.super}} > Rezultatele cautarii{% endblock %}
+
+{% block content %}
+<h2>Rezultatele cautarii</h2>
+
+<ul>
+{% for sr in searchresults %}
+    <li><a href="{% url interface.profile.views.user_profile sr.id %}">{{sr.first_name}} {{sr.last_name}}</a></li>
+{% endfor %}
+</ul>
+
+{% endblock %}
+
