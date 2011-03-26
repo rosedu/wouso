@@ -231,6 +231,14 @@ class ChallengeGame(Game):
         )
         return fs
 
+    @classmethod
+    def get_header_link(kls, request):
+        if not request.user.is_anonymous():
+            from views import header_link
+            return header_link(request)
+        return None
+
+
 # Hack for having participants in sync
 def challenge_post_delete(sender, instance, **kwargs):
     """ For some reason, this is called twice. Needs investigantion

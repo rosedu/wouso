@@ -104,6 +104,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
     
     'wouso.interface.context_processors.sidebar',
+    'wouso.interface.context_processors.header_footer',
 )
 
 INSTALLED_APPS = (

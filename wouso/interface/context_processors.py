@@ -2,6 +2,26 @@ import logging
 from wouso.core.game import get_games
 from top.models import Top
 
+def header_footer(request):
+    """ See sidebar bellow """
+    header = []
+    try:
+        for game in get_games():
+            h = game.get_header_link(request)
+            if h:
+                header.append(h)
+    except: pass
+
+    footer = []
+    try:
+        for game in get_games():
+            f = game.get_header_link(request)
+            if h:
+                footer.append(f)
+    except: pass
+
+    return {'header': header, 'footer': footer}
+
 def sidebar(request):
     """ For each registered game, get a widget to be displayed in sidebar 
     @remark This design needs to be analysed.

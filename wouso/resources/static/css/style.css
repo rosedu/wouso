@@ -47,7 +47,9 @@ h1 {
     clear: both;
     border-top: 1px solid #444;
 }
-
+#footer_links {
+    text-align: right;
+}
 .block {
     border: 1px dashed #444;
     padding: 4px;

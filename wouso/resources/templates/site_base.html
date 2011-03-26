@@ -14,12 +14,13 @@
     <div id="header">
         <div id="topbar">
             {% if user.is_authenticated %}
-            {% artifact user.get_profile.level %}
-            <a href="{% url interface.profile.views.profile %}">{{ user.first_name }} {{ user.last_name }}</a>
-            <a href="{% url django.contrib.auth.views.logout %}">logout</a>.
-            {% if user.is_staff %}
-            <a href="{% url admin:index %}">Admin</a>
-            {% endif %}
+                {% artifact user.get_profile.level %}
+                <a href="{% url interface.profile.views.profile %}">{{ user.first_name }} {{ user.last_name }}</a> |
+                {% for h in header %}{% autoescape off %}{{ h }}{% endautoescape %} |{% endfor %}
+                {% if user.is_staff %}
+                <a href="{% url admin:index %}">Admin</a>
+                {% endif %}
+                <a href="{% url django.contrib.auth.views.logout %}">logout</a>.        
             {% else %}
             Anonimous, <a href="{% url django.contrib.auth.views.login %}">login</a>.
             {% endif %}
@@ -51,7 +52,9 @@
     </div>
 
     <div id="footer">
-    &copy; <a href="http://www.rosedu.org/">ROSEdu</a></div>
+        <div id="footer_links">{% for f in footer %}{% autoescape off %}{{ f }}{% endautoescape %} |{% endfor %}
+        <a href="http://www.rosedu.org/">ROSEdu</a>
+        </div>
     </div>
 </div>
 </BODY>

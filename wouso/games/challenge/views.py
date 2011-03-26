@@ -113,3 +113,5 @@ def cancel(request, id):
         return HttpResponseRedirect(reverse('games.challenge.views.index'))
     return do_error(request, 'cannotcancel')
 
+def header_link(request):
+    return '<a href="'+ reverse('games.challenge.views.index') +'">Challenges</a>'
