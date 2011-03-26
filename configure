@@ -1,7 +1,7 @@
 #!/bin/bash
 
 EASY_INSTALL_MODULES=django-logdb
-APT_PACKAGES=python-django
+APT_PACKAGES=python-django python-imaging
 
 # This configure script should run just fine on ubuntu 10.10 and newer
 
