@@ -1,6 +1,8 @@
 from django.contrib import admin
-from models import Quest
+from models import Quest, QuestUser
 
 # should filter questions:
 # return get_questions_with_tags('quest', 'quest-%d' % self.id, 'all')
 admin.site.register(Quest)
+
+admin.site.register(QuestUser)

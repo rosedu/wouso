@@ -1,0 +1,17 @@
+{% extends 'sidebar_widget.html' %}
+
+{% block title %}Weekly Quest{% endblock %}
+
+{% block content %}
+
+{% if quest %}
+    {% if quser.finished %}
+    You have finished the quest.
+    {% else %}
+    <a href="{% url games.quest.views.index %}">Answer quest</a>!
+    {% endif %}
+{% else %}
+    No active quest.
+{% endif %}
+
+{% endblock %}

@@ -4,16 +4,19 @@
 
 {% block content %}
 
-<h1>Quest</h1>
+<h1>{{ quest.title }}</h1>
 
 {% if progress.finished %}
 <p>Quest finished!</p>
+
+<p>You passed {{ quest.levels }} levels in {{ progress.time_took }}.</p>
 {% else %}
 <p style="color:red">{{ message }}</p>
 <p>
-{{ quest }} available until {{ quest.end }}
+Available until {{ quest.end }}. Your progress: {{ progress.time_took }}
 </p>
-<p>{{ progress.current_question }}</p>
+<h2>Question #{{ progress.current_level }}</h2>
+<p>{{ progress.current_question.text }}</p>
 <form method="post" action="{% url games.quest.views.index %}">
 <table>
 {{ form }}
