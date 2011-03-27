@@ -1,11 +1,16 @@
+# python imports & django environment setup
 from sys import argv
 import json
 from django.core.management import setup_environ
 import settings
 setup_environ(settings)
+
+# django imports
 from django.core import serializers
-from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
+
+# Models to be dumped/restored
+from django.contrib.auth.models import User
 from core.artifacts.models import Artifact, Group
 from core.qpool.models import Question, Answer, Tag
 from games.quest.models import Quest
@@ -13,16 +18,10 @@ from games.quest.models import Quest
 
 def dump_db():
     dump_file = open('../db_dump.json', 'w')
-    users = User.objects.all()
-    qpool = Question.objects.all()
-    qpool_tag = Tag.objects.all()
-    qpool_answ = Answer.objects.all()
-    artifacts_ar = Artifact.objects.all()
-    artifacts_gr = Group.objects.all()
-    quest = Quest.objects.all()
-    all_objects = list(list(users) + list(qpool_tag) + list(qpool) + \
-                  list(qpool_answ) + list(artifacts_gr) + list(artifacts_ar) + \
-                  list(quest))
+    models_list = [User, Tag, Question, Answer, Group, Artifact, Quest]
+    all_objects = []
+    for model in models_list:
+        all_objects = all_objects + list(model.objects.all())
     json_serializer = serializers.get_serializer("json")()
     json_serializer.serialize(all_objects, ensure_ascii=True, stream=dump_file)
     dump_file.close()
