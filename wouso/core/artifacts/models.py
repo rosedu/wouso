@@ -1,3 +1,4 @@
+import os.path
 from django.db import models
 from django.conf import settings
 
@@ -18,7 +19,7 @@ class Artifact(models.Model):
     def path(self):
         """ Image can be stored inside uploads or in theme """
         if self.image:
-            return "%s/%s" % (settings.MEDIA_ARTIFACTS_URL, self.image)
+            return "%s/%s" % (settings.MEDIA_ARTIFACTS_URL, os.path.basename(str(self.image)))
         return "%s-%s" %  (self.group.name.lower(), self.name)
     
     @classmethod
