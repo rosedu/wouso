@@ -5,7 +5,13 @@
 {% block content %}
 
 <p> Hello, {{ user }}, </p>
-<p> Here the activity module will kick in </p>
+<p>
+<ul>
+{% for a in activity %}
+    <li>{{a.user_from}} {{a.message}}</li>
+{% endfor %}
+</ul>
+</p>
 
 {% endblock %}
  

@@ -5,6 +5,7 @@ import settings
 setup_environ(settings)
 from django.core import serializers
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
 from core.artifacts.models import Artifact, Group
 from core.qpool.models import Question, Answer, Tag
 from games.quest.models import Quest
