@@ -15,6 +15,7 @@ urlpatterns = patterns('',
 
     (r'^search/$', 'interface.views.search'),
     (r'^instantsearch/$', 'interface.views.instantsearch'),
+    (r'^staticpage/(\d+)/$', 'interface.views.staticpage'),
 
     # Games
     (r'^g/', include('wouso.games.urls')),

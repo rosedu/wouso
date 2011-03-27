@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from wouso.interface import logger, render_response
 from wouso.interface.forms import *
 from wouso.core.user.models import UserProfile
+from wouso.interface.models import StaticPage
 
 def homepage(request):
     """ First page shown """
@@ -33,4 +34,11 @@ def instantsearch(request):
         user_ids = [u.id for u in users]
         searchresults = UserProfile.objects.filter(user__in=user_ids)
         return render_response('instant_search_results.txt', request, {'searchresults': searchresults})
+
+@csrf_exempt
+def staticpage(request, page_position):
+    """ Perform regular search by either first or last name """
+    logger.debug('Initiating regular search')
+    staticpage = StaticPage.objects.get(position=int(page_position))
+    return render_response('static_page.html', request, {'staticpage': staticpage})
 
