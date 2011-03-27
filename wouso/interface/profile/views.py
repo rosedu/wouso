@@ -5,7 +5,7 @@ from wouso.core.user.models import UserProfile
 
 @login_required
 def profile(request):
-    return render_response('profile/index.html', request)  
+    return render_response('profile/index.html', request)
 
 @login_required
 def user_profile(request, id):
@@ -13,7 +13,7 @@ def user_profile(request, id):
         profile = UserProfile.objects.get(id=id)
     except UserProfile.DoesNotExist:
         raise Http404
-        
-    return render_response('profile/profile.html', 
+
+    return render_response('profile/profile.html',
         request,
         {'profile': profile})

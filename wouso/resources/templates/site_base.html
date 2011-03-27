@@ -6,6 +6,12 @@
 <TITLE>{% block title %}World of USO: piranha{% endblock %}</TITLE>
 <LINK rel="stylesheet" type="text/css" href="/static/css/style.css" />
 <LINK rel="stylesheet" type="text/css" href="/static/themes/{{ config.theme }}/styles.css" />
+<style type="text/css"> 
+    @import url("/static/css/autocomplete.css");
+</style>
+<script type="text/javascript" src="/static/js/jquery.js"></script>
+<script type="text/javascript" src="/static/js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="/static/js/format.item.js"></script>
 </HEAD>
 
 <BODY>
@@ -30,10 +36,18 @@
         </div>
     </div>
 
-    <div id="search">
-    <form method="get" action="">
-    <input type="text" name="query" /></form>
+    <div id="search_box">
+        <form method="post" action="/search/" style="float:right;">
+            <input id="query" type="text" name="query" size="10" />
+            <button type=submit>Caută</button>
+        </form>
     </div>
+
+	<script type="text/javascript"> 
+		$(document).ready(function() {
+		$("#query").autocomplete("/instantsearch/", { minChars:3, matchSubset:1, matchContains:1, cacheLength:10, formatItem:formatItem, onItemSelect:selectItem, selectOnly:1 });
+		});
+	</script>
 
     <div id="sidebar">
         {% for w in sidebar %}
@@ -59,3 +73,4 @@
 </div>
 </BODY>
 </HTML>
+

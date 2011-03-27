@@ -1,0 +1,38 @@
+{% extends 'site_base.html' %}
+{% load artifacts %}
+
+{% block title %} Top {% endblock %}
+
+{% block content %}
+
+<p> The top </p>
+
+<table id="clasament">
+<tr> <th> </th>
+<th width = 100%> Player </th> <th> Points </th>
+</tr>
+
+{% for user in allUsers %}
+<tr>
+<td> {% artifact user.level %}  </td>
+<td> <a href="{% url interface.profile.views.user_profile user.id %}">{{ user.user }}</a>
+{% for artf in user.artifacts.all %}
+<div class = "artefacts">
+{% artifact artf %}
+</div>
+{% endfor %}
+</td>
+<td> {{ user.points }} </td>
+<td> {{ user.progress }} </td>
+</tr>
+{% endfor %}
+</table>
+
+{% if page_top_prev %}
+<a href="{% url interface.top.views.gettop %}?p={{ page_top_prev }}"> prev </a>
+{% endif %}
+{% if page_top_next %}
+<a href="{% url interface.top.views.gettop %}?p={{ page_top_next }}"> next </a>
+{% endif %}
+
+{% endblock %}
