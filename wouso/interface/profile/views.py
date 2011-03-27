@@ -6,7 +6,7 @@ from wouso.interface.activity.models import Activity
 
 @login_required
 def profile(request):
-    list = Activity.objects.all().reverse()
+    list = Activity.objects.all()
     return render_response('profile/index.html', request, \
             {'activity': list})
 

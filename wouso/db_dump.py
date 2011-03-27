@@ -28,41 +28,18 @@ def dump_db():
     dump_file.close()
 
 def restore_db():
-    """dump_file = open('../db_dump.json', 'r')
-    data = dump_file.read()
-    all_objects = serializers.deserialize("json", data)
-    for object in all_objects:
-        object.save()"""
     dec = json.JSONDecoder()
     dump_file = open('../db_dump.json', 'r')
     data_list = dec.decode(dump_file.read())
     for elem in data_list:
-        if elem['model'] == 'auth.user':
-            object = User()
-        elif elem['model'] == 'artifacts.artifact':
-            object = Artifact()
-        elif elem['model'] == 'artifacts.group':
-            object = Group()
-        elif elem['model'] == 'qpool.question':
-            object = Question()
-        elif elem['model'] == 'qpool.tag':
-            object = Tag()
-        elif elem['model'] == 'qpool.answer':
-            object = Answer()
-        elif elem['model'] == 'quest.quest':
-            object = Quest()
+        l = elem['model'].split('.')
+        object = ContentType.objects.get(app_label=l[0], model=l[1]).model_class()()
         object.pk = elem['pk']
-        model = elem['model']
         for key, value in elem['fields'].iteritems():
             if hasattr(object, key):
                 setattr(object,key,value)
             elif hasattr(object, '%s_id' % key):
                 setattr(object,'%s_id' % key,value)
-            elif type(value).__name__ == 'list':
-                for id in value:
-                    l = string.split(elem['model'],'.')
-                    m2m_object = ContentType.objects.get(app_label=l[0], model=l[1])
-                    objects.addQuestion(Question.objects.get(pk=id))
             else:
                 print('%s does not have attribute %s' % (elem['model'], key))
         object.save()
