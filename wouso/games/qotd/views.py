@@ -40,12 +40,13 @@ def done(request):
 
     # send signal
     if qotd.answers[choice].correct:
-        signal_msg = 'has given a correct answer to QotD'
+        signal_msg = '%s has given a correct answer to %s'
     else:
-        signal_msg = 'has given a wrong answer to QotD'
+        signal_msg = '%s has given a wrong answer to %s'
     signals.addActivity.send(sender=None, user_from=request.user, \
                     user_to=request.user, message=signal_msg, \
                     game=QotdGame.get_instance())
+
     return render_response('qotd/done.html',
             request,
             {'question': qotd, 'choice': choice, 
@@ -55,5 +56,5 @@ def done(request):
 def sidebar_widget(request):
     qotd = QotdGame.get_for_today()
     qotd_user = request.user.get_profile().get_extension(QotdUser)
-    
+
     return render_string('qotd/sidebar.html', {'question': qotd, 'quser': qotd_user})

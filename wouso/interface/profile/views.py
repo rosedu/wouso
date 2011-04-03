@@ -6,7 +6,7 @@ from wouso.interface.activity.models import Activity
 
 @login_required
 def profile(request):
-    list = Activity.objects.all()
+    list = Activity.objects.all().order_by('-timestamp')[:10]
     return render_response('profile/index.html', request, \
             {'activity': list})
 

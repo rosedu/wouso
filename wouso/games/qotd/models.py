@@ -17,11 +17,11 @@ class QotdUser(UserProfile):
             self.last_answer = correct
             self.last_answered = datetime.now()
             self.save()
-        
+
     def reset_answered(self):
         self.last_answered = None
         self.save()
-        
+
     @property
     def has_answered(self):
         """ Check if last_answered was today """
@@ -29,7 +29,7 @@ class QotdUser(UserProfile):
             return False
         else:
             return (datetime.now() - self.last_answered) < timedelta (days = 1)
-    
+
 class QotdGame(Game):
     """ Each game must extend Game """
     class Meta:
@@ -37,7 +37,7 @@ class QotdGame(Game):
         verbose_name = "Question of the Day"
         # A Game extending core.game.models.Game should be set as proxy
         proxy = True
-    
+
     @staticmethod
     def get_for_today():
         """ Return a Question object selected for Today """
@@ -51,7 +51,7 @@ class QotdGame(Game):
             a.id, a.text, a.correct = i, str(i), True if i == 2 else False
             q.answers.append(a)
         return q
-        
+
     @staticmethod
     def answered(user, question, choice):
         correct = False
@@ -59,12 +59,12 @@ class QotdGame(Game):
             if a.id == choice and a.correct:
                 correct = True
                 break
-        
+
         user.set_answered(choice)
-        
+
         if correct:
             scoring.score(user, QotdGame, 'qotd-ok')
-    
+
     @classmethod
     def get_formulas(kls):
         """ Returns a list of formulas used by qotd """
@@ -75,7 +75,7 @@ class QotdGame(Game):
             description='Points earned on a correct answer')
         )
         return fs
-    
+
     @classmethod
     def get_sidebar_widget(kls, request):
         if not request.user.is_anonymous():

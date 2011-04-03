@@ -6,11 +6,10 @@
 
 <p> Hello, {{ user }}, </p>
 <p>
-<ul>
 {% for a in activity %}
-    <li>{{a.user_from}} {{a.message}}</li>
+    <p>{{a.message}}<br /><em>{{a.timestamp}}</em></p>
+    <hr>
 {% endfor %}
-</ul>
 </p>
 
 {% endblock %}
