@@ -36,7 +36,9 @@ def search(request):
     """ Search for an user """
     query = request.GET.get('query', None)
     # TODO: sanitize query!
-    
+    # Python's database libraries (and therefore Django models) always sanitize the input.
+    # Django templates sanitize HTML output.
+
     if query == None:
         players = None
     else:
