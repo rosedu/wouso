@@ -13,6 +13,8 @@ class Question(models.Model):
         """ TODO: this fails if there are two questions for today, change this """
         try:
             return Question.objects.all().get(date=datetime.date.today())
+            # Solution to the TODO above:
+            # return Question.objects.filter(date=datetime.date.today())[0]
         except:
             return None
     
