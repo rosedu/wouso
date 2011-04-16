@@ -21,6 +21,8 @@ class Question(models.Model):
     def answers(self):
         try:
             return Answer.objects.all().filter(question=self)
+            # filter() does not require .all(), condense the above to:
+            # return Answer.objects.filter(question=self)
         except:
             return None
         
