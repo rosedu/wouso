@@ -58,5 +58,4 @@ def done(request):
     return render_to_response('qotd/done.html', 
             {'text': qotd.text, 'answers': answers, 'choice': qh.choice, 'valid': qh.value},
             context_instance=RequestContext(request))
-    
 

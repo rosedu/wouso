@@ -1,5 +1,6 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
+from wouso.games.qotd.feeds import LatestQuestionsFeed
 
 from django.contrib import admin
 admin.autodiscover()
@@ -14,6 +15,7 @@ urlpatterns = patterns('',
     # Question of the day
     (r'^qotd/$', 'wouso.games.qotd.views.index'),
     (r'^qotd/done/$', 'wouso.games.qotd.views.done'),
+    (r'^qotd/feed/$', LatestQuestionsFeed()),
     # Challenge
     (r'^challenge/$', 'wouso.games.challenge.views.index'),
     (r'^challenge/(?P<id>\d+)/$', 'wouso.games.challenge.views.challenge'),
