@@ -34,6 +34,10 @@ class Message(models.Model):
 class UserProfile(models.Model):
     # One to one key to User
     user = models.ForeignKey(User, unique=True)
+    # Shouldn't this be a OneToOneField, as per
+    # http://docs.djangoproject.com/en/dev/topics/auth/#storing-additional-information-about-users
+    # ?
+
     # Details
     last_online = models.DateTimeField(null=True)
     points = models.FloatField(default=0)
