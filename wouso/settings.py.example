@@ -106,7 +106,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
     'django.contrib.messages.context_processors.messages',
-    
+
     'wouso.interface.context_processors.sidebar',
     'wouso.interface.context_processors.header_footer',
 )
@@ -125,12 +125,13 @@ INSTALLED_APPS = (
     'wouso.core.scoring',
     'wouso.core.qpool',
     'wouso.core.artifacts',
-    
+
     'wouso.games.qotd',
     'wouso.games.challenge',
     'wouso.games.quest',
     'wouso.interface',
     'wouso.interface.top',
+    'wouso.interface.activity',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 	'djangologdb',
