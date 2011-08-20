@@ -10,21 +10,10 @@ def init():
     setup_environ(settings)
 
 
-def main():
-
-    if len(sys.argv) != 2:
-        print 'Usage: export.py <file>'
-        sys.exit(1)
-
-    try:
-        init()
-    except:
-        print "No wouso/settings.py file. Maybe you can symlink the example file?"
-        sys.exit(1)
-
+def export_to_file(file):
     from wouso.core.qpool.models import Question, Answer
 
-    with codecs.open(sys.argv[1], 'w', 'utf-8') as f:
+    with codecs.open(file, 'w', 'utf-8') as f:
 
         for question in Question.objects.all():
             if question.answer_type == 'R':
@@ -39,6 +28,21 @@ def main():
                 else:
                     type = '+'
                 f.write(type + ' ' + answer.text + '\n')
+
+
+def main():
+
+    if len(sys.argv) != 2:
+        print 'Usage: export.py <file>'
+        sys.exit(1)
+
+    try:
+        init()
+    except:
+        print "No wouso/settings.py file. Maybe you can symlink the example file?"
+        sys.exit(1)
+
+    export_to_file(sys.argv[1])
 
     print 'Done.'
 
