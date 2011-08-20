@@ -18,6 +18,9 @@ import sys, os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
 
+sys.path.insert(0, os.path.join(os.path.abspath('.'), '..'))
+os.environ['DJANGO_SETTINGS_MODULE'] = 'wouso.settings'
+
 # -- General configuration -----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
