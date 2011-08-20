@@ -13,6 +13,7 @@ Contents:
 
    guidelines
    install
+   tutorial
 
 Indices and tables
 ==================
