@@ -18,9 +18,6 @@ class TopUser(UserProfile):
 
         return yesterday.position - daybefore.position
 
-    def __unicode__(self):
-        return unicode(self.user)
-
 class History(models.Model):
     user = models.ForeignKey('TopUser');
     position = models.IntegerField();

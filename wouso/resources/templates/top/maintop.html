@@ -8,14 +8,18 @@
 <p> The top </p>
 
 <table id="clasament">
-<tr> <th> </th>
-<th width = 100%> Player </th> <th> Points </th>
+<tr>
+<th>&nbsp;</th>
+<th width = "100%" align=left> Player </th>
+<th> <a href="/top/sortcrit/0/page/1/">Points</a> </th>
+<th> <a href="/top/sortcrit/1/page/1/">Progress</a> </th>
+<th> <a href="/top/sortcrit/2/page/1/">Last&nbsp;seen</a> </th>
 </tr>
 
 {% for user in allUsers %}
 <tr>
-<td> {% artifact user.level %}  </td>
-<td> <a href="{% url interface.profile.views.user_profile user.id %}">{{ user.user }}</a>
+<td> {% artifact user.level %} </td>
+<td> <a href="{% url interface.profile.views.user_profile user.id %}">{{ user }}</a>
 {% for artf in user.artifacts.all %}
 <div class = "artefacts">
 {% artifact artf %}
@@ -24,15 +28,16 @@
 </td>
 <td> {{ user.points }} </td>
 <td> {{ user.progress }} </td>
+<td> {{ user.last_seen }} </td>
 </tr>
 {% endfor %}
 </table>
 
 {% if page_top_prev %}
-<a href="{% url interface.top.views.gettop %}?p={{ page_top_prev }}"> prev </a>
+<a href="/top/sortcrit/{{ sortcrit }}/page/{{ page_top_prev }}/"> prev </a>
 {% endif %}
 {% if page_top_next %}
-<a href="{% url interface.top.views.gettop %}?p={{ page_top_next }}"> next </a>
+<a href="/top/sortcrit/{{ sortcrit }}/page/{{ page_top_next }}/"> next </a>
 {% endif %}
 
 {% endblock %}

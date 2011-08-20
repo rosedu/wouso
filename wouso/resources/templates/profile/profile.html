@@ -23,9 +23,9 @@ Points: {{profile.points}}
 {% endfor %}
 
 {% if page > '0' %}
-<a href="/user/profile/{{ profile.id }}/{{ page|add:"-1" }}"> Newer </a>
+<a href="{% url wouso.interface.profile.views.user_profile id=profile.id page=page|add:"-1" %}"> Newer </a>
 {% endif %}
-<a href="/user/profile/{{ profile.id }}/{{ page|add:"1" }}"> Older </a>
+<a href="{% url wouso.interface.profile.views.user_profile id=profile.id page=page|add:"1" %}"> Older </a>
 <!-- FIXME older may go beyond the limit -->
 </ul>
 
