@@ -139,7 +139,10 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 	'djangologdb',
+    'django_nose',
 )
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 LOGIN_URL = '/user/login/'
 LOGIN_REDIRECT_URL = '/'

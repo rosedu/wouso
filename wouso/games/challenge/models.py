@@ -62,7 +62,9 @@ class Challenge(models.Model):
     status = models.CharField(max_length=1, choices=STATUS, default='L')
     winner = models.ForeignKey(ChallengeUser, related_name="winner", null=True, blank=True)
     questions = models.ManyToManyField(Question)
-        
+    nr_q = 0
+    LIMIT = 5
+    
     @staticmethod
     def create(user_from, user_to):
         """ Assigns questions, and returns the number of assigned q """
@@ -75,11 +77,12 @@ class Challenge(models.Model):
         questions = [q for q in get_questions_with_tags('challenge')]
         shuffle(questions)
         # TODO: better question selection
-        limit = 5
+        #limit = 5
         for q in questions:
             c.questions.add(q)
-            limit -= 1
-            if limit <= 0: break
+            LIMIT -= 1
+            nr_q += 1
+            if LIMIT <= 0: break
         return c
     
     def accept(self):

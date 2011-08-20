@@ -6,19 +6,12 @@ from django.template import RequestContext, Context
 # Get a specific logger for this module
 logger = logging.getLogger('interface')
 
-# Theme
-GAME_THEME='default'    # TODO: move it in God, or game settings
-
 def render_response(template, request, data=None):
-    """ Provide game context render_to response """
-    config = {}
-    config['theme'] = request.GET.get('theme', GAME_THEME)
-    
-    context_instance = RequestContext(request, {'config': config})
-        
+    """ Provide game context render_to response TODO: get rid of this"""
+
     return render_to_response(template, 
             data,
-            context_instance=context_instance
+            context_instance=RequestContext(request)
         )
 
 def render_string(template, data=None):

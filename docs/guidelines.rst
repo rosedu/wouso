@@ -26,7 +26,11 @@ see Logging
 Testing
 -------
 
-write unit tests, see Scoring or Qotd for examples.
+Write unit tests, see Scoring or Qotd for examples. The example
+configuration file uses `nose` as the test runner. To run the full test
+suite for WoUSO::
+
+    ./manage.py test
 
 Documentation
 -------------
