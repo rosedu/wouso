@@ -15,7 +15,7 @@ class UserProfile(models.Model):
     level_no = models.IntegerField(default=1, blank=True, null=True)
     level = models.ForeignKey(Artifact, default=Artifact.get_level_1, related_name='user_level', blank=True, null=True)
 
-    last_seen = models.DateTimeField(default=None, null=True)
+    last_seen = models.DateTimeField(null=True, blank=True)
 
     @property
     def coins(self):
