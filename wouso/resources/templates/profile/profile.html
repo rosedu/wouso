@@ -14,6 +14,20 @@ Points: {{profile.points}}
     <li>{% artifact a %}</li>
 {% endfor %}
 </ul>
-<p> Here the activity module will kick in </p>
+
+<ul>
+{% for ac in activity %}
+    <li> From {{ ac.user_from }} to {{ ac.user_to }} <br/>
+    <b>{{ ac.message }}</b> <br/> 
+    {{ ac.timestamp }}</li>
+{% endfor %}
+
+{% if page > '0' %}
+<a href="/user/profile/{{ profile.id }}/{{ page|add:"-1" }}"> Newer </a>
+{% endif %}
+<a href="/user/profile/{{ profile.id }}/{{ page|add:"1" }}"> Older </a>
+<!-- FIXME older may go beyond the limit -->
+</ul>
+
 
 {% endblock %}

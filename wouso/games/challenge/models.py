@@ -4,12 +4,12 @@ from random import shuffle
 import pickle as pk
 from django.db import models
 from django.db.models import Q, Max
-from core.user.models import UserProfile
-from core.qpool.models import Question
-from core.qpool import get_questions_with_tags
-from core.game.models import Game
-from core import scoring
-from core.scoring.models import Formula
+from wouso.core.user.models import UserProfile
+from wouso.core.qpool.models import Question
+from wouso.core.qpool import get_questions_with_tags
+from wouso.core.game.models import Game
+from wouso.core import scoring
+from wouso.core.scoring.models import Formula
 
 # Challenge will use QPool questions
 

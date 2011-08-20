@@ -6,6 +6,10 @@ body {
 h1 {
     margin: 4px;
 }
+label {
+    width: 150px;
+    float: left;
+}
 #logo {
     height: 120px;
 	width: 930px;

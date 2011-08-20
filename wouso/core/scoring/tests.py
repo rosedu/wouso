@@ -1,10 +1,10 @@
 import unittest
 from django.db.models.query import QuerySet
 from django.contrib.auth.models import User
-from core.game.models import Game
-from core.scoring.models import Formula, Coin, History
-from core.scoring import FormulaParsingError
-from core import scoring
+from wouso.core.game.models import Game
+from wouso.core.scoring.models import Formula, Coin, History
+from wouso.core.scoring import FormulaParsingError
+from wouso.core import scoring
 
 class ScoringTestCase(unittest.TestCase):
     def setUp(self):

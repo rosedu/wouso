@@ -1,9 +1,10 @@
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from django.db import models
-from core.user.models import UserProfile
-from core.game.models import Game
-from core import scoring
-from core.scoring.models import Formula
+from wouso.core.user.models import UserProfile
+from wouso.core.game.models import Game
+from wouso.core import scoring
+from wouso.core.qpool import get_questions_with_tag_for_day
+from wouso.core.scoring.models import Formula
 
 # Qotd will use models (question) from qpool
 # Please implement wouso.core.qpool
@@ -41,15 +42,11 @@ class QotdGame(Game):
     @staticmethod
     def get_for_today():
         """ Return a Question object selected for Today """
+        query = get_questions_with_tag_for_day("qotd", date.today())
         class Question: pass
-        class Answer: pass
         q = Question()
-        q.text = 'How many'
-        q.answers = []
-        for i in range(4):
-            a = Answer()
-            a.id, a.text, a.correct = i, str(i), True if i == 2 else False
-            q.answers.append(a)
+        q.text = query.question
+        q.answers = query.answers
         return q
 
     @staticmethod

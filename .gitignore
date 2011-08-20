@@ -5,3 +5,4 @@
 /wouso/settings.py
 /wouso/localsettings.py
 /wouso/resources/static/upload/*
+/docs/_build

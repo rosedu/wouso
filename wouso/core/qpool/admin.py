@@ -13,6 +13,11 @@ class TagsInline(admin.TabularInline):
     extra = 0
     verbose_name = "Tag"
     verbose_name_plural = "Tags"
+
+class ScheduleInline(admin.TabularInline):
+    model = models.Schedule
+    extra = 0
+    verbose_name = "Day"
     
 class QuestionForm(ModelForm):
     class Meta:
@@ -24,9 +29,14 @@ class QuestionForm(ModelForm):
         return self.cleaned_data
 
 class QuestionAdmin(admin.ModelAdmin):
-    inlines = [AnswersInline,TagsInline]
+    inlines = [AnswersInline,TagsInline,ScheduleInline]
     form = QuestionForm
     exclude = ('tags',)
+    list_display = ('question', 'tag', 'scheduled')
+    
+class Questions2(admin.ModelAdmin):
+    list_display = ('text')
     
 admin.site.register(models.Question, QuestionAdmin)
 admin.site.register(models.Tag)
+admin.site.register(models.Schedule)

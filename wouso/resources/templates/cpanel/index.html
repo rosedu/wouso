@@ -1,0 +1,29 @@
+{% extends 'site_base.html' %}
+
+{% block title %}CPanel{% endblock %}
+
+{% block content %}
+
+<h1>Admin - welcome...</h1>
+
+<form method="post" action="">
+<fieldset><legend>Customization:</legend>
+{% for s in settings.props %}
+    {% autoescape off %}{{ s.form }}{% endautoescape %}
+    <br/>
+{% endfor %}
+</fieldset>
+<button type="submit">Save</button>
+{% csrf_token %}
+</form>
+
+{% endblock %}
+
+{% block sidebar %}
+<h2>Tools</h2>
+    <div class="widget-content">
+        <ul>
+        <li><a href="{% url admin:index %}">Django Admin</a></li>
+        </ul>
+    </div>
+{% endblock %}
