@@ -12,13 +12,15 @@ def profile(request):
             {'activity': list})
 
 @login_required
-def user_profile(request, id):
+def user_profile(request, id, page=u'0'):
     try:
         profile = UserProfile.objects.get(id=id)
-        activity = Activity.objects.filter(Q(user_to=id) | Q(user_from=id)).order_by('-timestamp')[:10]
+        activity = Activity.objects.filter(Q(user_to=id) | Q(user_from=id))\
+                .order_by('-timestamp')[int(page)*10:int(page)*10+10]
     except UserProfile.DoesNotExist:
         raise Http404
 
     return render_response('profile/profile.html',
         request,
-        {'profile': profile, 'activity': activity})
+        {'profile': profile, 'activity': activity,
+         'page': page})
