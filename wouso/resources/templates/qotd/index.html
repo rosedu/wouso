@@ -15,7 +15,7 @@
 <div class="answers">
 <ul>
     {% for a in question.answers %}
-        <li><input type=radio />{{ a.text }}</li>
+        <li><input type=radio name="answers" value="{{ a.id }}"/>{{ a.text }}</li>
     {% endfor %}
 </ul>
 </div>
