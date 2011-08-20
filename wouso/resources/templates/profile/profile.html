@@ -16,17 +16,19 @@ Points: {{profile.points}}
 </ul>
 
 <ul>
-{% for ac in activity %}
+{% for ac in activity.object_list %}
     <li> From {{ ac.user_from }} to {{ ac.user_to }} <br/>
     <b>{{ ac.message }}</b> <br/> 
-    {{ ac.timestamp }}</li>
+    {{ ac.timestamp }}<br/></li>
 {% endfor %}
 
-{% if page > '0' %}
-<a href="{% url wouso.interface.profile.views.user_profile id=profile.id page=page|add:"-1" %}"> Newer </a>
+{% if activity.has_previous %}
+<a href="{% url wouso.interface.profile.views.user_profile id=profile.id page=activity.previous_page_number %}"> Newer </a>
 {% endif %}
-<a href="{% url wouso.interface.profile.views.user_profile id=profile.id page=page|add:"1" %}"> Older </a>
-<!-- FIXME older may go beyond the limit -->
+
+{% if activity.has_next %}
+<a href="{% url wouso.interface.profile.views.user_profile id=profile.id page=activity.next_page_number %}"> Older </a>
+{% endif %}
 </ul>
 
 
