@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import Http404
 from django.db.models import Q
 from wouso.interface import render_response
@@ -15,12 +16,17 @@ def profile(request):
 def user_profile(request, id, page=u'0'):
     try:
         profile = UserProfile.objects.get(id=id)
-        activity = Activity.objects.filter(Q(user_to=id) | Q(user_from=id))\
-                .order_by('-timestamp')[int(page)*10:int(page)*10+10]
+        activity_list = Activity.objects.\
+            filter(Q(user_to=id) | Q(user_from=id)).order_by('-timestamp')
+        paginator = Paginator(activity_list, 10)
     except UserProfile.DoesNotExist:
         raise Http404
 
+    try:
+        activity = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        activity = paginator.page(paginator.num_pages)
+
     return render_response('profile/profile.html',
         request,
-        {'profile': profile, 'activity': activity,
-         'page': page})
+        {'profile': profile, 'activity': activity})
