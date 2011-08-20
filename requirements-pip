@@ -5,3 +5,4 @@ Django==1.2.4
 -e git+https://github.com/sciyoshi/pyfacebook.git@be8e843c6eeedf0a03cf27ffe10cd73bd24be81d#egg=pyfacebook-1.0a2-py2.7-dev
 django-logdb==1.1
 python-ldap==2.3.13
+django-nose==0.1.3
