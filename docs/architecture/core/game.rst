@@ -25,9 +25,7 @@ Guidelines
 See also
 --------
 
-.. TODO link to `scoring`
-
-* the scoring specification
+* the scoring specification: :ref:`scoring`
 
 
 :mod:`wouso.core.game`
