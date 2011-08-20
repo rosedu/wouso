@@ -14,6 +14,7 @@ Contents:
    guidelines
    install
    tutorial
+   architecture/overview
 
 Indices and tables
 ==================
