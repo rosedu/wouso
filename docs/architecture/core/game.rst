@@ -1,5 +1,5 @@
-Game
-====
+Core - `Game`
+=============
 
 A Game object defines a wouso pluggable game, such as Qotd, Challenge
 and Quest.

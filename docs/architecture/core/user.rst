@@ -1,5 +1,5 @@
-User
-====
+Core - `User`
+=============
 
 The UserProfile is a Django-specific way to extend the User class. In
 WoUSO, we use this to store login information, basic level and title

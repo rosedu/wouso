@@ -1,7 +1,7 @@
 .. _scoring:
 
-Scoring
-=======
+Core - `Scoring`
+================
 
 The Scoring module (SM) centralizes users' grading system, providing
 coin type management, storage for the formulas, a few helper functions
