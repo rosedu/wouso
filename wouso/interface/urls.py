@@ -6,7 +6,9 @@ import wouso.games
 
 urlpatterns = patterns('',
     (r'^$', 'wouso.interface.views.homepage'),
-    (r'^top/sortcrit/(\d)/page/(\d+)/$', 'wouso.interface.top.views.gettop'),
+    (r'^top/toptype/(\d)/sortcrit/(\d)/page/(\d+)/$', 'interface.top.views.gettop'),
+    # toptype = 0 means overall top
+    # toptype = 1 means top for 1 week
     # sortcrit = 0 means sort by points descending
     # sortcrit = 1 means sort by progress descending
     # sortcrit = 2 means sort by last_seen descending

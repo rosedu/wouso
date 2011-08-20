@@ -1,3 +1,4 @@
+from hashlib import md5
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import Http404
@@ -16,6 +17,8 @@ def profile(request):
 def user_profile(request, id, page=u'0'):
     try:
         profile = UserProfile.objects.get(id=id)
+        avatar = "http://www.gravatar.com/avatar/%s.jpg?d=monsterid"\
+            % md5(profile.user.email).hexdigest()
         activity_list = Activity.objects.\
             filter(Q(user_to=id) | Q(user_from=id)).order_by('-timestamp')
         paginator = Paginator(activity_list, 10)
@@ -27,6 +30,7 @@ def user_profile(request, id, page=u'0'):
     except (EmptyPage, InvalidPage):
         activity = paginator.page(paginator.num_pages)
 
+
     return render_response('profile/profile.html',
         request,
-        {'profile': profile, 'activity': activity})
+        {'profile': profile, 'avatar': avatar, 'activity': activity})

@@ -15,8 +15,16 @@ class TopUser(UserProfile):
             daybefore = History.objects.filter(user=self).order_by('-date')[1]
         except Exception as e:
             return 0
-
         return yesterday.position - daybefore.position
+
+    @property
+    def weeklyprogress(self):
+        try:
+            yesterday     = History.objects.filter(user=self).order_by('-date')[0]
+            day1weekprior = History.objects.filter(user=self).order_by('-date')[7]
+        except Exception as e:
+            return 0
+        return yesterday.position - day1weekprior.position
 
 class History(models.Model):
     user = models.ForeignKey('TopUser');
