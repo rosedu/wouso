@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     (r'^g/', include('wouso.games.urls')),
 
     # Admin related
+    (r'^cpanel/', include('interface.cpanel.urls')),
     (r'^admin/', include(admin.site.urls)),
     (r'^admin/djangologdb/', include('djangologdb.urls')),
 
