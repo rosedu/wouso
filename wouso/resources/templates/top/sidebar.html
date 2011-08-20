@@ -6,10 +6,10 @@
 
 <ul>
 {% for u in topusers %}
-    <li><a href="{% url interface.profile.views.user_profile u.id %}">{{ u.user }}</a> <span class="points">{{ u.points }}</span></li>
+    <li><a href="{% url interface.profile.views.user_profile u.id %}">{{ u }}</a> <span class="points">{{ u.points }}</span></li>
 {% endfor %}
 </ul>
 
-<a href="{% url interface.top.views.gettop %}"> Clasament </a>
+<a href="/top/sortcrit/0/page/1/"> Clasament </a>
 
 {% endblock %}

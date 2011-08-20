@@ -48,12 +48,13 @@ class QotdGame(Game):
     @staticmethod
     def answered(user, question, choice):
         correct = False
-        for a in question.answers:
-            if a.id == choice and a.correct:
-                correct = True
+        for i, a in enumerate(question.answers):
+            if a.id == choice:
+                if a.correct:
+                    correct = True
                 break
 
-        user.set_answered(choice)
+        user.set_answered(i) # answer index
 
         if correct:
             scoring.score(user, QotdGame, 'qotd-ok')
