@@ -3,10 +3,21 @@ from django.http import Http404
 from wouso.core.config.models import Setting
 from wouso.interface import render_response
 from wouso.utils.import_questions import import_from_file
+from wouso.core.qpool.models import Schedule
 from models import Customization
+import datetime
+
 
 @login_required
 def dashboard(request):
+
+    future_questions = Schedule.objects.filter(day__gte=datetime.datetime.now())
+    nr_future_questions = len(future_questions)
+
+    return render_response('cpanel/index.html', request, {'nr_future_questions' : nr_future_questions})
+
+@login_required
+def customization(request):
     customization = Customization()
 
     if request.method == "POST":
@@ -14,7 +25,7 @@ def dashboard(request):
             val = request.POST.get(s.name, '')
             s.set_value(val)
 
-    return render_response('cpanel/index.html', request, \
+    return render_response('cpanel/customization.html', request, \
             {'settings': customization}
     )
 
