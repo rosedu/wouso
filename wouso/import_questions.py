@@ -55,7 +55,7 @@ def main():
         q_saved = True
 
         for line in f:
-            line = line.strip()
+            line = line.strip() + '\n'
 
             # blank line
             if not line:
@@ -101,13 +101,15 @@ def main():
                 else:
                     a['correct'] = True
 
+                a['text'] = ' '.join(s[1:])
+
             else:
                 # continuation line
                 if state == 'question':
-                    q['text'].append(line + '\n')
+                    q['text'] += (line)
 
                 else:
-                    a['text'].append(line + '\n')
+                    a['text'] += (line)
 
     if not a_saved:
         answers.append(a)
