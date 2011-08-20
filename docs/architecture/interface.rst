@@ -57,3 +57,27 @@ Profile
 See http://swarm.cs.pub.ro/~alexef/store/profil-wouso.png
 
 
+:mod:`wouso.interface`
+----------------------
+.. automodule:: wouso.interface
+    :members:
+
+:mod:`wouso.interface.context_processors`
+-----------------------------------------
+.. automodule:: wouso.interface.context_processors
+    :members:
+
+:mod:`wouso.interface.forms`
+----------------------------
+.. automodule:: wouso.interface.forms
+    :members:
+
+:mod:`wouso.interface.models`
+-----------------------------
+.. automodule:: wouso.interface.models
+    :members:
+
+:mod:`wouso.interface.views`
+----------------------------
+.. automodule:: wouso.interface.views
+    :members:
