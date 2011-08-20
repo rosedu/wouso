@@ -77,3 +77,7 @@ label {
 .artifact-default-level-1 {
     background-image:url(../art/default/level-1.png);
 }
+
+.top .points {
+    float: right
+}

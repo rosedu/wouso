@@ -42,11 +42,11 @@
         </form>
     </div>
 
-	<script type="text/javascript"> 
-		$(document).ready(function() {
-		$("#query").autocomplete("/instantsearch/", { minChars:3, matchSubset:1, matchContains:1, cacheLength:10, formatItem:formatItem, onItemSelect:selectItem, selectOnly:1 });
-		});
-	</script>
+    <script type="text/javascript"> 
+        $(document).ready(function() {
+        $("#query").autocomplete("/instantsearch/", { minChars:3, matchSubset:1, matchContains:1, cacheLength:10, formatItem:formatItem, onItemSelect:selectItem, selectOnly:1 });
+        });
+    </script>
 
     <div id="sidebar">
         {% block sidebar %}
@@ -58,9 +58,7 @@
 
     <div id="content">
     {% block content %}
-    <h1>World of USO: A new start</h1>
-
-    <h2>Online players (active in the last 10 minutes)</h2>
+    <h2>Players active in the last 10 minutes</h2>
     {% for u in last10 %}
         {% player u %}
     {% endfor %}

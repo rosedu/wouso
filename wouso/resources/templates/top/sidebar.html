@@ -4,12 +4,12 @@
 
 {% block content %}
 
-<ul>
+<ol class="top">
 {% for u in topusers %}
     <li><a href="{% url interface.profile.views.user_profile u.id %}">{{ u }}</a> <span class="points">{{ u.points }}</span></li>
 {% endfor %}
-</ul>
+</ol>
 
-<a href="/top/sortcrit/0/page/1/"> Clasament </a>
+<a href="/top/sortcrit/0/page/1/" class="goto">clasament complet</a>
 
 {% endblock %}
