@@ -7,6 +7,7 @@ Architecture
     middleware
     interface
     games/*
+    core/*
 
 
 .. image:: wouso-piranha-arch-overview.png
