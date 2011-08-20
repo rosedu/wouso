@@ -1,5 +1,5 @@
-God
-===
+Core - `God`
+============
 
 The God module controls world specific content and actions. It is going to be rewritten for every WoUSO edition.
 
