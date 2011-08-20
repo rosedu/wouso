@@ -41,6 +41,7 @@ label {
 }
 #sidebar {
     width: 250px;
+    min-height: 500px; /* for mihnea */
     float: left;
 }
 #content {
