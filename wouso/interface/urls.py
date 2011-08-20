@@ -6,7 +6,9 @@ import wouso.games
 
 urlpatterns = patterns('',
     (r'^$', 'interface.views.homepage'),
-    (r'^top/$', 'interface.top.views.gettop'),
+    (r'^top/sortcrit/(\d)/page/(\d+)/$', 'interface.top.views.gettop'),
+    # sortcrit = 0 means sort by points descending
+    # sortcrit = 1 means sort by name ascending
 
     (r'^user/login/$', 'django.contrib.auth.views.login'),
     (r'^user/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}),

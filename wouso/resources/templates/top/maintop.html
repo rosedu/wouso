@@ -8,8 +8,10 @@
 <p> The top </p>
 
 <table id="clasament">
-<tr> <th> </th>
-<th width = 100%> Player </th> <th> Points </th>
+<tr>
+<th>&nbsp;</th>
+<th width = 100%> <a href="sortcrit/1/page/0/">Player</a> </th>
+<th> <a href="sortcrit/0/page/0/">Points</a> </th>
 </tr>
 
 {% for user in allUsers %}
@@ -29,10 +31,10 @@
 </table>
 
 {% if page_top_prev %}
-<a href="{% url interface.top.views.gettop %}?p={{ page_top_prev }}"> prev </a>
+<a href="/top/sortcrit/{{ sortcrit }}/page/{{ page_top_prev }}/"> prev </a>
 {% endif %}
 {% if page_top_next %}
-<a href="{% url interface.top.views.gettop %}?p={{ page_top_next }}"> next </a>
+<a href="/top/sortcrit/{{ sortcrit }}/page/{{ page_top_next }}/"> next </a>
 {% endif %}
 
 {% endblock %}
