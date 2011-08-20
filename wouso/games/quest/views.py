@@ -37,4 +37,8 @@ def sidebar_widget(request):
     if quest_user.current_quest is None:
         quest_user.set_current(quest)
     
-    return render_string('quest/sidebar.html', {'quest': quest, 'quser': quest_user})
+    quest_progress = "Questions answered in %s: %d/%d." % \
+                     (quest.title, quest_user.current_level, quest.levels)
+    
+    
+    return render_string('quest/sidebar.html', {'quest': quest, 'quser': quest_user, 'qprogress': quest_progress})
