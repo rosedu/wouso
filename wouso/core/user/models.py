@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from core.scoring.models import History
-from core.artifacts.models import Artifact
+from wouso.core.scoring.models import History
+from wouso.core.artifacts.models import Artifact
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, 
@@ -14,7 +14,9 @@ class UserProfile(models.Model):
     artifacts = models.ManyToManyField(Artifact, blank=True)
     level_no = models.IntegerField(default=1, blank=True, null=True)
     level = models.ForeignKey(Artifact, default=Artifact.get_level_1, related_name='user_level', blank=True, null=True)
-    
+
+    last_seen = models.DateTimeField(default=None, null=True)
+
     @property
     def coins(self):
         return History.user_coins(self.user)
@@ -35,7 +37,10 @@ class UserProfile(models.Model):
             extension.save()
                 
         return extension
-        
+
+    def __unicode__(self):
+        return u"%s %s" % (self.user.first_name, self.user.last_name)
+
 # Hack for having user and user's profile always in sync
 def user_post_save(sender, instance, **kwargs):
     profile, new = UserProfile.objects.get_or_create(user=instance)

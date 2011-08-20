@@ -11,9 +11,9 @@ from django.contrib.contenttypes.models import ContentType
 
 # Models to be dumped/restored
 from django.contrib.auth.models import User
-from core.artifacts.models import Artifact, Group
-from core.qpool.models import Question, Answer, Tag
-from games.quest.models import Quest
+from wouso.core.artifacts.models import Artifact, Group
+from wouso.core.qpool.models import Question, Answer, Tag
+from wouso.games.quest.models import Quest
 
 
 def dump_db():

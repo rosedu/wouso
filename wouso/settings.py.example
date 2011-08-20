@@ -41,7 +41,7 @@ DATABASES = {
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'Europe/Bucharest'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -89,6 +89,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 	# If we want to log exceptions, uncomment next line:
 	# 'djangologdb.middleware.LoggingMiddleware',
+    # for last 10 minutes to work
+    'wouso.middleware.Seen',
 )
 AUTHENTICATION_BACKENDS = (
     #'wouso.middleware.ldap_connection.LDAPBackend',
@@ -109,6 +111,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
     'wouso.interface.context_processors.sidebar',
     'wouso.interface.context_processors.header_footer',
+    'wouso.interface.context_processors.config',
 )
 
 INSTALLED_APPS = (
@@ -120,6 +123,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # WoUSO specific
+    'wouso.core.config',
     'wouso.core.user',
     'wouso.core.game',
     'wouso.core.scoring',

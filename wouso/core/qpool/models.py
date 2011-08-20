@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -8,11 +9,9 @@ def validate_dynq_code():
 
 class Tag(models.Model):
     name = models.CharField(max_length=256)
-    # tags could have different types ("date" for questions tagged with a date for qotd)
-    type = models.CharField(max_length=256, default="default")
 
     def __unicode__(self):
-        return self.name + " (" + self.type + ")"
+        return self.name
 
 class Question(models.Model):
     text = models.TextField()
@@ -26,6 +25,20 @@ class Question(models.Model):
     type = models.CharField(max_length=1, choices=(("S", "static"), ("D", "dynamic")), default="S")
     code = models.TextField(blank=True, validators=[validate_dynq_code], 
                             help_text="Use %text for initial text, %user for the user that sees the question.")
+
+    @property
+    def answers(self):
+        try:
+            return Answer.objects.filter(question=self)
+        except Answer.DoesNotExist:
+            return None
+        
+    @property
+    def day(self):
+        try:
+            return Schedule.objects.filter(question=self)[0].day
+        except Schedule.DoesNotExist:
+            return None
 
     def is_valid(self):
         if self.answers.count() == 0:
@@ -48,18 +61,37 @@ class Question(models.Model):
               return False
         return tag in self.tags.all()
     
-    def __unicode__(self):
-        tags = [t for t in self.tags.all()]
-        res = unicode(self.text) + " ["
+    def question(self):
+        return unicode(self.text)
+    
+    def tag(self):
+        tlist = self.tags.all()
+        ret = ""
         
         # no tags assigned to the question
-        if not tags:
-            return self.text
+        if not tlist:
+            return ''
+                
+        for t in tlist:
+            ret += str(t) + ", "
+            
+        return ret[:-2]
         
-        for t in tags:
-            res += str(t) + ", "
+    def scheduled(self):
+        slist = Schedule.objects.filter(question=self)
+        ret = ""
         
-        return res[:-2] + "]"
+        # no days scheduled for the question
+        if not slist:
+            return ''
+                
+        for s in slist:
+            ret += str(s) + ", "
+            
+        return ret[:-2]
+    
+    def __unicode__(self):        
+        return unicode(self.text)
     
 class Answer(models.Model):
     question = models.ForeignKey(Question, related_name="answers")
@@ -69,3 +101,10 @@ class Answer(models.Model):
     
     def __unicode__(self):
         return self.text
+        
+class Schedule(models.Model):
+    question = models.ForeignKey(Question, related_name="schedule")
+    day = models.DateField(default=datetime.now, blank=True)
+
+    def __unicode__(self):
+        return str(self.day)

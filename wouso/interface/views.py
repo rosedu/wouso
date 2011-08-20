@@ -1,3 +1,4 @@
+import datetime
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
@@ -8,9 +9,11 @@ from wouso.interface.models import StaticPage
 
 def homepage(request):
     """ First page shown """
-    logger.debug('Everything is fine')
+    # gather users online in the last ten minutes
+    oldest = datetime.datetime.now() - datetime.timedelta(minutes = 10)
+    online_last10 = UserProfile.objects.filter(last_seen__gte=oldest)
 
-    return render_response('site_base.html', request)
+    return render_response('site_base.html', request, {'last10': online_last10})
 
 @csrf_exempt
 def search(request):
