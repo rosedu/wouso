@@ -1,4 +1,4 @@
-{% load artifacts %}
+{% load user %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <HTML xmlns="http://www.w3.org/1999/xhtml">
 <HEAD>
@@ -20,8 +20,7 @@
     <div id="header">
         <div id="topbar">
             {% if user.is_authenticated %}
-                {% artifact user.get_profile.level %}
-                <a href="{% url interface.profile.views.profile %}">{{ user.first_name }} {{ user.last_name }}</a> |
+                {% player user.get_profile %} |
                 {% for h in header %}{% autoescape off %}{{ h }}{% endautoescape %} |{% endfor %}
                 {% if user.is_staff %}
                 <a href="{% url admin:index %}">Admin</a>
@@ -58,6 +57,11 @@
     <div id="content">
     {% block content %}
     <h1>World of USO: A new start</h1>
+
+    <h2>Online players (active in the last 10 minutes)</h2>
+    {% for u in last10 %}
+        {% player u %}
+    {% endfor %}
 
     <p>
     See <a href="{% url games.views.games %}">a list of available games</a>.

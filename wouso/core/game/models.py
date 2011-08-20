@@ -1,5 +1,5 @@
 from django.db import models
-from core.app import App
+from wouso.core.app import App
 
 class Game(models.Model, App):
     name = models.CharField(max_length=100, primary_key=True)

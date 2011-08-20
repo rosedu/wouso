@@ -1,11 +1,11 @@
 import logging
 import datetime
 from django.db import models
-from core.user.models import UserProfile
-from core.game.models import Game
-from core.scoring.models import Formula
-from core.qpool.models import Question
-from core.qpool import get_questions_with_tags
+from wouso.core.user.models import UserProfile
+from wouso.core.game.models import Game
+from wouso.core.scoring.models import Formula
+from wouso.core.qpool.models import Question
+from wouso.core.qpool import get_questions_with_tags
 
 # Quest will use QPool questions tagged 'quest'
 
