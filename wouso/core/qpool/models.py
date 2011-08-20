@@ -29,7 +29,7 @@ class Question(models.Model):
     @property
     def answers(self):
         try:
-            return Answer.objects.filter(question=self)
+            return Answer.objects.filter(question=self).all()
         except Answer.DoesNotExist:
             return None
         
@@ -61,6 +61,7 @@ class Question(models.Model):
               return False
         return tag in self.tags.all()
     
+    @property
     def question(self):
         return unicode(self.text)
     
@@ -94,7 +95,7 @@ class Question(models.Model):
         return unicode(self.text)
     
 class Answer(models.Model):
-    question = models.ForeignKey(Question, related_name="answers")
+    question = models.ForeignKey(Question, related_name="zanswers")
     text = models.TextField()
     explanation = models.TextField(null=True, default='', blank=True)
     correct = models.BooleanField()

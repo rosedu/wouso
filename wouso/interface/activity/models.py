@@ -11,6 +11,9 @@ class Activity(models.Model):
     user_to = models.ForeignKey(User, related_name='user_to')
     message = models.CharField(max_length=140)
     game = models.ForeignKey(Game)
+    
+    def fromgame(self):
+        return self.game.name
 
 def addActivity_handler(sender, **kwargs):
     a = Activity()

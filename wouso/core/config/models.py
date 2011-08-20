@@ -38,3 +38,16 @@ class BoolSetting(Setting):
         return '<label for="%s">%s</label><input type="checkbox" name="%s" id="%s" %s />' \
                     % (self.name, self.name, self.name, self.name, 'checked' if self.get_value() else '')
 
+class ChoicesSetting(Setting):
+    class Meta:
+        proxy = True
+
+    choices = []
+
+    def form(self):
+        html = '<label for="%s">%s</label><select id="%s" name="%s">' % (self.name, self.name, self.name, self.name)
+        for n,v in self.choices:
+            html += '<option value="%s" %s>%s</option>' % (v, 'selected' if self.value == v else '', n)
+        html += '</select>'
+        return html
+    
