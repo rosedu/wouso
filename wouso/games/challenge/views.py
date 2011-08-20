@@ -64,13 +64,23 @@ def launch(request, to_id):
     user_from = request.user.get_profile().get_extension(ChallengeUser)
     
     if user_from.can_challenge(user_to):
-        if not Challenge.create(user_from=user_from, user_to=user_to):
+    
+    	chall = Challenge.create(user_from=user_from, user_to=user_to)
+        if not chall:
             """ Some error occurred during question fetch. Clean up, and display error """
             return do_error(request, 'couldnotcreate')
         
+        if chall.nr_q > chall.LIMIT:
+        	return do_error(request, 'too many questions')
+
+        if chall.nr_q < chall.LIMIT:
+        	return do_error(request, 'few questions')
+    
         return HttpResponseRedirect(reverse('games.challenge.views.index'))
     else:
         return do_error(request, 'cannotchallenge')
+        
+
 
 @login_required
 def accept(request, id):
