@@ -33,24 +33,9 @@ def add(question, answers):
         a.save()
 
 
-def main():
-
-    if len(sys.argv) != 3:
-        print 'Usage: add_questions.py <file> <endorsed_by>'
-        sys.exit(1)
-
-    try:
-        init()
-    except:
-        print "No wouso/settings.py file. Maybe you can symlink the example file?"
-        sys.exit(1)
-
-    from django.contrib.auth.models import User
-    proposed_by = User.objects.get(username__exact=sys.argv[2])
-
-
+def import_from_file(file, proposed_by):
     # open file and parse contents
-    with codecs.open(sys.argv[1], 'r', 'utf-8') as f:
+    with codecs.open(file, 'r', 'utf-8') as f:
 
         a_saved = True
         q_saved = True
@@ -118,6 +103,24 @@ def main():
     if not q_saved:
         q['proposed_by'] = proposed_by
         add(q, answers)
+
+
+def main():
+
+    if len(sys.argv) != 3:
+        print 'Usage: add_questions.py <file> <endorsed_by>'
+        sys.exit(1)
+
+    try:
+        init()
+    except:
+        print "No wouso/settings.py file. Maybe you can symlink the example file?"
+        sys.exit(1)
+
+    from django.contrib.auth.models import User
+    proposed_by = User.objects.get(username__exact=sys.argv[2])
+
+    import_from_file(sys.argv[1], proposed_by)
 
     print 'Done.'
 
