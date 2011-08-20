@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from core.scoring.models import History
-from core.artifacts.models import Artifact
+from wouso.core.scoring.models import History
+from wouso.core.artifacts.models import Artifact
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, 
