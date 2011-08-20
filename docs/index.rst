@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    guidelines
+   install
 
 Indices and tables
 ==================
