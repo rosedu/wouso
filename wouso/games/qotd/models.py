@@ -42,12 +42,8 @@ class QotdGame(Game):
     @staticmethod
     def get_for_today():
         """ Return a Question object selected for Today """
-        query = get_questions_with_tag_for_day("qotd", date.today())
-        class Question: pass
-        q = Question()
-        q.text = query.question
-        q.answers = query.answers
-        return q
+        question = get_questions_with_tag_for_day("qotd", date.today())
+        return question
 
     @staticmethod
     def answered(user, question, choice):
