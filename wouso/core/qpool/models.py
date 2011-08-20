@@ -37,7 +37,7 @@ class Question(models.Model):
     def day(self):
         try:
             return Schedule.objects.filter(question=self)[0].day
-        except Schedule.DoesNotExist:
+        except (Schedule.DoesNotExist, IndexError):
             return None
 
     def is_valid(self):
