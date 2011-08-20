@@ -1,0 +1,14 @@
+? <S|M> Enunt intrebare
+pe
+mai multe
+linii
++ raspuns corect
+pe mai multe
+linii
+- raspuns gresit
+
+? S  Alta intrebare?
++ un singur raspuns corect
+- mai
+- multe
+- raspunsuri gresite
