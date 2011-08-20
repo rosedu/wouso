@@ -5,21 +5,21 @@ admin.autodiscover()
 import wouso.games
 
 urlpatterns = patterns('',
-    (r'^$', 'interface.views.homepage'),
-    (r'^top/sortcrit/(\d)/page/(\d+)/$', 'interface.top.views.gettop'),
+    (r'^$', 'wouso.interface.views.homepage'),
+    (r'^top/sortcrit/(\d)/page/(\d+)/$', 'wouso.interface.top.views.gettop'),
     # sortcrit = 0 means sort by points descending
     # sortcrit = 1 means sort by progress descending
     # sortcrit = 2 means sort by last_seen descending
 
     (r'^user/login/$', 'django.contrib.auth.views.login'),
     (r'^user/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}),
-    (r'^user/profile/(?P<id>\d*)/$', 'interface.profile.views.user_profile'),
-    (r'^user/profile/(?P<id>\d*)/(?P<page>\d*)/$', 'interface.profile.views.user_profile'),
-    (r'^user/profile/$', 'interface.profile.views.profile'),
+    (r'^user/profile/(?P<id>\d*)/$', 'wouso.interface.profile.views.user_profile'),
+    (r'^user/profile/(?P<id>\d*)/(?P<page>\d*)/$', 'wouso.interface.profile.views.user_profile'),
+    (r'^user/profile/$', 'wouso.interface.profile.views.profile'),
 
-    (r'^search/$', 'interface.views.search'),
-    (r'^instantsearch/$', 'interface.views.instantsearch'),
-    (r'^staticpage/(\d+)/$', 'interface.views.staticpage'),
+    (r'^search/$', 'wouso.interface.views.search'),
+    (r'^instantsearch/$', 'wouso.interface.views.instantsearch'),
+    (r'^staticpage/(\d+)/$', 'wouso.interface.views.staticpage'),
 
     # Games
     (r'^g/', include('wouso.games.urls')),
