@@ -47,6 +47,6 @@ WoUSO documentation is maintained using Sphinx_ in the repository, under
 
 * Upload to publc server::
 
-    scp -r _build/html wouso@rosedu.org:public_html/docs
+    rsync -rv --del _build/html/ wouso@rosedu.org:public_html/docs
 
 .. _Sphinx: http://sphinx.pocoo.org/
