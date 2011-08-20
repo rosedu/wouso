@@ -6,7 +6,7 @@
 
 <h1>Admin - welcome...</h1>
 
-<form method="post" action="">
+<form method="post" action="{% url importer_send %}">
 <fieldset><legend>Customization:</legend>
 {% for s in settings.props %}
     {% autoescape off %}{{ s.form }}{% endautoescape %}
