@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import codecs
 import sys
 from django.core.management import setup_environ
 
@@ -23,7 +24,7 @@ def main():
 
     from wouso.core.qpool.models import Question, Answer
 
-    with open(sys.argv[1], 'w') as f:
+    with codecs.open(sys.argv[1], 'w', 'utf-8') as f:
 
         for question in Question.objects.all():
             if question.answer_type == 'R':

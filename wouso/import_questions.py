@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import codecs
 import sys
 from django.core.management import setup_environ
 
@@ -49,7 +50,7 @@ def main():
 
 
     # open file and parse contents
-    with open(sys.argv[1], 'r') as f:
+    with codecs.open(sys.argv[1], 'r', 'utf-8') as f:
 
         a_saved = True
         q_saved = True
