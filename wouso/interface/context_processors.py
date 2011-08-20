@@ -1,6 +1,7 @@
 import logging
 from wouso.core.game import get_games
-from top.models import Top
+from wouso.core.config.models import Setting
+from wouso.interface.top.models import Top
 
 def header_footer(request):
     """ See sidebar bellow """
@@ -49,3 +50,10 @@ def sidebar(request):
         # This is a hack for fixing test. TODO: actually fix ./manage.py test
         
     return {'sidebar': sidebar}
+
+def config(request):
+    settings = {}
+    for s in Setting.objects.all():
+        settings['config_' + s.name] = s.get_value()
+
+    return settings
