@@ -1,14 +1,15 @@
 import unittest
-from django.test.client import Client
+import django.test
 from django.contrib.auth.models import User
 from models import *
 from wouso.core.user.models import UserProfile
 from wouso.core import scoring
+from wouso.core.qpool.models import Question, Schedule, Tag
+
 
 class QotdTestCase(unittest.TestCase):        
     def setUp(self):
         self.user = User.objects.create(username='_test')
-        self.user.set_password('_test_pw')
         self.user.save()
         profile = self.user.get_profile()
         self.qotd_user = profile.get_extension(QotdUser)
@@ -61,9 +62,33 @@ class QotdTestCase(unittest.TestCase):
         coins = scoring.user_coins(self.qotd_user)
         self.assertEqual(coins['points'], 3)
 
+def _make_question_for_today(user, text):
+    tag = Tag.objects.get_or_create(name='qotd')[0]
+    tag.save()
+    question = Question(text=text, proposed_by=user)
+    question.save()
+    question.tags = [tag]
+    question.save()
+    sched = Schedule(question=question)
+    sched.save()
+
+class PageTests(django.test.TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create(username='_test')
+        self.user.set_password('_test_pw')
+        self.user.save()
+        profile = self.user.get_profile()
+        self.qotd_user = profile.get_extension(QotdUser)
+        scoring.setup()
+        self.client.login(username='_test', password='_test_pw')
+
     def testNoQuestion(self):
-        c = Client()
-        c.login(username='_test', password='_test_pw')
-        response = c.get('/g/qotd/')
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue('No question for today.' in response.content)
+        response = self.client.get('/g/qotd/')
+        self.assertContains(response, 'No question for today.')
+
+    def testCorrectAnswer(self):
+        _make_question_for_today(user=self.user, text="what is the question?")
+        response = self.client.get('/g/qotd/')
+        self.assertContains(response, 'No question for today.', 0)
+        self.assertContains(response, 'what is the question?')
