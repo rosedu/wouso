@@ -14,3 +14,11 @@ def get_questions_with_tags(tlist, select='any'):
             for t in tlist[1:]:
                 result = result.filter(tags__name=t)
             return result
+
+def get_questions_with_tag_for_day(tag, select):
+    if isinstance(tag, str):
+        query = models.Question.objects.filter(tags__name=tag)
+        for q in query:
+            if q.day == select:
+                return q
+        return None
