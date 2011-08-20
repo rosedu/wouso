@@ -4,14 +4,18 @@
 
 {% block content %}
 
-<ul>
+<ol class="top">
 {% for u in topusers %}
     <li><a href="{% url interface.profile.views.user_profile u.id %}">{{ u }}</a> <span class="points">{{ u.points }}</span></li>
 {% endfor %}
-</ul>
+</ol>
 
+<<<<<<< HEAD
 <a href="/top/toptype/0/sortcrit/0/page/1/"> Clasament </a>
 <br>
 <a href="/top/toptype/1/sortcrit/0/page/1/"> Top pe o săptămână </a>
+=======
+<a href="/top/sortcrit/0/page/1/" class="goto">clasament complet</a>
+>>>>>>> 56e40fc989883b72a49e2d789af6dfd200678500
 
 {% endblock %}

@@ -13,9 +13,12 @@ class QotdUser(UserProfile):
     """ Extension of the User object, customized for qotd """
     last_answered = models.DateTimeField(null=True, blank=True, default=None)
     last_answer = models.IntegerField(default=0, blank=True)
-    def set_answered(self, correct):
+    last_answer_correct = models.BooleanField(default=0, blank=True)
+
+    def set_answered(self, choice, correct):
         if not self.has_answered:
-            self.last_answer = correct
+            self.last_answer = choice
+            self.last_answer_correct = correct
             self.last_answered = datetime.now()
             self.save()
 
@@ -48,12 +51,13 @@ class QotdGame(Game):
     @staticmethod
     def answered(user, question, choice):
         correct = False
-        for a in question.answers:
-            if a.id == choice and a.correct:
-                correct = True
+        for i, a in enumerate(question.answers):
+            if a.id == choice:
+                if a.correct:
+                    correct = True
                 break
 
-        user.set_answered(choice)
+        user.set_answered(i, correct) # answer index
 
         if correct:
             scoring.score(user, QotdGame, 'qotd-ok')

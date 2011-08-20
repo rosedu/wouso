@@ -41,6 +41,7 @@ label {
 }
 #sidebar {
     width: 250px;
+    min-height: 500px; /* for mihnea */
     float: left;
 }
 #content {
@@ -75,4 +76,8 @@ label {
 }
 .artifact-default-level-1 {
     background-image:url(../art/default/level-1.png);
+}
+
+.top .points {
+    float: right
 }

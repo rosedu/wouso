@@ -9,6 +9,8 @@
     You have finished the quest.
     {% else %}
     <a href="{% url games.quest.views.index %}">Answer quest</a>!
+    <br />
+    {{ qprogress }}
     {% endif %}
 {% else %}
     No active quest.

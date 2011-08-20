@@ -16,7 +16,10 @@ def index(request):
     if qotd_user.has_answered:
         return HttpResponseRedirect(reverse('games.qotd.views.done'))
 
-    if request.method == "POST":
+    if qotd is None:
+        form = None
+
+    elif request.method == "POST":
         form = QotdForm(qotd, request.POST)
         if form.is_valid():
             choice = int(form.cleaned_data['answers'])

@@ -6,9 +6,11 @@
 
 {% if question %}
     {% if quser.has_answered %}
-    You have answered Qotd
+    You have answered
+        {% if quser.last_answer_correct %}correctly{% else %}wrong{% endif %}
+    for today.
     {% else %}
-    <a href="{% url games.qotd.views.index %}">Answer qotd</a>!
+    <a href="{% url games.qotd.views.index %}" class="button">Answer now</a>!
     {% endif %}
 {% else %}
     No question for today.
