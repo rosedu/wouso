@@ -6,17 +6,9 @@
 
 <h1>Admin - welcome...</h1>
 
-<form method="post" action="{% url importer_send %}">
-<fieldset><legend>Customization:</legend>
-{% for s in settings.props %}
-    {% autoescape off %}{{ s.form }}{% endautoescape %}
-    <br/>
-{% endfor %}
-</fieldset>
-<button type="submit">Save</button>
-{% csrf_token %}
-</form>
+<p> STATISTICI </p>
 
+<p> {{nr_future_questions}} intrebari viitoare disponibile. </p>
 {% endblock %}
 
 {% block sidebar %}
@@ -25,6 +17,7 @@
         <ul>
         <li><a href="{% url admin:index %}">Django Admin</a></li>
         <li><a href="{% url importer %}">importer</a>
+        <li><a href="{% url customization %}">customization</a></li>
         </ul>
     </div>
 {% endblock %}
