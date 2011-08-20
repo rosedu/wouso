@@ -5,15 +5,10 @@ admin.autodiscover()
 import wouso.games
 
 urlpatterns = patterns('',
-<<<<<<< HEAD
-    (r'^$', 'interface.views.homepage'),
+    (r'^$', 'wouso.interface.views.homepage'),
     (r'^top/toptype/(\d)/sortcrit/(\d)/page/(\d+)/$', 'interface.top.views.gettop'),
     # toptype = 0 means overall top
     # toptype = 1 means top for 1 week
-=======
-    (r'^$', 'wouso.interface.views.homepage'),
-    (r'^top/sortcrit/(\d)/page/(\d+)/$', 'wouso.interface.top.views.gettop'),
->>>>>>> 56e40fc989883b72a49e2d789af6dfd200678500
     # sortcrit = 0 means sort by points descending
     # sortcrit = 1 means sort by progress descending
     # sortcrit = 2 means sort by last_seen descending
