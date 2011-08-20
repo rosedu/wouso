@@ -1,4 +1,4 @@
-{% extends 'site_base.html' %}
+{% extends 'cpanel/index.html' %}
 
 {% block title %}CPanel{% endblock %}
 
@@ -14,12 +14,3 @@
 
 {% endblock %}
 
-{% block sidebar %}
-<h2>Tools</h2>
-    <div class="widget-content">
-        <ul>
-        <li><a href="{% url admin:index %}">Django Admin</a></li>
-        <li><a href="{% url importer %}">importer</a></li>
-        </ul>
-    </div>
-{% endblock %}

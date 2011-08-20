@@ -4,27 +4,24 @@
 
 {% block content %}
 
-<h1>Admin - welcome...</h1>
+<h1> Statistics </h1>
 
-<form method="post" action="">
-<fieldset><legend>Customization:</legend>
-{% for s in settings.props %}
-    {% autoescape off %}{{ s.form }}{% endautoescape %}
-    <br/>
-{% endfor %}
-</fieldset>
-<button type="submit">Save</button>
-{% csrf_token %}
-</form>
-
+<p> {{nr_future_questions}} future available questions. </p>
+<p> {{nr_questions}} total questions. </p>
 {% endblock %}
 
 {% block sidebar %}
 <h2>Tools</h2>
     <div class="widget-content">
         <ul>
+        <li><a href="{% url dashboard %}">Dashboard</a>
+        <li><a href="{% url importer %}">Question importer</a>
+        <li><a href="{% url customization %}">Customization</a></li>
+        </ul>
+    </div>
+    <div class="widget-content">
+        <ul>
         <li><a href="{% url admin:index %}">Django Admin</a></li>
-        <li><a href="{% url importer %}">importer</a>
         </ul>
     </div>
 {% endblock %}
