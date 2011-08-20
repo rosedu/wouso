@@ -33,69 +33,67 @@ def add(question, answers):
         a.save()
 
 
-def import_from_file(file, proposed_by):
-    # open file and parse contents
-    with codecs.open(file, 'r', 'utf-8') as f:
+def import_from_file(opened_file, proposed_by):
+    # read file and parse contents
+    a_saved = True
+    q_saved = True
 
-        a_saved = True
-        q_saved = True
+    for line in opened_file:
+        line = line.strip() + '\n'
 
-        for line in f:
-            line = line.strip() + '\n'
+        # blank line
+        if not line:
+            continue
 
-            # blank line
-            if not line:
-                continue
+        # parse line according to its beginning
+        if line[0] == '?':
+            if not a_saved:
+                answers.append(a)
+                a_saved = True
+            if not q_saved:
+                q['proposed_by'] = proposed_by
+                add(q, answers)
+                q_saved = True
+                a_saved = True
 
-            # parse line according to its beginning
-            if line[0] == '?':
-                if not a_saved:
-                    answers.append(a)
-                    a_saved = True
-                if not q_saved:
-                    q['proposed_by'] = proposed_by
-                    add(q, answers)
-                    q_saved = True
-                    a_saved = True
+            state = 'question'
+            q = {}
+            answers = []
+            q_saved = False
+            s = line.split()
 
-                state = 'question'
-                q = {}
-                answers = []
-                q_saved = False
-                s = line.split()
+            if s[1] == 'S' or s[1] == 's':
+                q['answer_type'] = 'R'
+            else:
+                q['answer_type'] = 'C'
 
-                if s[1] == 'S' or s[1] == 's':
-                    q['answer_type'] = 'R'
-                else:
-                    q['answer_type'] = 'C'
-
-                q['text'] = ' '.join(s[2:])
+            q['text'] = ' '.join(s[2:])
 
 
-            elif line[0] == '-' or line[0] == '+':
-                if not a_saved:
-                    answers.append(a)
-                    a_saved = True
+        elif line[0] == '-' or line[0] == '+':
+            if not a_saved:
+                answers.append(a)
+                a_saved = True
 
-                state = 'answer'
-                a = {}
-                a_saved = False
-                s = line.split()
+            state = 'answer'
+            a = {}
+            a_saved = False
+            s = line.split()
 
-                if s[0] == '-':
-                    a['correct'] = False
-                else:
-                    a['correct'] = True
+            if s[0] == '-':
+                a['correct'] = False
+            else:
+                a['correct'] = True
 
-                a['text'] = ' '.join(s[1:])
+            a['text'] = ' '.join(s[1:])
+
+        else:
+            # continuation line
+            if state == 'question':
+                q['text'] += (line)
 
             else:
-                # continuation line
-                if state == 'question':
-                    q['text'] += (line)
-
-                else:
-                    a['text'] += (line)
+                a['text'] += (line)
 
     if not a_saved:
         answers.append(a)
@@ -120,7 +118,8 @@ def main():
     from django.contrib.auth.models import User
     proposed_by = User.objects.get(username__exact=sys.argv[2])
 
-    import_from_file(sys.argv[1], proposed_by)
+    with codecs.open(sys.argv[1], 'r', 'utf-8') as f:
+        import_from_file(f, proposed_by)
 
     print 'Done.'
 
