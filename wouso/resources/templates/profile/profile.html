@@ -14,7 +14,7 @@ Points: {{profile.points}}
     <li>{% artifact a %}</li>
 {% endfor %}
 </ul>
-
+<img src="{{ avatar }}"/>
 <ul>
 {% for ac in activity.object_list %}
     <li> From {{ ac.user_from }} to {{ ac.user_to }} <br/>
