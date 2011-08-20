@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import codecs
 import sys
 from django.core.management import setup_environ
 
@@ -49,13 +50,13 @@ def main():
 
 
     # open file and parse contents
-    with open(sys.argv[1], 'r') as f:
+    with codecs.open(sys.argv[1], 'r', 'utf-8') as f:
 
         a_saved = True
         q_saved = True
 
         for line in f:
-            line = line.strip()
+            line = line.strip() + '\n'
 
             # blank line
             if not line:
@@ -101,13 +102,15 @@ def main():
                 else:
                     a['correct'] = True
 
+                a['text'] = ' '.join(s[1:])
+
             else:
                 # continuation line
                 if state == 'question':
-                    q['text'].append(line + '\n')
+                    q['text'] += (line)
 
                 else:
-                    a['text'].append(line + '\n')
+                    a['text'] += (line)
 
     if not a_saved:
         answers.append(a)
