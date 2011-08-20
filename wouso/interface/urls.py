@@ -8,7 +8,8 @@ urlpatterns = patterns('',
     (r'^$', 'interface.views.homepage'),
     (r'^top/sortcrit/(\d)/page/(\d+)/$', 'interface.top.views.gettop'),
     # sortcrit = 0 means sort by points descending
-    # sortcrit = 1 means sort by name ascending
+    # sortcrit = 1 means sort by progress descending
+    # sortcrit = 2 means sort by last_seen descending
 
     (r'^user/login/$', 'django.contrib.auth.views.login'),
     (r'^user/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}),

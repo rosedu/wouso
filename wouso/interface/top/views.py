@@ -6,6 +6,9 @@ from wouso.interface.top.models import History, TopUser
 
 PERPAGE = 5;
 def gettop(request, sortcrit, page):
+    # sortcrit = 0 means sort by points descending
+    # sortcrit = 1 means sort by progress descending
+    # sortcrit = 2 means sort by last_seen descending
     next_page = 0;
     prev_page = 0;
     try:
@@ -19,12 +22,13 @@ def gettop(request, sortcrit, page):
     if (pageno < 0):
         raise Http404;
 
-#    allUsers = TopUser.objects.all()[(page - 1)*PERPAGE:page*PERPAGE];
     allUsers = TopUser.objects.order_by('-points')[(pageno-1)*PERPAGE:pageno*PERPAGE];
-    if sortcritno == 1:
-        allUsers = TopUser.objects.order_by('user__first_name')[(pageno-1)*PERPAGE:pageno*PERPAGE];
     if (allUsers.count() == 0):
         raise Http404;
+    if sortcritno == 1:
+        allUsers = sorted(TopUser.objects.all(), key = lambda p: p.progress, reverse=True)[(pageno-1)*PERPAGE:pageno*PERPAGE];
+    if sortcritno == 2:
+        allUsers = TopUser.objects.order_by('-last_seen')[(pageno-1)*PERPAGE:pageno*PERPAGE];
 
     count = UserProfile.objects.count();
     if (count > pageno*PERPAGE+PERPAGE):
