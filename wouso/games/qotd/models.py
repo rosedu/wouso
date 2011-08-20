@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
 from django.db import models
-from core.user.models import UserProfile
-from core.game.models import Game
-from core import scoring
-from core.scoring.models import Formula
+from wouso.core.user.models import UserProfile
+from wouso.core.game.models import Game
+from wouso.core import scoring
+from wouso.core.scoring.models import Formula
 
 # Qotd will use models (question) from qpool
 # Please implement wouso.core.qpool
