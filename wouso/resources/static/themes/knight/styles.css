@@ -16,12 +16,8 @@ body a:hover {
 
 #topbar {
 	width:910px;
-	padding-top:3px;
+	padding-top:5px;
 	color:black;
-}
-
-#fundal {
-	background: black;
 }
 
 #logo {
@@ -35,7 +31,7 @@ body a:hover {
 #logo a {
 	background: none;
 	height:60px;
-	width:620px;
+	width:585px;
 	padding-top:40px;
 	margin-left:180px;
 
@@ -57,6 +53,12 @@ body a:hover {
 #content {
 	min-height:550px;
 	padding-right:20px;
+    padding-top:20px;
+}
+
+#sidebar {
+    padding-left:20px;
+    padding-top:40px;
 }
 
 #content .box .title, .box_title {
