@@ -1,6 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from wouso.core.config.models import Setting
+from wouso.core.user.models import UserProfile
+from wouso.core.artifacts.models import Artifact
 from wouso.interface import render_response
 from wouso.utils.import_questions import import_from_file
 from wouso.core.qpool.models import Schedule, Question
@@ -41,3 +44,15 @@ def importer(request):
 def import_from_upload(request):
     import_from_file(request.FILES['file'], request.user)
     return render_response('cpanel/importer.html', request)
+
+@login_required
+def artifactset(request, id):
+    profile = get_object_or_404(UserProfile, pk=id)
+    artifacts = Artifact.objects.all()
+
+    if request.method == "POST":
+        artifact = get_object_or_404(Artifact, pk=request.POST.get('artifact', 0))
+        profile.artifacts.add(artifact)
+
+    return render_response('cpanel/artifactset.html', request,
+                           {'to': profile, 'artifacts': artifacts})

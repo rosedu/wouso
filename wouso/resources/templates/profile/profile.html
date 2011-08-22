@@ -1,7 +1,7 @@
 {% extends 'site_base.html' %}
 {% load artifacts %}
 
-{% block title %}{{ profile.user }}{% endblock %}
+{% block title %}Profil: {{ profile }}{% endblock %}
 {% block scripts %}
     <script type="text/javascript" src="/static/js/tabs.js"></script>
     <script type="text/javascript" src="/static/js/jquery.flot.pack.js"></script>
@@ -18,17 +18,23 @@
     <img src="{{ avatar }}" class="avatar" width="100" />
     <h2>{{ profile }}</h2>
     <h3>{% artifact_full profile.level %}</h3>
-    <ul class="artifacts">
-    {% for a in profile.artifacts.all %}
-        <li>{% artifact a %}</li>
-    {% endfor %}
-    </ul>
-    
+    {% if profile.artifacts.all %}
+        Artifacts: 
+        <ul class="artifacts">
+        {% for a in profile.artifacts.all %}
+            <li>{% artifact a %}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
     <div class="actions">
         {% if profile.user.id != user.id %}
         <a class="button" href="#">Message</a>
 
             <a class="button" href="{% url games.challenge.views.launch profile.id %}">Challenge!</a>
+        {% endif %}
+        {% if user.is_superuser %}
+            <a class="button" href="{% url artifact_set profile.id %}">Artifacts</a>
         {% endif %}
     </div>
 

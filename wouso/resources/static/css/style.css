@@ -36,8 +36,8 @@ label {
     float: right;
     text-align: right;
 }
-#search input {
-    float: right
+#search {
+    float: right;
 }
 #sidebar {
     width: 260px;
@@ -134,4 +134,13 @@ label {
 }
 .profile .actions a:hover {
     background-color: #eee;
+}
+.profile ul.artifacts {
+    list-style-type: none;
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+.profile ul.artifacts li {
+    display: inline;
 }
