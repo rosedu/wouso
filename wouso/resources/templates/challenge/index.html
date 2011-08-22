@@ -4,9 +4,11 @@
 
 {% block content %}
 
-<h1>Challenges</h1>
+<h2>Challenges</h2>
 
-<h2>Active</h2>
+<p>To launch a challenge, find the player you want to challenge and click on the <em>Challenge</em> button, next to his profile.</p>
+
+<h3>Active</h3>
 {% for c in challenges %}
     {{ c }} 
     
@@ -23,14 +25,12 @@
         {% if c.is_launched %}<a href="{% url games.challenge.views.cancel c.id %}">Cancel</a>{% endif %}
     {% endifequal %}
     <br/>
+{% empty %}
+    There are no active challenges.
 {% endfor %}
 
-{% ifequal c|length 0 %}
-    No challenges.
-{% endifequal %}
-
 {% if played %}
-<h2>Played</h2>
+<h3>Played</h3>
 {% for c in played %}
     {{ c }} <br/>
 {% endfor %}
