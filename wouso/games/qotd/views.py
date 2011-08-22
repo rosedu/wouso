@@ -46,9 +46,10 @@ def done(request):
         signal_msg = '%s has given a correct answer to %s'
     else:
         signal_msg = '%s has given a wrong answer to %s'
+    signal_msg = signal_msg % (request.user, \
+                               QotdGame.get_instance()._meta.verbose_name)
     signals.addActivity.send(sender=None, user_from=request.user, \
-                    user_to=request.user, message=signal_msg, \
-                    game=QotdGame.get_instance())
+                             message=signal_msg, game=QotdGame.get_instance())
 
     return render_response('qotd/done.html',
             request,

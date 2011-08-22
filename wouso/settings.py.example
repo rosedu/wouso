@@ -2,7 +2,7 @@
 # TODO: more descriptive text about what to modify and what not
 
 # Global debug switch
-DEBUG = False
+DEBUG = True
 
 # Setup logging
 import logging

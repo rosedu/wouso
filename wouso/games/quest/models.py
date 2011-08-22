@@ -6,6 +6,7 @@ from wouso.core.game.models import Game
 from wouso.core.scoring.models import Formula
 from wouso.core.qpool.models import Question
 from wouso.core.qpool import get_questions_with_tags
+from wouso.interface.activity import signals
 
 # Quest will use QPool questions tagged 'quest'
 
@@ -41,6 +42,15 @@ class QuestUser(UserProfile):
     def finish_quest(self):
         if not self.finished:
             # TODO: insert into questresult
+
+            # sending the signal
+            signal_msg = u"%s has finished quest %s" % \
+                          (self, self.current_quest.title)
+            signals.addActivity.send(sender=None, user_from=self.user, \
+                                     message=signal_msg, \
+                                     game=QuestGame.get_instance())
+
+            # saving finish data
             self.finished = True
             self.finished_time = datetime.datetime.now()
             self.save()
