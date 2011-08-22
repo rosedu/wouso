@@ -40,29 +40,31 @@ label {
     float: right
 }
 #sidebar {
-    width: 250px;
+    width: 260px;
     min-height: 500px; /* for mihnea */
     float: left;
+    border-right: 1px solid #aaa;
+    padding-right: 10px;
 }
 #content {
-    width: 600px;
+    width: 640px;
     float: right;
 }
 #footer {
     clear: both;
-    border-top: 1px solid #444;
+    border-top: 1px solid #aaa;
 }
 #footer_links {
     text-align: right;
 }
 .block {
-    border: 1px dashed #444;
+    border: 1px dashed #aaa;
     padding: 4px;
     margin-bottom: 5px;
 }
 .block h4 {
     margin: 0px;
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid #aaa;
 }
 .answers ul {
     list-style-type: none
@@ -81,4 +83,35 @@ label {
 
 .top .points {
     float: right
+}
+/* profile page */
+.profile {
+    padding-top: 10px;
+}
+.profile .points {
+    float: right;
+    text-align: center;
+}
+.profile .points-big {
+    width: 150px;
+    font-size: 42px;
+}
+.profile .avatar {
+    float: left;
+    margin: 4px 4px 4px 0px;
+    border: 2px solid #aaa;
+}
+.profile h2, .profile h3 {
+    margin: 1px;
+}
+.profile .tabs, .profile .tab_content {
+    margin-top: 3px;
+    clear: both;
+}
+.profile .tab_content {
+    padding: 4px;
+}
+.graf {
+    width: 400px;
+    height: 200px;
 }
