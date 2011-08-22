@@ -115,3 +115,23 @@ label {
     width: 400px;
     height: 200px;
 }
+.profile .actions {
+    margin: 6px;
+    clear: right;
+    float: right;
+}
+.profile .actions a {
+    display: block;
+    float: left;
+    text-align: center;
+    width: 80px;
+    border: 1px solid #aaa;
+    padding: 6px;
+    margin: 1px;
+    background-color: #ddd;
+    text-decoration: none;
+    color: black;
+}
+.profile .actions a:hover {
+    background-color: #eee;
+}

@@ -24,6 +24,14 @@
     {% endfor %}
     </ul>
     
+    <div class="actions">
+        {% if profile.user.id != user.id %}
+        <a class="button" href="#">Message</a>
+
+            <a class="button" href="{% url games.challenge.views.launch profile.id %}">Challenge!</a>
+        {% endif %}
+    </div>
+
     <ul class="tabs">
         <li><a href="#tab-1">Activity</a></li>
         <li><a href="#tab-2">Evolution</a></li>
