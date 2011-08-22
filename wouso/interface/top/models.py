@@ -5,7 +5,6 @@ from wouso.core.app import App
 from wouso.core.user.models import UserProfile
 from wouso.interface import render_string
 
-
 class TopUser(UserProfile):
 
     @property
@@ -26,11 +25,30 @@ class TopUser(UserProfile):
             return 0
         return yesterday.position - day1weekprior.position
 
+    @property
+    def position(self):
+        return History.get_user_position(self)
+
+    def week_evolution(self):
+        """ :return: list of pairs (index, position) for the last week """
+        hs = History.objects.filter(user=self).order_by('-date')[:7]
+        return [(i + 1, h.position) for (i,h) in enumerate(hs)]
+
 class History(models.Model):
-    user = models.ForeignKey('TopUser');
-    position = models.IntegerField();
-    points = models.IntegerField();
-    date = models.DateField();
+    user = models.ForeignKey('TopUser')
+    position = models.IntegerField()
+    points = models.IntegerField()
+    date = models.DateField()
+
+    @classmethod
+    def get_user_position(kls, user):
+        try:
+            history = History.objects.filter(user=user).order_by('-date')[0]
+            return history.position
+        except IndexError:
+            return 0
+        except History.DoesNotExist:
+            return 0
 
 class Top(App):
 

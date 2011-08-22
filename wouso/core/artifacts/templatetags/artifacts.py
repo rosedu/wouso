@@ -9,3 +9,9 @@ def artifact(artifact):
         return '<img class="artifact" src="%s" />' % path
 
     return '<div class="artifact artifact-%s"></div>' % path
+
+@register.simple_tag
+def artifact_full(artif):
+    if not artif:
+        return ''
+    return artifact(artif) + artif.title

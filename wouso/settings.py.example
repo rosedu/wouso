@@ -2,7 +2,7 @@
 # TODO: more descriptive text about what to modify and what not
 
 # Global debug switch
-DEBUG = True
+DEBUG = False
 
 # Setup logging
 import logging
@@ -138,7 +138,7 @@ INSTALLED_APPS = (
     'wouso.interface.activity',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-	'djangologdb',
+    'djangologdb',
     'django_nose',
 )
 
