@@ -54,9 +54,10 @@ class Top(App):
 
     @classmethod
     def get_sidebar_widget(kls, request):
-        top5 =TopUser.objects.all().order_by('-points')[:5]
+        top5 = TopUser.objects.all().order_by('-points')[:5]
+        is_top = request.get_full_path().startswith('/top/')
         return render_string('top/sidebar.html',
-            {'topusers': top5}
+            {'topusers': top5, 'is_top': is_top}
         )
 
 def user_post_save(sender, instance, **kwargs):

@@ -57,6 +57,12 @@ label {
 #footer_links {
     text-align: right;
 }
+ol.top {
+    padding: 0px;
+}
+ol.top {
+    padding-left: 20px;
+}
 .block {
     border: 1px dashed #aaa;
     padding: 4px;
