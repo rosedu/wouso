@@ -28,7 +28,7 @@ urlpatterns = patterns('',
     (r'^m/inbox$', 'wouso.core.messaging.views.inbox'),
     (r'^m/sentbox$', 'wouso.core.messaging.views.sentbox'),
     (r'^m/allbox$', 'wouso.core.messaging.views.allbox'),
-    (r'^m/create$', 'wouso.core.messaging.views.create'),
+    url(r'^m/create$', 'wouso.core.messaging.views.create', name='create'),
 
 
     # Games
