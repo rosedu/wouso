@@ -1,13 +1,17 @@
 {% extends 'site_base.html' %}
 
-{% block title %}Inbox{% endblock %}
+{% block title %}Create message{% endblock %}
 
 {% block content %}
 
 
-<p> Hello, GIgi </p>
+<h1>Create message</h1>
 
-
-
+<form id="msg">
+    <p>To: <input type="text" id="to"/></p>
+    <p>Subject: <input type="text" id="subject"/></p>
+    <textarea id="text"></textarea>
+    <p><input type="submit" value="Send"/></p>
+</form>
  
 {% endblock %}
