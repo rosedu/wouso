@@ -48,6 +48,39 @@ challenged Alice and lost".
 The module should register for events send by different other modules
 and log the data (in the database) that would be displayed on the wall.
 
+:mod:`wouso.interface.activity.models`
+--------------------------------------
+.. automodule:: wouso.interface.activity.models
+    :members:
+
+:mod:`wouso.interface.activity.signals`
+--------------------------------------
+.. automodule:: wouso.interface.activity.signals
+    :members:
+
+Usage examples
+~~~~~~~~
+
+Sending events from games::
+
+    from wouso.interface.activity import signals
+    
+    # games/quest/models.py
+    signal_msg = u"%s has finished quest %s" % (self, self.current_quest.title)
+    signals.addActivity.send(sender=None, user_from=self, user_to=self, \
+                             message=signal_msg, game=QuestGame.get_instance())
+
+    # games/qotd/views.py
+    if qotd.answers[choice].correct:
+        signal_msg = '%s has given a correct answer to %s'
+    else:
+        signal_msg = '%s has given a wrong answer to %s'
+    signal_msg = signal_msg % (request.user.get_profile(), \
+                               QotdGame.get_instance()._meta.verbose_name)
+    signals.addActivity.send(sender=None, user_from=request.user.get_profile(), \
+                             user_to=request.user.get_profile(), \
+                             message=signal_msg, game=QotdGame.get_instance())
+
 Top
 ---
 
