@@ -8,7 +8,6 @@ def header_footer(request):
     """ See sidebar below """
     header = []
     try:
-        print "CEVA"
         for game in get_games():
             h = game.get_header_link(request)
             if h:
