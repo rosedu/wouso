@@ -3,7 +3,7 @@ from django.contrib import admin
 from wouso.core.user.models import UserProfile
 from datetime import datetime
 
-class MessageUser(UserProfile):
+class MessagingUser(UserProfile):
     '''extension of the user profile, customized for messages'''
     
     canSendMessage = models.BooleanField(null=False, blank=False, default=True)
@@ -14,8 +14,8 @@ class MessageUser(UserProfile):
 class Message(models.Model):
     '''the message itself'''
     
-    sender = models.ForeignKey(MessageUser, null=True, blank=False, default=None, related_name='sender')
-    receiver = models.ForeignKey(MessageUser, null=True, blank=False, default=None, related_name='receiver')
+    sender = models.ForeignKey(MessagingUser, null=True, blank=False, default=None, related_name='sender')
+    receiver = models.ForeignKey(MessagingUser, null=True, blank=False, default=None, related_name='receiver')
     timestamp = models.DateTimeField(null=True, blank=False, default=datetime.now)
     subject = models.CharField(max_length=64, null=False, blank=False, default=None)
     text = models.CharField(max_length=1000, null=False, blank=False, default=None)
@@ -35,5 +35,5 @@ class Message(models.Model):
 
 
 #admin
-admin.site.register(MessageUser)
+admin.site.register(MessagingUser)
 admin.site.register(Message)

@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from wouso.interface import render_response
-from wouso.core.messaging.models import Message, MessageUser
+from wouso.core.messaging.models import Message, MessagingUser
 from django.db.models import Q
 from django.core.urlresolvers import reverse
 
@@ -10,7 +10,7 @@ from django.core.urlresolvers import reverse
 def inbox(request):
     
     profile = request.user.get_profile()
-    msg_user = profile.get_extension(MessageUser)
+    msg_user = profile.get_extension(MessagingUser)
     
     messages = Message.objects.filter(receiver=msg_user)
     
@@ -24,7 +24,7 @@ def inbox(request):
 def sentbox(request):
     
     profile = request.user.get_profile()
-    msg_user = profile.get_extension(MessageUser)
+    msg_user = profile.get_extension(MessagingUser)
     
     messages = Message.objects.filter(sender=msg_user)
     
@@ -38,7 +38,7 @@ def sentbox(request):
 def allbox(request):
     
     profile = request.user.get_profile()
-    msg_user = profile.get_extension(MessageUser)
+    msg_user = profile.get_extension(MessagingUser)
     
     messages = Message.objects.filter(Q(receiver=msg_user) | Q(sender=msg_user))
     
