@@ -22,6 +22,14 @@ urlpatterns = patterns('',
     (r'^search/$', 'wouso.interface.views.search'),
     (r'^instantsearch/$', 'wouso.interface.views.instantsearch'),
     (r'^staticpage/(\d+)/$', 'wouso.interface.views.staticpage'),
+    
+    # Messaging
+    (r'^m/$', 'wouso.core.messaging.views.inbox'),
+    (r'^m/inbox$', 'wouso.core.messaging.views.inbox'),
+    (r'^m/sentbox$', 'wouso.core.messaging.views.sentbox'),
+    (r'^m/allbox$', 'wouso.core.messaging.views.allbox'),
+    (r'^m/create$', 'wouso.core.messaging.views.create'),
+
 
     # Games
     (r'^g/', include('wouso.games.urls')),

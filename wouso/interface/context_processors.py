@@ -1,16 +1,25 @@
 import logging
 from wouso.core.game import get_games
+from wouso.core.messaging.models import Message
 from wouso.core.config.models import Setting
 from wouso.interface.top.models import Top
 
 def header_footer(request):
-    """ See sidebar bellow """
+    """ See sidebar below """
     header = []
     try:
+        print "CEVA"
         for game in get_games():
             h = game.get_header_link(request)
             if h:
                 header.append(h)
+    except: pass
+    
+    # add also messages link
+    try:
+        h = Message.get_header_link(request)
+        if h:
+            header.append(h)
     except: pass
 
     footer = []

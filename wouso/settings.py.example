@@ -129,6 +129,7 @@ INSTALLED_APPS = (
     'wouso.core.scoring',
     'wouso.core.qpool',
     'wouso.core.artifacts',
+    'wouso.core.messaging',
 
     'wouso.games.qotd',
     'wouso.games.challenge',

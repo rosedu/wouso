@@ -1,0 +1,28 @@
+{% extends 'site_base.html' %}
+
+{% block title %}Inbox{% endblock %}
+
+{% block content %}
+
+
+<h1>Inbox</h1>
+<table id="Messages" border=1>
+    <tr>
+        <th>From</td>
+        <th>To</td>
+        <th>Subject</td>
+    </tr>
+    {% for msg in messages %}
+    <tr>
+        <td>{{msg.sender}}</td>
+        <td>{{msg.receiver}}</td>
+        <td>{{msg.subject}}</td>
+    </tr>
+    {% endfor %}
+
+    
+</table>
+
+
+ 
+{% endblock %}
