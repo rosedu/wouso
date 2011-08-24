@@ -48,7 +48,11 @@
         <div id="tab-1" class="tab_content">
         <ul>
         {% for ac in activity.object_list %}
-            <li> From {{ ac.user_from }} to {{ ac.user_to }} <br/>
+            {% if ac.user_from == ac.user_to %}
+                <li> {{ ac.user_from }} <br/>
+            {% else %}
+                <li> From {{ ac.user_from }} to {{ ac.user_to }} <br/>
+            {% endif %}
             <b>{{ ac.message }}</b> <br/> 
             {{ ac.timestamp }}<br/></li>
         {% empty %}
