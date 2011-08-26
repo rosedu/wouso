@@ -7,46 +7,22 @@ from django.core.urlresolvers import reverse
 
 
 @login_required
-def inbox(request):
+def home(request):
 
     profile = request.user.get_profile()
     msg_user = profile.get_extension(MessagingUser)
 
-    messages = Message.objects.filter(receiver=msg_user)
+    messages_rec = Message.objects.filter(receiver=msg_user)
+    messages_sent = Message.objects.filter(receiver=msg_user)
+    messages_all = Message.objects.filter(Q(receiver=msg_user) | Q(sender=msg_user))
 
     return render_response('messaging/inbox.html',
                            request,
                            {'user': request.user,
-                            'messages': messages})
-
-
-@login_required
-def sentbox(request):
-
-    profile = request.user.get_profile()
-    msg_user = profile.get_extension(MessagingUser)
-
-    messages = Message.objects.filter(sender=msg_user)
-
-    return render_response('messaging/sentbox.html',
-                           request,
-                           {'user': request.user,
-                            'messages': messages})
-
-
-@login_required
-def allbox(request):
-
-    profile = request.user.get_profile()
-    msg_user = profile.get_extension(MessagingUser)
-
-    messages = Message.objects.filter(Q(receiver=msg_user) | Q(sender=msg_user))
-
-    return render_response('messaging/allbox.html',
-                           request,
-                           {'user': request.user,
-                            'messages': messages})
-
+                            'messages_rec': messages_rec,
+                            'messages_sent': messages_sent,
+                            'messages_all': messages_all
+                            })
 
 
 @login_required
