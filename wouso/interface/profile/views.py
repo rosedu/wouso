@@ -30,6 +30,7 @@ def user_profile(request, id, page=u'0'):
     top_user = profile.get_extension(TopUser)
     history = History.user_points(profile)
     paginator = Paginator(activity_list, 10)
+    last_seen = profile.last_seen
 
     try:
         activity = paginator.page(page)
@@ -39,4 +40,4 @@ def user_profile(request, id, page=u'0'):
     return render_response('profile/profile.html',
         request,
         {'profile': profile, 'avatar': avatar, 'activity': activity,
-         'top': top_user, 'scoring': history})
+         'top': top_user, 'scoring': history, 'last_seen': last_seen})
