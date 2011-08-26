@@ -6,3 +6,6 @@ class SearchForm(forms.Form):
 class InstantSearchForm(forms.Form):
     q = forms.CharField(max_length=100)
 
+class SearchOneForm(forms.Form):
+    q = forms.CharField(max_length=100)
+

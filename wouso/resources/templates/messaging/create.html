@@ -1,17 +1,39 @@
 {% extends 'site_base.html' %}
+{% load user %}
 
 {% block title %}Create message{% endblock %}
 
 {% block content %}
 
-
 <h1>Create message</h1>
 
-<form id="msg">
-    <p>To: <input type="text" id="to"/></p>
-    <p>Subject: <input type="text" id="subject"/></p>
-    <textarea id="text"></textarea>
-    <p><input type="submit" value="Send"/></p>
+<form id="msg" onsubmit="messagingSubmit();" method="post">
+    <table>
+    <tr><td>To:</td><td valign="top">
+            {% if to %}
+                <input type="text" id="to_input" class="hidden">
+                <input type="hidden" id="to" name="to" value="{{ to.id }}" />
+                <span class="to_user">{% player to %}</span>
+            {% else %}
+                <input type="text" id="to_input" /> <div id="to_container"></div>
+            {% endif %}
+    </td></tr>
+    <tr><td>Subject: </td><td valign="top">
+            <input type="text" id="subject" name="subject" />
+    </td></tr>
+    <tr><td colspan="2">
+        <textarea id="text" name="text"></textarea>
+    </td></tr>
+    </table>
+    <input type="submit" value="Send" />
+    {% csrf_token %}
 </form>
+
+<script type="text/javascript"> 
+    $(document).ready(function() {
+    $("#to_input").autocomplete("/instantsearch/", { minChars:3, matchSubset:1, matchContains:1, cacheLength:10, formatItem:formatItem, onItemSelect:selectItemMessaging, selectOnly:1 });
+    });
+    $("#to_input").bind('focusout', messagingOut);
+</script>
  
 {% endblock %}

@@ -21,6 +21,7 @@ urlpatterns = patterns('',
 
     (r'^search/$', 'wouso.interface.views.search'),
     (r'^instantsearch/$', 'wouso.interface.views.instantsearch'),
+    (r'^searchone/$', 'wouso.interface.views.searchone'),
     (r'^staticpage/(\d+)/$', 'wouso.interface.views.staticpage'),
 
     # Messaging
