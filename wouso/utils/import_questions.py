@@ -10,7 +10,7 @@ def init():
     setup_environ(settings)
 
 
-def add(question, answers):
+def add(question, answers, tags):
     ''' question is a dict with the following keys: text, endorsed_by, answer_type
     [, proposed_by, active, type, code]
     answers is a list of dicts with the following keys: text, correct [, explanation]
@@ -26,6 +26,9 @@ def add(question, answers):
     # create and save question
     q = Question(**question)
     q.save()
+    for tag in tags:
+        q.tags.add(tag)
+    q.save()
 
     # create and save answers for question
     for answer in answers:
@@ -33,7 +36,7 @@ def add(question, answers):
         a.save()
 
 
-def import_from_file(opened_file, proposed_by):
+def import_from_file(opened_file, proposed_by, tags):
     # read file and parse contents
     a_saved = True
     q_saved = True
@@ -52,7 +55,7 @@ def import_from_file(opened_file, proposed_by):
                 a_saved = True
             if not q_saved:
                 q['proposed_by'] = proposed_by
-                add(q, answers)
+                add(q, answers, tags)
                 q_saved = True
                 a_saved = True
 
@@ -100,7 +103,7 @@ def import_from_file(opened_file, proposed_by):
         a_saved = True
     if not q_saved:
         q['proposed_by'] = proposed_by
-        add(q, answers)
+        add(q, answers, tags)
 
 
 def main():

@@ -6,9 +6,20 @@
 
 <h1>Questions importer</h1>
 
+<h2>Tags</h2>
+
+
 <form id="file_import" action="{% url importer_send %}"  method="POST" enctype="multipart/form-data">
     {% csrf_token %}
+
+    <select name="tag" id="select">
+    {% for tag in tags %}
+        <option value="{{tag}}">{{tag}}</option>
+    {% endfor %}
+    </select>
+
     <input type="file" name="file"/> <br/>
+
     <input type="submit" value="Send file"/>
 </form>
 

@@ -1,14 +1,16 @@
+import datetime
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from wouso.core.config.models import Setting
 from wouso.core.user.models import UserProfile
 from wouso.core.artifacts.models import Artifact
-from wouso.interface import render_response
-from wouso.utils.import_questions import import_from_file
 from wouso.core.qpool.models import Schedule, Question
-from models import Customization
-import datetime
+from wouso.core.qpool.models import Tag
+from wouso.interface import render_response
+from wouso.interface.cpanel.models import Customization
+from wouso.utils.import_questions import import_from_file
+
 
 
 @login_required
@@ -38,11 +40,14 @@ def customization(request):
 
 @login_required
 def importer(request):
-    return render_response('cpanel/importer.html', request)
+    tags = Tag.objects.all()
+    return render_response('cpanel/importer.html', request,
+                           {'tags': tags})
 
 @login_required
 def import_from_upload(request):
-    import_from_file(request.FILES['file'], request.user)
+    tags = Tag.objects.filter(name=request.POST['tag'])
+    import_from_file(request.FILES['file'], request.user, tags)
     return render_response('cpanel/importer.html', request)
 
 @login_required
