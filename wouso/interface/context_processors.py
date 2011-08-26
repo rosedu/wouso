@@ -1,8 +1,8 @@
 import logging
 from wouso.core.game import get_games
-from wouso.core.messaging.models import Message
 from wouso.core.config.models import Setting
 from wouso.interface.top.models import Top
+from wouso.interface.messaging.models import Message
 
 def header_footer(request):
     """ See sidebar below """
@@ -13,7 +13,7 @@ def header_footer(request):
             if h:
                 header.append(h)
     except: pass
-    
+
     # add also messages link
     try:
         h = Message.get_header_link(request)
@@ -32,22 +32,22 @@ def header_footer(request):
     return {'header': header, 'footer': footer}
 
 def sidebar(request):
-    """ For each registered game, get a widget to be displayed in sidebar 
+    """ For each registered game, get a widget to be displayed in sidebar
     @remark This design needs to be analysed.
     @todo ordering, probably done by god
-    
+
     Returns a 'sidebar' list containing html boxes.
     """
-    
+
     sidebar = []
-    
+
     try:
         # Request blocks from games
         for game in get_games():
             w = game.get_sidebar_widget(request)
             if w:
                 sidebar.append(w)
-        
+
         # Request blocks from apps
         for app in (Top,):
             w = app.get_sidebar_widget(request)
@@ -56,7 +56,7 @@ def sidebar(request):
     except Exception as e:
         logging.error(e)
         # This is a hack for fixing test. TODO: actually fix ./manage.py test
-        
+
     return {'sidebar': sidebar}
 
 def config(request):

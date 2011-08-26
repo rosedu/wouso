@@ -87,8 +87,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-	# If we want to log exceptions, uncomment next line:
-	# 'djangologdb.middleware.LoggingMiddleware',
+    # If we want to log exceptions, uncomment next line:
+    # 'djangologdb.middleware.LoggingMiddleware',
     # for last 10 minutes to work
     'wouso.middleware.Seen',
 )
@@ -129,7 +129,6 @@ INSTALLED_APPS = (
     'wouso.core.scoring',
     'wouso.core.qpool',
     'wouso.core.artifacts',
-    'wouso.core.messaging',
 
     'wouso.games.qotd',
     'wouso.games.challenge',
@@ -137,6 +136,8 @@ INSTALLED_APPS = (
     'wouso.interface',
     'wouso.interface.top',
     'wouso.interface.activity',
+    'wouso.interface.messaging',
+
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'djangologdb',
