@@ -51,3 +51,19 @@ function messagingSubmit() {
     }
     return true;
 }
+
+function messagingView(id) {
+    var container;
+    if (active_tab)
+        container = $(active_tab);
+    else
+        container = $('#message');
+
+    $.ajax({
+        url: '/m/view/' + id,
+        success: function(data) {
+            container.html(data);
+        }
+    });
+    return false;
+}

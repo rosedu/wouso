@@ -129,10 +129,12 @@ ol.top {
     clear: right;
     float: right;
 }
-.profile .actions a {
+.profile .actions a, a.button {
     display: block;
     float: left;
     text-align: center;
+    min-width: 80px;
+    max-width: 120px;
     width: 80px;
     border: 1px solid #aaa;
     padding: 6px;
@@ -141,7 +143,7 @@ ol.top {
     text-decoration: none;
     color: black;
 }
-.profile .actions a:hover {
+.profile .actions a:hover, a.button:hover {
     background-color: #eee;
 }
 .profile ul.artifacts {

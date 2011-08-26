@@ -53,6 +53,15 @@ def create(request, to=None):
         #   print form, form.is_valid(), request.POST
     return render_response('messaging/create.html', request, {'to': to})
 
+@login_required
+def message(request, mid):
+    message = get_object_or_404(Message, pk=mid)
+
+    me = request.user.get_profile().get_extension(MessagingUser)
+
+    if message.sender == me or message.receiver == me:
+        return render_response('messaging/message_one.html', request, {'m': message})
+    raise Http404
 
 def header_link(request):
     return '<a href="'+ reverse('wouso.interface.messaging.views.home') +'">Messages</a>'

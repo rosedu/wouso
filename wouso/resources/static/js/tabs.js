@@ -1,3 +1,6 @@
+/* global reference */
+var active_tab = null;
+
 $(document).ready(function() {
 
     //When page loads...
@@ -15,6 +18,7 @@ $(document).ready(function() {
         var activeTab = $(this).find("a").attr("href"); //Find the href attribute value to identify the active tab + content
         $(activeTab).fadeIn(); //Fade in the active ID content
         $(activeTab).trigger("custom");
+        active_tab = activeTab;
         return true;
     });
 
