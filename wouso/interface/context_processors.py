@@ -24,8 +24,8 @@ def header_footer(request):
     footer = []
     try:
         for game in get_games():
-            f = game.get_header_link(request)
-            if h:
+            f = game.get_footer_link(request)
+            if f:
                 footer.append(f)
     except: pass
 

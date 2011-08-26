@@ -9,46 +9,22 @@ from wouso.interface.messaging.models import Message, MessagingUser
 from wouso.interface.messaging.forms import ComposeForm
 
 @login_required
-def inbox(request):
+def home(request):
 
     profile = request.user.get_profile()
     msg_user = profile.get_extension(MessagingUser)
 
-    messages = Message.objects.filter(receiver=msg_user)
+    messages_rec = Message.objects.filter(receiver=msg_user)
+    messages_sent = Message.objects.filter(receiver=msg_user)
+    messages_all = Message.objects.filter(Q(receiver=msg_user) | Q(sender=msg_user))
 
-    return render_response('messaging/inbox.html',
+    return render_response('messaging/index.html',
                            request,
                            {'user': request.user,
-                            'messages': messages})
-
-
-@login_required
-def sentbox(request):
-
-    profile = request.user.get_profile()
-    msg_user = profile.get_extension(MessagingUser)
-
-    messages = Message.objects.filter(sender=msg_user)
-
-    return render_response('messaging/sentbox.html',
-                           request,
-                           {'user': request.user,
-                            'messages': messages})
-
-
-@login_required
-def allbox(request):
-
-    profile = request.user.get_profile()
-    msg_user = profile.get_extension(MessagingUser)
-
-    messages = Message.objects.filter(Q(receiver=msg_user) | Q(sender=msg_user))
-
-    return render_response('messaging/allbox.html',
-                           request,
-                           {'user': request.user,
-                            'messages': messages})
-
+                            'messages_rec': messages_rec,
+                            'messages_sent': messages_sent,
+                            'messages_all': messages_all
+                            })
 
 
 @login_required
@@ -64,11 +40,11 @@ def create(request, to=None):
                             form.cleaned_data['subject'],
                             form.cleaned_data['text']
             )
-            return HttpResponseRedirect(reverse('wouso.interface.messaging.views.inbox'))
+            return HttpResponseRedirect(reverse('wouso.interface.messaging.views.home'))
         #else:
         #   print form, form.is_valid(), request.POST
     return render_response('messaging/create.html', request, {'to': to})
 
 
 def header_link(request):
-    return '<a href="'+ reverse('wouso.interface.messaging.views.inbox') +'">Messages</a>'
+    return '<a href="'+ reverse('wouso.interface.messaging.views.home') +'">Messages</a>'
