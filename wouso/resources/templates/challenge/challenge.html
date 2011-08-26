@@ -17,7 +17,9 @@ You challenged {{ challenge.user_to.get_profile.real_name }} on {{ challenge.dat
 <hr>
 <form action="{% url games.challenge.views.challenge challenge.id %}" method="post" >
 <table class=answers>
-{{ form }}
+    {% autoescape off %}
+    {{ form }}
+    {% endautoescape %}
 </table>
 {% csrf_token %}
 <input type="submit" value="Submit" />
