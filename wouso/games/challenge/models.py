@@ -125,6 +125,20 @@ class Challenge(models.Model):
         else:
             pass # again, raise something
 
+    def is_started_for_user(self, user):
+        """Check if the challenge has already started for the given user"""
+        user = user.get_extension(ChallengeUser)
+        if self.user_from.user == user:
+            if self.user_from.start is None:
+                return False
+            return True
+        elif self.user_to.user == user:
+            if self.user_to.start is None:
+                return False
+            return True
+        else:
+            pass #raise something
+
     def played(self):
         """ Both players have played, save and score """
         self.user_to.points = self.calculate_points(pk.loads(str(self.user_to.responses)))
