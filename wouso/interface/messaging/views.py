@@ -16,7 +16,7 @@ def home(request):
     messages_sent = Message.objects.filter(receiver=msg_user)
     messages_all = Message.objects.filter(Q(receiver=msg_user) | Q(sender=msg_user))
 
-    return render_response('messaging/inbox.html',
+    return render_response('messaging/index.html',
                            request,
                            {'user': request.user,
                             'messages_rec': messages_rec,
@@ -32,4 +32,4 @@ def create(request):
 
 
 def header_link(request):
-    return '<a href="'+ reverse('wouso.interface.messaging.views.inbox') +'">Messages</a>'
+    return '<a href="'+ reverse('wouso.interface.messaging.views.home') +'">Messages</a>'
