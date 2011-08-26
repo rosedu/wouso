@@ -8,24 +8,71 @@
 <a href="{% url create %}">Create message</a>
 
 
-<h1>Inbox</h1>
-<table id="Messages">
-    <tr>
-        <th>From</td>
-        <th>To</td>
-        <th>Subject</td>
-    </tr>
-    {% for msg in messages %}
-    <tr>
-        <td>{{msg.sender}}</td>
-        <td>{{msg.receiver}}</td>
-        <td>{{msg.subject}}</td>
-    </tr>
-    {% empty %} <tr> <td colspan=3>No messages.</td></tr>
-    {% endfor %}
+
+<ul class="tabs">
+        <li><a href="#tab-1">Received</a></li>
+        <li><a href="#tab-2">Sent</a></li>
+        <li><a href="#tab-3">All</a></li>
+</ul>
+
+<div class="tab_container">
+    <div id="tab-1" class="tab_content">
+        <table id="Messages">
+            <tr>
+                <th>From</td>
+                <th>To</td>
+                <th>Subject</td>
+            </tr>
+            {% for msg in messages_rec %}
+                <tr>
+                    <td>{{msg.sender}}</td>
+                    <td>{{msg.receiver}}</td>
+                    <td>{{msg.subject}}</td>
+                </tr>
+            {% empty %} <tr> <td colspan=3>No messages.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div id="tab-2" class="tab_content">
+        <table id="Messages">
+            <tr>
+                <th>From</td>
+                <th>To</td>
+                <th>Subject</td>
+            </tr>
+            {% for msg in messages_sent %}
+                <tr>
+                    <td>{{msg.sender}}</td>
+                    <td>{{msg.receiver}}</td>
+                    <td>{{msg.subject}}</td>
+                </tr>
+            {% empty %} <tr> <td colspan=3>No messages.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div id="tab-3" class="tab_content">
+        <table id="Messages">
+            <tr>
+                <th>From</td>
+                <th>To</td>
+                <th>Subject</td>
+            </tr>
+            {% for msg in messages_all %}
+                <tr>
+                    <td>{{msg.sender}}</td>
+                    <td>{{msg.receiver}}</td>
+                    <td>{{msg.subject}}</td>
+                </tr>
+            {% empty %} <tr> <td colspan=3>No messages.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
 
 
-</table>
 
 
 
