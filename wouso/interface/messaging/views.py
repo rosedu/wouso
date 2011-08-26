@@ -19,7 +19,7 @@ def home(request, quiet=None, box=None, page=u'0'):
     if box == 'rec' or box is None:
         messages = Message.objects.filter(receiver=msg_user)
     elif box == 'sent':
-        messages = Message.objects.filter(receiver=msg_user)
+        messages = Message.objects.filter(sender=msg_user)
     elif box == 'all':
         messages = Message.objects.filter(Q(receiver=msg_user) | Q(sender=msg_user))
 
