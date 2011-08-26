@@ -1,0 +1,6 @@
+{% load artifacts %}
+
+{% for sr in results %}
+    {{sr.first_name}} {{sr.last_name}}|{{ sr.id }}
+{% endfor %}
+
