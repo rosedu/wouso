@@ -12,7 +12,7 @@
 <form id="file_import" action="{% url importer_send %}"  method="POST" enctype="multipart/form-data">
     {% csrf_token %}
 
-    <select name="tag" id="select">
+    <select name="tags" id="tags" multiple="multiple" size="{{len}}">
     {% for tag in tags %}
         <option value="{{tag}}">{{tag}}</option>
     {% endfor %}

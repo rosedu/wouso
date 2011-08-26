@@ -42,11 +42,15 @@ def customization(request):
 def importer(request):
     tags = Tag.objects.all()
     return render_response('cpanel/importer.html', request,
-                           {'tags': tags})
+                           {'tags': tags,
+                            'len': len(tags)})
 
 @login_required
 def import_from_upload(request):
-    tags = Tag.objects.filter(name=request.POST['tag'])
+
+    selected = request.POST.getlist('tags')
+
+    tags = [Tag.objects.filter(name=tag)[0] for tag in selected]
     import_from_file(request.FILES['file'], request.user, tags)
     return render_response('cpanel/importer.html', request)
 
