@@ -1,5 +1,11 @@
 {% extends 'site_base.html' %}
 
+{% block scripts %}
+    <script type="text/javascript" src="/static/js/tabs.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.flot.pack.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
+{% endblock %}
+
 {% block title %}Inbox{% endblock %}
 
 {% block content %}
@@ -8,15 +14,14 @@
 <a href="{% url create %}">Create message</a>
 
 
-
 <ul class="tabs">
-        <li><a href="#tab-1">Received</a></li>
-        <li><a href="#tab-2">Sent</a></li>
-        <li><a href="#tab-3">All</a></li>
+        <li><a href="#rec">Received</a></li>
+        <li><a href="#sent">Sent</a></li>
+        <li><a href="#all">All</a></li>
 </ul>
 
 <div class="tab_container">
-    <div id="tab-1" class="tab_content">
+    <div id="rec" class="tab_content">
         <table id="Messages">
             <tr>
                 <th>From</td>
@@ -34,7 +39,7 @@
         </table>
     </div>
 
-    <div id="tab-2" class="tab_content">
+    <div id="sent" class="tab_content">
         <table id="Messages">
             <tr>
                 <th>From</td>
@@ -52,7 +57,7 @@
         </table>
     </div>
 
-    <div id="tab-3" class="tab_content">
+    <div id="all" class="tab_content">
         <table id="Messages">
             <tr>
                 <th>From</td>
@@ -69,7 +74,11 @@
             {% endfor %}
         </table>
     </div>
-
+    <script language="javascript" type="text/javascript">
+        tabToURL("rec", "{% url quiet_home box='rec' quiet='q' %}")
+        tabToURL("sent", "{% url quiet_home box="sent" quiet='q' %}")
+        tabToURL("all", "{% url quiet_home box="all" quiet='q' %}")
+    </script>
 </div>
 
 

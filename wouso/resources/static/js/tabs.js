@@ -15,7 +15,19 @@ $(document).ready(function() {
         var activeTab = $(this).find("a").attr("href"); //Find the href attribute value to identify the active tab + content
         $(activeTab).fadeIn(); //Fade in the active ID content
         $(activeTab).trigger("custom");
-        return false;
+        return true;
     });
 
 });
+
+function tabToURL(tab_name, url) {
+    $("#" + tab_name).bind('custom',
+                    function() {
+                        $.ajax({
+                            url: url,
+                            success: function(data) {
+                                $("#" + tab_name).html(data)
+                            }
+                        })
+                    });
+}

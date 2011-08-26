@@ -14,12 +14,12 @@
         <div class="points-big">{{ profile.points}}</div>
         <div class="rank">rank: {{ top.position }}</div>
     </div>
-    
+
     <img src="{{ avatar }}" class="avatar" width="100" />
     <h2>{{ profile }}</h2>
     <h3>{% artifact_full profile.level %}</h3>
     {% if profile.artifacts.all %}
-        Artifacts: 
+        Artifacts:
         <ul class="artifacts">
         {% for a in profile.artifacts.all %}
             <li>{% artifact a %}</li>
@@ -53,22 +53,22 @@
             {% else %}
                 <li> From {{ ac.user_from }} to {{ ac.user_to }} <br/>
             {% endif %}
-            <b>{{ ac.message }}</b> <br/> 
+            <b>{{ ac.message }}</b> <br/>
             {{ ac.timestamp }}<br/></li>
         {% empty %}
             <li class="empty">Sorry, no recent activity for this user</li>
         {% endfor %}
-        
+
         {% if activity.has_previous %}
-        <a href="{% url wouso.interface.profile.views.user_profile id=profile.id page=activity.previous_page_number %}"> Newer </a>
+        <a href="{% url wouso.interface.profile.views.user_profile id=profile.id page=activity.previous_page_number %}#tab-1"> Newer </a>
         {% endif %}
-        
+
         {% if activity.has_next %}
-        <a href="{% url wouso.interface.profile.views.user_profile id=profile.id page=activity.next_page_number %}"> Older </a>
+        <a href="{% url wouso.interface.profile.views.user_profile id=profile.id page=activity.next_page_number %}%tab-1"> Older </a>
         {% endif %}
         </ul>
         </div>
-        
+
         <div id="tab-2" class="tab_content">
             <div id="graf1" class="graf placeholder"></div>
             <script id="source" language="javascript" type="text/javascript">
@@ -82,12 +82,12 @@
                 };
                 $("#tab-2").bind('custom', function() {
                     $.plot($("#graf1"), [{ label: "Weekly position evolution", color: "green", data: d1}], options);
-                    $('#tab-2').unbind('custom');                    
+                    $('#tab-2').unbind('custom');
                 });
             });
             </script>
         </div>
-        
+
         <div id="tab-3" class="tab_content">
             {% for source,coins in scoring.iteritems %}
                 <h3>{{ source }}</h3>

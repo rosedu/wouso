@@ -5,7 +5,7 @@ from datetime import datetime
 
 class MessagingUser(UserProfile):
     '''extension of the user profile, customized for messages'''
-    
+
     canSendMessage = models.BooleanField(null=False, blank=False, default=True)
     lastMessageTS = models.DateTimeField(null=True, blank=False, default=datetime.now)
 
@@ -13,7 +13,7 @@ class MessagingUser(UserProfile):
 
 class Message(models.Model):
     '''the message itself'''
-    
+
     sender = models.ForeignKey(MessagingUser, null=True, blank=False, default=None, related_name='sender')
     receiver = models.ForeignKey(MessagingUser, null=True, blank=False, default=None, related_name='receiver')
     timestamp = models.DateTimeField(null=True, blank=False, default=datetime.now)
@@ -24,8 +24,8 @@ class Message(models.Model):
     def __unicode__(self):
         return 'from ' + self.sender.__unicode__() + ' to ' + self.receiver.__unicode__() +\
         ' @ ' + self.timestamp.strftime("%A, %d %B %Y %I:%M %p")
-    
-    
+
+
     @classmethod
     def get_header_link(kls, request):
         if not request.user.is_anonymous():
