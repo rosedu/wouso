@@ -15,7 +15,7 @@ from wouso.core.scoring.models import Formula
 
 class ChallengeUser(UserProfile):
     """ Extension of the userprofile, customized for challenge """
-    
+
     def can_challenge(self, user):
         user = user.get_extension(ChallengeUser)
         if self.user == user.user:
@@ -24,10 +24,10 @@ class ChallengeUser(UserProfile):
         # TODO: implement has_challenged, 1 challenge per day restriction
         # TODO: we should return a reasoning why we cannot challenge
         return True
-        
+
     def can_play(self, challenge):
         return challenge.can_play(self)
-        
+
     def __unicode__(self):
         return unicode(self.user)
 
@@ -36,7 +36,7 @@ class Participant(models.Model):
     start = models.DateTimeField(null=True, blank=True)
     played = models.BooleanField(default=False)
     responses = models.TextField(default='', blank=True, null=True)
-    
+
     @property
     def challenge(self):
         #return Challenge.objects.get(Q(user_from=self)|Q(user_to=self))
@@ -44,15 +44,15 @@ class Participant(models.Model):
             return Challenge.objects.get(Q(user_from=self)|Q(user_to=self))
         except:
             return None
-    
+
     def __unicode__(self):
         return unicode(self.user)
-    
+
 class Challenge(models.Model):
-    STATUS = ( 
-        ('L', 'Launched'), 
-        ('A', 'Accepted'), 
-        ('R', 'Refused'), 
+    STATUS = (
+        ('L', 'Launched'),
+        ('A', 'Accepted'),
+        ('R', 'Refused'),
         ('P', 'Played'),
         ('D', 'Draw'),
     )
@@ -64,38 +64,67 @@ class Challenge(models.Model):
     questions = models.ManyToManyField(Question)
     nr_q = 0
     LIMIT = 5
-    
+    TIME_LIMIT = 360 # seconds
+
     @staticmethod
     def create(user_from, user_to):
         """ Assigns questions, and returns the number of assigned q """
         uf, ut = Participant(user=user_from), Participant(user=user_to)
         uf.save(), ut.save()
-        
+
         c = Challenge(user_from=uf, user_to=ut, date=datetime.now())
         c.save()
-        
+
         questions = [q for q in get_questions_with_tags('challenge')]
         shuffle(questions)
         # TODO: better question selection
         #limit = 5
-        for q in questions:
+        for q in questions[:Challenge.LIMIT]:
             c.questions.add(q)
-            LIMIT -= 1
-            nr_q += 1
-            if LIMIT <= 0: break
+
         return c
-    
+
     def accept(self):
         self.status = 'A'
         self.save()
-        
+
     def refuse(self):
         self.status = 'R'
         self.save()
-        
+
     def cancel(self):
         self.delete()
-        
+
+    def set_start(self, user):
+        """ Update user.start and set playing time to now
+        TODO: check it hasn't been already started in the past"""
+        user = user.get_extension(ChallengeUser)
+
+        if self.user_from.user == user:
+            self.user_from.start = datetime.now()
+            self.user_from.save()
+        elif self.user_to.user == user:
+            self.user_to.start = datetime.now()
+            self.user_to.start.save()
+        else:
+            pass # todo raise something
+
+    def check_timedelta(self, user):
+        """Check that the challenge form has been submitted in the allowed time"""
+        user = user.get_extension(ChallengeUser)
+        now = datetime.now()
+
+        if self.user_from.user == user:
+            if (now - self.user_from.start).seconds < Challenge.TIME_LIMIT:
+                return True
+            return False
+        elif self.user_to.user == user:
+            if (now - self.user_to.start).seconds < Challenge.TIME_LIMIT:
+                return True
+            return False
+        else:
+            pass # again, raise something
+
     def played(self):
         """ Both players have played, save and score """
         self.user_to.points = self.calculate_points(pk.loads(str(self.user_to.responses)))
@@ -106,7 +135,7 @@ class Challenge(models.Model):
             result = (self.user_from, self.user_to)
         else: #draw game
             result = 'draw'
-            
+
         if result == 'draw':
             self.status = 'D'
             scoring.score(self.user_to.user, ChallengeGame, 'chall-draw')
@@ -115,13 +144,13 @@ class Challenge(models.Model):
             self.status = 'P'
             self.user_won, self.user_lost = result
             self.winner = self.user_won.user
-            scoring.score(self.user_won.user, ChallengeGame, 'chall-won', 
+            scoring.score(self.user_won.user, ChallengeGame, 'chall-won',
                 external_id=self.id, points=self.user_won.points, points2=self.user_lost.points)
             scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
                 external_id=self.id, points=self.user_lost.points, points2=self.user_lost.points)
-        
+
         self.save()
-    
+
     def calculate_points(self, responses):
         points = 0
         for r, v in responses.iteritems():
@@ -137,7 +166,7 @@ class Challenge(models.Model):
                     missed += 1
             points += float(checked) / q.answers.count()
         return points
-        
+
     def set_played(self, user, responses):
         """ Set user's results """
         if self.user_to.user == user:
@@ -147,43 +176,44 @@ class Challenge(models.Model):
         else:
             logging.error("Invalid user")
             return
-        
+
         user_played.played = True
         user_played.responses = pk.dumps(responses)
         user_played.save()
-            
+
         if self.user_to.played and self.user_from.played:
             self.played()
-            
+
         return {'points': self.calculate_points(responses)}
-        
+
     def can_play(self, user):
         """ Check if user can play this challenge"""
         if self.user_to.user != user and self.user_from.user != user:
             return False
-        
+
         if self.user_to == user:
             if self.played_to:
                 return False
+
         elif self.user_from == user:
             if self.played_from:
                 return False
-                
+
         return self.is_runnable()
-        
+
     def is_launched(self):
         return self.status == 'L'
-    
+
     def is_runnable(self):
         return self.status == 'A'
-        
+
     def is_refused(self):
         return self.status == 'R'
-        
+
     def __unicode__(self):
         return "%s vs %s (%s) - %s [%d] " % (
-            str(self.user_from.user), 
-            str(self.user_to.user), 
+            str(self.user_from.user),
+            str(self.user_to.user),
             self.date,
             self.status,
             self.questions.count())
@@ -193,7 +223,7 @@ class ChallengeGame(Game):
     class Meta:
         verbose_name = "Challenge"
         proxy = True
-        
+
     @staticmethod
     def get_active(user):
         """ Return a list of active (runnable) challenges for a user """
@@ -204,8 +234,8 @@ class ChallengeGame(Game):
         except Participant.DoesNotExist:
             challs = []
         return challs
-    
-    @staticmethod    
+
+    @staticmethod
     def get_played(user):
         """ Return a list of played (scored TODO) challenges for a user """
         try:
@@ -214,22 +244,22 @@ class ChallengeGame(Game):
         except Participant.DoesNotExist:
             challs = []
         return challs
-        
+
     @classmethod
     def get_formulas(kls):
         """ Returns a list of formulas used by qotd """
         fs = []
         chall_game = kls.get_instance()
-        fs.append(Formula(id='chall-won', formula='points=3', 
-            owner=chall_game.game, 
+        fs.append(Formula(id='chall-won', formula='points=3',
+            owner=chall_game.game,
             description='Points earned when winning a challenge')
         )
-        fs.append(Formula(id='chall-lost', formula='points=-1', 
-            owner=chall_game.game, 
+        fs.append(Formula(id='chall-lost', formula='points=-1',
+            owner=chall_game.game,
             description='Points earned when losing a challenge')
         )
-        fs.append(Formula(id='chall-draw', formula='points=1', 
-            owner=chall_game.game, 
+        fs.append(Formula(id='chall-draw', formula='points=1',
+            owner=chall_game.game,
             description='Points earned when drawing a challenge')
         )
         return fs
@@ -252,4 +282,3 @@ def challenge_post_delete(sender, instance, **kwargs):
         instance.user_to.delete()
     except: pass
 models.signals.post_delete.connect(challenge_post_delete, Challenge)
-
