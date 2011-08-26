@@ -10,6 +10,9 @@ label {
     width: 150px;
     float: left;
 }
+.hidden {
+    display: none;
+}
 #logo {
     height: 120px;
 	width: 930px;

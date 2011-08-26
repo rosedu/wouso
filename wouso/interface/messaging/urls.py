@@ -6,5 +6,6 @@ urlpatterns = patterns('',
     (r'^inbox$', 'wouso.interface.messaging.views.inbox'),
     (r'^sentbox$', 'wouso.interface.messaging.views.sentbox'),
     (r'^allbox$', 'wouso.interface.messaging.views.allbox'),
-    url(r'^create$', 'wouso.interface.messaging.views.create', name='create')
+    url(r'^create$', 'wouso.interface.messaging.views.create', name='create'),
+    url(r'^create/to=(?P<to>\d*)$', 'wouso.interface.messaging.views.create', name='create_to'),
 )

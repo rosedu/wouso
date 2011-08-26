@@ -2,6 +2,7 @@ import datetime
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
+from django.http import Http404
 from wouso.interface import logger, render_response
 from wouso.interface.forms import *
 from wouso.core.user.models import UserProfile
@@ -37,6 +38,28 @@ def instantsearch(request):
         user_ids = [u.id for u in users]
         searchresults = UserProfile.objects.filter(user__in=user_ids)
         return render_response('instant_search_results.txt', request, {'searchresults': searchresults})
+
+
+def searchone(request):
+    """ Get one user, based on his/her name """
+    logger.debug('Initiating search one')
+    form = SearchOneForm(request.GET)
+    if form.is_valid():
+        query = form.cleaned_data['q']
+        result = []
+        try:
+            first = query.split(' ')[0]
+            users = User.objects.filter(Q(first_name__icontains=first))
+            for u in users:
+                name = u.first_name + " " + u.last_name
+                if name == query:
+                    result.append(u)
+            if result:
+                return render_response('search_one_results.txt', request, {'results': result})
+        except Exception as e:
+            logging.exception(e)
+
+    raise Http404()
 
 @csrf_exempt
 def staticpage(request, page_position):

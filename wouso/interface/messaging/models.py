@@ -24,8 +24,19 @@ class Message(models.Model):
     def __unicode__(self):
         return 'from ' + self.sender.__unicode__() + ' to ' + self.receiver.__unicode__() +\
         ' @ ' + self.timestamp.strftime("%A, %d %B %Y %I:%M %p")
-    
-    
+
+    @classmethod
+    def send(kls, sender, receiver, subject, text):
+        # TODO: check cand send
+        m = kls()
+        sender = sender.get_extension(MessagingUser)
+        receiver = receiver.get_extension(MessagingUser)
+        m.sender, m.receiver, m.subject = sender, receiver, subject
+        m.text = text
+        m.save()
+        sender.lastMessageTS = datetime.now()
+        sender.save()
+
     @classmethod
     def get_header_link(kls, request):
         if not request.user.is_anonymous():
