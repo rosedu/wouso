@@ -38,7 +38,7 @@
         {% endif %}
     </div>
 
-    <br/><br/><br/><p>Last seen: {{last_seen}}</p>
+    <br/><br/><br/><p>Last seen: {% if profile.last_seen %}{{profile.last_seen}}{% else %}Never{% endif %}</p>
 
     <ul class="tabs">
         <li><a href="#tab-1">Activity</a></li>
