@@ -105,7 +105,7 @@ class Challenge(models.Model):
             self.user_from.save()
         elif self.user_to.user == user:
             self.user_to.start = datetime.now()
-            self.user_to.start.save()
+            self.user_to.save()
         else:
             pass # todo raise something
 
