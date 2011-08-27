@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, time
 from django.db import models
 from wouso.core.user.models import UserProfile
 from wouso.core.game.models import Game
@@ -32,7 +32,10 @@ class QotdUser(UserProfile):
         if self.last_answered is None:
             return False
         else:
-            return (datetime.now() - self.last_answered) < timedelta (days = 1)
+            now = datetime.now()
+            today_start = datetime.combine(now, time())
+            today_end = datetime.combine(now, time(23, 59, 59))
+            return today_start <= self.last_answered <= today_end
 
 class QotdGame(Game):
     """ Each game must extend Game """
