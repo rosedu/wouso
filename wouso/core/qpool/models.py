@@ -55,10 +55,10 @@ class Question(models.Model):
         
     def has_tag(self, tag):
         if not isinstance(tag, Tag):
-          try:
-              tag = Tag.objects.get(name=tag)
-          except Tag.DoesNotExist:
-              return False
+            try:
+                tag = Tag.objects.get(name=tag)
+            except Tag.DoesNotExist:
+                return False
         return tag in self.tags.all()
     
     @property
@@ -105,7 +105,7 @@ class Answer(models.Model):
         
 class Schedule(models.Model):
     question = models.ForeignKey(Question, related_name="schedule")
-    day = models.DateField(default=datetime.now, blank=True)
+    day = models.DateField(default=datetime.now(), blank=True)
 
     def __unicode__(self):
         return str(self.day)
