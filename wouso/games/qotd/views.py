@@ -24,6 +24,17 @@ def index(request):
         if form.is_valid():
             choice = int(form.cleaned_data['answers'])
             QotdGame.answered(qotd_user, qotd, choice)
+
+            # send signal
+            if qotd.answers[qotd_user.last_answer].correct:
+                signal_msg = '%s has given a correct answer to %s'
+            else:
+                signal_msg = '%s has given a wrong answer to %s'
+            signal_msg = signal_msg % (request.user.get_profile(), \
+                                       QotdGame.get_instance()._meta.verbose_name)
+            signals.addActivity.send(sender=None, user_from=request.user.get_profile(), \
+                                     user_to=request.user.get_profile(), \
+                                     message=signal_msg, game=QotdGame.get_instance())
             return HttpResponseRedirect(reverse('games.qotd.views.done'))
     else:
         form = QotdForm(qotd) 
@@ -39,18 +50,8 @@ def done(request):
         return HttpResponseRedirect(reverse("games.qotd.views.index"))
 
     qotd = QotdGame.get_for_today()
-    choice = request.user.get_profile().get_extension(QotdUser).last_answer
-
-    # send signal
-    if qotd.answers[choice].correct:
-        signal_msg = '%s has given a correct answer to %s'
-    else:
-        signal_msg = '%s has given a wrong answer to %s'
-    signal_msg = signal_msg % (request.user.get_profile(), \
-                               QotdGame.get_instance()._meta.verbose_name)
-    signals.addActivity.send(sender=None, user_from=request.user.get_profile(), \
-                             user_to=request.user.get_profile(), \
-                             message=signal_msg, game=QotdGame.get_instance())
+    user = request.user.get_profile().get_extension(QotdUser)
+    choice = user.last_answer
 
     return render_response('qotd/done.html',
             request,
