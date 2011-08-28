@@ -1,3 +1,6 @@
+# This has to be used from the wouso folder like so:
+# PYTHONPATH=. python utils/import_questions
+
 import codecs
 import sys
 from django.core.management import setup_environ
@@ -46,9 +49,7 @@ def import_from_file(opened_file, proposed_by, tags=[]):
     nr_correct = 0
 
     for line in opened_file:
-        line = line.strip() + '\n'
-
-        # blank line
+        line = line.strip()
         if not line:
             continue
 
@@ -98,10 +99,10 @@ def import_from_file(opened_file, proposed_by, tags=[]):
         else:
             # continuation line
             if state == 'question':
-                q['text'] += '\n' + (line)
+                q['text'] += '\n' + line
 
             else:
-                a['text'] += '\n' + (line)
+                a['text'] += '\n' + line
 
     if not a_saved:
         answers.append(a)

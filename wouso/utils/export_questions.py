@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+# This has to be used from the wouso folder like so:
+# PYTHONPATH=. python utils/export_questions
 
 import codecs
 import sys
@@ -16,11 +17,7 @@ def export_to_file(file):
     with codecs.open(file, 'w', 'utf-8') as f:
 
         for question in Question.objects.all():
-            if question.answer_type == 'R':
-                type = 'S'
-            else:
-                type = 'M'
-            f.write('? ' + type + ' ' + question.text + '\n')
+            f.write('? ' + question.text + '\n')
 
             for answer in question.answers.all():
                 if answer.correct is False:
@@ -28,6 +25,7 @@ def export_to_file(file):
                 else:
                     type = '+'
                 f.write(type + ' ' + answer.text + '\n')
+            f.write('\n')
 
 
 def main():
