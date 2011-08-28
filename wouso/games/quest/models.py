@@ -41,7 +41,9 @@ class QuestUser(UserProfile):
 
     def finish_quest(self):
         if not self.finished:
-            # TODO: insert into questresult
+            # TODO: insert into questresult # Done?
+            qr = QuestResult(user=self, quest=self.current_quest, level=self.current_level)
+            qr.save()
 
             # sending the signal
             signal_msg = u"%s has finished quest %s" % \
