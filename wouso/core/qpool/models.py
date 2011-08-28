@@ -105,7 +105,7 @@ class Answer(models.Model):
         
 class Schedule(models.Model):
     question = models.ForeignKey(Question, related_name="schedule")
-    day = models.DateField(default=datetime.now(), blank=True)
+    day = models.DateField(default=datetime.now, blank=True)
 
     def __unicode__(self):
         return str(self.day)
