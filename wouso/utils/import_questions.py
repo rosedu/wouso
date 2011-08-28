@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import codecs
 import sys
 from django.core.management import setup_environ
@@ -42,6 +40,10 @@ def import_from_file(opened_file, proposed_by, tags=[]):
     # read file and parse contents
     a_saved = True
     q_saved = True
+    a = {}
+    answers = []
+    q = {}
+    nr_correct = 0
 
     for line in opened_file:
         line = line.strip() + '\n'
@@ -57,6 +59,10 @@ def import_from_file(opened_file, proposed_by, tags=[]):
                 a_saved = True
             if not q_saved:
                 q['proposed_by'] = proposed_by
+                if nr_correct == 1:
+                    q['answer_type'] = 'R'
+                else:
+                    q['answer_type'] = 'C'
                 add(q, answers, tags)
                 q_saved = True
                 a_saved = True
@@ -64,15 +70,11 @@ def import_from_file(opened_file, proposed_by, tags=[]):
             state = 'question'
             q = {}
             answers = []
+            nr_correct = 0
             q_saved = False
             s = line.split()
 
-            if s[1] == 'S' or s[1] == 's':
-                q['answer_type'] = 'R'
-            else:
-                q['answer_type'] = 'C'
-
-            q['text'] = ' '.join(s[2:])
+            q['text'] = ' '.join(s[1:])
 
 
         elif line[0] == '-' or line[0] == '+':
@@ -89,22 +91,27 @@ def import_from_file(opened_file, proposed_by, tags=[]):
                 a['correct'] = False
             else:
                 a['correct'] = True
+                nr_correct += 1
 
             a['text'] = ' '.join(s[1:])
 
         else:
             # continuation line
             if state == 'question':
-                q['text'] += (line)
+                q['text'] += '\n' + (line)
 
             else:
-                a['text'] += (line)
+                a['text'] += '\n' + (line)
 
     if not a_saved:
         answers.append(a)
         a_saved = True
     if not q_saved:
         q['proposed_by'] = proposed_by
+        if nr_correct == 1:
+            q['answer_type'] = 'R'
+        else:
+            q['answer_type'] = 'C'
         add(q, answers, tags)
 
 

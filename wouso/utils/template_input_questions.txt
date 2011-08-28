@@ -1,4 +1,4 @@
-? <S|M> Enunt intrebare
+? Enunt intrebare
 pe
 mai multe
 linii
@@ -7,7 +7,7 @@ pe mai multe
 linii
 - raspuns gresit
 
-? S  Alta intrebare?
+? Alta intrebare?
 + un singur raspuns corect
 - mai
 - multe
