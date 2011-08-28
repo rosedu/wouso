@@ -9,11 +9,10 @@ class QuestionForm(forms.Form):
 
     def __init__(self, nr_ans=5, data=None): 
         super(QuestionForm, self).__init__(data)
-        self.answers = []
+        self.nr_ans = nr_ans
         for i in range(5):
             self.fields['answer_%d' % i] = forms.CharField(max_length=100,
                                     widget=forms.Textarea, required=False)
-            self.answers.append(self.fields['answer_%d' % i])
             self.fields['correct_%d' % i] = forms.BooleanField(required=False, label="Correct?")
         alltags = Tag.objects.all()
         self.fields['tags'] = forms.MultipleChoiceField(
@@ -24,7 +23,7 @@ class QuestionForm(forms.Form):
         cleaned_data = self.cleaned_data
         answer_type = cleaned_data.get('answer_type')
         nr = 0
-        for i in range(5):
+        for i in range(self.nr_ans):
             if cleaned_data.get('correct_%d' % i) is True:
                 nr += 1
         if nr == 0:

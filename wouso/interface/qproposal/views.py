@@ -23,7 +23,7 @@ def propose(request):
             q.save()
 
             # add the answers
-            for i in range(5):
+            for i in range(form.nr_ans):
                 ansdict = {}
                 if not form.cleaned_data['answer_%d' % i]:
                     continue
