@@ -37,3 +37,6 @@ html ul.tabs li.active, html ul.tabs li.active a:hover  { /*--Makes sure that th
     background: #fff;
     border-bottom: 1px solid #fff; /*--Makes the active tab look like it's connected with its content--*/
 }
+.tab_container {
+    clear: both;
+}

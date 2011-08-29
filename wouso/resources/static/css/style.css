@@ -124,26 +124,29 @@ ol.top {
     width: 400px;
     height: 200px;
 }
-.profile .actions {
+.actions {
     margin: 6px;
     clear: right;
     float: right;
 }
-.profile .actions a, a.button {
+.actions a, a.button, .actions button {
     display: block;
     float: left;
     text-align: center;
-    min-width: 80px;
-    max-width: 120px;
-    width: 80px;
+    min-width: 70px;
+    max-width: 150px;
     border: 1px solid #aaa;
     padding: 6px;
     margin: 1px;
     background-color: #ddd;
     text-decoration: none;
     color: black;
+    text-wrap: suppress;
 }
-.profile .actions a:hover, a.button:hover {
+.actions a.default, .actions button.default {
+    font-weight: bold;
+}
+.actions a:hover, a.button:hover {
     background-color: #eee;
 }
 .profile ul.artifacts {

@@ -12,17 +12,21 @@
 <p>You passed {{ quest.levels }} levels in {{ progress.time_took }}.</p>
 {% else %}
 <p style="color:red">{{ message }}</p>
-<p>
-Available until {{ quest.end }}. Your progress: {{ progress.time_took }}
-</p>
-<h2>Question #{{ progress.current_level }}</h2>
+
+<h2>Level #{{ progress.current_level }}:</h2>
 <p>{{ progress.current_question.text }}</p>
 <form method="post" action="{% url games.quest.views.index %}">
-<table>
-{{ form }}
-</table>
-{% csrf_token %}
-<input type="submit" value="Send" />
+    <table>
+    {{ form }}
+    </table>
+    {% csrf_token %}
+    <div class="actions">
+        <button type="submit" class="default">Send</button>
+    </div>
 </form>
+
+<p style="clear:both">
+Available until {{ quest.end }}. Your progress: {{ progress.time_took }}
+</p>
 {% endif %}
 {% endblock %}

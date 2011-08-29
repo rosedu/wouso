@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<h1>Create message</h1>
+<h2>Create message</h2>
 
 <form id="msg" onsubmit="messagingSubmit();" method="post">
     <table>
@@ -25,7 +25,10 @@
         <textarea id="text" name="text"></textarea>
     </td></tr>
     </table>
-    <input type="submit" value="Send" />
+    <div class="actions">
+        <a href="{% url wouso.interface.messaging.views.home %}">Cancel</a>
+        <button type="submit" class="default">Send</button>
+    </div>
     {% csrf_token %}
 </form>
 

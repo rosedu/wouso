@@ -21,7 +21,7 @@
         <div id="topbar">
             {% if user.is_authenticated %}
                 {% player user.get_profile %} |
-                {% for h in header %}{% autoescape off %}{{ h }}{% endautoescape %} |{% endfor %}
+                {% for h in header %}{% autoescape off %}{{ h }}{% endautoescape %} | {% endfor %}
                 {% if user.is_staff %}
                 <a href="{% url wouso.interface.cpanel.views.dashboard %}">CPanel</a>
                 {% endif %}

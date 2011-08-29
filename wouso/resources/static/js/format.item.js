@@ -38,7 +38,6 @@ function messagingOut() {
             messagingUpdate(res[0], res[1]);
         },
         error: function(data) {
-            alert("Invalid player name");
             $('#to_input').focus();
         }
     });
