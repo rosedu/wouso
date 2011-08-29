@@ -6,3 +6,5 @@
 /wouso/localsettings.py
 /wouso/resources/static/upload/*
 /docs/_build
+src/
+build/
