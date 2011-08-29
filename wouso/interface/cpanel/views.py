@@ -1,7 +1,8 @@
 import datetime
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.core.urlresolvers import reverse
 from wouso.core.config.models import Setting
 from wouso.core.user.models import UserProfile
 from wouso.core.artifacts.models import Artifact
@@ -10,7 +11,7 @@ from wouso.core.qpool.models import Tag
 from wouso.interface import render_response
 from wouso.interface.cpanel.models import Customization
 from wouso.utils.import_questions import import_from_file
-
+from forms import QuestionForm
 
 
 @login_required
@@ -37,6 +38,30 @@ def customization(request):
     return render_response('cpanel/customization.html', request, \
             {'settings': customization}
     )
+
+@login_required
+def qpool_home(request):
+    questions = Question.objects.all()
+
+    return render_response('cpanel/qpool_home.html', request,
+                           {'questions': questions})
+
+def question_edit(request, id):
+    question = get_object_or_404(Question, pk=id)
+
+    form = None
+    if request.method == 'POST':
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
+        else:
+            print form
+        print request.POST
+
+    return render_response('cpanel/question_edit.html', request,
+                           {'question': question, 'form': form})
+
 
 @login_required
 def importer(request):

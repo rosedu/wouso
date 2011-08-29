@@ -1,0 +1,21 @@
+{% extends 'cpanel/index.html' %}
+
+{% block title %}CPanel{% endblock %}
+
+{% block content %}
+
+<h2>Question pool</h2>
+
+<table>
+    {% for q in questions %}
+        <tr>
+            <td>{{ q }}</td>
+            <td class="actions">
+                <a href="{% url question_edit q.id%}">✍</a>
+            </td>
+        </tr>
+    {% empty %}
+    <tr><td colspan=3>No questions</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

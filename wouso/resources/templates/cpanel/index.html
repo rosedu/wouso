@@ -14,9 +14,14 @@
 <h2>Tools</h2>
     <div class="widget-content">
         <ul>
-        <li><a href="{% url dashboard %}">Dashboard</a>
-        <li><a href="{% url importer %}">Question importer</a>
+        <li><a href="{% url dashboard %}">Dashboard</a></li>
+        <li><a href="{% url qpool_home %}">Question Pool</a>
+            <ul>
+            <li><a href="{% url importer %}">Import</a></li>
+            </ul>
+        </li>
         <li><a href="{% url customization %}">Customization</a></li>
+        <li><a href="#">Static Pages</a></li>
         </ul>
     </div>
     <div class="widget-content">

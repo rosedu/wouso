@@ -1,0 +1,28 @@
+{% extends 'cpanel/index.html' %}
+
+{% block title %}CPanel{% endblock %}
+
+{% block content %}
+
+<h2>Edit question #{{ question.id }}</h2>
+<p>Tags: {{ question.tags.all }}</p>
+
+<form method="post">
+<table>
+    <tr><td><label for="text">Text:</label></td>
+        <td><textarea id="text" name="text">{{ question.text}}</textarea>
+    </tr>
+    {% for a in question.answers %}
+    <tr><td><input type="checkbox" name="checked_{{a.id}}" {% if a.correct %}checked{% endif %} /></td>
+        <td><textarea name="answer_{{a.id}}">{{ a.text }}</textarea></td>
+    </tr>
+    {% endfor %}
+</table>
+<div class="actions">
+    <button onclick="history.back(); return false;">Cancel</button>
+    <button type="reset">Reset</button>
+    <button type="submit" class="default">Save</button>
+</div>
+    {% csrf_token %}
+</form>
+{% endblock %}
