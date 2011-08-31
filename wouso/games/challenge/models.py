@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import datetime, time
 from random import shuffle
 import pickle as pk
 from django.db import models
@@ -16,12 +16,20 @@ from wouso.core.scoring.models import Formula
 class ChallengeUser(UserProfile):
     """ Extension of the userprofile, customized for challenge """
 
+    last_launched = models.DateTimeField(default=datetime(1, 1, 1), blank=True, null=True)
+
+
     def can_challenge(self, user):
         user = user.get_extension(ChallengeUser)
         if self.user == user.user:
             # Cannot challenge myself
             return False
-        # TODO: implement has_challenged, 1 challenge per day restriction
+
+        now = datetime.now()
+        today_start = datetime.combine(now, time())
+        today_end = datetime.combine(now, time(23, 59, 59))
+        if today_start <= self.last_launched <= today_end:
+            return False
         # TODO: we should return a reasoning why we cannot challenge
         return True
 
@@ -75,6 +83,10 @@ class Challenge(models.Model):
         c = Challenge(user_from=uf, user_to=ut, date=datetime.now())
         c.save()
 
+        # set last_launched
+        user_from.last_launched = datetime.now()
+        user_from.save()
+
         questions = [q for q in get_questions_with_tags('challenge')]
         shuffle(questions)
         # TODO: better question selection
@@ -93,6 +105,8 @@ class Challenge(models.Model):
         self.save()
 
     def cancel(self):
+        self.user_from.user.last_launched = datetime(1, 1, 1)
+        self.user_from.user.save()
         self.delete()
 
     def set_start(self, user):
