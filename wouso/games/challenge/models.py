@@ -102,6 +102,8 @@ class Challenge(models.Model):
 
     def refuse(self):
         self.status = 'R'
+        self.user_from.user.last_launched = datetime(1, 1, 1)
+        self.user_from.user.save()
         self.save()
 
     def cancel(self):
