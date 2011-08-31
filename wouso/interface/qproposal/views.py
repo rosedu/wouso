@@ -5,8 +5,10 @@ from wouso.core.qpool.models import Question, Tag, Answer
 
 def propose(request):
 
+    MAX_ANSWERS = 6
+
     if request.method == 'POST':
-        form = QuestionForm(5, request.POST)
+        form = QuestionForm(nr_ans=MAX_ANSWERS, data=request.POST)
         if form.is_valid():
             # create and save the question
             qdict = {}
@@ -34,6 +36,6 @@ def propose(request):
 
             return render_response('qproposal/thanks.html', request, {})
     else:
-        form = QuestionForm()
+        form = QuestionForm(MAX_ANSWERS)
     return render_response('qproposal/propose.html', request,
                            {'form': form})

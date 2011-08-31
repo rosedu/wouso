@@ -7,10 +7,10 @@ class QuestionForm(forms.Form):
     text = forms.CharField(max_length=500, widget=forms.Textarea)
     answer_type = forms.ChoiceField(choices=(('R', 'Single'), ('C','Multiple')))
 
-    def __init__(self, nr_ans=5, data=None): 
+    def __init__(self, nr_ans=6, data=None):
         super(QuestionForm, self).__init__(data)
         self.nr_ans = nr_ans
-        for i in range(5):
+        for i in range(nr_ans):
             self.fields['answer_%d' % i] = forms.CharField(max_length=100,
                                     widget=forms.Textarea, required=False)
             self.fields['correct_%d' % i] = forms.BooleanField(required=False, label="Correct?")
