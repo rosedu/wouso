@@ -77,14 +77,8 @@
 
     <div id="footer">
         <div id="footer_links">{% for f in footer %}{% autoescape off %}{{ f }}{% endautoescape %} |{% endfor %}
-        <a href="http://www.rosedu.org/">ROSEdu</a>
         <a href="{% url propose %}">Propose question</a>
-        <!-- this is wrong FIXME vvvvv -->
-        <a href="/staticpage/1/">Povestea</a>
-        <a href="/staticpage/2/">Manual</a>
-        <a href="/staticpage/3/">Dezvoltare</a>
-        <a href="/staticpage/4/">Wall</a>
-        <a href="/staticpage/5/">Statistici live</a>
+        <a href="http://www.rosedu.org/">ROSEdu</a>
         </div>
     </div>
 </BODY>

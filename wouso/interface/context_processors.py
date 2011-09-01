@@ -3,6 +3,7 @@ from wouso.core.game import get_games
 from wouso.core.config.models import Setting
 from wouso.interface.top.models import Top
 from wouso.interface.messaging.models import Message
+from wouso.interface import get_static_pages
 
 def header_footer(request):
     """ See sidebar below """
@@ -28,6 +29,9 @@ def header_footer(request):
             if f:
                 footer.append(f)
     except: pass
+    # also add static pages
+    for sp in get_static_pages():
+        footer.append(sp.html_link())
 
     return {'header': header, 'footer': footer}
 

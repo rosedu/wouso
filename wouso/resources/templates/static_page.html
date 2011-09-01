@@ -2,5 +2,10 @@
 
 {% block title %}{{block.super}} > {{staticpage.title}}{% endblock %}
 
-{% block content %}{{staticpage.html_contents}}{% endblock %}
+{% block content %}
+    <h2>{{staticpage.title}}</h2>
+    {% autoescape off %}
+    {{staticpage.html_contents}}
+    {% endautoescape %}
+{% endblock %}
 

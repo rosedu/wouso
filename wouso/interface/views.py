@@ -62,9 +62,9 @@ def searchone(request):
     raise Http404()
 
 @csrf_exempt
-def staticpage(request, page_position):
+def staticpage(request, slug):
     """ Perform regular search by either first or last name """
     logger.debug('Initiating regular search')
-    staticpage = StaticPage.objects.get(position=int(page_position))
+    staticpage = StaticPage.objects.get(slug=slug)
     return render_response('static_page.html', request, {'staticpage': staticpage})
 
