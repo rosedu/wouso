@@ -45,7 +45,7 @@ class History(models.Model):
     timestamp = models.DateTimeField(default=datetime.now, blank=True)
     user = models.ForeignKey(User)
     game = models.ForeignKey(Game, blank=True, null=True, default=None)
-    external_id = models.IntegerField(default=0, null=True)
+    external_id = models.IntegerField(default=0, null=True, blank=True)
     formula = models.ForeignKey(Formula, blank=True, null=True, default=None)
     coin = models.ForeignKey(Coin)
     amount = models.FloatField(default=0)
@@ -72,7 +72,7 @@ class History(models.Model):
             pp = {}
             hs = History.objects.filter(user=user, game=game.get_instance())
             for h in hs:
-                if h.coin.id in pp.keys():
+                if h.coin in pp.keys():
                     pp[h.coin] += h.amount
                 else:
                     pp[h.coin] = h.amount
@@ -88,8 +88,8 @@ class History(models.Model):
 def sync_user_points(sender, instance, **kwargs):
     user = instance.user
     coin = Coin.get('points')
-    result = History.objects.filter(user=user,coin=coin).aggregate(points=models.Sum('amount'))
-    user.get_profile().points = result['points']
+    result = History.objects.filter(user=user,coin=coin).aggregate(total=models.Sum('amount'))
+    user.get_profile().points = result['total']
     #print user.get_profile().points, "aici"
     # TODO: check why is this called twice
     # TODO: update points only if instance.coin = points

@@ -1,3 +1,4 @@
+import logging
 from django.contrib.auth.models import User
 from wouso.core.game import get_games
 from wouso.core.scoring.models import *
@@ -58,28 +59,29 @@ def calculate(formula, **params):
     
 def score(user, game, formula, external_id=None, **params):
     ret = calculate(formula, **params)
-        
+
     if isinstance(ret, dict):
         for coin, amount in ret.items():
             score_simple(user, coin, amount, game, formula, external_id)
-            
+
 def score_simple(user, coin, amount, game=None, formula=None, 
     external_id=None):
-    
+
     if not isinstance(game, Game):
         game = game.get_instance()
-    
+
     if not isinstance(user, User):
         user = user.user
-            
+
     coin = Coin.get(coin)
     formula = Formula.get(formula) 
-    
+
     hs = History.objects.create(user=user, coin=coin, amount=amount,
         game=game, formula=formula, external_id=external_id)
-    
+
+    logging.debug("Scored %s with %f %s" % (user, amount, coin))
     return hs
-    
+
 def history_for(user, game, external_id=None, formula=None, coin=None):
     fltr = {}
     if external_id:
