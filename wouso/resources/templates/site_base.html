@@ -8,6 +8,11 @@
 <LINK rel="stylesheet" type="text/css" href="/static/themes/{{ config_theme }}/styles.css" />
 <style type="text/css"> 
     @import url("/static/css/autocomplete.css");
+    {% if config_logo %}
+    div#logo {
+        background: url({{ config_logo}}) no-repeat;
+    }
+    {% endif %}
 </style>
 <script type="text/javascript" src="/static/js/jquery-1.6.2.min.js"></script>
 <script type="text/javascript" src="/static/js/jquery.autocomplete.js"></script>

@@ -21,7 +21,7 @@ td {
 .hidden {
     display: none;
 }
-#logo {
+div#logo {
     height: 120px;
 	width: 930px;
     background: url(../img/logo.png) no-repeat;

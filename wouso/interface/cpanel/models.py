@@ -10,5 +10,6 @@ class Customization(ConfigGroup):
         intro = HTMLSetting.get('intro')
         theme = ChoicesSetting.get('theme')
         theme.choices = [(t,t) for t in get_themes()]
+        logo = Setting.get('logo')
 
-        return [title, intro, theme]
+        return [title, intro, theme, logo]

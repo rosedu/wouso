@@ -3,7 +3,7 @@ ul.tabs {
     padding: 0;
     float: left;
     list-style: none;
-    height: 32px; /*--Set height of tabs--*/
+    height: 24px; /*--Set height of tabs--*/
     border-bottom: 1px solid #999;
     border-left: 1px solid #999;
     width: 100%;
@@ -12,8 +12,8 @@ ul.tabs li {
     float: left;
     margin: 0;
     padding: 0;
-    height: 31px; /*--Subtract 1px from the height of the unordered list--*/
-    line-height: 31px; /*--Vertically aligns the text within the tab--*/
+    height: 23px; /*--Subtract 1px from the height of the unordered list--*/
+    line-height: 23px; /*--Vertically aligns the text within the tab--*/
     border: 1px solid #999;
     border-left: none;
     margin-bottom: -1px; /*--Pull the list item down 1px--*/
@@ -25,8 +25,8 @@ ul.tabs li a {
     text-decoration: none;
     color: #000;
     display: block;
-    font-size: 1.2em;
-    padding: 0 20px;
+    font-size: 1.1em;
+    padding: 0 18px;
     border: 1px solid #fff; /*--Gives the bevel look with a 1px white border inside the list item--*/
     outline: none;
 }
