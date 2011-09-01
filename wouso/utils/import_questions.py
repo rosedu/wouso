@@ -39,7 +39,7 @@ def add(question, answers, tags=[]):
         a.save()
 
 
-def import_from_file(opened_file, proposed_by, tags=[]):
+def import_from_file(opened_file, proposed_by=None, endorsed_by=None, tags=[]):
     # read file and parse contents
     a_saved = True
     q_saved = True
@@ -59,7 +59,10 @@ def import_from_file(opened_file, proposed_by, tags=[]):
                 answers.append(a)
                 a_saved = True
             if not q_saved:
-                q['proposed_by'] = proposed_by
+                if endorsed_by is not None:
+                    q['endorsed_by'] = endorsed_by
+                if proposed_by is not None:
+                    q['proposed_by'] = proposed_by
                 if nr_correct == 1:
                     q['answer_type'] = 'R'
                 else:
@@ -108,7 +111,10 @@ def import_from_file(opened_file, proposed_by, tags=[]):
         answers.append(a)
         a_saved = True
     if not q_saved:
-        q['proposed_by'] = proposed_by
+        if endorsed_by is not None:
+            q['endorsed_by'] = endorsed_by
+        if proposed_by is not None:
+            q['proposed_by'] = proposed_by
         if nr_correct == 1:
             q['answer_type'] = 'R'
         else:

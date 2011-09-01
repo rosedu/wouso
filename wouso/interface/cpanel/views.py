@@ -76,8 +76,8 @@ def import_from_upload(request):
     selected = request.POST.getlist('tags')
 
     tags = [Tag.objects.filter(name=tag)[0] for tag in selected]
-    import_from_file(request.FILES['file'], request.user, tags)
-    return render_response('cpanel/importer.html', request)
+    import_from_file(request.FILES['file'], endorsed_by=request.user, tags=tags)
+    return render_response('cpanel/imported.html', request)
 
 @login_required
 def artifactset(request, id):
