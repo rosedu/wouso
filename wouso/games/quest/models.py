@@ -3,6 +3,7 @@ import datetime
 from django.db import models
 from wouso.core.user.models import UserProfile
 from wouso.core.game.models import Game
+from wouso.core import scoring
 from wouso.core.scoring.models import Formula
 from wouso.core.qpool.models import Question
 from wouso.core.qpool import get_questions_with_tags
@@ -125,10 +126,13 @@ class Quest(models.Model):
 
         if not user.current_level == self.count and \
                 answer == question.answers.all()[0].text:
+            # score current progress
+            scoring.score(user, QuestGame, 'quest-ok', level=(user.current_level + 1))
             user.current_level += 1
-            #scoring.score()
             if user.current_level == self.count:
                 user.finish_quest()
+                # score finishing
+                scoring.score(user, QuestGame, 'quest-finish-ok')
             user.save()
             return True
         return False
@@ -165,6 +169,10 @@ class QuestGame(Game):
         fs.append(Formula(id='quest-ok', formula='points={level}', 
             owner=quest_game.game, 
             description='Points earned when finishing a level. Arguments: level.')
+        )
+        fs.append(Formula(id='quest-finish-ok', formula='points=10', 
+            owner=quest_game.game, 
+            description='Bonus points earned when finishing the entire quest. No arguments.')
         )
         return fs
 
