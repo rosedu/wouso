@@ -10,6 +10,14 @@ label {
     width: 150px;
     float: left;
 }
+th {
+    border: 1px solid #ddd;
+    background-color: #eee;
+    padding: 5px;
+}
+td {
+    padding: 4px;
+}
 .hidden {
     display: none;
 }
@@ -161,4 +169,9 @@ ol.top {
 /* cpanel */
 td.actions a, td.actions button {
     min-width: 20px;
+}
+div.second {
+    font-size: 0.8em;
+    color: #444;
+    text-align: right;
 }

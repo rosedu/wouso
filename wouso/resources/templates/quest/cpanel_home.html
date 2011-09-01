@@ -1,0 +1,38 @@
+{% extends 'cpanel/index.html' %}
+
+{% block title %}Quests{% endblock %}
+
+{% block content %}
+
+<h2>Quests</h2>
+
+<table>
+    <tr>
+        <th>Date</th>
+        <th>Title</th>
+        <th>Levels</th>
+        <th>Status</th>
+        <th></th>
+    </tr>
+    {% for q in quests %}
+        <tr>
+            <td nowrap>Starts {{ q.start|date:"d/m/Y H:i" }}
+            <div class="second">ends: {{q.end|date:"d/m/Y H:i"}}</div>
+            </td>
+            <td width="100%">{{ q.title }}</td>
+            <td align="center">{{ q.levels }}</td>
+            <td>{{ q.status }}</td>
+            <td class="actions">
+                <a href="{% url quest_edit q.id%}">✍</a>
+            </td>
+        </tr>
+    {% empty %}
+    <tr><td colspan=3>No quests</td></tr>
+    {% endfor %}
+</table>
+
+<a class="button" href="{% url quest_new %}">New quest</a>
+
+<div class="info second" style="clear:both">Current date and time:  {% now "d/m/Y H:i" %}</div>
+
+{% endblock %}

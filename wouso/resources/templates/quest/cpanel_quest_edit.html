@@ -1,0 +1,24 @@
+{% extends 'cpanel/index.html' %}
+
+{% block title %}CPanel{% endblock %}
+
+{% block content %}
+
+{% if quest %}
+<h2>Edit quest #{{ quest.id }}</h2>
+{% else %}
+<h2>New quest</h2>
+{% endif %}
+
+<form method="post">
+<table>
+    {{ form.as_table }}
+</table>
+<div class="actions">
+    <button onclick="history.back(); return false;">Cancel</button>
+    <button type="reset">Reset</button>
+    <button type="submit" class="default">Save</button>
+</div>
+    {% csrf_token %}
+</form>
+{% endblock %}

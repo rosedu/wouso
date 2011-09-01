@@ -33,6 +33,9 @@ def index(request):
 def sidebar_widget(request):
     quest = QuestGame.get_current()
 
+    if quest is None:
+        return ''
+
     quest_user = request.user.get_profile().get_extension(QuestUser)
     if quest_user.current_quest is None:
         quest_user.set_current(quest)

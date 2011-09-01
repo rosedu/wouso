@@ -89,6 +89,18 @@ class Quest(models.Model):
     def remaining(self):
         return self.end - datetime.datetime.now()
 
+    @property
+    def status(self):
+        """ Current activity status.
+        Note (alexef): I'm not particulary happy with this
+        """
+        acum = datetime.datetime.now()
+        if self.end < acum:
+            return "Passed"
+        if self.start > acum:
+            return "Scheduled"
+        return "Active"
+
     def check_answer(self, user, answer):
         if user.current_quest != self:
             user.finish_quest()
