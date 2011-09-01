@@ -8,3 +8,5 @@
 /docs/_build
 src/
 build/
+.pydevproject
+.project

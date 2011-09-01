@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.admin import widgets
 from models import Quest
 
 class QuestForm(forms.Form):
@@ -7,3 +8,7 @@ class QuestForm(forms.Form):
 class QuestCpanel(forms.ModelForm):
     class Meta:
         model = Quest
+        widgets = {
+                   'start': widgets.AdminSplitDateTime,
+                   'end': widgets.AdminSplitDateTime
+                   }
