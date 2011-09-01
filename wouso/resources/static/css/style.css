@@ -186,3 +186,9 @@ div.second {
     float: right;
     display: block;
 }
+.ok {
+    color: green;
+}
+.wrong {
+    color: red;
+}

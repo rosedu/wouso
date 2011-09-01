@@ -8,6 +8,7 @@ from wouso.core.user.models import UserProfile
 from wouso.core.artifacts.models import Artifact
 from wouso.core.qpool.models import Schedule, Question
 from wouso.core.qpool.models import Tag
+from wouso.core.qpool import get_questions_with_tags
 from wouso.interface import render_response
 from wouso.interface.cpanel.models import Customization
 from wouso.utils.import_questions import import_from_file
@@ -40,24 +41,26 @@ def customization(request):
     )
 
 @login_required
-def qpool_home(request):
-    questions = Question.objects.all()
+def qpool_home(request, cat=None):
+    CATEGORIES = (('Qotd', 'qotd'), ('Challenge', 'challenge'), ('Quest', 'quest'))
+    if cat is None:
+        cat = 'qotd'
+
+    questions = get_questions_with_tags(str(cat), endorsed_only=False)
 
     return render_response('cpanel/qpool_home.html', request,
-                           {'questions': questions})
+                           {'questions': questions, 'categs': CATEGORIES,
+                            'cat': cat})
 
 def question_edit(request, id):
     question = get_object_or_404(Question, pk=id)
 
     form = None
     if request.method == 'POST':
-        form = QuestionForm(request.POST)
+        form = QuestionForm(request.POST, instance=question)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
-        else:
-            print form
-        print request.POST
 
     return render_response('cpanel/question_edit.html', request,
                            {'question': question, 'form': form})

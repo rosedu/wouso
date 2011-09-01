@@ -13,7 +13,7 @@
         <td><textarea id="text" name="text">{{ question.text}}</textarea>
     </tr>
     {% for a in question.answers %}
-    <tr><td><input type="checkbox" name="checked_{{a.id}}" {% if a.correct %}checked{% endif %} /></td>
+    <tr><td><input type="checkbox" name="correct_{{a.id}}" {% if a.correct %}checked{% endif %}/></td>
         <td><textarea name="answer_{{a.id}}">{{ a.text }}</textarea></td>
     </tr>
     {% endfor %}
