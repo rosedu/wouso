@@ -22,7 +22,7 @@ class QuestUser(UserProfile):
         if not self.current_quest:
             return None
         try:
-            return self.current_quest.questions.all()[self.current_level]
+            return self.current_quest.levels[self.current_level]
         except IndexError:
             return None
 
@@ -41,7 +41,6 @@ class QuestUser(UserProfile):
 
     def finish_quest(self):
         if not self.finished:
-            # TODO: insert into questresult # Done?
             qr = QuestResult(user=self, quest=self.current_quest, level=self.current_level)
             qr.save()
 
@@ -74,12 +73,24 @@ class Quest(models.Model):
     start = models.DateTimeField()
     end = models.DateTimeField()
     title = models.CharField(default="", max_length=100)
-    max_levels = models.IntegerField(default=0)
     questions = models.ManyToManyField(Question)
+    order = models.CharField(max_length=1000,default="",blank=True)
+
+    @property
+    def count(self):
+        return self.questions.count()
 
     @property
     def levels(self):
-        return self.questions.count()
+        """ Get questions/levels in specified order """
+        if not self.order:
+            return self.questions.all()
+        else:
+            order = [int(i) for i in self.order.split(',')]
+            qs = {}
+            for q in self.questions.all():
+                qs[q.id] = q
+            return [qs[i] for i in order]
 
     @property
     def elapsed(self):
@@ -107,20 +118,27 @@ class Quest(models.Model):
             user.set_current(self)
             return False
         try:
-            question = self.questions.all()[user.current_level]
+            question = self.levels[user.current_level]
         except IndexError:
             logging.error("No such question")
             return False
 
-        if not user.current_level == self.levels and \
+        if not user.current_level == self.count and \
                 answer == question.answers.all()[0].text:
             user.current_level += 1
             #scoring.score()
-            if user.current_level == self.levels:
+            if user.current_level == self.count:
                 user.finish_quest()
             user.save()
             return True
         return False
+
+    def reorder(self, order):
+        self.order = ''
+        for i in order:
+            self.order += i + ','
+        self.order = self.order[:-1]
+        self.save()
 
     def __unicode__(self):
         return "%s - %s" % (self.start, self.end)

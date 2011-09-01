@@ -1,0 +1,45 @@
+{% extends 'cpanel/index.html' %}
+
+{% block scripts %}
+<script type="text/javascript" src="/static/js/jquery-ui-1.8.16.custom.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() { 
+  $("#level-list").sortable({ 
+    handle : '.handle', 
+    update : function () { 
+      var order = $('#level-list').sortable('serialize');
+      $('#order-input').val(order);
+    }
+  });
+});
+</script>
+{% endblock %}
+
+{% block title %}CPanel{% endblock %}
+
+{% block content %}
+
+<h2>Sort levels in quest #{{ quest.id }}</h2>
+
+<form method="post">
+<input id="order-input" name="order" value="" type="hidden" />
+<ol id="level-list" class="sort-list">
+    {% for l in quest.levels %}
+    <li id="listItem_{{ l.id }}">
+      <span class="handle">&bull;</span> 
+      {{ l }}
+    </li>
+    {% endfor %}
+</ol>
+
+<div class="info second">Drag and drop the bullets to reorder questions</div>
+
+<div class="actions">
+    <button onclick="history.back(); return false;">Cancel</button>
+    <button onclick="window.location.reload(); return false;">Reset</button>
+    <button type="submit" class="default">Save</button>
+</div>
+    {% csrf_token %}
+</form>
+{% endblock %}

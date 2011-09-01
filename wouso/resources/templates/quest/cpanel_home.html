@@ -20,10 +20,11 @@
             <div class="second">ends: {{q.end|date:"d/m/Y H:i"}}</div>
             </td>
             <td width="100%">{{ q.title }}</td>
-            <td align="center">{{ q.levels }}</td>
+            <td align="center">{{ q.count }}</td>
             <td>{{ q.status }}</td>
             <td class="actions">
-                <a href="{% url quest_edit q.id%}">✍</a>
+                <a href="{% url quest_edit q.id%}" title="edit">✍</a>
+                <a href="{% url quest_sort q.id%}" title="sort">➝</a>
             </td>
         </tr>
     {% empty %}

@@ -175,3 +175,14 @@ div.second {
     color: #444;
     text-align: right;
 }
+.sort-list {
+}
+.sort-list li {
+    margin: 20px;
+}
+.handle {
+    cursor: move;
+    font-size: 2em;
+    float: right;
+    display: block;
+}
