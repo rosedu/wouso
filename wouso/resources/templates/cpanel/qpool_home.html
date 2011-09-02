@@ -1,5 +1,5 @@
 {% extends 'cpanel/index.html' %}
-
+{% load i18n %}
 {% block scripts %}
     <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
 {% endblock %}
@@ -18,16 +18,33 @@
 
 <h2>Question pool</h2>
 
+<div class="actions">
+    <a class="button" href="{% url question_new %}">{% trans 'Add question' %}</a>
+</div>
+
 <ul class="tabs">
     {% for c in categs%}
     <li {% if cat == c.1 %}class="active"{% endif %}><a href="{% url qpool_home c.1 %}">{{ c.0 }}</a></li>
     {% endfor %}
+
+    <li {% if cat == 'search' %}class="active"{% endif %}><a href="{% url qpool_search %}">{% trans 'Search' %}</a></li>
 </ul>
 
 <div class="tab_container">
     <div id="tab-1" class="tab_content">
+    {% if cat == 'search' %}
+    <form>
+    <p>Search for questions containing:
+        <input type="text" name="q" value="{{q}}" />
+        <button type="submit">{% trans 'Search'%}</button>
+    </p>
+    </form>
+    {% endif %}
     <table>
         <tr>
+            {% if cat == 'search' %}
+            <th>#</th>
+            {% endif %}
             {% if cat == 'qotd' %}
             <th>Day</th>
             {% endif %}
@@ -37,6 +54,7 @@
         </th>
     {% for q in questions %}
         <tr>
+            {% if cat == 'search' %}<td>{{q.id}}</td>{% endif %}
             {% if cat == 'qotd' %}
             <td nowrap {% if q.scheduled == today %}class="bold"{%endif%}>{{ q.scheduled }}</td>
             {% endif %}
@@ -47,8 +65,9 @@
             {% endif %}
             </a>
             </td>
-            <td class="actions">
+            <td class="actions" nowrap>
                 <a href="{% url question_edit q.id%}">✍</a>
+                <a href="{% url question_del q.id%}" onclick="return confirm('really?');">✕</a>
             </td>
         </tr>
     {% empty %}

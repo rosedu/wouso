@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.utils.translation import ugettext as _
 from wouso.core.user.models import UserProfile
 from wouso.interface.messaging.models import Message, MessagingUser
 from wouso.interface.messaging.forms import ComposeForm
@@ -69,4 +70,4 @@ def message(request, mid):
     raise Http404
 
 def header_link(request):
-    return '<a href="'+ reverse('wouso.interface.messaging.views.home') +'">Messages</a>'
+    return '<a href="'+ reverse('wouso.interface.messaging.views.home') +'">' + _('Messages') + '</a>'

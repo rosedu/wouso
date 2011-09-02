@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
@@ -129,4 +130,14 @@ def cancel(request, id):
     return do_error(request, 'cannotcancel')
 
 def header_link(request):
-    return '<a href="'+ reverse('games.challenge.views.index') +'">Challenges</a>'
+    profile = request.user.get_profile()
+    if not profile:
+        return ''
+    chall_user = profile.get_extension(ChallengeUser)
+    count = len(ChallengeGame.get_active(chall_user))
+
+    link = '<a href="'+ reverse('games.challenge.views.index') +'">' + _('Challenges') + '</a>'
+
+    if count > 0:
+        link += '<span class="unread-count">%d</span>' % count
+    return link

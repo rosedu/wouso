@@ -6,6 +6,7 @@ from django.http import Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from wouso.interface import logger
+from django.utils.translation import ugettext as _
 from wouso.interface.forms import *
 from wouso.core.user.models import UserProfile
 from wouso.interface.models import StaticPage

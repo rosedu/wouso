@@ -43,9 +43,11 @@ def customization(request):
                                'module': 'custom'},
                               context_instance=RequestContext(request))
 
+# used by qpool and qpool_search
+CATEGORIES = (('Qotd', 'qotd'), ('Challenge', 'challenge'), ('Quest', 'quest'))
+
 @login_required
 def qpool_home(request, cat=None):
-    CATEGORIES = (('Qotd', 'qotd'), ('Challenge', 'challenge'), ('Quest', 'quest'))
     if cat is None:
         cat = 'qotd'
 
@@ -61,8 +63,23 @@ def qpool_home(request, cat=None):
                                'today': str(datetime.date.today())},
                               context_instance=RequestContext(request))
 
-def question_edit(request, id):
-    question = get_object_or_404(Question, pk=id)
+def qpool_search(request):
+    query = request.GET.get('q', '')
+    if query is not None:
+        questions = Question.objects.filter(text__icontains=query)
+    else:
+        questions = []
+
+    return render_response('cpanel/qpool_home.html', request,
+                           {'questions': questions, 'categs': CATEGORIES,
+                            'cat': 'search', 'module': 'qpool', 'today': str(datetime.date.today()),
+                            'q': query})
+
+def question_edit(request, id=None):
+    if id is not None:
+        question = get_object_or_404(Question, pk=id)
+    else:
+        question = None
 
     form = None
     if request.method == 'POST':
@@ -74,7 +91,8 @@ def question_edit(request, id):
     return render_to_response('cpanel/question_edit.html',
                               {'question': question,
                                'form': form,
-                               'module': 'qpool'},
+                               'module': 'qpool',
+                               'categs': CATEGORIES},
                               context_instance=RequestContext(request))
 
 def question_switch(request, id):
@@ -82,6 +100,13 @@ def question_switch(request, id):
 
     question.active = not question.active
     question.save()
+
+    return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
+
+def question_del(request, id):
+    question = get_object_or_404(Question, pk=id)
+
+    question.delete()
 
     return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
 

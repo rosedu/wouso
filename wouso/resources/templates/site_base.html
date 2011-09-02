@@ -1,4 +1,5 @@
 {% load user %}
+{% load i18n %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <HTML xmlns="http://www.w3.org/1999/xhtml">
 <HEAD>
@@ -6,7 +7,7 @@
 <TITLE>{% block title %}{{config_title}}{% endblock %}</TITLE>
 <LINK rel="stylesheet" type="text/css" href="/static/css/style.css" />
 <LINK rel="stylesheet" type="text/css" href="/static/themes/{{ config_theme }}/styles.css" />
-<style type="text/css"> 
+<style type="text/css">
     @import url("/static/css/autocomplete.css");
     {% if config_logo %}
     div#logo {
@@ -31,11 +32,11 @@
                 {% if user.is_staff %}
                 <a href="{% url wouso.interface.cpanel.views.dashboard %}">CPanel</a> |
                 {% endif %}
-                <a href="{% url django.contrib.auth.views.logout %}">Logout &raquo;</a>        
+                <a href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %} &raquo;</a>
             {% else %}
-            Anonimous, <a href="{% url django.contrib.auth.views.login %}">Login &raquo;</a>
+            {% trans 'Anonimous' %}, <a href="{% url django.contrib.auth.views.login %}">{% trans "Login" %} &raquo;</a>
             {% endif %}
-        </div> 
+        </div>
         <div id="logo">
             <a href="{% url interface.views.homepage %}" id="logoa"></a>
         </div>
@@ -45,9 +46,9 @@
     <div id="search">
         <form method="post" action="/search/" style="float:right;">
             <input id="query" type="text" name="query" size="10" />
-            <button type=submit>Caută</button>
+            <button type=submit>{% trans 'Search' %}</button>
         </form>
-        <script type="text/javascript"> 
+        <script type="text/javascript">
             $(document).ready(function() {
             $("#query").autocomplete("/instantsearch/", { minChars:3, matchSubset:1, matchContains:1, cacheLength:10, formatItem:formatItem, onItemSelect:selectItem, selectOnly:1 });
             });
@@ -65,13 +66,13 @@
 
     <div id="content">
     {% block content %}
-    <h2>Players active in the last 10 minutes</h2>
+    <h2>{% trans 'Players active in the last 10 minutes' %}</h2>
     {% for u in last10 %}
         {% player u %}
     {% endfor %}
 
     {% if config_intro %}
-    <h2>About</h2>
+    <h2>{% trans 'About' %}</h2>
         <p>{{config_intro}}</p>
     {% endif %}
 
@@ -87,10 +88,9 @@
         <br/>
         <span id="poweredby">
         <br />Powered by: <br />
-        <a href="http://www.rosedu.org/"></a>          
+        <a href="http://www.rosedu.org/"></a>
         </span>
         </div>
     </div>
 </BODY>
 </HTML>
-
