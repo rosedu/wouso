@@ -10,3 +10,4 @@ src/
 build/
 .pydevproject
 .project
+.DS_Store
