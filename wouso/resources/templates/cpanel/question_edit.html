@@ -5,10 +5,12 @@
 {% block content %}
 
 <h2>Edit question #{{ question.id }}</h2>
+{% if question %}
 <div class="second">
 <p>Proposed by: {{ question.proposed_by }}, Endorsed by: {{ question.endorsed_by }}</p>
 Category: {{ question.category }}
 </div>
+{% endif %}
 
 <form method="post">
 <table>
@@ -19,6 +21,12 @@ Category: {{ question.category }}
     <tr><td><input type="checkbox" name="correct_{{a.id}}" {% if a.correct %}checked{% endif %}/></td>
         <td><textarea name="answer_{{a.id}}" cols="50">{{ a.text }}</textarea></td>
     </tr>
+    {% empty %}
+        {% for a in 12345|make_list %}
+         <tr><td><input type="checkbox" name="correct_{{a}}" /></td>
+            <td><textarea name="answer_{{a}}" cols="50"></textarea></td>
+        </tr>
+        {% endfor %}
     {% endfor %}
     <tr><td colspan="2"><label for="active">Active: </label>
         <input id="active" type="checkbox" name="active" {% if question.active %}checked{% endif %} /></td>
@@ -27,6 +35,15 @@ Category: {{ question.category }}
     <tr><td><label for="schedule">Schedule</label></td>
         <td><input type="text" value="{{ question.scheduled }}" name="schedule" id="schedule"/></td>
     </tr>
+    {% endif %}
+    {% if not question %}
+    <tr><td>Category: </td><td>
+        <select name="category">
+            {% for c in categs %}
+                <option value="{{c.1}}">{{ c.0 }}</option>
+            {% endfor %}
+        </select>
+    </td></tr>
     {% endif %}
 </table>
 <div class="actions">
