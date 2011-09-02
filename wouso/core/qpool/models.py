@@ -22,7 +22,7 @@ class Category(models.Model):
 
 class Question(models.Model):
     text = models.TextField()
-    proposed_by = models.ForeignKey(User, null=True, related_name="%(app_label)s_%(class)s_proposedby_related")
+    proposed_by = models.ForeignKey(User, null=True, blank=True, related_name="%(app_label)s_%(class)s_proposedby_related")
     endorsed_by = models.ForeignKey(User, null=True, blank=True, related_name="%(app_label)s_%(class)s_endorsedby_related")
     active = models.BooleanField(default=False)
 
