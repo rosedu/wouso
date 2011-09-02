@@ -1,6 +1,8 @@
 import unittest
+from datetime import datetime,timedelta
+from mock import patch
 from django.contrib.auth.models import User
-from models import *
+from wouso.games.challenge.models import ChallengeUser, Challenge, ChallengeGame
 from wouso.core.user.models import UserProfile
 from wouso.core import scoring
 
@@ -66,3 +68,12 @@ class ChallengeTestCase(unittest.TestCase):
         chall.set_start(self.chall_user)
         self.assertTrue(chall.is_started_for_user(self.chall_user))
         self.assertFalse(chall.is_started_for_user(self.chall_user2))
+
+        just_now = datetime.now()
+        with patch('wouso.games.challenge.models.datetime') as mock_datetime:
+            # after three minutes, challenge is still available
+            mock_datetime.now.return_value = just_now + timedelta(minutes=3)
+            self.assertTrue(chall.check_timedelta(self.chall_user))
+            # pass some more time, challenge cannot be submited any more
+            mock_datetime.now.return_value = just_now + timedelta(minutes=10)
+            self.assertFalse(chall.check_timedelta(self.chall_user))
