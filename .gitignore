@@ -2,6 +2,7 @@
 *.swp
 *.pyc
 *.db
+*.mo
 /wouso/settings.py
 /wouso/localsettings.py
 /wouso/resources/static/upload/*

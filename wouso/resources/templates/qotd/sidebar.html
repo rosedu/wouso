@@ -1,4 +1,5 @@
 {% extends 'sidebar_widget.html' %}
+{% load i18n %}
 
 {% block title %}Question of the Day{% endblock %}
 
@@ -6,14 +7,16 @@
 
 {% if question %}
     {% if quser.has_answered %}
-    You have answered
-        {% if quser.last_answer_correct %}correctly{% else %}wrong{% endif %}
-    for today.
+        {% if quser.last_answer_correct %}
+        {% trans 'You have answered correctly for today'%}
+        {% else %}
+        {% trans 'You have answered wrong for today'%}
+        {% endif %}
     {% else %}
-    <a href="{% url games.qotd.views.index %}" class="button">Answer now</a>!
+    <a href="{% url games.qotd.views.index %}" class="button little">{% trans 'Answer now' %}</a>!
     {% endif %}
 {% else %}
-    No question for today.
+    {% trans 'No question for today' %}.
 {% endif %}
 
 {% endblock %}

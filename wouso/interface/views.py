@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.http import Http404
+from django.utils.translation import ugettext as _
 from wouso.interface import logger, render_response
 from wouso.interface.forms import *
 from wouso.core.user.models import UserProfile
@@ -67,4 +68,3 @@ def staticpage(request, slug):
     logger.debug('Initiating regular search')
     staticpage = StaticPage.objects.get(slug=slug)
     return render_response('static_page.html', request, {'staticpage': staticpage})
-

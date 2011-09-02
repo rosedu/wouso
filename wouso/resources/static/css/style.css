@@ -176,9 +176,19 @@ ol.top {
 .profile ul.artifacts li {
     display: inline;
 }
-/* sidebar */
+/* topbar sidebar */
 #sidebar h2 {
     clear: both;
+}
+.unread-count {
+    border-radius: 5pt;
+    background-color: red;
+    color: #ddd;
+    font-weight: bold;
+    padding:2px 4px;
+    font-size: 0.7em;
+    line-height: 0.8em;
+    vertical-align: top;
 }
 /* cpanel */
 ul.menu, ul.submenu {
