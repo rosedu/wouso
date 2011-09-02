@@ -4,8 +4,9 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from wouso.core.user.models import UserProfile
-from wouso.interface import render_response
 from wouso.interface.messaging.models import Message, MessagingUser
 from wouso.interface.messaging.forms import ComposeForm
 
@@ -28,11 +29,11 @@ def home(request, quiet=None, box=None, page=u'0'):
     else:
         template = 'messaging/index.html'
 
-    return render_response(template,
-                           request,
-                           {'user': request.user,
-                            'messages': messages
-                            })
+    return render_to_response(template,
+                              {'user': request.user,
+                               'messages': messages
+                               },
+                              context_instance=RequestInstance(request))
 
 
 @login_required
@@ -51,7 +52,9 @@ def create(request, to=None):
             return HttpResponseRedirect(reverse('wouso.interface.messaging.views.home'))
         #else:
         #   print form, form.is_valid(), request.POST
-    return render_response('messaging/create.html', request, {'to': to})
+    return render_to_response('messaging/create.html',
+                              {'to': to},
+                              context_instance=RequestContext(request))
 
 @login_required
 def message(request, mid):
@@ -60,7 +63,9 @@ def message(request, mid):
     me = request.user.get_profile().get_extension(MessagingUser)
 
     if message.sender == me or message.receiver == me:
-        return render_response('messaging/message_one.html', request, {'m': message})
+        return render_to_response('messaging/message_one.html',
+                                  {'m': message},
+                                  context_instance=RequestContext(request))
     raise Http404
 
 def header_link(request):

@@ -1,5 +1,7 @@
 from django.contrib.auth.decorators import login_required
-from wouso.interface import render_response, render_string
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+from wouso.interface import render_string
 from models import Quest, QuestGame, QuestUser
 from forms import QuestForm
 
@@ -8,7 +10,7 @@ def index(request):
     quest = QuestGame.get_current()
 
     if quest == None:
-        return render_response('quest/none.html', request)
+        return render_to_response('quest/none.html', context_instance=RequestContext(request))
 
     quest_user = request.user.get_profile().get_extension(QuestUser)
     if quest_user.current_quest is None:
@@ -27,8 +29,9 @@ def index(request):
 
     form = QuestForm()
 
-    return render_response('quest/index.html', request, 
-            {'quest': quest, 'progress': quest_user, 'form': form, 'message': message})
+    return render_to_response('quest/index.html',
+            {'quest': quest, 'progress': quest_user, 'form': form, 'message': message},
+            context_instance=RequestContext(request))
 
 def sidebar_widget(request):
     quest = QuestGame.get_current()

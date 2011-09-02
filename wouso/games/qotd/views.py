@@ -1,7 +1,9 @@
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from wouso.interface import render_response, render_string
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+from wouso.interface import render_string
 from wouso.interface.activity import signals
 from models import QotdUser, QotdGame
 from forms import QotdForm
@@ -37,11 +39,11 @@ def index(request):
                                      message=signal_msg, game=QotdGame.get_instance())
             return HttpResponseRedirect(reverse('games.qotd.views.done'))
     else:
-        form = QotdForm(qotd) 
+        form = QotdForm(qotd)
 
-    return render_response('qotd/index.html',
-            request,
-            {'question': qotd, 'form': form})
+    return render_to_response('qotd/index.html',
+            {'question': qotd, 'form': form},
+            context_instance=RequestContext(request))
 
 @login_required
 def done(request):
@@ -53,11 +55,11 @@ def done(request):
     user = request.user.get_profile().get_extension(QotdUser)
     choice = user.last_answer
 
-    return render_response('qotd/done.html',
-            request,
-            {'question': qotd, 'choice': choice, 
+    return render_to_response('qotd/done.html',
+            {'question': qotd, 'choice': choice,
             'valid': qotd.answers[choice].correct
-            })
+            },
+            context_instance=RequestContext(request))
 
 def sidebar_widget(request):
     qotd = QotdGame.get_for_today()

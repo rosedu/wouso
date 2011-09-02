@@ -3,7 +3,8 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from wouso.interface import render_response
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from models import ChallengeUser, ChallengeGame, Challenge, Participant
 from forms import ChallengeForm
 
@@ -16,15 +17,15 @@ def index(request):
     challs = ChallengeGame.get_active(chall_user)
     played = ChallengeGame.get_played(chall_user)[:10]
 
-    return render_response('challenge/index.html',
-            request,
-            {'challenges': challs, 'played': played, 'challuser': chall_user})
+    return render_to_response('challenge/index.html',
+            {'challenges': challs, 'played': played, 'challuser': chall_user},
+            context_instance=RequestContext(request))
 
 @login_required
 def do_error(request, error=''):
-    return render_response('challenge/error.html',
-        request,
-        {'error': error})
+    return render_to_response('challenge/error.html',
+        {'error': error},
+        context_instance=RequestContext(request))
 
 @login_required
 def challenge(request, id):
@@ -52,14 +53,14 @@ def challenge(request, id):
 
         results = chall.set_played(chall_user, form.get_response())
 
-        return render_response('challenge/result.html',
-            request,
-            {'challenge': chall, 'results': results})
+        return render_to_response('challenge/result.html',
+            {'challenge': chall, 'results': results},
+            context_instance=RequestContext(request))
     else:
         form = ChallengeForm(chall)
-    return render_response('challenge/challenge.html',
-            request,
-            {'challenge': chall, 'form': form})
+    return render_to_response('challenge/challenge.html',
+            {'challenge': chall, 'form': form},
+            context_instance=RequestContext(request))
 
 
 @login_required

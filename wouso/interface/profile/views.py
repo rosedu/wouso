@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import Http404
 from django.db.models import Q
-from wouso.interface import render_response
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from wouso.core.user.models import UserProfile
 from wouso.core.scoring.models import History
 from wouso.interface.activity.models import Activity
@@ -12,8 +13,9 @@ from wouso.interface.top.models import TopUser
 @login_required
 def profile(request):
     list = Activity.objects.all().order_by('-timestamp')[:10]
-    return render_response('profile/index.html', request, \
-            {'activity': list})
+    return render_to_response('profile/index.html',
+                              {'activity': list},
+                              context_instance=RequestContext(request))
 
 @login_required
 def user_profile(request, id, page=u'0'):
@@ -36,7 +38,10 @@ def user_profile(request, id, page=u'0'):
     except (EmptyPage, InvalidPage):
         activity = paginator.page(paginator.num_pages)
 
-    return render_response('profile/profile.html',
-        request,
-        {'profile': profile, 'avatar': avatar, 'activity': activity,
-         'top': top_user, 'scoring': history})
+    return render_to_response('profile/profile.html',
+                              {'profile': profile,
+                               'avatar': avatar,
+                               'activity': activity,
+                               'top': top_user,
+                               'scoring': history},
+                              context_instance=RequestContext(request))

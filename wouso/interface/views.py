@@ -3,7 +3,9 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.http import Http404
-from wouso.interface import logger, render_response
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+from wouso.interface import logger
 from wouso.interface.forms import *
 from wouso.core.user.models import UserProfile
 from wouso.interface.models import StaticPage
@@ -14,7 +16,9 @@ def homepage(request):
     oldest = datetime.datetime.now() - datetime.timedelta(minutes = 10)
     online_last10 = UserProfile.objects.filter(last_seen__gte=oldest)
 
-    return render_response('site_base.html', request, {'last10': online_last10})
+    return render_to_response('site_base.html',
+                              {'last10': online_last10},
+                              context_instance=RequestContext(request))
 
 @csrf_exempt
 def search(request):
@@ -24,9 +28,11 @@ def search(request):
     if form.is_valid():
         query = form.cleaned_data['query']
         searchresults = User.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query))
-        return render_response('search_results.html', request, {'searchresults': searchresults})
+        return render_to_response('search_results.html',
+                                  {'searchresults': searchresults},
+                                  context_instance=RequestContext(request))
 
-    return render_response('site_base.html', request)
+    return render_to_response('site_base.html', context_instance=RequestContext(request))
 
 def instantsearch(request):
     """ Perform instant search """
@@ -37,7 +43,9 @@ def instantsearch(request):
         users = User.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query))
         user_ids = [u.id for u in users]
         searchresults = UserProfile.objects.filter(user__in=user_ids)
-        return render_response('instant_search_results.txt', request, {'searchresults': searchresults})
+        return render_to_response('instant_search_results.txt',
+                                  {'searchresults': searchresults},
+                                  context_instance=RequestContext(request))
 
 
 def searchone(request):
@@ -55,7 +63,9 @@ def searchone(request):
                 if name == query:
                     result.append(u)
             if result:
-                return render_response('search_one_results.txt', request, {'results': result})
+                return render_to_response('search_one_results.txt',
+                                          {'results': result},
+                                          context_instance=RequestContext(request))
         except Exception as e:
             logging.exception(e)
 
@@ -66,5 +76,6 @@ def staticpage(request, slug):
     """ Perform regular search by either first or last name """
     logger.debug('Initiating regular search')
     staticpage = StaticPage.objects.get(slug=slug)
-    return render_response('static_page.html', request, {'staticpage': staticpage})
-
+    return render_to_response('static_page.html',
+                              {'staticpage': staticpage},
+                              context_instance=RequestContext(request))

@@ -2,7 +2,8 @@
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from wouso.interface import render_response
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from wouso.core.qpool import get_questions_with_category
 from models import Quest
 from forms import QuestCpanel
@@ -10,8 +11,10 @@ from forms import QuestCpanel
 def quest_home(request):
     quests = Quest.objects.all()
 
-    return render_response('quest/cpanel_home.html', request,
-                           {'quests': quests, 'module': 'quest'})
+    return render_to_response('quest/cpanel_home.html',
+                              {'quests': quests,
+                               'module': 'quest'},
+                              context_instance=RequestContext(request))
 
 def quest_edit(request, id=None):
     if id is not None:
@@ -29,8 +32,11 @@ def quest_edit(request, id=None):
             form.save()
             return HttpResponseRedirect(reverse('wouso.games.quest.cpanel.quest_home'))
 
-    return render_response('quest/cpanel_quest_edit.html', request,
-                           {'quest': quest, 'form': form, 'module': 'quest'})
+    return render_to_response('quest/cpanel_quest_edit.html',
+                              {'quest': quest,
+                               'form': form,
+                               'module': 'quest'},
+                              context_instance=RequestContext(request))
 
 def quest_sort(request, id):
     quest = get_object_or_404(Quest, pk=id)
@@ -43,5 +49,7 @@ def quest_sort(request, id):
             quest.reorder(order)
             return HttpResponseRedirect(reverse('wouso.games.quest.cpanel.quest_home'))
 
-    return render_response('quest/cpanel_quest_sort.html', request,
-                           {'quest': quest, 'module': 'quest'})
+    return render_to_response('quest/cpanel_quest_sort.html',
+                              {'quest': quest,
+                               'module': 'quest'},
+                              context_instance=RequestContext(request))

@@ -1,6 +1,7 @@
 # Create your views here.
-from wouso.interface import render_response
 from wouso.core.user.models import UserProfile
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from django.http import Http404
 from wouso.interface.top.models import History, TopUser
 
@@ -41,9 +42,10 @@ def gettop(request, toptype, sortcrit, page):
         next_page = pageno + 1;
     if pageno > 1:
         prev_page = pageno - 1;
-    return render_response('top/maintop.html', request, {'allUsers':      allUsers,
-                                                         'toptype':       toptypeno,
-                                                         'sortcrit':      sortcritno,
-                                                         'page_top_next': next_page,
-                                                         'page_top_prev': prev_page});
-
+    return render_to_response('top/maintop.html',
+                           {'allUsers':      allUsers,
+                            'toptype':       toptypeno,
+                            'sortcrit':      sortcritno,
+                            'page_top_next': next_page,
+                            'page_top_prev': prev_page},
+                           context_instance=RequestContext(request));

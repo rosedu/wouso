@@ -1,5 +1,6 @@
 from forms import QuestionForm
-from wouso.interface import render_response
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from wouso.core.qpool.models import Question, Tag, Answer
 
 
@@ -34,8 +35,10 @@ def propose(request):
                 ans = Answer(question=q, **ansdict)
                 ans.save()
 
-            return render_response('qproposal/thanks.html', request, {})
+            return render_to_response('qproposal/thanks.html',
+                                      context_instance=RequestContext(request))
     else:
         form = QuestionForm(MAX_ANSWERS)
-    return render_response('qproposal/propose.html', request,
-                           {'form': form})
+    return render_to_response('qproposal/propose.html',
+                           {'form': form},
+                           context_instance=RequestContext(request))
