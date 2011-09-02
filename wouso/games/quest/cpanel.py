@@ -11,7 +11,7 @@ def quest_home(request):
     quests = Quest.objects.all()
 
     return render_response('quest/cpanel_home.html', request,
-                           {'quests': quests})
+                           {'quests': quests, 'module': 'quest'})
 
 def quest_edit(request, id=None):
     if id is not None:
@@ -30,7 +30,7 @@ def quest_edit(request, id=None):
             return HttpResponseRedirect(reverse('wouso.games.quest.cpanel.quest_home'))
 
     return render_response('quest/cpanel_quest_edit.html', request,
-                           {'quest': quest, 'form': form})
+                           {'quest': quest, 'form': form, 'module': 'quest'})
 
 def quest_sort(request, id):
     quest = get_object_or_404(Quest, pk=id)
@@ -44,4 +44,4 @@ def quest_sort(request, id):
             return HttpResponseRedirect(reverse('wouso.games.quest.cpanel.quest_home'))
 
     return render_response('quest/cpanel_quest_sort.html', request,
-                           {'quest': quest})
+                           {'quest': quest, 'module': 'quest'})

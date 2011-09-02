@@ -21,6 +21,10 @@ td {
 .hidden {
     display: none;
 }
+fieldset textarea {
+    width: 70%;
+    height: 50px;
+}
 div#logo {
     height: 120px;
 	width: 930px;
@@ -167,6 +171,23 @@ ol.top {
     display: inline;
 }
 /* cpanel */
+ul.menu, ul.submenu {
+    list-style-type: none;
+    padding: 0px;
+    border-top: 1px solid #ddd;
+}
+ul.submenu {
+    border: none;
+    font-weight: normal;
+}
+ul.menu li {
+    margin: 10px;
+    text-indent: 0px;
+}
+ul.menu li a {
+    text-decoration: none;
+    color: black;
+}
 td.actions a, td.actions button {
     min-width: 20px;
 }
@@ -174,17 +195,22 @@ div.second {
     font-size: 0.8em;
     color: #444;
     text-align: right;
+    clear: both;
 }
 .sort-list {
 }
 .sort-list li {
-    margin: 20px;
+    margin: 28px;
 }
 .handle {
     cursor: move;
     font-size: 2em;
     float: right;
+    width: 30px;
+    height: 30px;
     display: block;
+    text-align: center;
+    vertical-align: middle;
 }
 .ok {
     color: green;

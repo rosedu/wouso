@@ -2,31 +2,33 @@
 
 {% block title %}CPanel{% endblock %}
 
+{% block css %}li.{{module}} {font-weight: bold}{% endblock %}
+
 {% block content %}
 
 <h1> Statistics </h1>
 
-<p> {{nr_future_questions}} future available questions. </p>
+<p>Qotd: {{nr_future_questions}} future available questions. </p>
 <p> {{nr_questions}} total questions. </p>
 {% endblock %}
 
 {% block sidebar %}
 <h2>Tools</h2>
     <div class="widget-content">
-        <ul>
-        <li><a href="{% url dashboard %}">Dashboard</a></li>
-        <li><a href="{% url qpool_home %}">Question Pool</a>
-            <ul>
-            <li><a href="{% url importer %}">Import</a></li>
+        <ul class="menu">
+        <li class="home"><a href="{% url dashboard %}">Dashboard</a></li>
+        <li class="qpool"><a href="{% url qpool_home %}">Question Pool</a>
+            <ul class="submenu">
+            <li class="qpool_import"><a href="{% url importer %}">Import</a></li>
             </ul>
         </li>
-        <li><a href="{% url quest_home %}">Quests</a>
-        <li><a href="{% url customization %}">Customization</a></li>
-        <li><a href="#">Static Pages</a></li>
+        <li class="quest"><a href="{% url quest_home %}">Quests</a>
+        <li class="custom"><a href="{% url customization %}">Customization</a></li>
+        <li class="static"><a href="#">Static Pages</a></li>
         </ul>
     </div>
     <div class="widget-content">
-        <ul>
+        <ul class="menu">
         <li><a href="{% url admin:index %}">Django Admin</a></li>
         </ul>
     </div>

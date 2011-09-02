@@ -25,7 +25,7 @@ def dashboard(request):
     nr_questions = len(questions)
 
     return render_response('cpanel/index.html', request, {'nr_future_questions' : nr_future_questions,
-                                                          'nr_questions' : nr_questions})
+                                                          'nr_questions' : nr_questions, 'module': 'home'})
 
 @login_required
 def customization(request):
@@ -37,7 +37,7 @@ def customization(request):
             s.set_value(val)
 
     return render_response('cpanel/customization.html', request, \
-            {'settings': customization}
+            {'settings': customization, 'module': 'custom'}
     )
 
 @login_required
@@ -50,7 +50,7 @@ def qpool_home(request, cat=None):
 
     return render_response('cpanel/qpool_home.html', request,
                            {'questions': questions, 'categs': CATEGORIES,
-                            'cat': cat})
+                            'cat': cat, 'module': 'qpool'})
 
 def question_edit(request, id):
     question = get_object_or_404(Question, pk=id)
@@ -63,7 +63,7 @@ def question_edit(request, id):
             return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
 
     return render_response('cpanel/question_edit.html', request,
-                           {'question': question, 'form': form})
+                           {'question': question, 'form': form, 'module': 'qpool'})
 
 
 @login_required
@@ -71,7 +71,7 @@ def importer(request):
     tags = Tag.objects.all()
     return render_response('cpanel/importer.html', request,
                            {'tags': tags,
-                            'len': len(tags)})
+                            'len': len(tags), 'module': 'qpool_import'})
 
 @login_required
 def import_from_upload(request):
