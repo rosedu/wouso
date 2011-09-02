@@ -6,9 +6,8 @@ from django.core.urlresolvers import reverse
 from wouso.core.config.models import Setting
 from wouso.core.user.models import UserProfile
 from wouso.core.artifacts.models import Artifact
-from wouso.core.qpool.models import Schedule, Question
-from wouso.core.qpool.models import Tag
-from wouso.core.qpool import get_questions_with_tags
+from wouso.core.qpool.models import Schedule, Question, Tag, Category
+from wouso.core.qpool import get_questions_with_category
 from wouso.interface import render_response
 from wouso.interface.cpanel.models import Customization
 from wouso.utils.import_questions import import_from_file
@@ -46,7 +45,7 @@ def qpool_home(request, cat=None):
     if cat is None:
         cat = 'qotd'
 
-    questions = get_questions_with_tags(str(cat), endorsed_only=False)
+    questions = get_questions_with_category(str(cat), endorsed_only=False)
 
     return render_response('cpanel/qpool_home.html', request,
                            {'questions': questions, 'categs': CATEGORIES,
@@ -68,18 +67,17 @@ def question_edit(request, id):
 
 @login_required
 def importer(request):
-    tags = Tag.objects.all()
+    categories = Category.objects.all()
     return render_response('cpanel/importer.html', request,
-                           {'tags': tags,
-                            'len': len(tags)})
+                           {'categories': categories})
 
 @login_required
 def import_from_upload(request):
 
-    selected = request.POST.getlist('tags')
+    cat = request.POST['category']
 
-    tags = [Tag.objects.filter(name=tag)[0] for tag in selected]
-    import_from_file(request.FILES['file'], endorsed_by=request.user, tags=tags)
+    category = Category.objects.filter(name=cat)[0]
+    import_from_file(request.FILES['file'], endorsed_by=request.user, category=category)
     return render_response('cpanel/imported.html', request)
 
 @login_required

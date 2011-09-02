@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from wouso.interface import render_response
-from wouso.core.qpool import get_questions_with_tags
+from wouso.core.qpool import get_questions_with_category
 from models import Quest
 from forms import QuestCpanel
 
@@ -20,11 +20,11 @@ def quest_edit(request, id=None):
         quest = None
 
     form = QuestCpanel(instance=quest)
-    form.fields['questions'].queryset = get_questions_with_tags('quest')
+    form.fields['questions'].queryset = get_questions_with_category('quest')
 
     if request.method == 'POST':
         form = QuestCpanel(request.POST, instance=quest)
-        form.fields['questions'].queryset = get_questions_with_tags('quest')
+        form.fields['questions'].queryset = get_questions_with_category('quest')
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('wouso.games.quest.cpanel.quest_home'))

@@ -6,7 +6,7 @@ from django.db import models
 from django.db.models import Q, Max
 from wouso.core.user.models import UserProfile
 from wouso.core.qpool.models import Question
-from wouso.core.qpool import get_questions_with_tags
+from wouso.core.qpool import get_questions_with_category
 from wouso.core.game.models import Game
 from wouso.core import scoring
 from wouso.core.scoring.models import Formula
@@ -87,7 +87,7 @@ class Challenge(models.Model):
         user_from.last_launched = datetime.now()
         user_from.save()
 
-        questions = [q for q in get_questions_with_tags('challenge')]
+        questions = [q for q in get_questions_with_category('challenge')]
         shuffle(questions)
         # TODO: better question selection
         #limit = 5

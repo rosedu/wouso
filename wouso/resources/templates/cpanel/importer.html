@@ -6,15 +6,15 @@
 
 <h1>Questions importer</h1>
 
-<h2>Tags</h2>
+<h2>Category</h2>
 
 
 <form id="file_import" action="{% url importer_send %}"  method="POST" enctype="multipart/form-data">
     {% csrf_token %}
 
-    <select name="tags" id="tags" multiple="multiple" size="{{len}}">
-    {% for tag in tags %}
-        <option value="{{tag}}">{{tag}}</option>
+    <select name="category" id="category">
+    {% for category in categories %}
+        <option value="{{category}}">{{category}}</option>
     {% endfor %}
     </select>
 
@@ -24,4 +24,3 @@
 </form>
 
 {% endblock %}
-
