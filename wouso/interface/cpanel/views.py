@@ -46,10 +46,12 @@ def qpool_home(request, cat=None):
         cat = 'qotd'
 
     questions = get_questions_with_category(str(cat), endorsed_only=False)
+    if cat == 'qotd':
+        questions = questions.order_by('schedule__day')
 
     return render_response('cpanel/qpool_home.html', request,
                            {'questions': questions, 'categs': CATEGORIES,
-                            'cat': cat, 'module': 'qpool'})
+                            'cat': cat, 'module': 'qpool', 'today': str(datetime.date.today())})
 
 def question_edit(request, id):
     question = get_object_or_404(Question, pk=id)
@@ -64,6 +66,17 @@ def question_edit(request, id):
     return render_response('cpanel/question_edit.html', request,
                            {'question': question, 'form': form, 'module': 'qpool'})
 
+def question_switch(request, id):
+    question = get_object_or_404(Question, pk=id)
+
+    question.active = not question.active
+    question.save()
+
+    return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
+
+def qotd_schedule(request):
+    Schedule.auttomatic()
+    return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
 
 @login_required
 def importer(request):

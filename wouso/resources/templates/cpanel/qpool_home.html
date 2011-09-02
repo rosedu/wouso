@@ -6,6 +6,14 @@
 
 {% block title %}CPanel{% endblock %}
 
+{% block extra_sidebar %}
+    {% if cat == 'qotd' %}
+        <ul class="menu no-border">
+            <li><a class="button" href="{% url qotd_schedule %}" title="schedule active questions">Auttomatic schedule</a></li>
+        </ul>
+    {% endif %}
+{% endblock %}
+
 {% block content %}
 
 <h2>Question pool</h2>
@@ -20,16 +28,24 @@
     <div id="tab-1" class="tab_content">
     <table>
         <tr>
+            {% if cat == 'qotd' %}
+            <th>Day</th>
+            {% endif %}
             <th>Question</th>
             <th>Active</th>
             <th>Actions</th>
         </th>
     {% for q in questions %}
         <tr>
+            {% if cat == 'qotd' %}
+            <td nowrap {% if q.scheduled == today %}class="bold"{%endif%}>{{ q.scheduled }}</td>
+            {% endif %}
             <td>{{ q }}</td>
-            <td>{% if q.active %}<span class="ok">yes</span>
+            <td>
+            <a class="button" href="{% url switch_active q.id %}">{% if q.active %}<span class="ok">yes</span>
             {% else %}<span class="wrong">no</span>
             {% endif %}
+            </a>
             </td>
             <td class="actions">
                 <a href="{% url question_edit q.id%}">✍</a>

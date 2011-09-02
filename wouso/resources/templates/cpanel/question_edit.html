@@ -5,18 +5,29 @@
 {% block content %}
 
 <h2>Edit question #{{ question.id }}</h2>
-<p>Tags: {{ question.tags.all }}</p>
+<div class="second">
+<p>Proposed by: {{ question.proposed_by }}, Endorsed by: {{ question.endorsed_by }}</p>
+Category: {{ question.category }}
+</div>
 
 <form method="post">
 <table>
     <tr><td><label for="text">Text:</label></td>
-        <td><textarea id="text" name="text">{{ question.text}}</textarea>
+        <td><textarea id="text" name="text" rows="10" cols="50">{{ question.text}}</textarea>
     </tr>
     {% for a in question.answers %}
     <tr><td><input type="checkbox" name="correct_{{a.id}}" {% if a.correct %}checked{% endif %}/></td>
-        <td><textarea name="answer_{{a.id}}">{{ a.text }}</textarea></td>
+        <td><textarea name="answer_{{a.id}}" cols="50">{{ a.text }}</textarea></td>
     </tr>
     {% endfor %}
+    <tr><td colspan="2"><label for="active">Active: </label>
+        <input id="active" type="checkbox" name="active" {% if question.active %}checked{% endif %} /></td>
+    </tr>
+    {% if question.category.name == 'qotd' %}
+    <tr><td><label for="schedule">Schedule</label></td>
+        <td><input type="text" value="{{ question.scheduled }}" name="schedule" id="schedule"/></td>
+    </tr>
+    {% endif %}
 </table>
 <div class="actions">
     <button onclick="history.back(); return false;">Cancel</button>

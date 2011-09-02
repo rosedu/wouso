@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -114,6 +114,18 @@ class Answer(models.Model):
 class Schedule(models.Model):
     question = models.ForeignKey(Question, related_name="schedule")
     day = models.DateField(default=datetime.now, blank=True)
+
+    @classmethod
+    def auttomatic(kls, qotd='qotd'):
+        """ Automatically schedule all active questions on dates newer than the newest """
+        newest = Schedule.objects.aggregate(models.Max('day'))
+        if not newest:
+            return
+        day = newest.get('day__max', date.today()) + timedelta(days=1)
+
+        for q in Question.objects.filter(active=True).filter(category__name=qotd).filter(schedule__isnull=True).order_by('id'):
+            Schedule.objects.create(question=q, day=day)
+            day = day + timedelta(days=1)
 
     def __unicode__(self):
         return str(self.day)

@@ -5,8 +5,10 @@ urlpatterns = patterns('',
     url(r'^customization/$', 'wouso.interface.cpanel.views.customization', name='customization'),
     url(r'^qpool/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
     url(r'^qpool/edit/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.question_edit', name='question_edit'),
+    url(r'^qpool/switch_active/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.question_switch', name='switch_active'),
     url(r'^qpool/importer/$', 'wouso.interface.cpanel.views.importer', name='importer'),
     url(r'^qpool/importer/send$', 'wouso.interface.cpanel.views.import_from_upload', name='importer_send'),
+    url(r'^qpool/qotd/schedule$', 'wouso.interface.cpanel.views.qotd_schedule', name='qotd_schedule'),
     url(r'^qpool/(?P<cat>\w*)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
 
     # game specific, TODO make them dynamic
