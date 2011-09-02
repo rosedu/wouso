@@ -18,7 +18,6 @@ class ChallengeUser(UserProfile):
 
     last_launched = models.DateTimeField(default=datetime(1, 1, 1), blank=True, null=True)
 
-
     def can_challenge(self, user):
         user = user.get_extension(ChallengeUser)
         if self.user == user.user:
@@ -113,6 +112,9 @@ class Challenge(models.Model):
 
     def set_start(self, user):
         """ Update user.start and set playing time to now
+        This is called when one of the participants sees the challenge for the
+        first time.
+        After this call, challenge will be visible to fim for 5 minutes
         TODO: check it hasn't been already started in the past"""
         user = user.get_extension(ChallengeUser)
 

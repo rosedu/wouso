@@ -49,7 +49,10 @@ class QotdGame(Game):
     def get_for_today():
         """ Return a Question object selected for Today """
         #question = get_questions_with_tag_for_day("qotd", date.today())
-        sched = Schedule.objects.get(day=date.today())
+        try:
+            sched = Schedule.objects.get(day=date.today())
+        except Schedule.DoesNotExist:
+            return None
         if not sched or not sched.question.active:
             return None
         return sched.question
@@ -73,8 +76,8 @@ class QotdGame(Game):
         """ Returns a list of formulas used by qotd """
         fs = []
         qotd_game = kls.get_instance()
-        fs.append(Formula(id='qotd-ok', formula='points=3', 
-            owner=qotd_game.game, 
+        fs.append(Formula(id='qotd-ok', formula='points=3',
+            owner=qotd_game.game,
             description='Points earned on a correct answer')
         )
         return fs
