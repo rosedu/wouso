@@ -26,14 +26,14 @@
     <div id="header">
         <div id="topbar">
             {% if user.is_authenticated %}
-                {% player user.get_profile %} |
+                <span class="bold">{% player user.get_profile %}</span> |
                 {% for h in header %}{% autoescape off %}{{ h }}{% endautoescape %} | {% endfor %}
                 {% if user.is_staff %}
-                <a href="{% url wouso.interface.cpanel.views.dashboard %}">CPanel</a>
+                <a href="{% url wouso.interface.cpanel.views.dashboard %}">CPanel</a> |
                 {% endif %}
-                <a href="{% url django.contrib.auth.views.logout %}">logout</a>.        
+                <a href="{% url django.contrib.auth.views.logout %}">Logout &raquo;</a>        
             {% else %}
-            Anonimous, <a href="{% url django.contrib.auth.views.login %}">login</a>.
+            Anonimous, <a href="{% url django.contrib.auth.views.login %}">Login &raquo;</a>
             {% endif %}
         </div> 
         <div id="logo">
@@ -84,7 +84,11 @@
     <div id="footer">
         <div id="footer_links">{% for f in footer %}{% autoescape off %}{{ f }}{% endautoescape %} |{% endfor %}
         <a href="{% url propose %}">Propose question</a>
-        <a href="http://www.rosedu.org/">ROSEdu</a>
+        <br/>
+        <span id="poweredby">
+        <br />Powered by: <br />
+        <a href="http://www.rosedu.org/"></a>          
+        </span>
         </div>
     </div>
 </BODY>

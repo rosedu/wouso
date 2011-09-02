@@ -3,7 +3,7 @@ from django.db import models
 from wouso.core.user.models import UserProfile
 from wouso.core.game.models import Game
 from wouso.core import scoring
-from wouso.core.qpool import get_questions_with_tag_for_day
+from wouso.core.qpool.models import Schedule
 from wouso.core.scoring.models import Formula
 
 # Qotd will use models (question) from qpool
@@ -48,8 +48,11 @@ class QotdGame(Game):
     @staticmethod
     def get_for_today():
         """ Return a Question object selected for Today """
-        question = get_questions_with_tag_for_day("qotd", date.today())
-        return question
+        #question = get_questions_with_tag_for_day("qotd", date.today())
+        sched = Schedule.objects.get(day=date.today())
+        if not sched or not sched.question.active:
+            return None
+        return sched.question
 
     @staticmethod
     def answered(user, question, choice):

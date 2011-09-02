@@ -24,8 +24,8 @@ td {
 .no-border {
     border: none !important;
 }
-.bold {
-    font-weight: bold;
+.bold, .bold a {
+    font-weight: bold !important;
 }
 fieldset textarea {
     width: 70%;
@@ -176,6 +176,10 @@ ol.top {
 .profile ul.artifacts li {
     display: inline;
 }
+/* sidebar */
+#sidebar h2 {
+    clear: both;
+}
 /* cpanel */
 ul.menu, ul.submenu {
     list-style-type: none;
@@ -192,7 +196,6 @@ ul.menu li {
 }
 ul.menu li a {
     text-decoration: none;
-    color: black;
 }
 td.actions a, td.actions button {
     min-width: 20px;
@@ -223,4 +226,12 @@ div.second {
 }
 .wrong {
     color: red;
+}
+#poweredby a{
+    background-image:url(../img/rosedu.png);
+    background-repeat:no-repeat;
+    display:block;
+    float:right;
+    width:268px;
+    height:80px;
 }
