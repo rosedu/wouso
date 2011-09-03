@@ -27,6 +27,9 @@ urlpatterns = patterns('',
     # Messaging
     (r'^m/', include('wouso.interface.messaging.urls')),
 
+    # Statistics
+    (r'^stats/', include('wouso.interface.statistics.urls')),
+
     # Qproposal
     (r'^qproposal/', include('wouso.interface.qproposal.urls')),
 
