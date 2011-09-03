@@ -34,7 +34,7 @@ def home(request, quiet=None, box=None, page=u'0'):
                               {'user': request.user,
                                'messages': messages
                                },
-                              context_instance=RequestInstance(request))
+                              context_instance=RequestContext(request))
 
 
 @login_required
