@@ -7,17 +7,18 @@ from models import StaticPage
 # Get a specific logger for this module
 logger = logging.getLogger('interface')
 
-def render_response(template, request, data=None):
-    """ Provide game context render_to response TODO: get rid of this"""
-
-    return render_to_response(template, 
-            data,
-            context_instance=RequestContext(request)
-        )
+# Stop using this. Thanks!
+#def render_response(template, request, data=None):
+#    """ Provide game context render_to response TODO: get rid of this"""
+#
+#    return render_to_response(template,
+#            data,
+#            context_instance=RequestContext(request)
+#        )
 
 def render_string(template, data=None):
     """ Provide game context render_to_string, used by widget generators """
-    
+
     return render_to_string(template,
             dictionary=data)
 
