@@ -70,10 +70,11 @@ def qpool_search(request):
     else:
         questions = []
 
-    return render_response('cpanel/qpool_home.html', request,
+    return render_to_response('cpanel/qpool_home.html',
                            {'questions': questions, 'categs': CATEGORIES,
                             'cat': 'search', 'module': 'qpool', 'today': str(datetime.date.today()),
-                            'q': query})
+                            'q': query},
+                           context_instance=RequestContext(request))
 
 def question_edit(request, id=None):
     if id is not None:
