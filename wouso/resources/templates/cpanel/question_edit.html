@@ -22,7 +22,7 @@ Category: {{ question.category }}
         <td><textarea name="answer_{{a.id}}" cols="50">{{ a.text }}</textarea></td>
     </tr>
     {% empty %}
-        {% for a in 12345|make_list %}
+        {% for a in 123456|make_list %}
          <tr><td><input type="checkbox" name="correct_{{a}}" /></td>
             <td><textarea name="answer_{{a}}" cols="50"></textarea></td>
         </tr>
