@@ -135,7 +135,11 @@ def header_link(request):
         return ''
     chall_user = profile.get_extension(ChallengeUser)
     challs = ChallengeGame.get_active(chall_user)
+    # remove launched challenges by the user
     challs = [c for c in challs if not (c.status == 'L' and c.user_from.user == chall_user)]
+    # remove refused challenges
+    challs = [c for c in challs if not c.status == 'R']
+
     count = len(challs)
 
     link = '<a href="'+ reverse('games.challenge.views.index') +'">' + _('Challenges') + '</a>'
