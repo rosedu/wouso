@@ -70,4 +70,15 @@ def message(request, mid):
     raise Http404
 
 def header_link(request):
-    return '<a href="'+ reverse('wouso.interface.messaging.views.home') +'">' + _('Messages') + '</a>'
+    profile = request.user.get_profile()
+    if not profile:
+        return ''
+
+    msg_user = profile.get_extension(MessagingUser)
+    msgs = Message.objects.filter(receiver=msg_user).filter(read=False)
+    count = len(msgs)
+
+    link = '<a href="'+ reverse('wouso.interface.messaging.views.home') +'">' + _('Messages') + '</a>'
+    if count > 0:
+        link += '<span class="unread-count">%d</span>' % count
+    return link
