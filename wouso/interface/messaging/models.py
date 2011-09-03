@@ -18,6 +18,7 @@ class Message(models.Model):
     timestamp = models.DateTimeField(null=True, blank=False, default=datetime.now)
     subject = models.CharField(max_length=64, null=False, blank=False, default=None)
     text = models.CharField(max_length=1000, null=False, blank=False, default=None)
+    read = models.BooleanField(null=False, blank=False, default=False)
 
     def __unicode__(self):
         return 'from ' + self.sender.__unicode__() + ' to ' + self.receiver.__unicode__() +\
