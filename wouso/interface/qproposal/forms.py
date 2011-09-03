@@ -1,11 +1,12 @@
 from django import forms
-from wouso.core.qpool.models import Tag
+from wouso.core.qpool.models import Tag, Category
 
 
 class QuestionForm(forms.Form):
 
     text = forms.CharField(max_length=500, widget=forms.Textarea)
     answer_type = forms.ChoiceField(choices=(('R', 'Single'), ('C','Multiple')))
+    category = forms.ChoiceField(choices=[(cat.name, cat.name) for cat in Category.objects.all()])
 
     def __init__(self, nr_ans=6, data=None):
         super(QuestionForm, self).__init__(data)

@@ -1,7 +1,7 @@
 from forms import QuestionForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from wouso.core.qpool.models import Question, Tag, Answer
+from wouso.core.qpool.models import Question, Tag, Answer, Category
 
 
 def propose(request):
@@ -16,6 +16,7 @@ def propose(request):
             qdict['text'] = form.cleaned_data['text']
             qdict['answer_type'] = form.cleaned_data['answer_type']
             qdict['proposed_by'] = request.user
+            qdict['category'] = Category.objects.filter(name=form.cleaned_data['category'])[0]
             q = Question(**qdict)
             q.save()
 
