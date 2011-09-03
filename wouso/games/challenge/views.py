@@ -134,7 +134,9 @@ def header_link(request):
     if not profile:
         return ''
     chall_user = profile.get_extension(ChallengeUser)
-    count = len(ChallengeGame.get_active(chall_user))
+    challs = ChallengeGame.get_active(chall_user)
+    challs = [c for c in challs if not (c.status == 'L' and c.user_from.user == chall_user)]
+    count = len(challs)
 
     link = '<a href="'+ reverse('games.challenge.views.index') +'">' + _('Challenges') + '</a>'
 
