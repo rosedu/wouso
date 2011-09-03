@@ -64,6 +64,9 @@ def message(request, mid):
     me = request.user.get_profile().get_extension(MessagingUser)
 
     if message.sender == me or message.receiver == me:
+        if message.receiver == me:
+            message.read = True
+            message.save()
         return render_to_response('messaging/message_one.html',
                                   {'m': message},
                                   context_instance=RequestContext(request))
