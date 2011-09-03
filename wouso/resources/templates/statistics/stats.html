@@ -1,0 +1,29 @@
+{% extends 'site_base.html' %}
+
+{% block title %}CPanel{% endblock %}
+
+{% block css %}li.{{module}} {font-weight: bold}{% endblock %}
+
+{% block content %}
+
+<h1>Statistics</h1>
+
+<h2>Now</h2>
+<p>Users online: {{ users_online_now }}</p>
+
+<h2>Today</h2>
+<p>Users online: {{ users_online_today }}</p>
+<p>Challenges played: {{ challenges_played_today }}</p>
+<p>Qotd answers: {{ qotd_answers_today }}</p>
+
+<h2>This week</h2>
+<p>Users online: {{ users_online_week }}</p>
+<p>Challenges played: {{ challenges_played_week }}</p>
+<p>Qotd answers: {{ qotd_answers_week }}</p>
+
+<h2>Ever</h2>
+<p>Users online: {{ users_online_ever }}</p>
+<p>Challenges played: {{ challenges_played_ever }}</p>
+<p>Qotd answers: {{ qotd_answers_ever }}</p>
+
+{% endblock %}

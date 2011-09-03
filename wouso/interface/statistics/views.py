@@ -1,6 +1,10 @@
 from datetime import datetime, timedelta, time, date
 from django.http import HttpResponse
+from django.core.urlresolvers import reverse
 from django.db.models import Q
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+from django.utils.translation import ugettext as _
 from wouso.core.qpool.models import Question
 from wouso.games.challenge.models import Challenge
 from wouso.games.qotd.models import QotdUser
@@ -81,4 +85,10 @@ def stats(request):
         qotd_answers_ever = []
     data['qotd_answers_ever'] = len(qotd_answers_ever)
 
-    return HttpResponse(repr(data))
+    return render_to_response('statistics/stats.html', data,
+                              context_instance=RequestContext(request))
+
+
+def footer_link(request):
+    link = '<a href="'+ reverse('wouso.interface.statistics.views.stats') +'">' + _('Live stats') + '</a>'
+    return link
