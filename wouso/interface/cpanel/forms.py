@@ -4,7 +4,7 @@ from wouso.core.qpool.models import Question, Answer, Schedule, Category
 class QuestionForm(forms.Form):
     text = forms.CharField(max_length=500, widget=forms.Textarea)
     active = forms.BooleanField(required=False)
-    schedule = forms.DateField(required=False)
+    schedule = forms.DateField(required=False, input_formats=['%d.%m.%Y'], help_text='dd.mm.yyyy')
     category = forms.CharField(max_length=50, required=False)
 
     def __init__(self, data=None, instance=None):

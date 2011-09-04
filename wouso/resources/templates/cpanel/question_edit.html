@@ -32,7 +32,7 @@ Category: {{ question.category }}
         <input id="active" type="checkbox" name="active" {% if question.active %}checked{% endif %} /></td>
     </tr>
     {% if question.category.name == 'qotd' %}
-    <tr><td><label for="schedule">Schedule</label></td>
+    <tr><td><label for="schedule">Schedule (dd.mm.yyyy)</label></td>
         <td><input type="text" value="{{ question.scheduled }}" name="schedule" id="schedule"/></td>
     </tr>
     {% endif %}
