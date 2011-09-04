@@ -102,7 +102,11 @@ def question_switch(request, id):
     question.active = not question.active
     question.save()
 
-    return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
+    go_back = request.META.get('HTTP_REFERER', None)
+    if not go_back:
+        go_back = reverse('wouso.interface.cpanel.views.qpool_home')
+
+    return HttpResponseRedirect(go_back)
 
 def question_del(request, id):
     question = get_object_or_404(Question, pk=id)
