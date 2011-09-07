@@ -5,12 +5,15 @@
 
 {% block content %}
 
-<h1>Set artifact</h1>
+<h1>Set groups</h1>
 
 <form method="post" action="">
 <input type="hidden" name="to" value="{{to.id}}" />User: {% player to %}
-Artifact:
-    <select name="artifact">{% for a in artifacts %}<option value="{{a.id}}">{{a.name}}</option>{% endfor %}</select>
+
+<table>
+{{ form }}
+</table>
+
 <button type="submit">Save</button>
 {% csrf_token %}
 </form>

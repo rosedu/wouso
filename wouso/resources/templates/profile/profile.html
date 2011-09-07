@@ -34,10 +34,14 @@
 
             <a class="button" href="{% url games.challenge.views.launch profile.id %}">Challenge!</a>
         {% endif %}
-        {% if user.is_superuser %}
-            <a class="button" href="{% url artifact_set profile.id %}">Artifacts</a>
-        {% endif %}
     </div>
+
+    {% if user.is_superuser %}
+    <div class="actions">
+        <a class="button" href="{% url group_set profile.id %}">Groups</a>
+        <a class="button" href="{% url artifact_set profile.id %}">Artifacts</a>
+    </div>
+    {% endif %}
 
     <div class="second">Last seen:
     {% if profile.last_seen %}

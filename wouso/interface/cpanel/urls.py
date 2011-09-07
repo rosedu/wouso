@@ -20,5 +20,6 @@ urlpatterns = patterns('',
     url(r'^quest/sort/(?P<id>\d*)/$', 'wouso.games.quest.cpanel.quest_sort', name='quest_sort'),
     url(r'^quest/new/$', 'wouso.games.quest.cpanel.quest_edit', name='quest_new'),
 
-    url(r'^artifact/set/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.artifactset', name='artifact_set')
+    url(r'^artifact/set/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.artifactset', name='artifact_set'),
+    url(r'^group/set/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.groupset', name='group_set'),
 )

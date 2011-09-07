@@ -154,3 +154,26 @@ def artifactset(request, id):
                               {'to': profile,
                                'artifacts': artifacts},
                               context_instance=RequestContext(request))
+
+@login_required
+def groupset(request, id):
+    profile = get_object_or_404(UserProfile, pk=id)
+
+    from django.forms import ModelForm
+
+    class GForm(ModelForm):
+        class Meta:
+            model = UserProfile
+            fields = ('groups',)
+
+    if request.method == 'POST':
+        form = GForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+    else:
+        form = GForm(instance=profile)
+
+    return render_to_response('cpanel/groupset.html',
+                              {'to': profile,
+                               'form': form},
+                              context_instance=RequestContext(request))
