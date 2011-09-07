@@ -1,0 +1,26 @@
+{% extends 'site_base.html' %}
+{% load artifacts %}
+{% load user %}
+
+{% block title %}Groups{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="/static/js/tabs.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.flot.pack.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
+{% endblock %}
+
+{% block content %}
+<div class="profile">
+    <h2>Groups</h2>
+
+    {% for group in groups %}
+        <h3>{% player_group group %} <span class="points">{{group.points}}</span></h3>
+        <ul>
+            {% for g in group.children %}
+            <li>{% player_group g %} <span class="points">{{ g.live_points }}</span></li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+    
+</div>
+{% endblock %}
