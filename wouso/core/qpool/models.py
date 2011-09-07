@@ -19,20 +19,15 @@ class Tag(models.Model):
             return
         self.active = True
         self.save()
-        questions = Question.objects.filter(tags__name=self.name)
-        for q in questions:
-            q.active = True
-            q.save()
+        Question.objects.filter(tags__name=self.name).update(active=True)
 
     def set_inactive(self):
         if self.active is False:
             return
         self.active = False
         self.save()
-        questions = Question.objects.filter(tags__name=self.name)
-        for q in questions:
-            q.active = False
-            q.save()
+        Question.objects.filter(tags__name=self.name).update(active=False)
+
 
 class Category(models.Model):
     name = models.CharField(max_length=64)
