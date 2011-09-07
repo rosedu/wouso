@@ -107,6 +107,8 @@
                     {% for coin, value in coins.iteritems %}
                         {{ coin }} {{ value }}
                     {% endfor %}
+            {% empty %}
+                No points registered for this player.
             {% endfor %}
         </div>
     </div>
