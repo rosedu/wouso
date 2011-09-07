@@ -55,7 +55,7 @@ def stats(request):
     data['users_online_week'] = len(users_online_week)
 
     try:
-        challenges_played_week = Challenge.objects.filter(date=week_start).filter(
+        challenges_played_week = Challenge.objects.filter(date__gte=week_start).filter(
             Q(status='P') | Q(status='D'))
     except:
         challenges_played_week = []
