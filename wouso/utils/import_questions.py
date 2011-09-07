@@ -43,7 +43,7 @@ def add(question, answers, category=None, tags=[]):
         a.save()
 
 
-def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=None, tags=[]):
+def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=None, tags=[], all_active=False):
     # read file and parse contents
     a_saved = True
     q_saved = True
@@ -65,6 +65,8 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
                 answers.append(a)
                 a_saved = True
             if not q_saved:
+                if all_active is True:
+                    q['active'] = True
                 if endorsed_by is not None:
                     q['endorsed_by'] = endorsed_by
                 if proposed_by is not None:
@@ -118,6 +120,8 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
         answers.append(a)
         a_saved = True
     if not q_saved:
+        if all_active is True:
+            q['active'] = True
         if endorsed_by is not None:
             q['endorsed_by'] = endorsed_by
         if proposed_by is not None:

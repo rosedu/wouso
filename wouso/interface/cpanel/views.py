@@ -152,12 +152,16 @@ def import_from_upload(request):
     # TODO: use form
     cat = request.POST.get('category', None)
 
+    all_active = False
+    if request.POST.has_key('all_active'):
+        all_active = True
+
     category = Category.objects.filter(name=cat)[0]
     infile = request.FILES.get('file', None)
     if not infile:
         return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.importer'))
 
-    nr = import_from_file(infile, endorsed_by=request.user, category=category)
+    nr = import_from_file(infile, endorsed_by=request.user, category=category, all_active=all_active)
     return render_to_response('cpanel/imported.html', {'module': 'qpool', 'nr': nr},
                               context_instance=RequestContext(request))
 
