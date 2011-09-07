@@ -32,7 +32,9 @@ def stats(request):
     data['users_online_today'] = len(users_online_today)
 
     try:
-        challenges_played_today = Challenge.objects.filter(date=today).filter(
+        challenges_played_today = Challenge.objects.filter(date__year=today.year,
+                                                           date__month=today.month,
+                                                           date__day=today.day).filter(
             Q(status='P') | Q(status='D'))
     except:
         challenges_played_today = []
