@@ -87,6 +87,8 @@ class Challenge(models.Model):
         user_from.save()
 
         questions = [q for q in get_questions_with_category('challenge')]
+        if len(questions) < 5:
+            return None
         shuffle(questions)
         # TODO: better question selection
         #limit = 5
