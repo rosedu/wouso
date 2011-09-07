@@ -61,3 +61,11 @@ def player_group(request, id):
                                'top': history,
                                },
                               context_instance=RequestContext(request))
+
+@login_required
+def groups_index(request):
+    groups = PlayerGroup.objects.filter(gclass=1).order_by('name')
+
+    return render_to_response('profile/groups.html',
+                              {'groups': groups},
+                              context_instance=RequestContext(request))
