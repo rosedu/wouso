@@ -32,7 +32,7 @@ def stats(request):
     data['users_online_today'] = len(users_online_today)
 
     try:
-        challenges_played_today = Challenge.objects.filter(date=today).get(
+        challenges_played_today = Challenge.objects.filter(date=today).filter(
             Q(status='P') | Q(status='D'))
     except:
         challenges_played_today = []
@@ -53,7 +53,7 @@ def stats(request):
     data['users_online_week'] = len(users_online_week)
 
     try:
-        challenges_played_week = Challenge.objects.filter(date=week_start).get(
+        challenges_played_week = Challenge.objects.filter(date=week_start).filter(
             Q(status='P') | Q(status='D'))
     except:
         challenges_played_week = []
@@ -73,7 +73,7 @@ def stats(request):
     data['users_online_ever'] = len(users_online_ever)
 
     try:
-        challenges_played_ever = Challenge.objects.get(
+        challenges_played_ever = Challenge.objects.filter(
             Q(status='P') | Q(status='D'))
     except:
         challenges_played_ever = []
