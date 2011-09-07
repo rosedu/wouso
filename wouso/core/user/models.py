@@ -13,6 +13,8 @@ class PlayerGroup(models.Model):
     @property
     def live_points(self):
         p = self.userprofile_set.aggregate(total=models.Sum('points'))
+        if p['total'] is None:
+            return 0
         return p['total']
 
     @property
@@ -23,9 +25,9 @@ class PlayerGroup(models.Model):
         return self.name
 
 class UserProfile(models.Model):
-    user = models.ForeignKey(User, unique=True, 
+    user = models.ForeignKey(User, unique=True,
         related_name="%(class)s_related")
-    
+
     # Unique differentiator for ladder
     # Do not modify it manually, use scoring.score instead
     points = models.FloatField(default=0, blank=True, null=True)
@@ -49,22 +51,22 @@ class UserProfile(models.Model):
             return None
 
         return self.groups.filter(gclass=res['gclass'])[0]
-        
+
     def get_extension(self, cls):
         """ Search for an extension of this object, with the type cls
         Create instance if there isn't any.
-        
+
         Using an workaround, while: http://code.djangoproject.com/ticket/7623 gets fixed.
         Also see: http://code.djangoproject.com/ticket/11618
         """
         try:
-            extension = cls.objects.get(user=self.user)    
+            extension = cls.objects.get(user=self.user)
         except cls.DoesNotExist:
             extension = cls(userprofile_ptr = self)
-            for f in self._meta.local_fields: 
+            for f in self._meta.local_fields:
                 setattr(extension, f.name, getattr(self, f.name))
             extension.save()
-                
+
         return extension
 
     def __unicode__(self):

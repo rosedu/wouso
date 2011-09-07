@@ -18,7 +18,7 @@ def main():
         print "No wouso/settings.py file. Maybe you can symlink the example file?"
         sys.exit(1)
 
-    from wouso.core.user.models import UserProfile
+    from wouso.core.user.models import UserProfile, PlayerGroup
     from wouso.interface.top.models import TopUser, History
 
     today = date.today()
@@ -26,9 +26,18 @@ def main():
     for i,u in enumerate(UserProfile.objects.all().order_by('-points')):
         topuser = u.get_extension(TopUser)
         position = i + 1
-        hs, new = History.objects.get_or_create(user=topuser,
-                                            date=today)
+        hs, new = History.objects.get_or_create(user=topuser, date=today)
         hs.position, hs.points = position, u.points
+        hs.save()
+
+    print 'Updating group history: '
+    for p in PlayerGroup.objects.all():
+        p.points = p.live_points
+        p.save()
+    for i,p in enumerate(PlayerGroup.objects.all().order_by('-points')):
+        position = i + 1
+        hs, new = History.objects.get_or_create(group=p, date=today)
+        hs.position, hs.points = position, p.points
         hs.save()
 
     print 'Done.'

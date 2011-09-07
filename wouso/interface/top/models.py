@@ -74,7 +74,7 @@ class History(models.Model):
             return 0
 
     def __unicode__(self):
-        return u"%s at %s, position: %d, points: %f" % (self.user, self.date, self.position, self.points)
+        return u"%s at %s, position: %d, points: %f" % (self.user if self.user else self.group, self.date, self.position, self.points)
 
 class Top(App):
 
@@ -90,4 +90,3 @@ def user_post_save(sender, instance, **kwargs):
     profile = instance.get_profile()
     profile.get_extension(TopUser)
 models.signals.post_save.connect(user_post_save, User)
-
