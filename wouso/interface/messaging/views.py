@@ -25,6 +25,8 @@ def home(request, quiet=None, box=None, page=u'0'):
     elif box == 'all':
         messages = Message.objects.filter(Q(receiver=msg_user) | Q(sender=msg_user))
 
+    messages = messages.order_by('-timestamp')
+
     if quiet is not None:
         template = 'messaging/message.html'
     else:
@@ -32,7 +34,8 @@ def home(request, quiet=None, box=None, page=u'0'):
 
     return render_to_response(template,
                               {'user': request.user,
-                               'messages': messages
+                               'messages': messages,
+                               'box': box,
                                },
                               context_instance=RequestContext(request))
 

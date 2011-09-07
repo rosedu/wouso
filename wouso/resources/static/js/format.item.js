@@ -66,3 +66,7 @@ function messagingView(id) {
     });
     return false;
 }
+
+function messagingReload() {
+    $(active_tab).trigger('custom');
+}

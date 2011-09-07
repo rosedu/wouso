@@ -245,3 +245,11 @@ div.second {
     width:268px;
     height:80px;
 }
+/* messaging */
+tr.unread td {
+    font-weight: bold;
+}
+tr.read td {
+    font-weight: normal;
+    background-color: #efefef;
+}

@@ -1,15 +1,25 @@
 <div>
     <table id="Messages">
         <tr>
-            <th>From</td>
-            <th>To</td>
-            <th>Subject</td>
+            {% if box != 'sent' %}
+            <th>From</th>
+            {% endif %}
+            {% if box != 'rec' %}
+            <th>To</th>
+            {% endif %}
+            <th width="100%">Subject</th>
+            <th>Date</th>
         </tr>
         {% for msg in messages %}
-            <tr>
-                <td>{{msg.sender}}</td>
-                <td>{{msg.receiver}}</td>
+            <tr {% if msg.read %}class="read"{% else %}class="unread"{% endif %}>
+                {% if box != 'sent' %}
+                <td nowrap>{{msg.sender}}</td>
+                {% endif %}
+                {% if box != 'rec' %}
+                <td nowrap>{{msg.receiver}}</td>
+                {% endif %}
                 <td><a href="" onclick="return messagingView({{msg.id}});">{{msg.subject}}</a></td>
+                <td nowrap>{{ msg.timestamp }}</td>
             </tr>
         {% empty %} <tr> <td colspan=3>No messages.</td></tr>
         {% endfor %}
