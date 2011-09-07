@@ -22,7 +22,7 @@ def main():
     from wouso.interface.top.models import TopUser, History
 
     today = date.today()
-    print 'Updating with date: ', today
+    print 'Updating users with date: ', today
     for i,u in enumerate(UserProfile.objects.all().order_by('-points')):
         topuser = u.get_extension(TopUser)
         position = i + 1

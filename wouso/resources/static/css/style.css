@@ -176,6 +176,11 @@ ol.top {
 .profile ul.artifacts li {
     display: inline;
 }
+.subgroups {
+    width: 150px;
+    float: right;
+    margin-left: 40px;
+}
 /* topbar sidebar */
 #sidebar h2 {
     clear: both;

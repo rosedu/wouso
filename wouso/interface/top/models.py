@@ -2,8 +2,21 @@ from datetime import datetime, timedelta
 from django.db import models
 from django.contrib.auth.models import User
 from wouso.core.app import App
-from wouso.core.user.models import UserProfile
+from wouso.core.user.models import UserProfile, PlayerGroup
 from wouso.interface import render_string
+
+class GroupHistory:
+    def __init__(self, group):
+        self.group = group
+
+    @property
+    def position(self):
+        return History.get_group_position(self.group)
+
+    def week_evolution(self):
+        """ :return: list of pairs (index, position) for the last week """
+        hs = History.objects.filter(group=self.group).order_by('-date')[:7]
+        return [(i + 1, h.position) for (i,h) in enumerate(hs)]
 
 class TopUser(UserProfile):
     @property
@@ -34,7 +47,8 @@ class TopUser(UserProfile):
         return [(i + 1, h.position) for (i,h) in enumerate(hs)]
 
 class History(models.Model):
-    user = models.ForeignKey('TopUser')
+    user = models.ForeignKey('TopUser', blank=True, null=True)
+    group = models.ForeignKey(PlayerGroup, blank=True, null=True)
     position = models.IntegerField(default=0)
     points = models.FloatField(default=0)
     date = models.DateField()
@@ -43,6 +57,16 @@ class History(models.Model):
     def get_user_position(kls, user):
         try:
             history = History.objects.filter(user=user).order_by('-date')[0]
+            return history.position
+        except IndexError:
+            return 0
+        except History.DoesNotExist:
+            return 0
+
+    @classmethod
+    def get_group_position(kls, group):
+        try:
+            history = History.objects.filter(group=group).order_by('-date')[0]
             return history.position
         except IndexError:
             return 0

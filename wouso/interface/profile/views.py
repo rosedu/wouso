@@ -3,12 +3,12 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import Http404
 from django.db.models import Q
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from wouso.core.user.models import UserProfile
+from wouso.core.user.models import UserProfile, PlayerGroup
 from wouso.core.scoring.models import History
 from wouso.interface.activity.models import Activity
-from wouso.interface.top.models import TopUser
+from wouso.interface.top.models import TopUser, GroupHistory
 
 @login_required
 def profile(request):
@@ -44,4 +44,20 @@ def user_profile(request, id, page=u'0'):
                                'activity': activity,
                                'top': top_user,
                                'scoring': history},
+                              context_instance=RequestContext(request))
+
+@login_required
+def player_group(request, id):
+    group = get_object_or_404(PlayerGroup, pk=id)
+
+    top_users = group.userprofile_set.all().order_by('-points')
+    subgroups = group.children.order_by('-points')
+    history = GroupHistory(group)
+
+    return render_to_response('profile/group.html',
+                              {'group': group,
+                               'top_users': top_users,
+                               'subgroups': subgroups,
+                               'top': history,
+                               },
                               context_instance=RequestContext(request))

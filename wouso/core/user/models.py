@@ -1,7 +1,26 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from wouso.core.scoring.models import History
 from wouso.core.artifacts.models import Artifact
+
+class PlayerGroup(models.Model):
+    group = models.ForeignKey(Group, unique=True, related_name="%(class)s_related")
+    name = models.CharField(max_length=100)
+    gclass = models.IntegerField(default=0)
+    parent = models.ForeignKey('PlayerGroup', default=None, null=True, blank=True)
+    points = models.FloatField(default=0)
+
+    @property
+    def live_points(self):
+        p = self.userprofile_set.aggregate(total=models.Sum('points'))
+        return p['total']
+
+    @property
+    def children(self):
+        return self.playergroup_set.all()
+
+    def __unicode__(self):
+        return self.name
 
 class UserProfile(models.Model):
     user = models.ForeignKey(User, unique=True, 
@@ -10,16 +29,26 @@ class UserProfile(models.Model):
     # Unique differentiator for ladder
     # Do not modify it manually, use scoring.score instead
     points = models.FloatField(default=0, blank=True, null=True)
-    
-    artifacts = models.ManyToManyField(Artifact, blank=True)
+
     level_no = models.IntegerField(default=1, blank=True, null=True)
     level = models.ForeignKey(Artifact, default=Artifact.get_level_1, related_name='user_level', blank=True, null=True)
 
     last_seen = models.DateTimeField(null=True, blank=True)
 
+    artifacts = models.ManyToManyField(Artifact, blank=True)
+    groups = models.ManyToManyField(PlayerGroup, blank=True)
+
     @property
     def coins(self):
         return History.user_coins(self.user)
+
+    @property
+    def proximate_group(self):
+        res = self.groups.aggregate(gclass=models.Min('gclass'))
+        if res['gclass'] is None:
+            return None
+
+        return self.groups.filter(gclass=res['gclass'])[0]
         
     def get_extension(self, cls):
         """ Search for an extension of this object, with the type cls

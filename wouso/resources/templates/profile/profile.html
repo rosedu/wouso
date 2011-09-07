@@ -1,5 +1,6 @@
 {% extends 'site_base.html' %}
 {% load artifacts %}
+{% load user %}
 
 {% block title %}Profil: {{ profile }}{% endblock %}
 {% block scripts %}
@@ -17,7 +18,7 @@
 
     <img src="{{ avatar }}" class="avatar" width="100" />
     <h2>{{ profile }}</h2>
-    <h3>{% artifact_full profile.level %}</h3>
+    <h3>{% artifact_full profile.level %} {% if profile.proximate_group %}Group: {% player_group profile.proximate_group %}{% endif %}</h3>
     {% if profile.artifacts.all %}
         Artifacts:
         <ul class="artifacts">

@@ -19,6 +19,8 @@ urlpatterns = patterns('',
     (r'^user/profile/(?P<id>\d*)/(?P<page>\d*)/$', 'wouso.interface.profile.views.user_profile'),
     (r'^user/profile/$', 'wouso.interface.profile.views.profile'),
 
+    (r'^group/(?P<id>\d*)/$', 'wouso.interface.profile.views.player_group'),
+
     (r'^search/$', 'wouso.interface.views.search'),
     (r'^instantsearch/$', 'wouso.interface.views.instantsearch'),
     (r'^searchone/$', 'wouso.interface.views.searchone'),
