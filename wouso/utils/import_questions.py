@@ -52,6 +52,8 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
     q = {}
     nr_correct = 0
 
+    nr_imported = 0
+
     for line in opened_file:
         line = line.strip()
         if not line:
@@ -72,6 +74,7 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
                 else:
                     q['answer_type'] = 'C'
                 add(q, answers, category, tags)
+                nr_imported += 1
                 q_saved = True
                 a_saved = True
 
@@ -124,6 +127,9 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
         else:
             q['answer_type'] = 'C'
         add(q, answers, category, tags)
+        nr_imported += 1
+
+    return nr_imported
 
 
 def main():

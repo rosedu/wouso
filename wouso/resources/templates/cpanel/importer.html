@@ -8,6 +8,16 @@
 
 <h2>Category</h2>
 
+<pre>File syntax:
+? Question text
+on many lines
+- wrong answer
++ correct answer
++ another correct answer
+on two lines
+
+? Another question
+...</pre>
 
 <form id="file_import" action="{% url importer_send %}"  method="POST" enctype="multipart/form-data">
     {% csrf_token %}

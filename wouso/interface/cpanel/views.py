@@ -157,8 +157,8 @@ def import_from_upload(request):
     if not infile:
         return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.importer'))
 
-    import_from_file(infile, endorsed_by=request.user, category=category)
-    return render_to_response('cpanel/imported.html', {'module': 'qpool'},
+    nr = import_from_file(infile, endorsed_by=request.user, category=category)
+    return render_to_response('cpanel/imported.html', {'module': 'qpool', 'nr': nr},
                               context_instance=RequestContext(request))
 
 @login_required
