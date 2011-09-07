@@ -54,11 +54,20 @@ def player_group(request, id):
     subgroups = group.children.order_by('-points')
     history = GroupHistory(group)
 
+    activity_list = Activity.objects.\
+        filter(Q(user_to__groups=group) | Q(user_from__groups=group)).order_by('-timestamp')
+    paginator = Paginator(activity_list, 10)
+    try:
+        activity = paginator.page(0)
+    except (EmptyPage, InvalidPage):
+        activity = paginator.page(paginator.num_pages)
+
     return render_to_response('profile/group.html',
                               {'group': group,
                                'top_users': top_users,
                                'subgroups': subgroups,
                                'top': history,
+                               'activity': activity,
                                },
                               context_instance=RequestContext(request))
 
