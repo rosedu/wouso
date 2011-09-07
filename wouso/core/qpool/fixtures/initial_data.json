@@ -19,5 +19,36 @@
   "fields": {
    "name": "quest"
   }
+ },
+ {
+  "pk": 4,
+  "model": "qpool.category",
+  "fields": {
+   "name": "proposed"
+  }
+ },
+ {
+  "pk": 1,
+  "model": "qpool.tag",
+  "fields": {
+    "name": "qotd",
+    "active": false
+  }
+ },
+ {
+  "pk": 2,
+  "model": "qpool.tag",
+  "fields": {
+    "name": "challenge",
+    "active": false
+  }
+ },
+ {
+  "pk": 3,
+  "model": "qpool.tag",
+  "fields": {
+    "name": "quest",
+    "active": false
+  }
  }
 ]

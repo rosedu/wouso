@@ -16,9 +16,12 @@ def propose(request):
             qdict['text'] = form.cleaned_data['text']
             qdict['answer_type'] = form.cleaned_data['answer_type']
             qdict['proposed_by'] = request.user
-            qdict['category'] = Category.objects.filter(name=form.cleaned_data['category'])[0]
+            qdict['category'] = Category.objects.filter(name='proposed')[0]
             q = Question(**qdict)
             q.save()
+
+            tag = Tag.objects.filter(name=form.cleaned_data['category'])[0]
+            q.tags.add(tag)
 
             # add the tags
             for tag_name in form.cleaned_data['tags']:
