@@ -14,6 +14,22 @@ class Tag(models.Model):
     def __unicode__(self):
         return self.name
 
+    def set_active(self):
+        self.active = True
+        self.save()
+        questions = Question.objects.filter(tags__name=self.name)
+        for q in questions:
+            q.active = True
+            q.save()
+
+    def set_inactive(self):
+        self.active = False
+        self.save()
+        questions = Question.objects.filter(tags__name=self.name)
+        for q in questions:
+            q.active = False
+            q.save()
+
 class Category(models.Model):
     name = models.CharField(max_length=64)
 
