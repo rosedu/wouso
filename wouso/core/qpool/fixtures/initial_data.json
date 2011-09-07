@@ -1,0 +1,23 @@
+[
+ {
+  "pk": 1,
+  "model": "qpool.category",
+  "fields": {
+   "name": "qotd"
+  }
+ },
+ {
+  "pk": 2,
+  "model": "qpool.category",
+  "fields": {
+   "name": "challenge"
+  }
+ },
+ {
+  "pk": 3,
+  "model": "qpool.category",
+  "fields": {
+   "name": "quest"
+  }
+ }
+]
