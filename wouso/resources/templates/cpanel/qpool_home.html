@@ -12,6 +12,17 @@
             <li><a class="button" href="{% url qotd_schedule %}" title="schedule active questions">Automatic schedule</a></li>
         </ul>
     {% endif %}
+    {% if cat == 'challenge' %}
+        {% if tags == 0 %}
+            <p>No tags.</p>
+        {% else %}
+            <h3> Active tags </h3>
+            <form action="{% url set_active_categories %}" method="post">{% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="Submit" />
+            </form>
+        {% endif %}
+    {% endif %}
 {% endblock %}
 
 {% block content %}

@@ -12,7 +12,7 @@ from wouso.core.qpool.models import Schedule, Question, Tag, Category
 from wouso.core.qpool import get_questions_with_category
 from wouso.interface.cpanel.models import Customization
 from wouso.utils.import_questions import import_from_file
-from forms import QuestionForm
+from forms import QuestionForm, TagsForm
 
 
 @login_required
@@ -55,11 +55,16 @@ def qpool_home(request, cat=None):
     if cat == 'qotd':
         questions = questions.order_by('schedule__day')
 
+    tags = Tag.objects.all().exclude(name__in=['qotd', 'challenge', 'quest'])
+    form = TagsForm(tags=tags)
+
     return render_to_response('cpanel/qpool_home.html',
                               {'questions': questions,
                                'categs': CATEGORIES,
                                'cat': cat,
+                               'form': form,
                                'module': 'qpool',
+                               'tags': len(tags),
                                'today': str(datetime.date.today())},
                               context_instance=RequestContext(request))
 
@@ -118,6 +123,21 @@ def question_del(request, id):
 def qotd_schedule(request):
     Schedule.automatic()
     return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
+
+def set_active_categories(request):
+    if request.method == 'POST':
+        tags = Tag.objects.all().exclude(name__in=['qotd', 'quest', 'challenge'])
+        tdict = {}
+        for tag in tags:
+            tdict[tag.name] = [tag, False]
+        for item in request.POST.keys():
+            if item in tdict:
+                tdict[item][0].set_active()
+                tdict[item][1] = True
+        for tag in tdict:
+            if tdict[tag][1] is False:
+                tdict[tag][0].set_inactive()
+        return qpool_home(request, 'challenge')
 
 @login_required
 def importer(request):

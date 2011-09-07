@@ -15,6 +15,8 @@ class Tag(models.Model):
         return self.name
 
     def set_active(self):
+        if self.active is True:
+            return
         self.active = True
         self.save()
         questions = Question.objects.filter(tags__name=self.name)
@@ -23,6 +25,8 @@ class Tag(models.Model):
             q.save()
 
     def set_inactive(self):
+        if self.active is False:
+            return
         self.active = False
         self.save()
         questions = Question.objects.filter(tags__name=self.name)

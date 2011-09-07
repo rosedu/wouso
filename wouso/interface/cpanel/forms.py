@@ -1,5 +1,5 @@
 from django import forms
-from wouso.core.qpool.models import Question, Answer, Schedule, Category
+from wouso.core.qpool.models import Question, Answer, Schedule, Category, Tag
 
 class QuestionForm(forms.Form):
     text = forms.CharField(max_length=500, widget=forms.Textarea)
@@ -55,3 +55,11 @@ class QuestionForm(forms.Form):
                 sched.day = data['schedule']
                 sched.save()
         self.instance.save()
+
+
+class TagsForm(forms.Form):
+    def __init__(self, data=None, instance=None, tags=[]):
+        super(TagsForm, self).__init__(data)
+
+        for tag in tags:
+            self.fields['%s' % tag.name] = forms.BooleanField(initial=tag.active, required=True)
