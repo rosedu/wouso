@@ -71,7 +71,7 @@ def message(request, mid):
             message.read = True
             message.save()
         return render_to_response('messaging/message_one.html',
-                                  {'m': message},
+                                  {'m': message, 'mess_user': me},
                                   context_instance=RequestContext(request))
     raise Http404
 

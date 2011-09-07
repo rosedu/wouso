@@ -7,7 +7,7 @@
 
     {{m.text}}
     </pre>
-    {% if m.sender.id != user.id %}
+    {% if m.sender.id != mess_user.id %}
     <a href="{% url create_to m.sender.id %}" class="button">Reply</a>
     {% endif %}
     <a href="#" onclick="messagingReload(); return false;" class="button">Back</a>
