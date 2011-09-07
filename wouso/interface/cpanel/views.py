@@ -116,7 +116,7 @@ def question_del(request, id):
     return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
 
 def qotd_schedule(request):
-    Schedule.auttomatic()
+    Schedule.automatic()
     return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
 
 @login_required

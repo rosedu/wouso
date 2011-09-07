@@ -132,7 +132,7 @@ class Schedule(models.Model):
     day = models.DateField(default=datetime.now, blank=True)
 
     @classmethod
-    def auttomatic(kls, qotd='qotd'):
+    def automatic(kls, qotd='qotd'):
         """ Automatically schedule all active questions on dates newer than the newest """
         newest = Schedule.objects.aggregate(models.Max('day'))
         if not newest:
