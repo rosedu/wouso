@@ -141,7 +141,7 @@ def set_active_categories(request):
 
 @login_required
 def importer(request):
-    categories = Category.objects.all()
+    categories = Category.objects.all().exclude(name='proposed')
     return render_to_response('cpanel/importer.html',
                            {'categories': categories,
                             'module': 'qpool'},
