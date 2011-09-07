@@ -32,7 +32,7 @@
 {% else %}
 <td> {{ user.progress }} </td>
 {% endif %}
-<td> {{ user.last_seen }} </td>
+<td nowrap> {% if user.last_seen %}{{ user.last_seen }}{% else %}Never{% endif %} </td>
 </tr>
 {% endfor %}
 </table>

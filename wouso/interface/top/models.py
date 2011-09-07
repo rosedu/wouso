@@ -6,7 +6,6 @@ from wouso.core.user.models import UserProfile
 from wouso.interface import render_string
 
 class TopUser(UserProfile):
-
     @property
     def progress(self):
         try:
@@ -36,8 +35,8 @@ class TopUser(UserProfile):
 
 class History(models.Model):
     user = models.ForeignKey('TopUser')
-    position = models.IntegerField()
-    points = models.IntegerField()
+    position = models.IntegerField(default=0)
+    points = models.FloatField(default=0)
     date = models.DateField()
 
     @classmethod
@@ -49,6 +48,9 @@ class History(models.Model):
             return 0
         except History.DoesNotExist:
             return 0
+
+    def __unicode__(self):
+        return u"%s at %s, position: %d, points: %f" % (self.user, self.date, self.position, self.points)
 
 class Top(App):
 
