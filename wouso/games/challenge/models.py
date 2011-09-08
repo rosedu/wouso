@@ -88,7 +88,7 @@ class Challenge(models.Model):
 
         questions = [q for q in get_questions_with_category('challenge')]
         if len(questions) < 5:
-            return None
+            raise ValueError('Too few questions')
         shuffle(questions)
         # TODO: better question selection
         #limit = 5
