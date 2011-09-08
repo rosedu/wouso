@@ -1,9 +1,9 @@
 from django.db import models
 from django.contrib import admin
-from wouso.core.user.models import UserProfile
+from wouso.core.user.models import Player
 from datetime import datetime
 
-class MessagingUser(UserProfile):
+class MessagingUser(Player):
     '''extension of the user profile, customized for messages'''
 
     canSendMessage = models.BooleanField(null=False, blank=False, default=True)

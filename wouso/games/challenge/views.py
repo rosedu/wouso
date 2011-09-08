@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from wouso.core.user.models import UserProfile
+from wouso.core.user.models import Player
 from models import ChallengeUser, ChallengeGame, Challenge, Participant
 from forms import ChallengeForm
 
@@ -68,7 +68,7 @@ def challenge(request, id):
 @login_required
 def launch(request, to_id):
     try:
-        user_to = UserProfile.objects.get(id=to_id)
+        user_to = Player.objects.get(id=to_id)
         user_to = user_to.get_extension(ChallengeUser)
     except User.DoesNotExist:
         return do_error(request, 'nosuchuser')

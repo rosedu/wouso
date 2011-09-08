@@ -2,7 +2,7 @@ import unittest
 import django.test
 from django.contrib.auth.models import User
 from models import *
-from wouso.core.user.models import UserProfile
+from wouso.core.user.models import Player
 from wouso.core import scoring
 from wouso.core.qpool.models import Question, Schedule, Tag, Category
 
@@ -38,7 +38,7 @@ class QotdTestCase(unittest.TestCase):
 
         profile = user.get_profile()
 
-        self.assertTrue(isinstance(profile, UserProfile))
+        self.assertTrue(isinstance(profile, Player))
         self.assertTrue(isinstance(profile.get_extension(QotdUser), QotdUser))
 
         user.delete()

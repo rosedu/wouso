@@ -5,7 +5,7 @@ from django.http import Http404
 from django.db.models import Q
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from wouso.core.user.models import UserProfile, PlayerGroup
+from wouso.core.user.models import Player, PlayerGroup
 from wouso.core.scoring.models import History
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, GroupHistory
@@ -20,8 +20,8 @@ def profile(request):
 @login_required
 def user_profile(request, id, page=u'0'):
     try:
-        profile = UserProfile.objects.get(id=id)
-    except UserProfile.DoesNotExist:
+        profile = Player.objects.get(id=id)
+    except Player.DoesNotExist:
         raise Http404
 
     avatar = "http://www.gravatar.com/avatar/%s.jpg?d=monsterid"\

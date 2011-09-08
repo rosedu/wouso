@@ -8,14 +8,14 @@ from django.template import RequestContext
 from wouso.interface import logger
 from django.utils.translation import ugettext as _
 from wouso.interface.forms import *
-from wouso.core.user.models import UserProfile
+from wouso.core.user.models import Player
 from wouso.interface.models import StaticPage
 
 def homepage(request):
     """ First page shown """
     # gather users online in the last ten minutes
     oldest = datetime.datetime.now() - datetime.timedelta(minutes = 10)
-    online_last10 = UserProfile.objects.filter(last_seen__gte=oldest)
+    online_last10 = Player.objects.filter(last_seen__gte=oldest)
 
     return render_to_response('site_base.html',
                               {'last10': online_last10},
@@ -29,12 +29,12 @@ def search(request):
     if form.is_valid():
         query = form.cleaned_data['query']
         if len(query.split()) == 1:
-            searchresults = UserProfile.objects.filter(Q(user__first_name__icontains=query) | Q(user__last_name__icontains=query))
+            searchresults = Player.objects.filter(Q(user__first_name__icontains=query) | Q(user__last_name__icontains=query))
         else:
             query = query.split()
             searchresults = set()
             for word in query:
-                r = UserProfile.objects.filter(Q(user__first_name__icontains=word) | Q(user__last_name__icontains=word))
+                r = Player.objects.filter(Q(user__first_name__icontains=word) | Q(user__last_name__icontains=word))
                 searchresults = searchresults.union(r)
 
         return render_to_response('search_results.html',
@@ -51,7 +51,7 @@ def instantsearch(request):
         query = form.cleaned_data['q']
         users = User.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query))
         user_ids = [u.id for u in users]
-        searchresults = UserProfile.objects.filter(user__in=user_ids)
+        searchresults = Player.objects.filter(user__in=user_ids)
         return render_to_response('instant_search_results.txt',
                                   {'searchresults': searchresults},
                                   context_instance=RequestContext(request))

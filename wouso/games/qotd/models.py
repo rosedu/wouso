@@ -1,6 +1,6 @@
 from datetime import date, datetime, time
 from django.db import models
-from wouso.core.user.models import UserProfile
+from wouso.core.user.models import Player
 from wouso.core.game.models import Game
 from wouso.core import scoring
 from wouso.core.qpool.models import Schedule
@@ -9,7 +9,7 @@ from wouso.core.scoring.models import Formula
 # Qotd will use models (question) from qpool
 # Please implement wouso.core.qpool
 
-class QotdUser(UserProfile):
+class QotdUser(Player):
     """ Extension of the User object, customized for qotd """
     last_answered = models.DateTimeField(null=True, blank=True, default=None)
     last_answer = models.IntegerField(default=0, blank=True)

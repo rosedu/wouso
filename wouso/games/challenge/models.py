@@ -4,7 +4,7 @@ from random import shuffle
 import pickle as pk
 from django.db import models
 from django.db.models import Q, Max
-from wouso.core.user.models import UserProfile
+from wouso.core.user.models import Player
 from wouso.core.qpool.models import Question
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.game.models import Game
@@ -13,7 +13,7 @@ from wouso.core.scoring.models import Formula
 
 # Challenge will use QPool questions
 
-class ChallengeUser(UserProfile):
+class ChallengeUser(Player):
     """ Extension of the userprofile, customized for challenge """
 
     last_launched = models.DateTimeField(default=datetime(1, 1, 1), blank=True, null=True)

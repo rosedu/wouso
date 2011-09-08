@@ -24,7 +24,7 @@ class PlayerGroup(models.Model):
     def __unicode__(self):
         return self.name
 
-class UserProfile(models.Model):
+class Player(models.Model):
     user = models.ForeignKey(User, unique=True,
         related_name="%(class)s_related")
 
@@ -74,5 +74,5 @@ class UserProfile(models.Model):
 
 # Hack for having user and user's profile always in sync
 def user_post_save(sender, instance, **kwargs):
-    profile, new = UserProfile.objects.get_or_create(user=instance)
+    profile, new = Player.objects.get_or_create(user=instance)
 models.signals.post_save.connect(user_post_save, User)

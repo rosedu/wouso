@@ -3,7 +3,7 @@ from datetime import datetime,timedelta
 from mock import patch
 from django.contrib.auth.models import User
 from wouso.games.challenge.models import ChallengeUser, Challenge, ChallengeGame
-from wouso.core.user.models import UserProfile
+from wouso.core.user.models import Player
 from wouso.core import scoring
 
 class ChallengeTestCase(unittest.TestCase):
@@ -38,7 +38,7 @@ class ChallengeTestCase(unittest.TestCase):
 
         profile = user.get_profile()
 
-        self.assertTrue(isinstance(profile, UserProfile))
+        self.assertTrue(isinstance(profile, Player))
         self.assertTrue(isinstance(profile.get_extension(ChallengeUser), ChallengeUser))
 
         user.delete()

@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from django.db import models
 from django.contrib.auth.models import User
 from wouso.core.app import App
-from wouso.core.user.models import UserProfile, PlayerGroup
+from wouso.core.user.models import Player, PlayerGroup
 from wouso.interface import render_string
 
 class GroupHistory:
@@ -18,7 +18,7 @@ class GroupHistory:
         hs = History.objects.filter(group=self.group).order_by('-date')[:7]
         return [(i + 1, h.position) for (i,h) in enumerate(hs)]
 
-class TopUser(UserProfile):
+class TopUser(Player):
     @property
     def progress(self):
         try:

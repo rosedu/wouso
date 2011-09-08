@@ -1,10 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as OldUserAdmin
-from wouso.core.user.models import UserProfile, PlayerGroup
+from wouso.core.user.models import Player, PlayerGroup
 
 class UserProfileInline(admin.StackedInline):
-    model = UserProfile
+    model = Player
 
 class UserAdmin(OldUserAdmin):
     inlines = [ UserProfileInline ]

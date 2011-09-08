@@ -1,7 +1,7 @@
 import logging
 import datetime
 from django.db import models
-from wouso.core.user.models import UserProfile
+from wouso.core.user.models import Player
 from wouso.core.game.models import Game
 from wouso.core import scoring
 from wouso.core.scoring.models import Formula
@@ -11,7 +11,7 @@ from wouso.interface.activity import signals
 
 # Quest will use QPool questions tagged 'quest'
 
-class QuestUser(UserProfile):
+class QuestUser(Player):
     current_quest = models.ForeignKey('Quest', null=True, blank=True, default=None)
     current_level = models.IntegerField(default=0, blank=True)
     started_time = models.DateTimeField(default=datetime.datetime.now, blank=True, null=True)
@@ -166,12 +166,12 @@ class QuestGame(Game):
         """ Returns a list of formulas used by qotd """
         fs = []
         quest_game = kls.get_instance()
-        fs.append(Formula(id='quest-ok', formula='points={level}', 
-            owner=quest_game.game, 
+        fs.append(Formula(id='quest-ok', formula='points={level}',
+            owner=quest_game.game,
             description='Points earned when finishing a level. Arguments: level.')
         )
-        fs.append(Formula(id='quest-finish-ok', formula='points=10', 
-            owner=quest_game.game, 
+        fs.append(Formula(id='quest-finish-ok', formula='points=10',
+            owner=quest_game.game,
             description='Bonus points earned when finishing the entire quest. No arguments.')
         )
         return fs

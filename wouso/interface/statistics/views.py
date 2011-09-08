@@ -8,7 +8,7 @@ from django.utils.translation import ugettext as _
 from wouso.core.qpool.models import Question
 from wouso.games.challenge.models import Challenge
 from wouso.games.qotd.models import QotdUser
-from wouso.core.user.models import UserProfile
+from wouso.core.user.models import Player
 
 
 def stats(request):
@@ -17,7 +17,7 @@ def stats(request):
 
     # now
     try:
-        users_online_now = UserProfile.objects.filter(
+        users_online_now = Player.objects.filter(
             last_seen__gte=datetime.now() - timedelta(minutes=10))
     except:
         users_online_now = []
@@ -26,7 +26,7 @@ def stats(request):
     # today
     today = date.today()
     try:
-        users_online_today = UserProfile.objects.filter(last_seen__gte=today)
+        users_online_today = Player.objects.filter(last_seen__gte=today)
     except:
         users_online_today = []
     data['users_online_today'] = len(users_online_today)
@@ -49,7 +49,7 @@ def stats(request):
     # week
     week_start = date.today() - timedelta(days=date.today().isocalendar()[2])
     try:
-        users_online_week = UserProfile.objects.filter(last_seen__gte=week_start)
+        users_online_week = Player.objects.filter(last_seen__gte=week_start)
     except:
         users_online_week = []
     data['users_online_week'] = len(users_online_week)
@@ -69,7 +69,7 @@ def stats(request):
 
     # ever
     try:
-        users_online_ever = UserProfile.objects.filter(last_seen__isnull=False)
+        users_online_ever = Player.objects.filter(last_seen__isnull=False)
     except:
         users_online_ever = []
     data['users_online_ever'] = len(users_online_ever)

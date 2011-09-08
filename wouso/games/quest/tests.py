@@ -1,7 +1,7 @@
 import unittest
 from django.contrib.auth.models import User
 from models import *
-from wouso.core.user.models import UserProfile
+from wouso.core.user.models import Player
 from wouso.core import scoring
 
 class QuestTestCase(unittest.TestCase):

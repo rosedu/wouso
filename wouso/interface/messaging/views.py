@@ -7,7 +7,7 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
-from wouso.core.user.models import UserProfile
+from wouso.core.user.models import Player
 from wouso.interface.messaging.models import Message, MessagingUser
 from wouso.interface.messaging.forms import ComposeForm
 
@@ -43,7 +43,7 @@ def home(request, quiet=None, box=None, page=u'0'):
 @login_required
 def create(request, to=None):
     if to is not None:
-        to = get_object_or_404(UserProfile, pk=to)
+        to = get_object_or_404(Player, pk=to)
 
     if request.method == "POST":
         form = ComposeForm(request.POST)

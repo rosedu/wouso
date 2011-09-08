@@ -7,11 +7,11 @@ setup_environ(settings)
 
 from wouso.core import artifacts
 from wouso.core.artifacts.models import *
-from wouso.core.user.models import UserProfile
+from wouso.core.user.models import Player
 
 if __name__ == '__main__':
     print 'Setting up the Artifacts...',
-    
+
     # Create a default group
     default_group, new = Group.objects.get_or_create(name='Default')
     for i in range(7):
@@ -21,15 +21,15 @@ if __name__ == '__main__':
             name=name,
             group=default_group,
             title=title)
-    
+
     print "done"
     # Assure each user has a level
     level = Artifact.get_level_1()
-    for u in UserProfile.objects.all():
+    for u in Player.objects.all():
         if u.level is None:
             u.level = level
             u.save()
-    
+
     # Dump
     print "Groups: "
     for c in Group.objects.all():

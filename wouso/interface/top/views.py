@@ -1,5 +1,5 @@
 # Create your views here.
-from wouso.core.user.models import UserProfile
+from wouso.core.user.models import Player
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import Http404
@@ -37,7 +37,7 @@ def gettop(request, toptype, sortcrit, page):
     if sortcritno == 2:
         allUsers = TopUser.objects.order_by('-last_seen')[(pageno-1)*PERPAGE:pageno*PERPAGE]
 
-    count = UserProfile.objects.count()
+    count = Player.objects.count()
     if (count > pageno*PERPAGE+PERPAGE):
         next_page = pageno + 1
     if pageno > 1:

@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from wouso.core.config.models import Setting
-from wouso.core.user.models import UserProfile
+from wouso.core.user.models import Player
 from wouso.core.artifacts.models import Artifact
 from wouso.core.qpool.models import Schedule, Question, Tag, Category
 from wouso.core.qpool import get_questions_with_category
@@ -167,7 +167,7 @@ def import_from_upload(request):
 
 @login_required
 def artifactset(request, id):
-    profile = get_object_or_404(UserProfile, pk=id)
+    profile = get_object_or_404(Player, pk=id)
     artifacts = Artifact.objects.all()
 
     if request.method == "POST":
@@ -181,13 +181,13 @@ def artifactset(request, id):
 
 @login_required
 def groupset(request, id):
-    profile = get_object_or_404(UserProfile, pk=id)
+    profile = get_object_or_404(Player, pk=id)
 
     from django.forms import ModelForm
 
     class GForm(ModelForm):
         class Meta:
-            model = UserProfile
+            model = Player
             fields = ('groups',)
 
     if request.method == 'POST':

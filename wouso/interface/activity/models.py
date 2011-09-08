@@ -1,14 +1,14 @@
 from datetime import datetime
 from django.db import models
 from wouso.core.game.models import Game
-from wouso.core.user.models import UserProfile
+from wouso.core.user.models import Player
 from wouso.interface import logger
 from wouso.interface.activity.signals import addActivity
 
 class Activity(models.Model):
     timestamp = models.DateTimeField(default=datetime.now, blank=True)
-    user_from = models.ForeignKey(UserProfile, related_name='user_from')
-    user_to = models.ForeignKey(UserProfile, related_name='user_to')
+    user_from = models.ForeignKey(Player, related_name='user_from')
+    user_to = models.ForeignKey(Player, related_name='user_to')
     message = models.CharField(max_length=140)
     game = models.ForeignKey(Game)
 
