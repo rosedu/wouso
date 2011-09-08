@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
+from wouso.core.god import God
 from wouso.core.scoring.models import History
 from wouso.core.artifacts.models import Artifact
 
@@ -8,6 +9,8 @@ class PlayerGroup(models.Model):
     name = models.CharField(max_length=100)
     gclass = models.IntegerField(default=0)
     parent = models.ForeignKey('PlayerGroup', default=None, null=True, blank=True)
+
+    # used only for sorting and position
     points = models.FloatField(default=0)
 
     @property
@@ -33,12 +36,20 @@ class Player(models.Model):
     points = models.FloatField(default=0, blank=True, null=True)
 
     level_no = models.IntegerField(default=1, blank=True, null=True)
-    level = models.ForeignKey(Artifact, default=Artifact.get_level_1, related_name='user_level', blank=True, null=True)
+    #level = models.ForeignKey(Artifact, default=Artifact.get_level_1, related_name='user_level', blank=True, null=True)
 
     last_seen = models.DateTimeField(null=True, blank=True)
 
     artifacts = models.ManyToManyField(Artifact, blank=True)
     groups = models.ManyToManyField(PlayerGroup, blank=True)
+
+    @property
+    def level(self):
+        """ Return an artifact object for the current level_no.
+        Ask God about the right artifact object, given the player instance.
+        In the future, God may check players race and give specific artifacts.
+        """
+        return God.get_user_level(self.level_no, player=self)
 
     @property
     def coins(self):

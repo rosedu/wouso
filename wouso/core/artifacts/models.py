@@ -10,6 +10,8 @@ class Group(models.Model):
         return self.name
     
 class Artifact(models.Model):
+    class Meta:
+        unique_together = ('name', 'group')
     name = models.CharField(max_length=64) # level-1, quest-bun, etc
     title = models.CharField(max_length=100) # Maturator
     image = models.ImageField(upload_to=settings.MEDIA_ARTIFACTS_DIR, blank=True, null=True)

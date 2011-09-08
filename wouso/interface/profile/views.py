@@ -50,7 +50,7 @@ def user_profile(request, id, page=u'0'):
 def player_group(request, id):
     group = get_object_or_404(PlayerGroup, pk=id)
 
-    top_users = group.userprofile_set.all().order_by('-points')
+    top_users = group.player_set.all().order_by('-points')
     subgroups = group.children.order_by('-points')
     history = GroupHistory(group)
 
