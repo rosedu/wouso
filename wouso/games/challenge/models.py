@@ -35,8 +35,6 @@ class ChallengeUser(Player):
     def can_play(self, challenge):
         return challenge.can_play(self)
 
-    def __unicode__(self):
-        return unicode(self.user)
 
 class Participant(models.Model):
     user = models.ForeignKey(ChallengeUser)
@@ -118,7 +116,7 @@ class Challenge(models.Model):
         """ Update user.start and set playing time to now
         This is called when one of the participants sees the challenge for the
         first time.
-        After this call, challenge will be visible to fim for 5 minutes
+        After this call, challenge will be visible to him for 5 minutes
         TODO: check it hasn't been already started in the past"""
         user = user.get_extension(ChallengeUser)
 
