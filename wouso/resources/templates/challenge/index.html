@@ -11,11 +11,11 @@
 <h3>Active</h3>
 {% for c in challenges %}
     <a href="{% url interface.profile.views.user_profile c.user_from.user.id %}">{{ c.user_from }}</a> vs.
-    <a href="{% url interface.profile.views.user_profile c.user_to.user.id %}">{{ c.user_to }}</a> - Status: {% if c.status == "R" %}refused
+    <a href="{% url interface.profile.views.user_profile c.user_to.user.id %}">{{ c.user_to }}</a> - Status: {% if c.status == "R" %}Refused
     {% else %}
-    {% if c.status == "L" %}launched
+    {% if c.status == "L" %}Launched
     {% else %}
-    {% if c.status == "A" %}accepted
+    {% if c.status == "A" %}Accepted
     {% endif %}{% endif %}{% endif %}
 
     {% ifequal c.user_to.user challuser %}
@@ -40,7 +40,11 @@
 {% for c in played %}
     <a href="{% url interface.profile.views.user_profile c.user_from.user.id %}">{{ c.user_from }}</a> vs.
     <a href="{% url interface.profile.views.user_profile c.user_to.user.id %}">{{ c.user_to }}</a>
-     - Result:{% if c.status == "D" %} Draw {% else %} Won by {{ c.winner }}. {% endif %} <br/>
+     - Result:{% if c.status == "D" %} Draw
+    {% else %} {% if c.status == "P" %} Won by {{ c.winner }}
+    {% else %} Pending
+    {% endif %}
+    {% endif %} <br/>
 {% endfor %}
 {% endif %}
 

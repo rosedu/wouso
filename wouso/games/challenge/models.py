@@ -159,6 +159,25 @@ class Challenge(models.Model):
         else:
             pass #raise something
 
+    def expired(self, user):
+        # set winner the OTHER user, set challenge as played, score.
+        self.status = 'P'
+        exp_user = user.get_extension(ChallengeUser)
+        if exp_user == self.user_from.user:
+            self.user_won = self.user_to
+            self.user_lost = self.user_from
+        elif exp_user == self.user_to.user:
+            self.user_won = self.user_from
+            self.user_lost = self.user_to
+        self.user_won.points = 42
+        self.user_lost.points = -1
+        self.winner = self.user_won.user
+        scoring.score(self.user_won.user, ChallengeGame, 'chall-won',
+            external_id=self.id, points=self.user_won.points, points2=self.user_lost.points)
+        scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
+            external_id=self.id, points=self.user_lost.points, points2=self.user_lost.points)
+        self.save()
+
     def played(self):
         """ Both players have played, save and score """
         self.user_to.points = self.calculate_points(pk.loads(str(self.user_to.responses)))
@@ -246,8 +265,8 @@ class Challenge(models.Model):
 
     def __unicode__(self):
         return "%s vs %s (%s) - %s [%d] " % (
-            str(self.user_from.user),
-            str(self.user_to.user),
+            unicode(self.user_from),
+            unicode(self.user_to),
             self.date,
             self.status,
             self.questions.count())

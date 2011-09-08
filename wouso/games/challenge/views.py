@@ -49,6 +49,8 @@ def challenge(request, id):
     if request.method == "POST":
         # check time delta between start of challenge and submit
         if not chall.check_timedelta(request.user.get_profile()):
+            # set challenge lost for user
+            chall.expired(request.user.get_profile())
             return do_error(request, 'Challenge timer exceeded.')
 
         form = ChallengeForm(chall, request.POST)
