@@ -62,7 +62,7 @@ class Player(models.Model):
         try:
             extension = cls.objects.get(user=self.user)
         except cls.DoesNotExist:
-            extension = cls(userprofile_ptr = self)
+            extension = cls(player_ptr = self)
             for f in self._meta.local_fields:
                 setattr(extension, f.name, getattr(self, f.name))
             extension.save()
