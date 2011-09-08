@@ -32,10 +32,10 @@ def search(request):
             searchresults = UserProfile.objects.filter(Q(user__first_name__icontains=query) | Q(user__last_name__icontains=query))
         else:
             query = query.split()
-            searchresults = []
+            searchresults = set()
             for word in query:
                 r = UserProfile.objects.filter(Q(user__first_name__icontains=word) | Q(user__last_name__icontains=word))
-                searchresults.extend(list(r))
+                searchresults = searchresults.union(r)
 
         return render_to_response('search_results.html',
                                   {'searchresults': searchresults},
