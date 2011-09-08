@@ -28,7 +28,14 @@ def search(request):
     form = SearchForm(request.POST)
     if form.is_valid():
         query = form.cleaned_data['query']
-        searchresults = UserProfile.objects.filter(Q(user__first_name__icontains=query) | Q(user__last_name__icontains=query))
+        if len(query.split()) == 1:
+            searchresults = UserProfile.objects.filter(Q(user__first_name__icontains=query) | Q(user__last_name__icontains=query))
+        else:
+            query = query.split()
+            searchresults = []
+            for word in query:
+                r = UserProfile.objects.filter(Q(user__first_name__icontains=word) | Q(user__last_name__icontains=word))
+                searchresults.extend(list(r))
 
         return render_to_response('search_results.html',
                                   {'searchresults': searchresults},
