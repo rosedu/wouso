@@ -30,8 +30,7 @@
 
     <div class="actions">
         {% if profile.user.id != user.id %}
-        <a class="button" href="{% url create_to profile.id %}">Message</a>
-
+            <a class="button" href="{% url create_to profile.id %}">Message</a>
             <a class="button" href="{% url games.challenge.views.launch profile.id %}">Challenge!</a>
         {% endif %}
     </div>
