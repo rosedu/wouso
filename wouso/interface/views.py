@@ -28,12 +28,10 @@ def search(request):
     form = SearchForm(request.POST)
     if form.is_valid():
         query = form.cleaned_data['query']
-        searchresults = User.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query))
-        sr = []
-        for r in searchresults:
-            sr.append(r.get_profile())
+        searchresults = UserProfile.objects.filter(Q(user__first_name__icontains=query) | Q(user__last_name__icontains=query))
+
         return render_to_response('search_results.html',
-                                  {'searchresults': sr},
+                                  {'searchresults': searchresults},
                                   context_instance=RequestContext(request))
 
     return render_to_response('site_base.html', context_instance=RequestContext(request))
