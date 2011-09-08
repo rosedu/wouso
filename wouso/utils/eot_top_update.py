@@ -34,11 +34,14 @@ def main():
     for p in PlayerGroup.objects.all():
         p.points = p.live_points
         p.save()
-    for i,p in enumerate(PlayerGroup.objects.all().order_by('-points')):
-        position = i + 1
-        hs, new = History.objects.get_or_create(group=p, date=today)
-        hs.position, hs.points = position, p.points
-        hs.save()
+    # get position on distinct classes
+    for cls in PlayerGroup.objects.values_list('gclass').distinct():
+        cls = cls[0]
+        for i,p in enumerate(PlayerGroup.objects.filter(gclass=cls).order_by('-points')):
+            position = i + 1
+            hs, new = History.objects.get_or_create(group=p, date=today)
+            hs.position, hs.points = position, p.points
+            hs.save()
 
     print 'Done.'
 

@@ -15,7 +15,7 @@ class PlayerGroup(models.Model):
 
     @property
     def live_points(self):
-        p = self.userprofile_set.aggregate(total=models.Sum('points'))
+        p = self.player_set.aggregate(total=models.Sum('points'))
         if p['total'] is None:
             return 0
         return p['total']
