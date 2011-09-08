@@ -246,8 +246,8 @@ class Challenge(models.Model):
 
     def __unicode__(self):
         return "%s vs %s (%s) - %s [%d] " % (
-            str(self.user_from.user),
-            str(self.user_to.user),
+            unicode(self.user_from),
+            unicode(self.user_to),
             self.date,
             self.status,
             self.questions.count())
