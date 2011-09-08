@@ -54,10 +54,11 @@ def done(request):
     qotd = QotdGame.get_for_today()
     user = request.user.get_profile().get_extension(QotdUser)
     choice = user.last_answer
+    ans = qotd.answers[choice]
 
     return render_to_response('qotd/done.html',
-            {'question': qotd, 'choice': choice,
-            'valid': qotd.answers[choice].correct
+            {'question': qotd, 'choice': ans,
+            'valid': ans.correct
             },
             context_instance=RequestContext(request))
 
