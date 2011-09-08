@@ -10,13 +10,13 @@
 <div class="answers">
 <ul>
 {% for a in question.answers %}
-    <li><input type=radio disabled {% ifequal a.id choice %}checked{% endifequal %} /> 
+    <li><input type=radio disabled {% ifequal a.id choice %}checked{% endifequal %} />
     {{ a.text }} {% if a.correct %}[correct]{% endif %}</li>
 {% endfor %}
 </ul>
 </div>
 Your choice: {{ choice }}
-{% if valid %} correct{% else %} wrong{% endif %}
+{% if valid %} (correct){% else %} (wrong){% endif %}
 {% else %}
     No question for today.
 {% endif %}

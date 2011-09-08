@@ -77,10 +77,11 @@ def launch(request, to_id):
 
     if user_from.can_challenge(user_to):
 
-        chall = Challenge.create(user_from=user_from, user_to=user_to)
-        if not chall:
+        try:
+            chall = Challenge.create(user_from=user_from, user_to=user_to)
+        except ValueError as e:
             """ Some error occurred during question fetch. Clean up, and display error """
-            return do_error(request, 'couldnotcreate')
+            return do_error(request, e.message)
 
 
         return HttpResponseRedirect(reverse('games.challenge.views.index'))

@@ -76,6 +76,12 @@ class Challenge(models.Model):
     @staticmethod
     def create(user_from, user_to):
         """ Assigns questions, and returns the number of assigned q """
+
+        questions = [q for q in get_questions_with_category('challenge')]
+        if len(questions) < 5:
+            raise ValueError('Too few questions')
+        shuffle(questions)
+
         uf, ut = Participant(user=user_from), Participant(user=user_to)
         uf.save(), ut.save()
 
@@ -86,10 +92,6 @@ class Challenge(models.Model):
         user_from.last_launched = datetime.now()
         user_from.save()
 
-        questions = [q for q in get_questions_with_category('challenge')]
-        if len(questions) < 5:
-            return None
-        shuffle(questions)
         # TODO: better question selection
         #limit = 5
         for q in questions[:Challenge.LIMIT]:

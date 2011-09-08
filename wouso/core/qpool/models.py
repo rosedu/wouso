@@ -136,7 +136,10 @@ class Schedule(models.Model):
         newest = Schedule.objects.aggregate(models.Max('day'))
         if not newest:
             return
-        day = newest.get('day__max', date.today()) + timedelta(days=1)
+        day = newest.get('day__max', date.today())
+        if day is None:
+            day = date.today() - timedelta(days=1)
+        day += timedelta(days=1)
 
         for q in Question.objects.filter(active=True).filter(category__name=qotd).filter(schedule__isnull=True).order_by('id'):
             Schedule.objects.create(question=q, day=day)
