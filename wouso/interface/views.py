@@ -29,6 +29,8 @@ def search(request):
     if form.is_valid():
         query = form.cleaned_data['query']
         searchresults = User.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query))
+        for i in range(len(searchresults)):
+            searchresults[i] = searchresults[i].get_profile()
         return render_to_response('search_results.html',
                                   {'searchresults': searchresults},
                                   context_instance=RequestContext(request))
