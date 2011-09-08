@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django import forms
 from wouso.core.user.models import Player
 from wouso.core.artifacts.models import Artifact, Group
 from wouso.core.qpool.models import Schedule, Question, Tag, Category
@@ -188,6 +189,42 @@ def artifactset(request, id):
                                'artifacts': artifacts},
                               context_instance=RequestContext(request))
 
+def artifact_home(request, group=None):
+    if group is None:
+        group = 'Default'
+
+    group = get_object_or_404(Group, name=group)
+    artifacts = group.artifact_set.all()
+
+    return render_to_response('cpanel/artifact_home.html',
+                              {'groups': Group.objects.all(),
+                               'artifacts': artifacts,
+                               'module': 'artifacts',
+                               'group': group,
+                               },
+                              context_instance=RequestContext(request))
+
+def artifact_edit(request, id=None):
+    if id is not None:
+        instance = get_object_or_404(Artifact, pk=id)
+    else:
+        instance = None
+
+    from django.forms import ModelForm
+
+    class AForm(ModelForm):
+        class Meta:
+            model = Artifact
+
+    form = AForm(instance=instance)
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.artifact_home'))
+
+    return render_to_response('cpanel/artifact_edit.html',
+                            {'form': form, 'instance': instance},
+                              context_instance=RequestContext(request))
 @login_required
 def groupset(request, id):
     profile = get_object_or_404(Player, pk=id)

@@ -1,0 +1,20 @@
+{% extends 'cpanel/index.html' %}
+{% load artifacts %}
+{% block title %}CPanel{% endblock %}
+
+{% block content %}
+
+<h2>Edit artifact {% artifact instance %}</h2>
+
+<form method="post" enctype="multipart/form-data">
+<table>
+    {{ form }}
+</table>
+<div class="actions">
+    <button onclick="history.back(); return false;">Cancel</button>
+    <button type="reset">Reset</button>
+    <button type="submit" class="default">Save</button>
+</div>
+    {% csrf_token %}
+</form>
+{% endblock %}

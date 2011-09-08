@@ -1,0 +1,55 @@
+{% extends 'cpanel/index.html' %}
+{% load i18n %}
+{% load artifacts %}
+
+{% block scripts %}
+    <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
+{% endblock %}
+
+{% block title %}Artifacts{% endblock %}
+
+{% block extra_sidebar %}
+{% endblock %}
+
+{% block content %}
+
+<h2>Artifacts</h2>
+
+<div class="actions">
+    <a class="button" href="{% url artifact_new %}">{% trans 'Add artifact' %}</a>
+</div>
+
+<ul class="tabs">
+    {% for c in groups %}
+    <li {% if group == c %}class="active"{% endif %}><a href="{% url artifact_home c.name %}">{{ c.name }}</a></li>
+    {% endfor %}
+</ul>
+
+<div class="tab_container">
+    <div id="tab-1" class="tab_content">
+    <table>
+        <tr>
+            <th></th>
+            <th>Identifier</th>
+            <th>Title</th>
+            <th>Path or CSS class</th>
+        </th>
+    {% for a in artifacts %}
+        <tr>
+            <td>{% artifact a %}</td>
+            <td>{{ a.name }}</td>
+            <td>{{ a.title }}</td>
+            <td>{{ a.path }}</td>
+            <td class="actions" nowrap>
+                <a href="{% url artifact_edit a.id %}">✍</a>
+                <a href="" onclick="return confirm('really?');">✕</a>
+            </td>
+        </tr>
+    {% empty %}
+    <tr><td colspan=3>No artifacts</td></tr>
+    {% endfor %}
+    </table>
+    </div>
+</div>
+
+{% endblock %}
