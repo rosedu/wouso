@@ -171,12 +171,12 @@ class Challenge(models.Model):
             self.user_lost = self.user_to
         self.user_won.points = 42
         self.user_lost.points = -1
+        self.winner = self.user_won.user
         scoring.score(self.user_won.user, ChallengeGame, 'chall-won',
             external_id=self.id, points=self.user_won.points, points2=self.user_lost.points)
         scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
             external_id=self.id, points=self.user_lost.points, points2=self.user_lost.points)
         self.save()
-
 
     def played(self):
         """ Both players have played, save and score """
