@@ -9,7 +9,7 @@
 - pentru nici un utilizator
 - oricine
 ? S Care este echivalentul numeric al permisiunilor <tt>rwxr-----</tt>?
-- 740
++ 740
 - 640
 - 720
 - 037
