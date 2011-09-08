@@ -138,7 +138,7 @@ class Schedule(models.Model):
             return
         day = newest.get('day__max', date.today())
         if day is None:
-            day = date.today()
+            day = date.today() - timedelta(days=1)
         day += timedelta(days=1)
 
         for q in Question.objects.filter(active=True).filter(category__name=qotd).filter(schedule__isnull=True).order_by('id'):
