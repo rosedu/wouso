@@ -27,12 +27,16 @@
 
 <div class="tab_container">
     <div id="tab-1" class="tab_content">
+        <div class="subgroups">
+            <h3>Help</h3>
+            <p>To give/remove artifacts from users, use the artifact button on their profile page.</p>
+        </div>
     <table>
         <tr>
             <th></th>
             <th>Identifier</th>
             <th>Title</th>
-            <th>Path or CSS class</th>
+            <th>Path</th>
         </th>
     {% for a in artifacts %}
         <tr>
@@ -42,7 +46,7 @@
             <td>{{ a.path }}</td>
             <td class="actions" nowrap>
                 <a href="{% url artifact_edit a.id %}">✍</a>
-                <a href="" onclick="return confirm('really?');">✕</a>
+                <a href="{% url artifact_del a.id %}" onclick="return confirm('really?');">✕</a>
             </td>
         </tr>
     {% empty %}

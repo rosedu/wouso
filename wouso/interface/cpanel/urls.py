@@ -25,6 +25,7 @@ urlpatterns = patterns('',
     url(r'^artifact/user_set/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.artifactset', name='artifact_set'),
     url(r'^artifact/new/$', 'wouso.interface.cpanel.views.artifact_edit', name='artifact_new'),
     url(r'^artifact/edit/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.artifact_edit', name='artifact_edit'),
+    url(r'^artifact/del/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.artifact_del', name='artifact_del'),
     url(r'^artifact/(?P<group>\w*)/$', 'wouso.interface.cpanel.views.artifact_home', name='artifact_home'),
 
     url(r'^group/set/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.groupset', name='group_set'),

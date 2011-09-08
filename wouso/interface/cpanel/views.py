@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django import forms
+from django.conf import settings
 from wouso.core.user.models import Player
 from wouso.core.artifacts.models import Artifact, Group
 from wouso.core.qpool.models import Schedule, Question, Tag, Category
@@ -128,7 +128,11 @@ def question_del(request, id):
 
     question.delete()
 
-    return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
+    go_back = request.META.get('HTTP_REFERER', None)
+    if not go_back:
+        go_back = reverse('wouso.interface.cpanel.views.qpool_home')
+
+    return HttpResponseRedirect(go_back)
 
 def qotd_schedule(request):
     Schedule.automatic()
@@ -211,20 +215,45 @@ def artifact_edit(request, id=None):
         instance = None
 
     from django.forms import ModelForm
+    import os.path
 
     class AForm(ModelForm):
         class Meta:
             model = Artifact
 
-    form = AForm(instance=instance)
     if request.method == "POST":
+        form = AForm(request.POST, instance=instance)
         if form.is_valid():
-            form.save()
+            # Upload file, if necessary
+            image = request.FILES.get('image', False)
+            if image:
+                path = os.path.join(settings.MEDIA_ARTIFACTS_DIR, image.name)
+                with open(path, 'wb+') as fout:
+                    for chunk in image.chunks():
+                        fout.write(chunk)
+            instance = form.save()
+            if image:
+                instance.image = image
+                instance.save()
             return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.artifact_home'))
+    else:
+        form = AForm(instance=instance)
 
     return render_to_response('cpanel/artifact_edit.html',
                             {'form': form, 'instance': instance},
                               context_instance=RequestContext(request))
+
+def artifact_del(request, id):
+    artifact = get_object_or_404(Artifact, pk=id)
+
+    artifact.delete()
+
+    go_back = request.META.get('HTTP_REFERER', None)
+    if not go_back:
+        go_back = reverse('wouso.interface.cpanel.views.artifact_home')
+
+    return HttpResponseRedirect(go_back)
+
 @login_required
 def groupset(request, id):
     profile = get_object_or_404(Player, pk=id)
