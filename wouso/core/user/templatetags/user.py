@@ -5,6 +5,8 @@ register = template.Library()
 
 @register.simple_tag
 def player(user):
+    if isinstance(user, str):
+        return ''
     artif_html = artifact(user.level)
     user_profile = reverse('wouso.interface.profile.views.user_profile', args=(user.id,))
 

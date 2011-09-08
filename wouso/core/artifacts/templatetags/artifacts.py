@@ -1,6 +1,6 @@
-from django import template
+import django
 
-register = template.Library()
+register = django.template.Library()
 
 @register.simple_tag
 def artifact(artifact):

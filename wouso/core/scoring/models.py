@@ -1,8 +1,10 @@
 # see https://projects.rosedu.org/projects/wousodjango/wiki/CoreModulesScoring
 
+import logging
 from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
+from wouso.core.god import God
 from wouso.core.game import get_games
 from wouso.core.game.models import Game
 
@@ -88,12 +90,12 @@ class History(models.Model):
 def sync_user_points(sender, instance, **kwargs):
     user = instance.user
     coin = Coin.get('points')
-    result = History.objects.filter(user=user,coin=coin).aggregate(total=models.Sum('amount'))
-    user.get_profile().points = result['total']
-    #print user.get_profile().points, "aici"
-    # TODO: check why is this called twice
-    # TODO: update points only if instance.coin = points
-    # TODO: write a test for this signal handler
-    user.get_profile().save()
+    if instance.coin == coin:
+        result = History.objects.filter(user=user,coin=coin).aggregate(total=models.Sum('amount'))
+        player = user.get_profile()
+        player.points = result['total']
+        player.level_no = God.get_level_for_points(player.points)
+        player.save()
+        logging.debug("Updated %s with %f points, level %d" % (player, player.points, player.level_no))
 models.signals.post_save.connect(sync_user_points, History)
 models.signals.post_delete.connect(sync_user_points, History)
