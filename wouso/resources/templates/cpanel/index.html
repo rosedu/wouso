@@ -1,15 +1,35 @@
 {% extends 'site_base.html' %}
-
+{%  load artifacts %}
 {% block title %}CPanel{% endblock %}
 
 {% block css %}li.{{module}} {font-weight: bold}{% endblock %}
 
 {% block content %}
 
+ <div class="subgroups">
+    <h2>Artifacts</h2>
+    <table>
+        <tr>
+        {%  for g in artifact_groups %}
+        <td valign="top">
+            <h3>{{ g }}</h3>
+            {% for a in g.artifact_set.all %}
+                {% artifact a %} {{ a.name }}<br/>
+            {% endfor %}
+        </td>
+        {%  endfor %}
+    </table>
+</div>
+
 <h1> Statistics </h1>
 
+<h2>QPool</h2>
 <p>Qotd: {{nr_future_questions}} future available questions. </p>
 <p> {{nr_questions}} total questions. </p>
+
+<h2>Quest</h2>
+<p>{% if  active_quests %}One active quest{% else %}No quest active{% endif %}. Total: {{ total_quests }}</p>
+
 {% endblock %}
 
 {% block sidebar %}

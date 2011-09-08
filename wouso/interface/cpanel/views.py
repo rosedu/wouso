@@ -1,13 +1,12 @@
 import datetime
 from django.contrib.auth.decorators import login_required
-from django.http import Http404, HttpResponseRedirect
+from django.http import  HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from wouso.core.config.models import Setting
 from wouso.core.user.models import Player
-from wouso.core.artifacts.models import Artifact
+from wouso.core.artifacts.models import Artifact, Group
 from wouso.core.qpool.models import Schedule, Question, Tag, Category
 from wouso.core.qpool import get_questions_with_category
 from wouso.interface.cpanel.models import Customization
@@ -17,16 +16,26 @@ from forms import QuestionForm, TagsForm
 
 @login_required
 def dashboard(request):
+    from wouso.games.quest.models import Quest, QuestGame
 
     future_questions = Schedule.objects.filter(day__gte=datetime.datetime.now())
     nr_future_questions = len(future_questions)
 
     questions = Question.objects.all()
     nr_questions = len(questions)
+    active_quest = QuestGame().get_current()
+    total_quests = Quest.objects.all().count()
+
+    # artifacts
+    artifact_groups = Group.objects.all()
 
     return render_to_response('cpanel/index.html',
                               {'nr_future_questions' : nr_future_questions,
-                               'nr_questions' : nr_questions, 'module': 'home'},
+                               'nr_questions' : nr_questions,
+                               'active_quest': active_quest,
+                               'total_quests': total_quests,
+                               'module': 'home',
+                               'artifact_groups': artifact_groups},
                               context_instance=RequestContext(request))
 
 @login_required
