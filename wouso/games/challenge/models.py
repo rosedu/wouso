@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from random import shuffle
 import pickle as pk
 from django.db import models
@@ -97,6 +97,14 @@ class Challenge(models.Model):
 
         return c
 
+    @staticmethod
+    def get_expired(today):
+        """
+        Return all expired challenges at given date.
+        """
+        yesterday = today + timedelta(days=-1)
+        return Challenge.objects.filter(status='a', date__lt=yesterday)
+
     def accept(self):
         self.status = 'A'
         self.save()
@@ -169,7 +177,7 @@ class Challenge(models.Model):
         elif exp_user == self.user_to.user:
             self.user_won = self.user_from
             self.user_lost = self.user_to
-        self.user_won.points = 42
+        self.user_won.points = 42 
         self.user_lost.points = -1
         self.winner = self.user_won.user
         scoring.score(self.user_won.user, ChallengeGame, 'chall-won',
