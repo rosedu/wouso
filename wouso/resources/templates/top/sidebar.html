@@ -12,10 +12,10 @@
     </ol>
 {% endif %}
 
-<a href="/top/toptype/0/sortcrit/0/page/1/" class="goto"> Clasament curent</a>
+<a href="{% url wouso.interface.top.views.gettop %}" class="goto"> Clasament curent</a>
 <br/>
 {% if is_top %}
-    <a href="/top/toptype/1/sortcrit/0/page/1/" class="goto"> Top pe o săptămână </a>
+    <a href="{% url wouso.interface.top.views.gettop toptype=1 sortcrit=0 page=1 %}" class="goto"> Top pe o săptămână </a>
 {% endif %}
 
 {% endblock %}
