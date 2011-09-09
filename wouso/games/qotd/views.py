@@ -28,7 +28,7 @@ def index(request):
             QotdGame.answered(qotd_user, qotd, choice)
 
             # send signal
-            if qotd.answers[qotd_user.last_answer].correct:
+            if qotd_user.last_answer_correct:
                 signal_msg = '%s has given a correct answer to %s'
             else:
                 signal_msg = '%s has given a wrong answer to %s'
