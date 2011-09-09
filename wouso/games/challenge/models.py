@@ -4,7 +4,7 @@ from random import shuffle
 import pickle as pk
 from django.db import models
 from django.db.models import Q, Max
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_noop
 from wouso.core.user.models import Player
 from wouso.core.qpool.models import Question
 from wouso.core.qpool import get_questions_with_category
@@ -120,10 +120,13 @@ class Challenge(models.Model):
         self.user_from.user.save()
 
         # send activty signal
-        signal_msg = _('{user_to} has refused challenge from {user_from}').format(user_to=self.user_to, user_from=self.user_from)
+        signal_msg = ugettext_noop('{user_to} has refused challenge from {user_from}')
+
         signals.addActivity.send(sender=None, user_from=self.user_to.user, \
                                      user_to=self.user_from.user, \
-                                     message=signal_msg, game=ChallengeGame.get_instance())
+                                     message=signal_msg, \
+                                     arguments=dict(user_to=self.user_to, user_from=self.user_from), \
+                                     game=ChallengeGame.get_instance())
         self.save()
 
     def cancel(self):
@@ -197,10 +200,13 @@ class Challenge(models.Model):
             external_id=self.id, points=self.user_lost.points, points2=self.user_lost.points)
 
         # send activty signal
-        signal_msg = _('Challenge to {user_to} from {user_from} has expired and it was automatically settled.').format(user_to=self.user_to, user_from=self.user_from)
+        signal_msg = ugettext_noop('Challenge to {user_to} from {user_from} has expired and it was automatically settled.')
+
         signals.addActivity.send(sender=None, user_from=exp_user, \
                                      user_to=exp_user, \
-                                     message=signal_msg, game=ChallengeGame.get_instance())
+                                     message=signal_msg, \
+                                     arguments=dict(user_to=self.user_to, user_from=self.user_from), \
+                                     game=ChallengeGame.get_instance())
         self.save()
 
     def played(self):
@@ -225,10 +231,12 @@ class Challenge(models.Model):
             scoring.score(self.user_to.user, ChallengeGame, 'chall-draw')
             scoring.score(self.user_from.user, ChallengeGame, 'chall-draw')
             # send activty signal
-            signal_msg = _('Draw result between {user_to} and {user_from}').format(user_to=self.user_to, user_from=self.user_from)
+            signal_msg = ugettext_noop('Draw result between {user_to} and {user_from}')
             signals.addActivity.send(sender=None, user_from=self.user_to.user, \
                                      user_to=self.user_from.user, \
-                                     message=signal_msg, game=ChallengeGame.get_instance())
+                                     message=signal_msg, \
+                                     arguments=dict(user_to=self.user_to, user_from=self.user_from),\
+                                     game=ChallengeGame.get_instance())
         else:
             self.status = 'P'
             self.user_won, self.user_lost = result
@@ -238,10 +246,11 @@ class Challenge(models.Model):
             scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
                 external_id=self.id, points=self.user_lost.points, points2=self.user_lost.points)
             # send activty signal
-            signal_msg = _('{user_won} won challenge with {user_lost}').format(user_won=self.user_won, user_lost=self.user_lost)
+            signal_msg = ugettext_noop('{user_won} won challenge with {user_lost}')
             signals.addActivity.send(sender=None, user_from=self.user_from.user, \
                                      user_to=self.user_to.user, \
-                                     message=signal_msg, game=ChallengeGame.get_instance())
+                                     message=signal_msg, arguments=dict(user_won=self.user_won, user_lost=self.user_lost), \
+                                     game=ChallengeGame.get_instance())
         self.save()
 
     def _calculate_points(self, responses):

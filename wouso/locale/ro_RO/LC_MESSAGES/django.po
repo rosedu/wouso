@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wouso VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-02 16:58+0300\n"
+"POT-Creation-Date: 2011-09-09 13:40+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,13 +17,44 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: games/challenge/views.py:138
+#: games/challenge/models.py:123
+msgid "{user_to} has refused challenge from {user_from}"
+msgstr "{user_to} a refuzat provocarea de la {user_from}"
+
+#: games/challenge/models.py:203
+msgid ""
+"Challenge to {user_to} from {user_from} has expired and it was automatically "
+"settled."
+msgstr "Provocarea către {user_to} de la {user_from} a expirat și a fost rezolvată"
+"automat."
+
+#: games/challenge/models.py:234
+msgid "Draw result between {user_to} and {user_from}"
+msgstr "Rezultat null între {user_to} și {user_from}"
+
+#: games/challenge/models.py:249
+msgid "{user_won} won challenge with {user_lost}"
+msgstr "{user_won} a câștigat provocarea cu {user_lost}"
+
+#: games/challenge/views.py:154
 msgid "Challenges"
 msgstr "Provocări"
 
-#: interface/messaging/views.py:68
+#: games/quest/models.py:58
+msgid "{user} has finished quest {quest}"
+msgstr "{user} a terminat questul {quest}"
+
+#: games/quest/models.py:77
+msgid "{user} has started quest {quest}"
+msgstr "{user} a început questul {quest}"
+
+#: interface/messaging/views.py:87
 msgid "Messages"
 msgstr "Mesaje"
+
+#: interface/statistics/views.py:95
+msgid "Live stats"
+msgstr "Statistici live"
 
 #: resources/templates/site_base.html:35
 msgid "Logout"
@@ -38,6 +69,8 @@ msgid "Login"
 msgstr "Autentificare"
 
 #: resources/templates/site_base.html:49
+#: resources/templates/cpanel/qpool_home.html:42
+#: resources/templates/cpanel/qpool_home.html:51
 msgid "Search"
 msgstr "Caută"
 
@@ -48,6 +81,14 @@ msgstr "Jucători activi în ultimele 10 minute"
 #: resources/templates/site_base.html:75
 msgid "About"
 msgstr "Despre"
+
+#: resources/templates/cpanel/artifact_home.html:19
+msgid "Add artifact"
+msgstr ""
+
+#: resources/templates/cpanel/qpool_home.html:33
+msgid "Add question"
+msgstr ""
 
 #: resources/templates/qotd/sidebar.html:11
 msgid "You have answered correctly for today"

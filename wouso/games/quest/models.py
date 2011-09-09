@@ -1,7 +1,7 @@
 import logging
 import datetime
 from django.db import models
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_noop
 from wouso.core.user.models import Player
 from wouso.core.game.models import Game
 from wouso.core import scoring
@@ -55,10 +55,10 @@ class QuestUser(Player):
             qr.save()
 
             # sending the signal
-            signal_msg = u"%s has finished quest %s" % \
-                          (self, self.current_quest.title)
-            signals.addActivity.send(sender=None, user_from=self, \
-                                     user_to=self, message=signal_msg, \
+            signal_msg = ugettext_noop("{user} has finished quest {quest}")
+            signals.addActivity.send(sender=None, user_from=self,
+                                     user_to=self, message=signal_msg,
+                                     arguments=dict(user=self, quest=self.current_quest.title),
                                      game=QuestGame.get_instance())
 
             # saving finish data
@@ -74,10 +74,12 @@ class QuestUser(Player):
         self.finished_time = None
         self.save()
         # send activity signal
-        signal_msg = _('{user} has started quest {quest}').format(user=self, quest=quest.title)
-        signals.addActivity.send(sender=None, user_from=self, \
-                                     user_to=self, \
-                                     message=signal_msg, game=QuestGame.get_instance())
+        signal_msg = ugettext_noop('{user} has started quest {quest}')
+        signals.addActivity.send(sender=None,
+                                 user_from=self, user_to=self,
+                                 message=signal_msg,
+                                 arguments=dict(user=self, quest=quest.title),
+                                 game=QuestGame.get_instance())
 
 class QuestResult(models.Model):
     user = models.ForeignKey('QuestUser')
