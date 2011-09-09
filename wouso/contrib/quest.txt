@@ -1,0 +1,11 @@
+? Care a fost numele de cod al versiunii Django?
++ Piranha
+
+? Câți?
++ 5
+
+? Ce 5?
++ Ce câți?
+
+? Gata?
++ da
