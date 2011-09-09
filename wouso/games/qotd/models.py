@@ -1,5 +1,7 @@
 from datetime import date, datetime, time
 from django.db import models
+from django.utils.translation import ugettext_noop
+from wouso.interface.activity import signals
 from wouso.core.user.models import Player
 from wouso.core.game.models import Game
 from wouso.core import scoring
@@ -21,6 +23,17 @@ class QotdUser(Player):
             self.last_answer_correct = correct
             self.last_answered = datetime.now()
             self.save()
+            # send signal
+            if correct:
+                signal_msg = ugettext_noop('{user} has given a correct answer to QotD.')
+            else:
+                signal_msg = ugettext_noop('{user} has given a wrong answer to QotD.')
+
+            signals.addActivity.send(sender=None, user_from=self,
+                                     user_to=self,
+                                     message=signal_msg,
+                                     arguments={'user': self},
+                                     game=QotdGame.get_instance())
 
     def reset_answered(self):
         self.last_answered = None

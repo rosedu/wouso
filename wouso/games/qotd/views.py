@@ -27,16 +27,6 @@ def index(request):
             choice = int(form.cleaned_data['answers'])
             QotdGame.answered(qotd_user, qotd, choice)
 
-            # send signal
-            if qotd_user.last_answer_correct:
-                signal_msg = '%s has given a correct answer to %s'
-            else:
-                signal_msg = '%s has given a wrong answer to %s'
-            signal_msg = signal_msg % (request.user.get_profile(), \
-                                       QotdGame.get_instance()._meta.verbose_name)
-            signals.addActivity.send(sender=None, user_from=request.user.get_profile(), \
-                                     user_to=request.user.get_profile(), \
-                                     message=signal_msg, game=QotdGame.get_instance())
             return HttpResponseRedirect(reverse('games.qotd.views.done'))
     else:
         form = QotdForm(qotd)
