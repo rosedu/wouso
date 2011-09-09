@@ -4,14 +4,15 @@ from random import shuffle
 import pickle as pk
 from django.db import models
 from django.db.models import Q, Max
+from django.utils.translation import ugettext as _
 from wouso.core.user.models import Player
 from wouso.core.qpool.models import Question
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.game.models import Game
 from wouso.core import scoring
 from wouso.core.scoring.models import Formula
+from wouso.interface.activity import signals
 
-# Challenge will use QPool questions
 
 class ChallengeUser(Player):
     """ Extension of the userprofile, customized for challenge """
@@ -102,7 +103,7 @@ class Challenge(models.Model):
         """
         Return all expired challenges at given date.
         """
-        yesterday = today + timedelta(days=-1)
+        yesterday = today + timedelta(days=-1) # TODO: use combine
         return Challenge.objects.filter(status='a', date__lt=yesterday)
 
     @property
@@ -117,6 +118,12 @@ class Challenge(models.Model):
         self.status = 'R'
         self.user_from.user.last_launched = datetime(1, 1, 1)
         self.user_from.user.save()
+
+        # send activty signal
+        signal_msg = _('{user_to} has refused challenge from {user_from}').format(user_to=self.user_to, user_from=self.user_from)
+        signals.addActivity.send(sender=None, user_from=self.user_to.user, \
+                                     user_to=self.user_from.user, \
+                                     message=signal_msg, game=ChallengeGame.get_instance())
         self.save()
 
     def cancel(self):
@@ -188,6 +195,12 @@ class Challenge(models.Model):
             external_id=self.id, points=self.user_won.points, points2=self.user_lost.points)
         scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
             external_id=self.id, points=self.user_lost.points, points2=self.user_lost.points)
+
+        # send activty signal
+        signal_msg = _('Challenge to {user_to} from {user_from} has expired and it was automatically settled.').format(user_to=self.user_to, user_from=self.user_from)
+        signals.addActivity.send(sender=None, user_from=exp_user, \
+                                     user_to=exp_user, \
+                                     message=signal_msg, game=ChallengeGame.get_instance())
         self.save()
 
     def played(self):
@@ -197,11 +210,12 @@ class Challenge(models.Model):
                 answers = pk.loads(str(participant.responses))
             except:
                 answers = {}
-            participant.points = self.calculate_points(answers)
+            participant.points = self._calculate_points(answers)
+            participant.save()
 
         if self.user_to.points > self.user_from.points:
             result = (self.user_to, self.user_from)
-        elif self.user_from.points > self.user_from.points:
+        elif self.user_from.points > self.user_to.points:
             result = (self.user_from, self.user_to)
         else: #draw game
             result = 'draw'
@@ -210,6 +224,11 @@ class Challenge(models.Model):
             self.status = 'D'
             scoring.score(self.user_to.user, ChallengeGame, 'chall-draw')
             scoring.score(self.user_from.user, ChallengeGame, 'chall-draw')
+            # send activty signal
+            signal_msg = _('Draw result between {user_to} and {user_from}').format(user_to=self.user_to, user_from=self.user_from)
+            signals.addActivity.send(sender=None, user_from=self.user_to.user, \
+                                     user_to=self.user_from.user, \
+                                     message=signal_msg, game=ChallengeGame.get_instance())
         else:
             self.status = 'P'
             self.user_won, self.user_lost = result
@@ -218,11 +237,19 @@ class Challenge(models.Model):
                 external_id=self.id, points=self.user_won.points, points2=self.user_lost.points)
             scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
                 external_id=self.id, points=self.user_lost.points, points2=self.user_lost.points)
-
+            # send activty signal
+            signal_msg = _('{user_won} won challenge with {user_lost}').format(user_won=self.user_won, user_lost=self.user_lost)
+            signals.addActivity.send(sender=None, user_from=self.user_from.user, \
+                                     user_to=self.user_to.user, \
+                                     message=signal_msg, game=ChallengeGame.get_instance())
         self.save()
 
-    def calculate_points(self, responses):
-        points = 0
+    def _calculate_points(self, responses):
+        """ Response contains a dict with question id and checked answers ids.
+        Example:
+            1 : {14}, - has answered answer with id 14 at the question with id 1
+        """
+        points = 0.0
         for r, v in responses.iteritems():
             checked = missed = 0
             q = Question.objects.get(id=r)
@@ -234,11 +261,20 @@ class Challenge(models.Model):
                         missed += 1
                 elif a.id in v:
                     missed += 1
-            points += float(checked) / q.answers.count()
+            correct_count = len([a for a in q.answers if a.correct])
+            wrong_count = len([a for a in q.answers if not a.correct])
+            if correct_count == 0:
+                qpoints = 1 if (len(v) == 0) else 0
+            elif wrong_count == 0:
+                qpoints = 1 if (len(v) == q.answers.count()) else 0
+            else:
+                qpoints = float(checked) / correct_count - float(missed) / wrong_count
+            qpoints = qpoints if qpoints > 0 else 0
+            points += qpoints
         return points
 
     def set_played(self, user, responses):
-        """ Set user's results """
+        """ Set user's results. If both users have played, also update self and activity. """
         if self.user_to.user == user:
             user_played = self.user_to
         elif self.user_from.user == user:
@@ -254,7 +290,7 @@ class Challenge(models.Model):
         if self.user_to.played and self.user_from.played:
             self.played()
 
-        return {'points': self.calculate_points(responses)}
+        return {'points': self._calculate_points(responses)}
 
     def can_play(self, user):
         """ Check if user can play this challenge"""
