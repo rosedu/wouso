@@ -1,10 +1,10 @@
 from datetime import datetime
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from wouso.core.user.models import Player
 from models import ChallengeUser, ChallengeGame, Challenge, Participant
@@ -35,10 +35,7 @@ def challenge(request, id):
     This is play """
     chall_user = request.user.get_profile().get_extension(ChallengeUser)
 
-    try:
-        chall = Challenge.objects.get(id=id)
-    except Challenge.DoesNotExist:
-        return do_error(request, 'inexistent')
+    chall = get_object_or_404(Challenge, pk=id)
 
     if not chall_user.can_play(chall):
         return do_error(request, 'cantplay')
@@ -91,47 +88,55 @@ def launch(request, to_id):
         return do_error(request, 'cannotchallenge')
 
 
-
 @login_required
 def accept(request, id):
-    try:
-        chall = Challenge.objects.get(id=id)
-    except Challenge.DoesNotExist:
-        return do_error(request, 'nosuchchallenge')
+    chall = get_object_or_404(Challenge, pk=id)
 
     user_to = request.user.get_profile().get_extension(ChallengeUser)
-    if chall.user_to.user == user_to and chall.is_launched():
-        chall.accept()
-        return HttpResponseRedirect(reverse('games.challenge.views.index'))
-    else:
-        print chall.user_to, user_to, chall.is_launched()
+    if (chall.user_to.user == user_to and chall.is_launched()) or \
+        request.user.is_superuser:
+            chall.accept()
+            return HttpResponseRedirect(reverse('games.challenge.views.index'))
     return do_error(request, 'cannotaccept')
 
 @login_required
 def refuse(request, id):
-    try:
-        chall = Challenge.objects.get(id=id)
-    except Challenge.DoesNotExist:
-        return do_error(request, 'nosuchchallenge')
+    chall = get_object_or_404(Challenge, pk=id)
 
     user_to = request.user.get_profile().get_extension(ChallengeUser)
-    if chall.user_to.user == user_to and chall.is_launched():
-        chall.refuse()
-        return HttpResponseRedirect(reverse('games.challenge.views.index'))
+    if (chall.user_to.user == user_to and chall.is_launched()) or \
+        request.user.is_superuser:
+            chall.refuse()
+            return HttpResponseRedirect(reverse('games.challenge.views.index'))
     return do_error(request, 'cannotrefuse')
 
 @login_required
 def cancel(request, id):
-    try:
-        chall = Challenge.objects.get(id=id)
-    except Challenge.DoesNotExist:
-        return do_error(request, 'nosuchchallenge')
+    chall = get_object_or_404(Challenge, pk=id)
 
     user_from = request.user.get_profile().get_extension(ChallengeUser)
     if chall.user_from.user == user_from and chall.is_launched():
         chall.cancel()
         return HttpResponseRedirect(reverse('games.challenge.views.index'))
     return do_error(request, 'cannotcancel')
+
+@login_required
+def setplayed(request, id):
+    """ Set challenge as played for the other user.
+    Only superuser can do this. Useful for debugging
+    """
+    if not request.user.is_superuser:
+        raise Http404
+
+    chall = get_object_or_404(Challenge, pk=id)
+
+    if chall.user_from.played:
+        chall.user_to.played = True
+    else:
+        chall.user_from.played = True
+
+    chall.played()
+    return HttpResponseRedirect(reverse('games.challenge.views.index'))
 
 def header_link(request):
     profile = request.user.get_profile()

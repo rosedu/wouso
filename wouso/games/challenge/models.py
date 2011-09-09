@@ -105,6 +105,10 @@ class Challenge(models.Model):
         yesterday = today + timedelta(days=-1)
         return Challenge.objects.filter(status='a', date__lt=yesterday)
 
+    @property
+    def participants(self):
+        return (self.user_from, self.user_to)
+
     def accept(self):
         self.status = 'A'
         self.save()
@@ -188,8 +192,13 @@ class Challenge(models.Model):
 
     def played(self):
         """ Both players have played, save and score """
-        self.user_to.points = self.calculate_points(pk.loads(str(self.user_to.responses)))
-        self.user_from.points = self.calculate_points(pk.loads(str(self.user_from.responses)))
+        for participant in self.participants:
+            try:
+                answers = pk.loads(str(participant.responses))
+            except:
+                answers = {}
+            participant.points = self.calculate_points(answers)
+
         if self.user_to.points > self.user_from.points:
             result = (self.user_to, self.user_from)
         elif self.user_from.points > self.user_from.points:

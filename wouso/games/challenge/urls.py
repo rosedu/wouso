@@ -7,4 +7,5 @@ urlpatterns = patterns('',
     (r'^refuse/(?P<id>\d+)/$', 'wouso.games.challenge.views.refuse'),
     (r'^accept/(?P<id>\d+)/$', 'wouso.games.challenge.views.accept'),
     (r'^cancel/(?P<id>\d+)/$', 'wouso.games.challenge.views.cancel'),
+    (r'^setplayed/(?P<id>\d+)/$', 'wouso.games.challenge.views.setplayed'),
 )
