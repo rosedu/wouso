@@ -1,5 +1,7 @@
+import json
 from datetime import datetime
 from django.db import models
+from django.utils.translation import ugettext as _
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player
 from wouso.interface import logger
@@ -9,8 +11,20 @@ class Activity(models.Model):
     timestamp = models.DateTimeField(default=datetime.now, blank=True)
     user_from = models.ForeignKey(Player, related_name='user_from')
     user_to = models.ForeignKey(Player, related_name='user_to')
-    message = models.CharField(max_length=140)
+    message_string = models.CharField(max_length=140)
+    arguments = models.CharField(max_length=600)
     game = models.ForeignKey(Game)
+
+    @property
+    def message(self):
+        if self.arguments:
+            try:
+                arguments = json.loads(self.arguments)
+            except Exception as e:
+                logger.exception(e)
+                arguments = {}
+
+        return _(self.message_string).format(**arguments)
 
     def fromgame(self):
         """ Returns the game name """
@@ -21,7 +35,11 @@ def addActivity_handler(sender, **kwargs):
     a = Activity()
     a.user_from = kwargs['user_from']
     a.user_to = kwargs['user_to']
-    a.message = kwargs['message']
+    a.message_string = kwargs['message']
+    args = kwargs.get('arguments', {})
+    for k in args.keys():
+        args[k] = unicode(args[k])
+    a.arguments = json.dumps(args)
     a.game = kwargs['game']
     a.save()
 
