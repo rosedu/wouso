@@ -58,9 +58,9 @@ def player_group(request, id):
         filter(Q(user_to__groups=group) | Q(user_from__groups=group)).order_by('-timestamp')
     paginator = Paginator(activity_list, 10)
     try:
-        activity = paginator.page(0)
+        activity = paginator.page(1)
     except (EmptyPage, InvalidPage):
-        activity = paginator.page(paginator.num_pages)
+        activity = paginator.page(1)
 
     return render_to_response('profile/group.html',
                               {'group': group,

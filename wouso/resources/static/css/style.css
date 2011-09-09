@@ -258,3 +258,41 @@ tr.read td {
     font-weight: normal;
     background-color: #efefef;
 }
+
+/* activity */
+ul.activity-stream {
+    padding-left: 0px;
+}
+li.activity-line {
+    margin: 0 auto;
+    clear:both;
+    list-style-type: none;
+    padding-top: 10px;
+    max-width: 500px;
+}
+img.medium {
+    width: 38px;
+    height: 38px;
+}
+img.small {
+    width: 22px;
+    height: 22px;
+}
+div.activity-timestamp {
+    float: right;
+    text-align: right;
+    font-size: 0.9em;
+    color: #444;
+    clear: both;
+    margin-top: -1.8em;
+}
+div.activity-source {
+    float: right;
+    font-size: 0.9em;
+}
+div.activity-second div {
+    padding-top: 8px;
+}
+div.activity-second a {
+    text-decoration: none;
+}
