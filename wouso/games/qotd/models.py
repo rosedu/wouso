@@ -17,7 +17,7 @@ class QotdUser(Player):
 
     def set_answered(self, choice, correct):
         if not self.has_answered:
-            self.last_answer = choice
+            self.last_answer = choice # answer id
             self.last_answer_correct = correct
             self.last_answered = datetime.now()
             self.save()
@@ -29,6 +29,7 @@ class QotdUser(Player):
     @property
     def has_answered(self):
         """ Check if last_answered was today """
+        #TODO: test this
         if self.last_answered is None:
             return False
         else:
@@ -66,7 +67,7 @@ class QotdGame(Game):
                     correct = True
                 break
 
-        user.set_answered(i, correct) # answer index
+        user.set_answered(choice, correct) # answer id
 
         if correct:
             scoring.score(user, QotdGame, 'qotd-ok')

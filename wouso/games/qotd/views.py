@@ -54,12 +54,16 @@ def done(request):
     qotd = QotdGame.get_for_today()
     user = request.user.get_profile().get_extension(QotdUser)
     choice = user.last_answer
-    ans = qotd.answers[choice]
+    ans = [a for a in qotd.answers if a.id == choice]
+    if ans:
+        ans = ans[0]
+        valid = ans.correct
+    else:
+        ans = None
+        valid = False
 
     return render_to_response('qotd/done.html',
-            {'question': qotd, 'choice': ans,
-            'valid': ans.correct
-            },
+            {'question': qotd, 'choice': ans, 'valid': valid,},
             context_instance=RequestContext(request))
 
 def sidebar_widget(request):
