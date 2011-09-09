@@ -58,7 +58,7 @@
 
     <div class="tab_container">
         <div id="tab-1" class="tab_content">
-        {% include 'activity/stream.html' with activity=activity activity_owner='user' %}
+        {% include 'activity/stream.html' %}
 
         {% if activity.has_previous %}
         <a href="{% url wouso.interface.profile.views.user_profile id=profile.id page=activity.previous_page_number %}#tab-1"> Newer </a>

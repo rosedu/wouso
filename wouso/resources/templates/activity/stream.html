@@ -1,4 +1,5 @@
 {% load user %}
+{% load i18n %}
 
 <ul class="activity-stream">
 {% for ac in activity.object_list %}
@@ -15,6 +16,6 @@
         <div class="activity-timestamp">{{ ac.timestamp }}</div>
     </li>
 {% empty %}
-    <li class="empty">Sorry, no recent activity for this {{ activity_owner }}</li>
+    <li class="activity-line empty">{% trans 'Sorry, no recent activity.' %}</li>
 {% endfor %}
 </ul>
