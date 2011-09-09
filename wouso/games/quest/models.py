@@ -1,6 +1,7 @@
 import logging
 import datetime
 from django.db import models
+from django.utils.translation import ugettext as _
 from wouso.core.user.models import Player
 from wouso.core.game.models import Game
 from wouso.core import scoring
@@ -17,6 +18,14 @@ class QuestUser(Player):
     started_time = models.DateTimeField(default=datetime.datetime.now, blank=True, null=True)
     finished_time = models.DateTimeField(default=None, blank=True, null=True)
     finished = models.BooleanField(default=False, blank=True)
+
+    @property
+    def started(self):
+        """
+        Check if we started the current quest.
+        """
+        quest = QuestGame.get_current()
+        return self.current_quest == quest
 
     @property
     def current_question(self):
@@ -64,6 +73,11 @@ class QuestUser(Player):
         self.finished = False
         self.finished_time = None
         self.save()
+        # send activity signal
+        signal_msg = _('{user} has started quest {quest}').format(user=self, quest=quest.title)
+        signals.addActivity.send(sender=None, user_from=self, \
+                                     user_to=self, \
+                                     message=signal_msg, game=QuestGame.get_instance())
 
 class QuestResult(models.Model):
     user = models.ForeignKey('QuestUser')
