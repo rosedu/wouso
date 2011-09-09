@@ -21,7 +21,7 @@
     </table>
 </div>
 
-<h1> Statistics </h1>
+<h1>Dashboard</h1>
 
 <h2>QPool</h2>
 <p>Qotd: {{nr_future_questions}} future available questions. </p>
@@ -30,6 +30,9 @@
 <h2>Quest</h2>
 <p>{% if  active_quests %}One active quest{% else %}No quest active{% endif %}. Total: {{ total_quests }}</p>
 
+<h2>Information</h2>
+    <p>Django version: {{ django_version }}</p>
+    <p>WoUSO version: {{ wouso_version }}</p>
 {% endblock %}
 
 {% block sidebar %}
