@@ -23,6 +23,9 @@ class Activity(models.Model):
             except Exception as e:
                 logger.exception(e)
                 arguments = {}
+        # emphasize
+        for k in arguments.keys():
+            arguments[k] = '<strong>%s</strong>' % arguments[k]
 
         return _(self.message_string).format(**arguments)
 

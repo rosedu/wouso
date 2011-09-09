@@ -58,19 +58,7 @@
         </div>
 
         <div id="tab-2" class="tab_content">
-        <ul>
-        {% for ac in activity.object_list %}
-            {% if ac.user_from == ac.user_to %}
-                <li> {{ ac.user_from }} <br/>
-            {% else %}
-                <li> From {{ ac.user_from }} to {{ ac.user_to }} <br/>
-            {% endif %}
-            <b>{{ ac.message }}</b> <br/>
-            {{ ac.timestamp }}<br/></li>
-        {% empty %}
-            <li class="empty">Sorry, no recent activity for this group</li>
-        {% endfor %}
-        </ul>
+            {% include 'activity/stream.html' with activity=activity activity_owner='group' %}
         </div>
 
         <div id="tab-3" class="tab_content">
