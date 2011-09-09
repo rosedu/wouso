@@ -18,6 +18,8 @@ from forms import QuestionForm, TagsForm
 @login_required
 def dashboard(request):
     from wouso.games.quest.models import Quest, QuestGame
+    from django import get_version
+    from wouso.settings import WOUSO_VERSION
 
     future_questions = Schedule.objects.filter(day__gte=datetime.datetime.now())
     nr_future_questions = len(future_questions)
@@ -36,7 +38,9 @@ def dashboard(request):
                                'active_quest': active_quest,
                                'total_quests': total_quests,
                                'module': 'home',
-                               'artifact_groups': artifact_groups},
+                               'artifact_groups': artifact_groups,
+                               'django_version': get_version(),
+                               'wouso_version': WOUSO_VERSION},
                               context_instance=RequestContext(request))
 
 @login_required
