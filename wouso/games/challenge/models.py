@@ -191,21 +191,35 @@ class Challenge(models.Model):
         elif exp_user == self.user_to.user:
             self.user_won = self.user_from
             self.user_lost = self.user_to
-        self.user_won.points = 42 
+        self.user_won.points = 42
+        self.user_won.played = True
+        self.user_won.save()
         self.user_lost.points = -1
+        self.user_lost.played = True
+        self.user_lost.save()
         self.winner = self.user_won.user
         scoring.score(self.user_won.user, ChallengeGame, 'chall-won',
             external_id=self.id, points=self.user_won.points, points2=self.user_lost.points)
         scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
             external_id=self.id, points=self.user_lost.points, points2=self.user_lost.points)
 
-        # send activty signal
-        signal_msg = ugettext_noop('Challenge to {user_to} from {user_from} has expired and it was automatically settled.')
+        # send activty signal to the loser
+        signal_msg = ugettext_noop('Challenge to {user_to} from {user_from} has expired and it was automatically settled.'\
+            ' {user_lost} lost.')
 
         signals.addActivity.send(sender=None, user_from=exp_user, \
                                      user_to=exp_user, \
                                      message=signal_msg, \
-                                     arguments=dict(user_to=self.user_to, user_from=self.user_from), \
+                                     arguments=dict(user_to=self.user_to, user_from=self.user_from, user_lost=self.user_lost), \
+                                     game=ChallengeGame.get_instance())
+        # send activty signal to the winner
+        signal_msg = ugettext_noop('Challenge to {user_to} from {user_from} has expired and it was automatically settled.'\
+            ' {user_won} won.')
+
+        signals.addActivity.send(sender=None, user_from=self.user_won.user, \
+                                     user_to=self.user_won.user, \
+                                     message=signal_msg, \
+                                     arguments=dict(user_to=self.user_to, user_from=self.user_from, user_won=self.user_won), \
                                      game=ChallengeGame.get_instance())
         self.save()
 
