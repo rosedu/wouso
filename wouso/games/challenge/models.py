@@ -183,6 +183,8 @@ class Challenge(models.Model):
 
     def expired(self, user):
         # set winner the OTHER user, set challenge as played, score.
+        if self.status == 'P':
+            return
         self.status = 'P'
         exp_user = user.get_extension(ChallengeUser)
         if exp_user == self.user_from.user:
