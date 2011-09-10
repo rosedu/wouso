@@ -74,6 +74,10 @@ div#logo {
 #footer_links {
     text-align: right;
 }
+#wall {
+    float: left;
+    width: 500px;
+}
 ol.top {
     padding: 0px;
 }
@@ -119,7 +123,7 @@ ol.top {
     width: 150px;
     font-size: 42px;
 }
-.profile .avatar {
+img.avatar {
     float: left;
     margin: 4px 4px 4px 0px;
     border: 2px solid #aaa;
