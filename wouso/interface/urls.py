@@ -23,6 +23,7 @@ urlpatterns = patterns('',
 
     (r'^groups/$', 'wouso.interface.profile.views.groups_index'),
     (r'^group/(?P<id>\d*)/$', 'wouso.interface.profile.views.player_group'),
+    (r'^group/(?P<id>\d*)/(?P<page>\d*)/$', 'wouso.interface.profile.views.player_group'),
 
     (r'^search/$', 'wouso.interface.views.search'),
     (r'^instantsearch/$', 'wouso.interface.views.instantsearch'),
