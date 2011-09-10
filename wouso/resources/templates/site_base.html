@@ -71,6 +71,20 @@
         {% player u %}
     {% endfor %}
 
+    <br /><br />
+
+    <div id="wall" style="border:1px solid black;">
+        {% include 'activity/stream.html' %}
+
+        {% if activity.has_previous %}
+            <a href="{% url wouso.interface.views.homepage %}"> Newer </a>
+        {% endif %}
+
+        {% if activity.has_next %}
+            <a href="{% url wouso.interface.views.homepage page=activity.next_page_number %}"> Older </a>
+        {% endif %}
+    </div>
+
     {% if config_intro %}
     <h2>{% trans 'About' %}</h2>
         <p>{{config_intro}}</p>

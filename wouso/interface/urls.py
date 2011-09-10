@@ -6,6 +6,7 @@ import wouso.games
 
 urlpatterns = patterns('',
     (r'^$', 'wouso.interface.views.homepage'),
+    (r'^(?P<page>\d*)/$', 'wouso.interface.views.homepage'),
     # TODO: refactor this into wouso.interface.top.urls and include vvvvv
     (r'^top/$', 'wouso.interface.top.views.gettop'),
     (r'^top/toptype/(?P<toptype>\d)/sortcrit/(?P<sortcrit>\d)/page/(?P<page>\d+)/$', 'wouso.interface.top.views.gettop'),
