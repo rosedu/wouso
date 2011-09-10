@@ -5,7 +5,7 @@
 {% block title %}Group: {{ group.name }}{% endblock %}
 {% block scripts %}
     <script type="text/javascript" src="/static/js/tabs.js"></script>
-    <script type="text/javascript" src="/static/js/jquery.flot.pack.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.flot.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
 {% endblock %}
 
@@ -13,7 +13,7 @@
 <div class="profile">
     <div class="points">
         <div class="points-big">{{ group.live_points}}</div>
-        <div class="rank">rank: {{ top.position }}</div>
+        <div class="rank">{% if top.disabled %}-{% else %}rank: {{ top.position }}{% endif %}</div>
     </div>
 
     <h2>{{ group }}</h2>
@@ -37,17 +37,25 @@
 
     <div class="tab_container">
         <div id="tab-1" class="tab_content">
-        {% if group.children %}
         <div class="subgroups">
+        {% if group.children %}
         <h4>Top subgroups</h4>
         <ol class="top">{% for g in subgroups %}
             <li>{% player_group g %} <span class="points">{{ g.points }}</span></li>
             {% endfor %}
         </ol>
-        <a href="{% url wouso.interface.profile.views.groups_index %}">View all</a>
-        </div>
         {% endif %}
-        
+        {% if group.sisters %}
+        <h4>Top same kind</h4>
+        <ol class="top">{% for g in sistergroups %}
+                <li>{% player_group g %} <span class="points">{{ g.points }}</span></li>
+            {% endfor %}
+        </ol>
+
+        <a href="{% url wouso.interface.profile.views.groups_index %}">View all</a>
+        {% endif %}
+        </div>
+
         <ol class="top">
             {% for u in top_users %}
             <li>{% player u %} <span class="points">{{ u.points }}</span></li>
@@ -62,18 +70,33 @@
         </div>
 
         <div id="tab-3" class="tab_content">
+            <div class="subgroups">
+                <h3>Position evolution</h3>
+                <p>Position evolution compared with groups of the same kind.</p>
+                <div id="legend"></div>
+            </div>
             <div id="graf1" class="graf placeholder"></div>
             <script id="source" language="javascript" type="text/javascript">
             <!-- using flot to draw evolution -->
             $(function () {
-                var d1 = [[null, 10],{% for p in top.week_evolution %}[{{p.0}},{{p.1}}],{% endfor %}[7, null]];
+                var d1 = [[null, 12],{% for p in top.week_evolution %}[{{p.0}},{{p.1}}],{% endfor %}[7, null]];
+                {% for g in group.sisters %}
+                    var d{{ g.id }} = [{% for p in g.top.week_evolution %}[{{ p.0 }},{{ p.1 }}],{% endfor %}];
+                {% endfor %}
                 var options = { lines: { show: true }, points: { show: true },
                     xaxis: {
-                        ticks: [[1,1],[5,5],[9,9]]
-                        }
+                        ticks: [[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7]]
+                        },
+                    yaxis: {
+                        transform: function (v) { return -v; },
+                        inverseTransform: function (v) { return -v; },
+                    },
+                    legend: {
+                        container: $('#legend'),
+                    },
                 };
                 $("#tab-3").bind('custom', function() {
-                    $.plot($("#graf1"), [{ label: "Weekly position evolution", color: "green", data: d1}], options);
+                    $.plot($("#graf1"), [{ label: "<strong>{{ group.name }}</strong>", color: "green", data: d1},{% for g in group.sisters %}{label: "{{ g.name }}", data:d{{ g.id }}},{% endfor %}], options);
                     $('#tab-3').unbind('custom');
                 });
             });

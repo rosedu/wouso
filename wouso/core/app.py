@@ -1,6 +1,15 @@
 
 class App:
-    """ Interface extended by Game and by Top and Activity"""
+    """ Interface extended by Game and by Top and Qproposal Activity"""
+
+    @classmethod
+    def disabled(kls):
+        """ Search for a disabled config
+        """
+        from wouso.core.config.models import BoolSetting
+
+        name = kls.__name__
+        return BoolSetting.get('disable-%s' % name).get_value()
 
     @classmethod
     def get_sidebar_widget(kls, request):

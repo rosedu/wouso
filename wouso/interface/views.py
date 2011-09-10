@@ -1,5 +1,6 @@
 import datetime
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.http import Http404
@@ -9,16 +10,28 @@ from wouso.interface import logger
 from django.utils.translation import ugettext as _
 from wouso.interface.forms import *
 from wouso.core.user.models import Player
-from wouso.interface.models import StaticPage
+from wouso.interface.activity.models import Activity
 
-def homepage(request):
+
+def get_wall(page=u'1'):
+    ''' Returns activity for main wall, paginated.'''
+    activity_list = Activity.objects.all().order_by('-timestamp')
+    paginator = Paginator(activity_list, 10)
+    try:
+        activity = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        activity = paginator.page(paginator.num_pages)
+    return activity
+
+def homepage(request, page=u'1'):
     """ First page shown """
     # gather users online in the last ten minutes
     oldest = datetime.datetime.now() - datetime.timedelta(minutes = 10)
     online_last10 = Player.objects.filter(last_seen__gte=oldest)
+    activity = get_wall(page)
 
     return render_to_response('site_base.html',
-                              {'last10': online_last10},
+                              {'last10': online_last10, 'activity': activity},
                               context_instance=RequestContext(request))
 
 @csrf_exempt
@@ -79,12 +92,3 @@ def searchone(request):
             logging.exception(e)
 
     raise Http404()
-
-@csrf_exempt
-def staticpage(request, slug):
-    """ Perform regular search by either first or last name """
-    logger.debug('Initiating regular search')
-    staticpage = StaticPage.objects.get(slug=slug)
-    return render_to_response('static_page.html',
-                              {'staticpage': staticpage},
-                              context_instance=RequestContext(request))

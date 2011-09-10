@@ -13,12 +13,21 @@ class Setting(models.Model):
 
     def form(self):
         return '<label for="%s">%s</label><textarea name="%s" id="%s">%s</textarea>' \
-                    % (self.name, self.name, self.name, self.name, self.value)
+                    % (self.name, self.title, self.name, self.name, self.value)
 
     @classmethod
     def get(kls, name):
         obj, new = kls.objects.get_or_create(name=name)
         return obj
+
+    @property
+    def title(self):
+        if self.name.startswith('disable-'):
+            return self.name[8:].capitalize()
+        return self.name.capitalize()
+
+    def __unicode__(self):
+        return self.name
 
 class HTMLSetting(Setting):
     class Meta:
@@ -29,14 +38,18 @@ class BoolSetting(Setting):
         proxy = True
 
     def set_value(self, b):
-        self.value = 'True' if b else 'False'
+        if isinstance(b, bool):
+            self.value = 'True' if b else 'False'
+        else:
+            self.value = b
+        self.save()
 
     def get_value(self):
         return (self.value == 'True')
 
     def form(self):
-        return '<label for="%s">%s</label><input type="checkbox" name="%s" id="%s" %s />' \
-                    % (self.name, self.name, self.name, self.name, 'checked' if self.get_value() else '')
+        return '<label for="%s">%s</label><input type="checkbox" name="%s" id="%s" %s value="True" />' \
+                    % (self.name, self.title, self.name, self.name, 'checked' if self.get_value() else '')
 
 class ChoicesSetting(Setting):
     class Meta:
@@ -45,7 +58,7 @@ class ChoicesSetting(Setting):
     choices = []
 
     def form(self):
-        html = '<label for="%s">%s</label><select id="%s" name="%s">' % (self.name, self.name, self.name, self.name)
+        html = '<label for="%s">%s</label><select id="%s" name="%s">' % (self.name, self.title, self.name, self.name)
         for n,v in self.choices:
             html += '<option value="%s" %s>%s</option>' % (v, 'selected' if self.value == v else '', n)
         html += '</select>'

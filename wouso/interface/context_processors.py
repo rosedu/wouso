@@ -2,6 +2,7 @@ import logging
 from wouso.core.game import get_games
 from wouso.core.config.models import Setting
 from wouso.interface.top.models import Top
+from wouso.interface.qproposal.models import Qproposal
 from wouso.interface.messaging.models import Message
 from wouso.interface.statistics.views import footer_link as stats_link
 from wouso.interface import get_static_pages
@@ -42,6 +43,10 @@ def header_footer(request):
     # also add static pages
     for sp in get_static_pages():
         footer.append(sp.html_link())
+
+    # qporposal
+    if not Qproposal.disabled():
+        footer.append(Qproposal.get_footer_link(request))
 
     return {'header': header, 'footer': footer}
 

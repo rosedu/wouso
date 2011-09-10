@@ -2,7 +2,7 @@ import logging
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.template import RequestContext, Context
-from models import StaticPage
+from wouso.interface.pages.models import StaticPage
 
 # Get a specific logger for this module
 logger = logging.getLogger('interface')

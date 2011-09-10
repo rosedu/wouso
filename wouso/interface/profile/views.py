@@ -18,7 +18,7 @@ def profile(request):
                               context_instance=RequestContext(request))
 
 @login_required
-def user_profile(request, id, page=u'0'):
+def user_profile(request, id, page=u'1'):
     try:
         profile = Player.objects.get(id=id)
     except Player.DoesNotExist:
@@ -47,25 +47,33 @@ def user_profile(request, id, page=u'0'):
                               context_instance=RequestContext(request))
 
 @login_required
-def player_group(request, id):
+def player_group(request, id, page=u'1'):
     group = get_object_or_404(PlayerGroup, pk=id)
 
     top_users = group.player_set.all().order_by('-points')
     subgroups = group.children.order_by('-points')
+    if group.parent:
+        sistergroups = group.parent.children.order_by('-points')
+    else:
+        sistergroups = PlayerGroup.objects.filter(gclass=group.gclass).order_by('-points')
     history = GroupHistory(group)
+
+    for g in group.sisters:
+        g.top = GroupHistory(g)
 
     activity_list = Activity.objects.\
         filter(Q(user_to__groups=group) | Q(user_from__groups=group)).order_by('-timestamp')
     paginator = Paginator(activity_list, 10)
     try:
-        activity = paginator.page(1)
+        activity = paginator.page(page)
     except (EmptyPage, InvalidPage):
-        activity = paginator.page(1)
+        activity = paginator.page(paginator.num_pages)
 
     return render_to_response('profile/group.html',
                               {'group': group,
                                'top_users': top_users,
                                'subgroups': subgroups,
+                               'sistergroups': sistergroups,
                                'top': history,
                                'activity': activity,
                                },

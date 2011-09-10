@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from wouso.core.user.models import Player
+from wouso.interface import render_string
 from models import ChallengeUser, ChallengeGame, Challenge, Participant
 from forms import ChallengeForm
 
@@ -43,13 +44,13 @@ def challenge(request, id):
     if request.method == 'GET' and not chall.is_started_for_user(request.user.get_profile()):
         chall.set_start(request.user.get_profile())
 
-    if request.method == "POST":
-        # check time delta between start of challenge and submit
-        if not chall.check_timedelta(request.user.get_profile()):
-            # set challenge lost for user
-            chall.expired(request.user.get_profile())
-            return do_error(request, 'Challenge timer exceeded.')
+    # check time delta between start of challenge
+    if not chall.check_timedelta(request.user.get_profile()):
+        # set challenge lost for user
+        chall.expired(request.user.get_profile())
+        return do_error(request, 'Challenge timer exceeded.')
 
+    if request.method == "POST":
         form = ChallengeForm(chall, request.POST)
 
         results = chall.set_played(chall_user, form.get_response())
@@ -59,8 +60,10 @@ def challenge(request, id):
             context_instance=RequestContext(request))
     else:
         form = ChallengeForm(chall)
+
+    seconds_left = chall.time_for_user(chall_user)
     return render_to_response('challenge/challenge.html',
-            {'challenge': chall, 'form': form},
+            {'challenge': chall, 'form': form, 'challenge_user': chall_user, 'seconds_left': seconds_left},
             context_instance=RequestContext(request))
 
 
@@ -83,7 +86,7 @@ def launch(request, to_id):
             return do_error(request, e.message)
 
 
-        return HttpResponseRedirect(reverse('games.challenge.views.index'))
+        return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
     else:
         return do_error(request, 'cannotchallenge')
 
@@ -96,7 +99,7 @@ def accept(request, id):
     if (chall.user_to.user == user_to and chall.is_launched()) or \
         request.user.is_superuser:
             chall.accept()
-            return HttpResponseRedirect(reverse('games.challenge.views.index'))
+            return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
     return do_error(request, 'cannotaccept')
 
 @login_required
@@ -107,7 +110,7 @@ def refuse(request, id):
     if (chall.user_to.user == user_to and chall.is_launched()) or \
         request.user.is_superuser:
             chall.refuse()
-            return HttpResponseRedirect(reverse('games.challenge.views.index'))
+            return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
     return do_error(request, 'cannotrefuse')
 
 @login_required
@@ -117,7 +120,7 @@ def cancel(request, id):
     user_from = request.user.get_profile().get_extension(ChallengeUser)
     if chall.user_from.user == user_from and chall.is_launched():
         chall.cancel()
-        return HttpResponseRedirect(reverse('games.challenge.views.index'))
+        return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
     return do_error(request, 'cannotcancel')
 
 @login_required
@@ -136,7 +139,7 @@ def setplayed(request, id):
         chall.user_from.played = True
 
     chall.played()
-    return HttpResponseRedirect(reverse('games.challenge.views.index'))
+    return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
 
 def header_link(request):
     profile = request.user.get_profile()
@@ -151,8 +154,18 @@ def header_link(request):
 
     count = len(challs)
 
-    link = '<a href="'+ reverse('games.challenge.views.index') +'">' + _('Challenges') + '</a>'
+    link = '<a href="'+ reverse('wouso.games.challenge.views.index') +'">' + _('Challenges') + '</a>'
 
     if count > 0:
         link += '<span class="unread-count">%d</span>' % count
     return link
+
+def sidebar_widget(request):
+    profile = request.user.get_profile()
+    if not profile:
+        return ''
+    chall_user = profile.get_extension(ChallengeUser)
+    challs = ChallengeGame.get_active(chall_user)
+    challs = [c for c in challs if c.status == 'A']
+
+    return render_string('challenge/sidebar.html', {'challenges': challs, 'chall_user': chall_user})

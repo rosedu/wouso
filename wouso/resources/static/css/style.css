@@ -6,10 +6,6 @@ body {
 h1 {
     margin: 4px;
 }
-label {
-    min-width: 50px;
-    float: left;
-}
 th {
     border: 1px solid #ddd;
     background-color: #eee;
@@ -78,6 +74,10 @@ div#logo {
 #footer_links {
     text-align: right;
 }
+#wall {
+    float: left;
+    width: 500px;
+}
 ol.top {
     padding: 0px;
 }
@@ -108,7 +108,7 @@ ol.top {
     background-image:url(../art/default/level-1.png);
 }
 
-.top .points {
+span.points {
     float: right
 }
 /* profile page */
@@ -123,7 +123,7 @@ ol.top {
     width: 150px;
     font-size: 42px;
 }
-.profile .avatar {
+img.avatar {
     float: left;
     margin: 4px 4px 4px 0px;
     border: 2px solid #aaa;
@@ -139,8 +139,8 @@ ol.top {
     padding: 4px;
 }
 .graf {
-    width: 400px;
-    height: 200px;
+    width: 500px;
+    height: 300px;
 }
 .actions {
     margin: 6px;
@@ -196,6 +196,10 @@ ol.top {
     vertical-align: top;
 }
 /* cpanel */
+fieldset label {
+    float: left;
+    min-width: 100px;
+}
 ul.menu, ul.submenu {
     list-style-type: none;
     padding: 0px;
@@ -295,4 +299,17 @@ div.activity-second div {
 }
 div.activity-second a {
     text-decoration: none;
+}
+/* challenge */
+ul.answers {
+    list-style-type: none;
+    padding-left: 0px;
+}
+div.timer {
+    text-align: center;
+    font-size: 42px;
+}
+ul.simple {
+    padding-left: 0px;
+    list-style-type: none;
 }

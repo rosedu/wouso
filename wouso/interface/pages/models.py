@@ -12,5 +12,5 @@ class StaticPage(models.Model):
         return "%s (%s)" % (self.position, self.title)
 
     def html_link(self):
-        return '<a href="%s">%s</a>' % (reverse('wouso.interface.views.staticpage', args=(self.slug,)),
+        return '<a href="%s">%s</a>' % (reverse('static_page', args=(self.slug,)),
                                         self.name)

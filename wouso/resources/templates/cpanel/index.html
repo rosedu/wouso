@@ -1,5 +1,7 @@
 {% extends 'site_base.html' %}
 {%  load artifacts %}
+{%  load cpanel %}
+
 {% block title %}CPanel{% endblock %}
 
 {% block css %}li.{{module}} {font-weight: bold}{% endblock %}
@@ -46,14 +48,14 @@
             </ul>
         </li>
         <li class="artifacts"><a href="{% url artifact_home %}">Artifacts</a></li>
-        <li class="static"><a href="{% url admin:interface_staticpage_changelist %}" target="blank">Static Pages</a></li>
+        <li class="static"><a href="{% url admin:pages_staticpage_changelist %}" target="blank">Static Pages</a></li>
         <li class="custom"><a href="{% url customization %}">Customization</a></li>
         
         </ul>
     </div>
     <div class="widget-content">
         <ul class="menu">
-            <li class="quest"><a href="{% url quest_home %}">Quests</a>
+            {% cpanel_games %}
         </ul>
     </div>
     <div class="widget-content">

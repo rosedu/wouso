@@ -70,7 +70,8 @@ class Challenge(models.Model):
     questions = models.ManyToManyField(Question)
     nr_q = 0
     LIMIT = 5
-    TIME_LIMIT = 360 # seconds
+    TIME_LIMIT = 300 # seconds
+    TIME_SAFE = 10 # seconds more
 
     @staticmethod
     def create(user_from, user_to):
@@ -151,17 +152,29 @@ class Challenge(models.Model):
         else:
             pass # todo raise something
 
+    def time_for_user(self, user):
+        now = datetime.now()
+
+        if user == self.user_from.user:
+            partic = self.user_from
+        elif user == self.user_to.user:
+            partic = self.user_to
+        else:
+            return 0
+
+        return Challenge.TIME_LIMIT - (now - partic.start).seconds
+
     def check_timedelta(self, user):
         """Check that the challenge form has been submitted in the allowed time"""
         user = user.get_extension(ChallengeUser)
         now = datetime.now()
 
         if self.user_from.user == user:
-            if (now - self.user_from.start).seconds < Challenge.TIME_LIMIT:
+            if (now - self.user_from.start).seconds < (Challenge.TIME_LIMIT + Challenge.TIME_SAFE):
                 return True
             return False
         elif self.user_to.user == user:
-            if (now - self.user_to.start).seconds < Challenge.TIME_LIMIT:
+            if (now - self.user_to.start).seconds < (Challenge.TIME_LIMIT + Challenge.TIME_SAFE):
                 return True
             return False
         else:
@@ -183,6 +196,8 @@ class Challenge(models.Model):
 
     def expired(self, user):
         # set winner the OTHER user, set challenge as played, score.
+        if self.status == 'P':
+            return
         self.status = 'P'
         exp_user = user.get_extension(ChallengeUser)
         if exp_user == self.user_from.user:
@@ -203,20 +218,11 @@ class Challenge(models.Model):
         scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
             external_id=self.id, points=self.user_lost.points, points2=self.user_lost.points)
 
-        # send activty signal to the loser
-        signal_msg = ugettext_noop('Challenge to {user_to} from {user_from} has expired and it was automatically settled.'\
-            ' {user_lost} lost.')
-
-        signals.addActivity.send(sender=None, user_from=exp_user, \
-                                     user_to=exp_user, \
-                                     message=signal_msg, \
-                                     arguments=dict(user_to=self.user_to, user_from=self.user_from, user_lost=self.user_lost), \
-                                     game=ChallengeGame.get_instance())
         # send activty signal to the winner
         signal_msg = ugettext_noop('Challenge to {user_to} from {user_from} has expired and it was automatically settled.'\
             ' {user_won} won.')
 
-        signals.addActivity.send(sender=None, user_from=self.user_won.user, \
+        signals.addActivity.send(sender=None, user_from=exp_user, \
                                      user_to=self.user_won.user, \
                                      message=signal_msg, \
                                      arguments=dict(user_to=self.user_to, user_from=self.user_from, user_won=self.user_won), \
@@ -400,6 +406,12 @@ class ChallengeGame(Game):
             return header_link(request)
         return None
 
+    @classmethod
+    def get_sidebar_widget(kls, request):
+        if not request.user.is_anonymous():
+            from views import sidebar_widget
+            return sidebar_widget(request)
+        return None
 
 # Hack for having participants in sync
 def challenge_post_delete(sender, instance, **kwargs):
