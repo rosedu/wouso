@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import *
+from wouso.interface.cpanel import get_cpanel_games
 
-urlpatterns = patterns('',
+upat = [
     url(r'^$', 'wouso.interface.cpanel.views.dashboard', name='dashboard'),
     url(r'^customization/$', 'wouso.interface.cpanel.views.customization', name='customization'),
     url(r'^qpool/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
@@ -15,12 +16,6 @@ urlpatterns = patterns('',
     url(r'^qpool/search/$', 'wouso.interface.cpanel.views.qpool_search', name='qpool_search'),
     url(r'^qpool/(?P<cat>\w*)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
 
-    # game specific, TODO make them dynamic
-    url(r'^quest/$', 'wouso.games.quest.cpanel.quest_home', name='quest_home'),
-    url(r'^quest/edit/(?P<id>\d*)/$', 'wouso.games.quest.cpanel.quest_edit', name='quest_edit'),
-    url(r'^quest/sort/(?P<id>\d*)/$', 'wouso.games.quest.cpanel.quest_sort', name='quest_sort'),
-    url(r'^quest/new/$', 'wouso.games.quest.cpanel.quest_edit', name='quest_new'),
-
     url(r'^artifact/$', 'wouso.interface.cpanel.views.artifact_home', name='artifact_home'),
     url(r'^artifact/user_set/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.artifactset', name='artifact_set'),
     url(r'^artifact/new/$', 'wouso.interface.cpanel.views.artifact_edit', name='artifact_new'),
@@ -29,4 +24,11 @@ urlpatterns = patterns('',
     url(r'^artifact/(?P<group>\w*)/$', 'wouso.interface.cpanel.views.artifact_home', name='artifact_home'),
 
     url(r'^group/set/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.groupset', name='group_set'),
-)
+]
+
+for g in get_cpanel_games():
+    upat.append((r'games/{game}/'.format(game=g), include('wouso.games.{game}.cpanel_urls'.format(game=g))))
+
+upat.append(url(r'^games/', 'wouso.interface.cpanel.views.dashboard', name='games_home'))
+
+urlpatterns = patterns('', *upat)

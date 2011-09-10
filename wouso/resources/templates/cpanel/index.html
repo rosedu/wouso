@@ -1,5 +1,7 @@
 {% extends 'site_base.html' %}
 {%  load artifacts %}
+{%  load cpanel %}
+
 {% block title %}CPanel{% endblock %}
 
 {% block css %}li.{{module}} {font-weight: bold}{% endblock %}
@@ -53,7 +55,7 @@
     </div>
     <div class="widget-content">
         <ul class="menu">
-            <li class="quest"><a href="{% url quest_home %}">Quests</a>
+            {% cpanel_games %}
         </ul>
     </div>
     <div class="widget-content">
