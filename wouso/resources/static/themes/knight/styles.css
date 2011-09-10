@@ -73,6 +73,13 @@ div#logo {
     padding-top:10px;
     font-size: 0.7em;
 }
+#wall {
+    width: 450px;
+}
+div.activity-timestamp {
+    margin-top: -0.9em;
+    color: #ddd;
+}
 
 #content .box .title, .box_title {
 	color: white;
