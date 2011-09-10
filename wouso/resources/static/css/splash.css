@@ -1,0 +1,60 @@
+html, body {
+	margin:0; padding:0;
+	height:100%;
+}
+
+body {
+    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+}
+
+#floater {
+	position:relative; float:left;
+	height:50%;	margin-bottom:-200px;
+	width:1px;
+}
+
+#centered {
+	position:relative; clear:left;
+	height:300px; width:80%; max-width:600px; min-width:300px;
+	margin:0 auto;
+	background:#fff;
+	border-top:1px solid #666;
+}
+
+#bottom {
+	position:absolute;
+	bottom:0; right:10px;
+}
+
+#logo {
+    background:url('../img/logo.png') 50% 50% no-repeat;
+    height: 100px;
+}
+#side {
+	position:absolute; left:0; top:250px; bottom:0; right:0;
+	padding:10px; margin:5px;
+    background: #ddd;
+    text-align: right;
+    border-bottom: 1px solid #666;
+    z-index: 1000;
+}
+
+#content {
+	position:absolute; left:0; right:0; top:18%; bottom:0;
+	overflow:auto; 
+	padding:20px; margin:10px;
+    text-align: center;
+}
+button {
+    display: block;
+    float: right;;
+    text-align: center;
+    min-width: 70px;
+    max-width: 150px;
+    border: 1px solid #aaa;
+    padding: 3px;
+    margin: 1px;
+    background-color: #ddd;
+    color: black;
+}
