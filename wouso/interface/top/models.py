@@ -16,7 +16,8 @@ class GroupHistory:
     def week_evolution(self):
         """ :return: list of pairs (index, position) for the last week """
         hs = History.objects.filter(group=self.group).order_by('-date')[:7]
-        return [(i + 1, h.position) for (i,h) in enumerate(hs)]
+        tot = len(hs)
+        return [(tot - i, h.position) for (i,h) in enumerate(hs)]
 
 class TopUser(Player):
     @property
@@ -44,7 +45,14 @@ class TopUser(Player):
     def week_evolution(self):
         """ :return: list of pairs (index, position) for the last week """
         hs = History.objects.filter(user=self).order_by('-date')[:7]
-        return [(i + 1, h.position) for (i,h) in enumerate(hs)]
+        tot = len(hs)
+        return [(tot - i, h.position) for (i,h) in enumerate(hs)]
+
+    def week_points_evolution(self):
+        """ :return: list of pairs (index, points) for the last week """
+        hs = History.objects.filter(user=self).order_by('-date')[:7]
+        tot = len(hs)
+        return [(tot - i, h.points) for (i,h) in enumerate(hs)]
 
 class History(models.Model):
     user = models.ForeignKey('TopUser', blank=True, null=True)

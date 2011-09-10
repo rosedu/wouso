@@ -52,7 +52,14 @@ def player_group(request, id):
 
     top_users = group.player_set.all().order_by('-points')
     subgroups = group.children.order_by('-points')
+    if group.parent:
+        sistergroups = group.parent.children.order_by('-points')
+    else:
+        sistergroups = PlayerGroup.objects.filter(gclass=group.gclass).order_by('-points')
     history = GroupHistory(group)
+
+    for g in group.sisters:
+        g.top = GroupHistory(g)
 
     activity_list = Activity.objects.\
         filter(Q(user_to__groups=group) | Q(user_from__groups=group)).order_by('-timestamp')
@@ -66,6 +73,7 @@ def player_group(request, id):
                               {'group': group,
                                'top_users': top_users,
                                'subgroups': subgroups,
+                               'sistergroups': sistergroups,
                                'top': history,
                                'activity': activity,
                                },
