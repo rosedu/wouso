@@ -5,7 +5,12 @@ from wouso.core.app import App
 from wouso.core.user.models import Player, PlayerGroup
 from wouso.interface import render_string
 
-class GroupHistory:
+class ObjectHistory:
+    @property
+    def disabled(self):
+        return Top.disabled()
+
+class GroupHistory(ObjectHistory):
     def __init__(self, group):
         self.group = group
 
@@ -19,7 +24,7 @@ class GroupHistory:
         tot = len(hs)
         return [(tot - i, h.position) for (i,h) in enumerate(hs)]
 
-class TopUser(Player):
+class TopUser(ObjectHistory, Player):
     @property
     def progress(self):
         try:
@@ -91,7 +96,7 @@ class Top(App):
         top5 = TopUser.objects.all().order_by('-points')[:5]
         is_top = request.get_full_path().startswith('/top/')
         return render_string('top/sidebar.html',
-            {'topusers': top5, 'is_top': is_top}
+            {'topusers': top5, 'is_top': is_top, 'top': Top}
         )
 
 def user_post_save(sender, instance, **kwargs):

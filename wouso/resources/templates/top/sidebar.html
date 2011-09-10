@@ -1,21 +1,24 @@
 {% extends 'sidebar_widget.html' %}
-
+{% load i18n %}
 {% block title %} Top {% endblock %}
 
 {% block content %}
 
-{% if not is_top %}
-    <ol class="top">
-    {% for u in topusers %}
-        <li><a href="{% url interface.profile.views.user_profile u.id %}">{{ u }}</a> <span class="points">{{ u.points }}</span></li>
-    {% endfor %}
-    </ol>
-{% endif %}
+{% if top.disabled %}
+    {% trans 'Top has been disabled' %}
+{% else %}
+    {% if not is_top %}
+        <ol class="top">
+        {% for u in topusers %}
+            <li><a href="{% url interface.profile.views.user_profile u.id %}">{{ u }}</a> <span class="points">{{ u.points }}</span></li>
+        {% endfor %}
+        </ol>
+    {% endif %}
 
-<a href="{% url wouso.interface.top.views.gettop %}" class="goto"> Clasament curent</a>
-<br/>
-{% if is_top %}
-    <a href="{% url wouso.interface.top.views.gettop toptype=1 sortcrit=0 page=1 %}" class="goto"> Top pe o săptămână </a>
+    <a href="{% url wouso.interface.top.views.gettop %}" class="goto"> Clasament curent</a>
+    <br/>
+    {% if is_top %}
+        <a href="{% url wouso.interface.top.views.gettop toptype=1 sortcrit=0 page=1 %}" class="goto"> Top pe o săptămână </a>
+    {% endif %}
 {% endif %}
-
 {% endblock %}

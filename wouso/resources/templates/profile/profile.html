@@ -13,7 +13,7 @@
 <div class="profile">
     <div class="points">
         <div class="points-big">{{ profile.points}}</div>
-        <div class="rank">rank: {{ top.position }}</div>
+        <div class="rank">{% if top.disabled %}-{% else %}rank: {{ top.position }}{% endif %}</div>
     </div>
 
     <img src="{{ avatar }}" class="avatar" width="100" />

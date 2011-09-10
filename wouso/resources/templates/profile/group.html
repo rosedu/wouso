@@ -13,7 +13,7 @@
 <div class="profile">
     <div class="points">
         <div class="points-big">{{ group.live_points}}</div>
-        <div class="rank">rank: {{ top.position }}</div>
+        <div class="rank">{% if top.disabled %}-{% else %}rank: {{ top.position }}{% endif %}</div>
     </div>
 
     <h2>{{ group }}</h2>

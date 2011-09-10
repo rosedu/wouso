@@ -81,7 +81,7 @@
         </div>
 
     <div id="wall">
-        <h2>Activity</h2>
+        <h2>Activity</h2></h3>
         {% include 'activity/stream.html' %}
 
         {% if activity.has_previous %}
@@ -97,7 +97,6 @@
 
     <div id="footer">
         <div id="footer_links">{% for f in footer %}{% autoescape off %}{{ f }}{% endautoescape %} |{% endfor %}
-        <a href="{% url propose %}">Propose question</a>
         <br/>
         <span id="poweredby">
         <br />Powered by: <br />

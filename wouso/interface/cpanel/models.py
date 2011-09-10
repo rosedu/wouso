@@ -2,7 +2,7 @@ from wouso.core.config.models import *
 from wouso.utils import get_themes
 
 class ConfigGroup:
-    pass
+    name = 'Customizations'
 
 class Customization(ConfigGroup):
     def props(self):
@@ -13,3 +13,13 @@ class Customization(ConfigGroup):
         logo = Setting.get('logo')
 
         return [title, intro, theme, logo]
+
+class Switchboard(ConfigGroup):
+    name = 'Disable features'
+
+    def props(self):
+        p = []
+        for a in ('Qproposal', 'Top'):
+            p.append(BoolSetting.get('disable-%s' % a))
+
+        return p
