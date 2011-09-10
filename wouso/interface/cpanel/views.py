@@ -10,7 +10,7 @@ from wouso.core.user.models import Player
 from wouso.core.artifacts.models import Artifact, Group
 from wouso.core.qpool.models import Schedule, Question, Tag, Category
 from wouso.core.qpool import get_questions_with_category
-from wouso.interface.cpanel.models import Customization, Switchboard
+from wouso.interface.cpanel.models import *
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm
 
@@ -49,15 +49,28 @@ def customization(request):
     switchboard = Switchboard()
 
     if request.method == "POST":
-        for s in customization.props():
-            val = request.POST.get(s.name, '')
-            s.set_value(val)
-        for s in switchboard.props():
-            val = request.POST.get(s.name, '')
-            s.set_value(val)
+        for group in (customization, switchboard):
+            for s in group.props():
+                val = request.POST.get(s.name, '')
+                s.set_value(val)
 
     return render_to_response('cpanel/customization.html',
                               {'settings': (customization, switchboard),
+                               'module': 'games'},
+                              context_instance=RequestContext(request))
+
+@login_required
+def games(request):
+    switchboard = GamesSwitchboard()
+
+    if request.method == "POST":
+        for group in (switchboard,):
+            for s in group.props():
+                val = request.POST.get(s.name, '')
+                s.set_value(val)
+
+    return render_to_response('cpanel/customization.html',
+                              {'settings': (switchboard,),
                                'module': 'custom'},
                               context_instance=RequestContext(request))
 
