@@ -65,7 +65,7 @@
         {% endif %}
 
         {% if activity.has_next %}
-        <a href="{% url wouso.interface.profile.views.user_profile id=profile.id page=activity.next_page_number %}%tab-1"> Older </a>
+        <a href="{% url wouso.interface.profile.views.user_profile id=profile.id page=activity.next_page_number %}#tab-1"> Older </a>
         {% endif %}
         </div>
 
