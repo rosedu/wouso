@@ -86,7 +86,7 @@ def launch(request, to_id):
             return do_error(request, e.message)
 
 
-        return HttpResponseRedirect(reverse('games.challenge.views.index'))
+        return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
     else:
         return do_error(request, 'cannotchallenge')
 
@@ -99,7 +99,7 @@ def accept(request, id):
     if (chall.user_to.user == user_to and chall.is_launched()) or \
         request.user.is_superuser:
             chall.accept()
-            return HttpResponseRedirect(reverse('games.challenge.views.index'))
+            return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
     return do_error(request, 'cannotaccept')
 
 @login_required
@@ -110,7 +110,7 @@ def refuse(request, id):
     if (chall.user_to.user == user_to and chall.is_launched()) or \
         request.user.is_superuser:
             chall.refuse()
-            return HttpResponseRedirect(reverse('games.challenge.views.index'))
+            return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
     return do_error(request, 'cannotrefuse')
 
 @login_required
@@ -120,7 +120,7 @@ def cancel(request, id):
     user_from = request.user.get_profile().get_extension(ChallengeUser)
     if chall.user_from.user == user_from and chall.is_launched():
         chall.cancel()
-        return HttpResponseRedirect(reverse('games.challenge.views.index'))
+        return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
     return do_error(request, 'cannotcancel')
 
 @login_required
@@ -139,7 +139,7 @@ def setplayed(request, id):
         chall.user_from.played = True
 
     chall.played()
-    return HttpResponseRedirect(reverse('games.challenge.views.index'))
+    return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
 
 def header_link(request):
     profile = request.user.get_profile()
@@ -154,7 +154,7 @@ def header_link(request):
 
     count = len(challs)
 
-    link = '<a href="'+ reverse('games.challenge.views.index') +'">' + _('Challenges') + '</a>'
+    link = '<a href="'+ reverse('wouso.games.challenge.views.index') +'">' + _('Challenges') + '</a>'
 
     if count > 0:
         link += '<span class="unread-count">%d</span>' % count
