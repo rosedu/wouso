@@ -112,6 +112,7 @@ def qpool_search(request):
                             'q': query},
                            context_instance=RequestContext(request))
 
+@login_required
 def question_edit(request, id=None):
     if id is not None:
         question = get_object_or_404(Question, pk=id)
@@ -131,7 +132,7 @@ def question_edit(request, id=None):
                                'module': 'qpool',
                                'categs': CATEGORIES},
                               context_instance=RequestContext(request))
-
+@login_required
 def question_switch(request, id):
     question = get_object_or_404(Question, pk=id)
 
@@ -144,6 +145,7 @@ def question_switch(request, id):
 
     return HttpResponseRedirect(go_back)
 
+@login_required
 def question_del(request, id):
     question = get_object_or_404(Question, pk=id)
 
@@ -155,10 +157,12 @@ def question_del(request, id):
 
     return HttpResponseRedirect(go_back)
 
+@login_required
 def qotd_schedule(request):
     Schedule.automatic()
     return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
 
+@login_required
 def set_active_categories(request):
     if request.method == 'POST':
         tags = Tag.objects.all().exclude(name__in=['qotd', 'quest', 'challenge'])
@@ -213,7 +217,7 @@ def artifactset(request, id):
                               {'to': profile,
                                'artifacts': artifacts},
                               context_instance=RequestContext(request))
-
+@login_required
 def artifact_home(request, group=None):
     if group is None:
         group = 'Default'
@@ -229,6 +233,7 @@ def artifact_home(request, group=None):
                                },
                               context_instance=RequestContext(request))
 
+@login_required
 def artifact_edit(request, id=None):
     if id is not None:
         instance = get_object_or_404(Artifact, pk=id)
@@ -264,6 +269,7 @@ def artifact_edit(request, id=None):
                             {'form': form, 'instance': instance},
                               context_instance=RequestContext(request))
 
+@login_required
 def artifact_del(request, id):
     artifact = get_object_or_404(Artifact, pk=id)
 
