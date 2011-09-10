@@ -6,10 +6,6 @@ body {
 h1 {
     margin: 4px;
 }
-label {
-    min-width: 50px;
-    float: left;
-}
 th {
     border: 1px solid #ddd;
     background-color: #eee;
@@ -78,6 +74,10 @@ div#logo {
 #footer_links {
     text-align: right;
 }
+#wall {
+    float: left;
+    width: 500px;
+}
 ol.top {
     padding: 0px;
 }
@@ -123,7 +123,7 @@ ol.top {
     width: 150px;
     font-size: 42px;
 }
-.profile .avatar {
+img.avatar {
     float: left;
     margin: 4px 4px 4px 0px;
     border: 2px solid #aaa;
@@ -295,4 +295,13 @@ div.activity-second div {
 }
 div.activity-second a {
     text-decoration: none;
+}
+/* challenge */
+ul.answers {
+    list-style-type: none;
+    padding-left: 0px;
+}
+div.timer {
+    text-align: center;
+    font-size: 42px;
 }

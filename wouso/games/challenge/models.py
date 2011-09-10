@@ -70,7 +70,8 @@ class Challenge(models.Model):
     questions = models.ManyToManyField(Question)
     nr_q = 0
     LIMIT = 5
-    TIME_LIMIT = 360 # seconds
+    TIME_LIMIT = 300 # seconds
+    TIME_SAFE = 10 # seconds more
 
     @staticmethod
     def create(user_from, user_to):
@@ -151,17 +152,29 @@ class Challenge(models.Model):
         else:
             pass # todo raise something
 
+    def time_for_user(self, user):
+        now = datetime.now()
+
+        if user == self.user_from.user:
+            partic = self.user_from
+        elif user == self.user_to.user:
+            partic = self.user_to
+        else:
+            return 0
+
+        return Challenge.TIME_LIMIT - (now - partic.start).seconds
+
     def check_timedelta(self, user):
         """Check that the challenge form has been submitted in the allowed time"""
         user = user.get_extension(ChallengeUser)
         now = datetime.now()
 
         if self.user_from.user == user:
-            if (now - self.user_from.start).seconds < Challenge.TIME_LIMIT:
+            if (now - self.user_from.start).seconds < (Challenge.TIME_LIMIT + Challenge.TIME_SAFE):
                 return True
             return False
         elif self.user_to.user == user:
-            if (now - self.user_to.start).seconds < Challenge.TIME_LIMIT:
+            if (now - self.user_to.start).seconds < (Challenge.TIME_LIMIT + Challenge.TIME_SAFE):
                 return True
             return False
         else:

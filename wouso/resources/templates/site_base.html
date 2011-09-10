@@ -66,14 +66,22 @@
 
     <div id="content">
     {% block content %}
-    <h2>{% trans 'Players active in the last 10 minutes' %}</h2>
-    {% for u in last10 %}
-        {% player u %}
-    {% endfor %}
+        <div class="subgroups">
+            <h3>{% trans 'Players active in the last 10 minutes' %}</h3>
+            {% for u in last10 %}
+                {% player u %}
+            {% endfor %}
+            {% if config_intro %}
+            <h3>{% trans 'About' %}</h3>
+                <p>{{config_intro}}</p>
+            {% endif %}
+            <p>
+            See <a href="{% url games.views.games %}">a list of available games</a>.
+            </p>
+        </div>
 
-    <br /><br />
-
-    <div id="wall" style="border:1px solid black;">
+    <div id="wall">
+        <h2>Activity</h2>
         {% include 'activity/stream.html' %}
 
         {% if activity.has_previous %}
@@ -84,15 +92,6 @@
             <a href="{% url wouso.interface.views.homepage page=activity.next_page_number %}"> Older </a>
         {% endif %}
     </div>
-
-    {% if config_intro %}
-    <h2>{% trans 'About' %}</h2>
-        <p>{{config_intro}}</p>
-    {% endif %}
-
-    <p>
-    See <a href="{% url games.views.games %}">a list of available games</a>.
-    </p>
     {% endblock %}
     </div>
 
