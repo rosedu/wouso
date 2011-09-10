@@ -5,18 +5,21 @@
 
 {% block content %}
 
-{% if question %}
-    {% if quser.has_answered %}
-        {% if quser.last_answer_correct %}
-        {% trans 'You have answered correctly for today'%}
+{% if qotd.disabled %}
+    {% trans 'QotD has been disabled' %}
+{% else %}
+    {% if question %}
+        {% if quser.has_answered %}
+            {% if quser.last_answer_correct %}
+            {% trans 'You have answered correctly for today'%}
+            {% else %}
+            {% trans 'You have answered wrong for today'%}
+            {% endif %}
         {% else %}
-        {% trans 'You have answered wrong for today'%}
+        <a href="{% url games.qotd.views.index %}" class="button little">{% trans 'Answer now' %}</a>!
         {% endif %}
     {% else %}
-    <a href="{% url games.qotd.views.index %}" class="button little">{% trans 'Answer now' %}</a>!
+        {% trans 'No question for today' %}.
     {% endif %}
-{% else %}
-    {% trans 'No question for today' %}.
 {% endif %}
-
 {% endblock %}

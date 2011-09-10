@@ -10,6 +10,8 @@ from forms import QotdForm
 
 @login_required
 def index(request):
+    if QotdGame.disabled:
+        return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
     qotd = QotdGame.get_for_today()
 
     profile = request.user.get_profile()
@@ -37,6 +39,8 @@ def index(request):
 
 @login_required
 def done(request):
+    if QotdGame.disabled:
+            return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
     # Do not show results until done
     if not request.user.get_profile().get_extension(QotdUser).has_answered:
         return HttpResponseRedirect(reverse("games.qotd.views.index"))
@@ -60,4 +64,4 @@ def sidebar_widget(request):
     qotd = QotdGame.get_for_today()
     qotd_user = request.user.get_profile().get_extension(QotdUser)
 
-    return render_string('qotd/sidebar.html', {'question': qotd, 'quser': qotd_user})
+    return render_string('qotd/sidebar.html', {'question': qotd, 'quser': qotd_user, 'qotd': QotdGame})
