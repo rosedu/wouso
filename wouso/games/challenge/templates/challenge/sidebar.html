@@ -1,0 +1,19 @@
+{% extends 'sidebar_widget.html' %}
+{% load i18n %}
+{% load user %}
+
+{% block title %}Challenge{% endblock %}
+
+{% block content %}
+<ul class="simple">
+    {% for c in challenges %}
+    <li>{% player_simple2 c.user_from.user chall_user %} vs {% player_simple2 c.user_to.user chall_user %}
+        <span class="points"><a class="goto" href="{% url wouso.games.challenge.views.challenge c.id %}">Play!</a></span>
+    </li>
+    {% empty %}
+    <li class="empty">{% trans 'No active challenges' %}</li>
+    {% endfor %}
+ </ul>
+
+<a class="goto" href="{% url wouso.games.challenge.views.index %}">Challenges</a>
+{% endblock %}

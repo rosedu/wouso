@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from wouso.core.user.models import Player
+from wouso.interface import render_string
 from models import ChallengeUser, ChallengeGame, Challenge, Participant
 from forms import ChallengeForm
 
@@ -158,3 +159,13 @@ def header_link(request):
     if count > 0:
         link += '<span class="unread-count">%d</span>' % count
     return link
+
+def sidebar_widget(request):
+    profile = request.user.get_profile()
+    if not profile:
+        return ''
+    chall_user = profile.get_extension(ChallengeUser)
+    challs = ChallengeGame.get_active(chall_user)
+    challs = [c for c in challs if c.status == 'A']
+
+    return render_string('challenge/sidebar.html', {'challenges': challs, 'chall_user': chall_user})

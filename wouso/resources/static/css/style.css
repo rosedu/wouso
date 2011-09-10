@@ -108,7 +108,7 @@ ol.top {
     background-image:url(../art/default/level-1.png);
 }
 
-.top .points {
+span.points {
     float: right
 }
 /* profile page */
@@ -304,4 +304,8 @@ ul.answers {
 div.timer {
     text-align: center;
     font-size: 42px;
+}
+ul.simple {
+    padding-left: 0px;
+    list-style-type: none;
 }
