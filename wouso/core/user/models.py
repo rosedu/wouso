@@ -13,6 +13,8 @@ class PlayerGroup(models.Model):
     # used only for sorting and position
     points = models.FloatField(default=0)
 
+    _sisters = []
+
     @property
     def live_points(self):
         p = self.player_set.aggregate(total=models.Sum('points'))
@@ -23,6 +25,15 @@ class PlayerGroup(models.Model):
     @property
     def children(self):
         return self.playergroup_set.all()
+
+    @property
+    def sisters(self):
+        if not self._sisters:
+            if self.parent:
+                self._sisters = list(self.parent.children.exclude(id=self.id))
+            else:
+                self._sisters = list(PlayerGroup.objects.filter(gclass=self.gclass).exclude(id=self.id))
+        return self._sisters
 
     def __unicode__(self):
         return self.name
