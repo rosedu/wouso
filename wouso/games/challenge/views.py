@@ -43,13 +43,13 @@ def challenge(request, id):
     if request.method == 'GET' and not chall.is_started_for_user(request.user.get_profile()):
         chall.set_start(request.user.get_profile())
 
-    if request.method == "POST":
-        # check time delta between start of challenge and submit
-        if not chall.check_timedelta(request.user.get_profile()):
-            # set challenge lost for user
-            chall.expired(request.user.get_profile())
-            return do_error(request, 'Challenge timer exceeded.')
+    # check time delta between start of challenge
+    if not chall.check_timedelta(request.user.get_profile()):
+        # set challenge lost for user
+        chall.expired(request.user.get_profile())
+        return do_error(request, 'Challenge timer exceeded.')
 
+    if request.method == "POST":
         form = ChallengeForm(chall, request.POST)
 
         results = chall.set_played(chall_user, form.get_response())

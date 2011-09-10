@@ -18,7 +18,7 @@ def profile(request):
                               context_instance=RequestContext(request))
 
 @login_required
-def user_profile(request, id, page=u'0'):
+def user_profile(request, id, page=u'1'):
     try:
         profile = Player.objects.get(id=id)
     except Player.DoesNotExist:
@@ -47,7 +47,7 @@ def user_profile(request, id, page=u'0'):
                               context_instance=RequestContext(request))
 
 @login_required
-def player_group(request, id):
+def player_group(request, id, page=u'1'):
     group = get_object_or_404(PlayerGroup, pk=id)
 
     top_users = group.player_set.all().order_by('-points')
@@ -65,9 +65,9 @@ def player_group(request, id):
         filter(Q(user_to__groups=group) | Q(user_from__groups=group)).order_by('-timestamp')
     paginator = Paginator(activity_list, 10)
     try:
-        activity = paginator.page(1)
+        activity = paginator.page(page)
     except (EmptyPage, InvalidPage):
-        activity = paginator.page(1)
+        activity = paginator.page(paginator.num_pages)
 
     return render_to_response('profile/group.html',
                               {'group': group,
