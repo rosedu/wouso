@@ -141,7 +141,7 @@ class Quest(models.Model):
             return False
 
         if not user.current_level == self.count and \
-                answer == question.answers.all()[0].text:
+                answer.lower() == question.answers.all()[0].text.lower():
             # score current progress
             scoring.score(user, QuestGame, 'quest-ok', level=(user.current_level + 1))
             user.current_level += 1
