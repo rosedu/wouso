@@ -10,7 +10,6 @@ from wouso.interface import logger
 from django.utils.translation import ugettext as _
 from wouso.interface.forms import *
 from wouso.core.user.models import Player
-from wouso.interface.models import StaticPage
 from wouso.interface.activity.models import Activity
 
 
@@ -93,12 +92,3 @@ def searchone(request):
             logging.exception(e)
 
     raise Http404()
-
-@csrf_exempt
-def staticpage(request, slug):
-    """ Perform regular search by either first or last name """
-    logger.debug('Initiating regular search')
-    staticpage = StaticPage.objects.get(slug=slug)
-    return render_to_response('static_page.html',
-                              {'staticpage': staticpage},
-                              context_instance=RequestContext(request))

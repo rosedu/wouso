@@ -29,7 +29,7 @@ urlpatterns = patterns('',
     (r'^search/$', 'wouso.interface.views.search'),
     (r'^instantsearch/$', 'wouso.interface.views.instantsearch'),
     (r'^searchone/$', 'wouso.interface.views.searchone'),
-    (r'^s/(\w+)/$', 'wouso.interface.views.staticpage'),
+    url(r'^s/(\w+)/$', 'wouso.interface.pages.views.staticpage', name='static_page'),
 
     # Messaging
     (r'^m/', include('wouso.interface.messaging.urls')),
