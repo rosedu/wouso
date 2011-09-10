@@ -6,10 +6,6 @@ body {
 h1 {
     margin: 4px;
 }
-label {
-    min-width: 50px;
-    float: left;
-}
 th {
     border: 1px solid #ddd;
     background-color: #eee;
@@ -295,4 +291,13 @@ div.activity-second div {
 }
 div.activity-second a {
     text-decoration: none;
+}
+/* challenge */
+ul.answers {
+    list-style-type: none;
+    padding-left: 0px;
+}
+div.timer {
+    text-align: center;
+    font-size: 42px;
 }

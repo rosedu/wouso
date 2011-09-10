@@ -2,26 +2,55 @@
 
 {% block title %}Challenge #{{ challenge.id }}{% endblock %}
 
+{% block scripts %}
+    <script type="text/javascript" src="/static/js/timer.js"></script>
+{% endblock %}
 {% block content %}
 
-<h1>Challenge</h1>
+<h2>Challenge</h2>
 
-{% ifequal challenge.user_to user %}
-{{ challenge.user_from.get_profile.real_name }} has challenged you on {{ challenge.date }}.
-{% endifequal %}
+<div id="timer" class="timer timer-big">
+    {{ seconds_left }} seconds
+</div>
+<script id="timer_script" language="javascript">
+    var seconds = {{ seconds_left }};
+    $(document).ready(function () { update('timer');});
+</script>
 
-{% ifequal challenge.user_from user %}
-You challenged {{ challenge.user_to.get_profile.real_name }} on {{ challenge.date }}.
-{% endifequal %}
+<div class="second">
+    {% ifequal challenge.user_to.user challenge_user %}
+    {{ challenge.user_from }} has challenged you on {{ challenge.date }}.
+    {% endifequal %}
 
-<hr>
-<form action="{% url games.challenge.views.challenge challenge.id %}" method="post" >
-<table class=answers>
-    {% autoescape off %}
-    {{ form }}
-    {% endautoescape %}
-</table>
+    {% ifequal challenge.user_from.user challenge_user %}
+    You challenged {{ challenge.user_to }} on {{ challenge.date }}.
+    {% endifequal %}
+</div>
+
+<form action="{% url games.challenge.views.challenge challenge.id %}" method="post" id="challenge_form">
+    <ol>
+    {% for field in form.visible_fields %}
+        <li>
+        <div class="question">
+        {% autoescape off %}
+        {{ field.label }}
+        {% endautoescape %}
+        <ul class="answers">
+        {% for choice in field.field.choices %}
+            {% autoescape off %}
+            <li><input type="checkbox" name="{{ field.html_name }}" value="{{ choice.0 }}" id="{{ field.html_name }}_{{ choice.0 }}" />
+                <label for="{{ field.html_name }}_{{ choice.0 }}" />{{ choice.1 }}</label>
+            </li>
+            {% endautoescape %}
+        {% endfor %}
+        </ul>
+        </div>
+        </li>
+    {% endfor %}
+    </ol>
 {% csrf_token %}
-<input type="submit" value="Submit" />
+<div class="actions">
+    <button type="submit">Submit</button>
+</div>
 </form>
 {% endblock %}

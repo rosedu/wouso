@@ -59,8 +59,10 @@ def challenge(request, id):
             context_instance=RequestContext(request))
     else:
         form = ChallengeForm(chall)
+
+    seconds_left = chall.time_for_user(chall_user)
     return render_to_response('challenge/challenge.html',
-            {'challenge': chall, 'form': form},
+            {'challenge': chall, 'form': form, 'challenge_user': chall_user, 'seconds_left': seconds_left},
             context_instance=RequestContext(request))
 
 
