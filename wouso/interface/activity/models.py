@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 from django.db import models
 from django.utils.translation import ugettext as _
+from wouso.core.game import get_games
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player
 from wouso.interface import logger
@@ -29,9 +30,15 @@ class Activity(models.Model):
 
         return _(self.message_string).format(**arguments)
 
-    def fromgame(self):
+    @property
+    def game_name(self):
+        # FIXME: this is a hack for getting game name.
+        # self.game contains objects of type Game, therefore
+        # ._meta.verbose_name is not visibile to the parent class
         """ Returns the game name """
-        return self.game.name
+        for game in get_games():
+            if game.__name__ == self.game.name:
+                return game._meta.verbose_name
 
 def addActivity_handler(sender, **kwargs):
     """ Callback function for addActivity signal """

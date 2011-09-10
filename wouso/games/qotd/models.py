@@ -8,8 +8,7 @@ from wouso.core import scoring
 from wouso.core.qpool.models import Schedule
 from wouso.core.scoring.models import Formula
 
-# Qotd will use models (question) from qpool
-# Please implement wouso.core.qpool
+# Qotd uses questions from qpool
 
 class QotdUser(Player):
     """ Extension of the User object, customized for qotd """
