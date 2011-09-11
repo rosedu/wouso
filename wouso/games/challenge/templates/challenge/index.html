@@ -1,12 +1,21 @@
 {% extends 'site_base.html' %}
-
+{% load artifacts %}
 {% block title %}Challenges{% endblock %}
 
 {% block content %}
 
 <h2>Challenges</h2>
 
+{% if not challuser.can_launch %}
+<p>You cannot launch another challenge today.
+    {% if challuser.has_one_more %}
+    You can use the {% artifact challuser.has_one_more.artifact %} artifact to enable one more challenge.
+    <a href="{% url games.challenge.views.use_one_more %}">Use artifact</a>.
+    {% endif %}
+</p>
+{% else %}
 <p>To launch a challenge, find the player you want to challenge and click on the <em>Challenge</em> button, next to his profile.</p>
+{% endif %}
 
 <h3>Active</h3>
 {% for c in challenges %}

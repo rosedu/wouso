@@ -139,6 +139,16 @@ def setplayed(request, id):
     chall.played()
     return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
 
+@login_required
+def use_one_more(request):
+    challuser = request.user.get_profile().get_extension(ChallengeUser)
+
+    if challuser.has_one_more():
+        challuser.do_one_more()
+    else:
+        return do_error(_("You don't have the artifact."))
+    return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
+
 def header_link(request):
     profile = request.user.get_profile()
     if not profile:
