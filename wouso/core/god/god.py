@@ -1,4 +1,5 @@
 from wouso.core.artifacts.models import Artifact, Group
+from wouso.core.game import get_games
 
 class DefaultGod:
     """ A basic God implementation.
@@ -42,3 +43,12 @@ class DefaultGod:
         if points < 450:
             return 6
         return 7  # maximum level for now
+
+    def get_all_modifiers(self):
+        """ Fetch modifiers from games and also add specific ones
+        """
+        ms = []
+        for g in get_games():
+            ms.extend(g.get_modifiers())
+
+        return ms

@@ -30,6 +30,10 @@
         <div class="subgroups">
             <h3>Help</h3>
             <p>To give/remove artifacts from users, use the artifact button on their profile page.</p>
+            <h3>Modifiers</h3>
+            <p>In game enabled modifiers:
+            {% for m in modifiers %}<em>{{ m }}</em> {% endfor %}
+            </p>
         </div>
     <table>
         <tr>

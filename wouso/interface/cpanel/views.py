@@ -10,6 +10,7 @@ from wouso.core.user.models import Player
 from wouso.core.artifacts.models import Artifact, Group
 from wouso.core.qpool.models import Schedule, Question, Tag, Category
 from wouso.core.qpool import get_questions_with_category
+from wouso.core.god import God
 from wouso.interface.cpanel.models import *
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm
@@ -224,12 +225,14 @@ def artifact_home(request, group=None):
 
     group = get_object_or_404(Group, name=group)
     artifacts = group.artifact_set.all()
+    modifiers = God.get_all_modifiers()
 
     return render_to_response('cpanel/artifact_home.html',
                               {'groups': Group.objects.all(),
                                'artifacts': artifacts,
                                'module': 'artifacts',
                                'group': group,
+                               'modifiers': modifiers,
                                },
                               context_instance=RequestContext(request))
 
