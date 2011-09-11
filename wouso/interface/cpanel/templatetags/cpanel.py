@@ -13,6 +13,6 @@ def cpanel_games():
 
     for g in get_cpanel_games():
         text += u'<li class="%s"><a href="%s%s/">%s</a></li>' % \
-                            (g, cpanel_link, g, g)
+                            (g, cpanel_link, g, g.capitalize())
 
     return text
