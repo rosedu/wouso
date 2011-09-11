@@ -9,7 +9,7 @@
 {% if not challuser.can_launch %}
 <p>You cannot launch another challenge today.
     {% if challuser.has_one_more %}
-    You can use the {% artifact challuser.has_one_more.artifact %} artifact to enable one more challenge.
+    You can use the {% artifact challuser.has_one_more %} artifact to enable one more challenge.
     <a href="{% url games.challenge.views.use_one_more %}">Use artifact</a>.
     {% endif %}
 </p>
