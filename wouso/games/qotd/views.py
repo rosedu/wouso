@@ -10,7 +10,7 @@ from forms import QotdForm
 
 @login_required
 def index(request):
-    if QotdGame.disabled:
+    if QotdGame.disabled():
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
     qotd = QotdGame.get_for_today()
 

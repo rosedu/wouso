@@ -9,11 +9,11 @@ from wouso.interface.activity.signals import addActivity
 
 class Activity(models.Model):
     timestamp = models.DateTimeField(default=datetime.now, blank=True)
-    user_from = models.ForeignKey(Player, related_name='user_from')
-    user_to = models.ForeignKey(Player, related_name='user_to')
+    user_from = models.ForeignKey(Player, related_name='user_from', blank=True, null=True)
+    user_to = models.ForeignKey(Player, related_name='user_to', blank=True, null=True)
     message_string = models.CharField(max_length=140)
     arguments = models.CharField(max_length=600)
-    game = models.ForeignKey(Game)
+    game = models.ForeignKey(Game, blank=True, null=True)
 
     @property
     def message(self):
