@@ -39,7 +39,7 @@ def challenge(request, id):
     chall = get_object_or_404(Challenge, pk=id)
 
     if not chall_user.can_play(chall):
-        return do_error(request, 'cantplay')
+        return do_error(request, _('You cannot play this challenge.'))
 
     if request.method == 'GET' and not chall.is_started_for_user(request.user.get_profile()):
         chall.set_start(request.user.get_profile())
@@ -48,7 +48,7 @@ def challenge(request, id):
     if not chall.check_timedelta(request.user.get_profile()):
         # set challenge lost for user
         chall.expired(request.user.get_profile())
-        return do_error(request, 'Challenge timer exceeded.')
+        return do_error(request, _('Challenge timer exceeded.'))
 
     if request.method == "POST":
         form = ChallengeForm(chall, request.POST)
@@ -76,7 +76,7 @@ def launch(request, to_id):
     user_from = request.user.get_profile().get_extension(ChallengeUser)
 
     if not user_from.can_launch():
-        return do_error(request, _('You have already challenged for today'))
+        return do_error(request, _('You have already challenged for today.'))
 
     if user_from.can_challenge(user_to):
         try:
@@ -86,7 +86,7 @@ def launch(request, to_id):
             return do_error(request, e.message)
         return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
     else:
-        return do_error(request, _('This user cannot be challenged by you'))
+        return do_error(request, _('This user cannot be challenged by you.'))
 
 
 @login_required
@@ -98,7 +98,7 @@ def accept(request, id):
         request.user.is_superuser:
             chall.accept()
             return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
-    return do_error(request, 'cannotaccept')
+    return do_error(request, _('Challenge cannot be accepted.'))
 
 @login_required
 def refuse(request, id):
@@ -109,7 +109,7 @@ def refuse(request, id):
         request.user.is_superuser:
             chall.refuse()
             return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
-    return do_error(request, 'cannotrefuse')
+    return do_error(request, _('You cannot refuse this challenge.'))
 
 @login_required
 def cancel(request, id):
@@ -119,7 +119,7 @@ def cancel(request, id):
     if chall.user_from.user == user_from and chall.is_launched():
         chall.cancel()
         return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
-    return do_error(request, 'cannotcancel')
+    return do_error(request, _('You cannot cancel this challenge.'))
 
 @login_required
 def setplayed(request, id):
