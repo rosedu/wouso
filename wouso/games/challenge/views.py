@@ -69,26 +69,24 @@ def challenge(request, id):
 
 @login_required
 def launch(request, to_id):
-    try:
-        user_to = Player.objects.get(id=to_id)
-        user_to = user_to.get_extension(ChallengeUser)
-    except User.DoesNotExist:
-        return do_error(request, 'nosuchuser')
+    user_to = get_object_or_404(Player, pk=to_id)
+
+    user_to = user_to.get_extension(ChallengeUser)
 
     user_from = request.user.get_profile().get_extension(ChallengeUser)
 
-    if user_from.can_challenge(user_to):
+    if not user_from.can_launch():
+        return do_error(request, _('You have already challenged for today'))
 
+    if user_from.can_challenge(user_to):
         try:
             chall = Challenge.create(user_from=user_from, user_to=user_to)
         except ValueError as e:
-            """ Some error occurred during question fetch. Clean up, and display error """
+            # Some error occurred during question fetch. Clean up, and display error
             return do_error(request, e.message)
-
-
         return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
     else:
-        return do_error(request, 'cannotchallenge')
+        return do_error(request, _('This user cannot be challenged by you'))
 
 
 @login_required

@@ -19,18 +19,23 @@ class ChallengeUser(Player):
 
     last_launched = models.DateTimeField(default=datetime(1, 1, 1), blank=True, null=True)
 
-    def can_challenge(self, user):
-        user = user.get_extension(ChallengeUser)
-        if self.user == user.user:
-            # Cannot challenge myself
-            return False
-
+    def can_launch(self):
+        """ Check if 1 challenge per day restriction apply
+        """
         now = datetime.now()
         today_start = datetime.combine(now, time())
         today_end = datetime.combine(now, time(23, 59, 59))
         if today_start <= self.last_launched <= today_end:
             return False
-        # TODO: we should return a reasoning why we cannot challenge
+        return True
+
+    def can_challenge(self, user):
+        """ Check if the target user is available.
+        """
+        user = user.get_extension(ChallengeUser)
+        if self.user == user.user:
+            # Cannot challenge myself
+            return False
         return True
 
     def can_play(self, challenge):
