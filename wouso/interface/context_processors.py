@@ -48,6 +48,10 @@ def header_footer(request):
     if not Qproposal.disabled():
         footer.append(Qproposal.get_footer_link(request))
 
+    # format
+    header = " | ".join(header)
+    footer = " | ".join(footer)
+
     return {'header': header, 'footer': footer}
 
 def sidebar(request):
