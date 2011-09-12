@@ -1,4 +1,5 @@
 # views for wouso cpanel
+from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -8,6 +9,7 @@ from wouso.core.qpool import get_questions_with_category
 from models import Quest
 from forms import QuestCpanel
 
+@permission_required('quest.change_quest')
 def quest_home(request):
     quests = Quest.objects.all()
 
@@ -16,6 +18,7 @@ def quest_home(request):
                                'module': 'quest'},
                               context_instance=RequestContext(request))
 
+@permission_required('quest.change_quest')
 def quest_edit(request, id=None):
     if id is not None:
         quest = get_object_or_404(Quest, pk=id)
@@ -38,6 +41,7 @@ def quest_edit(request, id=None):
                                'module': 'quest'},
                               context_instance=RequestContext(request))
 
+@permission_required('quest.change_quest')
 def quest_sort(request, id):
     quest = get_object_or_404(Quest, pk=id)
 
