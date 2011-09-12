@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
 from wouso.core.god import God
-from wouso.core.scoring.models import History
 from wouso.core.artifacts.models import Artifact
 
 class PlayerGroup(models.Model):
@@ -76,6 +75,8 @@ class Player(models.Model):
 
     @property
     def coins(self):
+        # TODO check usage and deprecate this function
+        from wouso.core.scoring.models import History
         return History.user_coins(self.user)
 
     @property

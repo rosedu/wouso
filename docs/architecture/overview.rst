@@ -4,11 +4,11 @@ Architecture
 .. toctree::
     :glob:
 
-    middleware
-    interface
-    games/*
+    core
     core/*
-
+    interface
+    middleware
+    games/*
 
 .. image:: wouso-piranha-arch-overview.png
 
