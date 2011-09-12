@@ -29,6 +29,6 @@ upat = [
 for g in get_cpanel_games():
     upat.append((r'games/{game}/'.format(game=g), include('wouso.games.{game}.cpanel_urls'.format(game=g))))
 
-upat.append(url(r'^games/', 'wouso.interface.cpanel.views.dashboard', name='games_home'))
+upat.append(url(r'^games/', 'wouso.interface.cpanel.views.games', name='games_home'))
 
 urlpatterns = patterns('', *upat)

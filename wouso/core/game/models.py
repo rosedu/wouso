@@ -17,7 +17,14 @@ class Game(models.Model, App):
 
     @classmethod
     def get_coins(kls):
-        """ Returns a list of game-specific coins """
+        """ Returns a list of game-specific coins (as names)"""
+        return []
+
+    @classmethod
+    def get_modifiers(kls):
+        """ Return a list of modifiers - as names (this translates to artifact names)
+        Player has_modifier checks if the user has an artifact with the modifier id.
+        """
         return []
 
     def __unicode__(self):

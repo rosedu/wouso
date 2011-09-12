@@ -96,7 +96,7 @@ ol.top {
 .answers ul {
     list-style-type: none
 }
-.artifact {
+.artifact, .artifact-container {
     vertical-align: middle;
     margin-right: 5px;
     width: 24px;
@@ -107,7 +107,20 @@ ol.top {
 .artifact-default-level-1 {
     background-image:url(../art/default/level-1.png);
 }
-
+.artifact-container {
+    margin: 0px;
+    padding:  0px;
+}
+.artifact-container span.sup {
+    position: relative; top: -100%;
+    background-color: yellow;
+    color: #000;
+    border-radius: 10pt;
+    padding: 1px;
+    font-size: 0.6em;
+    z-index: 100;
+    float: right;
+}
 span.points {
     float: right
 }

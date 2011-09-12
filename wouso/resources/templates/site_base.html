@@ -28,7 +28,7 @@
         <div id="topbar">
             {% if user.is_authenticated %}
                 <span class="bold">{% player user.get_profile %}</span> |
-                {% for h in header %}{% autoescape off %}{{ h }}{% endautoescape %} | {% endfor %}
+                {% autoescape off %}{{ header }}{% endautoescape %}
                 {% if user.is_staff %}
                 <a href="{% url wouso.interface.cpanel.views.dashboard %}">CPanel</a> |
                 {% endif %}
@@ -96,7 +96,7 @@
     </div>
 
     <div id="footer">
-        <div id="footer_links">{% for f in footer %}{% autoescape off %}{{ f }}{% endautoescape %} |{% endfor %}
+        <div id="footer_links">{% autoescape off %}{{ footer }}{% endautoescape %}
         <br/>
         <span id="poweredby">
         <br />Powered by: <br />

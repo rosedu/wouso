@@ -105,11 +105,6 @@ See http://swarm.cs.pub.ro/~alexef/store/profil-wouso.png
 .. automodule:: wouso.interface.forms
     :members:
 
-:mod:`wouso.interface.models`
------------------------------
-.. automodule:: wouso.interface.models
-    :members:
-
 :mod:`wouso.interface.views`
 ----------------------------
 .. automodule:: wouso.interface.views

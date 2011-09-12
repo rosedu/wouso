@@ -1,0 +1,40 @@
+{% load i18n %}
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>{{config_title}}</title>
+    <LINK rel="stylesheet" type="text/css" href="/static/css/splash.css" />
+    <LINK rel="stylesheet" type="text/css" href="/static/themes/{{ config_theme }}/styles.css" />
+</head>
+<body>
+	<div id="floater"></div>
+	<div id="centered">
+        <div id="logo"></div>
+
+        <div id="side">
+            <form action="{% url django.contrib.auth.views.login %}" method="post">
+                <label for="username">{% trans 'username' %}:</label>
+                <input size="10" name="username" id="username" />
+                <label for="password">{% trans 'password' %}:</label>
+                <input size="10" name="password" id="password" type="password" />
+                <button type="submit">Enter &raquo;</button>
+                {% csrf_token %}
+            </form>
+		</div>
+
+        <div id="content">
+            <h2>{{ config_title }}</h2>
+            <p>
+                {{config_intro}}
+			</p>
+		</div>
+
+	</div>
+
+	<div id="bottom">
+		<p>
+			Copyright &copy; <a href="http://www.rosedu.org">ROSEdu</a>.
+		</p>
+	</div>
+</body>
+</html>

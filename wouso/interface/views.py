@@ -23,8 +23,14 @@ def get_wall(page=u'1'):
         activity = paginator.page(paginator.num_pages)
     return activity
 
+def anonymous_homepage(request):
+    return render_to_response('splash.html', context_instance=RequestContext(request))
+
 def homepage(request, page=u'1'):
     """ First page shown """
+    if request.user.is_anonymous():
+        return anonymous_homepage(request)
+
     # gather users online in the last ten minutes
     oldest = datetime.datetime.now() - datetime.timedelta(minutes = 10)
     online_last10 = Player.objects.filter(last_seen__gte=oldest)

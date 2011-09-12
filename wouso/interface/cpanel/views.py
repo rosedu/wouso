@@ -1,5 +1,5 @@
 import datetime
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.http import  HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
@@ -10,7 +10,8 @@ from wouso.core.user.models import Player
 from wouso.core.artifacts.models import Artifact, Group
 from wouso.core.qpool.models import Schedule, Question, Tag, Category
 from wouso.core.qpool import get_questions_with_category
-from wouso.interface.cpanel.models import Customization, Switchboard
+from wouso.core.god import God
+from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm
 
@@ -49,16 +50,29 @@ def customization(request):
     switchboard = Switchboard()
 
     if request.method == "POST":
-        for s in customization.props():
-            val = request.POST.get(s.name, '')
-            s.set_value(val)
-        for s in switchboard.props():
-            val = request.POST.get(s.name, '')
-            s.set_value(val)
+        for group in (customization, switchboard):
+            for s in group.props():
+                val = request.POST.get(s.name, '')
+                s.set_value(val)
 
     return render_to_response('cpanel/customization.html',
                               {'settings': (customization, switchboard),
                                'module': 'custom'},
+                              context_instance=RequestContext(request))
+
+@login_required
+def games(request):
+    switchboard = GamesSwitchboard()
+
+    if request.method == "POST":
+        for group in (switchboard,):
+            for s in group.props():
+                val = request.POST.get(s.name, '')
+                s.set_value(val)
+
+    return render_to_response('cpanel/customization.html',
+                              {'settings': (switchboard,),
+                               'module': 'games'},
                               context_instance=RequestContext(request))
 
 # used by qpool and qpool_search
@@ -99,6 +113,7 @@ def qpool_search(request):
                             'q': query},
                            context_instance=RequestContext(request))
 
+@login_required
 def question_edit(request, id=None):
     if id is not None:
         question = get_object_or_404(Question, pk=id)
@@ -118,7 +133,7 @@ def question_edit(request, id=None):
                                'module': 'qpool',
                                'categs': CATEGORIES},
                               context_instance=RequestContext(request))
-
+@login_required
 def question_switch(request, id):
     question = get_object_or_404(Question, pk=id)
 
@@ -131,6 +146,7 @@ def question_switch(request, id):
 
     return HttpResponseRedirect(go_back)
 
+@login_required
 def question_del(request, id):
     question = get_object_or_404(Question, pk=id)
 
@@ -142,10 +158,12 @@ def question_del(request, id):
 
     return HttpResponseRedirect(go_back)
 
+@login_required
 def qotd_schedule(request):
     Schedule.automatic()
     return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
 
+@login_required
 def set_active_categories(request):
     if request.method == 'POST':
         tags = Tag.objects.all().exclude(name__in=['qotd', 'quest', 'challenge'])
@@ -200,22 +218,25 @@ def artifactset(request, id):
                               {'to': profile,
                                'artifacts': artifacts},
                               context_instance=RequestContext(request))
-
+@login_required
 def artifact_home(request, group=None):
     if group is None:
         group = 'Default'
 
     group = get_object_or_404(Group, name=group)
     artifacts = group.artifact_set.all()
+    modifiers = God.get_all_modifiers()
 
     return render_to_response('cpanel/artifact_home.html',
                               {'groups': Group.objects.all(),
                                'artifacts': artifacts,
                                'module': 'artifacts',
                                'group': group,
+                               'modifiers': modifiers,
                                },
                               context_instance=RequestContext(request))
 
+@login_required
 def artifact_edit(request, id=None):
     if id is not None:
         instance = get_object_or_404(Artifact, pk=id)
@@ -251,6 +272,7 @@ def artifact_edit(request, id=None):
                             {'form': form, 'instance': instance},
                               context_instance=RequestContext(request))
 
+@login_required
 def artifact_del(request, id):
     artifact = get_object_or_404(Artifact, pk=id)
 
@@ -284,3 +306,15 @@ def groupset(request, id):
                               {'to': profile,
                                'form': form},
                               context_instance=RequestContext(request))
+
+# 'I am lazy' hack comes in
+import sys
+import types
+except_functions = ('login_required', 'permission_required','render_to_response', 'get_object_or_404',
+    'reverse', 'get_questions_with_category', 'get_themes')
+module = sys.modules[__name__].__dict__
+for i in module.keys():
+    if isinstance(module[i], types.FunctionType):
+        if i in except_functions:
+            continue
+        module[i] = permission_required('config.change_setting')(module[i])

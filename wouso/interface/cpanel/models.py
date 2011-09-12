@@ -1,5 +1,6 @@
 from wouso.core.config.models import *
 from wouso.utils import get_themes
+from wouso.core.game import get_games
 
 class ConfigGroup:
     name = 'Customizations'
@@ -21,5 +22,15 @@ class Switchboard(ConfigGroup):
         p = []
         for a in ('Qproposal', 'Top'):
             p.append(BoolSetting.get('disable-%s' % a))
+
+        return p
+
+class GamesSwitchboard(ConfigGroup):
+    name = 'Disable games'
+
+    def props(self):
+        p = []
+        for g in get_games():
+            p.append(BoolSetting.get('disable-%s' % g.__name__))
 
         return p

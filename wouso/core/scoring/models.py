@@ -87,6 +87,7 @@ class History(models.Model):
         return "{user} {date}-{formula}[{ext}]: {amount}{coin}".format(user=self.user, date=self.timestamp, formula=self.formula, ext=self.external_id, amount=self.amount, coin=self.coin)
 
 # Hack(?) for keeping User points in sync
+""" disable for now
 def sync_user_points(sender, instance, **kwargs):
     user = instance.user
     coin = Coin.get('points')
@@ -99,3 +100,4 @@ def sync_user_points(sender, instance, **kwargs):
         logging.debug("Updated %s with %f points, level %d" % (player, player.points, player.level_no))
 models.signals.post_save.connect(sync_user_points, History)
 models.signals.post_delete.connect(sync_user_points, History)
+"""

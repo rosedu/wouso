@@ -1,12 +1,14 @@
 import logging
-from django.contrib.auth.models import User
-from wouso.core.game import get_games
-from wouso.core.scoring.models import *
-from wouso.core import logger
+from django.utils.translation import ugettext_noop
+from wouso.core.user.models import Player
+from wouso.core.scoring.models import Coin, Formula, History
+from wouso.core.god import God
+from wouso.interface.activity import signals
 
 class NotSetupError(Exception): pass
 class InvalidFormula(Exception): pass
 class FormulaParsingError(Exception): pass
+class InvalidScoreCall(Exception): pass
 
 CORE_POINTS = ('points',)
 
@@ -64,20 +66,39 @@ def score(user, game, formula, external_id=None, **params):
         for coin, amount in ret.items():
             score_simple(user, coin, amount, game, formula, external_id)
 
-def score_simple(user, coin, amount, game=None, formula=None, 
+def score_simple(player, coin, amount, game=None, formula=None,
     external_id=None):
 
     if not isinstance(game, Game):
         game = game.get_instance()
 
-    if not isinstance(user, User):
-        user = user.user
+    if not isinstance(player, Player):
+        raise InvalidScoreCall()
+
+    user = player.user
 
     coin = Coin.get(coin)
     formula = Formula.get(formula) 
 
     hs = History.objects.create(user=user, coin=coin, amount=amount,
         game=game, formula=formula, external_id=external_id)
+
+    # update user.points asap
+    if coin.name == 'points':
+        player.points += amount
+        level = God.get_level_for_points(player.points)
+        if level != player.level_no:
+            if level < player.level_no:
+                signal_msg = ugettext_noop("{user} downgraded to level {level}")
+            else:
+                signal_msg = ugettext_noop("{user} upgraded to level {level}")
+
+            signals.addActivity.send(sender=None, user_from=player,
+                                 user_to=player, message=signal_msg,
+                                 arguments=dict(user=player, level=level),
+                                 game=game)
+            player.level_no = level
+        player.save()
 
     logging.debug("Scored %s with %f %s" % (user, amount, coin))
     return hs
@@ -107,3 +128,19 @@ def user_coins(user):
     if not isinstance(user, User):
         user = user.user
     return History.user_coins(user)
+
+def sync_user(player):
+    """ Synchronise user points with database
+    """
+    coin = Coin.get('points')
+    result = History.objects.filter(user=player.user,coin=coin).aggregate(total=models.Sum('amount'))
+    points = result['total'] if result['total'] is not None else 0
+    if player.points != points:
+        logging.debug('%s had %d instead of %d points' % (player, player.points, points))
+        player.points = points
+        player.level_no = God.get_level_for_points(player.points)
+        player.save()
+
+def sync_all_user_points():
+    for player in Player.objects.all():
+        sync_user(player)

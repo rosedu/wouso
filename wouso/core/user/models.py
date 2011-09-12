@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
 from wouso.core.god import God
-from wouso.core.scoring.models import History
 from wouso.core.artifacts.models import Artifact
 
 class PlayerGroup(models.Model):
@@ -38,6 +37,18 @@ class PlayerGroup(models.Model):
     def __unicode__(self):
         return self.name
 
+class InsufficientAmount(Exception): pass
+
+class PlayerArtifactAmount(models.Model):
+    class Meta:
+        unique_together = ('player', 'artifact')
+    player = models.ForeignKey('Player')
+    artifact = models.ForeignKey(Artifact)
+    amount = models.IntegerField(default=1)
+
+    def __unicode__(self):
+        return u"%s has %s [%d]" % (self.player, self.artifact, self.amount)
+
 class Player(models.Model):
     user = models.ForeignKey(User, unique=True,
         related_name="%(class)s_related")
@@ -51,7 +62,7 @@ class Player(models.Model):
 
     last_seen = models.DateTimeField(null=True, blank=True)
 
-    artifacts = models.ManyToManyField(Artifact, blank=True)
+    artifacts = models.ManyToManyField(Artifact, blank=True, through='PlayerArtifactAmount')
     groups = models.ManyToManyField(PlayerGroup, blank=True)
 
     @property
@@ -64,6 +75,8 @@ class Player(models.Model):
 
     @property
     def coins(self):
+        # TODO check usage and deprecate this function
+        from wouso.core.scoring.models import History
         return History.user_coins(self.user)
 
     @property
@@ -73,6 +86,26 @@ class Player(models.Model):
             return None
 
         return self.groups.filter(gclass=res['gclass'])[0]
+
+    def has_modifier(self, modifier):
+        """ Check for an artifact with id = modifier
+        """
+        try:
+            return PlayerArtifactAmount.objects.get(player=self, artifact__name=modifier)
+        except PlayerArtifactAmount.DoesNotExist:
+            return None
+
+    def use_modifier(self, modifier, amount):
+        paamount = self.has_modifier(modifier)
+        if amount > paamount.amount:
+            raise InsufficientAmount()
+
+        paamount.amount -= amount
+        if paamount.amount == 0:
+            paamount.delete()
+        else:
+            paamount.save()
+        return paamount
 
     def get_extension(self, cls):
         """ Search for an extension of this object, with the type cls

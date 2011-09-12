@@ -13,7 +13,10 @@
     {% empty %}
     <li class="empty">{% trans 'No active challenges' %}</li>
     {% endfor %}
+    {% if not chall_user.can_launch %}
+    <li class="empty">{% trans 'You cannot challenge' %}</li>
+    {% endif %}
  </ul>
 
-<a class="goto" href="{% url wouso.games.challenge.views.index %}">Challenges</a>
+<!-- <a class="goto" href="{% url wouso.games.challenge.views.index %}">Challenges</a> -->
 {% endblock %}
