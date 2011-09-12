@@ -39,7 +39,7 @@ def index(request):
 
 @login_required
 def done(request):
-    if QotdGame.disabled:
+    if QotdGame.disabled():
             return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
     # Do not show results until done
     if not request.user.get_profile().get_extension(QotdUser).has_answered:
