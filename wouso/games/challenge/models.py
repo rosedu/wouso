@@ -380,8 +380,12 @@ class Challenge(models.Model):
 class ChallengeGame(Game):
     """ Each game must extend Game """
     class Meta:
-        verbose_name = "Challenge"
         proxy = True
+
+    def __init__(self, *args, **kwargs):
+        # Set parent's fields
+        self._meta.get_field('verbose_name').default = "Challenge"
+        super(ChallengeGame, self).__init__(*args, **kwargs)
 
     @staticmethod
     def get_active(user):

@@ -53,10 +53,13 @@ class QotdUser(Player):
 class QotdGame(Game):
     """ Each game must extend Game """
     class Meta:
-        # The verbose_name is used in fine printing
-        verbose_name = "Question of the Day"
         # A Game extending core.game.models.Game should be set as proxy
         proxy = True
+
+    def __init__(self, *args, **kwargs):
+        # Set parent's fields
+        self._meta.get_field('verbose_name').default = "Question of the Day"
+        super(QotdGame, self).__init__(*args, **kwargs)
 
     @staticmethod
     def get_for_today():

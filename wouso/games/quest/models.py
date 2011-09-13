@@ -166,8 +166,12 @@ class Quest(models.Model):
 class QuestGame(Game):
     """ Each game must extend Game """
     class Meta:
-        verbose_name = "Weekly Quest"
         proxy = True
+
+    def __init__(self, *args, **kwargs):
+        # Set parent's fields
+        self._meta.get_field('verbose_name').default = "Weekly Quest"
+        super(QuestGame, self).__init__(*args, **kwargs)
 
     @staticmethod
     def get_current():
