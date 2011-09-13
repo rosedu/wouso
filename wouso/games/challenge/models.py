@@ -64,8 +64,10 @@ class ChallengeUser(Player):
 class Participant(models.Model):
     user = models.ForeignKey(ChallengeUser)
     start = models.DateTimeField(null=True, blank=True)
+    seconds_took = models.IntegerField(null=True, blank=True)
     played = models.BooleanField(default=False)
     responses = models.TextField(default='', blank=True, null=True)
+    score = models.FloatField(null=True, blank=True)
 
     @property
     def challenge(self):
@@ -230,17 +232,18 @@ class Challenge(models.Model):
         elif exp_user == self.user_to.user:
             self.user_won = self.user_from
             self.user_lost = self.user_to
-        self.user_won.points = 42
+        self.user_won.score = 42
         self.user_won.played = True
         self.user_won.save()
-        self.user_lost.points = -1
+        self.user_lost.score = -1
         self.user_lost.played = True
+        self.user_lost.seconds_took = (datetime.now() - user_played.start).seconds
         self.user_lost.save()
         self.winner = self.user_won.user
         scoring.score(self.user_won.user, ChallengeGame, 'chall-won',
-            external_id=self.id, points=self.user_won.points, points2=self.user_lost.points)
+            external_id=self.id, points=self.user_won.score, points2=self.user_lost.score)
         scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
-            external_id=self.id, points=self.user_lost.points, points2=self.user_lost.points)
+            external_id=self.id, points=self.user_lost.score, points2=self.user_lost.score)
 
         # send activty signal to the winner
         signal_msg = ugettext_noop('Challenge to {user_to} from {user_from} has expired and it was automatically settled.'\
@@ -253,6 +256,24 @@ class Challenge(models.Model):
                                      game=ChallengeGame.get_instance())
         self.save()
 
+    def extraInfo(self, user_won, user_lost):
+        '''returns a string with extra info for a string such as User 1 finished the challenge in $SECONDS seconds
+        (or $MINUTES minutes and seconds) and scored X points)'''
+
+        def formatTime(seconds):
+            if seconds < 60:
+                return "%d seconds" % seconds
+            elif seconds == 60:
+                return '1 minute'
+            elif seconds % 60 == 0:
+                return '%d minutes' % (seconds/60)
+            elif 60 < seconds < 120:
+                return '1 minute and %d seconds' % (seconds % 60)
+            return '%d minutes and %d seconds' % (seconds / 60, seconds % 60)
+
+        return '%.2fp (in %s) - %.2fp (in %s)' % (user_won.score, formatTime(user_won.seconds_took),
+                                                    user_lost.score, formatTime(user_lost.seconds_took))
+
     def played(self):
         """ Both players have played, save and score """
         for participant in self.participants:
@@ -260,12 +281,12 @@ class Challenge(models.Model):
                 answers = pk.loads(str(participant.responses))
             except:
                 answers = {}
-            participant.points = self._calculate_points(answers)
+            participant.score = self._calculate_points(answers)
             participant.save()
 
-        if self.user_to.points > self.user_from.points:
+        if self.user_to.score > self.user_from.score:
             result = (self.user_to, self.user_from)
-        elif self.user_from.points > self.user_to.points:
+        elif self.user_from.score > self.user_to.score:
             result = (self.user_from, self.user_to)
         else: #draw game
             result = 'draw'
@@ -275,25 +296,27 @@ class Challenge(models.Model):
             scoring.score(self.user_to.user, ChallengeGame, 'chall-draw')
             scoring.score(self.user_from.user, ChallengeGame, 'chall-draw')
             # send activty signal
-            signal_msg = ugettext_noop('Draw result between {user_to} and {user_from}')
+            signal_msg = ugettext_noop('Draw result between {user_to} and {user_from}:\n{extra}')
             signals.addActivity.send(sender=None, user_from=self.user_to.user, \
                                      user_to=self.user_from.user, \
                                      message=signal_msg, \
-                                     arguments=dict(user_to=self.user_to, user_from=self.user_from),\
+                                     arguments=dict(user_to=self.user_to, user_from=self.user_from,
+                                                    extra=self.extraInfo(self.user_won, self.user_lost)),\
                                      game=ChallengeGame.get_instance())
         else:
             self.status = 'P'
             self.user_won, self.user_lost = result
             self.winner = self.user_won.user
             scoring.score(self.user_won.user, ChallengeGame, 'chall-won',
-                external_id=self.id, points=self.user_won.points, points2=self.user_lost.points)
+                external_id=self.id, points=self.user_won.score, points2=self.user_lost.score)
             scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
-                external_id=self.id, points=self.user_lost.points, points2=self.user_lost.points)
+                external_id=self.id, points=self.user_lost.score, points2=self.user_lost.score)
             # send activty signal
-            signal_msg = ugettext_noop('{user_won} won challenge with {user_lost}')
+            signal_msg = ugettext_noop('{user_won} won challenge with {user_lost}: {extra}')
             signals.addActivity.send(sender=None, user_from=self.user_from.user, \
                                      user_to=self.user_to.user, \
-                                     message=signal_msg, arguments=dict(user_won=self.user_won, user_lost=self.user_lost), \
+                                     message=signal_msg, arguments=dict(user_won=self.user_won, user_lost=self.user_lost,
+                                                                        extra=self.extraInfo(self.user_won, self.user_lost)), \
                                      game=ChallengeGame.get_instance())
         self.save()
 
@@ -336,6 +359,7 @@ class Challenge(models.Model):
             logging.error("Invalid user")
             return
 
+        user_played.seconds_took = (datetime.now() - user_played.start).seconds
         user_played.played = True
         user_played.responses = pk.dumps(responses)
         user_played.save()

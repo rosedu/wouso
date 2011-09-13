@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_noop
 from wouso.core.user.models import Player
 from wouso.core.scoring.models import Coin, Formula, History
 from wouso.core.god import God
+from wouso.core.game import get_games, Game
 from wouso.interface.activity import signals
 
 class NotSetupError(Exception): pass
@@ -19,7 +20,7 @@ CORE_POINTS = ('points',)
 
 def check_setup():
     """ Check if the module has been setup """
-    
+
     if Coin.get('points') is None:
         return False
     return True
@@ -29,7 +30,7 @@ def setup():
     for cc in CORE_POINTS:
         if not Coin.get(cc):
             Coin.add(cc, name=cc)
-    
+
     # iterate through games and register formulas
     for game in get_games():
         for formula in game.get_formulas():
@@ -41,9 +42,9 @@ def calculate(formula, **params):
     formula = Formula.get(formula)
     if formula is None:
         raise InvalidFormula(formula)
-    
+
     ret = {}
-    try:    
+    try:
         frml = formula.formula.format(**params)
         # Apparently, Python does not allow assignments inside eval
         # Using this workaround for now
@@ -56,9 +57,9 @@ def calculate(formula, **params):
             ret[coin] = result
     except Exception as e:
         raise FormulaParsingError(e)
-        
+
     return ret
-    
+
 def score(user, game, formula, external_id=None, **params):
     ret = calculate(formula, **params)
 
@@ -78,7 +79,7 @@ def score_simple(player, coin, amount, game=None, formula=None,
     user = player.user
 
     coin = Coin.get(coin)
-    formula = Formula.get(formula) 
+    formula = Formula.get(formula)
 
     hs = History.objects.create(user=user, coin=coin, amount=amount,
         game=game, formula=formula, external_id=external_id)
@@ -111,18 +112,18 @@ def history_for(user, game, external_id=None, formula=None, coin=None):
         fltr['formula'] = Formula.get(formula)
     if coin:
         fltr['coin'] = Coin.get(coin)
-    
+
     if not isinstance(game, Game):
         game = game.get_instance()
-    
+
     if not isinstance(user, User):
         user = user.user
-        
+
     try:
         return History.objects.filter(user=user, game=game, **fltr)
     except History.DoesNotExist:
         return None
-        
+
 def user_coins(user):
     """ Returns a dictionary with user coins """
     if not isinstance(user, User):

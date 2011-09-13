@@ -311,7 +311,7 @@ def groupset(request, id):
 import sys
 import types
 except_functions = ('login_required', 'permission_required','render_to_response', 'get_object_or_404',
-    'reverse', 'get_questions_with_category', 'get_themes')
+    'reverse', 'get_questions_with_category', 'get_themes', 'import_from_file')
 module = sys.modules[__name__].__dict__
 for i in module.keys():
     if isinstance(module[i], types.FunctionType):
