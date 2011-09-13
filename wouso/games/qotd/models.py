@@ -59,6 +59,8 @@ class QotdGame(Game):
     def __init__(self, *args, **kwargs):
         # Set parent's fields
         self._meta.get_field('verbose_name').default = "Question of the Day"
+        self._meta.get_field('short_name').default = ""
+        self._meta.get_field('url').default = ""
         super(QotdGame, self).__init__(*args, **kwargs)
 
     @staticmethod

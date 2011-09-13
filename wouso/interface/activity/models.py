@@ -32,13 +32,8 @@ class Activity(models.Model):
 
     @property
     def game_name(self):
-        # FIXME: this is a hack for getting game name.
-        # self.game contains objects of type Game, therefore
-        # ._meta.verbose_name is not visibile to the parent class
         """ Returns the game name """
-        for game in get_games():
-            if game.__name__ == self.game.name:
-                return game._meta.verbose_name
+        return self.game.verbose_name
 
 def addActivity_handler(sender, **kwargs):
     """ Callback function for addActivity signal """

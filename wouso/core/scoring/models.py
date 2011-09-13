@@ -79,7 +79,7 @@ class History(models.Model):
                 else:
                     pp[h.coin] = h.amount
             if pp.keys():
-                points[game.get_instance()._meta.verbose_name] = pp
+                points[game.get_instance().verbose_name] = pp
         # TODO: get points without a game origin
         return points
 

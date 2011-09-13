@@ -3,9 +3,9 @@ from wouso.core.app import App
 
 class Game(models.Model, App):
     name = models.CharField(max_length=100, primary_key=True)
-    short_name = models.CharField(max_length=64)
-    verbose_name = models.CharField(max_length=128)
-    url = models.CharField(max_length=64)
+    short_name = models.CharField(max_length=64, blank=True)
+    verbose_name = models.CharField(max_length=128, blank=True)
+    url = models.CharField(max_length=64, blank=True)
 
     @classmethod
     def get_instance(kls):
