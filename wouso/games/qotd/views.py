@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from wouso.interface import render_string
-from wouso.interface.activity import signals
 from models import QotdUser, QotdGame
 from forms import QotdForm
 
