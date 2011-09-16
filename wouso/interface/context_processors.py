@@ -8,7 +8,10 @@ from wouso.interface.statistics.views import footer_link as stats_link
 from wouso.interface import get_static_pages
 
 def header_footer(request):
-    """ See sidebar below """
+    """ Generate header and footer bar contents.
+    """
+    #TODO ordering, using config
+
     header = []
     try:
         for game in get_games():
@@ -57,7 +60,7 @@ def header_footer(request):
 def sidebar(request):
     """ For each registered game, get a widget to be displayed in sidebar
     @remark This design needs to be analysed.
-    @todo ordering, probably done by god
+    @todo ordering, using config
 
     Returns a 'sidebar' list containing html boxes.
     """
@@ -83,6 +86,7 @@ def sidebar(request):
     return {'sidebar': sidebar}
 
 def config(request):
+    """ Make all configuration settings available as config_name """
     settings = {}
     for s in Setting.objects.all():
         settings['config_' + s.name] = s.get_value()

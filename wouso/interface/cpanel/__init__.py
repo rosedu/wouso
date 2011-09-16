@@ -2,6 +2,7 @@ from django.db.models import get_models
 from wouso.core.game.models import Game
 
 def get_cpanel_games():
+    # TODO: use get_games and some has_cpanel/cpanel_url_module property!!!
     import os
     games_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'games'))
 
