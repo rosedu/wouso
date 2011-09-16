@@ -70,7 +70,7 @@
             {% if cat == 'qotd' %}
             <td nowrap {% if q.scheduled == today %}class="bold"{%endif%}>{{ q.scheduled }}</td>
             {% endif %}
-            <td>{{ q }}</td>
+            <td>{{ q }}<span class="points">{% if not q.is_valid %}<span class="wrong">Invalid</span>{% endif %}</span></td>
             <td>
             <a class="button" href="{% url switch_active q.id %}">{% if q.active %}<span class="ok">yes</span>
             {% else %}<span class="wrong">no</span>
