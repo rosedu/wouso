@@ -62,7 +62,7 @@ class TopUser(ObjectHistory, Player):
 
     def week_points_evolution(self):
         """ :return: list of pairs (index, points) for the last week """
-        hs = History.objects.filter(user=self).order_by('-date')[:7]
+        hs = History.objects.filter(user=self, relative_to=None).order_by('-date')[:7]
         tot = len(hs)
         return [(tot - i, h.points) for (i,h) in enumerate(hs)]
 
