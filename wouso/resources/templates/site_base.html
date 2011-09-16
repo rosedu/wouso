@@ -80,6 +80,8 @@
             <h4>{% artifact user.get_profile.level %} {{ user.get_profile.level.title }}</h4>
             <span>{{ user.get_profile.points }} p</span>
             <!-- TODO progress bar points in level, next level -->
+            <br/>
+            <span>{{ user.get_profile.level_progress.points_left }} left until next level</span>
         </div>
         <h3>Your rank</h3>
         <p>Global: <span class="points">{{ top.position }}</span></p>

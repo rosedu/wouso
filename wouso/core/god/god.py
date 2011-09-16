@@ -7,6 +7,7 @@ class DefaultGod:
     This can be overriden by realm specific version of God. Every year,
     a new god can/must be written.
     """
+    LEVEL_LIMITS = (80, 125, 180, 245, 320, 450)
 
     def get_user_level(self, level_no, player=None):
         """
@@ -32,19 +33,25 @@ class DefaultGod:
             nivelul 6: 320 - 450p
             nivelul 7: 450 -
         """
-        if points < 80:
-            return 1
-        if points < 125:
-            return 2
-        if points < 180:
-            return 3
-        if points < 245:
-            return 4
-        if points < 320:
-            return 5
-        if points < 450:
-            return 6
+        for i, limit in enumerate(DefaultGod.LEVEL_LIMITS):
+            if points < limit:
+                return i + 1
         return 7  # maximum level for now
+
+    def get_level_progress(self, player):
+        """ Get player progress inside its level """
+        level_no = player.level_no
+        points = player.points
+        try:
+            current_limit = DefaultGod.LEVEL_LIMITS[level_no - 2]
+        except:
+            current_limit = 0
+        try:
+            next_limit = DefaultGod.LEVEL_LIMITS[level_no - 1]
+        except:
+            next_limit = 1000
+
+        return dict(next_level=level_no + 1, points_gained=points-current_limit, points_left=next_limit-points)
 
     def get_all_modifiers(self):
         """ Fetch modifiers from games and also add specific ones

@@ -105,6 +105,10 @@ class Player(models.Model):
     def artifact_amounts(self):
         return self.playerartifactamount_set
 
+    def level_progress(self):
+        """ Return a dictionary with: points_gained, points_left, next_level """
+        return God.get_level_progress(self)
+
     def has_modifier(self, modifier):
         """ Check for an artifact with id = modifier
         """
