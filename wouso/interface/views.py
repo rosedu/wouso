@@ -11,7 +11,7 @@ from django.utils.translation import ugettext as _
 from wouso.interface.forms import *
 from wouso.core.user.models import Player
 from wouso.interface.activity.models import Activity
-
+from wouso.interface.top.models import TopUser, History as TopHistory
 
 def get_wall(page=u'1'):
     ''' Returns activity for main wall, paginated.'''
@@ -31,13 +31,23 @@ def homepage(request, page=u'1'):
     if request.user.is_anonymous():
         return anonymous_homepage(request)
 
+    profile = request.user.get_profile()
     # gather users online in the last ten minutes
     oldest = datetime.datetime.now() - datetime.timedelta(minutes = 10)
     online_last10 = Player.objects.filter(last_seen__gte=oldest)
     activity = get_wall(page)
 
+    topuser = profile.get_extension(TopUser)
+    topgroups = list(profile.groups.all().order_by('-gclass'))
+    for g in topgroups:
+        g.position = TopHistory.get_user_position(topuser, relative_to=g)
+
     return render_to_response('site_base.html',
-                              {'last10': online_last10, 'activity': activity},
+                              {'last10': online_last10, 'activity': activity,
+                              'is_homepage': True,
+                              'top': topuser,
+                              'topgroups': topgroups,
+                              },
                               context_instance=RequestContext(request))
 
 @csrf_exempt

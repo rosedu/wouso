@@ -101,6 +101,10 @@ class Player(models.Model):
 
         return self.groups.filter(gclass=res['gclass'])[0]
 
+    @property
+    def artifact_amounts(self):
+        return self.playerartifactamount_set
+
     def has_modifier(self, modifier):
         """ Check for an artifact with id = modifier
         """

@@ -17,6 +17,12 @@ td {
 .hidden {
     display: none;
 }
+.centered {
+    text-align: center;
+}
+img.no-float, .no-float {
+    float: none !important;
+}
 .no-border {
     border: none !important;
 }
@@ -56,12 +62,21 @@ div#logo {
 #search {
     float: right;
 }
-#sidebar {
+#sidebar, #right-sidebar {
     width: 200px;
     min-height: 500px; /* for mihnea */
+}
+#sidebar {
     float: left;
     border-right: 1px solid #aaa;
     padding-right: 10px;
+}
+#right-sidebar {
+    width: 150px;
+    clear: right;
+    float: right;
+    border-left: 1px solid #aaa;
+    padding-left: 10px;
 }
 #content {
     width: 700px;
@@ -197,6 +212,9 @@ img.avatar {
 /* topbar sidebar */
 #sidebar h2 {
     clear: both;
+}
+#right-sidebar h4 {
+    margin: 2px;
 }
 .unread-count {
     border-radius: 5pt;

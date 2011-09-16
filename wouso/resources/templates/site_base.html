@@ -1,4 +1,5 @@
 {% load user %}
+{% load artifacts %}
 {% load i18n %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <HTML xmlns="http://www.w3.org/1999/xhtml">
@@ -62,24 +63,39 @@
             {{ w }}
         {% endfor %}
         {% endblock %}
-    </div>
-
-    <div id="content">
-    {% block content %}
-        <div class="subgroups">
-            <h3>{% trans 'Players active in the last 10 minutes' %}</h3>
+        {% if last10 %}
+        <h2>{% trans 'Players active in the last 10 minutes' %}</h2>
             {% for u in last10 %}
                 {% player u %}
             {% endfor %}
-            {% if config_intro %}
-            <h3>{% trans 'About' %}</h3>
-                <p>{{config_intro}}</p>
-            {% endif %}
-            <p>
-            See <a href="{% url games.views.games %}">a list of available games</a>.
-            </p>
-        </div>
+        {% endif %}
+    </div>
 
+    <div id="content">
+    {% if is_homepage %}
+    <div id="right-sidebar">
+        <h2>{{ user.get_profile }}</h2>
+        <div class="centered">
+            <img src="{% player_avatar user.get_profile %}" class="avatar no-float" />
+            <h4>{% artifact user.get_profile.level %} {{ user.get_profile.level.title }}</h4>
+            <span>{{ user.get_profile.points }} p</span>
+            <!-- TODO progress bar points in level, next level -->
+        </div>
+        <h3>Your rank</h3>
+        <p>Global: <span class="points">{{ top.position }}</span></p>
+        {% for g in topgroups %}
+        <p>{{ g }}: <span class="points">{{ g.position }}</span></p>
+        {% endfor %}
+
+        <h3>Artifacts</h3>
+        {% for a in user.get_profile.artifact_amounts.all %}
+            {% artifact a %}
+        {% empty %}
+        None.
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% block content %}
     <div id="wall">
         <h2>Activity</h2></h3>
         {% include 'activity/stream.html' %}

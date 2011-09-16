@@ -19,10 +19,9 @@
     <img src="{{ avatar }}" class="avatar" width="100" />
     <h2>{{ profile }}</h2>
     <h3>{% artifact_full profile.level %} {% if profile.proximate_group %}Group: {% player_group profile.proximate_group %}{% endif %}</h3>
-    {% if profile.playerartifactamount_set.all %}
-        Artifacts:
+    {% if profile.artifact_amounts.all %}
         <ul class="artifacts">
-        {% for a in profile.playerartifactamount_set.all %}
+        {% for a in profile.artifact_amounts.all %}
             <li>{% artifact a %}</li>
         {% endfor %}
         </ul>
