@@ -26,7 +26,7 @@ def main():
     for i,u in enumerate(Player.objects.all().order_by('-points')):
         topuser = u.get_extension(TopUser)
         position = i + 1
-        hs, new = History.objects.get_or_create(user=topuser, date=today)
+        hs, new = History.objects.get_or_create(user=topuser, date=today, relative_to=None)
         hs.position, hs.points = position, u.points
         hs.save()
 
@@ -39,7 +39,7 @@ def main():
         cls = cls[0]
         for i,p in enumerate(PlayerGroup.objects.filter(gclass=cls).order_by('-points')):
             position = i + 1
-            hs, new = History.objects.get_or_create(group=p, date=today)
+            hs, new = History.objects.get_or_create(group=p, date=today, relative_to=None)
             hs.position, hs.points = position, p.points
             hs.save()
     print 'Updating user relative to group position: '
