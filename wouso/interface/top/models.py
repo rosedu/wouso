@@ -18,15 +18,22 @@ class GroupHistory(ObjectHistory):
     def position(self):
         return History.get_group_position(self.group)
 
-    def week_evolution(self):
+    @property
+    def position_in_parent(self):
+        if not self.group.parent:
+            return self.position
+        return History.get_group_position(self.group, relative_to=self.group.parent)
+
+    def week_evolution(self, relative_to=None):
         """ :return: list of pairs (index, position) for the last week """
-        hs = History.objects.filter(group=self.group).order_by('-date')[:7]
+        hs = History.objects.filter(group=self.group, relative_to=relative_to).order_by('-date')[:7]
         tot = len(hs)
         return [(tot - i, h.position) for (i,h) in enumerate(hs)]
 
 class TopUser(ObjectHistory, Player):
     @property
     def progress(self):
+        """ Return position difference between last two recorded positions. """
         try:
             yesterday = History.objects.filter(user=self).order_by('-date')[0]
             daybefore = History.objects.filter(user=self).order_by('-date')[1]
@@ -47,9 +54,9 @@ class TopUser(ObjectHistory, Player):
     def position(self):
         return History.get_user_position(self)
 
-    def week_evolution(self):
+    def week_evolution(self, relative_to=None):
         """ :return: list of pairs (index, position) for the last week """
-        hs = History.objects.filter(user=self).order_by('-date')[:7]
+        hs = History.objects.filter(user=self, relative_to=relative_to).order_by('-date')[:7]
         tot = len(hs)
         return [(tot - i, h.position) for (i,h) in enumerate(hs)]
 
@@ -62,14 +69,15 @@ class TopUser(ObjectHistory, Player):
 class History(models.Model):
     user = models.ForeignKey('TopUser', blank=True, null=True)
     group = models.ForeignKey(PlayerGroup, blank=True, null=True)
+    relative_to = models.ForeignKey(PlayerGroup, blank=True, null=True, related_name='relativeto')
     position = models.IntegerField(default=0)
     points = models.FloatField(default=0)
     date = models.DateField()
 
     @classmethod
-    def get_user_position(kls, user):
+    def get_user_position(kls, user, relative_to=None):
         try:
-            history = History.objects.filter(user=user).order_by('-date')[0]
+            history = History.objects.filter(user=user,relative_to=relative_to).order_by('-date')[0]
             return history.position
         except IndexError:
             return 0
@@ -77,9 +85,9 @@ class History(models.Model):
             return 0
 
     @classmethod
-    def get_group_position(kls, group):
+    def get_group_position(kls, group, relative_to=None):
         try:
-            history = History.objects.filter(group=group).order_by('-date')[0]
+            history = History.objects.filter(group=group, relative_to=relative_to).order_by('-date')[0]
             return history.position
         except IndexError:
             return 0
@@ -87,7 +95,7 @@ class History(models.Model):
             return 0
 
     def __unicode__(self):
-        return u"%s at %s, position: %d, points: %f" % (self.user if self.user else self.group, self.date, self.position, self.points)
+        return u"%s %s at %s, position: %d, points: %f" % ('[%s]' % self.relative_to if self.relative_to else '',self.user if self.user else self.group, self.date, self.position, self.points)
 
 class Top(App):
 

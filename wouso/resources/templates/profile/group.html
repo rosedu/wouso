@@ -71,6 +71,12 @@
 
         <div id="tab-3" class="tab_content">
             <div class="subgroups">
+                <h3>Rank</h3>
+                <p>Overall: <span class="points">{{ top.position }}</span></p>
+                {% if group.parent %}
+                <p>In {{group.parent}}: <span class="points">{{ top.position_in_parent }}</span></p>
+                {% endif %}
+                
                 <h3>Position evolution</h3>
                 <p>Position evolution compared with groups of the same kind.</p>
                 <div id="legend"></div>

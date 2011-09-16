@@ -42,6 +42,22 @@ def main():
             hs, new = History.objects.get_or_create(group=p, date=today)
             hs.position, hs.points = position, p.points
             hs.save()
+    print 'Updating user relative to group position: '
+    for g in PlayerGroup.objects.all():
+        for i,u in enumerate(g.player_set.order_by('-points')):
+            topuser = u.get_extension(TopUser)
+            position = i + 1
+            hs, new = History.objects.get_or_create(user=topuser, date=today, relative_to=g)
+            hs.position, hs.points = position, p.points
+            hs.save()
+    print 'Updating group relative to parent group position: '
+    for g in PlayerGroup.objects.all():
+        if g.children:
+            for i,c in enumerate(g.children.order_by('-points')):
+                position = i + 1
+                hs, new = History.objects.get_or_create(group=c, date=today, relative_to=g)
+                hs.position, hs.points = position, p.points
+                hs.save()
 
     from wouso.games.challenge.models import Challenge
     print 'Updating expired challenges'

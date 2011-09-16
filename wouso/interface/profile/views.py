@@ -9,6 +9,7 @@ from wouso.core.user.models import Player, PlayerGroup
 from wouso.core.scoring.models import History
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, GroupHistory
+from wouso.interface.top.models import History as TopHistory
 
 @login_required
 def profile(request):
@@ -30,6 +31,10 @@ def user_profile(request, id, page=u'1'):
         filter(Q(user_to=id) | Q(user_from=id)).order_by('-timestamp')
 
     top_user = profile.get_extension(TopUser)
+    top_user.topgroups = list(profile.groups.all().order_by('-gclass'))
+    for g in top_user.topgroups:
+        g.week_evolution = top_user.week_evolution(relative_to=g)
+        g.position = TopHistory.get_user_position(top_user, relative_to=g)
     history = History.user_points(profile)
     paginator = Paginator(activity_list, 10)
 
