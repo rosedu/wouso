@@ -4,7 +4,7 @@ from wouso.core.qpool.models import Question, Answer, Schedule, Category, Tag
 class QuestionForm(forms.Form):
     text = forms.CharField(max_length=500, widget=forms.Textarea)
     active = forms.BooleanField(required=False)
-    schedule = forms.DateField(required=False, input_formats=['%d.%m.%Y'], help_text='dd.mm.yyyy')
+    schedule = forms.DateField(required=False, input_formats=['%d.%m.%Y','%Y-%m-%d'], help_text='dd.mm.yyyy')
     category = forms.CharField(max_length=50, required=False)
 
     def __init__(self, data=None, instance=None):
@@ -16,6 +16,11 @@ class QuestionForm(forms.Form):
                                         widget=forms.Textarea, required=False)
                 self.fields['correct_%d' % i] = forms.BooleanField(required=False)
 
+        alltags = Tag.objects.all().exclude(name__in=['qotd', 'challenge', 'quest'])
+        self.fields['tags'] = forms.MultipleChoiceField(
+                        choices=[(tag.name, tag.name) for tag in alltags],
+                        widget=forms.SelectMultiple, required=False,
+                        initial=[t.name for t in instance.tags.all()] if instance else {})
         self.instance = instance
 
     def save(self):
@@ -54,6 +59,12 @@ class QuestionForm(forms.Form):
             else:
                 sched.day = data['schedule']
                 sched.save()
+        # also do tags
+        for t in self.instance.tags.all():
+            self.instance.tags.remove(t)
+        for t in data['tags']:
+            tag, new = Tag.objects.get_or_create(name=t)
+            self.instance.tags.add(tag)
         self.instance.save()
 
 

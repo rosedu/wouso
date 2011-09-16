@@ -120,12 +120,13 @@ def question_edit(request, id=None):
     else:
         question = None
 
-    form = None
     if request.method == 'POST':
         form = QuestionForm(request.POST, instance=question)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
+    else:
+        form = QuestionForm(instance=question)
 
     return render_to_response('cpanel/question_edit.html',
                               {'question': question,
