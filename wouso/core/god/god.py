@@ -2,8 +2,10 @@ from wouso.core.artifacts.models import Artifact, Group
 from wouso.core.game import get_games
 
 class DefaultGod:
-    """ A basic God implementation.
-    This can be overriden by realm specific version of God. Every year, a new god must be written
+    """ A basic God implementation and also the base class for other gods.
+    It defines the game basics, such as level intervals and species.
+    This can be overriden by realm specific version of God. Every year,
+    a new god can/must be written.
     """
 
     def get_user_level(self, level_no, player=None):

@@ -9,6 +9,9 @@ from wouso.core.game import get_games
 from wouso.core.game.models import Game
 
 class ScoringModel:
+    """ Generic loose, fail-proof model with add_if_does_not_exist
+    and get_if_it_isnt_already_an_instance methods
+    """
     @classmethod
     def add(kls, id, **data):
         if isinstance(id, kls):
@@ -29,24 +32,38 @@ class ScoringModel:
         return u'%s' % self.id
             
 class Coin(ScoringModel, models.Model):
+    """ Different scoring categories.
+
+    A special coin is 'points' since is used for ladder and levels.
+    """
     id = models.CharField(max_length=100, primary_key=True)
     # The game owner module, or null if is a core coin
     owner = models.ForeignKey(Game, blank=True, null=True)
     name = models.CharField(max_length=100)
     
     def is_core(self):
+        """ A coin is a core coin, if it doesn't have an owner """
         return owner is None
 
 class Formula(ScoringModel, models.Model):
+    """ Define the way coin amounts are given to the user, based
+    on keyword arguments formulas.
+    
+    A formula is owned by a game.
+    """ 
     id = models.CharField(max_length=100, primary_key=True)
     formula = models.CharField(max_length=500, default='')
     owner = models.ForeignKey(Game)
     description = models.CharField(max_length=500, default='')
 
 class History(models.Model):
+    """ Scoring history keeps track of scoring events per user, saving
+    the details from source to amount.
+    """
     timestamp = models.DateTimeField(default=datetime.now, blank=True)
     user = models.ForeignKey(User)
     game = models.ForeignKey(Game, blank=True, null=True, default=None)
+    # this is reserved for further use/debugging
     external_id = models.IntegerField(default=0, null=True, blank=True)
     formula = models.ForeignKey(Formula, blank=True, null=True, default=None)
     coin = models.ForeignKey(Coin)
@@ -54,6 +71,8 @@ class History(models.Model):
     
     @staticmethod
     def user_coins(user):
+        """ Returns a dictionary of coins and amounts for a specific user. """
+        # TODO: get amounts directly, without filtering by games
         coins = {}
         for game in get_games():
             hs = list(History.objects.filter(user=user, game=game.get_instance()))
@@ -80,7 +99,7 @@ class History(models.Model):
                     pp[h.coin] = h.amount
             if pp.keys():
                 points[game.get_instance().verbose_name] = pp
-        # TODO: get points without a game origin
+        # TODO: also get points without a game origin
         return points
 
     def __unicode__(self):

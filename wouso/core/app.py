@@ -4,7 +4,7 @@ class App:
 
     @classmethod
     def disabled(kls):
-        """ Search for a disabled config
+        """ Search for a disabled config setting.
         """
         from wouso.core.config.models import BoolSetting
 

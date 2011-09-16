@@ -2,6 +2,9 @@ from django.db import models
 from wouso.core.app import App
 
 class Game(models.Model, App):
+    """ Generic game class. Each installed application acting like a
+    game should extend this class.
+    """
     name = models.CharField(max_length=100, primary_key=True)
     short_name = models.CharField(max_length=64, blank=True)
     verbose_name = models.CharField(max_length=128, blank=True)
@@ -9,6 +12,11 @@ class Game(models.Model, App):
 
     @classmethod
     def get_instance(kls):
+        """ Return the unique instance of a Game, starting from its
+        class model.
+        """
+        # TODO: check if caching at this level makes a difference, or
+        # django's object manager already caches it.
         instance, new = kls.objects.get_or_create(name=kls.__name__)
         instance.game = Game.objects.get(name=kls.__name__)
         return instance

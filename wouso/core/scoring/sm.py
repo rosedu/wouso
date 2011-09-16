@@ -1,3 +1,4 @@
+# TODO: why isn't this implemented as a class singleton, the same as God ?
 import logging
 from django.utils.translation import ugettext_noop
 from wouso.core.user.models import Player
@@ -38,7 +39,7 @@ def setup():
                 Formula.add(formula)
 
 def calculate(formula, **params):
-    """ Calculate formula """
+    """ Calculate formula and return a dictionary of coin and amounts """
     formula = Formula.get(formula)
     if formula is None:
         raise InvalidFormula(formula)
@@ -61,6 +62,7 @@ def calculate(formula, **params):
     return ret
 
 def score(user, game, formula, external_id=None, **params):
+    """ Give amount of coin specified by the formula to the player """
     ret = calculate(formula, **params)
 
     if isinstance(ret, dict):
@@ -69,7 +71,8 @@ def score(user, game, formula, external_id=None, **params):
 
 def score_simple(player, coin, amount, game=None, formula=None,
     external_id=None):
-
+    """ Give amount of coin to the player.
+    """
     if not isinstance(game, Game):
         game = game.get_instance()
 
@@ -105,6 +108,9 @@ def score_simple(player, coin, amount, game=None, formula=None,
     return hs
 
 def history_for(user, game, external_id=None, formula=None, coin=None):
+    """ Return all history entries for given (user, game) pair.
+    """
+    # TODO: check usage
     fltr = {}
     if external_id:
         fltr['external_id'] = external_id
@@ -143,5 +149,6 @@ def sync_user(player):
         player.save()
 
 def sync_all_user_points():
+    """ Synchronise points amounts for all players """
     for player in Player.objects.all():
         sync_user(player)

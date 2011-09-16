@@ -8,6 +8,7 @@ def validate_dynq_code():
     pass
 
 class Tag(models.Model):
+    """ A simple way of grouping Questions """
     name = models.CharField(max_length=256)
     active = models.BooleanField(default=False)
 
@@ -15,6 +16,9 @@ class Tag(models.Model):
         return self.name
 
     def set_active(self):
+        """ Activating a tag implies activating all the Question objects
+        having this tag.
+        """
         if self.active is True:
             return
         self.active = True
@@ -22,6 +26,9 @@ class Tag(models.Model):
         Question.objects.filter(tags__name=self.name).update(active=True)
 
     def set_inactive(self):
+        """ Same as activating, updates all Question objects with the
+        tag
+        """
         if self.active is False:
             return
         self.active = False
@@ -30,12 +37,21 @@ class Tag(models.Model):
 
 
 class Category(models.Model):
+    """ One to many grouping for Question objects. Usually a game
+    defines it's own category of questions in qpool.
+    """
     name = models.CharField(max_length=64)
 
     def __unicode__(self):
         return self.name
 
 class Question(models.Model):
+    """ A question in a qpool has text and a variable number of answers,
+    category and tags, proposing and endorsing user.
+    
+    Dynamic questions also store a validation code, that run against
+    the given answer should return True or False if the answer is valid.
+    """
     text = models.TextField()
     proposed_by = models.ForeignKey(User, null=True, blank=True, related_name="%(app_label)s_%(class)s_proposedby_related")
     endorsed_by = models.ForeignKey(User, null=True, blank=True, related_name="%(app_label)s_%(class)s_endorsedby_related")
@@ -51,6 +67,7 @@ class Question(models.Model):
 
     @property
     def answers(self):
+        """ A list of answers """
         try:
             return Answer.objects.filter(question=self).all()
         except Answer.DoesNotExist:
@@ -58,12 +75,15 @@ class Question(models.Model):
 
     @property
     def day(self):
+        """ The scheduled date for question, or None """
         try:
             return Schedule.objects.filter(question=self)[0].day
         except (Schedule.DoesNotExist, IndexError):
             return None
 
     def is_valid(self):
+        """ At least one answer is required. Also check for one correct
+        answer """
         if self.answers.count() == 0:
             return False
         if self.answers.filter(correct=True).count() == 0:
@@ -71,12 +91,16 @@ class Question(models.Model):
         return True
 
     def add_tag(self, tag):
+        """ Adding tag helper """
+        # TODO check usage, rewrite or deprecate
         if not isinstance(tag, Tag):
             tag = Tag.objects.create(name=tag)
             tag.save()
         return self.tags.add(tag)
 
     def has_tag(self, tag):
+        """ Has tag helper """
+        # TODO check usage, rewrite or deprecate
         if not isinstance(tag, Tag):
             try:
                 tag = Tag.objects.get(name=tag)
@@ -86,9 +110,12 @@ class Question(models.Model):
 
     @property
     def question(self):
+        # TODO check usage
         return unicode(self.text)
 
     def tag(self):
+        """ Tag as a string """
+        # TODO rename
         tlist = self.tags.all()
         ret = ""
 
@@ -102,6 +129,8 @@ class Question(models.Model):
         return ret[:-2]
 
     def scheduled(self):
+        """ Day as a string """
+        # TODO: rewrite using self.day
         slist = Schedule.objects.filter(question=self)
         ret = ""
 
@@ -132,7 +161,11 @@ class Schedule(models.Model):
 
     @classmethod
     def automatic(kls, qotd='qotd'):
-        """ Automatically schedule all active questions on dates newer than the newest """
+        """ Automatically schedule all active questions on dates newer
+        than the newest in database or today.
+
+        Affects only questions in category qotd.
+        """
         newest = Schedule.objects.aggregate(models.Max('day'))
         if not newest:
             return

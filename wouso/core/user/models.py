@@ -4,6 +4,8 @@ from wouso.core.god import God
 from wouso.core.artifacts.models import Artifact
 
 class PlayerGroup(models.Model):
+    """ Group players together in a hierchical way """
+    # TODO: check if the perms Group linking is of any use
     group = models.ForeignKey(Group, unique=True, related_name="%(class)s_related")
     name = models.CharField(max_length=100)
     gclass = models.IntegerField(default=0)
@@ -16,6 +18,7 @@ class PlayerGroup(models.Model):
 
     @property
     def live_points(self):
+        """ Calculate sum of user points dynamically """
         p = self.player_set.aggregate(total=models.Sum('points'))
         if p['total'] is None:
             return 0
@@ -23,10 +26,14 @@ class PlayerGroup(models.Model):
 
     @property
     def children(self):
+        """ All groups with parent set to this group """
         return self.playergroup_set.all()
 
     @property
     def sisters(self):
+        """ All groups with the same parent as this group or of the same
+        class, if parent is not set.
+        """
         if not self._sisters:
             if self.parent:
                 self._sisters = list(self.parent.children.exclude(id=self.id))
@@ -40,6 +47,7 @@ class PlayerGroup(models.Model):
 class InsufficientAmount(Exception): pass
 
 class PlayerArtifactAmount(models.Model):
+    """ Tie artifact and amount to the owner user """
     class Meta:
         unique_together = ('player', 'artifact')
     player = models.ForeignKey('Player')
@@ -50,6 +58,9 @@ class PlayerArtifactAmount(models.Model):
         return u"%s has %s [%d]" % (self.player, self.artifact, self.amount)
 
 class Player(models.Model):
+    """ Base class for the game user. This is extended by game specific
+    player models.
+    """
     user = models.ForeignKey(User, unique=True,
         related_name="%(class)s_related")
 
@@ -81,6 +92,9 @@ class Player(models.Model):
 
     @property
     def proximate_group(self):
+        """ Return the group with minimum class, for which the user
+        is a member of, or None.
+        """
         res = self.groups.aggregate(gclass=models.Min('gclass'))
         if res['gclass'] is None:
             return None
@@ -96,6 +110,11 @@ class Player(models.Model):
             return None
 
     def use_modifier(self, modifier, amount):
+        """ Substract amount of modifier artifact from players collection.
+        If the current amount is less than amount, raise an exception.
+        If the amount after substraction is zero, delete the corresponding
+        artifact amount object.
+        """
         paamount = self.has_modifier(modifier)
         if amount > paamount.amount:
             raise InsufficientAmount()
