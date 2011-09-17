@@ -62,6 +62,14 @@ div#logo {
 #search {
     float: right;
 }
+#search button {
+    display: inline-block;
+    float: none;
+}
+#search input {
+    padding: 6px;
+    border: 1px solid #aaa;
+}
 #sidebar, #right-sidebar {
     width: 200px;
     min-height: 500px; /* for mihnea */
