@@ -1,12 +1,13 @@
 {% extends 'site_base.html' %}
+{% load i18n %}
 
-{% block title %}Challenge result{% endblock %}
+{% block title %}{% trans 'Challenge result' %}{% endblock %}
 
 {% block content %}
 
-<h1>Challenge</h1>
+<h2>{% trans 'Challenge' %}</h2>
 
-<p>You scored: {{ results.points|floatformat:"-2" }}!</p>
+<p>{% trans 'You scored:' %} {{ results.points|floatformat:"-2" }}!</p>
 
 <!--
 <p>Details:

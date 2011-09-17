@@ -1,24 +1,24 @@
 {% extends 'site_base.html' %}
-
+{% load i18n %}
 {% block scripts %}
     <script type="text/javascript" src="/static/js/tabs.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
 {% endblock %}
 
-{% block title %}Inbox{% endblock %}
+{% block title %}{% trans 'Messaging' %}{% endblock %}
 
 {% block content %}
 
 <div class="actions">
-<a href="{% url create %}">Create message</a>
+<a href="{% url create %}">{% trans 'Compose' %}</a>
 </div>
 
-<h2>Messages</h2>
+<h2>{% trans 'Messages' %}</h2>
 
 <ul class="tabs">
-        <li><a href="#rec">Received</a></li>
-        <li><a href="#sent">Sent</a></li>
-        <li><a href="#all">All</a></li>
+        <li><a href="#rec">{% trans 'Received' %}</a></li>
+        <li><a href="#sent">{% trans 'Sent' %}</a></li>
+        <li><a href="#all">{% trans 'All' %}</a></li>
 </ul>
 
 <div class="tab_container">

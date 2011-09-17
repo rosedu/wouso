@@ -1,6 +1,7 @@
 {% extends 'sidebar_widget.html' %}
+{% load i18n %}
 
-{% block title %}Weekly Quest{% endblock %}
+{% block title %}{% trans 'Quest' %}{% endblock %}
 
 {% block content %}
 
@@ -10,7 +11,7 @@
         <a href="{% url games.quest.views.index %}">Start quest!</a>
     {% else %}
         {% if quser.finished %}
-        You have finished the quest.
+        {% trans 'You have finished the quest.' %}
         {% else %}
         <a href="{% url games.quest.views.index %}">Play quest!</a>
         <br/>
@@ -18,7 +19,7 @@
         {% endif %}
     {% endif %}
 {% else %}
-    No quest active.
+    {% trans 'No quest active.' %}
 {% endif %}
 
 {% endblock %}

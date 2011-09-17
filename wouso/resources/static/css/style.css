@@ -127,7 +127,8 @@ ol.top {
     border-bottom: 1px solid #aaa;
 }
 .answers ul {
-    list-style-type: none
+    list-style-type: none;
+    padding: 0px;
 }
 .artifact, .artifact-container {
     vertical-align: middle;
@@ -155,6 +156,22 @@ ol.top {
 }
 span.points {
     float: right
+}
+li input {
+    float: left;
+    clear: right;
+}
+li div.question {
+    clear: right;
+}
+li label {
+    display: block;
+    float: right;
+    width: 95%;
+    padding: 6px;
+}
+li label:hover {
+    background-color: #eee;
 }
 /* profile page */
 .profile {
@@ -352,12 +369,20 @@ div.activity-second a {
 ul.answers {
     list-style-type: none;
     padding-left: 0px;
+    margin-top: 6px;
 }
 div.timer {
     text-align: center;
     font-size: 42px;
+    position: fixed; top: 100px; left: 50%;
+    background-color: white;
+    border: 2px solid #ddd;
+    padding: 6px;
+    border-radius: 20px;
 }
 ul.simple {
     padding-left: 0px;
     list-style-type: none;
+}
+div.question {
 }

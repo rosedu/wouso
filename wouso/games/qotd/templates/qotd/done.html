@@ -1,27 +1,32 @@
 {% extends 'site_base.html' %}
+{% load i18n %}
 
-{% block title %}Question of the Day{% endblock %}
+{% block title %}{% trans 'Question of the Day' %}{% endblock %}
 
 {% block content %}
 
 {% if question %}
-<h1>Question</h1>
+{% autoescape off %}
+<h2>{% trans 'Question' %}</h2>
 <p>{{ question.text }}</p>
 <div class="answers">
 <ul>
 {% for a in question.answers %}
     <li {% ifequal a choice %}class={% if a.correct %}"ok"{% else %}"wrong"{% endif %}{% endifequal %}>
-        <input type=radio disabled {% ifequal a choice %}checked{% endifequal %} />
-        {{ a.text }} {% if a.correct %}[correct]{% endif %}
+        <input type=radio disabled {% ifequal a choice %}checked{% endifequal %} id="qotd_a_{{a.id}}" />
+        <label for="qotd_a_{{a.id}}" class="{% ifequal a choice %}bold{% endifequal %}">{{ a.text }}</label>
     </li>
 {% endfor %}
 </ul>
 </div>
 
+<!--
 Your choice: {{ choice }}
 {% if valid %} (correct){% else %} (wrong){% endif %}
+-->
+{% endautoescape %}
 {% else %}
-    No question for today.
+    {% trans 'No question for today.' %}
 {% endif %}
 
 {% endblock %}

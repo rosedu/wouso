@@ -1,44 +1,213 @@
 # WoUSO Romanian
-# Copyright (C) 2011 wouso 
+# Copyright (C) 2011 wouso
 # This file is distributed under the same license as the PACKAGE package.
 # Alex Eftimie <alex@rosedu.org>, 2011
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: wouso VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-09 13:40+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2011-09-17 07:08+0300\n"
+"PO-Revision-Date: 2011-09-17 07:08+0200\n"
+"Last-Translator: Alex Eftimie <alex@rosedu.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: games/challenge/models.py:123
+#: core/scoring/sm.py:96
+msgid "{user} downgraded to level {level}"
+msgstr ""
+
+#: core/scoring/sm.py:98
+msgid "{user} upgraded to level {level}"
+msgstr ""
+
+#: core/user/templatetags/user.py:32
+msgid "You"
+msgstr "Tu"
+
+#: games/challenge/models.py:52
+msgid "{user} used {artifact} to enable one more challenge."
+msgstr ""
+
+#: games/challenge/models.py:150
 msgid "{user_to} has refused challenge from {user_from}"
 msgstr "{user_to} a refuzat provocarea de la {user_from}"
 
-#: games/challenge/models.py:203
+#: games/challenge/models.py:249
+#, fuzzy
 msgid ""
 "Challenge to {user_to} from {user_from} has expired and it was automatically "
-"settled."
-msgstr "Provocarea către {user_to} de la {user_from} a expirat și a fost rezolvată"
-"automat."
+"settled. {user_won} won."
+msgstr ""
+"Provocarea către {user_to} de la {user_from} a expirat și a fost "
+"rezolvatăautomat."
 
-#: games/challenge/models.py:234
-msgid "Draw result between {user_to} and {user_from}"
+#: games/challenge/models.py:299
+#, fuzzy
+msgid ""
+"Draw result between {user_to} and {user_from}:\n"
+"{extra}"
 msgstr "Rezultat null între {user_to} și {user_from}"
 
-#: games/challenge/models.py:249
-msgid "{user_won} won challenge with {user_lost}"
+#: games/challenge/models.py:315
+#, fuzzy
+msgid "{user_won} won challenge with {user_lost}: {extra}"
 msgstr "{user_won} a câștigat provocarea cu {user_lost}"
 
-#: games/challenge/views.py:154
+#: games/challenge/views.py:42
+msgid "You cannot play this challenge."
+msgstr "Nu poți juca această provocare."
+
+#: games/challenge/views.py:51
+msgid "Challenge timer exceeded."
+msgstr ""
+
+#: games/challenge/views.py:79
+msgid "You have already challenged for today."
+msgstr "Ai provocat deja pe ziua de azi."
+
+#: games/challenge/views.py:89
+msgid "This user cannot be challenged by you."
+msgstr "Acest jucător nu poate fi provocat de către tine."
+
+#: games/challenge/views.py:101
+msgid "Challenge cannot be accepted."
+msgstr "Provocarea nu poate fi acceptată."
+
+#: games/challenge/views.py:112
+msgid "You cannot refuse this challenge."
+msgstr ""
+
+#: games/challenge/views.py:122
+msgid "You cannot cancel this challenge."
+msgstr ""
+
+#: games/challenge/views.py:149
+msgid "You don't have the artifact."
+msgstr ""
+
+#: games/challenge/views.py:165
+#: games/challenge/templates/challenge/index.html:4
+#: games/challenge/templates/challenge/index.html:8
+#: games/challenge/templates/challenge/sidebar.html:5
 msgid "Challenges"
 msgstr "Provocări"
+
+#: games/challenge/templates/challenge/error.html:3
+#: games/challenge/templates/challenge/result.html:4
+#, fuzzy
+msgid "Challenge result"
+msgstr "Provocări"
+
+#: games/challenge/templates/challenge/error.html:7
+#, fuzzy
+msgid "Challenge error"
+msgstr "Provocări"
+
+#: games/challenge/templates/challenge/index.html:11
+#, fuzzy
+msgid "You cannot launch another challenge today."
+msgstr "Nu poți juca această provocare."
+
+#: games/challenge/templates/challenge/index.html:14
+#, fuzzy
+msgid "Use artifact"
+msgstr "Artefacte"
+
+#: games/challenge/templates/challenge/index.html:18
+msgid ""
+"To launch a challenge, find the player you want to challenge and click on "
+"the <em>Challenge</em> button, next to his profile."
+msgstr ""
+
+#: games/challenge/templates/challenge/index.html:21
+#, fuzzy
+msgid "Active"
+msgstr "Activitate"
+
+#: games/challenge/templates/challenge/index.html:53
+#: games/challenge/templates/challenge/index.html:75
+msgid "No challenges in this category."
+msgstr "Nicio provocare în această categorie."
+
+#: games/challenge/templates/challenge/index.html:58
+msgid "Played"
+msgstr "Jucate"
+
+#: games/challenge/templates/challenge/result.html:8
+#, fuzzy
+msgid "Challenge"
+msgstr "Provocări"
+
+#: games/challenge/templates/challenge/result.html:10
+msgid "You scored:"
+msgstr ""
+
+#: games/challenge/templates/challenge/sidebar.html:11
+msgid "Play"
+msgstr "Joacă"
+
+#: games/challenge/templates/challenge/sidebar.html:14
+msgid "No active challenges"
+msgstr "Nicio provocare activă"
+
+#: games/challenge/templates/challenge/sidebar.html:17
+msgid "You cannot challenge"
+msgstr "Nu poți provoca"
+
+#: games/qotd/models.py:27
+msgid "{user} has given a correct answer to QotD."
+msgstr ""
+
+#: games/qotd/models.py:29
+msgid "{user} has given a wrong answer to QotD."
+msgstr ""
+
+#: games/qotd/templates/qotd/done.html:4
+#, fuzzy
+msgid "Question of the Day"
+msgstr "Nicio întrebare astăzi"
+
+#: games/qotd/templates/qotd/done.html:10
+msgid "Question"
+msgstr "Întrebare"
+
+#: games/qotd/templates/qotd/done.html:29
+#, fuzzy
+msgid "No question for today."
+msgstr "Nicio întrebare astăzi"
+
+#: games/qotd/templates/qotd/index.html:9
+msgid "You must provide an answer"
+msgstr "Trebuie să dai un răspuns"
+
+#: games/qotd/templates/qotd/index.html:13
+#, fuzzy
+msgid "Question of the day"
+msgstr "Nicio întrebare astăzi"
+
+#: games/qotd/templates/qotd/sidebar.html:9
+msgid "QotD has been disabled"
+msgstr "QotD a fost dezactivat"
+
+#: games/qotd/templates/qotd/sidebar.html:14
+msgid "You have answered correctly for today"
+msgstr "Ai răspuns corect azi"
+
+#: games/qotd/templates/qotd/sidebar.html:16
+msgid "You have answered wrong for today"
+msgstr "Ai răspuns greșit azi"
+
+#: games/qotd/templates/qotd/sidebar.html:19
+msgid "Answer now"
+msgstr "Răspunde acum"
+
+#: games/qotd/templates/qotd/sidebar.html:22
+msgid "No question for today"
+msgstr "Nicio întrebare astăzi"
 
 #: games/quest/models.py:58
 msgid "{user} has finished quest {quest}"
@@ -48,39 +217,96 @@ msgstr "{user} a terminat questul {quest}"
 msgid "{user} has started quest {quest}"
 msgstr "{user} a început questul {quest}"
 
-#: interface/messaging/views.py:87
+#: games/quest/templates/quest/index.html:3
+#: games/quest/templates/quest/sidebar.html:4
+msgid "Quest"
+msgstr ""
+
+#: games/quest/templates/quest/index.html:13
+msgid "Quest finished!"
+msgstr ""
+
+#: games/quest/templates/quest/index.html:27
+msgid "Answer"
+msgstr "Răspunde"
+
+#: games/quest/templates/quest/sidebar.html:14
+msgid "You have finished the quest."
+msgstr "Ai terminat questul."
+
+#: games/quest/templates/quest/sidebar.html:22
+msgid "No quest active."
+msgstr ""
+
+#: interface/messaging/views.py:87 resources/templates/messaging/index.html:16
 msgid "Messages"
 msgstr "Mesaje"
+
+#: interface/qproposal/models.py:10
+msgid "Propose question"
+msgstr "Propune întrebare"
 
 #: interface/statistics/views.py:95
 msgid "Live stats"
 msgstr "Statistici live"
 
-#: resources/templates/site_base.html:35
+#: resources/templates/site_base.html:36
 msgid "Logout"
 msgstr "Deconectare"
 
-#: resources/templates/site_base.html:37
+#: resources/templates/site_base.html:38
 msgid "Anonimous"
 msgstr "Anonim"
 
-#: resources/templates/site_base.html:37
+#: resources/templates/site_base.html:38
 msgid "Login"
 msgstr "Autentificare"
 
-#: resources/templates/site_base.html:49
+#: resources/templates/site_base.html:50
 #: resources/templates/cpanel/qpool_home.html:42
 #: resources/templates/cpanel/qpool_home.html:51
 msgid "Search"
 msgstr "Caută"
 
-#: resources/templates/site_base.html:69
-msgid "Players active in the last 10 minutes"
-msgstr "Jucători activi în ultimele 10 minute"
+#: resources/templates/site_base.html:67
+msgid "Online players"
+msgstr "Jucători online"
 
-#: resources/templates/site_base.html:75
-msgid "About"
-msgstr "Despre"
+#: resources/templates/site_base.html:86
+msgid "Your rank"
+msgstr "Rang"
+
+#: resources/templates/site_base.html:87
+msgid "Global"
+msgstr "Global"
+
+#: resources/templates/site_base.html:92
+msgid "Artifacts"
+msgstr "Artefacte"
+
+#: resources/templates/site_base.html:96
+msgid "None."
+msgstr "Niciunul."
+
+#: resources/templates/site_base.html:102
+msgid "Activity"
+msgstr "Activitate"
+
+#: resources/templates/site_base.html:120
+msgid "Powered by:"
+msgstr "Realizat de:"
+
+#: resources/templates/splash.html:16
+msgid "username"
+msgstr "nume utilizator"
+
+#: resources/templates/splash.html:18
+msgid "password"
+msgstr "parola"
+
+#: resources/templates/activity/stream.html:19
+msgid "Sorry, no recent activity."
+msgstr "Ne pare rău, nicio activitate recentă."
 
 #: resources/templates/cpanel/artifact_home.html:19
 msgid "Add artifact"
@@ -90,21 +316,58 @@ msgstr ""
 msgid "Add question"
 msgstr ""
 
-#: resources/templates/qotd/sidebar.html:11
-msgid "You have answered correctly for today"
-msgstr "Ai răspuns corect azi"
+#: resources/templates/messaging/index.html:8
+#, fuzzy
+msgid "Messaging"
+msgstr "Mesaje"
 
-#: resources/templates/qotd/sidebar.html:13
-msgid "You have answered wrong for today"
-msgstr "Ai răspuns greșit azi"
+#: resources/templates/messaging/index.html:13
+msgid "Compose"
+msgstr "Compune"
 
-#: resources/templates/qotd/sidebar.html:16
-msgid "Answer now"
-msgstr "Răspunde acum"
+#: resources/templates/messaging/index.html:19
+msgid "Received"
+msgstr "Primite"
 
-#: resources/templates/qotd/sidebar.html:19
-msgid "No question for today"
-msgstr "Nicio întrebare astăzi"
+#: resources/templates/messaging/index.html:20
+msgid "Sent"
+msgstr "Trimise"
+
+#: resources/templates/messaging/index.html:21
+msgid "All"
+msgstr "Toate"
+
+#: resources/templates/messaging/message.html:25
+#, fuzzy
+msgid "No messages."
+msgstr "Mesaje"
+
+#: resources/templates/registration/login.html:25
+msgid "Your username and password didn't match. Please try again."
+msgstr ""
+"Numele de utilizator sau parola nu se potrivesc. Te rog încearcă din nou."
+
+#: resources/templates/registration/login.html:28
+msgid "Authentication"
+msgstr "Autentificare"
+
+#: resources/templates/registration/login.html:40
+msgid "Enter"
+msgstr "Intră"
+
+#: resources/templates/top/maintop.html:12
+msgid "Top has been disabled."
+msgstr "Topul a fost dezactivat."
+
+#: resources/templates/top/sidebar.html:8
+msgid "Top has been disabled"
+msgstr "Topul a fost dezactivat"
+
+#~ msgid "Players active in the last 10 minutes"
+#~ msgstr "Jucători activi în ultimele 10 minute"
+
+#~ msgid "About"
+#~ msgstr "Despre"
 
 #~ msgid "Welcome here"
 #~ msgstr "Bun venit aici"

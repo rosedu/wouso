@@ -83,31 +83,31 @@
             <br/>
             <span>{{ user.get_profile.level_progress.points_left }} left to advance</span>
         </div>
-        <h3>Your rank</h3>
-        <p>Global: <span class="points">{{ top.position }}</span></p>
+        <h3>{% trans 'Your rank' %}</h3>
+        <p>{% trans 'Global' %}: <span class="points">{{ top.position }}</span></p>
         {% for g in topgroups %}
         <p>{{ g }}: <span class="points">{{ g.position }}</span></p>
         {% endfor %}
 
-        <h3>Artifacts</h3>
+        <h3>{% trans 'Artifacts' %}</h3>
         {% for a in user.get_profile.artifact_amounts.all %}
             {% artifact a %}
         {% empty %}
-        None.
+        {% trans 'None.' %}
         {% endfor %}
     </div>
     {% endif %}
     {% block content %}
     <div id="wall">
-        <h2>Activity</h2></h3>
+        <h2>{% trans 'Activity' %}</h2>
         {% include 'activity/stream.html' %}
 
         {% if activity.has_previous %}
-            <a href="{% url wouso.interface.views.homepage %}"> Newer </a>
+            <a href="{% url wouso.interface.views.homepage %}"> &raquo; </a>
         {% endif %}
 
         {% if activity.has_next %}
-            <a href="{% url wouso.interface.views.homepage page=activity.next_page_number %}"> Older </a>
+            <a href="{% url wouso.interface.views.homepage page=activity.next_page_number %}"> &laquo;</a>
         {% endif %}
     </div>
     {% endblock %}
@@ -117,7 +117,7 @@
         <div id="footer_links">{% autoescape off %}{{ footer }}{% endautoescape %}
         <br/>
         <span id="poweredby">
-        <br />Powered by: <br />
+        <br />{% trans 'Powered by:' %}<br />
         <a href="http://www.rosedu.org/"></a>
         </span>
         </div>

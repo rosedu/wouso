@@ -1,24 +1,28 @@
 {% extends 'site_base.html' %}
 {% load artifacts %}
-{% block title %}Challenges{% endblock %}
+{% load i18n %}
+{% block title %}{% trans 'Challenges' %}{% endblock %}
 
 {% block content %}
 
-<h2>Challenges</h2>
+<h2>{% trans 'Challenges' %}</h2>
 
 {% if not challuser.can_launch %}
-<p>You cannot launch another challenge today.
+<p>{% trans 'You cannot launch another challenge today.' %}
     {% if challuser.has_one_more %}
     You can use the {% artifact challuser.has_one_more %} artifact to enable one more challenge.
-    <a href="{% url games.challenge.views.use_one_more %}">Use artifact</a>.
+    <a href="{% url games.challenge.views.use_one_more %}">{% trans 'Use artifact' %}</a>.
     {% endif %}
 </p>
 {% else %}
-<p>To launch a challenge, find the player you want to challenge and click on the <em>Challenge</em> button, next to his profile.</p>
+<p>{% trans 'To launch a challenge, find the player you want to challenge and click on the <em>Challenge</em> button, next to his profile.' %}</p>
 {% endif %}
 
-<h3>Active</h3>
+<h3>{% trans 'Active' %}</h3>
+<ul class="answers">
 {% for c in challenges %}
+<li>
+    {{ c.date }}
     <a href="{% url interface.profile.views.user_profile c.user_from.user.id %}">{{ c.user_from }}</a> vs.
     <a href="{% url interface.profile.views.user_profile c.user_to.user.id %}">{{ c.user_to }}</a> - Status: {% if c.status == "R" %}Refused
     {% else %}
@@ -44,14 +48,18 @@
         {% if c.is_launched %}<a href="{% url games.challenge.views.accept c.id %}">Accept</a>{% endif %}
         {% if c.is_launched %}<a href="{% url games.challenge.views.refuse c.id %}">Refuse</a>{% endif %}
     {% endif %}
-    <br/>
+</li>
 {% empty %}
-    There are no active challenges.
+    <li class="empty">{% trans 'No challenges in this category.' %}
 {% endfor %}
+</ul>
 
 {% if played %}
-<h3>Played</h3>
+<h3>{% trans 'Played' %}</h3>
+<ul class="answers">
 {% for c in played %}
+    <li>
+    {{ c.date }}
     <a href="{% url interface.profile.views.user_profile c.user_from.user.id %}">{{ c.user_from }}</a> vs.
     <a href="{% url interface.profile.views.user_profile c.user_to.user.id %}">{{ c.user_to }}</a>
      - Result:  {% if c.status == "D" %} Draw
@@ -62,8 +70,11 @@
     {% if user.is_superuser %} | superuser:
         {% if c.status == "A" %}<a href="{% url games.challenge.views.setplayed c.id %}">Set played</a>{% endif %}
     {% endif %}
-    <br/>
+    </li>
+{% empty %}
+    <li class="empty">{% trans 'No challenges in this category.' %}</li>
 {% endfor %}
+</ul>
 {% endif %}
 
 {% endblock %}

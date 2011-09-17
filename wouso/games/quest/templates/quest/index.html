@@ -1,32 +1,33 @@
 {% extends 'site_base.html' %}
-
-{% block title %}Quest{% endblock %}
+{% load i18n %}
+{% block title %}{% trans 'Quest' %}{% endblock %}
 
 {% block content %}
 
-<h1>{{ quest.title }}</h1>
+<h2>{{ quest.title }}</h2>
+<div class="second">
+Available until {{ quest.end }}. Your progress: {{ progress.time_took }}
+</div>
 
 {% if progress.finished %}
-<p>Quest finished!</p>
+<p>{% trans 'Quest finished!' %}</p>
 
 <p>You passed {{ quest.count }} levels in {{ progress.time_took }}.</p>
 {% else %}
 <p style="color:red">{{ message }}</p>
 
-<h2>Level #{{ progress.current_level }}:</h2>
+<h3>Level #{{ progress.current_level }}:</h3>
 <p>{{ progress.current_question.text }}</p>
 <form method="post" action="{% url games.quest.views.index %}">
     <table>
-    {{ form }}
+    {{ form.answer }}
     </table>
     {% csrf_token %}
     <div class="actions">
-        <button type="submit" class="default">Send</button>
+        <button type="submit" class="default">{% trans 'Answer' %}</button>
     </div>
 </form>
 
-<p style="clear:both">
-Available until {{ quest.end }}. Your progress: {{ progress.time_took }}
-</p>
+<p style="clear:both"></p>
 {% endif %}
 {% endblock %}

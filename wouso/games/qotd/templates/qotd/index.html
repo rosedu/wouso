@@ -1,25 +1,30 @@
 {% extends 'site_base.html' %}
+{% load i18n %}
 
 {% block title %}Question of the Day{% endblock %}
 
 {% block content %}
 
 {% if form.errors %}
-<p style="color:red">You must provide an answer.</p>
+<p class="wrong">{% trans 'You must provide an answer' %}</p>
 {% endif %}
 
 {% if question %}
-<h1>Question</h1>
-<p>{{ question.text }}</p>
+<h2>{% trans 'Question of the day' %}</h2>
+<p>{% autoescape off %}{{ question.text }}{% endautoescape %}</p>
 <form method="post" action="{% url games.qotd.views.index %}">
 <div class="answers">
 <ul>
     {% for a in question.answers %}
-        <li><input type=radio name="answers" value="{{ a.id }}"/>{{ a.text }}</li>
+        <li><input type=radio name="answers" value="{{ a.id }}" id="qotd_a_{{a.id}}"/>
+            <label for="qotd_a_{{a.id}}">{% autoescape off %}{{ a.text }}{% endautoescape %}</label>
+        </li>
     {% endfor %}
 </ul>
 </div>
-<input type="submit" value="Send" />
+<div class="actions">
+<button class="default" type="submit">Answer</button>
+</div>
 {% csrf_token %} 
 </form>
 {% else %}
