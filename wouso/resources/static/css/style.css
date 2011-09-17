@@ -184,7 +184,7 @@ img.avatar {
     clear: right;
     float: right;
 }
-.actions a, a.button, .actions button {
+.actions a, a.button, button {
     display: block;
     float: left;
     text-align: center;
@@ -198,7 +198,7 @@ img.avatar {
     color: black;
     text-wrap: suppress;
 }
-.actions a.default, .actions button.default {
+.actions a.default, button.default {
     font-weight: bold;
 }
 .actions a:hover, a.button:hover {

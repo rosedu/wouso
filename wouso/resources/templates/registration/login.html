@@ -1,13 +1,33 @@
 {% extends "site_base.html" %}
+{% load i18n %}
+
+{% block scripts %}
+<style>
+div#sidebar {
+    display: none
+}
+div#content {
+    float: none;
+    width: 930px;
+    min-height: 400px;
+}
+button {
+    float: right;
+}</style>
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
 
 {% block content %}
-
+<div class="centered">
 {% if form.errors %}
-<p style="color:red">Your username and password didn't match. Please try again.</p>
+<p style="color:red">{% trans "Your username and password didn't match. Please try again." %}</p>
 {% endif %}
 
+<h2>{% trans 'Authentication' %}</h2>
 <form method="post" action="{% url django.contrib.auth.views.login %}">
-<table>
+<table align=center>
 <tr>
     <td>{{ form.username.label_tag }}</td>
     <td>{{ form.username }}</td>
@@ -16,11 +36,13 @@
     <td>{{ form.password.label_tag }}</td>
     <td>{{ form.password }}</td>
 </tr>
+<tr><td colspan="2">
+<button type="submit">{% trans 'Enter' %}</button>
+</td></tr>
 </table>
 
-<input type="submit" value="login" />
 <input type="hidden" name="next" value="{{ next }}" />
 {% csrf_token %}
 </form>
-
+</div>
 {% endblock %}
