@@ -34,13 +34,13 @@ fieldset textarea {
     height: 50px;
 }
 div#logo {
-    height: 120px;
+    height: 100px;
     width: 930px;
     background: url(../img/logo.png) no-repeat;
 }
 #logo > a {
     width:500px;
-    height:110px;
+    height:90px;
     background-image:none;
     display:block;
     text-align:center;
@@ -116,7 +116,6 @@ ol.top {
     margin-right: 5px;
     width: 24px;
     height: 24px;
-    background-color: whiteSmoke;
     display: inline-block;
 }
 .artifact-default-level-1 {

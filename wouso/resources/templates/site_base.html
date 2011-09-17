@@ -64,7 +64,7 @@
         {% endfor %}
         {% endblock %}
         {% if last10 %}
-        <h2>{% trans 'Players active in the last 10 minutes' %}</h2>
+        <h2>{% trans 'Online players' %}</h2>
             {% for u in last10 %}
                 {% player u %}
             {% endfor %}
