@@ -93,6 +93,16 @@ div#logo {
     float: left;
     width: 500px;
 }
+#right-sidebar p {
+    margin: 2px;
+}
+#right-sidebar h3 {
+    margin: 8px 0px 4px;
+}
+#right-sidebar h2 {
+    margin: 0px auto 0px;
+    text-align: center;
+}
 ol.top {
     padding: 0px;
 }
