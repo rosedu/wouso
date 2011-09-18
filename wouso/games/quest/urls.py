@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('',
-    (r'^$', 'games.quest.views.index'),
+    url(r'^$', 'games.quest.views.index', name='quest_index_view'),
 )
 

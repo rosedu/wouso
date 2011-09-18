@@ -33,7 +33,14 @@ class Activity(models.Model):
     @property
     def game_name(self):
         """ Returns the game name """
+        print self.game.verbose_name
+        print self.game.url
         return self.game.verbose_name
+
+    @models.permalink
+    def get_game_absolute_url(self):
+        """ Returns the game url """
+        return (self.game.url, None)
 
 def addActivity_handler(sender, **kwargs):
     """ Callback function for addActivity signal """

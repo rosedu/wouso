@@ -172,7 +172,8 @@ class QuestGame(Game):
         # Set parent's fields
         self._meta.get_field('verbose_name').default = "Weekly Quest"
         self._meta.get_field('short_name').default = ""
-        self._meta.get_field('url').default = ""
+        # the url field takes as value only a named url from module's urls.py
+        self._meta.get_field('url').default = "quest_index_view"
         super(QuestGame, self).__init__(*args, **kwargs)
 
     @staticmethod

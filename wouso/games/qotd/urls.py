@@ -3,7 +3,7 @@ from django.conf import settings
 from feeds import LatestQuestionsFeed
 
 urlpatterns = patterns('',
-    (r'^$', 'games.qotd.views.index'),
-    (r'^done/$', 'games.qotd.views.done'),
-    (r'^feed/$', LatestQuestionsFeed())
+    url(r'^$', 'games.qotd.views.index', name='qotd_index_view'),
+    url(r'^done/$', 'games.qotd.views.done', name='qotd_done_view'),
+    url(r'^feed/$', LatestQuestionsFeed(), name='qotd_feed_view')
 )
