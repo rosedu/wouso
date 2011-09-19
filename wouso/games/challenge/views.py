@@ -51,6 +51,16 @@ def challenge(request, id):
         return do_error(request, _('Challenge timer exceeded.'))
 
     if request.method == "POST":
+        # check to see if challenge was already submitted
+        participant = None
+        if chall_user == chall.user_from.user:
+            participant = chall.user_from
+        elif chall_user == chall.user_to.user:
+            participant = chall.user_to
+        if participant is not None and participant.played:
+            return do_error(request, _('You have already submitted this challenge'\
+                                       ' and scored %.2f points') % participant.score)
+        
         form = ChallengeForm(chall, request.POST)
 
         results = chall.set_played(chall_user, form.get_response())
