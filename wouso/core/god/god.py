@@ -68,7 +68,8 @@ class DefaultGod:
     def get_all_modifiers(self):
         """ Fetch modifiers from games and also add specific ones
         """
-        ms = []
+        ms = ['dispell', # cancel all spells
+        ]
         for g in get_games():
             ms.extend(g.get_modifiers())
 
@@ -84,5 +85,11 @@ class DefaultGod:
     def post_cast(self, psdue):
         """ Execute action after a spell is cast. This is used to implement specific spells
         such as 'clean any existing spell' cast.
+
+        Returns True if action has been taken, False if not.
         """
-        pass
+        if psdue.spell.name == 'dispell':
+            for psd in psdue.player.spells:
+                psd.delete()
+            return True 
+        return False

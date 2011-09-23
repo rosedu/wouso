@@ -211,6 +211,9 @@ class Player(models.Model):
         """ Curse self with given spell from source, for due time. """
         try:
             psdue = PlayerSpellDue.objects.create(player=self, source=source, spell=spell, due=due)
+            # Post-cast God action (there are specific modifiers, such as clean-spells
+            # that are implemented in God
+            God.post_cast(psdue)
             return True
         except:
             return False
