@@ -150,11 +150,18 @@ class Player(models.Model):
 
     def has_modifier(self, modifier):
         """ Check for an artifact with id = modifier
+        or for an active spell cast on me with id = modifier
         """
         try:
             return PlayerArtifactAmount.objects.get(player=self, artifact__name=modifier)
         except PlayerArtifactAmount.DoesNotExist:
-            return None
+            pass
+
+        try:
+            return PlayerSpellDue.objects.get(player=self, spell__name=modifier)
+        except PlayerSpellDue.DoesNotExist:
+            pass
+        return False
 
     def use_modifier(self, modifier, amount):
         """ Substract amount of modifier artifact from players collection.

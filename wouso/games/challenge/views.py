@@ -86,7 +86,7 @@ def launch(request, to_id):
     user_from = request.user.get_profile().get_extension(ChallengeUser)
 
     if not user_from.can_launch():
-        return do_error(request, _('You have already challenged for today.'))
+        return do_error(request, _('You cannot challenge.'))
 
     if user_from.can_challenge(user_to):
         try:

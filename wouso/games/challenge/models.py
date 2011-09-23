@@ -27,6 +27,8 @@ class ChallengeUser(Player):
         today_end = datetime.combine(now, time(23, 59, 59))
         if today_start <= self.last_launched <= today_end:
             return False
+        if self.has_modifier('challenge-cannot-challenge'):
+            return False
         return True
 
     def can_challenge(self, user):
@@ -35,6 +37,8 @@ class ChallengeUser(Player):
         user = user.get_extension(ChallengeUser)
         if self.user == user.user:
             # Cannot challenge myself
+            return False
+        if user.has_modifier('challenge-cannot-be-challenged'):
             return False
         return True
 
@@ -453,13 +457,17 @@ class ChallengeGame(Game):
             description='Points earned when drawing a challenge')
         )
         return fs
+
     @classmethod
     def get_modifiers(kls):
         """
-        Challenge modifiers:
-            challenge-one-more: if applied, user can challenge twice a day.
+        Challenge game modifiers
         """
-        return ['challenge-one-more']
+        return ['challenge-one-more', # challenge twice a day, positive
+                'challenge-cannot-be-challenged', # reject incoming challenges, negative
+                'challenge-cannot-challenge', # reject outgoing challenges, negative
+                #'challenge-lose', # lose regardless the result, negative
+        ]
 
     @classmethod
     def get_header_link(kls, request):
