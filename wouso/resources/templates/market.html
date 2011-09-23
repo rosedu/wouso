@@ -1,0 +1,24 @@
+{% extends 'site_base.html' %}
+{% load i18n %}
+{% load artifacts %}
+{% block title %}{% trans 'Market' %}{% endblock %}
+
+{% block content %}
+    <h2>{% trans 'Market' %}</h2>
+
+    {% for s in spells %}
+<div style="clear:both">
+    <span class="points">
+    <a href="{% url market_buy s.id %}" class="button">{% trans 'Buy' %}</a>
+    </span>
+    <h3>{% artifact s %}{{ s.title }}</h3>
+    <p>{{ s.description }}</p>
+    <div class="second">{{ s.price }} {% trans 'gold' %}
+    </div>
+</div>
+    {% empty %}
+    {% trans 'Nothing' %}.
+    {% endfor %}
+{% endblock %}
+
+

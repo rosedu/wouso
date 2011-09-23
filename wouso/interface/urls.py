@@ -18,6 +18,7 @@ urlpatterns = patterns('',
 
     (r'^user/login/$', 'django.contrib.auth.views.login'),
     (r'^user/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}),
+    # todo rename user/profile -> player
     (r'^user/profile/(?P<id>\d*)/$', 'wouso.interface.profile.views.user_profile'),
     (r'^user/profile/(?P<id>\d*)/(?P<page>\d*)/$', 'wouso.interface.profile.views.user_profile'),
     (r'^user/profile/$', 'wouso.interface.profile.views.profile'),
@@ -39,6 +40,10 @@ urlpatterns = patterns('',
 
     # Qproposal
     (r'^qproposal/', include('wouso.interface.qproposal.urls')),
+
+    # Market
+    url(r'^market/$', 'wouso.interface.views.market', name='market_home'),
+    url(r'^market/buy/(?P<spell>\d+)/$', 'wouso.interface.views.market_buy', name='market_buy'),
 
     # Games
     (r'^g/', include('wouso.games.urls')),

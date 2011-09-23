@@ -45,3 +45,4 @@ class Spell(Artifact):
 
     description = models.TextField() # Extended description shown in the market place
     type = models.CharField(max_length=1, choices=TYPES, default='o')
+    price = models.FloatField(default=10) # Spell price in gold.

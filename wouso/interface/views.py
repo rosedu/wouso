@@ -4,12 +4,13 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.http import Http404
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from wouso.interface import logger
 from django.utils.translation import ugettext as _
 from wouso.interface.forms import *
 from wouso.core.user.models import Player
+from wouso.core.magic.models import Spell
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, History as TopHistory
 
@@ -108,3 +109,18 @@ def searchone(request):
             logging.exception(e)
 
     raise Http404()
+
+# marche
+
+def market(request):
+    spells = Spell.objects.all()
+
+    return render_to_response('market.html', {'spells': spells},
+                              context_instance=RequestContext(request))
+
+def market_buy(request, spell):
+    spell = get_object_or_404(Spell, pk=spell)
+
+    # TODO me
+    return render_to_response('market.html', {'spells': []},
+                              context_instance=RequestContext(request))
