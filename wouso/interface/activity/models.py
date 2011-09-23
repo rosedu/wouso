@@ -33,8 +33,6 @@ class Activity(models.Model):
     @property
     def game_name(self):
         """ Returns the game name """
-        print self.game.verbose_name
-        print self.game.url
         return self.game.verbose_name
 
     @models.permalink
