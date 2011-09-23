@@ -37,6 +37,10 @@ def setup():
         for formula in game.get_formulas():
             if not Formula.get(formula.id):
                 Formula.add(formula)
+    # add wouso formulas
+    for formula in God.get_system_formulas():
+        if not Formula.get(formula.id):
+            Formula.add(formula)
 
 def calculate(formula, **params):
     """ Calculate formula and return a dictionary of coin and amounts """
@@ -73,7 +77,7 @@ def score_simple(player, coin, amount, game=None, formula=None,
     external_id=None):
     """ Give amount of coin to the player.
     """
-    if not isinstance(game, Game):
+    if not isinstance(game, Game) and game is not None:
         game = game.get_instance()
 
     if not isinstance(player, Player):

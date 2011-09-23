@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User, Group
 from wouso.core.god import God
@@ -195,6 +196,26 @@ class Player(models.Model):
             paamount.amount += amount
             paamount.save()
         return paamount
+
+    def add_spell(self, spell):
+        """ Add a spell to self collection """
+        try:
+            psamount = PlayerSpellAmount.objects.get(player=self, spell=spell)
+        except PlayerSpellAmount.DoesNotExist:
+            psamount = PlayerSpellAmount.objects.create(player=self, spell=spell)
+            return
+        psamount.amount += 1
+        psamount.save()
+
+    def cast_spell(self, spell, source, due):
+        """ Curse self with given spell from source, for due time. """
+        try:
+            psdue = PlayerSpellDue.objects.create(player=self, source=source, spell=spell, due=due)
+            return True
+        except:
+            return False
+
+    # special:
 
     def get_extension(self, cls):
         """ Search for an extension of this object, with the type cls

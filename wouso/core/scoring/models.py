@@ -49,11 +49,11 @@ class Formula(ScoringModel, models.Model):
     """ Define the way coin amounts are given to the user, based
     on keyword arguments formulas.
     
-    A formula is owned by a game.
+    A formula is owned by a game, or by the system (set owner to None)
     """ 
     id = models.CharField(max_length=100, primary_key=True)
     formula = models.CharField(max_length=500, default='')
-    owner = models.ForeignKey(Game)
+    owner = models.ForeignKey(Game, null=True, blank=True)
     description = models.CharField(max_length=500, default='')
 
 class History(models.Model):
@@ -72,16 +72,12 @@ class History(models.Model):
     @staticmethod
     def user_coins(user):
         """ Returns a dictionary of coins and amounts for a specific user. """
-        # TODO: get amounts directly, without filtering by games
+        allcoins = Coin.objects.all()
         coins = {}
-        for game in get_games():
-            hs = list(History.objects.filter(user=user, game=game.get_instance()))
-            for h in hs:
-                if h.coin.id in coins.keys():
-                    coins[h.coin.id] += h.amount
-                else:
-                    coins[h.coin.id] = h.amount
-
+        for coin in allcoins:
+            hs = History.objects.filter(user=user, coin=coin).aggregate(total=models.Sum('amount'))
+            if hs['total'] is not None:
+                coins[coin.id] = hs['total']
         return coins
 
     @staticmethod

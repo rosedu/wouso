@@ -9,6 +9,18 @@ class DefaultGod:
     """
     LEVEL_LIMITS = (80, 125, 180, 245, 320, 450)
 
+    def get_system_formulas(self):
+        """ Return formulas used by the meta wouso game.
+        If inherited, should not override super's result, but extend it.
+        """
+        from wouso.core.scoring.models import Formula
+        fs = []
+        fs.append(Formula(id='buy-spell', formula='gold=-{price}',
+            owner=None,
+            description='Gold spent on spells')
+        )
+        return fs
+
     def get_user_level(self, level_no, player=None):
         """
         Return the artifact object for the given level_no.
@@ -68,3 +80,9 @@ class DefaultGod:
             return Artifact.objects.get(group__name="Default", name=modifier)
         except Artifact.DoesNotExist:
             return None
+
+    def post_cast(self, psdue):
+        """ Execute action after a spell is cast. This is used to implement specific spells
+        such as 'clean any existing spell' cast.
+        """
+        pass
