@@ -100,7 +100,7 @@
         {% for s in user.get_profile.spells_collection.all %}
             {% artifact s.spell %}
         {% endfor %} <br/>
-        Casted on me:
+        Cast on me:
         {% for s in user.get_profile.spells %}
             {% artifact s.spell %}
         {% endfor %} <br/>
