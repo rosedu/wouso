@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
 from wouso.core.god import God
-from wouso.core.magic.models import Artifact
+from wouso.core.magic.models import Artifact, Spell
 
 class PlayerGroup(models.Model):
     """ Group players together in a hierchical way """
@@ -57,6 +57,29 @@ class PlayerArtifactAmount(models.Model):
     def __unicode__(self):
         return u"%s has %s [%d]" % (self.player, self.artifact, self.amount)
 
+class PlayerSpellAmount(models.Model):
+    """ Tie spells to collecting user """
+    class Meta:
+        unique_together = ('player', 'spell')
+    player = models.ForeignKey('Player')
+    spell = models.ForeignKey(Spell)
+    amount = models.IntegerField(default=1)
+
+    def __unicode__(self):
+        return u"%s has %s [%d]" % (self.player, self.spell, self.amount)
+
+class PlayerSpellDue(models.Model):
+    """ Tie spell, casting user, duration with the victim player """
+    class Meta:
+        unique_together = ('player', 'spell')
+    player = models.ForeignKey('Player')
+    spell = models.ForeignKey(Spell)
+    source = models.ForeignKey('Player', related_name='spell_source')
+    due = models.DateTimeField()
+
+    def __unicode__(self):
+        return u"%s casted on %s until %s [%s]" % (self.spell, self.player, self.due, self.source)
+    
 class Player(models.Model):
     """ Base class for the game user. This is extended by game specific
     player models.
@@ -73,9 +96,21 @@ class Player(models.Model):
 
     last_seen = models.DateTimeField(null=True, blank=True)
 
+    # artifacts available for using
     artifacts = models.ManyToManyField(Artifact, blank=True, through='PlayerArtifactAmount')
+    # spells available for casting
+    spells_collection = models.ManyToManyField(Spell, blank=True, through='PlayerSpellAmount', related_name='spell_collection')
     groups = models.ManyToManyField(PlayerGroup, blank=True)
 
+    # spells casted on itself
+    # it doesnt work this way, instead provide it as a property
+    # see: http://stackoverflow.com/questions/583327/django-model-with-2-foreign-keys-from-the-same-table
+    #spells = models.ManyToManyField(Spell, blank=True, through='PlayerSpellDue')
+    
+    @property
+    def spells(self):
+        return self.playerspelldue_set.all()
+        
     @property
     def level(self):
         """ Return an artifact object for the current level_no.

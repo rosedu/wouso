@@ -95,6 +95,15 @@
         {% empty %}
         {% trans 'None.' %}
         {% endfor %}
+        <h3>{% trans 'Spells' %}</h3>
+        Available:
+        {% for s in user.get_profile.spells_collection.all %}
+            {% artifact s.spell %}
+        {% endfor %} <br/>
+        Casted on me:
+        {% for s in user.get_profile.spells %}
+            {% artifact s.spell %}
+        {% endfor %} <br/>
     </div>
     {% endif %}
     {% block content %}

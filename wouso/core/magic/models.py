@@ -39,3 +39,9 @@ class Artifact(models.Model):
     
     def __unicode__(self):
         return u"%s [%s]" % (self.name, self.group.name)
+
+class Spell(Artifact):
+    TYPES = (('o', 'neutre'), ('p', 'positive'), ('n', 'negative'))
+
+    description = models.TextField() # Extended description shown in the market place
+    type = models.CharField(max_length=1, choices=TYPES, default='o')
