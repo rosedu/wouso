@@ -140,6 +140,10 @@ class Player(models.Model):
     def artifact_amounts(self):
         return self.playerartifactamount_set
 
+    @property
+    def spell_amounts(self):
+        return self.playerspellamount_set
+
     def level_progress(self):
         """ Return a dictionary with: points_gained, points_left, next_level """
         return God.get_level_progress(self)

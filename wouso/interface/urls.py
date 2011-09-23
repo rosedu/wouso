@@ -22,6 +22,8 @@ urlpatterns = patterns('',
     (r'^user/profile/(?P<id>\d*)/$', 'wouso.interface.profile.views.user_profile'),
     (r'^user/profile/(?P<id>\d*)/(?P<page>\d*)/$', 'wouso.interface.profile.views.user_profile'),
     (r'^user/profile/$', 'wouso.interface.profile.views.profile'),
+    url(r'^player/cast/to-(?P<destination>\d+)/$', 'wouso.interface.profile.views.magic_cast', name='magic_cast'),
+    (r'^player/cast/(?P<destination>\d+)/(?P<spell>\d+)/$', 'wouso.interface.profile.views.magic_cast'),
 
     (r'^groups/$', 'wouso.interface.profile.views.groups_index'),
     (r'^group/(?P<id>\d*)/$', 'wouso.interface.profile.views.player_group'),

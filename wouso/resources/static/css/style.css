@@ -223,6 +223,10 @@ img.avatar {
     color: black;
     text-wrap: suppress;
 }
+span.button-list {
+    float:left;
+    display: block;
+}
 .actions a.default, button.default {
     font-weight: bold;
 }

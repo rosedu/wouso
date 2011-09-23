@@ -91,3 +91,12 @@ def groups_index(request):
     return render_to_response('profile/groups.html',
                               {'groups': groups},
                               context_instance=RequestContext(request))
+
+@login_required
+def magic_cast(request, destination=None, spell=None):
+    destination = get_object_or_404(Player, pk=destination)
+    player = request.user.get_profile()
+
+    return render_to_response('profile/cast.html',
+                              {'destination': destination},
+                              context_instance=RequestContext(request))

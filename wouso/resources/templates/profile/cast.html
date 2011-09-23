@@ -1,0 +1,30 @@
+{% extends 'site_base.html' %}
+{% load artifacts %}
+{% load user %}
+{% load i18n %}
+
+{% block title %}{% trans 'Cast' %}{% endblock %}
+
+{% block content %}
+{% if error %}
+<div class="wrong error">{{ error }}</div>
+{% else %}
+    {% if not user.get_profile.spells_collection.all.count %}
+    <div class="wrong error">{% trans "You don't have any spells to cast. Buy some at the market place." %}
+    <a href="{% url market_home %}">{% trans 'Market' %}</a>
+    </div>
+    {% else %}
+    <form method="post">
+    {% csrf_token %}
+    {% trans 'Cast: ' %}<select name="spell">
+            {% for s in user.get_profile.spells_collection.all %}<option value="{{ s.id }}">{{ s.title }}</option>
+            {% endfor %}
+          </select>
+    {% trans 'on' %} {% player destination %}!
+    <div class="actions">
+    <button type="submit" class="default">{% trans 'Cast' %}</button>
+    </div>
+    </form>
+    {% endif %}
+{% endif %}
+{% endblock %}

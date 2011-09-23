@@ -1,8 +1,9 @@
 {% extends 'site_base.html' %}
 {% load artifacts %}
 {% load user %}
+{% load i18n %}
 
-{% block title %}Profil: {{ profile }}{% endblock %}
+{% block title %}{{ profile }}{% endblock %}
 {% block scripts %}
     <script type="text/javascript" src="/static/js/tabs.js"></script>
     <script type="text/javascript" src="/static/js/jquery.flot.min.js"></script>
@@ -16,26 +17,40 @@
         <div class="rank">{% if top.disabled %}-{% else %}rank: {{ top.position }}{% endif %}</div>
     </div>
 
-    <img src="{{ avatar }}" class="avatar" width="100" />
+    <img src="{{ avatar }}" class="avatar" width="100" height="100" />
     <h2>{{ profile }}</h2>
     <h3>{% artifact_full profile.level %} {% if profile.proximate_group %}Group: {% player_group profile.proximate_group %}{% endif %}</h3>
     {% if profile.artifact_amounts.all %}
-        <ul class="artifacts">
+        <ul class="artifacts" id="player-artifacts">
         {% for a in profile.artifact_amounts.all %}
             <li>{% artifact a %}</li>
         {% endfor %}
         </ul>
     {% endif %}
+        <ul class="artifacts" id="player-spells">
+        {% for s in profile.spells.all %}
+            <li>{% if s.source == request.user.get_profile %}{% spell_due s %}
+                {% else %}{% if profile == user.get_profile %}
+                {% spell_due s %}
+                {% else %}
+                    {% spell_unknown s %}
+                {% endif %}
+                {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
 
     <div class="actions">
         {% if profile.user.id != user.id %}
             <a class="button" href="{% url create_to profile.id %}">Message</a>
             <a class="button" href="{% url games.challenge.views.launch profile.id %}">Challenge!</a>
         {% endif %}
+            <a class="button" href="{% url magic_cast profile.id%}" title="{% trans 'Cast a spell on this player' %}">{% trans 'Cast' %}</a>
     </div>
 
     {% if user.is_superuser %}
     <div class="actions">
+        <span class="button-list">Superuser only: </span>
         <a class="button" href="{% url group_set profile.id %}">Groups</a>
         <a class="button" href="{% url artifact_set profile.id %}">Artifacts</a>
     </div>

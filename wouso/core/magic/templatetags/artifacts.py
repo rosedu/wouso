@@ -1,5 +1,7 @@
 import django
-from wouso.core.user.models import PlayerArtifactAmount
+from wouso.core.user.models import (PlayerArtifactAmount,
+                                    PlayerSpellAmount,
+                                    PlayerSpellDue)
 
 register = django.template.Library()
 
@@ -11,6 +13,12 @@ def artifact(artifact):
     if isinstance(artifact, PlayerArtifactAmount):
         amount = artifact.amount
         artifact = artifact.artifact
+    elif isinstance(artifact, PlayerSpellAmount):
+        amount = artifact.amount
+        artifact = artifact.spell
+    elif isinstance(artifact, PlayerSpellDue):
+        amount = None
+        artifact = artifact.spell
     else:
         amount = None
     path = artifact.path
@@ -31,3 +39,14 @@ def artifact_full(artif):
     if not artif:
         return ''
     return artifact(artif) + artif.title
+
+@register.simple_tag
+def spell_due(spell):
+    html = artifact(spell.spell)
+
+    return '<span class="artifact-container" title="%s until %s">%s<span class="sup">*</span>' % \
+                (spell.spell.title, spell.due, html)
+
+@register.simple_tag
+def spell_unknown(spell=None):
+    return '<div class="artifact artifact-unknown" title="Unknown"></div>'

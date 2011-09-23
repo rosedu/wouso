@@ -97,12 +97,12 @@
         {% endfor %}
         <h3>{% trans 'Spells' %}</h3>
         Available:
-        {% for s in user.get_profile.spells_collection.all %}
-            {% artifact s.spell %}
+        {% for s in user.get_profile.spell_amounts.all %}
+            {% artifact s %}
         {% endfor %} <br/>
         Cast on me:
         {% for s in user.get_profile.spells %}
-            {% artifact s.spell %}
+            {% spell_due s %}
         {% endfor %} <br/>
     </div>
     {% endif %}
