@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
 from wouso.core.god import God
-from wouso.core.artifacts.models import Artifact
+from wouso.core.magic.models import Artifact
 
 class PlayerGroup(models.Model):
     """ Group players together in a hierchical way """

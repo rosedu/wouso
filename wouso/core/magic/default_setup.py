@@ -5,8 +5,8 @@ from django.core.management import setup_environ
 import settings
 setup_environ(settings)
 
-from wouso.core import artifacts
-from wouso.core.artifacts.models import *
+from wouso.core import magic
+from wouso.core.magic.models import *
 from wouso.core.user.models import Player
 
 if __name__ == '__main__':

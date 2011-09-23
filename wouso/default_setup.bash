@@ -7,6 +7,6 @@ python core/user/default_setup.py
 python core/scoring/default_setup.py
 
 # Artifacts and levels
-python core/artifacts/default_setup.py
+python core/magic/default_setup.py
 
 

@@ -7,7 +7,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.conf import settings
 from wouso.core.user.models import Player
-from wouso.core.artifacts.models import Artifact, Group
+from wouso.core.magic.models import Artifact, Group
 from wouso.core.qpool.models import Schedule, Question, Tag, Category
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God

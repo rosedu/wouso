@@ -2,7 +2,7 @@ from md5 import md5
 from django import template
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
-from wouso.core.artifacts.templatetags.artifacts import artifact
+from wouso.core.magic.templatetags.artifacts import artifact
 register = template.Library()
 
 @register.simple_tag

@@ -11,7 +11,7 @@ from django.contrib.contenttypes.models import ContentType
 
 # Models to be dumped/restored
 from django.contrib.auth.models import User
-from wouso.core.artifacts.models import Artifact, Group
+from wouso.core.magic.models import Artifact, Group
 from wouso.core.qpool.models import Question, Answer, Tag
 from wouso.games.quest.models import Quest
 

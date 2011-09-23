@@ -1,4 +1,4 @@
-from wouso.core.artifacts.models import Artifact, Group
+from wouso.core.magic.models import Artifact, Group
 from wouso.core.game import get_games
 
 class DefaultGod:
