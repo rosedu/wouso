@@ -12,6 +12,9 @@ from wouso.core.user.models import Player
 if __name__ == '__main__':
     print 'Setting up the Artifacts...',
 
+    # Spell group
+    spell_group, new = Group.objects.get_or_create(name='Spells')
+
     # Create a default group
     default_group, new = Group.objects.get_or_create(name='Default')
     for i in range(7):
