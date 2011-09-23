@@ -1,18 +1,32 @@
 {% extends 'cpanel/index.html' %}
 {% load user %}
+{% load artifacts %}
 
 {% block title %}CPanel{% endblock %}
 
 {% block content %}
 
-<h1>Set artifact</h1>
+<h2>Set artifact</h2>
 
 <form method="post" action="">
 <input type="hidden" name="to" value="{{to.id}}" />User: {% player to %}
-Artifact:
-    <select name="artifact">{% for a in artifacts %}<option value="{{a.id}}">{{a.name}}</option>{% endfor %}</select>
-<button type="submit">Save</button>
+artifact:
+    <select name="artifact">{% for a in artifacts %}<option value="{{a.id}}">{{a.title}}</option>{% endfor %}</select>
+amount:
+    <input size="3" type="text" name="amount" value="1" />
+<div class="actions">
+    <button type="submit" class="default">Save</button>
+</div>
 {% csrf_token %}
 </form>
 
+{% if user.is_staff %}
+<!-- kind of an edit, TODO: write interface code -->
+<h4>Existing</h4>
+<ul class="simple">
+{% for a in to.artifact_amounts.all %}
+    <li>{% artifact a %} {{ a.artifact.title }} {{ a.amount }} <a href="{% url admin:user_playerartifactamount_change a.id %}">✍</a></li>
+{% endfor %}
+</ul>
+{% endif %}
 {% endblock %}

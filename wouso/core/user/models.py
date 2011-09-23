@@ -173,6 +173,22 @@ class Player(models.Model):
             paamount.save()
         return paamount
 
+    def give_modifier(self, modifier, amount):
+        """ Add given amount to existing, or creat new artifact amount
+        for the current user.
+        """
+        if amount <= 0:
+            return
+
+        paamount = self.has_modifier(modifier)
+        if not paamount:
+            artifact = God.get_artifact_for_modifier(modifier, self)
+            paamount = PlayerArtifactAmount.objects.create(player=self, artifact=artifact, amount=amount)
+        else:
+            paamount.amount += amount
+            paamount.save()
+        return paamount
+
     def get_extension(self, cls):
         """ Search for an extension of this object, with the type cls
         Create instance if there isn't any.
