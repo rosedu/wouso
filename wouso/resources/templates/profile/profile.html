@@ -29,8 +29,8 @@
     {% endif %}
         <ul class="artifacts" id="player-spells">
         {% for s in profile.spells.all %}
-            <li>{% if s.source == request.user.get_profile %}{% spell_due s %}
-                {% else %}{% if profile == user.get_profile %}
+            <li>{% if s.source.id == user.get_profile.id %}{% spell_due s %}
+                {% else %}{% if profile.id == user.get_profile.id %}
                 {% spell_due s %}
                 {% else %}
                     {% spell_unknown s %}
