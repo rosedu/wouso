@@ -4,6 +4,7 @@
 {% block title %}{% trans 'Market' %}{% endblock %}
 
 {% block content %}
+    <span class="points bold">{{ user.get_profile.coins.gold }} {% trans 'gold' %}</span>
     <h2>{% trans 'Market' %}</h2>
 
     {% for s in spells %}

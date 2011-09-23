@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from wouso.interface import logger
@@ -11,6 +11,7 @@ from django.utils.translation import ugettext as _
 from wouso.interface.forms import *
 from wouso.core.user.models import Player
 from wouso.core.magic.models import Spell
+from wouso.core import scoring
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, History as TopHistory
 
@@ -121,6 +122,15 @@ def market(request):
 def market_buy(request, spell):
     spell = get_object_or_404(Spell, pk=spell)
 
-    # TODO me
-    return render_to_response('market.html', {'spells': []},
+    player = request.user.get_profile()
+    error, message = '',''
+    if spell.price > player.coins.get('gold', 0):
+        error = _("Insufficient gold amount")
+    else:
+        player.add_spell(spell)
+        scoring.score(player, None, 'buy-spell', external_id=spell.id,
+                      price=spell.price)
+        message = _("Successfully aquired")
+
+    return render_to_response('market_buy.html', {'error': error, 'message': message},
                               context_instance=RequestContext(request))

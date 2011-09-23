@@ -1,0 +1,13 @@
+{% extends 'site_base.html' %}
+{% load i18n %}
+{% load artifacts %}
+{% block title %}{% trans 'Market' %}{% endblock %}
+
+{% block content %}
+    <div class="wrong error">{{ error }}</div>
+    <div class="ok message">{{ message }}</div>
+
+    <a href="{% url market_home %}">{% trans 'Market' %}</a>
+{% endblock %}
+
+
