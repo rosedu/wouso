@@ -95,9 +95,15 @@ div#logo {
     float: right;
 }
 #ajax-message {
-    position: relative;
+    position: fixed; top: 100px; left: 50%;
     z-index: 1000;
     text-align: center;
+}
+#ajax-message p {
+    background-color: #eee;
+    border: 1px solid #aaa;
+    border-radius: 10pt;
+    padding: 4px 6px;
 }
 #footer {
     clear: both;
