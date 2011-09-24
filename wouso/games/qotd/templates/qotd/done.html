@@ -11,7 +11,7 @@
 <p>{{ question.text }}</p>
 <div class="answers">
 <ul>
-{% for a in que1stion.answers %}
+{% for a in question.answers %}
     <li {% ifequal a choice %}class={% if a.correct %}"ok"{% else %}"wrong"{% endif %}{% endifequal %}>
         <input type=radio disabled {% ifequal a choice %}checked{% endifequal %} id="qotd_a_{{a.id}}" />
         <label for="qotd_a_{{a.id}}" class="{% ifequal a choice %}bold{% endifequal %}">{{ a.text }}</label>
