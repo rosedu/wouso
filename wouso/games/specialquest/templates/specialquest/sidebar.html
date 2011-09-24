@@ -1,12 +1,12 @@
 {% extends 'sidebar_widget.html' %}
 {% load i18n %}
 
-{% block title %}Special Quest{% endblock %}
+{% block title %}{% trans 'Special Quest' %}{% endblock %}
 
 {% block content %}
 
   {% if not not_done %}
-    No tasks to do.
+    {% trans 'No tasks to do.' %}
   {% else %}
     {{not_done}} <a href="{% url specialquest_index_view %}">tasks</a> to do.
   {% endif %}
