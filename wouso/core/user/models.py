@@ -210,10 +210,20 @@ class Player(models.Model):
     def cast_spell(self, spell, source, due):
         """ Curse self with given spell from source, for due time. """
         try:
+            psamount = PlayerSpellAmount.objects.get(player=source, spell=spell)
+            assert psamount.amount > 0
+        except (PlayerSpellAmount.DoesNotExist, AssertionError):
+            return False
+        try:
             psdue = PlayerSpellDue.objects.create(player=self, source=source, spell=spell, due=due)
             # Post-cast God action (there are specific modifiers, such as clean-spells
             # that are implemented in God
             God.post_cast(psdue)
+            psamount.amount -= 1
+            if psamount.amount == 0:
+                psamount.delete()
+            else:
+                psamount.save()
             return True
         except:
             return False
