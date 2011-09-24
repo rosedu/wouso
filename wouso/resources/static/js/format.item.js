@@ -18,7 +18,7 @@ function selectItemMessaging(li) {
 }
 
 function messagingUpdate(name, id) {
-    var html = "<span class='to_user'><input type='hidden' id='to' name='to' value='" + id +   "' />" + name + "<a href='#' id='to_reset'>x</a></span>";
+    var html = "<span class='to_user'><input type='hidden' id='to' name='to' value='" + id +   "' />" + name + "<a href='#' class='to_reset' id='to_reset'>x</a></span>";
 
     $('#to_container').html(html);
     $('#to_input').hide();

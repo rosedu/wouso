@@ -69,9 +69,10 @@ div#logo {
     display: inline-block;
     float: none;
 }
-#search input, input.big {
+#search input, input.big, textarea.big {
     padding: 6px;
     border: 1px solid #aaa;
+    font-family: Tahoma, Arial;
 }
 #sidebar, #right-sidebar {
     width: 200px;
@@ -334,7 +335,22 @@ tr.read td {
     font-weight: normal;
     background-color: #efefef;
 }
-
+span.to_user {
+    border-radius: 9pt;
+    background-color: #99aaff;
+    padding: 2px 6px;
+}
+span.to_user a {
+    text-decoration: none;
+    color: #fff;
+}
+span.to_user a.to_reset {
+    border-left: 1px solid #fff;
+    font-weight: bold;
+    display: inline-block;
+    margin-left: 2px;
+    padding: 2px;
+}
 /* activity */
 ul.activity-stream {
     padding-left: 0px;
