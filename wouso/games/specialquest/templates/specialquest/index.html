@@ -1,0 +1,35 @@
+{% extends 'site_base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Special Quest' %}{% endblock %}
+
+{% block content %}
+
+<h2>Special Quest Tasks</h2>
+Done tasks:
+<ul>
+{% if tasks_done %}
+{% for task in tasks_done %}
+<li><s><a href="{% url specialquest_task_view task.pk %}">{{task.name}}</a></s> ({{task.value}} gold).</li>
+{% endfor %}
+{% else %}
+<li>None yet</li>
+{% endif %}
+</ul>
+
+Not done tasks:
+<ul>
+{% if tasks_not_done %}
+  {% for task in tasks_not_done %}
+    {% if task.1 > 0 %}
+      <li><a href="{% url specialquest_task_view task.0.pk %}">{{task.0.name}}</a>
+      ({{task.0.value}} gold) - {{task.1}} days left (including today)</li>
+    {% else %}
+    <li><s><a href="{% url specialquest_task_view task.0.pk %}">{{task.0.name}}</a></s>
+      ({{task.0.value}} gold) - deadline passed</li>
+    {% endif %}
+  {% endfor %}
+{% else %}
+<li>None yet</li>
+{% endif %}
+</ul>
+{% endblock %}

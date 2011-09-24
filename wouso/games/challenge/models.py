@@ -194,21 +194,10 @@ class Challenge(models.Model):
 
         return Challenge.TIME_LIMIT - (now - partic.start).seconds
 
-    def check_timedelta(self, user):
-        """Check that the challenge form has been submitted in the allowed time"""
-        user = user.get_extension(ChallengeUser)
-        now = datetime.now()
-
-        if self.user_from.user == user:
-            if (now - self.user_from.start).seconds < (Challenge.TIME_LIMIT + Challenge.TIME_SAFE):
-                return True
+    def is_expired(self, participant):
+        if participant.seconds < Challenge.TIME_LIMIT + Challenge.TIME_SAFE:
             return False
-        elif self.user_to.user == user:
-            if (now - self.user_to.start).seconds < (Challenge.TIME_LIMIT + Challenge.TIME_SAFE):
-                return True
-            return False
-        else:
-            pass # again, raise something
+        return True
 
     def is_started_for_user(self, user):
         """Check if the challenge has already started for the given user"""
@@ -223,42 +212,6 @@ class Challenge(models.Model):
             return True
         else:
             pass #raise something
-
-    def expired(self, user):
-        # set winner the OTHER user, set challenge as played, score.
-        if self.status == 'P':
-            return
-        self.status = 'P'
-        exp_user = user.get_extension(ChallengeUser)
-        if exp_user == self.user_from.user:
-            self.user_won = self.user_to
-            self.user_lost = self.user_from
-        elif exp_user == self.user_to.user:
-            self.user_won = self.user_from
-            self.user_lost = self.user_to
-        self.user_won.score = 42
-        self.user_won.played = True
-        self.user_won.save()
-        self.user_lost.score = -1
-        self.user_lost.played = True
-        self.user_lost.seconds_took = (datetime.now() - user_played.start).seconds
-        self.user_lost.save()
-        self.winner = self.user_won.user
-        scoring.score(self.user_won.user, ChallengeGame, 'chall-won',
-            external_id=self.id, points=self.user_won.score, points2=self.user_lost.score)
-        scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
-            external_id=self.id, points=self.user_lost.score, points2=self.user_lost.score)
-
-        # send activty signal to the winner
-        signal_msg = ugettext_noop('Challenge to {user_to} from {user_from} has expired and it was automatically settled.'\
-            ' {user_won} won.')
-
-        signals.addActivity.send(sender=None, user_from=exp_user, \
-                                     user_to=self.user_won.user, \
-                                     message=signal_msg, \
-                                     arguments=dict(user_to=self.user_to, user_from=self.user_from, user_won=self.user_won), \
-                                     game=ChallengeGame.get_instance())
-        self.save()
 
     def extraInfo(self, user_won, user_lost):
         '''returns a string with extra info for a string such as User 1 finished the challenge in $SECONDS seconds
@@ -275,8 +228,10 @@ class Challenge(models.Model):
                 return '1 minute and %d seconds' % (seconds % 60)
             return '%d minutes and %d seconds' % (seconds / 60, seconds % 60)
 
-        return '%.2fp (in %s) - %.2fp (in %s)' % (user_won.score, formatTime(user_won.seconds_took),
-                                                    user_lost.score, formatTime(user_lost.seconds_took))
+        return '%.2fp (in %s%s) - %.2fp (in %s%s)' % (user_won.score, formatTime(user_won.seconds_took),
+                                                    ' - expired' if is_expired(user_won) else '',
+                                                    user_lost.score, formatTime(user_lost.seconds_took),
+                                                    ' - expired' if is_expired(user_lost) else '',)
 
     def played(self):
         """ Both players have played, save and score """
@@ -285,7 +240,7 @@ class Challenge(models.Model):
                 answers = pk.loads(str(participant.responses))
             except:
                 answers = {}
-            participant.score = self._calculate_points(answers)
+            participant.score = self._calculate_points(answers) if not is_expired(participant) else 0.0
             participant.save()
 
         if self.user_to.score > self.user_from.score:
@@ -371,7 +326,7 @@ class Challenge(models.Model):
         if self.user_to.played and self.user_from.played:
             self.played()
 
-        return {'points': self._calculate_points(responses)}
+        return {'points': self._calculate_points(responses) if not is_expired(user_played) else '0.0 (expired)'}
 
     def can_play(self, user):
         """ Check if user can play this challenge"""

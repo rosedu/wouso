@@ -1,0 +1,15 @@
+{% extends 'site_base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Special Quest' %}{% endblock %}
+
+{% block content %}
+
+<h2>{{task.name}}</h2>
+{% if days_left >= 0%}
+  <p>Days left including today: {{days_left}}</p>
+{%else%}
+  <p>Deadline passed</p>
+{%endif%}
+<p>Reward: {{task.value}} gold</p>
+<p>{{task.text}}</p>
+{% endblock %}
