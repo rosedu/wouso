@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from wouso.core.user.models import Player, PlayerGroup
+from wouso.core.user.models import Player, PlayerGroup, PlayerSpellDue
 from wouso.core.scoring.models import History
 from wouso.core.magic.models import Spell
 from wouso.interface.activity.models import Activity
@@ -108,4 +108,16 @@ def magic_cast(request, destination=None, spell=None):
 
     return render_to_response('profile/cast.html',
                               {'destination': destination},
+                              context_instance=RequestContext(request))
+
+@login_required
+def magic_summary(request):
+    """ Display a summary of spells cast by me or on me """
+    player = request.user.get_profile()
+
+    cast_spells = PlayerSpellDue.objects.filter(source=player).all()
+
+    return render_to_response('profile/spells.html',
+                              {'cast': cast_spells,
+                              'player': player},
                               context_instance=RequestContext(request))

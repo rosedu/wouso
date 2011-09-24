@@ -111,6 +111,10 @@ class Player(models.Model):
     @property
     def spells(self):
         return self.playerspelldue_set.all()
+
+    @property
+    def spells_cast(self):
+        return PlayerSpellDue.objects.filter(source=self)
         
     @property
     def level(self):

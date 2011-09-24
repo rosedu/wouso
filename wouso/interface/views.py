@@ -123,7 +123,8 @@ def market(request):
     spells = Spell.objects.all()
 
     rate = scoring.calculate('gold-points-rate', gold=1)['points']
-    rate_text = _('Rate: 1 gold = {rate} points').format(rate=rate)
+    rate2 = round(1/scoring.calculate('points-gold-rate', points=1)['gold'])
+    rate_text = _('Rate: 1 gold = {rate} points, 1 gold = {rate2} points').format(rate=rate, rate2=rate2)
     
     return render_to_response('market.html', {'spells': spells,
                               'rate': rate, 'rate_text': rate_text},
@@ -136,26 +137,30 @@ def market_exchange(request):
     player = request.user.get_profile()
     message, error = '', ''
     if request.method == 'POST':
-        points = float(request.POST.get('points', 0))
-        gold = round(float(request.POST.get('gold', 0)))
-        if points != 0:
-            gold = points_rate * points
-            if gold != 0:
-                if player.points < points:
-                    error = _('Insufficient points')
-                else:
-                    scoring.score(player, None, 'points-gold-rate', points=points)
-                    message = _('Converted successfully')
-        # other way around
-        elif gold != 0:
-            points = gold_rate * gold
-            if player.coins['gold'] < gold:
-                error = _('Insufficient gold')
-            else:
-                scoring.score(player, None, 'gold-points-rate', gold=gold)
-                message = _('Converted successfully')
+        try:
+            points = float(request.POST.get('points', 0))
+            gold = round(float(request.POST.get('gold', 0)))
+        except:
+            error = _('Invalid amounts')
         else:
-            error = _('Unknwon action')
+            if points != 0:
+                gold = points_rate * points
+                if gold != 0:
+                    if player.points < points:
+                        error = _('Insufficient points')
+                    else:
+                        scoring.score(player, None, 'points-gold-rate', points=points)
+                        message = _('Converted successfully')
+            # other way around
+            elif gold != 0:
+                points = gold_rate * gold
+                if player.coins['gold'] < gold:
+                    error = _('Insufficient gold')
+                else:
+                    scoring.score(player, None, 'gold-points-rate', gold=gold)
+                    message = _('Converted successfully')
+            else:
+                error = _('Unknwon action')
     else:
         error = _('Expected post')
 

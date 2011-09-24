@@ -1,0 +1,39 @@
+{% extends base_template %}
+{% load artifacts %}
+{% load user %}
+{% load i18n %}
+
+{% block title %}{% trans 'Magic summary' %}{% endblock %}
+
+{% block content %}
+<h2>{% trans 'Magic summary' %}</h2>
+<h3>{% trans 'Active on me' %}</h3>
+<table>
+    <tr><th>{% trans 'Spell' %}</th>
+        <th>{% trans 'Source' %}</th>
+        <th>{% trans 'Until' %}</th>
+    </tr>
+    {% for s in player.spells.all %}
+    <tr>
+        <td>{% artifact s.spell %} {{ s.spell.title }}</td>
+        <td>{% player_simple s.source %}</td>
+        <td>{{ s.due }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3>{% trans 'Cast by me' %}</h3>
+<table>
+    <tr><th>{% trans 'Spell' %}</th>
+        <th>{% trans 'Target' %}</th>
+        <th>{% trans 'Until' %}</th>
+    </tr>
+    {% for s in player.spells_cast.all %}
+    <tr>
+        <td>{% artifact s.spell %} {{ s.spell.title }}</td>
+        <td>{% player_simple s.player %}</td>
+        <td>{{ s.due }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
