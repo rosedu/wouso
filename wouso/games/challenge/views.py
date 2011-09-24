@@ -44,12 +44,6 @@ def challenge(request, id):
     if request.method == 'GET' and not chall.is_started_for_user(request.user.get_profile()):
         chall.set_start(request.user.get_profile())
 
-    # check time delta between start of challenge
-    if not chall.check_timedelta(request.user.get_profile()):
-        # set challenge lost for user
-        chall.expired(request.user.get_profile())
-        return do_error(request, _('Challenge timer exceeded.'))
-
     if request.method == "POST":
         # check to see if challenge was already submitted
         participant = None
@@ -60,7 +54,7 @@ def challenge(request, id):
         if participant is not None and participant.played:
             return do_error(request, _('You have already submitted this challenge'\
                                        ' and scored %.2f points') % participant.score)
-        
+
         form = ChallengeForm(chall, request.POST)
 
         results = chall.set_played(chall_user, form.get_response())
