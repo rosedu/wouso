@@ -122,9 +122,48 @@ def searchone(request):
 def market(request):
     spells = Spell.objects.all()
 
-    return render_to_response('market.html', {'spells': spells},
+    rate = scoring.calculate('gold-points-rate', gold=1)['points']
+    rate_text = _('Rate: 1 gold = {rate} points').format(rate=rate)
+    
+    return render_to_response('market.html', {'spells': spells,
+                              'rate': rate, 'rate_text': rate_text},
                               context_instance=RequestContext(request))
 
+def market_exchange(request):
+    gold_rate = scoring.calculate('gold-points-rate', gold=1)['points']
+    points_rate = scoring.calculate('points-gold-rate', points=1)['gold']
+
+    player = request.user.get_profile()
+    message, error = '', ''
+    if request.method == 'POST':
+        points = float(request.POST.get('points', 0))
+        gold = int(request.POST.get('gold', 0))
+        if points != 0:
+            gold = points_rate * points
+            if gold != 0:
+                if player.points < points:
+                    error = _('Insufficient points')
+                else:
+                    scoring.score(player, None, 'points-gold-rate', points=points)
+                    message = _('Converted successfully')
+        # other way around
+        elif gold != 0:
+            points = gold_rate * gold
+            if player.coins['gold'] < gold:
+                error = _('Insufficient gold')
+            else:
+                scoring.score(player, None, 'gold-points-rate', gold=gold)
+                message = _('Converted successfully')
+        else:
+            error = _('Unknwon action')
+    else:
+        error = _('Expected post')
+
+    return render_to_response('market_buy.html',
+                {'error': error,
+                'message': message,},
+                context_instance=RequestContext(request))
+            
 def market_buy(request, spell):
     spell = get_object_or_404(Spell, pk=spell)
 
@@ -138,5 +177,7 @@ def market_buy(request, spell):
                       price=spell.price)
         message = _("Successfully aquired")
 
-    return render_to_response('market_buy.html', {'error': error, 'message': message},
+    return render_to_response('market_buy.html',
+                              {'error': error, 'message': message,
+                              },
                               context_instance=RequestContext(request))

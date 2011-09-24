@@ -69,7 +69,7 @@ div#logo {
     display: inline-block;
     float: none;
 }
-#search input {
+#search input, input.big {
     padding: 6px;
     border: 1px solid #aaa;
 }

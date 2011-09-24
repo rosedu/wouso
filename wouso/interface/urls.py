@@ -46,6 +46,7 @@ urlpatterns = patterns('',
     # Market
     url(r'^market/$', 'wouso.interface.views.market', name='market_home'),
     url(r'^market/buy/(?P<spell>\d+)/$', 'wouso.interface.views.market_buy', name='market_buy'),
+    url(r'^market/exchange/$', 'wouso.interface.views.market_exchange', name='market_exchange'),
 
     # Games
     (r'^g/', include('wouso.games.urls')),

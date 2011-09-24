@@ -2,24 +2,58 @@
 {% load i18n %}
 {% load artifacts %}
 {% block title %}{% trans 'Market' %}{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="/static/js/tabs.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
+{% endblock %}
 
 {% block content %}
     <span class="points bold">{{ user.get_profile.coins.gold }} {% trans 'gold' %}</span>
     <h2>{% trans 'Market' %}</h2>
 
+<ul class="tabs">
+        <li><a href="#spells">{% trans 'Spells' %}</a></li>
+        <li><a href="#exchange">{% trans 'Exchange' %}</a></li>
+</ul>
+
+<div class="tab_container">
+    <div id="spells" class="tab_content">
+        <br/>
     {% for s in spells %}
-<div style="clear:both">
-    <span class="points">
-    <a href="{% url market_buy s.id %}" class="button">{% trans 'Buy' %}</a>
-    </span>
-    <h3>{% artifact s %}{{ s.title }}</h3>
-    <p>{{ s.description }}</p>
-    <div class="second">{{ s.price }} {% trans 'gold' %}
+    <div style="clear:both">
+        <span class="points">
+        <a href="{% url market_buy s.id %}" class="button">{% trans 'Buy' %}</a>
+        </span>
+        <h3>{% artifact s %}{{ s.title }}</h3>
+        <p>{{ s.description }}</p>
+        <div class="second">{{ s.price }} {% trans 'gold' %}
+        </div>
     </div>
-</div>
     {% empty %}
-    {% trans 'Nothing' %}.
+        {% trans 'Nothing' %}.
     {% endfor %}
+    </div>
+
+    <div id="exchange" class="tab_content">
+        <br/>
+    <span class="points">{{ rate_text }}</span>
+    <p>{% trans 'Exchange points for gold or gold for points' %}</p>
+    <form method="post" action="{% url market_exchange %}">
+        {% trans 'Points' %}: <input type="text" size="3" name="points" value="{{ rate }}" class="big" />
+        <div class="actions">
+        <button type="submit">{% trans 'Exchange' %}</button>
+        </div>
+        {% csrf_token %}
+    </form>
+
+    <form method="post" style="clear:both" action="{% url market_exchange %}">
+        {% trans 'Gold' %}: <input type="text" size="3" name="gold" value="1" class="big" />
+        <div class="actions">
+        <button type="submit">{% trans 'Exchange' %}</button>
+        </div>
+        {% csrf_token %}
+    </form>
+    </div>
 {% endblock %}
 
 
