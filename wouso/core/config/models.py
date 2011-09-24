@@ -30,7 +30,7 @@ class Setting(models.Model):
         """ Capitalize name to create a setting title for display """
         if self.name.startswith('disable-'):
             return self.name[8:].capitalize()
-        return self.name.capitalize()
+        return self.name.capitalize().replace('_', ' ')
 
     def __unicode__(self):
         return self.name

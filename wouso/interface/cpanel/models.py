@@ -9,11 +9,12 @@ class Customization(ConfigGroup):
     def props(self):
         title = HTMLSetting.get('title')
         intro = HTMLSetting.get('intro')
+        hf = HTMLSetting.get('hidden_footer')
         theme = ChoicesSetting.get('theme')
         theme.choices = [(t,t) for t in get_themes()]
         logo = Setting.get('logo')
 
-        return [title, intro, theme, logo]
+        return [title, intro, theme, logo, hf]
 
 class Switchboard(ConfigGroup):
     name = 'Disable features'
