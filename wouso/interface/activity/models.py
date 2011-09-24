@@ -38,7 +38,10 @@ class Activity(models.Model):
     @models.permalink
     def get_game_absolute_url(self):
         """ Returns the game url """
-        return (self.game.url, None)
+        if self.game:
+            return (self.game.url, None)
+        else:
+            return (None, None)
 
 def addActivity_handler(sender, **kwargs):
     """ Callback function for addActivity signal """
