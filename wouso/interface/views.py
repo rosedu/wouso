@@ -54,7 +54,7 @@ def homepage(request, page=u'1'):
                               'is_homepage': True,
                               'top': topuser,
                               'topgroups': topgroups,
-                              'games': get_games,
+                              'games': get_games(),
                               },
                               context_instance=RequestContext(request))
 
