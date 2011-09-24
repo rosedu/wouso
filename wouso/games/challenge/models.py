@@ -195,7 +195,7 @@ class Challenge(models.Model):
         return Challenge.TIME_LIMIT - (now - partic.start).seconds
 
     def is_expired(self, participant):
-        if participant.seconds < Challenge.TIME_LIMIT + Challenge.TIME_SAFE:
+        if participant.seconds_took < Challenge.TIME_LIMIT + Challenge.TIME_SAFE:
             return False
         return True
 
@@ -229,9 +229,9 @@ class Challenge(models.Model):
             return '%d minutes and %d seconds' % (seconds / 60, seconds % 60)
 
         return '%.2fp (in %s%s) - %.2fp (in %s%s)' % (user_won.score, formatTime(user_won.seconds_took),
-                                                    ' - expired' if is_expired(user_won) else '',
+                                                    ' - expired' if self.is_expired(user_won) else '',
                                                     user_lost.score, formatTime(user_lost.seconds_took),
-                                                    ' - expired' if is_expired(user_lost) else '',)
+                                                    ' - expired' if self.is_expired(user_lost) else '',)
 
     def played(self):
         """ Both players have played, save and score """
@@ -240,7 +240,7 @@ class Challenge(models.Model):
                 answers = pk.loads(str(participant.responses))
             except:
                 answers = {}
-            participant.score = self._calculate_points(answers) if not is_expired(participant) else 0.0
+            participant.score = self._calculate_points(answers) if not self.is_expired(participant) else 0.0
             participant.save()
 
         if self.user_to.score > self.user_from.score:
@@ -326,7 +326,7 @@ class Challenge(models.Model):
         if self.user_to.played and self.user_from.played:
             self.played()
 
-        return {'points': self._calculate_points(responses) if not is_expired(user_played) else '0.0 (expired)'}
+        return {'points': self._calculate_points(responses) if not self.is_expired(user_played) else '0.0 (expired)'}
 
     def can_play(self, user):
         """ Check if user can play this challenge"""
