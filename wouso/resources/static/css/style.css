@@ -94,6 +94,11 @@ div#logo {
     width: 700px;
     float: right;
 }
+#ajax-message {
+    position: relative;
+    z-index: 1000;
+    text-align: center;
+}
 #footer {
     clear: both;
     border-top: 1px solid #aaa;
@@ -289,7 +294,7 @@ ul.menu li {
 ul.menu li a {
     text-decoration: none;
 }
-td.actions a, td.actions button {
+td.actions a, td.actions button, a.button-min {
     min-width: 20px;
 }
 div.second {

@@ -25,9 +25,9 @@ def index(request):
             context_instance=RequestContext(request))
 
 @login_required
-def do_error(request, error=''):
-    return render_to_response('challenge/error.html',
-        {'error': error},
+def do_result(request, error='', message=''):
+    return render_to_response('challenge/message.html',
+        {'error': error, 'message': message},
         context_instance=RequestContext(request))
 
 @login_required
@@ -39,7 +39,7 @@ def challenge(request, id):
     chall = get_object_or_404(Challenge, pk=id)
 
     if not chall_user.can_play(chall):
-        return do_error(request, _('You cannot play this challenge.'))
+        return do_result(request, _('You cannot play this challenge.'))
 
     if request.method == 'GET' and not chall.is_started_for_user(request.user.get_profile()):
         chall.set_start(request.user.get_profile())
@@ -52,7 +52,7 @@ def challenge(request, id):
         elif chall_user == chall.user_to.user:
             participant = chall.user_to
         if participant is not None and participant.played:
-            return do_error(request, _('You have already submitted this challenge'\
+            return do_result(request, _('You have already submitted this challenge'\
                                        ' and scored %s points') % participant.score)
 
         form = ChallengeForm(chall, request.POST)
@@ -80,17 +80,18 @@ def launch(request, to_id):
     user_from = request.user.get_profile().get_extension(ChallengeUser)
 
     if not user_from.can_launch():
-        return do_error(request, _('You cannot challenge.'))
+        return do_result(request, _('You cannot challenge.'))
 
     if user_from.can_challenge(user_to):
         try:
             chall = Challenge.create(user_from=user_from, user_to=user_to)
         except ValueError as e:
             # Some error occurred during question fetch. Clean up, and display error
-            return do_error(request, e.message)
-        return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
+            return do_result(request, e.message)
+        return do_result(request, message=_('Successfully challenged'))
+        #HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
     else:
-        return do_error(request, _('This user cannot be challenged by you.'))
+        return do_result(request, _('This user cannot be challenged by you.'))
 
 
 @login_required
@@ -102,7 +103,7 @@ def accept(request, id):
         request.user.is_superuser:
             chall.accept()
             return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
-    return do_error(request, _('Challenge cannot be accepted.'))
+    return do_result(request, _('Challenge cannot be accepted.'))
 
 @login_required
 def refuse(request, id):
@@ -113,7 +114,7 @@ def refuse(request, id):
         request.user.is_superuser:
             chall.refuse()
             return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
-    return do_error(request, _('You cannot refuse this challenge.'))
+    return do_result(request, _('You cannot refuse this challenge.'))
 
 @login_required
 def cancel(request, id):
@@ -123,7 +124,7 @@ def cancel(request, id):
     if chall.user_from.user == user_from and chall.is_launched():
         chall.cancel()
         return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
-    return do_error(request, _('You cannot cancel this challenge.'))
+    return do_result(request, _('You cannot cancel this challenge.'))
 
 @login_required
 def setplayed(request, id):
@@ -150,7 +151,7 @@ def use_one_more(request):
     if challuser.has_one_more():
         challuser.do_one_more()
     else:
-        return do_error(_("You don't have the artifact."))
+        return do_result(_("You don't have the artifact."))
     return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
 
 def header_link(request):

@@ -98,4 +98,8 @@ def context(request):
         settings['base_template'] = 'mobile_base.html'
     else:
         settings['base_template'] = 'site_base.html'
+
+    if request.GET.get('ajax', False):
+        settings['base_template'] = 'interface/ajax_message.html'
+
     return settings

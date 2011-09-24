@@ -7,6 +7,7 @@
 {% block scripts %}
     <script type="text/javascript" src="/static/js/tabs.js"></script>
     <script type="text/javascript" src="/static/js/jquery.flot.min.js"></script>
+    <script type="text/javascript" src="/static/js/ajaxify.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
 {% endblock %}
 
@@ -42,10 +43,13 @@
 
     <div class="actions">
         {% if profile.user.id != user.id %}
-            <a class="button" href="{% url create_to profile.id %}">Message</a>
-            <a class="button" href="{% url games.challenge.views.launch profile.id %}">Challenge!</a>
+            <a class="button button-min" href="{% url create_to profile.id %}" title="{% trans 'Send a message' %}">✉</a>
         {% endif %}
-            <a class="button" href="{% url magic_cast profile.id%}" title="{% trans 'Cast a spell on this player' %}">{% trans 'Cast' %}</a>
+            <a class="button button-min" href="{% url magic_cast profile.id%}" title="{% trans 'Cast a spell on this player' %}">✤</a>
+
+        {% if profile.user.id != user.id %}
+            <a class="button ajaxify" href="{% url games.challenge.views.launch profile.id %}">Challenge!</a>
+        {% endif %}
     </div>
 
     {% if user.is_superuser %}
@@ -156,4 +160,6 @@
         </div>
     </div>
 </div>
+<script language="javascript" type="text/javascript">
+</script>
 {% endblock %}
