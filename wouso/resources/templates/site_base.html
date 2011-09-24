@@ -108,7 +108,10 @@
         {% empty %}
         {% trans 'None.' %}
         {% endfor %} <br/>
-        <div class="right"><a href="{% url market_home %}">{% trans 'Market' %}</a></div>
+        <div class="right">
+            <a href="{% url magic_summary %}">{% trans 'Summary' %}</a>
+            <a href="{% url market_home %}">{% trans 'Market' %}</a>
+        </div>
     </div>
     {% endif %}
     {% block content %}

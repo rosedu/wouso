@@ -12,7 +12,7 @@ class InvalidFormula(Exception): pass
 class FormulaParsingError(Exception): pass
 class InvalidScoreCall(Exception): pass
 
-CORE_POINTS = ('points',)
+CORE_POINTS = ('points','gold')
 
 #def __init__(self):
 #    if not Scoring.check_setup():
@@ -31,6 +31,10 @@ def setup():
     for cc in CORE_POINTS:
         if not Coin.get(cc):
             Coin.add(cc, name=cc)
+    # special case, gold is integer
+    gold = Coin.get('gold')
+    gold.integer = True
+    gold.save()
 
     # iterate through games and register formulas
     for game in get_games():

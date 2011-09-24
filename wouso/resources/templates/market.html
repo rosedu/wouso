@@ -26,7 +26,7 @@
         </span>
         <h3>{% artifact s %}{{ s.title }}</h3>
         <p>{{ s.description }}</p>
-        <div class="second">{{ s.price }} {% trans 'gold' %}
+        <div class="second">{{ s.price|floatformat }} {% trans 'gold' %}
         </div>
     </div>
     {% empty %}

@@ -40,6 +40,7 @@ class Coin(ScoringModel, models.Model):
     # The game owner module, or null if is a core coin
     owner = models.ForeignKey(Game, blank=True, null=True)
     name = models.CharField(max_length=100)
+    integer = models.BooleanField(default=False, blank=True)
     
     def is_core(self):
         """ A coin is a core coin, if it doesn't have an owner """
@@ -77,7 +78,7 @@ class History(models.Model):
         for coin in allcoins:
             hs = History.objects.filter(user=user, coin=coin).aggregate(total=models.Sum('amount'))
             if hs['total'] is not None:
-                coins[coin.id] = hs['total']
+                coins[coin.id] = hs['total'] if not coin.integer else int(round(hs['total']))
         return coins
 
     @staticmethod
