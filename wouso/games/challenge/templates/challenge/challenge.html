@@ -1,5 +1,5 @@
-{% extends 'site_base.html' %}
-
+{% extends base_template %}
+{% load i18n %}
 {% block title %}Challenge #{{ challenge.id }}{% endblock %}
 
 {% block scripts %}
@@ -7,7 +7,7 @@
 {% endblock %}
 {% block content %}
 
-<h2>Challenge</h2>
+<h2>{% trans 'Challenge' %}</h2>
 
 <div id="timer" class="timer timer-big">
     {{ seconds_left }} seconds

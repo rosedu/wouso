@@ -1,4 +1,4 @@
-{% extends 'site_base.html' %}
+{% extends base_template %}
 {% load artifacts %}
 {% load user %}
 {% load i18n %}
@@ -17,7 +17,7 @@
         <div class="rank">{% if top.disabled %}-{% else %}rank: {{ top.position }}{% endif %}</div>
     </div>
 
-    <img src="{{ avatar }}" class="avatar" width="100" height="100" />
+    <img src="{{ avatar }}" class="avatar" />
     <h2>{{ profile }}</h2>
     <h3>{% artifact_full profile.level %} {% if profile.proximate_group %}Group: {% player_group profile.proximate_group %}{% endif %}</h3>
     {% if profile.artifact_amounts.all %}

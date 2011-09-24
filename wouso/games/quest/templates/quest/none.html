@@ -1,11 +1,13 @@
-{% extends 'site_base.html' %}
-
-{% block title %}Quest{% endblock %}
+{% extends base_template %}
+{% load i18n %}
+{% block title %}{% trans 'Quest' %}{% endblock %}
 
 {% block content %}
 
-<h1>No Quest</h1>
+<h2>{% trans 'No Quest' %}</h2>
 
-We are sorry, there is no active quest.
+<p>
+{% trans 'We are sorry, there is no active quest.' %}
+</p>
 
 {% endblock %}
