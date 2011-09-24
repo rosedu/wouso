@@ -137,7 +137,7 @@ def market_exchange(request):
     message, error = '', ''
     if request.method == 'POST':
         points = float(request.POST.get('points', 0))
-        gold = int(request.POST.get('gold', 0))
+        gold = round(float(request.POST.get('gold', 0)))
         if points != 0:
             gold = points_rate * points
             if gold != 0:
