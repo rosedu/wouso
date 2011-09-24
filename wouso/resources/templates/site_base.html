@@ -99,11 +99,16 @@
         Available:
         {% for s in user.get_profile.spell_amounts.all %}
             {% artifact s %}
+        {% empty %}
+        {% trans 'None.' %}
         {% endfor %} <br/>
         Cast on me:
         {% for s in user.get_profile.spells %}
             {% spell_due s %}
+        {% empty %}
+        {% trans 'None.' %}
         {% endfor %} <br/>
+        <div class="right"><a href="{% url market_home %}">{% trans 'Market' %}</a></div>
     </div>
     {% endif %}
     {% block content %}

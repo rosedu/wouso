@@ -20,6 +20,9 @@ td {
 .centered {
     text-align: center;
 }
+.right {
+    text-align: right;
+}
 img.no-float, .no-float {
     float: none !important;
 }

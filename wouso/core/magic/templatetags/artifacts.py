@@ -44,9 +44,9 @@ def artifact_full(artif):
 def spell_due(spell):
     html = artifact(spell.spell)
 
-    return '<span class="artifact-container" title="%s until %s">%s<span class="sup">*</span>' % \
+    return '<span class="artifact-container" title="%s until %s">%s<span class="sup">*</span></span>' % \
                 (spell.spell.title, spell.due, html)
 
 @register.simple_tag
 def spell_unknown(spell=None):
-    return '<div class="artifact artifact-unknown" title="Unknown"></div>'
+    return '<span class="artifact artifact-unknown" title="Unknown"></span>'
