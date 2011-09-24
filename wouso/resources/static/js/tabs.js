@@ -11,6 +11,9 @@ $(document).ready(function() {
     //On Click Event
     $("ul.tabs li").click(switchtab);
 
+    //Load with hash
+    hash = document.location.hash;
+    $(hash + '-click').trigger('click');
 });
 
 function switchtab() {

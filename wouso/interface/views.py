@@ -166,7 +166,7 @@ def market_exchange(request):
 
     return render_to_response('market_buy.html',
                 {'error': error,
-                'message': message,},
+                'message': message, 'tab': 'exchange'},
                 context_instance=RequestContext(request))
             
 def market_buy(request, spell):

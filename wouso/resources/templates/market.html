@@ -1,4 +1,4 @@
-{% extends 'site_base.html' %}
+{% extends base_template %}
 {% load i18n %}
 {% load artifacts %}
 {% block title %}{% trans 'Market' %}{% endblock %}
@@ -12,8 +12,8 @@
     <h2>{% trans 'Market' %}</h2>
 
 <ul class="tabs">
-        <li><a href="#spells">{% trans 'Spells' %}</a></li>
-        <li><a href="#exchange">{% trans 'Exchange' %}</a></li>
+        <li><a href="#spells" id="spells-click">{% trans 'Spells' %}</a></li>
+        <li><a href="#exchange" id="exchange-click">{% trans 'Exchange' %}</a></li>
 </ul>
 
 <div class="tab_container">
