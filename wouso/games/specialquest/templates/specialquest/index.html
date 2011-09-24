@@ -1,0 +1,29 @@
+{% extends 'site_base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Special Quest' %}{% endblock %}
+
+{% block content %}
+
+<h2>Special Quest Tasks</h2>
+Done tasks:
+<ul>
+{% if tasks_done %}
+{% for task in tasks_done %}
+  <li><a href="{% url specialquest_task_view task.pk %}">{{task.name}}</a></li>
+{% endfor %}
+{% else %}
+<li>None yet</li>
+{% endif %}
+</ul>
+
+Not done tasks:
+<ul>
+{% if tasks_not_done %}
+{% for task in tasks_not_done %}
+  <li><a href="{% url specialquest_task_view task.pk %}">{{task.name}}</a></li>
+  {% endfor %}
+{% else %}
+<li>None yet</li>
+{% endif %}
+</ul>
+{% endblock %}
