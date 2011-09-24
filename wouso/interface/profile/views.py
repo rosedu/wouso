@@ -46,6 +46,8 @@ def user_profile(request, id, page=u'1'):
     except (EmptyPage, InvalidPage):
         activity = paginator.page(paginator.num_pages)
 
+    # TODO: fetch from get_games all get_profile_actions() html bits
+
     return render_to_response('profile/profile.html',
                               {'profile': profile,
                                'avatar': avatar,
