@@ -4,7 +4,7 @@
 <ul class="activity-stream">
 {% for ac in activity.object_list %}
     <li class="activity-line">
-    <a href="{{ ac.get_game_absolute_url }}"><div class="activity-source">{{ ac.game_name }}</div></a>
+    <div class="activity-source"><a href="{{ ac.get_game_absolute_url }}" title="{% trans ac.game_name %}">{% trans ac.game_name %}</a></div>
         <a href="{% url wouso.interface.profile.views.user_profile ac.user_from.id %}"><img class="avatar medium" src="{% player_avatar ac.user_from %}" /></a>
         <div class="activity-message">{% autoescape off %}{{ ac.message }}{% endautoescape %}</div>
         {% if ac.user_from != ac.user_to %}

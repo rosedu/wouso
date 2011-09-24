@@ -366,6 +366,10 @@ div.activity-source {
     float: right;
     font-size: 0.9em;
 }
+div.activity-source a {
+    text-decoration:none;
+    color: #444;
+}
 div.activity-second div {
     padding-top: 8px;
 }
