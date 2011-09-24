@@ -45,7 +45,7 @@ def homepage(request, page=u'1'):
     for g in topgroups:
         g.position = TopHistory.get_user_position(topuser, relative_to=g)
 
-    if detect_mobile:
+    if detect_mobile(request):
         template = 'mobile_index.html'
     else:
         template = 'site_base.html'
