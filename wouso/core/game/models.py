@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.urlresolvers import reverse
 from wouso.core.app import App
 
 class Game(models.Model, App):
@@ -37,6 +38,10 @@ class Game(models.Model, App):
         Player has_modifier checks if the user has an artifact with the modifier id.
         """
         return []
+
+    def get_game_absolute_url(self):
+        """ Return a tuple for django template system """
+        return reverse(self.url)
 
     def __unicode__(self):
         return self.name

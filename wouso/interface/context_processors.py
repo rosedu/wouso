@@ -5,7 +5,7 @@ from wouso.interface.top.models import Top
 from wouso.interface.qproposal.models import Qproposal
 from wouso.interface.messaging.models import Message
 from wouso.interface.statistics.views import footer_link as stats_link
-from wouso.interface import get_static_pages
+from wouso.interface import get_static_pages, detect_mobile
 
 def header_footer(request):
     """ Generate header and footer bar contents.
@@ -85,10 +85,17 @@ def sidebar(request):
 
     return {'sidebar': sidebar}
 
-def config(request):
-    """ Make all configuration settings available as config_name """
+def context(request):
+    """ Make all configuration settings available as config_name
+    and also define some game context """
     settings = {}
     for s in Setting.objects.all():
         settings['config_' + s.name] = s.get_value()
 
+    # do not use minidetector for now
+    mobile = detect_mobile(request)
+    if mobile:
+        settings['base_template'] = 'mobile_base.html'
+    else:
+        settings['base_template'] = 'site_base.html'
     return settings

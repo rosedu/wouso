@@ -116,7 +116,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
     'wouso.interface.context_processors.sidebar',
     'wouso.interface.context_processors.header_footer',
-    'wouso.interface.context_processors.config',
+    'wouso.interface.context_processors.context',
 )
 
 INSTALLED_APPS = (

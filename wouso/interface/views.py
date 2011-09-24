@@ -6,8 +6,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from wouso.interface import logger
 from django.utils.translation import ugettext as _
+from wouso.interface import logger, detect_mobile
+from wouso.core.game import get_games
 from wouso.interface.forms import *
 from wouso.core.user.models import Player
 from wouso.core.magic.models import Spell
@@ -44,11 +45,16 @@ def homepage(request, page=u'1'):
     for g in topgroups:
         g.position = TopHistory.get_user_position(topuser, relative_to=g)
 
-    return render_to_response('site_base.html',
+    if detect_mobile:
+        template = 'mobile_index.html'
+    else:
+        template = 'site_base.html'
+    return render_to_response(template,
                               {'last10': online_last10, 'activity': activity,
                               'is_homepage': True,
                               'top': topuser,
                               'topgroups': topgroups,
+                              'games': get_games,
                               },
                               context_instance=RequestContext(request))
 

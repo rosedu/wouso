@@ -1,0 +1,16 @@
+{% extends 'mobile_base.html' %}
+{% load i18n %}
+
+{% block content %}
+<h2>{% trans 'Activity' %}</h2>
+{% include 'activity/stream.html' %}
+
+<p style="clear:both"></p>
+<h2>{% trans 'Bookmarks' %}</h2>
+<ul>
+{% for g in games %}
+    <li><a href="{{ g.get_game_absolute_url }}">{% trans g.verbose_name %}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}
+
