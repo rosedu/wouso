@@ -6,38 +6,43 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from wouso.core.qpool import get_questions_with_category
-from models import Quest
-from forms import QuestCpanel
+from models import SpecialQuestTask
+from forms import TaskForm
 
-@permission_required('quest.change_quest')
+@permission_required('specialquest.change_quest')
 def home(request):
-    quests = Quest.objects.all()
+    tasks = SpecialQuestTask.objects.all()
 
-    return render_to_response('quest/cpanel_home.html',
-                              {'quests': quests,
-                               'module': 'quest'},
+    return render_to_response('specialquest/cpanel_home.html',
+                              {'tasks': tasks,
+                               'module': 'specialquest'},
                               context_instance=RequestContext(request))
 
 @permission_required('quest.change_quest')
 def edit(request, id=None):
     if id is not None:
-        quest = get_object_or_404(Quest, pk=id)
+        task = get_object_or_404(SpecialQuestTask, pk=id)
     else:
-        quest = None
+        task = None
 
-    form = QuestCpanel(instance=quest)
-    form.fields['questions'].queryset = get_questions_with_category('quest')
+    form = TaskForm(instance=task)
 
     if request.method == 'POST':
-        form = QuestCpanel(request.POST, instance=quest)
-        form.fields['questions'].queryset = get_questions_with_category('quest')
+        form = TaskForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('wouso.games.quest.cpanel.quest_home'))
+            return HttpResponseRedirect(reverse('wouso.games.specialquest.cpanel.home'))
 
-    return render_to_response('quest/cpanel_quest_edit.html',
-                              {'quest': quest,
+    return render_to_response('specialquest/cpanel_edit.html',
+                              {'task': task,
                                'form': form,
-                               'module': 'quest'},
+                               'module': 'specialquest'},
                               context_instance=RequestContext(request))
 
+@permission_required('specialquest.change_quest')
+def delete(request, id=None):
+    if id is None:
+        return HttpResponseRedirect(reverse('wouso.games.specialquest.cpanel.home'))
+    task = get_object_or_404(SpecialQuestTask, pk=id)
+    task.delete()
+    return HttpResponseRedirect(reverse('wouso.games.specialquest.cpanel.home'))

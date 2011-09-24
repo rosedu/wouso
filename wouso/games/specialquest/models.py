@@ -9,6 +9,7 @@ class SpecialQuestTask(models.Model):
     text = models.TextField()
     start_date = models.DateField()
     end_date = models.DateField()
+    value = models.IntegerField()
 
     def __unicode__(self):
             return unicode(self.name)
