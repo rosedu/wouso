@@ -53,7 +53,7 @@ def challenge(request, id):
             participant = chall.user_to
         if participant is not None and participant.played:
             return do_result(request, _('You have already submitted this challenge'\
-                                       ' and scored %s points') % participant.score)
+                                       ' and scored %.2f points') % participant.score)
 
         form = ChallengeForm(chall, request.POST)
 

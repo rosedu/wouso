@@ -235,14 +235,6 @@ class Challenge(models.Model):
 
     def played(self):
         """ Both players have played, save and score """
-        for participant in self.participants:
-            try:
-                answers = pk.loads(str(participant.responses))
-            except:
-                answers = {}
-            participant.score = self._calculate_points(answers) if not self.is_expired(participant) else 0.0
-            participant.save()
-
         if self.user_to.score > self.user_from.score:
             result = (self.user_to, self.user_from)
         elif self.user_from.score > self.user_to.score:
@@ -260,7 +252,7 @@ class Challenge(models.Model):
                                      user_to=self.user_from.user, \
                                      message=signal_msg, \
                                      arguments=dict(user_to=self.user_to, user_from=self.user_from,
-                                                    extra=self.extraInfo(self.user_won, self.user_lost)),\
+                                                    extra=self.extraInfo(self.user_from, self.user_from)),\
                                      game=ChallengeGame.get_instance())
         else:
             self.status = 'P'
@@ -321,12 +313,20 @@ class Challenge(models.Model):
         user_played.seconds_took = (datetime.now() - user_played.start).seconds
         user_played.played = True
         user_played.responses = pk.dumps(responses)
+        exp = False
+        if self.is_expired(user_played):
+            exp = True
+            user_played.score = 0.0
+        else:
+            user_played.score = self._calculate_points(responses)
         user_played.save()
 
         if self.user_to.played and self.user_from.played:
             self.played()
 
-        return {'points': self._calculate_points(responses) if not self.is_expired(user_played) else '0.0 (expired)'}
+        if exp:
+            return {'points': '0.0 (expired)'}
+        return {'points': user_played.score}
 
     def can_play(self, user):
         """ Check if user can play this challenge"""
