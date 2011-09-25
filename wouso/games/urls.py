@@ -8,7 +8,7 @@ from django.conf import settings
 upat = [(r'^$', 'views.games'),]
 
 for g in get_games():
-    upat.append((r'{game}/'.format(game=g), include('games.{game}.urls'.format(game=g))))
+    upat.append((r'^{game}/'.format(game=g), include('games.{game}.urls'.format(game=g))))
 
 urlpatterns = patterns('games', *upat)
 
