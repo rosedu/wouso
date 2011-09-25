@@ -37,8 +37,7 @@ def sidebar_widget(request):
     user = request.user.get_profile().get_extension(SpecialQuestUser)
     tasks = SpecialQuestTask.objects.all()
     today = date.today()
-    tasks = [t for t in tasks if t not in user.done_tasks.all()
-                    and (t.end_date - today).days <= 0]
+    tasks = [t for t in tasks if t not in user.done_tasks.all() and t.start_date <= today <= t.end_date]
 
     return render_string('specialquest/sidebar.html', {'not_done': len(tasks)})
 
@@ -49,8 +48,7 @@ def header_link(request):
     user = profile.get_extension(SpecialQuestUser)
     tasks = SpecialQuestTask.objects.all()
     today = date.today()
-    tasks = [t for t in tasks if t not in user.done_tasks.all()
-                    and (t.end_date - today).days <= 0]
+    tasks = [t for t in tasks if t not in user.done_tasks.all() and t.start_date <= today <= t.end_date]
 
     count = len(tasks)
 
