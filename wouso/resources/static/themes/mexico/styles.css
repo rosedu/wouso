@@ -1,0 +1,128 @@
+html, body {
+	height: 100%;
+}
+body {
+	margin: 0;
+	padding: 0;
+	background: #ffc93f url(bg.jpg) bottom no-repeat;
+	font-family: ubuntu;
+}
+a, a:hover, a:visited {
+	color: brown;
+}
+div#logo {
+	background: url(logo.png) bottom left no-repeat;
+	height: 120px;
+	margin-bottom: 20px;
+}
+a#logoa {
+	height: 118px;
+}
+#container {
+	min-height: 800px;
+	height: 99%;
+}
+#content {
+}
+#footer {
+	position: absolute;
+	bottom: 0px;
+	left: auto;
+	border: none;
+	width: 900px;
+	text-align: right;
+}
+#footer a {
+	color: #fff;
+}
+#poweredby a {
+	display: none;
+}
+#sidebar {
+	border-right: 3px dashed #800000;
+	border-radius: 20px;
+}
+#sidebar {
+    clear: right;
+}
+#right-sidebar {
+	border-left: 3px dashed #800000;
+	border-radius: 20px;
+}
+#search {
+    margin-top: -60px;
+}
+.widget h2, #content h2, #content h3, #content h4 {
+	color: #800000;
+}
+.widget h2 {
+	font-size: 1.2em;
+}
+#content h2 {
+	font-size: 1.4em;
+}
+.widget {
+	margin-bottom: 10px;
+}
+#right-sidebar h3, #right-sidebar h2 {
+	-background: url(head-small2.png) right no-repeat;
+	color: #800000;
+}
+a.goto {
+	float: right;
+}
+button, a.button, .actions a, #search input.ac_input, input.big {
+	border-radius: 20px;
+	border: 3px solid #800000;
+	background-color: orange;
+	color: black;
+}
+input.big {
+	padding-left: 4px;
+}
+img.avatar {
+	border-radius: 20px;
+	border: 3px solid #800000;
+}
+th {
+	background-color: orange;
+	border: none;
+}
+ul.tabs {
+	border: none;
+	padding-bottom: 4px;
+	margin-bottom: 2px;
+	border-bottom: 1px solid #800000;
+}
+ul.tabs li, ul.tabs li a, html ul.tabs li.active {
+	border-color: orange;
+	background: orange;
+	font-weight: bold;
+}
+html ul.tabs li a:hover {
+	background-color: orange;
+}
+ul.tabs li {
+	border-top: 3px solid orange;
+	margin-right: 2px;
+}
+html ul.tabs li.active {
+	border-top: 3px solid #800000;
+}
+/* splash */
+#centered {
+	border-top: 3px solid #800000;
+}
+#centered #logo {
+	background-position: center;
+}
+#centered #content h2 {
+	display: none;
+}
+#centered #content p{
+	margin-top: 40px;
+}
+#centered #side {
+	background-color: orange;
+	border: none;
+}

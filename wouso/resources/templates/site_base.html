@@ -1,13 +1,12 @@
 {% load user %}
 {% load artifacts %}
 {% load i18n %}
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<HTML xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>{% block title %}{{config_title}}{% endblock %}</TITLE>
 <LINK rel="stylesheet" type="text/css" href="/static/css/style.css" />
-<LINK rel="stylesheet" type="text/css" href="/static/themes/{{ config_theme }}/styles.css" />
 <style type="text/css">
     @import url("/static/css/autocomplete.css");
     {% if config_logo %}
@@ -21,6 +20,7 @@
 <script type="text/javascript" src="/static/js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="/static/js/format.item.js"></script>
 {% block scripts %}{% endblock %}
+<LINK rel="stylesheet" type="text/css" href="/static/themes/{{ config_theme }}/styles.css" />
 </HEAD>
 
 <BODY>
@@ -39,7 +39,7 @@
             {% endif %}
         </div>
         <div id="logo">
-            <a href="{% url interface.views.homepage %}" id="logoa"></a>
+            <a href="{% url interface.views.homepage %}" id="logoa" title="{{config_title}}"></a>
         </div>
     </div>
 
@@ -64,10 +64,12 @@
         {% endfor %}
         {% endblock %}
         {% if last10 %}
+	<div class="widget">
         <h2>{% trans 'Online players' %}</h2>
             {% for u in last10 %}
                 {% player u %}
             {% endfor %}
+	</div>
         {% endif %}
     </div>
 

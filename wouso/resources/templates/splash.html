@@ -14,9 +14,9 @@
         <div id="side">
             <form action="{% url django.contrib.auth.views.login %}" method="post">
                 <label for="username">{% trans 'username' %}:</label>
-                <input size="10" name="username" id="username" />
+                <input size="10" name="username" id="username" class="big" />
                 <label for="password">{% trans 'password' %}:</label>
-                <input size="10" name="password" id="password" type="password" />
+                <input size="10" name="password" id="password" class="big" type="password" />
                 <button type="submit">Enter &raquo;</button>
                 {% csrf_token %}
             </form>
