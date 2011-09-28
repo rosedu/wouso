@@ -9,6 +9,7 @@ class PlayerGroup(models.Model):
     # TODO: check if the perms Group linking is of any use
     group = models.ForeignKey(Group, unique=True, related_name="%(class)s_related")
     name = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, default='', blank=True)
     gclass = models.IntegerField(default=0)
     parent = models.ForeignKey('PlayerGroup', default=None, null=True, blank=True)
 
@@ -43,7 +44,7 @@ class PlayerGroup(models.Model):
         return self._sisters
 
     def __unicode__(self):
-        return self.name
+        return self.name if self.title == '' else self.title
 
 class InsufficientAmount(Exception): pass
 
@@ -252,7 +253,8 @@ class Player(models.Model):
         return extension
 
     def __unicode__(self):
-        return u"%s %s" % (self.user.first_name, self.user.last_name)
+        ret = u"%s %s" % (self.user.first_name, self.user.last_name)
+        return ret if ret != ' ' else self.user.__unicode__()
 
 # Hack for having user and user's profile always in sync
 def user_post_save(sender, instance, **kwargs):

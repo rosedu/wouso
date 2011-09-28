@@ -48,7 +48,7 @@ def homepage(request, page=u'1'):
     if detect_mobile(request):
         template = 'mobile_index.html'
     else:
-        template = 'site_base.html'
+        template = 'site_index.html'
     return render_to_response(template,
                               {'last10': online_last10, 'activity': activity,
                               'is_homepage': True,
