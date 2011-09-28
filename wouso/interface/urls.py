@@ -35,6 +35,9 @@ urlpatterns = patterns('',
     (r'^searchone/$', 'wouso.interface.views.searchone'),
     url(r'^s/(\w+)/$', 'wouso.interface.pages.views.staticpage', name='static_page'),
 
+    # Chat
+    (r'^chat/', include('wouso.interface.chat.urls')),
+
     # Messaging
     (r'^m/', include('wouso.interface.messaging.urls')),
 

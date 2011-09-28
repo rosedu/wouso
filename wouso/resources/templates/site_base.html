@@ -7,6 +7,7 @@
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <TITLE>{% block title %}{{config_title}}{% endblock %}</TITLE>
 <LINK rel="stylesheet" type="text/css" href="/static/css/style.css" />
+<LINK rel="stylesheet" type="text/css" href="/static/css/chatbox.css" />
 <style type="text/css">
     @import url("/static/css/autocomplete.css");
     {% if config_logo %}
@@ -17,8 +18,11 @@
     {% block css %}{% endblock %}
 </style>
 <script type="text/javascript" src="/static/js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery-ui.min.js"></script>
 <script type="text/javascript" src="/static/js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="/static/js/format.item.js"></script>
+<script type="text/javascript" src="/static/js/chatbox.js"></script>
+<script type="text/javascript" src="/static/js/jquery.timers.js"></script>
 {% block scripts %}{% endblock %}
 <LINK rel="stylesheet" type="text/css" href="/static/themes/{{ config_theme }}/styles.css" />
 </HEAD>
