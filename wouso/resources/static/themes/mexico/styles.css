@@ -5,6 +5,7 @@ body {
 	margin: 0;
 	padding: 0;
 	background: #fff152 url(bg.jpg) bottom no-repeat;
+    background-attachment: fixed;
 	font-family: ubuntu;
 }
 a, a:hover, a:visited {
