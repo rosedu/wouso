@@ -145,6 +145,7 @@ INSTALLED_APPS = (
     'wouso.interface.top',
     'wouso.interface.activity',
     'wouso.interface.messaging',
+    'wouso.interface.chat',
     'wouso.interface.statistics',
 
     # Uncomment the next line to enable admin documentation:

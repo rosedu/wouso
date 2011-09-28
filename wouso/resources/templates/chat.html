@@ -1,0 +1,23 @@
+{% extends 'site_base.html' %}
+
+{% block title %}{{block.super}} -- Chatbox{% endblock %}
+
+{% csrf_token %}
+{% block content %}
+
+<div id="Shoutbox">
+    <div id="ShoutboxTextArea"></div>
+
+    <input type="text" readonly=true id="ShoutboxUserName" value="{{user}}"/>
+
+    <input type="text" id="ShoutboxTextBox"/>
+
+    <input type="button" id="ShoutboxSendButton" value="Send"/>
+
+    <button type="button" id="ShoutboxHideButton">Hide</button>
+</div>
+
+<button type="button" id="ShoutboxShowButton">Show</button>
+
+{% endblock %}
+
