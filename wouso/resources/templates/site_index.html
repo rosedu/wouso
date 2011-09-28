@@ -1,0 +1,61 @@
+{% extends 'site_base.html' %}
+{% load user %}
+{% load artifacts %}
+{% load i18n %}
+
+{% block content %}
+    {% if is_homepage %}
+    <div id="right-sidebar">
+        <h2>{{ user.get_profile }}</h2>
+        <div class="centered">
+            <a href="{% url player_profile user.get_profile.id %}"><img src="{% player_avatar user.get_profile %}" class="avatar no-float" /></a>
+            <h4>{% artifact user.get_profile.level %} {{ user.get_profile.level.title }}</h4>
+            <span>{{ user.get_profile.points }} p</span>
+            <!-- TODO progress bar points in level, next level -->
+            <br/>
+            <span>{{ user.get_profile.level_progress.points_left }} left to advance</span>
+        </div>
+        <h3>{% trans 'Your rank' %}</h3>
+        <p>{% trans 'Global' %}: <span class="points">{{ top.position }}</span></p>
+        {% for g in topgroups %}
+        <p>{{ g }}: <span class="points">{{ g.position }}</span></p>
+        {% endfor %}
+
+        <h3>{% trans 'Artifacts' %}</h3>
+        {% for a in user.get_profile.artifact_amounts.all %}
+            {% artifact a %}
+        {% empty %}
+        {% trans 'None.' %}
+        {% endfor %}
+        <h3>{% trans 'Spells' %}</h3>
+        Available:
+        {% for s in user.get_profile.spell_amounts.all %}
+            {% artifact s %}
+        {% empty %}
+        {% trans 'None.' %}
+        {% endfor %} <br/>
+        Cast on me:
+        {% for s in user.get_profile.spells %}
+            {% spell_due s %}
+        {% empty %}
+        {% trans 'None.' %}
+        {% endfor %} <br/>
+        <div class="right">
+            <a href="{% url magic_summary %}">{% trans 'Summary' %}</a>
+            <a href="{% url market_home %}">{% trans 'Market' %}</a>
+        </div>
+    </div>
+    {% endif %}
+    <div id="wall">
+        <h2>{% trans 'Activity' %}</h2>
+        {% include 'activity/stream.html' %}
+
+        {% if activity.has_previous %}
+            <a href="{% url wouso.interface.views.homepage %}"> &raquo; </a>
+        {% endif %}
+
+        {% if activity.has_next %}
+            <a href="{% url wouso.interface.views.homepage page=activity.next_page_number %}"> &laquo;</a>
+        {% endif %}
+    </div>
+{% endblock %}

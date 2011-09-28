@@ -19,7 +19,7 @@ urlpatterns = patterns('',
     (r'^user/login/$', 'django.contrib.auth.views.login'),
     (r'^user/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}),
     # todo rename user/profile -> player
-    (r'^user/profile/(?P<id>\d*)/$', 'wouso.interface.profile.views.user_profile'),
+    url(r'^user/profile/(?P<id>\d*)/$', 'wouso.interface.profile.views.user_profile', name='player_profile'),
     (r'^user/profile/(?P<id>\d*)/(?P<page>\d*)/$', 'wouso.interface.profile.views.user_profile'),
     (r'^user/profile/$', 'wouso.interface.profile.views.profile'),
     url(r'^player/cast/to-(?P<destination>\d+)/$', 'wouso.interface.profile.views.magic_cast', name='magic_cast'),
