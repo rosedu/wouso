@@ -4,7 +4,7 @@ html, body {
 body {
 	margin: 0;
 	padding: 0;
-	background: #ffc93f url(bg.jpg) bottom no-repeat;
+	background: #fff152 url(bg.jpg) bottom no-repeat;
 	font-family: ubuntu;
 }
 a, a:hover, a:visited {
