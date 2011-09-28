@@ -6,7 +6,7 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
 from datetime import date, timedelta
 from wouso.interface import render_string
-from models import SpecialQuestUser, SpecialQuestTask
+from models import SpecialQuestUser, SpecialQuestTask, SpecialQuestGame
 
 
 @login_required
@@ -34,6 +34,8 @@ def task(request, task_id):
                     context_instance=RequestContext(request))
 
 def sidebar_widget(request):
+    if SpecialQuestGame.disabled():
+        return ''
     user = request.user.get_profile().get_extension(SpecialQuestUser)
     tasks = SpecialQuestTask.objects.all()
     today = date.today()
@@ -43,7 +45,7 @@ def sidebar_widget(request):
 
 def header_link(request):
     profile = request.user.get_profile()
-    if not profile:
+    if not profile or SpecialQuestGame.disabled():
         return ''
     user = profile.get_extension(SpecialQuestUser)
     tasks = SpecialQuestTask.objects.all()
