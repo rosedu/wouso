@@ -16,7 +16,7 @@
         <div class="rank">{% if top.disabled %}-{% else %}rank: {{ top.position }}{% endif %}</div>
     </div>
 
-    <h2>{{ group }}</h2>
+    <h2>{{ group }} {% if group.title != '' %}<small>[{{ group.name }}]</small>{% endif %}</h2>
     <h3>{% if group.gclass == 0 %}Group{% else %}
         {% if group.gclass == 1 %}Series{% endif %}
         {% endif %}

@@ -9,6 +9,7 @@ class PlayerGroup(models.Model):
     # TODO: check if the perms Group linking is of any use
     group = models.ForeignKey(Group, unique=True, related_name="%(class)s_related")
     name = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, default='', blank=True)
     gclass = models.IntegerField(default=0)
     parent = models.ForeignKey('PlayerGroup', default=None, null=True, blank=True)
 
@@ -43,7 +44,7 @@ class PlayerGroup(models.Model):
         return self._sisters
 
     def __unicode__(self):
-        return self.name
+        return self.name if self.title == '' else self.title
 
 class InsufficientAmount(Exception): pass
 
