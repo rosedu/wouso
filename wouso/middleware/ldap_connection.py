@@ -3,7 +3,7 @@ import ldap
 import logging
 
 LDAP_URL = 'ldaps://swarm.cs.pub.ro:636'
-LDAP_BINDNAME = 'cn=admin,dc=swarm,dc=cs,dc=pub,dc=ro'
+LDAP_BINDNAME = '' # 'cn=admin,dc=swarm,dc=cs,dc=pub,dc=ro'
 LDAP_BINDPASS = ''
 LDAP_BASECN = 'dc=swarm,dc=cs,dc=pub,dc=ro'
 LDAP_FILTER = '(uid=%s)'
@@ -18,7 +18,8 @@ class LDAPBackend:
 
         try:
             conn = ldap.initialize(LDAP_URL)
-            conn.simple_bind_s(LDAP_BINDNAME, LDAP_BINDPASS)
+            if LDAP_BINDNAME != '':
+                conn.simple_bind_s(LDAP_BINDNAME, LDAP_BINDPASS)
             result = conn.search_ext_s(LDAP_BASECN, ldap.SCOPE_SUBTREE, \
                     LDAP_FILTER % username, None)
             conn.unbind_s()
