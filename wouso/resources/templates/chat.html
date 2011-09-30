@@ -1,6 +1,11 @@
 {% extends 'site_base.html' %}
 
 {% block title %}{{block.super}} -- Chatbox{% endblock %}
+{% block scripts %}
+<script type="text/javascript" src="/static/js/chatbox.js"></script>
+<LINK rel="stylesheet" type="text/css" href="/static/css/chatbox.css" />
+<script type="text/javascript" src="/static/js/jquery.timers.js"></script>
+{% endblock %}
 
 {% csrf_token %}
 {% block content %}
