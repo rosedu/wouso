@@ -53,11 +53,11 @@ class ChallengeUser(Player):
         self.last_launched -= timedelta(days=-1)
         self.save()
 
-        signal_msg = ugettext_noop('{user} used {artifact} to enable one more challenge.')
+        signal_msg = ugettext_noop('used {artifact} to enable one more challenge.')
         signals.addActivity.send(sender=None, user_from=self, \
                                      user_to=self, \
                                      message=signal_msg, \
-                                     arguments=dict(user=self, artifact=modifier.artifact.title), \
+                                     arguments=dict(artifact=modifier.artifact.title), \
                                      game=ChallengeGame.get_instance())
         return True
 
@@ -151,12 +151,12 @@ class Challenge(models.Model):
         self.user_from.user.save()
 
         # send activty signal
-        signal_msg = ugettext_noop('{user_to} has refused challenge from {user_from}')
+        signal_msg = ugettext_noop('has refused challenge from {chall_from}')
 
         signals.addActivity.send(sender=None, user_from=self.user_to.user, \
                                      user_to=self.user_from.user, \
                                      message=signal_msg, \
-                                     arguments=dict(user_to=self.user_to, user_from=self.user_from), \
+                                     arguments=dict(chall_from=self.user_from), \
                                      game=ChallengeGame.get_instance())
         self.save()
 
@@ -218,6 +218,8 @@ class Challenge(models.Model):
         (or $MINUTES minutes and seconds) and scored X points)'''
 
         def formatTime(seconds):
+            if seconds is None:
+                return ''
             if seconds < 60:
                 return "%d seconds" % seconds
             elif seconds == 60:
@@ -247,7 +249,7 @@ class Challenge(models.Model):
             scoring.score(self.user_to.user, ChallengeGame, 'chall-draw')
             scoring.score(self.user_from.user, ChallengeGame, 'chall-draw')
             # send activty signal
-            signal_msg = ugettext_noop('Draw result between {user_to} and {user_from}:\n{extra}')
+            signal_msg = ugettext_noop('draw result between {user_to} and {user_from}:\n{extra}')
             signals.addActivity.send(sender=None, user_from=self.user_to.user, \
                                      user_to=self.user_from.user, \
                                      message=signal_msg, \
@@ -263,10 +265,10 @@ class Challenge(models.Model):
             scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
                 external_id=self.id, points=self.user_lost.score, points2=self.user_lost.score)
             # send activty signal
-            signal_msg = ugettext_noop('{user_won} won challenge with {user_lost}: {extra}')
-            signals.addActivity.send(sender=None, user_from=self.user_from.user, \
-                                     user_to=self.user_to.user, \
-                                     message=signal_msg, arguments=dict(user_won=self.user_won, user_lost=self.user_lost,
+            signal_msg = ugettext_noop('won challenge with {user_lost}: {extra}')
+            signals.addActivity.send(sender=None, user_from=self.user_won.user, \
+                                     user_to=self.user_lost.user, \
+                                     message=signal_msg, arguments=dict(user_lost=self.user_lost,
                                                                         extra=self.extraInfo(self.user_won, self.user_lost)), \
                                      game=ChallengeGame.get_instance())
         self.save()

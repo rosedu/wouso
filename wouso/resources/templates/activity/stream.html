@@ -6,7 +6,9 @@
     <li class="activity-line">
     <div class="activity-source"><a href="{{ ac.get_game_absolute_url }}" title="{% trans ac.game_name %}">{% trans ac.game_name %}</a></div>
         <a href="{% url wouso.interface.profile.views.user_profile ac.user_from.id %}"><img class="avatar medium" src="{% player_avatar ac.user_from %}" /></a>
-        <div class="activity-message">{% autoescape off %}{{ ac.message }}{% endautoescape %}</div>
+        <div class="activity-message">
+            {% if ac.user_from %}<strong>{% player_simple ac.user_from %}</strong>{% endif %}
+            {% autoescape off %}{{ ac.message }}{% endautoescape %}</div>
         {% if ac.user_from != ac.user_to %}
         <div class="activity-second">
             <a href="{% url wouso.interface.profile.views.user_profile ac.user_to.id %}"><img class="avatar small" src="{%  player_avatar ac.user_to %}" /></a>

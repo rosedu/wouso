@@ -138,8 +138,10 @@ def setplayed(request, id):
 
     if chall.user_from.played:
         chall.user_to.played = True
+        chall.user_to.score = 0
     else:
         chall.user_from.played = True
+        chall.user_from.score = 0
 
     chall.played()
     return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))

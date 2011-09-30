@@ -55,10 +55,10 @@ class QuestUser(Player):
             qr.save()
 
             # sending the signal
-            signal_msg = ugettext_noop("{user} has finished quest {quest}")
+            signal_msg = ugettext_noop("has finished quest {quest}")
             signals.addActivity.send(sender=None, user_from=self,
                                      user_to=self, message=signal_msg,
-                                     arguments=dict(user=self, quest=self.current_quest.title),
+                                     arguments=dict(quest=self.current_quest.title),
                                      game=QuestGame.get_instance())
 
             # saving finish data
@@ -74,11 +74,11 @@ class QuestUser(Player):
         self.finished_time = None
         self.save()
         # send activity signal
-        signal_msg = ugettext_noop('{user} has started quest {quest}')
+        signal_msg = ugettext_noop('has started quest {quest}')
         signals.addActivity.send(sender=None,
                                  user_from=self, user_to=self,
                                  message=signal_msg,
-                                 arguments=dict(user=self, quest=quest.title),
+                                 arguments=dict(quest=quest.title),
                                  game=QuestGame.get_instance())
 
 class QuestResult(models.Model):

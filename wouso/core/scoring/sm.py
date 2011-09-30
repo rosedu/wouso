@@ -101,13 +101,13 @@ def score_simple(player, coin, amount, game=None, formula=None,
         level = God.get_level_for_points(player.points)
         if level != player.level_no:
             if level < player.level_no:
-                signal_msg = ugettext_noop("{user} downgraded to level {level}")
+                signal_msg = ugettext_noop("downgraded to level {level}")
             else:
-                signal_msg = ugettext_noop("{user} upgraded to level {level}")
+                signal_msg = ugettext_noop("upgraded to level {level}")
 
             signals.addActivity.send(sender=None, user_from=player,
                                  user_to=player, message=signal_msg,
-                                 arguments=dict(user=player, level=level),
+                                 arguments=dict(level=level),
                                  game=game)
             player.level_no = level
         player.save()
