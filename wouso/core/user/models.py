@@ -1,6 +1,8 @@
 from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User, Group
+from django.utils.translation import ugettext_noop
+from wouso.interface.activity import signals
 from wouso.core.god import God
 from wouso.core.magic.models import Artifact, Spell
 
@@ -259,4 +261,13 @@ class Player(models.Model):
 # Hack for having user and user's profile always in sync
 def user_post_save(sender, instance, **kwargs):
     profile, new = Player.objects.get_or_create(user=instance)
+    if new:
+        # kick some activity
+        signal_msg = ugettext_noop('has joined the game.')
+
+        signals.addActivity.send(sender=None, user_from=profile,
+                                 user_to=profile,
+                                 message=signal_msg,
+                                 game=None)
+
 models.signals.post_save.connect(user_post_save, User)
