@@ -1,0 +1,30 @@
+{% extends 'cpanel/index.html' %}
+{% load i18n %}
+{% load user %}
+{% block title %}{% trans 'Special Quest' %}{% endblock %}
+
+{% block content %}
+
+<h2>{% player player %}</h2>
+<span class="points">Gold: {{ player.coins.gold }}</span>
+
+Done tasks:
+<ul>
+    {% for task in player.done_tasks.all %}
+    <li><s><a href="{% url specialquest_task_view task.pk %}">{{task.name}}</a></s> ({{task.value}} gold)
+           <a href="{% url specialquest_manage_unset player.id task.pk %}" class="points">Unset</a>.</li>
+    {% empty %}
+<li>None yet</li>
+    {% endfor %}
+</ul>
+
+Not done tasks:
+<ul>
+  {% for task in tasks_not_done %}
+      <li><a href="{% url specialquest_task_view task.pk %}">{{task.name}}</a> ({{task.value}} gold)
+          <a href="{% url specialquest_manage_set player.id task.pk %}" class="points">Set done</a>.</li>
+  {% empty %}
+<li class="empty">None yet</li>
+  {% endfor %}
+</ul>
+{% endblock %}

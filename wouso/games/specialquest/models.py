@@ -1,6 +1,8 @@
 from django.db import models
+from django.core.urlresolvers import reverse
 from wouso.core.user.models import Player
 from wouso.core.game.models import Game
+from wouso.core.scoring.models import Formula
 
 # Create your models here.
 
@@ -44,3 +46,17 @@ class SpecialQuestGame(Game):
             from views import header_link
             return header_link(request)
         return None
+
+    @classmethod
+    def get_profile_superuser_actions(kls, request, player):
+        return '<a class="button" href="%s">Special quest</a>' % reverse('specialquest_manage', args=(player.id,))
+
+    @classmethod
+    def get_formulas(kls):
+        fs = []
+        quest_game = kls.get_instance()
+        fs.append(Formula(id='specialquest-passed', formula='gold={value}',
+            owner=quest_game.game,
+            description='Points earned when finishing a task. Arguments: value.')
+        )
+        return fs
