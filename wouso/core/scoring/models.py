@@ -44,7 +44,7 @@ class Coin(ScoringModel, models.Model):
     
     def is_core(self):
         """ A coin is a core coin, if it doesn't have an owner """
-        return owner is None
+        return self.owner is None
 
 class Formula(ScoringModel, models.Model):
     """ Define the way coin amounts are given to the user, based
@@ -79,6 +79,9 @@ class History(models.Model):
             hs = History.objects.filter(user=user, coin=coin).aggregate(total=models.Sum('amount'))
             if hs['total'] is not None:
                 coins[coin.id] = hs['total'] if not coin.integer else int(round(hs['total']))
+            else:
+                if coin.is_core():
+                    coins[coin.id] = 0
         return coins
 
     @staticmethod
