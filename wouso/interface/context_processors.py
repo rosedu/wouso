@@ -92,6 +92,13 @@ def context(request):
     for s in Setting.objects.all():
         settings['config_' + s.name] = s.get_value()
 
+    # override theme using GET args
+    if request.GET.get('theme', None) is not None:
+        from wouso.utils import get_themes
+        theme = request.GET['theme']
+        if theme in get_themes():
+            settings['config_theme'] = theme
+
     # do not use minidetector for now
     mobile = detect_mobile(request)
     if mobile:
