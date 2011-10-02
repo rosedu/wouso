@@ -145,12 +145,15 @@ def market_exchange(request):
         else:
             if points != 0:
                 gold = points_rate * points
-                if gold != 0:
+                if gold > 0:
                     if player.points < points:
                         error = _('Insufficient points')
                     else:
+                        points = round(gold) / points_rate
                         scoring.score(player, None, 'points-gold-rate', points=points)
                         message = _('Converted successfully')
+                else:
+                    error = _('Insufficient points')
             # other way around
             elif gold != 0:
                 points = gold_rate * gold
@@ -160,7 +163,7 @@ def market_exchange(request):
                     scoring.score(player, None, 'gold-points-rate', gold=gold)
                     message = _('Converted successfully')
             else:
-                error = _('Unknwon action')
+                error = _('Unknown action')
     else:
         error = _('Expected post')
 

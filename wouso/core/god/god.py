@@ -19,11 +19,11 @@ class DefaultGod:
             owner=None,
             description='Gold spent on spells')
         )
-        fs.append(Formula(id='gold-points-rate', formula='points={gold}*10,gold=-{gold}',
+        fs.append(Formula(id='gold-points-rate', formula='points={gold}*9,gold=-{gold}',
             owner=None,
             description='Exchange gold in points')
         )
-        fs.append(Formula(id='points-gold-rate', formula='points=-{points},gold={points}*1.0/9',
+        fs.append(Formula(id='points-gold-rate', formula='points=-{points},gold={points}*0.1',
             owner=None,
             description='Exchange points in gold')
         )
