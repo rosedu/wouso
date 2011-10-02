@@ -62,18 +62,18 @@
     </div>
     {% endif %}
 
-    <div class="second">Last seen:
+    <div class="second">{% trans 'Last seen' %}:
     {% if profile.last_seen %}
         {{profile.last_seen}}
     {% else %}
-        Never
+        {% trans 'Never' %}
     {% endif %}
     </div>
 
     <ul class="tabs">
-        <li><a href="#tab-1">Activity</a></li>
-        <li><a href="#tab-2">Position</a></li>
-        <li><a href="#tab-3">Points</a></li>
+        <li><a href="#tab-1">{% trans 'Activity' %}</a></li>
+        <li><a href="#tab-2">{% trans 'Position' %}</a></li>
+        <li><a href="#tab-3">{% trans 'Points' %}</a></li>
     </ul>
 
     <div class="tab_container">
@@ -91,7 +91,7 @@
 
         <div id="tab-2" class="tab_content">
             <div class="subgroups">
-                <h3>Rank</h3>
+                <h3>{% trans 'Rank' %}</h3>
                 <p>Global: <span class="points">{{ top.position }}</span></p>
                 {% for g in top.topgroups %}
                     <p>{{ g }}: <span class="points">{{ g.position }}</span></p>

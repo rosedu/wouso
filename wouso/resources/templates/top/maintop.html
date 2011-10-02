@@ -1,12 +1,12 @@
-{% extends 'site_base.html' %}
+{% extends base_template %}
 {% load artifacts %}
 {% load i18n %}
 
-{% block title %} Top {% endblock %}
+{% block title %}{% trans 'Top' %}{% endblock %}
 
 {% block content %}
 
-<h2>Top</h2>
+<h2>{% trans 'Top' %}</h2>
 
 {% if top.disabled %}
     {% trans 'Top has been disabled.' %}
@@ -14,18 +14,18 @@
 <table id="clasament">
 <tr>
 <th>&nbsp;</th>
-<th width = "100%" align=left> Player </th>
-<th> <a href="/top/toptype/{{ toptype }}/sortcrit/0/page/1/">Points</a> </th>
-<th> <a href="/top/toptype/{{ toptype }}/sortcrit/1/page/1/">Progress</a> </th>
-<th> <a href="/top/toptype/{{ toptype }}/sortcrit/2/page/1/">Last&nbsp;seen</a> </th>
+<th width = "100%" align=left>{% trans 'Player' %}</th>
+<th> <a href="/top/toptype/{{ toptype }}/sortcrit/0/page/1/">{% trans 'Points' %}</a> </th>
+<th> <a href="/top/toptype/{{ toptype }}/sortcrit/1/page/1/">{% trans 'Progress' %}</a> </th>
+<th nowrap> <a href="/top/toptype/{{ toptype }}/sortcrit/2/page/1/">{% trans 'Last seen' %}</a> </th>
 </tr>
 
 {% for user in allUsers.object_list %}
 <tr>
-<td> {% artifact user.level %} </td>
-<td> <a href="{% url interface.profile.views.user_profile user.id %}">{{ user }}</a>
+<td>{% artifact user.level %}</td>
+<td><a href="{% url interface.profile.views.user_profile user.id %}">{{ user }}</a>
 {% for artf in user.artifacts.all %}
-<div class = "artefacts">
+<div class = "artifacts">
 {% artifact artf %}
 </div>
 {% endfor %}
@@ -36,7 +36,7 @@
 {% else %}
 <td> {{ user.progress }} </td>
 {% endif %}
-<td nowrap> {% if user.last_seen %}{{ user.last_seen }}{% else %}Never{% endif %} </td>
+<td nowrap> {% if user.last_seen %}{{ user.last_seen }}{% else %}{% trans 'Never' %}{% endif %} </td>
 </tr>
 {% endfor %}
 </table>
