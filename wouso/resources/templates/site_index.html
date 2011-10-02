@@ -21,27 +21,37 @@
         <p>{{ g }}: <span class="points">{{ g.position }}</span></p>
         {% endfor %}
 
+        {% if user.get_profile.artifact_amounts.all %}
         <h3>{% trans 'Artifacts' %}</h3>
         {% for a in user.get_profile.artifact_amounts.all %}
             {% artifact a %}
         {% empty %}
         {% trans 'None.' %}
         {% endfor %}
+        {% endif %}
+
         <h3>{% trans 'Spells' %}</h3>
-        Available:
+        {% if user.get_profile.spell_amounts.all %}
+        {% trans 'Available' %}:
         {% for s in user.get_profile.spell_amounts.all %}
             {% artifact s %}
         {% empty %}
         {% trans 'None.' %}
         {% endfor %} <br/>
-        Cast on me:
+        {% endif %}
+
+        {% if user.get_profile.spells %}
+        {% trans 'Cast on me' %}:
         {% for s in user.get_profile.spells %}
             {% spell_due s %}
         {% empty %}
         {% trans 'None.' %}
         {% endfor %} <br/>
+        {% endif %}
         <div class="right">
+            {% if user.get_profile.spells_cast or user.get_profile.spells %}
             <a href="{% url magic_summary %}">{% trans 'Summary' %}</a>
+            {% endif %}
             <a href="{% url market_home %}">{% trans 'Market' %}</a>
         </div>
     </div>
