@@ -77,6 +77,10 @@ def score(user, game, formula, external_id=None, **params):
         for coin, amount in ret.items():
             score_simple(user, coin, amount, game, formula, external_id)
 
+def unset(user, game, formula, external_id=None, **params):
+    """ Remove all history records by the external_id, formula and game given to the user """
+    return History.objects.filter(user=user, game=game.get_instance(), formula=formula, external_id=external_id).delete()
+
 def score_simple(player, coin, amount, game=None, formula=None,
     external_id=None):
     """ Give amount of coin to the player.
