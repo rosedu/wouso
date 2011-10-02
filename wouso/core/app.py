@@ -32,10 +32,10 @@ class App:
     @classmethod
     def get_profile_actions(kls, request, player):
         """ Return html content for player's profile view """
-        return None
+        return ''
 
     @classmethod
     def get_profile_superuser_actions(kls, request, player):
         """ Return html content for player's profile view
         in the superuser row """
-        return None
+        return ''

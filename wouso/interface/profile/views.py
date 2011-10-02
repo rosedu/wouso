@@ -13,6 +13,7 @@ from wouso.core.magic.models import Spell
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, GroupHistory
 from wouso.interface.top.models import History as TopHistory
+from wouso.core.game import get_games
 
 @login_required
 def profile(request):
@@ -46,14 +47,20 @@ def user_profile(request, id, page=u'1'):
     except (EmptyPage, InvalidPage):
         activity = paginator.page(paginator.num_pages)
 
-    # TODO: fetch from get_games all get_profile_actions() html bits
+    profile_actions = ''
+    profile_superuser_actions = ''
+    for g in get_games():
+        profile_actions += g.get_profile_actions(request, profile)
+        profile_superuser_actions += g.get_profile_superuser_actions(request, profile)
 
     return render_to_response('profile/profile.html',
                               {'profile': profile,
                                'avatar': avatar,
                                'activity': activity,
                                'top': top_user,
-                               'scoring': history},
+                               'scoring': history,
+                               'profile_actions': profile_actions,
+                               'profile_superuser_actions': profile_superuser_actions,},
                               context_instance=RequestContext(request))
 
 @login_required
