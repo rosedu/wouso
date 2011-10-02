@@ -30,8 +30,8 @@ def gettop(request, toptype=0, sortcrit=0, page=1):
 
     base_query = TopUser.objects.exclude(user__is_superuser=True)
     allUsers = base_query.order_by('-points') #[(pageno-1)*PERPAGE:pageno*PERPAGE]
-    if (allUsers.count() == 0):
-        raise Http404
+    #if (allUsers.count() == 0):
+    #    raise Http404
     #if sortcritno == 1:
     #    allUsers = sorted(TopUser.objects.all(), key = lambda p: p.progress, reverse=True)[(pageno-1)*PERPAGE:pageno*PERPAGE]
     if sortcritno == 2:
