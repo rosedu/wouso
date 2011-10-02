@@ -2,6 +2,7 @@ import django
 from wouso.core.user.models import (PlayerArtifactAmount,
                                     PlayerSpellAmount,
                                     PlayerSpellDue)
+from wouso.core.magic.models import Spell
 
 register = django.template.Library()
 
@@ -23,11 +24,17 @@ def artifact(artifact):
         amount = None
     path = artifact.path
     title = artifact.title
+    group = unicode(artifact.group).lower()
+
+    if isinstance(artifact, Spell):
+        type = artifact.get_type_display()
+    else:
+        type = ''
 
     if path[0] == '/':
         html = '<img class="artifact" src="%s" alt="%s" title="%s" />' % (path, title, title)
     else:
-        html = '<div class="artifact artifact-%s" title="%s"></div>' % (path, title)
+        html = '<div class="artifact artifact-%s artifact-%s artifact-%s" title="%s"></div>' % (group, type, path, title)
 
     if amount is not None:
         return '<span class="artifact-container">%s<span class="sup">%d</span></span>' % (html, amount)
@@ -42,7 +49,7 @@ def artifact_full(artif):
 
 @register.simple_tag
 def spell_due(spell):
-    html = artifact(spell.spell)
+    html = artifact(spell.spell, type=spell.type)
 
     return '<span class="artifact-container" title="%s until %s">%s<span class="sup">*</span></span>' % \
                 (spell.spell.title, spell.due, html)
