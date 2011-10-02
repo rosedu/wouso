@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -66,6 +66,6 @@ def sidebar_widget(request):
 
     if qotd_user.has_answered:
         time_passed = datetime.now() - qotd_user.last_answered
-        if time_passed.total_seconds() > 120: # two minutes
+        if time_passed > timedelta(seconds=120): # two minutes
             return ''
     return render_string('qotd/sidebar.html', {'question': qotd, 'quser': qotd_user, 'qotd': QotdGame})
