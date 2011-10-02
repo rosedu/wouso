@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -63,4 +64,8 @@ def sidebar_widget(request):
     qotd = QotdGame.get_for_today()
     qotd_user = request.user.get_profile().get_extension(QotdUser)
 
+    if qotd_user.has_answered:
+        time_passed = datetime.now() - qotd_user.last_answered
+        if time_passed.total_seconds() > 120: # two minutes
+            return ''
     return render_string('qotd/sidebar.html', {'question': qotd, 'quser': qotd_user, 'qotd': QotdGame})
