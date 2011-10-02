@@ -17,7 +17,7 @@ from wouso.games.quest.models import Quest
 
 
 def dump_db():
-    dump_file = open('../db_dump.json', 'w')
+    dump_file = open('../contrib/db_dump.json', 'w')
     models_list = [User, Tag, Question, Answer, Group, Artifact, Quest]
     all_objects = []
     for model in models_list:
@@ -28,7 +28,7 @@ def dump_db():
 
 def restore_db():
     dec = json.JSONDecoder()
-    dump_file = open('../db_dump.json', 'r')
+    dump_file = open('../contrib/db_dump.json', 'r')
     data_list = dec.decode(dump_file.read())
     for elem in data_list:
         l = elem['model'].split('.')
