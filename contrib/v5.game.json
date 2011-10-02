@@ -1,0 +1,328 @@
+[
+ {
+  "pk": 1,
+  "model": "magic.group",
+  "fields": {
+   "name": "Spells"
+  }
+ },
+ {
+  "pk": 2,
+  "model": "magic.group",
+  "fields": {
+   "name": "Default"
+  }
+ },
+ {
+  "pk": 1,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "group": 2,
+   "name": "level-1",
+   "title": "Level 1"
+  }
+ },
+ {
+  "pk": 2,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "group": 2,
+   "name": "level-2",
+   "title": "Level 2"
+  }
+ },
+ {
+  "pk": 3,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "group": 2,
+   "name": "level-3",
+   "title": "Level 3"
+  }
+ },
+ {
+  "pk": 4,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "group": 2,
+   "name": "level-4",
+   "title": "Level 4"
+  }
+ },
+ {
+  "pk": 5,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "group": 2,
+   "name": "level-5",
+   "title": "Level 5"
+  }
+ },
+ {
+  "pk": 6,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "group": 2,
+   "name": "level-6",
+   "title": "Level 6"
+  }
+ },
+ {
+  "pk": 7,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "group": 2,
+   "name": "level-7",
+   "title": "Level 7"
+  }
+ },
+ {
+  "pk": 8,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "group": 1,
+   "name": "dispell",
+   "title": "Cur\u0103\u021b\u0103 toate vr\u0103jile"
+  }
+ },
+ {
+  "pk": 9,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "group": 1,
+   "name": "challenge-cannot-be-challenged",
+   "title": "Nu poate fi provocat"
+  }
+ },
+ {
+  "pk": 10,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "group": 1,
+   "name": "challenge-cannot-challenge",
+   "title": "Nu poate provoca"
+  }
+ },
+ {
+  "pk": 8,
+  "model": "magic.spell",
+  "fields": {
+   "price": 100.0,
+   "type": "o",
+   "description": "\u00cenl\u0103tur\u0103 toate vr\u0103jile active pe juc\u0103torul pe care este aplicat\u0103."
+  }
+ },
+ {
+  "pk": 9,
+  "model": "magic.spell",
+  "fields": {
+   "price": 10.0,
+   "type": "n",
+   "description": "Nu permite provocarea juc\u0103torului pe care este aplicat\u0103."
+  }
+ },
+ {
+  "pk": 10,
+  "model": "magic.spell",
+  "fields": {
+   "price": 10.0,
+   "type": "n",
+   "description": "Nu las\u0103 utilizatorul pe care este aplicat\u0103 s\u0103 provoace."
+  }
+ },
+ {
+  "pk": "points",
+  "model": "scoring.coin",
+  "fields": {
+   "owner": null,
+   "integer": false,
+   "name": "points"
+  }
+ },
+ {
+  "pk": "gold",
+  "model": "scoring.coin",
+  "fields": {
+   "owner": null,
+   "integer": true,
+   "name": "gold"
+  }
+ },
+ {
+  "pk": "qotd-ok",
+  "model": "scoring.formula",
+  "fields": {
+   "owner": "QotdGame",
+   "formula": "points=3",
+   "description": "Points earned on a correct answer"
+  }
+ },
+ {
+  "pk": "chall-won",
+  "model": "scoring.formula",
+  "fields": {
+   "owner": "ChallengeGame",
+   "formula": "points=3",
+   "description": "Points earned when winning a challenge"
+  }
+ },
+ {
+  "pk": "chall-lost",
+  "model": "scoring.formula",
+  "fields": {
+   "owner": "ChallengeGame",
+   "formula": "points=-1",
+   "description": "Points earned when losing a challenge"
+  }
+ },
+ {
+  "pk": "chall-draw",
+  "model": "scoring.formula",
+  "fields": {
+   "owner": "ChallengeGame",
+   "formula": "points=1",
+   "description": "Points earned when drawing a challenge"
+  }
+ },
+ {
+  "pk": "quest-ok",
+  "model": "scoring.formula",
+  "fields": {
+   "owner": "QuestGame",
+   "formula": "points={level}",
+   "description": "Points earned when finishing a level. Arguments: level."
+  }
+ },
+ {
+  "pk": "quest-finish-ok",
+  "model": "scoring.formula",
+  "fields": {
+   "owner": "QuestGame",
+   "formula": "points=10",
+   "description": "Bonus points earned when finishing the entire quest. No arguments."
+  }
+ },
+ {
+  "pk": "specialquest-passed",
+  "model": "scoring.formula",
+  "fields": {
+   "owner": "SpecialQuestGame",
+   "formula": "gold={value}",
+   "description": "Points earned when finishing a task. Arguments: value."
+  }
+ },
+ {
+  "pk": "buy-spell",
+  "model": "scoring.formula",
+  "fields": {
+   "owner": null,
+   "formula": "gold=-{price}",
+   "description": "Gold spent on spells"
+  }
+ },
+ {
+  "pk": "gold-points-rate",
+  "model": "scoring.formula",
+  "fields": {
+   "owner": null,
+   "formula": "points={gold}*9,gold=-{gold}",
+   "description": "Exchange gold in points"
+  }
+ },
+ {
+  "pk": "points-gold-rate",
+  "model": "scoring.formula",
+  "fields": {
+   "owner": null,
+   "formula": "points=-{points},gold={points}*0.1",
+   "description": "Exchange points in gold"
+  }
+ },
+ {
+  "pk": "disable-SpecialQuestGame",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "disable-Top",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "disable-Qproposal",
+  "model": "config.setting",
+  "fields": {
+   "value": "True"
+  }
+ },
+ {
+  "pk": "title",
+  "model": "config.setting",
+  "fields": {
+   "value": "World of USO v5"
+  }
+ },
+ {
+  "pk": "intro",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "hidden_footer",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "theme",
+  "model": "config.setting",
+  "fields": {
+   "value": "default"
+  }
+ },
+ {
+  "pk": "logo",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "disable-QotdGame",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "disable-ChallengeGame",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "disable-QuestGame",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ }
+]
