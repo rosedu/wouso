@@ -1,8 +1,9 @@
 {% extends base_template %}
 {% load artifacts %}
 {% load user %}
+{% load i18n %}
 
-{% block title %}Group: {{ group.name }}{% endblock %}
+{% block title %}{% trans 'Group' %}: {{ group.name }}{% endblock %}
 {% block scripts %}
     <script type="text/javascript" src="/static/js/tabs.js"></script>
     <script type="text/javascript" src="/static/js/jquery.flot.min.js"></script>
@@ -13,14 +14,14 @@
 <div class="profile">
     <div class="points">
         <div class="points-big">{{ group.live_points}}</div>
-        <div class="rank">{% if top.disabled %}-{% else %}rank: {{ top.position }}{% endif %}</div>
+        <div class="rank">{% if top.disabled %}-{% else %}{% trans 'rank' %}: {{ top.position }}{% endif %}</div>
     </div>
 
     <h2>{{ group }} {% if group.title != '' %}<small>[{{ group.name }}]</small>{% endif %}</h2>
-    <h3>{% if group.gclass == 0 %}Group{% else %}
-        {% if group.gclass == 1 %}Series{% endif %}
+    <h3>{% if group.gclass == 0 %}{% trans 'Group' %}{% else %}
+        {% if group.gclass == 1 %}{% trans 'Series' %}{% endif %}
         {% endif %}
-        {% if group.parent %}part of {% player_group group.parent %}{% endif %}
+        {% if group.parent %}{% trans 'part of' %} {% player_group group.parent %}{% endif %}
     </h3>
 
     <div class="actions">
@@ -30,29 +31,29 @@
     </div>
 
     <ul class="tabs">
-        <li><a href="#tab-1">Top users</a></li>
-        <li><a href="#tab-2">Activity</a></li>
-        <li><a href="#tab-3">Evolution</a></li>
+        <li><a href="#tab-1">{% trans 'Top users' %}</a></li>
+        <li><a href="#tab-2">{% trans 'Activity' %}</a></li>
+        <li><a href="#tab-3">{% trans 'Evolution' %}</a></li>
     </ul>
 
     <div class="tab_container">
         <div id="tab-1" class="tab_content">
         <div class="subgroups">
         {% if group.children %}
-        <h4>Top subgroups</h4>
+        <h4>{% trans 'Top subgroups' %}</h4>
         <ol class="top">{% for g in subgroups %}
             <li>{% player_group g %} <span class="points">{{ g.points }}</span></li>
             {% endfor %}
         </ol>
         {% endif %}
         {% if group.sisters %}
-        <h4>Top same kind</h4>
+        <h4>{% trans 'Top same kind' %}</h4>
         <ol class="top">{% for g in sistergroups %}
                 <li>{% player_group g %} <span class="points">{{ g.points }}</span></li>
             {% endfor %}
         </ol>
 
-        <a href="{% url wouso.interface.profile.views.groups_index %}">View all</a>
+        <a href="{% url wouso.interface.profile.views.groups_index %}">{% trans 'View all' %}</a>
         {% endif %}
         </div>
 
@@ -71,14 +72,14 @@
 
         <div id="tab-3" class="tab_content">
             <div class="subgroups">
-                <h3>Rank</h3>
-                <p>Overall: <span class="points">{{ top.position }}</span></p>
+                <h3>{% trans 'Rank' %}</h3>
+                <p>{% trans 'Global' %}: <span class="points">{{ top.position }}</span></p>
                 {% if group.parent %}
-                <p>In {{group.parent}}: <span class="points">{{ top.position_in_parent }}</span></p>
+                <p>{{group.parent}}: <span class="points">{{ top.position_in_parent }}</span></p>
                 {% endif %}
                 
-                <h3>Position evolution</h3>
-                <p>Position evolution compared with groups of the same kind.</p>
+                <h3>{% trans 'Position evolution' %}</h3>
+                <p>{% trans 'Position evolution compared with groups of the same kind.' %}</p>
                 <div id="legend"></div>
             </div>
             <div id="graf1" class="graf placeholder"></div>

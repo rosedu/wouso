@@ -15,12 +15,12 @@
 <div class="profile">
     <div class="points">
         <div class="points-big">{{ profile.points}}</div>
-        <div class="rank">{% if top.disabled %}-{% else %}rank: {{ top.position }}{% endif %}</div>
+        <div class="rank">{% if top.disabled %}-{% else %}{% trans 'rank' %}: {{ top.position }}{% endif %}</div>
     </div>
 
     <img src="{{ avatar }}" class="avatar" />
     <h2>{{ profile }}</h2>
-    <h3>{% artifact_full profile.level %} {% if profile.proximate_group %}Group: {% player_group profile.proximate_group %}{% endif %}</h3>
+    <h3>{% artifact_full profile.level %} {% if profile.proximate_group %}{% trans 'Group' %}: {% player_group profile.proximate_group %}{% endif %}</h3>
     {% if profile.artifact_amounts.all %}
         <ul class="artifacts" id="player-artifacts">
         {% for a in profile.artifact_amounts.all %}
