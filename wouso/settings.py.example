@@ -81,10 +81,11 @@ SECRET_KEY = 'l*a)xet2kz8!@p(p@op41ce&#1u7i_+^i1d*fr53wak9)tyg!k'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
+    'wouso.interface.loaders.Loader',
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
+    #     'django.template.loaders.eggs.Loader',
+    )
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -96,7 +97,7 @@ MIDDLEWARE_CLASSES = (
     # 'djangologdb.middleware.LoggingMiddleware',
     # for last 10 minutes to work
     'wouso.middleware.Seen',
-)
+    )
 AUTHENTICATION_BACKENDS = (
     #'wouso.middleware.ldap_connection.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
@@ -107,6 +108,8 @@ ROOT_URLCONF = 'wouso.interface.urls'
 TEMPLATE_DIRS = (
     os.path.normpath(os.path.dirname(__file__) + "/resources/templates/"),
 )
+THEMES_ROOT = os.path.normpath(os.path.dirname(__file__) + "/resources/static/themes/")
+
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',
