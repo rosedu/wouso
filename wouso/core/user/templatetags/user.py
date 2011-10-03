@@ -2,6 +2,7 @@ from md5 import md5
 from django import template
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
+from wouso.core.user.models import Player
 from wouso.core.magic.templatetags.artifacts import artifact
 register = template.Library()
 
@@ -10,6 +11,9 @@ def player(user):
     """ Render player name and level image with link to player's profile """
     if isinstance(user, str):
         return ''
+
+    if isinstance(user, int):
+        user = Player.objects.get(pk=user)
 
     link = reverse('wouso.interface.profile.views.user_profile', args=(user.id,))
 

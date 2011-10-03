@@ -75,7 +75,7 @@
     </div>
 
     <div id="content">
-    <div id="ajax-message"></div>
+    <div id="ajax-message">{%  if message %}<p class="ok">{{ message }}</p>{% endif %}{% if error %}<p class="wrong">{{ error }}</p>{% endif %}</div>
     {% block content %}
     {% endblock %}
     </div>

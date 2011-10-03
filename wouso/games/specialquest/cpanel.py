@@ -55,8 +55,25 @@ def manage_player(request, player_id):
     player = player.get_extension(SpecialQuestUser)
     tasks_not_done = SpecialQuestTask.objects.exclude(id__in=player.done_tasks.all().values('id')).all()
 
+    # TODO: use smth like django-flash for this
+    message, error = '', ''
+
+    if request.method == "POST":
+        # do bonuses
+        try:
+            amount = int(request.POST.get('gold', 0))
+        except ValueError:
+            amount = 0
+        if amount > 0:
+            scoring.score(player, None, 'bonus-gold', external_id=request.user.get_profile().id, gold=amount)
+            message = 'Successfully given bonus'
+        else:
+            error = 'Invalid amount'
+
+    bonuses = scoring.History.objects.filter(user=player, formula__id='bonus-gold')
+
     return render_to_response('specialquest/cpanel_manage.html',
-                    dict(player=player, tasks_not_done=tasks_not_done),
+                    dict(player=player, tasks_not_done=tasks_not_done, message=message, error=error, bonuses=bonuses),
                     context_instance=RequestContext(request))
 
 @permission_required('specialquest.change_specialquest')

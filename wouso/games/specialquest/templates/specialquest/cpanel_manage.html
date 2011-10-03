@@ -27,4 +27,19 @@ Not done tasks:
 <li class="empty">None yet</li>
   {% endfor %}
 </ul>
+
+<h4>Give bonus:</h4>
+    <form action="" method="post">
+    Gold: <input class="big" type="text" size="3" value="0" name="gold">
+    <div class="actions">
+        <button type="submit">Bonus him!</button>
+    </div>
+    {% csrf_token %}
+    </form>
+<p>History:</p>
+<ul>
+    {% for bonus in bonuses %}
+    <li>{{ bonus.timestamp }} - {{ bonus.amount }} {{ bonus.coin }} from {% player bonus.external_id %}</li>
+    {% endfor %}
+</ul>
 {% endblock %}

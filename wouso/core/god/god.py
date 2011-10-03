@@ -27,6 +27,8 @@ class DefaultGod:
             owner=None,
             description='Exchange points in gold')
         )
+        fs.append(Formula(id='bonus-gold', formula='gold={gold}', owner=None,
+            description='Give bonus gold to the poor people'))
         return fs
 
     def get_user_level(self, level_no, player=None):
