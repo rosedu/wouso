@@ -6,7 +6,7 @@
 {% block title %}{% trans 'Cast' %}{% endblock %}
 
 {% block content %}
-{% if not user.get_profile.spells_collection.all.count %}
+{% if not player.spells_collection.all.count %}
 <div class="wrong error">{% trans "You don't have any spells to cast. Buy some at the market place." %}
 <a href="{% url market_home %}">{% trans 'Market' %}</a>
 </div>
@@ -16,7 +16,7 @@
 {% csrf_token %}
 {% trans 'Cast: ' %}<select name="spell" id="spell-selector">
         <option></option>
-        {% for s in user.get_profile.spells_available.all %}<option value="{{ s.spell.id }}">{{ s.spell.title }} ({{ s.amount }})</option>
+        {% for s in player.spells_available.all %}<option value="{{ s.spell.id }}">{{ s.spell.title }} ({{ s.amount }})</option>
         {% endfor %}
       </select>
 {% trans 'on' %} {% player destination %}

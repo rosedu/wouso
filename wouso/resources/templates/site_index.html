@@ -6,15 +6,15 @@
 {% block content %}
     {% if is_homepage %}
     <div id="right-sidebar">
-        <h2>{{ user.get_profile }}</h2>
+        <h2>{{ player }}</h2>
         <div class="centered">
-            <a href="{% url player_profile user.get_profile.id %}"><img src="{% player_avatar user.get_profile %}" class="avatar no-float" /></a>
-            <h4>{% artifact user.get_profile.level %} {{ user.get_profile.level.title }}</h4>
-            <span>{% coin_amount user.get_profile.points %}</span>
+            <a href="{% url player_profile player.id %}"><img src="{% player_avatar player %}" class="avatar no-float" /></a>
+            <h4>{% artifact player.level %} {{ player.level.title }}</h4>
+            <span>{% coin_amount player.points %}</span>
             <div class="progress-bar">
-                <div class="progress" style="width: {{ user.get_profile.level_progress.percent|floatformat }}%"></div>
+                <div class="progress" style="width: {{ player.level_progress.percent|floatformat }}%"></div>
             </div>
-            <div class="second">{{ user.get_profile.level_progress.points_left }} {% trans 'until next level' %}</div>
+            <div class="second">{{ player.level_progress.points_left }} {% trans 'until next level' %}</div>
         </div>
         <h3>{% trans 'Your rank' %}</h3>
         <p>{% trans 'Global' %}: <span class="points">{{ top.position }}</span></p>
@@ -22,9 +22,9 @@
         <p>{{ g }}: <span class="points">{{ g.position }}</span></p>
         {% endfor %}
 
-        {% if user.get_profile.artifact_amounts.all %}
+        {% if player.artifact_amounts.all %}
         <h3>{% trans 'Artifacts' %}</h3>
-        {% for a in user.get_profile.artifact_amounts.all %}
+        {% for a in player.artifact_amounts.all %}
             {% artifact a %}
         {% empty %}
         {% trans 'None.' %}
@@ -33,25 +33,25 @@
 
     {% if not config_disable_Magic %}
         <h3>{% trans 'Spells' %}</h3>
-        {% if user.get_profile.spell_amounts.all %}
+        {% if player.spell_amounts.all %}
         {% trans 'Available' %}:
-        {% for s in user.get_profile.spell_amounts.all %}
+        {% for s in player.spell_amounts.all %}
             {% artifact s %}
         {% empty %}
         {% trans 'None.' %}
         {% endfor %} <br/>
         {% endif %}
 
-        {% if user.get_profile.spells %}
+        {% if player.spells %}
         {% trans 'Cast on me' %}:
-        {% for s in user.get_profile.spells %}
+        {% for s in player.spells %}
             {% spell_due s %}
         {% empty %}
         {% trans 'None.' %}
         {% endfor %} <br/>
         {% endif %}
         <div class="right">
-            {% if user.get_profile.spells_cast or user.get_profile.spells %}
+            {% if player.spells_cast or player.spells %}
             <a href="{% url magic_summary %}">{% trans 'Summary' %}</a>
             {% endif %}
             <a href="{% url market_home %}">{% trans 'Market' %}</a>

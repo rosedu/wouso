@@ -22,7 +22,7 @@
         </div>
         <div id="mobile-topbar">
             {% if user.is_authenticated %}
-                <span class="bold">{% player_simple user.get_profile %}</span> |
+                <span class="bold">{% player_simple player %}</span> |
                 {% autoescape off %}{{ header }}{% endautoescape %}
                 {% if user.is_staff %}
                 <a href="{% url wouso.interface.cpanel.views.dashboard %}">CPanel</a> |

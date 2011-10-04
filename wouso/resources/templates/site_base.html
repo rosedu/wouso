@@ -29,7 +29,7 @@
     <div id="header">
         <div id="topbar">
             {% if user.is_authenticated %}
-                <span class="bold">{% player user.get_profile %}</span> |
+                <span class="bold">{% player player %}</span> |
                 {% autoescape off %}{{ header }}{% endautoescape %}
                 {% if user.is_staff %}
                 <a href="{% url wouso.interface.cpanel.views.dashboard %}">CPanel</a> |
@@ -40,8 +40,8 @@
             {% endif %}
             {% if user.is_authenticated %}
             <div class="second">
-                {% coin_amount user.get_profile.points %}
-                {% coin_amount user.get_profile.coins.gold 'gold' %}
+                {% coin_amount player.points %}
+                {% coin_amount player.coins.gold 'gold' %}
             </div>
             {% endif %}
         </div>

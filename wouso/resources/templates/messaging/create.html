@@ -1,11 +1,12 @@
 {% extends base_template %}
 {% load user %}
+{% load i18n %}
 
-{% block title %}Create message{% endblock %}
+{% block title %}{% trans 'Create message' %}{% endblock %}
 
 {% block content %}
 
-<h2>Create message</h2>
+<h2>{% trans 'Create message' %}</h2>
 
 <form id="msg" onsubmit="messagingSubmit();" method="post">
     <table>
@@ -18,7 +19,7 @@
                 <input type="text" id="to_input" class="big" /> <div id="to_container"></div>
             {% endif %}
     </td></tr>
-    <tr><td>Subject: </td><td valign="top">
+    <tr><td>{% trans 'Subject' %}: </td><td valign="top">
             <input type="text" id="subject" name="subject" class="big" size="50"/>
     </td></tr>
     <tr><td valign="top">Text:</td>
@@ -28,8 +29,8 @@
     </tr>
     </table>
     <div class="actions">
-        <a href="{% url wouso.interface.messaging.views.home %}">Cancel</a>
-        <button type="submit" class="default">Send</button>
+        <a href="{% url wouso.interface.messaging.views.home %}">{% trans 'Cancel' %}</a>
+        <button type="submit" class="default">{% trans 'Send' %}</button>
     </div>
     {% csrf_token %}
 </form>

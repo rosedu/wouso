@@ -40,7 +40,7 @@
                 <a href="{% url market_buy s.id %}" class="button">{% trans 'Buy' %}</a>
             </td>
             <td>
-                {% spell_stock user.get_profile s %}
+                {% spell_stock player s %}
             </td>
         </tr>
     </div>

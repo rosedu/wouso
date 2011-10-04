@@ -99,6 +99,9 @@ def context(request):
         if theme in get_themes():
             settings['config_theme'] = theme
 
+    # shorthand user.get_profile
+    settings['player'] = request.user.get_profile()
+
     # do not use minidetector for now
     mobile = detect_mobile(request)
     if mobile:

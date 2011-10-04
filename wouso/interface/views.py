@@ -89,7 +89,7 @@ def instantsearch(request):
         users = User.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query))
         user_ids = [u.id for u in users]
         searchresults = Player.objects.filter(user__in=user_ids)
-        return render_to_response('instant_search_results.txt',
+        return render_to_response('interface/instant_search_results.txt',
                                   {'searchresults': searchresults},
                                   context_instance=RequestContext(request))
 
@@ -109,7 +109,7 @@ def searchone(request):
                 if name == query:
                     result.append(u)
             if result:
-                return render_to_response('search_one_results.txt',
+                return render_to_response('interface/search_one_results.txt',
                                           {'results': result},
                                           context_instance=RequestContext(request))
         except Exception as e:
