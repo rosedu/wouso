@@ -100,7 +100,7 @@ def context(request):
             settings['config_theme'] = theme
 
     # shorthand user.get_profile
-    settings['player'] = request.user.get_profile()
+    settings['player'] = request.user.get_profile() if request.user.is_authenticated() else None
 
     # do not use minidetector for now
     mobile = detect_mobile(request)
