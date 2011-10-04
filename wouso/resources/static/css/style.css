@@ -201,7 +201,7 @@ img.avatar {
     margin: 4px 4px 4px 0px;
     border: 2px solid #aaa;
 }
-.profile h2, .profile h3 {
+.profile h2, .profile h3, .profile h4 {
     margin: 1px;
 }
 .profile .tabs, .profile .tab_content {

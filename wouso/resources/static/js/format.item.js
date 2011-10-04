@@ -5,7 +5,11 @@ function formatItem( row ) {
         row[1] + " puncte</small></i>" + "<span class='hidden'>:" + row[6] + "</span>";
 }
 function selectItem(li) {
-    $("#nume_user").focus();
+    var text = li.innerHTML;
+    var id = text.substr(text.lastIndexOf(":") + 1);
+    id = id.substr(0, id.indexOf("<"));
+
+    document.location = '/player/' + id;
 }
 
 function selectItemMessaging(li) {
