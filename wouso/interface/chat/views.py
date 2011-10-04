@@ -6,6 +6,7 @@ from django.template import RequestContext
 from django.utils import simplejson
 from models import *
 from datetime import datetime, timedelta
+from wouso.core.config.models import BoolSetting
 
 def create_room(roomName, deletable=False, renameable=False):
     ''' creates a new chatroom and saves it '''
@@ -54,6 +55,9 @@ def serve_message(user):
 
 @login_required
 def index(request):
+    if BoolSetting.get('disable-Chat').get_value():
+        return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
+
     user = request.user.get_profile()
     return render_to_response('chat.html', {'user': user},
             context_instance=RequestContext(request))
