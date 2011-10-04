@@ -6,6 +6,14 @@ from wouso.interface.activity import signals
 from wouso.core.god import God
 from wouso.core.magic.models import Artifact, Spell
 
+class GroupArtifactAmount(models.Model):
+    """ Tie artifact and amount to the owner group """
+    class Meta:
+        unique_together = ('group', 'artifact')
+    group = models.ForeignKey('PlayerGroup')
+    artifact = models.ForeignKey(Artifact)
+    amount = models.IntegerField(default=1)
+
 class PlayerGroup(models.Model):
     """ Group players together in a hierchical way """
     # TODO: check if the perms Group linking is of any use
@@ -14,6 +22,8 @@ class PlayerGroup(models.Model):
     title = models.CharField(max_length=100, default='', blank=True)
     gclass = models.IntegerField(default=0)
     parent = models.ForeignKey('PlayerGroup', default=None, null=True, blank=True)
+
+    artifacts = models.ManyToManyField(Artifact, blank=True, through=GroupArtifactAmount)
 
     # used only for sorting and position
     points = models.FloatField(default=0)
