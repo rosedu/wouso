@@ -48,9 +48,6 @@
             <a class="button button-min" href="{% url magic_cast profile.id%}" title="{% trans 'Cast a spell on this player' %}">✤</a>
 
         {% autoescape off %}{{ profile_actions }}{% endautoescape %}
-        {% if profile.user.id != user.id %}
-            <a class="button ajaxify" href="{% url games.challenge.views.launch profile.id %}">Challenge!</a>
-        {% endif %}
     </div>
 
     {% if user.is_superuser %}

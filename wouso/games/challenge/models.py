@@ -5,6 +5,7 @@ import pickle as pk
 from django.db import models
 from django.db.models import Q, Max
 from django.utils.translation import ugettext_noop
+from django.core.urlresolvers import reverse
 from wouso.core.user.models import Player, InsufficientAmount
 from wouso.core.qpool.models import Question
 from wouso.core.qpool import get_questions_with_category
@@ -439,6 +440,13 @@ class ChallengeGame(Game):
             from views import sidebar_widget
             return sidebar_widget(request)
         return None
+
+    @classmethod
+    def get_profile_actions(kls, request, player):
+        url = reverse('wouso.games.challenge.views.launch', args=(player.id,))
+        if request.user.get_profile().id != player.id:
+            return '<a class="button ajaxify" href="%s">Challenge!</a>' % url
+        return ''
 
 # Hack for having participants in sync
 def challenge_post_delete(sender, instance, **kwargs):
