@@ -1,14 +1,40 @@
 {% extends base_template %}
 {% load i18n %}
+{% load user %}
 {% block title %}Challenge #{{ challenge.id }}{% endblock %}
 
 {% block scripts %}
+    {{ block.super }}
     <script type="text/javascript" src="/static/js/timer.js"></script>
 {% endblock %}
 {% block content %}
 
 <h2>{% trans 'Challenge' %}</h2>
 
+<div class="vs">
+    <div class="to">
+        <img class="avatar" src="{% player_avatar challenge.user_to.user %}" />
+        <h3>{{ challenge.user_to.user  }}</h3>
+    </div>
+    <div class="from">
+        <img class="avatar" src="{% player_avatar challenge.user_from.user %}" />
+        <h3>{{ challenge.user_from.user  }}</h3>
+    </div>
+
+    <div class="second">
+        {% ifequal challenge.user_to.user challenge_user %}
+        {% blocktrans with challenge.user_from as c_from and challenge.date as date %}
+        {{ c_from}} has challenged you on {{ date }}.
+        {% endblocktrans %}
+        {% endifequal %}
+
+        {% ifequal challenge.user_from.user challenge_user %}
+        {% blocktrans with challenge.user_to as c_to and challenge.date as date %}
+        You challenged {{ c_to }} on {{ date }}.
+        {% endblocktrans %}
+        {% endifequal %}
+    </div>
+</div>
 <div id="timer" class="timer timer-big">
     {{ seconds_left }} seconds
 </div>
@@ -17,18 +43,9 @@
     $(document).ready(function () { update('timer');});
 </script>
 
-<div class="second">
-    {% ifequal challenge.user_to.user challenge_user %}
-    {{ challenge.user_from }} has challenged you on {{ challenge.date }}.
-    {% endifequal %}
-
-    {% ifequal challenge.user_from.user challenge_user %}
-    You challenged {{ challenge.user_to }} on {{ challenge.date }}.
-    {% endifequal %}
-</div>
 
 <form action="{% url games.challenge.views.challenge challenge.id %}" method="post" id="challenge_form">
-    <ol>
+    <ol id="questions-list">
     {% for field in form.visible_fields %}
         <li>
         <div class="question">
@@ -50,7 +67,7 @@
     </ol>
 {% csrf_token %}
 <div class="actions">
-    <button type="submit">Submit</button>
+    <button type="submit">{% trans 'Submit' %}</button>
 </div>
 </form>
 {% endblock %}

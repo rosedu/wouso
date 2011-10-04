@@ -418,9 +418,26 @@ ul.simple {
     padding-left: 0px;
     list-style-type: none;
 }
-div.question {
+ol#questions-list {
 }
-
+.vs {
+    margin: 0 30px;
+    text-align:center;
+}
+.vs div {
+    text-align: center;
+    width: 100px;
+}
+.vs .second {
+    width: auto;
+    margin-top: -50px;
+}
+.vs .to {
+    float:right;
+}
+.vs .left {
+    float: left;
+}
 /* home-page */
 div.progress-bar {
     margin:  2px;
@@ -458,4 +475,9 @@ div.progress {
 }
 .artifact-positive {
     background:url(../art/default/spell-positive.png) center left no-repeat;
+}
+
+/* top */
+td div.artifacts {
+    float: right;
 }
