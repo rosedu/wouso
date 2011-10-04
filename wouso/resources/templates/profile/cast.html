@@ -16,7 +16,7 @@
 {% csrf_token %}
 {% trans 'Cast: ' %}<select name="spell" id="spell-selector">
         <option></option>
-        {% for s in user.get_profile.spells_collection.all %}<option value="{{ s.id }}">{{ s.title }}</option>
+        {% for s in user.get_profile.spells_available.all %}<option value="{{ s.spell.id }}">{{ s.spell.title }} ({{ s.amount }})</option>
         {% endfor %}
       </select>
 {% trans 'on' %} {% player destination %}
@@ -31,7 +31,7 @@
 function days_select(days) {
     if (days == 1)
         return '<input type="hidden" name="days" value="1" />';
-    html = '{% trans 'for' %} <select name="days"><option>0</option>';
+    html = '{% trans 'for' %} <select name="days">';
     for (i = 1; i <= days; i++)
         html += '<option>' + i + '</option>';
     html += '</select> {% trans 'days' %}';

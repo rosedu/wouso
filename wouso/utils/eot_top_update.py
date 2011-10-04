@@ -68,6 +68,12 @@ def main():
         if not c.check_timedelta(c.user_to.user):
             c.expired(c.user_to.user)
 
+    from wouso.core.user.models import PlayerSpellDue
+    spells = PlayerSpellDue.get_expired(today)
+    print 'Updating expired spells (%d)' % spells.count()
+    for s in spells:
+        s.delete()
+
     print 'Done.'
 
 if __name__ == '__main__':

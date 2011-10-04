@@ -91,6 +91,10 @@ class PlayerSpellDue(models.Model):
     source = models.ForeignKey('Player', related_name='spell_source')
     due = models.DateTimeField()
 
+    @staticmethod
+    def get_expired(date):
+        return PlayerSpellDue.objects.filter(due__lte=date)
+
     def __unicode__(self):
         return u"%s casted on %s until %s [%s]" % (self.spell, self.player, self.due, self.source)
     
@@ -128,7 +132,11 @@ class Player(models.Model):
     @property
     def spells_cast(self):
         return PlayerSpellDue.objects.filter(source=self)
-        
+
+    @property
+    def spells_available(self):
+        return PlayerSpellAmount.objects.filter(player=self)
+
     @property
     def level(self):
         """ Return an artifact object for the current level_no.
