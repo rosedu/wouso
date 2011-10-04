@@ -3,6 +3,7 @@ from django import template
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from wouso.core.user.models import Player
+from wouso.core.scoring.models import Coin
 from wouso.core.magic.templatetags.artifacts import artifact
 register = template.Library()
 
@@ -52,3 +53,17 @@ def player_avatar(player_obj):
     avatar = "http://www.gravatar.com/avatar/%s.jpg?d=monsterid" % md5(player_obj.user.email).hexdigest()
 
     return avatar
+
+@register.simple_tag
+def coin_amount(amount, coin=None):
+    if coin == None:
+        coin = Coin.get('points')
+    else:
+        coin = Coin.get(coin)
+
+    return '<div class="coin-amount coin-%s" title="%s">%s</div>' % (coin.name, coin.name, amount)
+
+@register.simple_tag
+def spell_stock(player, spell):
+    stock = player.spell_stock(spell)
+    return 'x%d' % stock if stock > 0 else '-'

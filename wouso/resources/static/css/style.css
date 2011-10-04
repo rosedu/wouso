@@ -151,9 +151,6 @@ ol.top {
     height: 24px;
     display: inline-block;
 }
-.artifact-default-level-1 {
-    background-image:url(../art/default/level-1.png);
-}
 .artifact-container {
     margin: 0px;
     padding:  0px;
@@ -434,4 +431,31 @@ div.progress-bar {
 div.progress {
     height: 4px;
     background-color: green;
+}
+/* artifacts and coins */
+.artifact-default-level-1 {
+    background-image:url(../art/default/level-1.png);
+}
+.coin-amount {
+    display: inline-block;
+    padding-left: 20px;
+    line-height: 16px;
+}
+.coin-points {
+    background:url(../art/default/point.png) center left no-repeat;
+}
+.coin-gold {
+    background:url(../art/default/gold.png) center left no-repeat;
+}
+.artifact-spells {
+    background-color: transparent !important;
+}
+.artifact-neutral {
+    background:url(../art/default/spell-neutral.png) center left no-repeat;
+}
+.artifact-negative{
+    background:url(../art/default/spell-negative.png) center left no-repeat;
+}
+.artifact-positive {
+    background:url(../art/default/spell-positive.png) center left no-repeat;
 }

@@ -253,6 +253,13 @@ class Player(models.Model):
         except:
             return False
 
+    def spell_stock(self, spell):
+        try:
+            psa = PlayerSpellAmount.objects.get(player=self, spell=spell)
+        except PlayerSpellAmount.DoesNotExist:
+            return 0
+        return psa.amount
+
     # special:
 
     def get_extension(self, cls):

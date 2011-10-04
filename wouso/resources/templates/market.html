@@ -1,6 +1,7 @@
 {% extends base_template %}
 {% load i18n %}
 {% load artifacts %}
+{% load user %}
 {% block title %}{% trans 'Market' %}{% endblock %}
 {% block scripts %}
     <script type="text/javascript" src="/static/js/tabs.js"></script>
@@ -8,7 +9,6 @@
 {% endblock %}
 
 {% block content %}
-    <span class="points bold">{{ user.get_profile.coins.gold }} {% trans 'gold' %}</span>
     <h2>{% trans 'Market' %}</h2>
 
 <ul class="tabs">
@@ -19,19 +19,35 @@
 <div class="tab_container">
     <div id="spells" class="tab_content">
         <br/>
+    <table>
     {% for s in spells %}
     <div style="clear:both">
-        <span class="points">
-        <a href="{% url market_buy s.id %}" class="button">{% trans 'Buy' %}</a>
-        </span>
-        <h3>{% artifact s %}{{ s.title }}</h3>
-        <p>{{ s.description }}</p>
-        <div class="second">{{ s.price|floatformat }} {% trans 'gold' %}
-        </div>
+        <tr>
+            <td width="100%">
+                <h3>{% artifact s %}{{ s.title }}</h3>
+                <p>{{ s.description }}</p>
+                </div>
+            </td>
+            <td nowrap="nowrap">
+                {% if s.due_days > 1 %}
+                    {{ s.due_days }} {% trans 'days' %}
+                {% endif %}
+            </td>
+            <td align="right" >
+                {% coin_amount s.price 'gold' %}
+            </td>
+            <td>
+                <a href="{% url market_buy s.id %}" class="button">{% trans 'Buy' %}</a>
+            </td>
+            <td>
+                {% spell_stock user.get_profile s %}
+            </td>
+        </tr>
     </div>
     {% empty %}
         {% trans 'Nothing' %}.
     {% endfor %}
+    </table>
     </div>
 
     <div id="exchange" class="tab_content">

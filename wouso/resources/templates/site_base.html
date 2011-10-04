@@ -38,6 +38,12 @@
             {% else %}
             {% trans 'Anonimous' %}, <a href="{% url django.contrib.auth.views.login %}">{% trans "Login" %} &raquo;</a>
             {% endif %}
+            {% if user.is_authenticated %}
+            <div class="second">
+                {% coin_amount user.get_profile.points %}
+                {% coin_amount user.get_profile.coins.gold 'gold' %}
+            </div>
+            {% endif %}
         </div>
         <div id="logo">
             <a href="{% url interface.views.homepage %}" id="logoa" title="{{config_title}}"></a>

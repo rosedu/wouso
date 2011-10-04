@@ -10,7 +10,7 @@
         <div class="centered">
             <a href="{% url player_profile user.get_profile.id %}"><img src="{% player_avatar user.get_profile %}" class="avatar no-float" /></a>
             <h4>{% artifact user.get_profile.level %} {{ user.get_profile.level.title }}</h4>
-            <span>{{ user.get_profile.points }} p</span>
+            <span>{% coin_amount user.get_profile.points %}</span>
             <div class="progress-bar">
                 <div class="progress" style="width: {{ user.get_profile.level_progress.percent|floatformat }}%"></div>
             </div>
