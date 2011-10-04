@@ -1,12 +1,14 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from hashlib import md5
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.http import Http404, HttpResponseRedirect
+from django.core import serializers
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+from django.utils.translation import ugettext as _
 from wouso.core.user.models import Player, PlayerGroup, PlayerSpellDue
 from wouso.core.scoring.models import History
 from wouso.core.magic.models import Spell
@@ -108,15 +110,25 @@ def groups_index(request):
 def magic_cast(request, destination=None, spell=None):
     player = request.user.get_profile()
     destination = get_object_or_404(Player, pk=destination)
-    due = datetime.now() # TODO fixme
+
+    error = ''
 
     if request.method == 'POST':
         spell = get_object_or_404(Spell, pk=request.POST.get('spell', 0))
-        destination.cast_spell(spell, source=player, due=due)
-        return HttpResponseRedirect(reverse('wouso.interface.profile.views.user_profile', args=(destination.id,)))
+        try:
+            days = int(request.POST.get('days', 0))
+        except ValueError:
+            pass
+        else:
+            if (days > spell.due_days) or ((spell.due_days > 0) and (days < 1)):
+                error = _('Invalid number of days')
+            else:
+                due = datetime.now() + timedelta(days=days)
+                destination.cast_spell(spell, source=player, due=due)
+                return HttpResponseRedirect(reverse('wouso.interface.profile.views.user_profile', args=(destination.id,)))
 
     return render_to_response('profile/cast.html',
-                              {'destination': destination},
+                              {'destination': destination, 'error': error},
                               context_instance=RequestContext(request))
 
 @login_required
@@ -130,3 +142,13 @@ def magic_summary(request):
                               {'cast': cast_spells,
                               'player': player},
                               context_instance=RequestContext(request))
+
+@login_required
+def magic_spell(request):
+    try:
+        spell = int(request.GET.get('id', None))
+    except:
+        raise Http404
+    spell = get_object_or_404(Spell, pk=spell)
+    
+    return HttpResponse(serializers.serialize('json', (spell,)))

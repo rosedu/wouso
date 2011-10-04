@@ -41,8 +41,9 @@ class Artifact(models.Model):
         return u"%s [%s]" % (self.name, self.group.name)
 
 class Spell(Artifact):
-    TYPES = (('o', 'neutre'), ('p', 'positive'), ('n', 'negative'))
+    TYPES = (('o', 'neutral'), ('p', 'positive'), ('n', 'negative'))
 
     description = models.TextField() # Extended description shown in the market place
     type = models.CharField(max_length=1, choices=TYPES, default='o')
-    price = models.FloatField(default=10) # Spell price in gold.
+    price = models.FloatField(default=10)       # Spell price in gold.
+    due_days = models.IntegerField(default=3) # How many days may the spell be active

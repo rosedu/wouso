@@ -49,7 +49,7 @@ def artifact_full(artif):
 
 @register.simple_tag
 def spell_due(spell):
-    html = artifact(spell.spell, type=spell.type)
+    html = artifact(spell.spell)
 
     return '<span class="artifact-container" title="%s until %s">%s<span class="sup">*</span></span>' % \
                 (spell.spell.title, spell.due, html)

@@ -6,25 +6,51 @@
 {% block title %}{% trans 'Cast' %}{% endblock %}
 
 {% block content %}
-{% if error %}
-<div class="wrong error">{{ error }}</div>
+{% if not user.get_profile.spells_collection.all.count %}
+<div class="wrong error">{% trans "You don't have any spells to cast. Buy some at the market place." %}
+<a href="{% url market_home %}">{% trans 'Market' %}</a>
+</div>
 {% else %}
-    {% if not user.get_profile.spells_collection.all.count %}
-    <div class="wrong error">{% trans "You don't have any spells to cast. Buy some at the market place." %}
-    <a href="{% url market_home %}">{% trans 'Market' %}</a>
-    </div>
-    {% else %}
-    <form method="post">
-    {% csrf_token %}
-    {% trans 'Cast: ' %}<select name="spell">
-            {% for s in user.get_profile.spells_collection.all %}<option value="{{ s.id }}">{{ s.title }}</option>
-            {% endfor %}
-          </select>
-    {% trans 'on' %} {% player destination %}!
-    <div class="actions">
-    <button type="submit" class="default">{% trans 'Cast' %}</button>
-    </div>
-    </form>
-    {% endif %}
+<h2>{% trans 'Cast' %}</h2>
+<form method="post">
+{% csrf_token %}
+{% trans 'Cast: ' %}<select name="spell" id="spell-selector">
+        <option></option>
+        {% for s in user.get_profile.spells_collection.all %}<option value="{{ s.id }}">{{ s.title }}</option>
+        {% endfor %}
+      </select>
+{% trans 'on' %} {% player destination %}
+<span id="more"></span>
+!
+<div class="actions">
+<button type="submit" class="default" id="submit" disabled>{% trans 'Cast' %}</button>
+</div>
+</form>
 {% endif %}
+<script language="JavaScript" type="text/javascript">
+function days_select(days) {
+    if (days == 1)
+        return '<input type="hidden" name="days" value="1" />';
+    html = '{% trans 'for' %} <select name="days"><option>0</option>';
+    for (i = 1; i <= days; i++)
+        html += '<option>' + i + '</option>';
+    html += '</select> {% trans 'days' %}';
+    return html;
+}
+$('#spell-selector').change(function () {
+    $.ajax({
+        url: '{% url get_spell %}' + '?id=' + this.value,
+        dataType: 'json',
+        success: function(data) {
+            days = data[0]['fields']['due_days'];
+            $('#more').html(days_select(days));
+            $('#submit').attr('disabled', false);
+        },
+        error: function(data) {
+            $('#more').html('');
+            $('#submit').attr('disabled', true);
+        }
+    });
+});
+</script>
 {% endblock %}
