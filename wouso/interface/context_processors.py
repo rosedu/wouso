@@ -90,7 +90,7 @@ def context(request):
     and also define some game context """
     settings = {}
     for s in Setting.objects.all():
-        settings['config_' + s.name] = s.get_value()
+        settings['config_' + s.name.replace('-','_')] = s.get_value()
 
     # override theme using GET args
     if request.GET.get('theme', None) is not None:

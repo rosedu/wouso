@@ -30,6 +30,7 @@
         {% endfor %}
         {% endif %}
 
+    {% if not config_disable_Magic %}
         <h3>{% trans 'Spells' %}</h3>
         {% if user.get_profile.spell_amounts.all %}
         {% trans 'Available' %}:
@@ -54,6 +55,8 @@
             {% endif %}
             <a href="{% url market_home %}">{% trans 'Market' %}</a>
         </div>
+    {% endif %}
+
     </div>
     {% endif %}
     <div id="wall">
