@@ -65,15 +65,24 @@ class DefaultGod:
         level_no = player.level_no
         points = player.points
         try:
-            current_limit = DefaultGod.LEVEL_LIMITS[level_no - 2]
+            if level_no == 1:
+                current_limit = 0
+            else:
+                current_limit = DefaultGod.LEVEL_LIMITS[level_no - 2]
         except:
             current_limit = 0
         try:
             next_limit = DefaultGod.LEVEL_LIMITS[level_no - 1]
         except:
             next_limit = 1000
+    
+        points_gained = points - current_limit
+        if next_limit > current_limit:
+            percent = round(100.0 * points_gained / (next_limit - current_limit))
+        else:
+            percent = round(100.0 * points_gained / next_limit)
 
-        return dict(next_level=level_no + 1, points_gained=points-current_limit, points_left=next_limit-points)
+        return dict(next_level=level_no + 1, points_gained=points_gained , points_left=next_limit-points, percent=percent)
 
     def get_all_modifiers(self):
         """ Fetch modifiers from games and also add specific ones

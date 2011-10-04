@@ -423,3 +423,15 @@ ul.simple {
 }
 div.question {
 }
+
+/* home-page */
+div.progress-bar {
+    margin:  2px;
+    border:  1px solid #888;
+    background-color: #f5f5f5;
+    padding: 0;
+}
+div.progress {
+    height: 4px;
+    background-color: green;
+}
