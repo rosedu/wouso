@@ -13,7 +13,7 @@ def player(user):
     if isinstance(user, str):
         return ''
 
-    if isinstance(user, int):
+    if isinstance(user, int) or isinstance(user, long):
         user = Player.objects.get(pk=user)
 
     link = reverse('wouso.interface.profile.views.user_profile', args=(user.id,))
