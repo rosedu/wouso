@@ -248,6 +248,12 @@ class Player(models.Model):
             assert psamount.amount > 0
         except (PlayerSpellAmount.DoesNotExist, AssertionError):
             return False
+
+        # Pre-cat God actions: immunity and curse ar done by this
+        # check
+        if not God.can_cast(spell, source, self):
+            return False
+
         try:
             psdue = PlayerSpellDue.objects.create(player=self, source=source, spell=spell, due=due)
         except Exception as e:

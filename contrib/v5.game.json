@@ -212,6 +212,28 @@
   }
  },
  {
+  "pk": 19,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 1,
+   "name": "curse",
+   "title": "Blesteam\u0103"
+  }
+ },
+ {
+  "pk": 20,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 1,
+   "name": "immunity",
+   "title": "Imunitate"
+  }
+ },
+ {
   "pk": 8,
   "model": "magic.spell",
   "fields": {
@@ -319,6 +341,26 @@
    "price": 50.0,
    "type": "o",
    "description": "Cur\u0103\u021b\u0103 toate vr\u0103jile negative active pe juc\u0103torul pe care se aplic\u0103."
+  }
+ },
+ {
+  "pk": 19,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 3,
+   "price": 100.0,
+   "type": "n",
+   "description": "Juc\u0103torul afectat de blestem nu va mai fi afectat de vr\u0103jile pozitive sau neutre. De asemenea, nu poate s\u0103 foloseasc\u0103 vr\u0103jile pe care le are."
+  }
+ },
+ {
+  "pk": 20,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 3,
+   "price": 90.0,
+   "type": "p",
+   "description": "Face juc\u0103torul c\u0103ruia i se aplic\u0103 imun la orice fel de vr\u0103ji."
   }
  },
  {

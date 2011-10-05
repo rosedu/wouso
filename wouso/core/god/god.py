@@ -89,8 +89,8 @@ class DefaultGod:
         """
         ms = ['dispell', # cancel all spells
               'cure',   # delete all negative spells
-              #'curse',  # prevent cast of positive spells, or cure and dispell
-              #'immunity', # prevent cast of any spells, or cure and dispell
+              'curse',  # prevent cast of positive spells, or cure and dispell
+              'immunity', # prevent cast of any spells, or cure and dispell
         ]
         for g in get_games():
             ms.extend(g.get_modifiers())
@@ -104,6 +104,19 @@ class DefaultGod:
         except Artifact.DoesNotExist:
             return None
 
+    def can_cast(self, spell, source, destination):
+        """ Check if destination can receive spell from source
+        """
+        if destination.has_modifier('immunity'):
+            return False
+
+        if destination.has_modifier('curse') and (spell.type != 'n'):
+            return False
+
+        if source.has_modifier('curse'):
+            return False
+        return True
+    
     def post_cast(self, psdue):
         """ Execute action after a spell is cast. This is used to implement specific spells
         such as 'clean any existing spell' cast.
