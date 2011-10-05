@@ -1,6 +1,7 @@
 # TODO: why isn't this implemented as a class singleton, the same as God ?
 import logging
 from django.utils.translation import ugettext_noop
+from django.db import models
 from wouso.core.user.models import Player
 from wouso.core.scoring.models import Coin, Formula, History
 from wouso.core.god import God
