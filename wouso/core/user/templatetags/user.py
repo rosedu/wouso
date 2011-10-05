@@ -45,7 +45,7 @@ def player_group(group):
     """ Render group with link to group's profile page """
     link = reverse('wouso.interface.profile.views.player_group', args=(group.id,))
 
-    return u'<a href="%s">%s</a>' % (link, group)
+    return u'<a href="%s%s">%s</a>' % (link, group, group)
 
 @register.simple_tag
 def player_avatar(player_obj):

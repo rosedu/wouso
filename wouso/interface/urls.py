@@ -29,7 +29,7 @@ urlpatterns = patterns('',
     url(r'^magic/spell/$', 'wouso.interface.profile.views.magic_spell', name='get_spell'),
 
     (r'^groups/$', 'wouso.interface.profile.views.groups_index'),
-    (r'^group/(?P<id>\d*)/$', 'wouso.interface.profile.views.player_group'),
+    (r'^group/(?P<id>\d*)/.*$', 'wouso.interface.profile.views.player_group'),
     (r'^group/(?P<id>\d*)/(?P<page>\d*)/$', 'wouso.interface.profile.views.player_group'),
 
     (r'^search/$', 'wouso.interface.views.search'),
