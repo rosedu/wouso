@@ -237,7 +237,20 @@ class Challenge(models.Model):
                                                     ' - expired' if self.is_expired(user_lost) else '',)
 
     def played(self):
-        """ Both players have played, save and score """
+        """ Both players have played, save and score
+        Notice the fact this is the only function where the scoring is affected
+        """
+        """ Handle artifacts and spells """
+        for u in (self.user_to, self.user_from):
+            # always lose, you mofo
+            if u.user.has_modifier('challenge-always-lose'):
+                u.score = -1
+            # affect bonuses
+            if u.user.has_modifier('challenge-affect-scoring'):
+                u.percents = u.user.modifier_percents('challenge-affect-scoring')
+            else:
+                u.percents = 100
+        
         if self.user_to.score > self.user_from.score:
             result = (self.user_to, self.user_from)
         elif self.user_from.score > self.user_to.score:
@@ -247,8 +260,8 @@ class Challenge(models.Model):
 
         if result == 'draw':
             self.status = 'D'
-            scoring.score(self.user_to.user, ChallengeGame, 'chall-draw')
-            scoring.score(self.user_from.user, ChallengeGame, 'chall-draw')
+            scoring.score(self.user_to.user, ChallengeGame, 'chall-draw', percents=self.user_to.percents)
+            scoring.score(self.user_from.user, ChallengeGame, 'chall-draw', percents=self.user_from.percents)
             # send activty signal
             signal_msg = ugettext_noop('draw result between {user_to} and {user_from}:\n{extra}')
             signals.addActivity.send(sender=None, user_from=self.user_to.user, \
@@ -262,7 +275,7 @@ class Challenge(models.Model):
             self.user_won, self.user_lost = result
             self.winner = self.user_won.user
             scoring.score(self.user_won.user, ChallengeGame, 'chall-won',
-                external_id=self.id, points=self.user_won.score, points2=self.user_lost.score)
+                external_id=self.id, percents=self.user_won.percents, points=self.user_won.score, points2=self.user_lost.score)
             scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
                 external_id=self.id, points=self.user_lost.score, points2=self.user_lost.score)
             # send activty signal
@@ -424,7 +437,8 @@ class ChallengeGame(Game):
         return ['challenge-one-more', # challenge twice a day, positive
                 'challenge-cannot-be-challenged', # reject incoming challenges, negative
                 'challenge-cannot-challenge', # reject outgoing challenges, negative
-                #'challenge-lose', # lose regardless the result, negative
+                'challenge-always-lose', # lose regardless the result, negative
+                'challenge-affect-scoring', # affect scoring by positive/negative percent
         ]
 
     @classmethod

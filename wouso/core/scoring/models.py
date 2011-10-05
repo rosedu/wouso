@@ -69,6 +69,7 @@ class History(models.Model):
     formula = models.ForeignKey(Formula, blank=True, null=True, default=None)
     coin = models.ForeignKey(Coin)
     amount = models.FloatField(default=0)
+    percents = models.IntegerField(default=100)
     
     @staticmethod
     def user_coins(user):

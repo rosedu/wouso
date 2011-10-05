@@ -18,6 +18,7 @@
   "model": "magic.artifact",
   "fields": {
    "image": "",
+   "percents": 100,
    "group": 2,
    "name": "level-1",
    "title": "Level 1"
@@ -28,6 +29,7 @@
   "model": "magic.artifact",
   "fields": {
    "image": "",
+   "percents": 100,
    "group": 2,
    "name": "level-2",
    "title": "Level 2"
@@ -38,6 +40,7 @@
   "model": "magic.artifact",
   "fields": {
    "image": "",
+   "percents": 100,
    "group": 2,
    "name": "level-3",
    "title": "Level 3"
@@ -48,6 +51,7 @@
   "model": "magic.artifact",
   "fields": {
    "image": "",
+   "percents": 100,
    "group": 2,
    "name": "level-4",
    "title": "Level 4"
@@ -58,6 +62,7 @@
   "model": "magic.artifact",
   "fields": {
    "image": "",
+   "percents": 100,
    "group": 2,
    "name": "level-5",
    "title": "Level 5"
@@ -68,6 +73,7 @@
   "model": "magic.artifact",
   "fields": {
    "image": "",
+   "percents": 100,
    "group": 2,
    "name": "level-6",
    "title": "Level 6"
@@ -78,6 +84,7 @@
   "model": "magic.artifact",
   "fields": {
    "image": "",
+   "percents": 100,
    "group": 2,
    "name": "level-7",
    "title": "Level 7"
@@ -88,6 +95,7 @@
   "model": "magic.artifact",
   "fields": {
    "image": "",
+   "percents": 100,
    "group": 1,
    "name": "dispell",
    "title": "Cur\u0103\u021b\u0103 toate vr\u0103jile"
@@ -98,6 +106,7 @@
   "model": "magic.artifact",
   "fields": {
    "image": "",
+   "percents": 100,
    "group": 1,
    "name": "challenge-cannot-be-challenged",
    "title": "Nu poate fi provocat"
@@ -108,15 +117,94 @@
   "model": "magic.artifact",
   "fields": {
    "image": "",
+   "percents": 100,
    "group": 1,
    "name": "challenge-cannot-challenge",
    "title": "Nu poate provoca"
   }
  },
  {
+  "pk": 11,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 50,
+   "group": 1,
+   "name": "challenge-affect-scoring",
+   "title": "C\u00e2\u0219tig\u0103 cu 50% mai mult"
+  }
+ },
+ {
+  "pk": 12,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": -25,
+   "group": 1,
+   "name": "challenge-affect-scoring",
+   "title": "C\u00e2\u0219tig\u0103 cu 25% mai pu\u021bin"
+  }
+ },
+ {
+  "pk": 13,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 1,
+   "name": "challenge-affect-scoring",
+   "title": "C\u00e2\u0219tig\u0103 cu 100% mai mult"
+  }
+ },
+ {
+  "pk": 14,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 150,
+   "group": 1,
+   "name": "challenge-affect-scoring",
+   "title": "C\u00e2\u0219tig\u0103 cu 150% mai mult"
+  }
+ },
+ {
+  "pk": 15,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": -50,
+   "group": 1,
+   "name": "challenge-affect-scoring",
+   "title": "C\u00e2\u0219tig\u0103 cu 50% mai pu\u021bin"
+  }
+ },
+ {
+  "pk": 16,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": -75,
+   "group": 1,
+   "name": "challenge-affect-scoring",
+   "title": "C\u00e2\u0219tig\u0103 cu 75% mai pu\u021bin"
+  }
+ },
+ {
+  "pk": 17,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 1,
+   "name": "challenge-always-lose",
+   "title": "Pierde mereu"
+  }
+ },
+ {
   "pk": 8,
   "model": "magic.spell",
   "fields": {
+   "due_days": 3,
    "price": 100.0,
    "type": "o",
    "description": "\u00cenl\u0103tur\u0103 toate vr\u0103jile active pe juc\u0103torul pe care este aplicat\u0103."
@@ -126,6 +214,7 @@
   "pk": 9,
   "model": "magic.spell",
   "fields": {
+   "due_days": 3,
    "price": 10.0,
    "type": "n",
    "description": "Nu permite provocarea juc\u0103torului pe care este aplicat\u0103."
@@ -135,9 +224,80 @@
   "pk": 10,
   "model": "magic.spell",
   "fields": {
+   "due_days": 3,
    "price": 10.0,
    "type": "n",
    "description": "Nu las\u0103 utilizatorul pe care este aplicat\u0103 s\u0103 provoace."
+  }
+ },
+ {
+  "pk": 11,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 1,
+   "price": 10.0,
+   "type": "p",
+   "description": "Modific\u0103 punctajul provoc\u0103rilor, ad\u0103ug\u00e2nd 50% la punctajul aferent provoc\u0103rilor."
+  }
+ },
+ {
+  "pk": 12,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 1,
+   "price": 10.0,
+   "type": "n",
+   "description": "Modific\u0103 punctajul ob\u021binut din provoc\u0103ri sc\u0103z\u00e2nd un sfert."
+  }
+ },
+ {
+  "pk": 13,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 1,
+   "price": 30.0,
+   "type": "p",
+   "description": "Dubleaz\u0103 c\u00e2\u0219tigurile din provoc\u0103ri."
+  }
+ },
+ {
+  "pk": 14,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 1,
+   "price": 50.0,
+   "type": "p",
+   "description": "M\u0103re\u0219te c\u00e2\u0219tigurile din provoc\u0103ri cu 150%."
+  }
+ },
+ {
+  "pk": 15,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 1,
+   "price": 20.0,
+   "type": "n",
+   "description": "Pierde jum\u0103tate din punctajul oferit la provoc\u0103ri."
+  }
+ },
+ {
+  "pk": 16,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 1,
+   "price": 40.0,
+   "type": "n",
+   "description": "C\u00e2\u0219tig\u0103 cu trei sferturi mai pu\u021bin din provoc\u0103ri."
+  }
+ },
+ {
+  "pk": 17,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 3,
+   "price": 25.0,
+   "type": "n",
+   "description": "Face juc\u0103torul s\u0103 piard\u0103 indiferent de r\u0103spunsurile pe care le d\u0103 el sau adversarul s\u0103u."
   }
  },
  {
@@ -246,6 +406,15 @@
    "owner": null,
    "formula": "points=-{points},gold={points}*0.1",
    "description": "Exchange points in gold"
+  }
+ },
+ {
+  "pk": "bonus-gold",
+  "model": "scoring.formula",
+  "fields": {
+   "owner": null,
+   "formula": "gold={gold}",
+   "description": "Give bonus gold to the poor people"
   }
  },
  {

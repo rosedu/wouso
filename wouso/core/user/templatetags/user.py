@@ -56,10 +56,13 @@ def player_avatar(player_obj):
 
 @register.simple_tag
 def coin_amount(amount, coin=None):
-    if coin == None:
+    if coin is None:
         coin = Coin.get('points')
     else:
         coin = Coin.get(coin)
+
+    if coin is None:
+        return '%f (not setup)' % amount
 
     return '<div class="coin-amount coin-%s" title="%s">%s</div>' % (coin.name, coin.name, amount)
 
