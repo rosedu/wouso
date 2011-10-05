@@ -29,12 +29,12 @@
     <div id="header">
         <div id="topbar">
             {% if user.is_authenticated %}
-                <span class="bold">{% player player %}</span> |
+                <span id="head-profile" class="bold">{% player player %}</span> |
                 {% autoescape off %}{{ header }}{% endautoescape %}
                 {% if user.is_staff %}
-                <a href="{% url wouso.interface.cpanel.views.dashboard %}">CPanel</a> |
+                <a id="head-cpanel" href="{% url wouso.interface.cpanel.views.dashboard %}">CPanel</a> |
                 {% endif %}
-                <a href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %} &raquo;</a>
+                <a id="head-logout" href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %} &raquo;</a>
             {% else %}
             {% trans 'Anonimous' %}, <a href="{% url django.contrib.auth.views.login %}">{% trans "Login" %} &raquo;</a>
             {% endif %}
