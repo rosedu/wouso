@@ -1,3 +1,4 @@
+from datetime import date
 from django.db import models
 from django.core.urlresolvers import reverse
 from wouso.core.user.models import Player
@@ -12,6 +13,11 @@ class SpecialQuestTask(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     value = models.IntegerField()
+
+    def is_active(self, today=None):
+        if today is None:
+            today = date.today()
+        return self.start_date <= today
 
     def __unicode__(self):
             return unicode(self.name)
@@ -32,6 +38,16 @@ class SpecialQuestGame(Game):
         # the url field takes as value only a named url from module's urls.py
         self._meta.get_field('url').default = "specialquest_index_view"
         super(SpecialQuestGame, self).__init__(*args, **kwargs)
+
+    @classmethod
+    def tasks_for_user(kls, user):
+        """ Return a pair of tasks_done, tasks_not_done for requested user
+        """
+        tasks = SpecialQuestTask.objects.all()
+        tasks_done = [t for t in tasks if t in user.done_tasks.all()]
+        tasks_not_done = [t for t in tasks if t not in user.done_tasks.all()]
+        tasks_not_done = [t for t in tasks_not_done if t.is_active()]
+        return tasks_done, tasks_not_done
 
     @classmethod
     def get_sidebar_widget(kls, request):

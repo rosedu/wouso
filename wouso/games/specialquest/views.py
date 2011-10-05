@@ -12,10 +12,8 @@ from models import SpecialQuestUser, SpecialQuestTask, SpecialQuestGame
 @login_required
 def index(request):
     user = request.user.get_profile().get_extension(SpecialQuestUser)
-    tasks = SpecialQuestTask.objects.all()
+    tasks_done, tasks_not_done = SpecialQuestGame.tasks_for_user(user)
     today = date.today()
-    tasks_done = [t for t in tasks if t in user.done_tasks.all()]
-    tasks_not_done = [t for t in tasks if t not in user.done_tasks.all()]
     tasks_not_done = [(t, (t.end_date - today).days + 1) for t in tasks_not_done]
 
     return render_to_response('specialquest/index.html',

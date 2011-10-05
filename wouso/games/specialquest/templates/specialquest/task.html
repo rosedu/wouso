@@ -1,15 +1,22 @@
 {% extends base_template %}
 {% load i18n %}
+{% load user %}
 {% block title %}{% trans 'Special Quest' %}{% endblock %}
 
 {% block content %}
 
-<h2>{{task.name}}</h2>
-{% if days_left >= 0%}
-  <p>Days left including today: {{days_left}}</p>
-{%else%}
-  <p class="wrong">Deadline passed</p>
-{%endif%}
-<p>Reward: {{task.value}} gold</p>
-<p>{{task.text}}</p>
+{% if not task.is_active %}
+    <h2>{% trans 'Misterious task' %}</h2>
+    <p>{% trans 'Access forbidden.' %}</p>
+{% else %}
+    <h2>{{task.name}}</h2>
+    <span class="points">{% trans 'Reward' %}: {% coin_amount task.value 'gold' %}</span>
+
+    {% if days_left >= 0 %}
+      <p>{% trans 'Days left including today' %}: {{days_left}}</p>
+    {%else%}
+      <p class="wrong">{% trans 'Deadline passed' %}</p>
+    {%endif%}
+    <p class="task-text">{% autoescape off %}{{task.text}}{% endautoescape %}</p>
+{% endif %}
 {% endblock %}

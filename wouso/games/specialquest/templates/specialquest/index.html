@@ -1,5 +1,6 @@
 {% extends base_template %}
 {% load i18n %}
+{% load user %}
 {% block title %}{% trans 'Special Quest' %}{% endblock %}
 
 {% block content %}
@@ -8,7 +9,7 @@
 Done tasks:
 <ul>
 {% for task in tasks_done %}
-<li><s><a href="{% url specialquest_task_view task.pk %}">{{task.name}}</a></s> ({{task.value}} gold).</li>
+<li><s><a href="{% url specialquest_task_view task.pk %}">{{task.name}}</a></s> ({% coin_amount task.value 'gold' %}).</li>
 {% empty %}
 <li>None yet</li>
 {% endfor %}
@@ -19,10 +20,10 @@ Not done tasks:
   {% for task in tasks_not_done %}
     {% if task.1 > 0 %}
       <li><a href="{% url specialquest_task_view task.0.pk %}">{{task.0.name}}</a>
-      ({{task.0.value}} gold) - {{task.1}} days left (including today)</li>
+      ({% coin_amount task.0.value 'gold' %}) - {{task.1}} days left (including today)</li>
     {% else %}
     <li><s><a href="{% url specialquest_task_view task.0.pk %}">{{task.0.name}}</a></s>
-      ({{task.0.value}} gold) - deadline passed</li>
+      ({% coin_amount task.0.value 'gold' %}) - deadline passed</li>
     {% endif %}
   {% empty %}
     <li class="empty">None yet</li>

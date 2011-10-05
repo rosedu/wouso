@@ -370,7 +370,7 @@ class ChallengeGame(Game):
 
     def __init__(self, *args, **kwargs):
         # Set parent's fields
-        self._meta.get_field('verbose_name').default = "Challenge"
+        self._meta.get_field('verbose_name').default = "Challenges"
         self._meta.get_field('short_name').default = ""
         # the url field takes as value only a named url from module's urls.py
         self._meta.get_field('url').default = "challenge_index_view"

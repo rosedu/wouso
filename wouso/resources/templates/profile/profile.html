@@ -134,12 +134,12 @@
         <div id="tab-3" class="tab_content">
             <div class="subgroups">
             {% for source,coins in scoring.iteritems %}
-                <h3>{{ source }}</h3>
+                <h3>{% trans source %}</h3>
                     {% for coin, value in coins.iteritems %}
-                        <p>{{ coin }} {{ value }}</p>
+                        <p>{% coin_amount value coin %}</p>
                     {% endfor %}
             {% empty %}
-                No points registered for this player.
+                {% trans 'No points registered for this player.' %}
             {% endfor %}
             </div>
             <div id="graf2" class="graf placeholder"></div>
