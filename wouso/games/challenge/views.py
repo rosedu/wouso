@@ -38,12 +38,6 @@ def challenge(request, id):
 
     chall = get_object_or_404(Challenge, pk=id)
 
-    if not chall_user.can_play(chall):
-        return do_result(request, _('You cannot play this challenge.'))
-
-    if request.method == 'GET' and not chall.is_started_for_user(request.user.get_profile()):
-        chall.set_start(request.user.get_profile())
-
     # check to see if challenge was already submitted
     participant = None
     if chall_user == chall.user_from.user:
@@ -53,6 +47,12 @@ def challenge(request, id):
     if participant is not None and participant.played:
         return do_result(request, _('You have already submitted this challenge'\
                                    ' and scored %.2f points') % participant.score)
+
+    if not chall_user.can_play(chall):
+        return do_result(request, _('You cannot play this challenge.'))
+
+    if request.method == 'GET' and not chall.is_started_for_user(request.user.get_profile()):
+        chall.set_start(request.user.get_profile())
 
     if request.method == "POST":
         form = ChallengeForm(chall, request.POST)
