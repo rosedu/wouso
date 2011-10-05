@@ -165,6 +165,17 @@ class Player(models.Model):
         return self.groups.filter(gclass=res['gclass'])[0]
 
     @property
+    def series(self):
+        """ Return the group with class == 1, for which the user
+        is a member of, or None.
+        """
+        res = self.groups.filter(gclass=1)
+        if not res:
+            return None
+
+        return res[0]
+
+    @property
     def artifact_amounts(self):
         return self.playerartifactamount_set
 

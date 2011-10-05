@@ -481,3 +481,14 @@ div.progress {
 td div.artifacts {
     float: right;
 }
+
+/* races */
+div.group-ca {
+    border-top: 3px solid red;
+}
+div.group-cb {
+    border-top: 3px solid green;
+}
+div.group-cc {
+    border-top: 3px solid blue;
+}

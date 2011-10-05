@@ -5,7 +5,7 @@
 
 {% block content %}
     {% if is_homepage %}
-    <div id="right-sidebar">
+    <div id="right-sidebar" class="profile {% if player.series %}group-{{ player.series.name.lower }}{% endif %} {% if player.proximate_group %}group-{{ player.proximate_group.name.lower }}{% endif %}">
         <h2>{{ player }}</h2>
         <div class="centered">
             <a href="{% url player_profile player.id %}"><img src="{% player_avatar player %}" class="avatar no-float" /></a>

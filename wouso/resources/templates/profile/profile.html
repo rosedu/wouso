@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="profile">
+<div class="profile {% if profile.series %}group-{{ profile.series.name.lower }}{% endif %} {% if profile.proximate_group %}group-{{ profile.proximate_group.name.lower }}{% endif %}">
     <div class="points">
         <div class="points-big">{{ profile.points}}</div>
         <div class="rank">{% if top.disabled %}-{% else %}{% trans 'rank' %}: {{ top.position }}{% endif %}</div>

@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="profile">
+<div class="profile {% if group.parent %}group-{{ group.parent.name.lower }}{% endif %} group-{{ group.name.lower }}">
     <div class="points">
         <div class="points-big">{{ group.live_points}}</div>
         <div class="rank">{% if top.disabled %}-{% else %}{% trans 'rank' %}: {{ top.position }}{% endif %}</div>
