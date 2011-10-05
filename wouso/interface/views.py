@@ -9,6 +9,7 @@ from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from wouso.interface import logger, detect_mobile
 from wouso.core.game import get_games
+from wouso.core.config.models import BoolSetting
 from wouso.interface.forms import *
 from wouso.core.user.models import Player
 from wouso.core.magic.models import Spell
@@ -136,7 +137,9 @@ def market_exchange(request):
 
     player = request.user.get_profile()
     message, error = '', ''
-    if request.method == 'POST':
+    if BoolSetting.get('disable-Market-Exchange').get_value():
+        error = _("Exchange is disabled")
+    elif request.method == 'POST':
         try:
             points = float(request.POST.get('points', 0))
             gold = round(float(request.POST.get('gold', 0)))
