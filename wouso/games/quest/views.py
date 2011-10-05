@@ -41,12 +41,11 @@ def sidebar_widget(request):
 
     quest_user = request.user.get_profile().get_extension(QuestUser)
     if not quest_user.started:
-        quest_progress = ""
+        quest_progress = None
     else:
-        quest_progress = "Questions answered in %s: %d/%d." % \
-                     (quest.title, quest_user.current_level, quest.count)
+        quest_progress = 1.0 * quest_user.current_level / quest.count * 100
 
     return render_string('quest/sidebar.html',
             {'quest': quest, 'quser': quest_user,
-             'qprogress': quest_progress,
+             'quest_progress': quest_progress,
              })

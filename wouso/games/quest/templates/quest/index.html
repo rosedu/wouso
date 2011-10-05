@@ -6,13 +6,19 @@
 
 <h2>{{ quest.title }}</h2>
 <div class="second">
-Available until {{ quest.end }}. Your progress: {{ progress.time_took }}
+{% blocktrans with quest.end as end and progress.time_took as time_took %}
+Available until {{ end }}. Your progress: {{ time_took }}
+{% endblocktrans %}
 </div>
 
 {% if progress.finished %}
 <p>{% trans 'Quest finished!' %}</p>
 
-<p>You passed {{ quest.count }} levels in {{ progress.time_took }}.</p>
+<p>
+{% blocktrans with quest.count as count and progress.time_took as time_took %}
+    You passed {{ count }} levels in {{ time_took }}.
+{% endblocktrans %}
+</p>
 {% else %}
 <p style="color:red">{{ message }}</p>
 

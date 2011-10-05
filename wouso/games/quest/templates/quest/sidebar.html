@@ -8,14 +8,15 @@
 {% if quest %}
     {{ quest.title }} <br/>
     {% if not quser.started %}
-        <a href="{% url games.quest.views.index %}">Start quest!</a>
+        <a href="{% url games.quest.views.index %}">{% trans 'Start quest!' %}</a>
     {% else %}
         {% if quser.finished %}
         {% trans 'You have finished the quest.' %}
         {% else %}
-        <a href="{% url games.quest.views.index %}">Play quest!</a>
-        <br/>
-        {{ qprogress }}
+        <div class="progress-bar">
+            <div class="progress" style="width: {{ quest_progress|floatformat }}%"></div>
+        </div>
+        <a href="{% url games.quest.views.index %}">{% trans 'Play quest!' %}</a>
         {% endif %}
     {% endif %}
 {% else %}
