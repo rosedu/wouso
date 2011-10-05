@@ -261,7 +261,7 @@ class Challenge(models.Model):
         if result == 'draw':
             self.status = 'D'
             scoring.score(self.user_to.user, ChallengeGame, 'chall-draw', percents=self.user_to.percents)
-            scoring.score(self.user_from.user, ChallengeGame, 'chall-draw', percents=self.user_to.percents)
+            scoring.score(self.user_from.user, ChallengeGame, 'chall-draw', percents=self.user_from.percents)
             # send activty signal
             signal_msg = ugettext_noop('draw result between {user_to} and {user_from}:\n{extra}')
             signals.addActivity.send(sender=None, user_from=self.user_to.user, \
@@ -277,7 +277,7 @@ class Challenge(models.Model):
             scoring.score(self.user_won.user, ChallengeGame, 'chall-won',
                 external_id=self.id, percents=self.user_won.percents, points=self.user_won.score, points2=self.user_lost.score)
             scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
-                external_id=self.id, percents=self.user_lost.percents, points=self.user_lost.score, points2=self.user_lost.score)
+                external_id=self.id, points=self.user_lost.score, points2=self.user_lost.score)
             # send activty signal
             signal_msg = ugettext_noop('won challenge with {user_lost}: {extra}')
             signals.addActivity.send(sender=None, user_from=self.user_won.user, \
