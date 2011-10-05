@@ -73,7 +73,7 @@ def manage_player(request, player_id):
     bonuses = scoring.History.objects.filter(user=player, formula__id='bonus-gold')
 
     return render_to_response('specialquest/cpanel_manage.html',
-                    dict(player=player, tasks_not_done=tasks_not_done, message=message, error=error, bonuses=bonuses),
+                    dict(mplayer=player, tasks_not_done=tasks_not_done, message=message, error=error, bonuses=bonuses),
                     context_instance=RequestContext(request))
 
 @permission_required('specialquest.change_specialquest')
