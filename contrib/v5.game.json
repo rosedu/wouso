@@ -201,6 +201,17 @@
   }
  },
  {
+  "pk": 18,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 1,
+   "name": "cure",
+   "title": "Vindec\u0103"
+  }
+ },
+ {
   "pk": 8,
   "model": "magic.spell",
   "fields": {
@@ -298,6 +309,16 @@
    "price": 25.0,
    "type": "n",
    "description": "Face juc\u0103torul s\u0103 piard\u0103 indiferent de r\u0103spunsurile pe care le d\u0103 el sau adversarul s\u0103u."
+  }
+ },
+ {
+  "pk": 18,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 1,
+   "price": 50.0,
+   "type": "o",
+   "description": "Cur\u0103\u021b\u0103 toate vr\u0103jile negative active pe juc\u0103torul pe care se aplic\u0103."
   }
  },
  {

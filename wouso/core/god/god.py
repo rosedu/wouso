@@ -85,9 +85,12 @@ class DefaultGod:
         return dict(next_level=level_no + 1, points_gained=points_gained , points_left=next_limit-points, percent=percent)
 
     def get_all_modifiers(self):
-        """ Fetch modifiers from games and also add specific ones
+        """ Fetch modifiers from games and also add system specific ones
         """
         ms = ['dispell', # cancel all spells
+              'cure',   # delete all negative spells
+              #'curse',  # prevent cast of positive spells, or cure and dispell
+              #'immunity', # prevent cast of any spells, or cure and dispell
         ]
         for g in get_games():
             ms.extend(g.get_modifiers())
@@ -110,5 +113,11 @@ class DefaultGod:
         if psdue.spell.name == 'dispell':
             for psd in psdue.player.spells:
                 psd.delete()
-            return True 
+            return True
+        if psdue.spell.name == 'cure':
+            for psd in psdue.player.spells.filter(spell__type='n'):
+                psd.delete()
+            # also delete itself
+            psdue.delete()
+            return True
         return False

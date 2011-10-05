@@ -1,4 +1,5 @@
 from datetime import datetime
+import logging
 from django.db import models
 from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext_noop
@@ -249,17 +250,19 @@ class Player(models.Model):
             return False
         try:
             psdue = PlayerSpellDue.objects.create(player=self, source=source, spell=spell, due=due)
-            # Post-cast God action (there are specific modifiers, such as clean-spells
-            # that are implemented in God
-            God.post_cast(psdue)
-            psamount.amount -= 1
-            if psamount.amount == 0:
-                psamount.delete()
-            else:
-                psamount.save()
-            return True
-        except:
+        except Exception as e:
+            logging.exception(e)
             return False
+        # Post-cast God action (there are specific modifiers, such as clean-spells
+        # that are implemented in God
+        God.post_cast(psdue)
+        psamount.amount -= 1
+        if psamount.amount == 0:
+            psamount.delete()
+        else:
+            psamount.save()
+        return True
+
 
     def spell_stock(self, spell):
         try:
