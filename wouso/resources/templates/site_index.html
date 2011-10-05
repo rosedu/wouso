@@ -32,9 +32,8 @@
         {% endif %}
 
     {% if not config_disable_Magic %}
-        <h3>{% trans 'Spells' %}</h3>
         {% if player.spell_amounts.all %}
-        {% trans 'Available' %}:
+        <h3>{% trans 'Spells' %}</h3>
         {% for s in player.spell_amounts.all %}
             {% artifact s %}
         {% empty %}
@@ -42,14 +41,6 @@
         {% endfor %} <br/>
         {% endif %}
 
-        {% if player.spells %}
-        {% trans 'Cast on me' %}:
-        {% for s in player.spells %}
-            {% spell_due s %}
-        {% empty %}
-        {% trans 'None.' %}
-        {% endfor %} <br/>
-        {% endif %}
         <div class="right">
             {% if player.spells_cast or player.spells %}
             <a href="{% url magic_summary %}">{% trans 'Summary' %}</a>
