@@ -190,6 +190,13 @@ class Player(models.Model):
             pass
         return False
 
+    def modifier_percents(self, modifier):
+        percents = 100
+        res = PlayerArtifactAmount.objects.filter(player=self, artifact__name=modifier)
+        for a in res:
+            percents += a.amount * a.artifact.percents
+        return percents
+
     def use_modifier(self, modifier, amount):
         """ Substract amount of modifier artifact from players collection.
         If the current amount is less than amount, raise an exception.

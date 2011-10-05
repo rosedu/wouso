@@ -69,20 +69,22 @@ def calculate(formula, **params):
 
     return ret
 
-def score(user, game, formula, external_id=None, **params):
-    """ Give amount of coin specified by the formula to the player """
+def score(user, game, formula, external_id=None, percents=100, **params):
+    """ Give amount of coin specified by the formula to the player.
+     The amount can be affected by percents/100.
+    """
     ret = calculate(formula, **params)
 
     if isinstance(ret, dict):
         for coin, amount in ret.items():
-            score_simple(user, coin, amount, game, formula, external_id)
+            score_simple(user, coin, amount, game, formula, external_id, percents=percents)
 
 def unset(user, game, formula, external_id=None, **params):
     """ Remove all history records by the external_id, formula and game given to the user """
     return History.objects.filter(user=user, game=game.get_instance(), formula=formula, external_id=external_id).delete()
 
 def score_simple(player, coin, amount, game=None, formula=None,
-    external_id=None):
+    external_id=None, percents=100):
     """ Give amount of coin to the player.
     """
     if not isinstance(game, Game) and game is not None:
@@ -96,8 +98,8 @@ def score_simple(player, coin, amount, game=None, formula=None,
     coin = Coin.get(coin)
     formula = Formula.get(formula)
 
-    hs = History.objects.create(user=user, coin=coin, amount=amount,
-        game=game, formula=formula, external_id=external_id)
+    hs = History.objects.create(user=user, coin=coin, amount=1.0 * amount * percents / 100,
+        game=game, formula=formula, external_id=external_id, percents=percents)
 
     # update user.points asap
     if coin.name == 'points':

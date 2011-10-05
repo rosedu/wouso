@@ -14,11 +14,13 @@ class Artifact(models.Model):
     but also personalization such as: image (icon) and title
     """
     class Meta:
-        unique_together = ('name', 'group')
+        unique_together = ('name', 'group', 'percents')
     name = models.CharField(max_length=64) # level-1, quest-bun, etc
     title = models.CharField(max_length=100) # Maturator
     image = models.ImageField(upload_to=settings.MEDIA_ARTIFACTS_DIR, blank=True, null=True)
     group = models.ForeignKey(Group)
+
+    percents = models.IntegerField(default=100)
     
     @property
     def path(self):
@@ -27,7 +29,11 @@ class Artifact(models.Model):
         if self.image:
             return "%s/%s" % (settings.MEDIA_ARTIFACTS_URL, os.path.basename(str(self.image)))
         return "%s-%s" %  (self.group.name.lower(), self.name)
-    
+
+    @classmethod
+    def DEFAULT(kls):
+        return Group.objects.get_or_create(name='Default')[0]
+
     @classmethod
     def get_level_1(kls):
         """ Temporary method for setting default artifact until God and Guildes """
