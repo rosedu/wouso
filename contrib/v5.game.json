@@ -190,6 +190,17 @@
   }
  },
  {
+  "pk": 17,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 1,
+   "name": "challenge-always-lose",
+   "title": "Pierde mereu"
+  }
+ },
+ {
   "pk": 8,
   "model": "magic.spell",
   "fields": {
@@ -277,6 +288,16 @@
    "price": 40.0,
    "type": "n",
    "description": "C\u00e2\u0219tig\u0103 cu trei sferturi mai pu\u021bin din provoc\u0103ri."
+  }
+ },
+ {
+  "pk": 17,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 3,
+   "price": 25.0,
+   "type": "n",
+   "description": "Face juc\u0103torul s\u0103 piard\u0103 indiferent de r\u0103spunsurile pe care le d\u0103 el sau adversarul s\u0103u."
   }
  },
  {
