@@ -1,5 +1,6 @@
 import datetime
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
@@ -131,6 +132,7 @@ def market(request):
                               'rate': rate, 'rate_text': rate_text},
                               context_instance=RequestContext(request))
 
+@login_required
 def market_exchange(request):
     gold_rate = scoring.calculate('gold-points-rate', gold=1)['points']
     points_rate = scoring.calculate('points-gold-rate', points=1)['gold']
@@ -174,7 +176,8 @@ def market_exchange(request):
                 {'error': error,
                 'message': message, 'tab': 'exchange'},
                 context_instance=RequestContext(request))
-            
+
+@login_required
 def market_buy(request, spell):
     spell = get_object_or_404(Spell, pk=spell)
 
