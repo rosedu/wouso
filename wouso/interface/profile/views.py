@@ -19,9 +19,18 @@ from wouso.core.game import get_games
 
 @login_required
 def profile(request):
+    # TODO: remove this and url to this
     list = Activity.objects.all().order_by('-timestamp')[:10]
     return render_to_response('profile/index.html',
                               {'activity': list},
+                              context_instance=RequestContext(request))
+
+@login_required
+def player_points_history(request, id):
+    player = get_object_or_404(Player, pk=id)
+    hist = History.objects.filter(user=player).order_by('-timestamp')[:500]
+    return render_to_response('profile/points_history.html',
+                            {'pplayer': player, 'history': hist},
                               context_instance=RequestContext(request))
 
 @login_required

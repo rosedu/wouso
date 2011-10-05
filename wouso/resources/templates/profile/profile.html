@@ -141,6 +141,7 @@
             {% empty %}
                 {% trans 'No points registered for this player.' %}
             {% endfor %}
+            <p><a class="goto" href="{% url player_points_history profile.id %}">{% trans 'History' %}</a></p>
             </div>
             <div id="graf2" class="graf placeholder"></div>
             <script id="source2" language="javascript" type="text/javascript">
