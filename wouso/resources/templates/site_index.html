@@ -19,7 +19,7 @@
         <h3>{% trans 'Your rank' %}</h3>
         <p>{% trans 'Global' %}: <span class="points">{{ top.position }}</span></p>
         {% for g in topgroups %}
-        <p>{{ g }}: <span class="points">{{ g.position }}</span></p>
+        <p>{% player_group g %}: <span class="points">{{ g.position }}</span></p>
         {% endfor %}
 
         {% if player.artifact_amounts.all %}

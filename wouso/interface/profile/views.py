@@ -81,7 +81,7 @@ def player_group(request, id, page=u'1'):
         g.top = GroupHistory(g)
 
     activity_list = Activity.objects.\
-        filter(Q(user_to__groups=group) | Q(user_from__groups=group)).order_by('-timestamp')
+        filter(Q(user_to__groups=group) | Q(user_from__groups=group)).distinct().order_by('-timestamp')
     paginator = Paginator(activity_list, 10)
     try:
         activity = paginator.page(page)
@@ -100,8 +100,9 @@ def player_group(request, id, page=u'1'):
 
 @login_required
 def groups_index(request):
+    PlayerGroup.top = lambda(self): GroupHistory(self)
     groups = PlayerGroup.objects.filter(gclass=1).order_by('name')
-
+    
     return render_to_response('profile/groups.html',
                               {'groups': groups},
                               context_instance=RequestContext(request))

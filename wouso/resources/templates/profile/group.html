@@ -61,7 +61,7 @@
             {% for u in top_users %}
             <li>{% player u %} <span class="points">{{ u.points }}</span></li>
             {% empty %}
-            <li class="empty">Sorry, no users in this group</li>
+            <li class="empty">{% trans 'Sorry, no users in this group' %}</li>
             {% endfor %}
         </ol>
         </div>

@@ -29,6 +29,7 @@ class PlayerGroup(models.Model):
     points = models.FloatField(default=0)
 
     _sisters = []
+    _children = []
 
     @property
     def live_points(self):
@@ -40,7 +41,7 @@ class PlayerGroup(models.Model):
 
     @property
     def children(self):
-        """ All groups with parent set to this group """
+        """ All groups with parent set to this group, cached """
         return self.playergroup_set.all()
 
     @property

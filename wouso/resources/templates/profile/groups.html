@@ -13,14 +13,29 @@
 <div class="profile">
     <h2>{% trans 'Groups' %}</h2>
 
+    <table>
+    <tr>
+        <th colspan="2" align="left">{% trans 'Name' %}</th>
+        <th>{% trans 'Members' %}</th>
+        <th>{% trans 'Position' %}</th>
+        <th>{% trans 'Points' %}</th>
+    </tr>
     {% for group in groups %}
-        <h3>{% player_group group %} <span class="points">{{group.points}}</span></h3>
-        <ul>
+        <tr>
+            <td colspan="2" width="100%"><strong>{% player_group group %}</strong>
+            <td align="center"><strong>{{ group.player_set.count }}</strong></td>
+            <td align="center"><strong>{{ group.top.position }}</strong></td>
+            <td align="right"><strong>{{group.live_points}}</strong></td>
+        </tr>
             {% for g in group.children %}
-            <li>{% player_group g %} <span class="points">{{ g.live_points }}</span></li>
+            <tr>
+                <td></td>
+                <td>{% player_group g %}</td>
+                <td align="center">{{ g.player_set.count }}</td>
+                <td align="center">{{ g.top.position}}</td>
+                <td align="right">{{ g.live_points }}</td>
             {% endfor %}
-        </ul>
     {% endfor %}
-
+    </table>
 </div>
 {% endblock %}
