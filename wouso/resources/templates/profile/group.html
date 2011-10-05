@@ -23,9 +23,14 @@
         {% endif %}
         {% if group.parent %}{% trans 'part of' %} {% player_group group.parent %}{% endif %}
     </h3>
+    <h4>{{ group.player_set.count }} {% trans 'members' %}</h4>
 
+    {% if user.is_superuser %}
     <div class="actions">
+        <span class="button-list">Superuser only: </span>
+        <a class="button" href="{% url admin:user_playergroup_change group.id %}">✍</a>
     </div>
+    {% endif %}
 
     <div class="second">
     </div>
