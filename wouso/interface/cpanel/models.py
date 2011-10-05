@@ -1,4 +1,5 @@
 from wouso.core.config.models import *
+from wouso.core.user.models import PlayerGroup
 from wouso.utils import get_themes
 from wouso.core.game import get_games
 
@@ -14,7 +15,10 @@ class Customization(ConfigGroup):
         theme.choices = [(t,t) for t in get_themes()]
         logo = Setting.get('logo')
 
-        return [title, intro, theme, logo, hf]
+        default_group = ChoicesSetting.get('default_group')
+        default_group.choices = [(unicode(g), str(g.id)) for g in PlayerGroup.objects.filter(gclass=1)]
+
+        return [title, intro, theme, logo, hf, default_group]
 
 class Switchboard(ConfigGroup):
     name = 'Disable features'

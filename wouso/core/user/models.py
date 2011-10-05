@@ -304,6 +304,14 @@ class Player(models.Model):
 def user_post_save(sender, instance, **kwargs):
     profile, new = Player.objects.get_or_create(user=instance)
     if new:
+        # add in default group
+        from wouso.core.config.models import ChoicesSetting
+        try:
+            default_group = PlayerGroup.objects.get(pk=int(ChoicesSetting.get('default_group').get_value()))
+        except (PlayerGroup.DoesNotExist, ValueError):
+            pass
+        else:
+            profile.groups.add(default_group)
         # kick some activity
         signal_msg = ugettext_noop('has joined the game.')
 
