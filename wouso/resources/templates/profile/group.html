@@ -91,9 +91,9 @@
             <script id="source" language="javascript" type="text/javascript">
             <!-- using flot to draw evolution -->
             $(function () {
-                var d{{ g.id }} = [[null, 12],{% for p in top.week_evolution %}[{{p.0}},{{p.1}}],{% endfor %}[7, null]];
+                var d{{ group.id }} = [[null, 12],{% for p in top.week_evolution %}[{{p.0}},{{p.1}}],{% endfor %}[7, null]];
                 {% for g in group.sisters %}
-                    var d{{ group.id }} = [{% for p in g.top.week_evolution %}[{{ p.0 }},{{ p.1 }}],{% endfor %}];
+                    var d{{ g.id }} = [{% for p in g.top.week_evolution %}[{{ p.0 }},{{ p.1 }}],{% endfor %}];
                 {% endfor %}
                 var options = { lines: { show: true }, points: { show: true },
                     xaxis: {
