@@ -260,6 +260,11 @@ span.button-list {
     width: 150px;
     float: right;
     margin-left: 40px;
+    min-height: 350px;
+}
+.w50 {
+    width: 50px;
+    margin-right: 2px;
 }
 /* topbar sidebar */
 #sidebar h2 {

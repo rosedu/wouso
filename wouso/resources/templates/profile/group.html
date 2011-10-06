@@ -47,14 +47,14 @@
         {% if group.children %}
         <h4>{% trans 'Top subgroups' %}</h4>
         <ol class="top">{% for g in subgroups %}
-            <li>{% player_group g %} <span class="points">{{ g.points }}</span></li>
+            <li>{% player_group g %} <span class="points">{{ g.live_points }}</span></li>
             {% endfor %}
         </ol>
         {% endif %}
         {% if group.sisters %}
         <h4>{% trans 'Top same kind' %}</h4>
         <ol class="top">{% for g in sistergroups %}
-                <li>{% player_group g %} <span class="points">{{ g.points }}</span></li>
+                <li>{% player_group g %} <span class="points">{{ g.live_points }}</span></li>
             {% endfor %}
         </ol>
 
@@ -64,7 +64,12 @@
 
         <ol class="top">
             {% for u in top_users %}
-            <li>{% player u %} <span class="points">{{ u.points }}</span></li>
+            <li>{% player u %}
+                <span class="points w50">{{ u.points }}</span>
+                {% if not group.parent %}
+                <span class="points w50">{% player_group u.proximate_group  %}</span>
+                {% endif %}
+            </li>
             {% empty %}
             <li class="empty">{% trans 'Sorry, no users in this group' %}</li>
             {% endfor %}
