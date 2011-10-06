@@ -108,7 +108,7 @@
                     },
                 };
                 $("#tab-3").bind('custom', function() {
-                    $.plot($("#graf1"), [{ label: "<strong>{{ group.name }}</strong>", color: "green", data: d{{ group.id}},{% for g in group.sisters %}{label: "{{ g.name }}", data:d{{ g.id }}},{% endfor %}], options);
+                    $.plot($("#graf1"), [{ label: "<strong>{{ group.name }}</strong>", color: "green", data: d{{ group.id }} }, {% for g in group.sisters %}{label: "{{ g.name }}", data:d{{ g.id }}},{% endfor %}], options);
                     $('#tab-3').unbind('custom');
                 });
             });
