@@ -2,14 +2,14 @@
 {% load i18n %}
 {% load artifacts %}
 {% load user %}
-{% block title %}{% trans 'Market' %}{% endblock %}
+{% block title %}{% trans 'Bazaar' %}{% endblock %}
 {% block scripts %}
     <script type="text/javascript" src="/static/js/tabs.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
 {% endblock %}
 
 {% block content %}
-    <h2>{% trans 'Market' %}</h2>
+    <h2>{% trans 'Bazaar' %}</h2>
 
 <ul class="tabs">
         <li><a href="#spells" id="spells-click">{% trans 'Spells' %}</a></li>
@@ -37,7 +37,7 @@
                 {% coin_amount s.price 'gold' %}
             </td>
             <td>
-                <a href="{% url market_buy s.id %}" class="button">{% trans 'Buy' %}</a>
+                <a href="{% url bazaar_buy s.id %}" class="button">{% trans 'Buy' %}</a>
             </td>
             <td>
                 {% spell_stock player s %}
@@ -54,7 +54,7 @@
         <br/>
     <span class="points">{{ rate_text }}</span>
     <p>{% trans 'Exchange points for gold or gold for points' %}</p>
-    <form method="post" action="{% url market_exchange %}">
+    <form method="post" action="{% url bazaar_exchange %}">
         {% trans 'Points' %}: <input type="text" size="3" name="points" value="{{ rate }}" class="big" />
         <div class="actions">
         <button type="submit">{% trans 'Exchange' %}</button>
@@ -62,7 +62,7 @@
         {% csrf_token %}
     </form>
 
-    <form method="post" style="clear:both" action="{% url market_exchange %}">
+    <form method="post" style="clear:both" action="{% url bazaar_exchange %}">
         {% trans 'Gold' %}: <input type="text" size="3" name="gold" value="1" class="big" />
         <div class="actions">
         <button type="submit">{% trans 'Exchange' %}</button>

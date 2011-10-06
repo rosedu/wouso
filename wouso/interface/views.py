@@ -121,25 +121,25 @@ def searchone(request):
 
 # marche
 
-def market(request):
+def bazaar(request):
     spells = Spell.objects.all()
 
     rate = scoring.calculate('gold-points-rate', gold=1)['points']
     rate2 = round(1/scoring.calculate('points-gold-rate', points=1)['gold'])
     rate_text = _('Rate: 1 gold = {rate} points, 1 gold = {rate2} points').format(rate=rate, rate2=rate2)
     
-    return render_to_response('market.html', {'spells': spells,
+    return render_to_response('bazaar.html', {'spells': spells,
                               'rate': rate, 'rate_text': rate_text},
                               context_instance=RequestContext(request))
 
 @login_required
-def market_exchange(request):
+def bazaar_exchange(request):
     gold_rate = scoring.calculate('gold-points-rate', gold=1)['points']
     points_rate = scoring.calculate('points-gold-rate', points=1)['gold']
 
     player = request.user.get_profile()
     message, error = '', ''
-    if BoolSetting.get('disable-Market-Exchange').get_value():
+    if BoolSetting.get('disable-Bazaar-Exchange').get_value():
         error = _("Exchange is disabled")
     elif request.method == 'POST':
         try:
@@ -172,13 +172,13 @@ def market_exchange(request):
     else:
         error = _('Expected post')
 
-    return render_to_response('market_buy.html',
+    return render_to_response('bazaar_buy.html',
                 {'error': error,
                 'message': message, 'tab': 'exchange'},
                 context_instance=RequestContext(request))
 
 @login_required
-def market_buy(request, spell):
+def bazaar_buy(request, spell):
     spell = get_object_or_404(Spell, pk=spell)
 
     player = request.user.get_profile()
@@ -191,7 +191,7 @@ def market_buy(request, spell):
                       price=spell.price)
         message = _("Successfully aquired")
 
-    return render_to_response('market_buy.html',
+    return render_to_response('bazaar_buy.html',
                               {'error': error, 'message': message,
                               },
                               context_instance=RequestContext(request))

@@ -1,13 +1,13 @@
 {% extends base_template %}
 {% load i18n %}
 {% load artifacts %}
-{% block title %}{% trans 'Market' %}{% endblock %}
+{% block title %}{% trans 'Bazaar' %}{% endblock %}
 
 {% block content %}
     <div class="wrong error">{{ error }}</div>
     <div class="ok message">{{ message }}</div>
 
-    <a href="{% url market_home %}#{{tab}}">{% trans 'Market' %}</a>
+    <a href="{% url bazaar_home %}#{{tab}}">{% trans 'Bazaar' %}</a>
 {% endblock %}
 
 

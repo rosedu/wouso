@@ -329,52 +329,52 @@ msgstr "Propune întrebare"
 msgid "Live stats"
 msgstr "Statistici live"
 
-#: resources/templates/market.html:5
-#: resources/templates/market.html.py:12
-#: resources/templates/market_buy.html:4
-#: resources/templates/market_buy.html:10
+#: resources/templates/bazaar.html:5
+#: resources/templates/bazaar.html.py:12
+#: resources/templates/bazaar_buy.html:4
+#: resources/templates/bazaar_buy.html:10
 #: resources/templates/mobile_index.html:16
 #: resources/templates/site_index.html:57
 #: resources/templates/profile/cast.html:11
-msgid "Market"
-msgstr "Piață"
+msgid "Bazaar"
+msgstr "Bazar"
 
-#: resources/templates/market.html:15
+#: resources/templates/bazaar.html:15
 #: resources/templates/site_index.html:35
 msgid "Spells"
 msgstr "Vrăji"
 
-#: resources/templates/market.html:16
-#: resources/templates/market.html.py:60
-#: resources/templates/market.html:68
+#: resources/templates/bazaar.html:16
+#: resources/templates/bazaar.html.py:60
+#: resources/templates/bazaar.html:68
 msgid "Exchange"
 msgstr "Schimb"
 
-#: resources/templates/market.html:33
+#: resources/templates/bazaar.html:33
 #: resources/templates/profile/cast.html:37
 msgid "days"
 msgstr "zile"
 
-#: resources/templates/market.html:40
+#: resources/templates/bazaar.html:40
 msgid "Buy"
 msgstr "Cumpără"
 
-#: resources/templates/market.html:48
+#: resources/templates/bazaar.html:48
 msgid "Nothing"
 msgstr "Nimic"
 
-#: resources/templates/market.html:56
+#: resources/templates/bazaar.html:56
 msgid "Exchange points for gold or gold for points"
 msgstr "Schimbă punctele pe aur sau aurul pe puncte"
 
-#: resources/templates/market.html:58
+#: resources/templates/bazaar.html:58
 #: resources/templates/profile/groups.html:21
 #: resources/templates/profile/profile.html:75
 #: resources/templates/top/maintop.html:18
 msgid "Points"
 msgstr "Puncte"
 
-#: resources/templates/market.html:66
+#: resources/templates/bazaar.html:66
 msgid "Gold"
 msgstr "Aur"
 

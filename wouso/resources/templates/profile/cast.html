@@ -7,8 +7,8 @@
 
 {% block content %}
 {% if not player.spells_collection.all.count %}
-<div class="wrong error">{% trans "You don't have any spells to cast. Buy some at the market place." %}
-<a href="{% url market_home %}">{% trans 'Market' %}</a>
+<div class="wrong error">{% trans "You don't have any spells to cast. Buy some at the bazaar place." %}
+<a href="{% url bazaar_home %}">{% trans 'Bazaar' %}</a>
 </div>
 {% else %}
 <h2>{% trans 'Cast' %}</h2>
