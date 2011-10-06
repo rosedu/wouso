@@ -115,6 +115,9 @@ div#logo {
     float: left;
     width: 500px;
 }
+#wall-navigation {
+    clear: left;
+}
 #right-sidebar p {
     margin: 2px;
 }

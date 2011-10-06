@@ -57,10 +57,12 @@
 
     </div>
     {% endif %}
-    <div id="wall">
+    <div id="wall-container">
         <h2>{% trans 'Activity' %}</h2>
-        {% include 'activity/stream.html' %}
-
+        <div id="wall">
+            {% include 'activity/stream.html' %}
+        </div>
+        <div id="wall-navigation">
         {% if activity.has_previous %}
             <a href="{% url wouso.interface.views.homepage %}"> &raquo; </a>
         {% endif %}
@@ -68,5 +70,6 @@
         {% if activity.has_next %}
             <a href="{% url wouso.interface.views.homepage page=activity.next_page_number %}"> &laquo;</a>
         {% endif %}
-    </div>
+        </div>
+   </div>
 {% endblock %}
