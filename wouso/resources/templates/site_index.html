@@ -2,7 +2,13 @@
 {% load user %}
 {% load artifacts %}
 {% load i18n %}
-
+{% block scripts %}
+<script type="text/javascript" language="JavaScript">
+    $(document).ready(function (){
+        $(document).everyTime(15000, reload_activity);
+    });
+</script>
+{% endblock %}
 {% block content %}
     {% if is_homepage %}
     <div id="right-sidebar" class="profile {% if player.series %}group-{{ player.series.name.lower }}{% endif %} {% if player.proximate_group %}group-{{ player.proximate_group.name.lower }}{% endif %}">

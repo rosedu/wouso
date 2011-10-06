@@ -195,3 +195,13 @@ def market_buy(request, spell):
                               {'error': error, 'message': message,
                               },
                               context_instance=RequestContext(request))
+
+def ajax(request, name):
+    if name == 'header':
+        return render_to_response('interface/header.html',
+                                context_instance=RequestContext(request))
+    if name == 'activity':
+        return render_to_response('activity/stream.html',
+                                {'activity': get_wall(),},
+                                context_instance=RequestContext(request))
+    raise Http404

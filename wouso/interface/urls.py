@@ -54,6 +54,9 @@ urlpatterns = patterns('',
     url(r'^market/buy/(?P<spell>\d+)/$', 'wouso.interface.views.market_buy', name='market_buy'),
     url(r'^market/exchange/$', 'wouso.interface.views.market_exchange', name='market_exchange'),
 
+    # Some dynamic shite
+    url(r'^ajax/(?P<name>.*)/$', 'wouso.interface.views.ajax', name='ajax_do'),
+    
     # Games
     (r'^g/', include('wouso.games.urls')),
 

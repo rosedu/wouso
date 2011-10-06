@@ -1,0 +1,19 @@
+{% load user %}
+{% load i18n %}
+
+{% if user.is_authenticated %}
+    <span id="head-profile" class="bold">{% player player %}</span> |
+    {% autoescape off %}{{ header }}{% endautoescape %}
+    {% if user.is_staff %}
+    <a id="head-cpanel" href="{% url wouso.interface.cpanel.views.dashboard %}">CPanel</a> |
+    {% endif %}
+    <a id="head-logout" href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %} &raquo;</a>
+{% else %}
+{% trans 'Anonimous' %}, <a href="{% url django.contrib.auth.views.login %}">{% trans "Login" %} &raquo;</a>
+{% endif %}
+{% if user.is_authenticated %}
+<div class="second">
+    {% coin_amount player.points %}
+    {% coin_amount player.coins.gold 'gold' %}
+</div>
+{% endif %}
