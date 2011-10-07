@@ -142,6 +142,14 @@ class Challenge(models.Model):
     def participants(self):
         return (self.user_from, self.user_to)
 
+    def participant_for_player(self, player):
+        player = player.get_extension(ChallengeUser)
+        if self.user_from.user == player:
+            return self.user_from
+        elif self.user_to.user == player:
+            return self.user_to
+        raise ValueError('Not participating in this challenge')
+
     def accept(self):
         self.status = 'A'
         self.save()
@@ -151,9 +159,8 @@ class Challenge(models.Model):
         self.user_from.user.last_launched = datetime(1, 1, 1)
         self.user_from.user.save()
 
-        # send activty signal
+        # send activity signal
         signal_msg = ugettext_noop('has refused challenge from {chall_from}')
-
         signals.addActivity.send(sender=None, user_from=self.user_to.user, \
                                      user_to=self.user_from.user, \
                                      message=signal_msg, \
@@ -172,26 +179,15 @@ class Challenge(models.Model):
         first time.
         After this call, challenge will be visible to him for 5 minutes
         TODO: check it hasn't been already started in the past"""
-        user = user.get_extension(ChallengeUser)
 
-        if self.user_from.user == user:
-            self.user_from.start = datetime.now()
-            self.user_from.save()
-        elif self.user_to.user == user:
-            self.user_to.start = datetime.now()
-            self.user_to.save()
-        else:
-            pass # todo raise something
+        partic = self.participant_for_player(user)
+
+        partic.start = datetime.now()
+        partic.save()
 
     def time_for_user(self, user):
         now = datetime.now()
-
-        if user == self.user_from.user:
-            partic = self.user_from
-        elif user == self.user_to.user:
-            partic = self.user_to
-        else:
-            return 0
+        partic = self.participant_for_player(user)
 
         return Challenge.TIME_LIMIT - (now - partic.start).seconds
 
@@ -207,26 +203,17 @@ class Challenge(models.Model):
         return True
 
     def is_expired_for_user(self, user):
-        if self.user_from.user == user:
-            return self.is_expired(self.user_from)
-        elif self.user_to.user == user:
-            return self.is_expired(self.user_to)
-        else:
-            pass # should raise UserNotParticipating
+        """ Check if the challenge has expired for the user
+        """
+        partic = self.participant_for_player(user)
+        return self.is_expired(partic)
 
     def is_started_for_user(self, user):
-        """Check if the challenge has already started for the given user"""
-        user = user.get_extension(ChallengeUser)
-        if self.user_from.user == user:
-            if self.user_from.start is None:
-                return False
-            return True
-        elif self.user_to.user == user:
-            if self.user_to.start is None:
-                return False
-            return True
-        else:
-            pass #raise something
+        """ Check if the challenge has already started for the given user"""
+        partic = self.participant_for_player(user)
+        if partic.start is None:
+            return False
+        return True
 
     def extraInfo(self, user_won, user_lost):
         '''returns a string with extra info for a string such as User 1 finished the challenge in $SECONDS seconds
@@ -282,7 +269,7 @@ class Challenge(models.Model):
                                      user_to=self.user_from.user, \
                                      message=signal_msg, \
                                      arguments=dict(user_to=self.user_to, user_from=self.user_from,
-                                                    extra=self.extraInfo(self.user_from, self.user_from)),\
+                                                    extra=self.extraInfo(self.user_from, self.user_to)),\
                                      game=ChallengeGame.get_instance())
         else:
             self.status = 'P'
@@ -332,13 +319,7 @@ class Challenge(models.Model):
 
     def set_played(self, user, responses):
         """ Set user's results. If both users have played, also update self and activity. """
-        if self.user_to.user == user:
-            user_played = self.user_to
-        elif self.user_from.user == user:
-            user_played = self.user_from
-        else:
-            logging.error("Invalid user")
-            return
+        user_played = self.participant_for_player(user)
 
         user_played.seconds_took = (datetime.now() - user_played.start).seconds
         user_played.played = True
@@ -360,16 +341,13 @@ class Challenge(models.Model):
 
     def can_play(self, user):
         """ Check if user can play this challenge"""
-        if self.user_to.user != user and self.user_from.user != user:
+        try:
+            partic = self.participant_for_player(user)
+        except ValueError:
             return False
 
-        if self.user_to == user:
-            if self.played_to:
-                return False
-
-        elif self.user_from == user:
-            if self.played_from:
-                return False
+        if partic.played:
+            return False
 
         return self.is_runnable()
 

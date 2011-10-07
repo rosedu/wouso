@@ -39,20 +39,21 @@ def challenge(request, id):
     chall = get_object_or_404(Challenge, pk=id)
 
     # check to see if challenge was already submitted
-    participant = None
-    if chall_user == chall.user_from.user:
-        participant = chall.user_from
-    elif chall_user == chall.user_to.user:
-        participant = chall.user_to
-    if participant is not None and participant.played:
+    try:
+        participant = chall.participant_for_player(chall_user)
+    except:
+        raise Http404
+
+    if participant.played:
         return do_result(request, _('You have already submitted this challenge'\
                                    ' and scored %.2f points') % participant.score)
 
-    if not chall_user.can_play(chall):
-        return do_result(request, _('You cannot play this challenge.'))
+    # this is caught by chall_user
+    #if not chall_user.can_play(chall):
+    #    return do_result(request, _('You cannot play this challenge.'))
 
-    if request.method == 'GET' and not chall.is_started_for_user(request.user.get_profile()):
-        chall.set_start(request.user.get_profile())
+    if request.method == 'GET' and not chall.is_started_for_user(chall_user):
+        chall.set_start(chall_user)
 
     if request.method == "POST":
         form = ChallengeForm(chall, request.POST)
@@ -89,7 +90,6 @@ def launch(request, to_id):
             # Some error occurred during question fetch. Clean up, and display error
             return do_result(request, e.message)
         return do_result(request, message=_('Successfully challenged'))
-        #HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
     else:
         return do_result(request, _('This user cannot be challenged by you.'))
 
