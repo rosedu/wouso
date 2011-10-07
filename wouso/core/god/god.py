@@ -31,14 +31,21 @@ class DefaultGod:
             description='Give bonus gold to the poor people'))
         return fs
 
-    def get_user_level(self, level_no, player=None):
+    def get_user_level(self, level_no, player):
         """
         Return the artifact object for the given level_no.
+        If there is a group for player series, use it.
         """
-        group, new =  Group.objects.get_or_create(name='Default')
+        try:
+            group = Group.objects.get(name=player.series.name)
+        except (Group.DoesNotExist, AttributeError):
+            group = Artifact.DEFAULT()
+
         name = 'level-%d' % level_no
         try:
             artifact = Artifact.objects.get(name=name, group=group)
+        except Artifact.DoesNotExist:
+            artifact = Artifact.objects.get(name=name, group=Artifact.DEFAULT())
         except Artifact.DoesNotExist:
             return None
 
