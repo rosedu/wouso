@@ -2,6 +2,7 @@
 import logging
 from django.utils.translation import ugettext_noop
 from django.db import models
+from django.contrib.auth.models import User
 from wouso.core.user.models import Player
 from wouso.core.scoring.models import Coin, Formula, History
 from wouso.core.god import God

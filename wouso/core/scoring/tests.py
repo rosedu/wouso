@@ -22,7 +22,7 @@ class ScoringTestCase(unittest.TestCase):
         self.assertEqual(len(no_history), 0 )
 
     def testScoreSimple(self):
-        scoring.score_simple(self.user, self.coin, game=self.game, external_id=2, amount=10)
+        scoring.score_simple(self.user.get_profile(), self.coin, game=self.game, external_id=2, amount=10)
         multiple = scoring.history_for(self.user, self.game, external_id=2)
 
         self.assertTrue(isinstance(multiple, QuerySet))
@@ -74,7 +74,7 @@ class ScoringTestCase(unittest.TestCase):
         formula = Formula.objects.create(id='_test_formula_sc',
             formula='_test=13', owner=self.game)
 
-        scoring.score(self.user, self.game, formula,
+        scoring.score(self.user.get_profile(), self.game, formula,
             external_id=3)
 
         hs = scoring.history_for(self.user, self.game, external_id=3)

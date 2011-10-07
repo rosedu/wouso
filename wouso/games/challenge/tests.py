@@ -44,7 +44,7 @@ class ChallengeTestCase(unittest.TestCase):
         user.delete()
 
     def testLaunch(self):
-        chall = Challenge.create(user_from=self.chall_user, user_to=self.chall_user2)
+        chall = Challenge.create(user_from=self.chall_user, user_to=self.chall_user2, ignore_questions=True)
 
         self.assertTrue(isinstance(chall, Challenge))
         self.assertTrue(chall.is_launched())
@@ -53,14 +53,14 @@ class ChallengeTestCase(unittest.TestCase):
         self.assertTrue(chall.is_refused())
         chall.delete()
 
-        chall = Challenge.create(user_from=self.chall_user, user_to=self.chall_user2)
+        chall = Challenge.create(user_from=self.chall_user, user_to=self.chall_user2, ignore_questions=True)
         chall.accept()
         self.assertTrue(chall.is_runnable())
         self.assertFalse(chall.is_refused())
         chall.delete()
 
     def testRun(self):
-        chall = Challenge.create(user_from=self.chall_user, user_to=self.chall_user2)
+        chall = Challenge.create(user_from=self.chall_user, user_to=self.chall_user2, ignore_questions=True)
 
         chall.accept()
         self.assertTrue(chall.is_runnable())
@@ -73,7 +73,7 @@ class ChallengeTestCase(unittest.TestCase):
         with patch('wouso.games.challenge.models.datetime') as mock_datetime:
             # after three minutes, challenge is still available
             mock_datetime.now.return_value = just_now + timedelta(minutes=3)
-            self.assertTrue(chall.check_timedelta(self.chall_user))
+            self.assertTrue(chall.is_expired_for_user(self.chall_user))
             # pass some more time, challenge cannot be submited any more
             mock_datetime.now.return_value = just_now + timedelta(minutes=10)
             self.assertFalse(chall.check_timedelta(self.chall_user))

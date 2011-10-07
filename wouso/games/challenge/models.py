@@ -105,11 +105,11 @@ class Challenge(models.Model):
     TIME_SAFE = 10 # seconds more
 
     @staticmethod
-    def create(user_from, user_to):
+    def create(user_from, user_to, ignore_questions = False):
         """ Assigns questions, and returns the number of assigned q """
 
         questions = [q for q in get_questions_with_category('challenge')]
-        if len(questions) < 5:
+        if (len(questions) < 5) and not ignore_questions:
             raise ValueError('Too few questions')
         shuffle(questions)
 
@@ -196,9 +196,23 @@ class Challenge(models.Model):
         return Challenge.TIME_LIMIT - (now - partic.start).seconds
 
     def is_expired(self, participant):
+        """ This function assumes that seconds_took has been set.
+        If the user didn't submit the challenge, this will return False
+        which might be incorrect.
+        TODO: fix this to first check if user has submitted, and
+        if not, verify with datetime.now - participant.start.
+        """
         if participant.seconds_took < Challenge.TIME_LIMIT + Challenge.TIME_SAFE:
             return False
         return True
+
+    def is_expired_for_user(self, user):
+        if self.user_from.user == user:
+            return self.is_expired(self.user_from)
+        elif self.user_to.user == user:
+            return self.is_expired(self.user_to)
+        else:
+            pass # should raise UserNotParticipating
 
     def is_started_for_user(self, user):
         """Check if the challenge has already started for the given user"""
