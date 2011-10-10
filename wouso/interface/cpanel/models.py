@@ -10,6 +10,7 @@ class Customization(ConfigGroup):
     def props(self):
         title = HTMLSetting.get('title')
         intro = HTMLSetting.get('intro')
+        einfo = HTMLSetting.get('extrainfo')
         hf = HTMLSetting.get('hidden_footer')
         theme = ChoicesSetting.get('theme')
         theme.choices = [(t,t) for t in get_themes()]
@@ -18,7 +19,7 @@ class Customization(ConfigGroup):
         default_group = ChoicesSetting.get('default_group')
         default_group.choices = [(unicode(g), str(g.id)) for g in PlayerGroup.objects.filter(gclass=1)]
 
-        return [title, intro, theme, logo, hf, default_group]
+        return [title, intro, theme, logo, hf, default_group, einfo]
 
 class Switchboard(ConfigGroup):
     name = 'Disable features'
