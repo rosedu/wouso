@@ -13,7 +13,7 @@ def header_footer(request):
     """
     #TODO ordering, using config
 
-    header = []
+    header = [] 
     try:
         for game in get_games():
             h = game.get_header_link(request)
@@ -56,12 +56,14 @@ def header_footer(request):
         footer.append(Qproposal.get_footer_link(request))
 
     # format header
-    hids = lambda p: '<span id="head-%s">%s</span>' % (p[1].lower(), p[0])
+    hids = lambda p: '<span id="head-%s"><a href="%s">%s</a>%s</span>' % (p[1].lower(), \
+                        p[0]['link'], p[0]['text'], \
+                        '<sup class="unread-count">%d</sup>' % p[0]['count'] if p[0].get('count', False) else '')
 
-    header = " | ".join(map(hids, header))
+    header_html = " | ".join(map(hids, header))
     footer = " | ".join(footer)
 
-    return {'header': header, 'footer': footer}
+    return {'header': header_html, 'heads': header, 'footer': footer}
 
 def sidebar(request):
     """ For each registered game, get a widget to be displayed in sidebar

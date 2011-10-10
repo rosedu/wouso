@@ -19,7 +19,8 @@ class App:
 
     @classmethod
     def get_header_link(kls, request):
-        """ Return html content to be displayed in the header
+        """ Return dictionary containing (link, text, count) for the content
+        to be displayed in the page header.
         Called in interface.context_processors.header """
         return None
 

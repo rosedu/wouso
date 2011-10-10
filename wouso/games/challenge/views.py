@@ -159,7 +159,7 @@ def use_one_more(request):
 def header_link(request):
     profile = request.user.get_profile()
     if not profile:
-        return ''
+        return None
     chall_user = profile.get_extension(ChallengeUser)
     challs = ChallengeGame.get_active(chall_user)
     # remove launched challenges by the user
@@ -168,12 +168,9 @@ def header_link(request):
     challs = [c for c in challs if not c.status == 'R']
 
     count = len(challs)
+    url = reverse('wouso.games.challenge.views.index')
 
-    link = '<a href="'+ reverse('wouso.games.challenge.views.index') +'">' + _('Challenges') + '</a>'
-
-    if count > 0:
-        link += '<span class="unread-count">%d</span>' % count
-    return link
+    return dict(link=url, count=count, text=_('Challenges'))
 
 def sidebar_widget(request):
     profile = request.user.get_profile()

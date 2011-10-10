@@ -7,5 +7,5 @@ class Bazaar(App):
     def get_header_link(kls, request):
         url = reverse('bazaar_home')
 
-        return '<a href="%s">' % url + _('Bazaar') + '</a>'
+        return dict(link=url, text=_('Bazaar'))
     
