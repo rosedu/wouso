@@ -15,7 +15,7 @@
 <form method="post" action="{% url games.qotd.views.index %}">
 <div class="answers">
 <ul>
-    {% for a in question.answers %}
+    {% for a in question.shuffled_answers %}
         <li><input type=radio name="answers" value="{{ a.id }}" id="qotd_a_{{a.id}}"/>
             <label for="qotd_a_{{a.id}}">{% autoescape off %}{{ a.text }}{% endautoescape %}</label>
         </li>

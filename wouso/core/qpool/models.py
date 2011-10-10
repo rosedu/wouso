@@ -1,4 +1,5 @@
 from datetime import datetime, date, timedelta
+from random import shuffle
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -72,6 +73,16 @@ class Question(models.Model):
             return Answer.objects.filter(question=self).all()
         except Answer.DoesNotExist:
             return None
+
+    @property
+    def shuffled_answers(self):
+        """ A list of permuted answers, for displaying
+        """
+        if self.answers is None:
+            return []
+        answers = list(self.answers)
+        shuffle(answers)
+        return answers
 
     @property
     def day(self):
