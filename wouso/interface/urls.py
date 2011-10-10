@@ -50,9 +50,7 @@ urlpatterns = patterns('',
     (r'^qproposal/', include('wouso.interface.qproposal.urls')),
 
     # Bazaar
-    url(r'^bazaar/$', 'wouso.interface.views.bazaar', name='bazaar_home'),
-    url(r'^bazaar/buy/(?P<spell>\d+)/$', 'wouso.interface.views.bazaar_buy', name='bazaar_buy'),
-    url(r'^bazaar/exchange/$', 'wouso.interface.views.bazaar_exchange', name='bazaar_exchange'),
+    url(r'^bazaar/', include('wouso.interface.bazaar.urls')),
 
     # Some dynamic shite
     url(r'^ajax/(?P<name>.*)/$', 'wouso.interface.views.ajax', name='ajax_do'),
