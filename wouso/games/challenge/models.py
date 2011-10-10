@@ -1,10 +1,10 @@
 import logging
-from datetime import datetime, time, timedelta
+from datetime import datetime, time, timedelta, date
 from random import shuffle
 import pickle as pk
 from django.db import models
 from django.db.models import Q, Max
-from django.utils.translation import ugettext_noop
+from django.utils.translation import ugettext_noop, ugettext as _
 from django.core.urlresolvers import reverse
 from wouso.core.user.models import Player, InsufficientAmount
 from wouso.core.qpool.models import Question
@@ -135,8 +135,16 @@ class Challenge(models.Model):
         """
         Return all expired challenges at given date.
         """
-        yesterday = today + timedelta(days=-1) # TODO: use combine
+        yesterday = today + timedelta(days=-1)
         return Challenge.objects.filter(status='a', date__lt=yesterday)
+
+    @staticmethod
+    def exist_last_day(today, user_from, user_to):
+        """
+        Return true if there are any challenges between the two users in the last day
+        """
+        yesterday = today + timedelta(days=-1)
+        return Challenge.objects.filter(user_from__user=user_from, user_to__user=user_to, date__gt=yesterday).count() > 0
 
     @property
     def participants(self):
@@ -451,7 +459,10 @@ class ChallengeGame(Game):
     def get_profile_actions(kls, request, player):
         url = reverse('wouso.games.challenge.views.launch', args=(player.id,))
         if request.user.get_profile().id != player.id:
-            return '<a class="button ajaxify" href="%s">Challenge!</a>' % url
+            # check if there isn't another challenge launched
+            if Challenge.exist_last_day(date.today(), request.user.get_profile(), player):
+                return '<span class="button">%s</span>' % _('Challenged')
+            return '<a class="button ajaxify" href="%s">%s</a>' % (url, _('Challenge!'))
         return ''
 
 # Hack for having participants in sync

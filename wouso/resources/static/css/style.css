@@ -223,7 +223,7 @@ img.avatar {
     clear: right;
     float: right;
 }
-.actions a, a.button, button {
+.actions a, a.button, span.button, button {
     display: block;
     float: left;
     text-align: center;
@@ -236,6 +236,9 @@ img.avatar {
     text-decoration: none;
     color: black;
     text-wrap: suppress;
+}
+span.button {
+    color: #888;
 }
 span.button-list {
     float:left;
