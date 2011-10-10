@@ -416,6 +416,9 @@ ul.answers {
     padding-left: 0px;
     margin-top: 6px;
 }
+ul.answers li {
+    clear: both;
+}
 div.timer {
     text-align: center;
     font-size: 42px;

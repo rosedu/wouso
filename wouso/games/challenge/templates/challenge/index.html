@@ -37,7 +37,7 @@
     {% endifequal %}
 
     {% if c.is_runnable %}
-        <a href="{% url games.challenge.views.challenge c.id %}">Play</a>
+        <span class="points"><a href="{% url games.challenge.views.challenge c.id %}" class="button">{% trans 'Play' %}</a></span>
     {% endif %}
 
     {% ifequal c.user_from.user challuser %}
