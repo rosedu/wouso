@@ -20,7 +20,7 @@
             {% endif %}
     </td></tr>
     <tr><td>{% trans 'Subject' %}: </td><td valign="top">
-            <input type="text" id="subject" name="subject" class="big" size="50"/>
+            <input type="text" id="subject" name="subject" class="big" size="50" value="{{ subject }}"/>
     </td></tr>
     <tr><td valign="top">Text:</td>
     <td>
@@ -33,6 +33,7 @@
         <button type="submit" class="default">{% trans 'Send' %}</button>
     </div>
     {% csrf_token %}
+    <input type="hidden" name="reply_to" value="{{ reply_to.id }}" />
 </form>
 
 <script type="text/javascript"> 

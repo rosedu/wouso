@@ -41,9 +41,14 @@ def home(request, quiet=None, box=None, page=u'0'):
 
 
 @login_required
-def create(request, to=None):
+def create(request, to=None, reply_to=None):
     if to is not None:
         to = get_object_or_404(Player, pk=to)
+    if reply_to is not None:
+        reply_to = get_object_or_404(Message, pk=reply_to)
+        subject = 'Re: ' + reply_to.subject if not reply_to.subject.startswith('Re: ') else reply_to.subject
+    else:
+        subject = ''
 
     if request.method == "POST":
         form = ComposeForm(request.POST)
@@ -51,13 +56,16 @@ def create(request, to=None):
             m = Message.send(request.user.get_profile(),
                             form.cleaned_data['to'],
                             form.cleaned_data['subject'],
-                            form.cleaned_data['text']
+                            form.cleaned_data['text'],
+                            reply_to=form.cleaned_data['reply_to'],
             )
             return HttpResponseRedirect(reverse('wouso.interface.messaging.views.home'))
         #else:
         #   print form, form.is_valid(), request.POST
     return render_to_response('messaging/create.html',
-                              {'to': to},
+                              {'to': to,
+                               'reply_to': reply_to,
+                               'subject': subject},
                               context_instance=RequestContext(request))
 
 @login_required
