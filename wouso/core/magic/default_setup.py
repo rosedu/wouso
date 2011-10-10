@@ -15,23 +15,29 @@ if __name__ == '__main__':
     # Spell group
     spell_group, new = Group.objects.get_or_create(name='Spells')
 
+    # Group groups
+    ca, new = Group.objects.get_or_create(name='CA')
+    cb, new = Group.objects.get_or_create(name='CB')
+    cc, new = Group.objects.get_or_create(name='CC')
+
     # Create a default group
     default_group, new = Group.objects.get_or_create(name='Default')
     for i in range(7):
         name='level-%d' % (i + 1)
         title='Level %d' % (i + 1)
-        Artifact.objects.get_or_create(
-            name=name,
-            group=default_group,
-            title=title)
+        for g in (default_group, ca, cb, cc):
+            Artifact.objects.get_or_create(
+                name=name,
+                group=g,
+                title=title)
 
     print "done"
     # Assure each user has a level
-    level = Artifact.get_level_1()
-    for u in Player.objects.all():
-        if u.level is None:
-            u.level = level
-            u.save()
+    #level = Artifact.get_level_1()
+    #for u in Player.objects.all():
+    #    if u.level is None:
+    #        u.level = level
+    #        u.save()
 
     # Dump
     print "Groups: "
