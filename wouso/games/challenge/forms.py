@@ -6,7 +6,7 @@ class ChallengeForm(forms.Form):
         
         for q in challenge.questions.all():
             field = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, label=q.text)
-            field.choices = [(a.id, a.text) for a in q.answers.all()]
+            field.choices = [(a.id, a.text) for a in q.shuffled_answers]
             self.fields['answer_{id}'.format(id=q.id)] = field
         self.data = data
     
