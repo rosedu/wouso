@@ -10,6 +10,27 @@
   "pk": 2,
   "model": "magic.group",
   "fields": {
+   "name": "CA"
+  }
+ },
+ {
+  "pk": 3,
+  "model": "magic.group",
+  "fields": {
+   "name": "CB"
+  }
+ },
+ {
+  "pk": 4,
+  "model": "magic.group",
+  "fields": {
+   "name": "CC"
+  }
+ },
+ {
+  "pk": 5,
+  "model": "magic.group",
+  "fields": {
    "name": "Default"
   }
  },
@@ -19,7 +40,7 @@
   "fields": {
    "image": "",
    "percents": 100,
-   "group": 2,
+   "group": 5,
    "name": "level-1",
    "title": "Level 1"
   }
@@ -31,12 +52,89 @@
    "image": "",
    "percents": 100,
    "group": 2,
+   "name": "level-1",
+   "title": "Level 1"
+  }
+ },
+ {
+  "pk": 3,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 3,
+   "name": "level-1",
+   "title": "Level 1"
+  }
+ },
+ {
+  "pk": 4,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 4,
+   "name": "level-1",
+   "title": "Level 1"
+  }
+ },
+ {
+  "pk": 5,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 5,
    "name": "level-2",
    "title": "Level 2"
   }
  },
  {
-  "pk": 3,
+  "pk": 6,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 2,
+   "name": "level-2",
+   "title": "Level 2"
+  }
+ },
+ {
+  "pk": 7,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 3,
+   "name": "level-2",
+   "title": "Level 2"
+  }
+ },
+ {
+  "pk": 8,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 4,
+   "name": "level-2",
+   "title": "Level 2"
+  }
+ },
+ {
+  "pk": 9,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 5,
+   "name": "level-3",
+   "title": "Level 3"
+  }
+ },
+ {
+  "pk": 10,
   "model": "magic.artifact",
   "fields": {
    "image": "",
@@ -47,7 +145,40 @@
   }
  },
  {
-  "pk": 4,
+  "pk": 11,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 3,
+   "name": "level-3",
+   "title": "Level 3"
+  }
+ },
+ {
+  "pk": 12,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 4,
+   "name": "level-3",
+   "title": "Level 3"
+  }
+ },
+ {
+  "pk": 13,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 5,
+   "name": "level-4",
+   "title": "Level 4"
+  }
+ },
+ {
+  "pk": 14,
   "model": "magic.artifact",
   "fields": {
    "image": "",
@@ -58,7 +189,40 @@
   }
  },
  {
-  "pk": 5,
+  "pk": 15,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 3,
+   "name": "level-4",
+   "title": "Level 4"
+  }
+ },
+ {
+  "pk": 16,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 4,
+   "name": "level-4",
+   "title": "Level 4"
+  }
+ },
+ {
+  "pk": 17,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 5,
+   "name": "level-5",
+   "title": "Level 5"
+  }
+ },
+ {
+  "pk": 18,
   "model": "magic.artifact",
   "fields": {
    "image": "",
@@ -69,7 +233,40 @@
   }
  },
  {
-  "pk": 6,
+  "pk": 19,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 3,
+   "name": "level-5",
+   "title": "Level 5"
+  }
+ },
+ {
+  "pk": 20,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 4,
+   "name": "level-5",
+   "title": "Level 5"
+  }
+ },
+ {
+  "pk": 21,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 5,
+   "name": "level-6",
+   "title": "Level 6"
+  }
+ },
+ {
+  "pk": 22,
   "model": "magic.artifact",
   "fields": {
    "image": "",
@@ -80,7 +277,40 @@
   }
  },
  {
-  "pk": 7,
+  "pk": 23,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 3,
+   "name": "level-6",
+   "title": "Level 6"
+  }
+ },
+ {
+  "pk": 24,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 4,
+   "name": "level-6",
+   "title": "Level 6"
+  }
+ },
+ {
+  "pk": 25,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 5,
+   "name": "level-7",
+   "title": "Level 7"
+  }
+ },
+ {
+  "pk": 26,
   "model": "magic.artifact",
   "fields": {
    "image": "",
@@ -91,7 +321,29 @@
   }
  },
  {
-  "pk": 8,
+  "pk": 27,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 3,
+   "name": "level-7",
+   "title": "Level 7"
+  }
+ },
+ {
+  "pk": 28,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 4,
+   "name": "level-7",
+   "title": "Level 7"
+  }
+ },
+ {
+  "pk": 29,
   "model": "magic.artifact",
   "fields": {
    "image": "",
@@ -102,7 +354,7 @@
   }
  },
  {
-  "pk": 9,
+  "pk": 30,
   "model": "magic.artifact",
   "fields": {
    "image": "",
@@ -113,7 +365,7 @@
   }
  },
  {
-  "pk": 10,
+  "pk": 31,
   "model": "magic.artifact",
   "fields": {
    "image": "",
@@ -124,7 +376,7 @@
   }
  },
  {
-  "pk": 11,
+  "pk": 32,
   "model": "magic.artifact",
   "fields": {
    "image": "",
@@ -135,7 +387,7 @@
   }
  },
  {
-  "pk": 12,
+  "pk": 33,
   "model": "magic.artifact",
   "fields": {
    "image": "",
@@ -146,7 +398,7 @@
   }
  },
  {
-  "pk": 13,
+  "pk": 34,
   "model": "magic.artifact",
   "fields": {
    "image": "",
@@ -157,7 +409,7 @@
   }
  },
  {
-  "pk": 14,
+  "pk": 35,
   "model": "magic.artifact",
   "fields": {
    "image": "",
@@ -168,7 +420,7 @@
   }
  },
  {
-  "pk": 15,
+  "pk": 36,
   "model": "magic.artifact",
   "fields": {
    "image": "",
@@ -179,7 +431,7 @@
   }
  },
  {
-  "pk": 16,
+  "pk": 37,
   "model": "magic.artifact",
   "fields": {
    "image": "",
@@ -190,7 +442,7 @@
   }
  },
  {
-  "pk": 17,
+  "pk": 38,
   "model": "magic.artifact",
   "fields": {
    "image": "",
@@ -201,7 +453,7 @@
   }
  },
  {
-  "pk": 18,
+  "pk": 39,
   "model": "magic.artifact",
   "fields": {
    "image": "",
@@ -212,7 +464,7 @@
   }
  },
  {
-  "pk": 19,
+  "pk": 40,
   "model": "magic.artifact",
   "fields": {
    "image": "",
@@ -223,7 +475,7 @@
   }
  },
  {
-  "pk": 20,
+  "pk": 41,
   "model": "magic.artifact",
   "fields": {
    "image": "",
@@ -234,7 +486,7 @@
   }
  },
  {
-  "pk": 8,
+  "pk": 29,
   "model": "magic.spell",
   "fields": {
    "due_days": 3,
@@ -244,7 +496,7 @@
   }
  },
  {
-  "pk": 9,
+  "pk": 30,
   "model": "magic.spell",
   "fields": {
    "due_days": 3,
@@ -254,7 +506,7 @@
   }
  },
  {
-  "pk": 10,
+  "pk": 31,
   "model": "magic.spell",
   "fields": {
    "due_days": 3,
@@ -264,7 +516,7 @@
   }
  },
  {
-  "pk": 11,
+  "pk": 32,
   "model": "magic.spell",
   "fields": {
    "due_days": 1,
@@ -274,7 +526,7 @@
   }
  },
  {
-  "pk": 12,
+  "pk": 33,
   "model": "magic.spell",
   "fields": {
    "due_days": 1,
@@ -284,7 +536,7 @@
   }
  },
  {
-  "pk": 13,
+  "pk": 34,
   "model": "magic.spell",
   "fields": {
    "due_days": 1,
@@ -294,7 +546,7 @@
   }
  },
  {
-  "pk": 14,
+  "pk": 35,
   "model": "magic.spell",
   "fields": {
    "due_days": 1,
@@ -304,7 +556,7 @@
   }
  },
  {
-  "pk": 15,
+  "pk": 36,
   "model": "magic.spell",
   "fields": {
    "due_days": 1,
@@ -314,7 +566,7 @@
   }
  },
  {
-  "pk": 16,
+  "pk": 37,
   "model": "magic.spell",
   "fields": {
    "due_days": 1,
@@ -324,7 +576,7 @@
   }
  },
  {
-  "pk": 17,
+  "pk": 38,
   "model": "magic.spell",
   "fields": {
    "due_days": 3,
@@ -334,7 +586,7 @@
   }
  },
  {
-  "pk": 18,
+  "pk": 39,
   "model": "magic.spell",
   "fields": {
    "due_days": 1,
@@ -344,7 +596,7 @@
   }
  },
  {
-  "pk": 19,
+  "pk": 40,
   "model": "magic.spell",
   "fields": {
    "due_days": 3,
@@ -354,7 +606,7 @@
   }
  },
  {
-  "pk": 20,
+  "pk": 41,
   "model": "magic.spell",
   "fields": {
    "due_days": 3,
@@ -481,6 +733,20 @@
   }
  },
  {
+  "pk": "theme",
+  "model": "config.setting",
+  "fields": {
+   "value": "default"
+  }
+ },
+ {
+  "pk": "disable-QotdGame",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
   "pk": "disable-SpecialQuestGame",
   "model": "config.setting",
   "fields": {
@@ -523,21 +789,7 @@
   }
  },
  {
-  "pk": "theme",
-  "model": "config.setting",
-  "fields": {
-   "value": "default"
-  }
- },
- {
   "pk": "logo",
-  "model": "config.setting",
-  "fields": {
-   "value": ""
-  }
- },
- {
-  "pk": "disable-QotdGame",
   "model": "config.setting",
   "fields": {
    "value": ""
