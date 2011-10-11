@@ -11,7 +11,7 @@ from wouso.core.qpool import get_questions_with_category
 from models import SpecialQuestTask, SpecialQuestUser, SpecialQuestGame
 from forms import TaskForm
 
-@permission_required('specialquest.change_specialquest')
+@permission_required('specialquest.change_specialquestuser')
 def home(request):
     tasks = SpecialQuestTask.objects.all()
 
@@ -20,7 +20,7 @@ def home(request):
                                'module': 'specialquest'},
                               context_instance=RequestContext(request))
 
-@permission_required('specialquest.change_specialquest')
+@permission_required('specialquest.change_specialquestuser')
 def edit(request, id=None):
     if id is not None:
         task = get_object_or_404(SpecialQuestTask, pk=id)
@@ -41,7 +41,7 @@ def edit(request, id=None):
                                'module': 'specialquest'},
                               context_instance=RequestContext(request))
 
-@permission_required('specialquest.change_specialquest')
+@permission_required('specialquest.change_specialquestuser')
 def delete(request, id=None):
     if id is None:
         return HttpResponseRedirect(reverse('wouso.games.specialquest.cpanel.home'))
@@ -49,7 +49,7 @@ def delete(request, id=None):
     task.delete()
     return HttpResponseRedirect(reverse('wouso.games.specialquest.cpanel.home'))
 
-@permission_required('specialquest.change_specialquest')
+@permission_required('specialquest.change_specialquestuser')
 def manage_player(request, player_id):
     player = get_object_or_404(Player, pk=player_id)
     player = player.get_extension(SpecialQuestUser)
@@ -76,7 +76,7 @@ def manage_player(request, player_id):
                     dict(mplayer=player, tasks_not_done=tasks_not_done, message=message, error=error, bonuses=bonuses),
                     context_instance=RequestContext(request))
 
-@permission_required('specialquest.change_specialquest')
+@permission_required('specialquest.change_specialquestuser')
 def manage_player_set(request, player_id, task_id):
     player = get_object_or_404(SpecialQuestUser, id=player_id)
     task = get_object_or_404(SpecialQuestTask, id=task_id)
@@ -87,7 +87,7 @@ def manage_player_set(request, player_id, task_id):
 
     return HttpResponseRedirect(reverse('specialquest_manage', args=(player.id,)))
 
-@permission_required('specialquest.change_specialquest')
+@permission_required('specialquest.change_specialquestuser')
 def manage_player_unset(request, player_id, task_id):
     player = get_object_or_404(SpecialQuestUser, id=player_id)
     task = get_object_or_404(SpecialQuestTask, id=task_id)

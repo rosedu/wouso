@@ -53,9 +53,9 @@
         {% autoescape off %}{{ profile_actions }}{% endautoescape %}
     </div>
 
-    {% if user.is_superuser %}
+    {% if perms.config.change_setting %}
     <div class="actions">
-        <span class="button-list">Superuser only: </span>
+        <span class="button-list">Staff:</span>
         <a class="button" href="{% url group_set profile.id %}">Groups</a>
         <a class="button" href="{% url artifact_set profile.id %}">Artifacts</a>
         {% autoescape off %}{{ profile_superuser_actions }}{% endautoescape %}
