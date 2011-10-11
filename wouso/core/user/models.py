@@ -23,12 +23,12 @@ class PlayerGroup(models.Model):
     title = models.CharField(max_length=100, default='', blank=True)
     gclass = models.IntegerField(default=0)
     parent = models.ForeignKey('PlayerGroup', default=None, null=True, blank=True)
+    show_in_top = models.BooleanField(default=True, blank=True)
 
     artifacts = models.ManyToManyField(Artifact, blank=True, through=GroupArtifactAmount)
 
     # used only for sorting and position
     points = models.FloatField(default=0)
-
     _sisters = []
     _children = []
 
@@ -52,9 +52,9 @@ class PlayerGroup(models.Model):
         """
         if not self._sisters:
             if self.parent:
-                self._sisters = list(self.parent.children.exclude(id=self.id))
+                self._sisters = list(self.parent.children.exclude(id=self.id).exclude(show_in_top=False))
             else:
-                self._sisters = list(PlayerGroup.objects.filter(gclass=self.gclass).exclude(id=self.id))
+                self._sisters = list(PlayerGroup.objects.filter(gclass=self.gclass).exclude(id=self.id).exclude(show_in_top=False))
         return self._sisters
 
     def __unicode__(self):

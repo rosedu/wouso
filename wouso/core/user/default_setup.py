@@ -16,6 +16,8 @@ if __name__ == '__main__':
         g,nw = Group.objects.get_or_create(name=i)
         pg,nw = PlayerGroup.objects.get_or_create(group=g,name=i,gclass=1)
         if i == 'Others':
+            pg.show_in_top = False
+            pg.save()
             continue
         for j in groups:
             name = i + '' + str(j)

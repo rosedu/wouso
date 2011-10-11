@@ -81,9 +81,9 @@ def player_group(request, id, page=u'1'):
     top_users = group.player_set.all().order_by('-points')
     subgroups = group.children.order_by('-points')
     if group.parent:
-        sistergroups = group.parent.children.order_by('-points')
+        sistergroups = group.parent.children.exclude(show_in_top=False).order_by('-points')
     else:
-        sistergroups = PlayerGroup.objects.filter(gclass=group.gclass).order_by('-points')
+        sistergroups = PlayerGroup.objects.filter(gclass=group.gclass).exclude(show_in_top=False).order_by('-points')
     history = GroupHistory(group)
 
     for g in group.sisters:
