@@ -2,9 +2,10 @@ import datetime
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.core import serializers
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
@@ -127,3 +128,14 @@ def ajax(request, name):
                                 {'activity': get_wall(),},
                                 context_instance=RequestContext(request))
     raise Http404
+
+def ajax_get(request, model, id=0):
+    if model == 'pages.staticpage':
+        from wouso.interface.pages.models import StaticPage
+        model = StaticPage
+    else:
+        raise Http404
+
+    obj = get_object_or_404(model, pk=id)
+    
+    return HttpResponse(serializers.serialize('json', (obj,)))
