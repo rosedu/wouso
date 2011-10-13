@@ -152,7 +152,7 @@ def magic_summary(request):
 
     return render_to_response('profile/spells.html',
                               {'cast': cast_spells,
-                              'player': player},
+                              'theowner': player},
                               context_instance=RequestContext(request))
 
 @login_required
