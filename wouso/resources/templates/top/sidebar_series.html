@@ -1,0 +1,12 @@
+{% extends 'interface/sidebar_widget.html' %}
+{% load i18n %}
+{% load user %}
+{% block title %}{% trans 'Top series' %}{% endblock %}
+
+{% block content %}
+<ol class="top">
+{% for g in topseries %}
+    <li>{% player_group g %} <span class="points">{{ g.live_points }}</span></li>
+{% endfor %}
+</ol>
+{% endblock %}

@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import Http404
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from wouso.core.user.models import PlayerGroup
 from wouso.interface.top.models import History, TopUser, Top
 
 PERPAGE = 10
@@ -43,9 +44,15 @@ def gettop(request, toptype=0, sortcrit=0, page=1):
     except (EmptyPage, InvalidPage):
         users = paginator.page(0)
 
+    topseries = PlayerGroup.objects.exclude(show_in_top=False).filter(gclass=1).order_by('-points')
+    topgroups = PlayerGroup.objects.exclude(show_in_top=False).filter(gclass=0).order_by('-points')[:5]
+
     return render_to_response('top/maintop.html',
                            {'allUsers':      users,
                             'toptype':       toptypeno,
                             'sortcrit':      sortcritno,
+                            'topgroups':      topgroups,
+                            'topseries':      topseries,
+                            'is_top': True,
                             'top': Top},
                            context_instance=RequestContext(request))
