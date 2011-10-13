@@ -179,5 +179,8 @@ def sidebar_widget(request):
     chall_user = profile.get_extension(ChallengeUser)
     challs = ChallengeGame.get_active(chall_user)
     challs = [c for c in challs if c.status == 'A']
+    # reduce noise, thanks
+    if not challs:
+        return ''
 
     return render_string('challenge/sidebar.html', {'challenges': challs, 'chall_user': chall_user})
