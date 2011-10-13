@@ -51,7 +51,7 @@
     {% for s in theowner.spells_cast.all %}
     <tr>
         <td>{% artifact s.spell %} {{ s.spell.title }}</td>
-        <td>{% player_simple s.theowner %}</td>
+        <td>{% player_simple s.player %}</td>
         <td>{{ s.due }}</td>
     </tr>
     {% endfor %}
