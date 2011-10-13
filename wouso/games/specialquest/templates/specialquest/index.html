@@ -4,7 +4,10 @@
 {% block title %}{% trans 'Special Quest' %}{% endblock %}
 
 {% block content %}
-
+{% if not tasks_done and not tasks_not_done %}
+    <h3>{% trans 'Special quest' %}</h3>
+    <p>{% blocktrans %}Special quest hasn't started yet. Keep your eyes on it!{% endblocktrans %}</p>
+{% else %}
 <h2>{% trans 'Tasks' %}</h2>
 Done tasks:
 <ul>
@@ -29,4 +32,6 @@ Not done tasks:
     <li class="empty">None yet</li>
   {% endfor %}
 </ul>
+
+{% endif %}
 {% endblock %}
