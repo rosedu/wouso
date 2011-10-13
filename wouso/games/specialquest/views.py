@@ -39,6 +39,9 @@ def sidebar_widget(request):
     today = date.today()
     tasks = [t for t in tasks if t not in user.done_tasks.all() and t.start_date <= today <= t.end_date]
 
+    if not tasks:
+        return ''
+
     return render_string('specialquest/sidebar.html', {'not_done': len(tasks)})
 
 def header_link(request):
