@@ -843,5 +843,35 @@
   "fields": {
    "value": "True"
   }
+ },
+ {
+  "pk": 0,
+  "model": "pages.staticpage",
+  "fields": {
+   "html_contents": "The story starts here.",
+   "title": "Povestea",
+   "slug": "poveste",
+   "name": "Povestea"
+  }
+ },
+ {
+  "pk": 1,
+  "model": "pages.staticpage",
+  "fields": {
+   "html_contents": "You can find us on one of the following:\r\n\r\n<ul>\r\n<li><a href=\"http://lists.rosedu.org/cgi-bin/mailman/listinfo/rosedu-general\">rosedu-general mailing list</a></li>\r\n<li>#rosedu IRC channel on Freenode</li>\r\n<li><a href=\"http://projects.rosedu.org/projects/wousodjango\">Redmine project</a> and git repo</li>\r\n</ul>",
+   "title": "Contact us",
+   "slug": "contact",
+   "name": "Contact"
+  }
+ },
+ {
+  "pk": 2,
+  "model": "pages.staticpage",
+  "fields": {
+   "html_contents": "<h3>Developers</h3>\r\n<ul class=\"none\">\r\n<li><a href=\"http://alex.eftimie.ro/\" title=\"Alex Eftimie\"><img class=\"avatar\" src=\"http://www.gravatar.com/avatar/49bd6ade5bea5cea998ec50d76047c29.jpg?d=monsterid\" /></a></li>\r\n<li><a href=\"\" title=\"Mihnea Dobrescu-Balaur\"><img class=\"avatar\" src=\"http://www.gravatar.com/avatar/959c3839e720a10d4885f40dbf941797.jpg?d=monsterid\" /></a></li>\r\n<li><a href=\"\" title=\"Mircea-\u0218tefan Ghideu\"><img class=\"avatar\" src=\"http://www.gravatar.com/avatar/eaba5c724e366351f8925ed4fa0743f3.jpg?d=monsterid\" /></a></li>\r\n<li><br/><br/><br/>\u0219i <a href=\"http://projects.rosedu.org/projects/wousodjango/\">mul\u021bi al\u021bii</a>.</li>\r\n</ul>\r\n<p style=\"clear:both\"></p>\r\n<h3>Design</h3>\r\n<ul class=\"none\">\r\n<li><a href=\"http://swarm.c.spub.ro/~cdogaru/\" title=\"C\u0103t\u0103lin Dogaru\"><img class=\"avatar\" src=\"http://www.gravatar.com/avatar/b01691dcb932148802ef78c12bfcd7b8.jpg?d=monsterid\" /></a>\r\n</li>\r\n</ul>\r\n\r\n<p style=\"clear:both\"></p>\r\n<h3>Poveste \u0219i con\u021binut</h3>\r\n<p>R\u0103zvan Deaconescu \u0219i echipa wouso-content.</p>",
+   "title": "Credits",
+   "slug": "credits",
+   "name": "Credits"
+  }
  }
 ]

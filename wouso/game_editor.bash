@@ -12,7 +12,7 @@ fi
 
 if [ "$1" == "reset" ]; then
 	# Resetting everything to a plain default
-	$MANAGE_SCRIPT sqlreset magic scoring config | ./manage.py dbshell
+	$MANAGE_SCRIPT sqlreset magic scoring config pages | ./manage.py dbshell
     # Run default-setup
 	bash default_setup.bash
 	exit 0
@@ -29,6 +29,6 @@ if [ "$1" == "load" ]; then
 fi
 
 if [ "$1" == "save" ]; then
-	$MANAGE_SCRIPT dumpdata --indent=1 magic scoring.coin scoring.formula config > $2
+	$MANAGE_SCRIPT dumpdata --indent=1 magic scoring.coin scoring.formula config pages > $2
 	exit 0
 fi

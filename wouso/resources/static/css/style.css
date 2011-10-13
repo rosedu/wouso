@@ -250,7 +250,7 @@ span.button-list {
 .actions a:hover, a.button:hover {
     background-color: #eee;
 }
-.profile ul.artifacts {
+.profile ul.artifacts, ul.none {
     list-style-type: none;
     display: inline;
     margin: 0;
