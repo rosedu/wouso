@@ -20,6 +20,8 @@
     </tr>
     {% endfor %}
     </table>
+{% else %}
+    {% trans 'None.' %}
 {% endif %}
 
 {% if theowner.spells.all %}
