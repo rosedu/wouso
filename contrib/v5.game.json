@@ -771,14 +771,14 @@
   "pk": "title",
   "model": "config.setting",
   "fields": {
-   "value": "World of USO v5"
+   "value": "World of USO v5 - In Omnia Paratus"
   }
  },
  {
   "pk": "intro",
   "model": "config.setting",
   "fields": {
-   "value": ""
+   "value": "WoUSO este un joc realizat pentru studen\u0163ii cursului de Utilizarea Sistemelor de Operare din Facultatea de Automatic\u0103 \u015fi Calculatoare."
   }
  },
  {
@@ -807,6 +807,41 @@
   "model": "config.setting",
   "fields": {
    "value": ""
+  }
+ },
+ {
+  "pk": "extrainfo",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "default_group",
+  "model": "config.setting",
+  "fields": {
+   "value": "19"
+  }
+ },
+ {
+  "pk": "disable-Magic",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "disable-Chat",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "disable-Bazaar-Exchange",
+  "model": "config.setting",
+  "fields": {
+   "value": "True"
   }
  }
 ]
