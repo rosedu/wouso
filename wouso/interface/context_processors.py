@@ -4,7 +4,7 @@ from wouso.core.config.models import Setting
 from wouso.interface.top.models import Top
 from wouso.interface.qproposal.models import Qproposal
 from wouso.interface.messaging.models import Message
-from wouso.interface.bazaar.models import Bazaar
+from wouso.interface.magic.models import Bazaar
 from wouso.interface.statistics.views import footer_link as stats_link
 from wouso.interface import get_static_pages, detect_mobile
 
@@ -21,14 +21,14 @@ def header_footer(request):
                 header.append((h, game.get_instance().name))
     except: pass
 
-    # add also messages and bazaar link
+    # add also messages and magic link
     try:
         h = Message.get_header_link(request)
         if h:
             header.append((h, 'Message'))
         h = Bazaar.get_header_link(request)
         if h:
-            header.append((h, 'Bazaar'))
+            header.append((h, 'Magic'))
     except Exception as e: logging.exception(e); pass
 
     footer = []

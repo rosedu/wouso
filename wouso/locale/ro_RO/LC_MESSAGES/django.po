@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wouso VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-13 20:33+0300\n"
-"PO-Revision-Date: 2011-10-13 20:38+0200\n"
+"POT-Creation-Date: 2011-10-13 21:10+0300\n"
+"PO-Revision-Date: 2011-10-13 21:10+0200\n"
 "Last-Translator: Alex Eftimie <alex@eftimie.ro>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -344,55 +344,51 @@ msgstr "Zile rămase inclusiv azi"
 msgid "Deadline passed"
 msgstr "Deadline depășit"
 
-#: interface/bazaar/models.py:10
+#: interface/magic/models.py:10
 #: resources/templates/bazaar.html:5
 #: resources/templates/bazaar.html.py:12
-#: resources/templates/bazaar_buy.html:4
-#: resources/templates/bazaar_buy.html:10
-#: resources/templates/mobile_index.html:16
-#: resources/templates/profile/cast.html:11
-msgid "Bazaar"
-msgstr "Bazar"
+msgid "Magic"
+msgstr "Magie"
 
-#: interface/bazaar/views.py:18
+#: interface/magic/views.py:19
 msgid "Rate: 1 gold = {rate} points, 1 gold = {rate2} points"
 msgstr ""
 
-#: interface/bazaar/views.py:32
+#: interface/magic/views.py:37
 msgid "Exchange is disabled"
 msgstr "Schimbul este dezactivat"
 
-#: interface/bazaar/views.py:38
+#: interface/magic/views.py:43
 msgid "Invalid amounts"
 msgstr "Cantități nevalide"
 
-#: interface/bazaar/views.py:44
-#: interface/bazaar/views.py:50
+#: interface/magic/views.py:49
+#: interface/magic/views.py:55
 msgid "Insufficient points"
 msgstr "Puncte insuficiente"
 
-#: interface/bazaar/views.py:48
-#: interface/bazaar/views.py:58
+#: interface/magic/views.py:53
+#: interface/magic/views.py:63
 msgid "Converted successfully"
 msgstr "Convertire realizată cu succes"
 
-#: interface/bazaar/views.py:55
+#: interface/magic/views.py:60
 msgid "Insufficient gold"
 msgstr "Aur insuficient"
 
-#: interface/bazaar/views.py:60
+#: interface/magic/views.py:65
 msgid "Unknown action"
 msgstr "Acțiune necunoscută"
 
-#: interface/bazaar/views.py:62
+#: interface/magic/views.py:67
 msgid "Expected post"
 msgstr "Se aștepta formular POST"
 
-#: interface/bazaar/views.py:76
+#: interface/magic/views.py:81
 msgid "Insufficient gold amount"
 msgstr "Cantitate de aur insuficientă"
 
-#: interface/bazaar/views.py:81
+#: interface/magic/views.py:86
 msgid "Successfully aquired"
 msgstr "Achiziționat cu succes"
 
@@ -418,43 +414,104 @@ msgid "Live stats"
 msgstr "Statistici live"
 
 #: resources/templates/bazaar.html:15
-#: resources/templates/site_index.html:42
-msgid "Spells"
-msgstr "Vrăji"
+#: resources/templates/bazaar_buy.html:4
+#: resources/templates/bazaar_buy.html:10
+#: resources/templates/mobile_index.html:16
+#: resources/templates/profile/cast.html:11
+msgid "Bazaar"
+msgstr "Bazar"
 
 #: resources/templates/bazaar.html:16
-#: resources/templates/bazaar.html.py:60
-#: resources/templates/bazaar.html:68
+#: resources/templates/bazaar.html.py:61
+#: resources/templates/bazaar.html:69
 msgid "Exchange"
 msgstr "Schimb"
 
-#: resources/templates/bazaar.html:33
+#: resources/templates/bazaar.html:17
+#: resources/templates/site_index.html:52
+msgid "Summary"
+msgstr "Sumar"
+
+#: resources/templates/bazaar.html:34
 #: resources/templates/profile/cast.html:37
 msgid "days"
 msgstr "zile"
 
-#: resources/templates/bazaar.html:40
+#: resources/templates/bazaar.html:41
 msgid "Buy"
 msgstr "Cumpără"
 
-#: resources/templates/bazaar.html:48
+#: resources/templates/bazaar.html:49
 msgid "Nothing"
 msgstr "Nimic"
 
-#: resources/templates/bazaar.html:56
+#: resources/templates/bazaar.html:57
 msgid "Exchange points for gold or gold for points"
 msgstr "Schimbă punctele pe aur sau aurul pe puncte"
 
-#: resources/templates/bazaar.html:58
+#: resources/templates/bazaar.html:59
 #: resources/templates/profile/groups.html:21
 #: resources/templates/profile/profile.html:76
 #: resources/templates/top/maintop.html:23
 msgid "Points"
 msgstr "Puncte"
 
-#: resources/templates/bazaar.html:66
+#: resources/templates/bazaar.html:67
 msgid "Gold"
 msgstr "Aur"
+
+#: resources/templates/bazaar.html:77
+#: resources/templates/profile/spells.html:11
+msgid "Available"
+msgstr "Disponibile"
+
+#: resources/templates/bazaar.html:80
+#: resources/templates/bazaar.html.py:96
+#: resources/templates/bazaar.html:113
+#: resources/templates/profile/spells.html:14
+#: resources/templates/profile/spells.html:30
+#: resources/templates/profile/spells.html:47
+msgid "Spell"
+msgstr "Vrajă"
+
+#: resources/templates/bazaar.html:81
+#: resources/templates/profile/spells.html:15
+msgid "Amount"
+msgstr "Cantitate"
+
+#: resources/templates/bazaar.html:90
+#: resources/templates/site_index.html:36
+#: resources/templates/site_index.html:46
+#: resources/templates/profile/spells.html:24
+msgid "None."
+msgstr "Niciunul."
+
+#: resources/templates/bazaar.html:94
+#: resources/templates/profile/spells.html:28
+msgid "Active on me"
+msgstr "Active pe mine"
+
+#: resources/templates/bazaar.html:97
+#: resources/templates/profile/spells.html:31
+msgid "Source"
+msgstr "Sursă"
+
+#: resources/templates/bazaar.html:98
+#: resources/templates/bazaar.html:115
+#: resources/templates/profile/spells.html:32
+#: resources/templates/profile/spells.html:49
+msgid "Until"
+msgstr "Până la"
+
+#: resources/templates/bazaar.html:111
+#: resources/templates/profile/spells.html:45
+msgid "Cast by me"
+msgstr "Invocate de mine"
+
+#: resources/templates/bazaar.html:114
+#: resources/templates/profile/spells.html:48
+msgid "Target"
+msgstr "Țintă"
 
 #: resources/templates/mobile_base.html:30
 #: resources/templates/interface/header.html:10
@@ -520,15 +577,9 @@ msgstr "Global"
 msgid "Artifacts"
 msgstr "Artefacte"
 
-#: resources/templates/site_index.html:36
-#: resources/templates/site_index.html:46
-#: resources/templates/profile/spells.html:24
-msgid "None."
-msgstr "Niciunul."
-
-#: resources/templates/site_index.html:52
-msgid "Summary"
-msgstr "Sumar"
+#: resources/templates/site_index.html:42
+msgid "Spells"
+msgstr "Vrăji"
 
 #: resources/templates/splash.html:16
 msgid "username"
@@ -733,41 +784,6 @@ msgstr "Istoric"
 #: resources/templates/profile/spells.html:9
 msgid "Magic summary"
 msgstr "Sumar magie"
-
-#: resources/templates/profile/spells.html:11
-msgid "Available"
-msgstr "Disponibile"
-
-#: resources/templates/profile/spells.html:14
-#: resources/templates/profile/spells.html:30
-#: resources/templates/profile/spells.html:47
-msgid "Spell"
-msgstr "Vrajă"
-
-#: resources/templates/profile/spells.html:15
-msgid "Amount"
-msgstr "Cantitate"
-
-#: resources/templates/profile/spells.html:28
-msgid "Active on me"
-msgstr "Active pe mine"
-
-#: resources/templates/profile/spells.html:31
-msgid "Source"
-msgstr "Sursă"
-
-#: resources/templates/profile/spells.html:32
-#: resources/templates/profile/spells.html:49
-msgid "Until"
-msgstr "Până la"
-
-#: resources/templates/profile/spells.html:45
-msgid "Cast by me"
-msgstr "Invocate de mine"
-
-#: resources/templates/profile/spells.html:48
-msgid "Target"
-msgstr "Țintă"
 
 #: resources/templates/registration/login.html:25
 msgid "Your username and password didn't match. Please try again."

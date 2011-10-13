@@ -50,7 +50,7 @@ urlpatterns = patterns('',
     (r'^qproposal/', include('wouso.interface.qproposal.urls')),
 
     # Bazaar
-    url(r'^bazaar/', include('wouso.interface.bazaar.urls')),
+    url(r'^bazaar/', include('wouso.interface.magic.urls')),
 
     # Some dynamic shite
     url(r'^ajax/do/(?P<name>.*)/$', 'wouso.interface.views.ajax', name='ajax_do'),
