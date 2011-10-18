@@ -93,6 +93,8 @@ class PlayerSpellDue(models.Model):
     source = models.ForeignKey('Player', related_name='spell_source')
     due = models.DateTimeField()
 
+    seen = models.BooleanField(default=False, blank=True) # if the target have seen it
+
     @staticmethod
     def get_expired(date):
         return PlayerSpellDue.objects.filter(due__lte=date)

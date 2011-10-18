@@ -14,7 +14,7 @@
 <ul class="tabs">
         <li><a href="#spells" id="spells-click">{% trans 'Bazaar' %}</a></li>
         <li><a href="#exchange" id="exchange-click">{% trans 'Exchange' %}</a></li>
-        <li><a href="#summary" id="summary-click">{% trans 'Summary' %}</a></li>
+        <li><a href="#summary" id="summary-click">{% trans 'Summary' %}{% if unseen_count > 0 %}<sup class="unread-count">{{ unseen_count }}</sup>{% endif %}</a></li>
 </ul>
 
 <div class="tab_container">

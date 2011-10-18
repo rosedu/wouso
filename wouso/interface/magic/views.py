@@ -19,10 +19,14 @@ def bazaar(request):
     rate_text = _('Rate: 1 gold = {rate} points, 1 gold = {rate2} points').format(rate=rate, rate2=rate2)
 
     cast_spells = PlayerSpellDue.objects.filter(source=player).all()
+    unseen_count = cast_spells.filter(seen=False).count()
 
+    # TODO: think of smth better
+    cast_spells.update(seen=True)
     return render_to_response('bazaar.html', {'spells': spells,
                               'rate': rate, 'rate_text': rate_text,
                               'cast': cast_spells,
+                              'unseen_count': unseen_count,
                               'theowner': player},
                               context_instance=RequestContext(request))
 
