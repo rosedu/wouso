@@ -47,6 +47,7 @@
         {% if c.is_launched %}<a href="{% url games.challenge.views.accept c.id %}">Accept</a>{% endif %}
         {% if c.is_launched %}<a href="{% url games.challenge.views.refuse c.id %}">Refuse</a>{% endif %}
     {% endif %}
+    <div class="clear spacer"></div>
 </li>
 {% empty %}
     <li class="empty">{% trans 'No challenges in this category.' %}
