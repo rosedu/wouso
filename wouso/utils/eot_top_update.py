@@ -60,6 +60,7 @@ def main():
                 hs.save()
 
     from wouso.games.challenge.models import Challenge
+    """ TODO: fixme
     print 'Updating expired challenges'
     challenges = Challenge.get_expired(today)
     for c in challenges:
@@ -67,7 +68,7 @@ def main():
             c.expired(c.user_from.user)
         if not c.check_timedelta(c.user_to.user):
             c.expired(c.user_to.user)
-
+    """
     from wouso.core.user.models import PlayerSpellDue
     spells = PlayerSpellDue.get_expired(today)
     print 'Updating expired spells (%d)' % spells.count()
