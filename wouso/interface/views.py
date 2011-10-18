@@ -51,12 +51,15 @@ def homepage(request, page=u'1'):
         template = 'mobile_index.html'
     else:
         template = 'site_index.html'
+
+    news = [] # TODO: implement them in pages
     return render_to_response(template,
                               {'last10': online_last10, 'activity': activity,
                               'is_homepage': True,
                               'top': topuser,
                               'topgroups': topgroups,
                               'games': get_games(),
+                              'news': news,
                               },
                               context_instance=RequestContext(request))
 

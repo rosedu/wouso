@@ -1,12 +1,10 @@
-{% extends base_template %}
+{% extends 'interface/section_base.html' %}
 {% load i18n %}
 
 {% block title %}{% trans 'Challenge result' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Challenge result' %}{% endblock %}
 
-{% block content %}
-
-<h2>{% trans 'Challenge' %}</h2>
-
+{% block sectioncontent %}
 <p>{% trans 'You scored:' %} {{ results.points|floatformat:"-2" }}!</p>
 
 <!--

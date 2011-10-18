@@ -1,15 +1,15 @@
-{% extends base_template %}
+{% extends 'interface/section_base.html' %}
 {% load i18n %}
 {% load user %}
-{% block title %}Challenge #{{ challenge.id }}{% endblock %}
+{% block title %}{% trans 'Challenge #' %}{{ challenge.id }}{% endblock %}
+{% block sectiontitle %}{% trans 'Challenge #' %}{{ challenge.id }}{% endblock %}
 
 {% block scripts %}
     {{ block.super }}
     <script type="text/javascript" src="/static/js/timer.js"></script>
 {% endblock %}
-{% block content %}
 
-<h2>{% trans 'Challenge' %}</h2>
+{% block sectioncontent %}
 
 <div class="vs">
     <div class="to">

@@ -1,14 +1,14 @@
-{% extends base_template %}
+{% extends 'interface/section_base.html' %}
 {% load i18n %}
 {% load user %}
 {% block title %}{% trans 'Special Quest' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Special Quest' %}{% endblock %}
 
-{% block content %}
+{% block sectioncontent %}
 {% if not tasks_done and not tasks_not_done %}
-    <h3>{% trans 'Special quest' %}</h3>
     <p>{% blocktrans %}Special quest hasn't started yet. Keep your eyes on it!{% endblocktrans %}</p>
 {% else %}
-<h2>{% trans 'Tasks' %}</h2>
+<h3>{% trans 'Tasks' %}</h3>
 Done tasks:
 <ul>
 {% for task in tasks_done %}

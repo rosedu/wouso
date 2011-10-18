@@ -1,15 +1,20 @@
-{% extends base_template %}
+{% extends 'interface/section_base.html' %}
 {% load i18n %}
 {% load user %}
 {% block title %}{% trans 'Special Quest' %}{% endblock %}
+{% block sectiontitle %}
+    {% if not task.is_active %}
+    {% trans 'Misterious task' %}
+    {% else %}
+    {{ task.name }}
+    {% endif %}
+{% endblock %}
 
-{% block content %}
+{% block sectioncontent %}
 
 {% if not task.is_active %}
-    <h2>{% trans 'Misterious task' %}</h2>
     <p>{% trans 'Access forbidden.' %}</p>
 {% else %}
-    <h2>{{task.name}}</h2>
     <span class="points">{% trans 'Reward' %}: {% coin_amount task.value 'gold' %}</span>
 
     {% if days_left >= 0 %}

@@ -1,16 +1,16 @@
-{% extends base_template %}
+{% extends 'interface/section_base.html' %}
 {% load i18n %}
 
-{% block title %}Question of the Day{% endblock %}
+{% block title %}{% trans 'Question of the Day' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Question of the Day' %}{% endblock %}
 
-{% block content %}
+{% block sectioncontent %}
 
 {% if form.errors %}
 <p class="wrong">{% trans 'You must provide an answer' %}</p>
 {% endif %}
 
 {% if question %}
-<h2>{% trans 'Question of the day' %}</h2>
 <p>{% autoescape off %}{{ question.text }}{% endautoescape %}</p>
 <form method="post" action="{% url games.qotd.views.index %}">
 <div class="answers">

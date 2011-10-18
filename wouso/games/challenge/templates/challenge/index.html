@@ -1,11 +1,10 @@
-{% extends base_template %}
+{% extends 'interface/section_base.html'%}
 {% load artifacts %}
 {% load i18n %}
 {% block title %}{% trans 'Challenges' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Challenges' %}{% endblock %}
 
-{% block content %}
-
-<h2>{% trans 'Challenges' %}</h2>
+{% block sectioncontent %}
 
 {% if not challuser.can_launch %}
 <p>{% trans 'You cannot launch another challenge today.' %}

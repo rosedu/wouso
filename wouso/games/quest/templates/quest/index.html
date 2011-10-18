@@ -1,10 +1,9 @@
-{% extends base_template %}
+{% extends 'interface/section_base.html' %}
 {% load i18n %}
 {% block title %}{% trans 'Quest' %}{% endblock %}
+{% block sectiontitle %}{{ quest.title }}{% endblock %}
 
-{% block content %}
-
-<h2>{{ quest.title }}</h2>
+{% block sectioncontent %}
 <div class="second">
 {% blocktrans with quest.end as end and progress.time_took as time_took %}
 Available until {{ end }}. Your progress: {{ time_took }}

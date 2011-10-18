@@ -1,13 +1,13 @@
-{% extends base_template %}
+{% extends 'interface/section_base.html' %}
 {% load i18n %}
 
 {% block title %}{% trans 'Question of the Day' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Question of the Day' %}{% endblock %}
 
-{% block content %}
+{% block sectioncontent %}
 
 {% if question %}
 {% autoescape off %}
-<h2>{% trans 'Question' %}</h2>
 <p>{{ question.text }}</p>
 <div class="answers">
 <ul>
