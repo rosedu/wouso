@@ -1,11 +1,29 @@
 from datetime import date
 from django.db import models
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_noop, ugettext as _
 from wouso.core.user.models import Player
 from wouso.core.game.models import Game
 from wouso.core.scoring.models import Formula
 
-# Create your models here.
+class Invitation(models.Model):
+    group = models.ForeignKey('SpecialQuestGroup')
+    to = models.ForeignKey('SpecialQuestUser')
+
+class SpecialQuestGroup(models.Model):
+    owner = models.ForeignKey('SpecialQuestUser', related_name='owned_groups')
+    name = models.CharField(max_length=100)
+    active = models.BooleanField(default=False, blank=True)
+
+    @property
+    def members(self):
+        return self.specialquestuser_set
+
+    def is_empty(self):
+        return self.members.count() < 2
+
+    def __unicode__(self):
+        return u"%s [%d]" % (self.name, self.members.count())
 
 class SpecialQuestTask(models.Model):
     name = models.TextField()
@@ -23,7 +41,22 @@ class SpecialQuestTask(models.Model):
             return unicode(self.name)
 
 class SpecialQuestUser(Player):
+    group = models.ForeignKey('SpecialQuestGroup', blank=True, default=None, null=True)
     done_tasks = models.ManyToManyField(SpecialQuestTask, related_name="%(app_label)s_%(class)s_done")
+
+    @property
+    def active(self):
+        return self.group.active if self.group else False
+
+    @property
+    def self_group(self):
+        gs = list(self.owned_groups.all())
+        if not gs:
+            return None
+        return gs[0]
+
+    def invitations(self):
+        return self.invitation_set.all()
 
 class SpecialQuestGame(Game):
     """ Each game must extend Game """
@@ -76,3 +109,18 @@ class SpecialQuestGame(Game):
             description='Points earned when finishing a task. Arguments: value.')
         )
         return fs
+
+    @classmethod
+    def get_profile_actions(kls, request, player):
+        url = reverse('specialquest_invite', args=(player.id,))
+        if request.user.get_profile().id != player.id:
+            squser = request.user.get_profile().get_extension(SpecialQuestUser)
+            targetuser = player.get_extension(SpecialQuestUser)
+            if not squser.self_group and not targetuser.group:
+                return ''
+            if ((squser.self_group is not None) and (targetuser in squser.self_group.members.all())) or ((targetuser.group is not None) and (squser in targetuser.group.members.all())):
+                return '<span class="button">%s</span>' % _('Special mate')
+            if targetuser.group is not None:
+                return '<span class="button">%s</span>' % _('Other group')
+            return '<a class="button" href="%s" title="%s">%s</a>' % (url, _("Invite in my Special Quest group"), _('Invite'))
+        return ''

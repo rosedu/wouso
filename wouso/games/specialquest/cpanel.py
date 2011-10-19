@@ -82,8 +82,14 @@ def manage_player_set(request, player_id, task_id):
     task = get_object_or_404(SpecialQuestTask, id=task_id)
 
     if task not in player.done_tasks.all():
-        player.done_tasks.add(task)
-        scoring.score(player, SpecialQuestGame, 'specialquest-passed',external_id=task.id, value=task.value)
+        if player.group:
+            members = player.group.members.all()
+        else:
+            members = (player,)
+        for member in members:
+            if task not in member.done_tasks.all():
+                member.done_tasks.add(task)
+                scoring.score(member, SpecialQuestGame, 'specialquest-passed',external_id=task.id, value=task.value)
 
     return HttpResponseRedirect(reverse('specialquest_manage', args=(player.id,)))
 

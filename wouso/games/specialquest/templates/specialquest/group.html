@@ -1,0 +1,17 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+{% load user %}
+
+{% block title %}{% trans 'Special Quest' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Group:' %} {{ sqgroup.name }}{% endblock %}
+
+{% block sectioncontent %}
+    <p>{% trans 'Owner' %}: {% player_simple sqgroup.owner %}</p>
+    <p>{% trans 'Members' %}: {{ sqgroup.members.count }}</p>
+    <ul>
+        {% for m in sqgroup.members.all %}
+            <li>{% player_simple m %}</li>
+        {% endfor %}
+    </ul>
+    <p>{% blocktrans %}If you want to invite more players to this group, click on Invite on their profile{% endblocktrans %}</p>
+{% endblock %}
