@@ -2,16 +2,20 @@
 {% load i18n %}
 {% load user %}
 {% block title %}{% trans 'Special Quest' %}{% endblock %}
-{% block sectiontitle %}{% trans 'Special Quest' %}{% endblock %}
+{% block sectiontitle %}
+    {% if squser.active %}
+        {% trans 'Tasks' %}
+    {% else %}
+        {% trans 'Special Quest' %}
+    {% endif %}
+{% endblock %}
 
 {% block sectioncontent %}
-    
 {% if not tasks_done and not tasks_not_done %}
     <p>{% blocktrans %}Special quest hasn't started yet. Keep your eyes on it!{% endblocktrans %}</p>
 {% else %}
     {% if squser.active %}
-    <h3>{% trans 'Tasks' %}</h3>
-    Done tasks:
+    <b>{% trans 'Done tasks' %}:</b>
     <ul>
     {% for task in tasks_done %}
     <li><s><a href="{% url specialquest_task_view task.pk %}">{{task.name}}</a></s> ({% coin_amount task.value 'gold' %}).</li>
@@ -20,7 +24,9 @@
     {% endfor %}
     </ul>
 
-    Not done tasks:
+    <div class="spacer"></div>
+
+    <b>{% trans 'Not done tasks' %}:</b>
     <ul>
       {% for task in tasks_not_done %}
         {% if task.1 > 0 %}
@@ -34,6 +40,8 @@
         <li class="empty">None yet</li>
       {% endfor %}
     </ul>
+
+    <p>{% trans 'Your group' %}: {{ squser.group }}. <a href="{% url specialquest_group squser.group.id %}">{% trans 'View group' %}</a></p>
     {% else %}
         {% if squser.group %}
             <p>
@@ -44,7 +52,9 @@
             <p><a href="{% url specialquest_leave %}">{% trans 'Leave this group' %}</a></p>
             {% endif %}
         {% else %}
+            <p>{% blocktrans %}In order to play the special quest, you need to set up a group. You can do that by either:{% endblocktrans %}</p>
             <p><a href="{% url specialquest_create %}">{% trans 'Create a new group' %}</a></p>
+            <p><b>{% trans 'or' %}</b></p>
             <p>{% trans 'Accept one of these group invitations:' %}
             <ul>
             {% for i in squser.invitations %}

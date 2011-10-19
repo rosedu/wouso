@@ -8,7 +8,7 @@ from django.template import RequestContext
 from wouso.core.user.models import Player
 from wouso.core import scoring
 from wouso.core.qpool import get_questions_with_category
-from models import SpecialQuestTask, SpecialQuestUser, SpecialQuestGame
+from models import SpecialQuestTask, SpecialQuestUser, SpecialQuestGame, SpecialQuestGroup
 from forms import TaskForm
 
 @permission_required('specialquest.change_specialquestuser')
@@ -17,6 +17,15 @@ def home(request):
 
     return render_to_response('specialquest/cpanel_home.html',
                               {'tasks': tasks,
+                               'module': 'specialquest'},
+                              context_instance=RequestContext(request))
+
+@permission_required('specialquest.change_specialquestuser')
+def groups(request):
+    groups = SpecialQuestGroup.objects.all()
+
+    return render_to_response('specialquest/cpanel_groups.html',
+                              {'groups': groups,
                                'module': 'specialquest'},
                               context_instance=RequestContext(request))
 

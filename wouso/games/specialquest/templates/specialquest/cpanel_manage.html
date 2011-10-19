@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<h2>{% player mplayer %}</h2>
+<h2>{% player mplayer %} {% if mplayer.group %}and his group: <a href="{% url specialquest_group mplayer.group.id %}">{{ mplayer.group }}</a>{% endif %}</h2>
 <span class="points">Gold: {{ mplayer.coins.gold }}</span>
 
 Done tasks:
