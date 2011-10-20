@@ -71,4 +71,15 @@
         {% endif %}
         </div>
    </div>
+
+    <div id="news">
+    {% block news %}
+    {% for n in news %}
+        <li><a href="{% url news_item_view n.pk %}">{{n.title}}</a></li>
+    {% endfor %}
+    {% if more %}
+        <a href="{% url news_index_view %}">{% trans 'All news' %}</a>
+    {% endif %}
+    {% endblock %}
+    </div>
 {% endblock %}

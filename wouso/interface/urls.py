@@ -43,6 +43,9 @@ urlpatterns = patterns('',
     # Messaging
     (r'^m/', include('wouso.interface.messaging.urls')),
 
+    # News
+    (r'^n/', include('wouso.interface.pages.urls')),
+
     # Statistics
     (r'^stats/', include('wouso.interface.statistics.urls')),
 

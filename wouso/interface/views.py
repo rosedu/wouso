@@ -10,6 +10,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from wouso.interface import logger, detect_mobile
+from wouso.interface.pages.models import NewsItem
 from wouso.core.game import get_games
 from wouso.interface.forms import *
 from wouso.core.user.models import Player
@@ -52,7 +53,12 @@ def homepage(request, page=u'1'):
     else:
         template = 'site_index.html'
 
-    news = [] # TODO: implement them in pages
+    news = NewsItem.objects.all().order_by('-date_pub')
+    more = False
+    if len(news) > 10:
+        more = True
+    news = news[:10]
+
     return render_to_response(template,
                               {'last10': online_last10, 'activity': activity,
                               'is_homepage': True,
@@ -60,6 +66,7 @@ def homepage(request, page=u'1'):
                               'topgroups': topgroups,
                               'games': get_games(),
                               'news': news,
+                              'more': more,
                               },
                               context_instance=RequestContext(request))
 
@@ -140,5 +147,5 @@ def ajax_get(request, model, id=0):
         raise Http404
 
     obj = get_object_or_404(model, pk=id)
-    
+
     return HttpResponse(serializers.serialize('json', (obj,)))

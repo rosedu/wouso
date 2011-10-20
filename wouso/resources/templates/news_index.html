@@ -1,0 +1,18 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+{% load user %}
+{% block title %}{% trans 'News' %}{% endblock %}
+{% block sectiontitle %}{% trans 'News' %}{% endblock %}
+
+{% block sectioncontent %}
+    {% for n in news_page.object_list %}
+        <li><a href="{% url news_item_view n.pk %}">{{n.title}}</a></li>
+    {% endfor %}
+    {% if news_page.has_previous %}
+        <a href="{% url wouso.interface.views.homepage %}"> &raquo; </a>
+    {% endif %}
+
+    {% if news_page.has_next %}
+        <a href="{% url wouso.interface.views.homepage page=activity.next_page_number %}"> &laquo;</a>
+    {% endif %}
+{% endblock %}
