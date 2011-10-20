@@ -1,0 +1,16 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+{% load user %}
+
+{% block title %}{% trans 'Special Quest' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Group invitation' %}{% endblock %}
+
+{% block sectioncontent %}
+    <p>{% blocktrans with to_user as to and squser.group as group %}Invite {{ to }} to {{ group }}{% endblocktrans %}</p>
+<form method="post" action="">
+<div>
+<button type="submit">{% trans 'Invite' %}</button>
+</div>
+{% csrf_token %}
+</form>
+{% endblock %}

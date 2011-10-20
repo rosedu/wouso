@@ -1,0 +1,39 @@
+{% extends 'cpanel/index.html' %}
+{% block scripts %}
+    <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
+{% endblock %}
+{% block title %}Special Quests{% endblock %}
+
+{% block content %}
+
+<h2>Special Quest</h2>
+
+<ul class="tabs">
+    <li ><a href="{% url specialquest_home %}">Tasks</a></li>
+    <li class="active"><a href="{% url specialquest_cpanel_groups %}">Groups</a></li>
+</ul>
+
+<div class="tab_container">
+    <div id="tab-1" class="tab_content">
+    {% block tabcontent %}
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Members</th>
+            <th>Active</th>
+        </tr>
+        {% for t in groups %}
+            <tr>
+                <td>{{ t.name }}</td>
+                <td>{{ t.members.count }}</td>
+                <td>{{ t.active }}</td>
+                <td class="actions" nowrap>
+                    <a href="{% url admin:specialquest_specialquestgroup_change t.id %}" title="edit">✍</a>
+                </td>
+            </tr>
+        {% empty %}
+        <tr><td colspan=5>No groups</td></tr>
+        {% endfor %}
+    </table>
+    {% endblock %}
+{% endblock %}

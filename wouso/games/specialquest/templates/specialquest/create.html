@@ -1,0 +1,16 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+{% load user %}
+
+{% block title %}{% trans 'Special Quest' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Create a group' %}{% endblock %}
+
+{% block sectioncontent %}
+<form method="post" action="">
+<label>{% trans 'Group name:' %}</label><input type="text" name="name" class="big" />
+<div>
+<button type="submit">{% trans 'Create' %}</button>
+</div>
+{% csrf_token %}
+</form>
+{% endblock %}
