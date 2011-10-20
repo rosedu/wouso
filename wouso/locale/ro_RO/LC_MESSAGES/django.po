@@ -45,7 +45,7 @@ msgid ""
 "draw result between {user_to} and {user_from}:\n"
 "{extra}"
 msgstr ""
-"rezultat null în provocarea {user_to} vs {user_from}:\n"
+"rezultat nul în provocarea {user_to} vs {user_from}:\n"
 "{extra}"
 
 #: games/challenge/models.py:291

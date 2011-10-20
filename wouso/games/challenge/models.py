@@ -133,10 +133,10 @@ class Challenge(models.Model):
     @staticmethod
     def get_expired(today):
         """
-        Return all expired challenges at given date.
+        Return all expired candidate challenges at given date.
         """
         yesterday = today + timedelta(days=-1)
-        return Challenge.objects.filter(status='a', date__lt=yesterday)
+        return Challenge.objects.filter(date__lt=yesterday).filter(Q(status='A')|Q(status='L'))
 
     @staticmethod
     def exist_last_day(today, user_from, user_to):
@@ -162,13 +162,16 @@ class Challenge(models.Model):
         self.status = 'A'
         self.save()
 
-    def refuse(self):
+    def refuse(self, auto=False):
         self.status = 'R'
         self.user_from.user.last_launched = datetime(1, 1, 1)
         self.user_from.user.save()
 
         # send activity signal
-        signal_msg = ugettext_noop('has refused challenge from {chall_from}')
+        if auto:
+            signal_msg = ugettext_noop('has refused challenge from {chall_from} (expired)')
+        else:
+            signal_msg = ugettext_noop('has refused challenge from {chall_from}')
         signals.addActivity.send(sender=None, user_from=self.user_to.user, \
                                      user_to=self.user_from.user, \
                                      message=signal_msg, \
@@ -193,6 +196,18 @@ class Challenge(models.Model):
         partic.start = datetime.now()
         partic.save()
 
+    def set_expired(self):
+        if not self.user_from.played:
+            self.user_from.score = 0.0
+            self.user_from.played = True
+
+        if not self.user_to.played:
+            self.user_to.score = 0.0
+            self.user_to.played = True
+
+        # send expired activity
+        self.played()
+
     def time_for_user(self, user):
         now = datetime.now()
         partic = self.participant_for_player(user)
@@ -206,6 +221,8 @@ class Challenge(models.Model):
         TODO: fix this to first check if user has submitted, and
         if not, verify with datetime.now - participant.start.
         """
+        if participant.start is None:
+            return False
         if participant.seconds_took < Challenge.TIME_LIMIT + Challenge.TIME_SAFE:
             return False
         return True
@@ -229,21 +246,22 @@ class Challenge(models.Model):
 
         def formatTime(seconds):
             if seconds is None:
-                return ''
+                return _('expired')
+            ret = ''
             if seconds < 60:
-                return "%d seconds" % seconds
+                ret = _("{seconds} seconds").format(seconds=seconds)
             elif seconds == 60:
-                return '1 minute'
+                ret = _('1 minute')
             elif seconds % 60 == 0:
-                return '%d minutes' % (seconds/60)
+                ret = _('{minutes} minutes').format(minutes=(seconds/60))
             elif 60 < seconds < 120:
-                return '1 minute and %d seconds' % (seconds % 60)
-            return '%d minutes and %d seconds' % (seconds / 60, seconds % 60)
+                ret = _('1 minute and {s} seconds').format(s=seconds % 60)
+            else:
+                ret = _('{m} minutes and {s} seconds').format(m=seconds / 60, s=seconds % 60)
+            return _('(in {time})').format(time=ret)
 
-        return '%.2fp (in %s%s) - %.2fp (in %s%s)' % (user_won.score, formatTime(user_won.seconds_took),
-                                                    ' - expired' if self.is_expired(user_won) else '',
-                                                    user_lost.score, formatTime(user_lost.seconds_took),
-                                                    ' - expired' if self.is_expired(user_lost) else '',)
+        return '%.2fp %s - %.2fp %s' % (user_won.score, formatTime(user_won.seconds_took),
+                                        user_lost.score, formatTime(user_lost.seconds_took))
 
     def played(self):
         """ Both players have played, save and score
@@ -395,7 +413,7 @@ class ChallengeGame(Game):
         user = user.get_extension(ChallengeUser)
         try:
             challs = [p.challenge for p in Participant.objects.filter(
-                Q(user=user, played=False))]
+                Q(user=user, played=False)) if p.challenge.is_launched() or p.challenge.is_runnable()]
         except Participant.DoesNotExist:
             challs = []
         return challs
@@ -409,6 +427,12 @@ class ChallengeGame(Game):
         except Participant.DoesNotExist:
             challs = []
         return challs
+
+    @staticmethod
+    def get_expired(user):
+        """ Return a list of status != L/A challenges, where played = False """
+        # TODO
+        return []
 
     @classmethod
     def get_formulas(kls):

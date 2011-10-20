@@ -11,7 +11,7 @@ def init():
     import settings
     setup_environ(settings)
 
-def main():
+def main(args):
     try:
         init()
     except:
@@ -22,6 +22,7 @@ def main():
     from wouso.interface.top.models import TopUser, History
 
     today = date.today()
+    """
     print 'Updating users with date: ', today
     for i,u in enumerate(Player.objects.all().order_by('-points')):
         topuser = u.get_extension(TopUser)
@@ -58,17 +59,20 @@ def main():
                 hs, new = History.objects.get_or_create(group=c, date=today, relative_to=g)
                 hs.position, hs.points = position, p.points
                 hs.save()
+    """ #TODO: fixme
 
     from wouso.games.challenge.models import Challenge
-    """ TODO: fixme
-    print 'Updating expired challenges'
+    
     challenges = Challenge.get_expired(today)
+    print 'Updating expired challenges ', len(challenges)
     for c in challenges:
-        if not c.check_timedelta(c.user_from.user):
-            c.expired(c.user_from.user)
-        if not c.check_timedelta(c.user_to.user):
-            c.expired(c.user_to.user)
-    """
+        if c.is_launched():
+            # launched before yesterday, automatically refuse
+            c.refuse(auto=True)
+        else:
+            # launched and accepted before yesterday, but not played by both
+            c.set_expired()
+    #"""
     from wouso.core.user.models import PlayerSpellDue
     spells = PlayerSpellDue.get_expired(today)
     print 'Updating expired spells (%d)' % spells.count()
@@ -78,4 +82,4 @@ def main():
     print 'Done.'
 
 if __name__ == '__main__':
-    main()
+    main(sys.argv)
