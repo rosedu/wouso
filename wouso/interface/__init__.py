@@ -24,7 +24,7 @@ def render_string(template, data=None):
 
 def get_static_pages():
     """ Return a list of static pages ordered by position, for rendering in footer """
-    return StaticPage.objects.all().order_by('position')
+    return StaticPage.objects.filter(hidden=False).order_by('position')
 
 def detect_mobile(request):
     if request.META.has_key("HTTP_USER_AGENT"):

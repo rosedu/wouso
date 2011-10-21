@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.conf import settings
-from wouso.core.user.models import Player
+from wouso.core.user.models import Player, PlayerGroup
 from wouso.core.magic.models import Artifact, Group
 from wouso.core.qpool.models import Schedule, Question, Tag, Category
 from wouso.core.qpool import get_questions_with_category
@@ -290,12 +290,19 @@ def artifact_del(request, id):
 def groupset(request, id):
     profile = get_object_or_404(Player, pk=id)
 
-    from django.forms import ModelForm
+    from django.forms import ModelForm, SelectMultiple
+
+    class GSelect(SelectMultiple):
+        def render_option(self, selected_choices, option_value, option_label):
+            group = PlayerGroup.objects.get(pk=option_value)
+            option_label = u'%s [%s]' % (group, group.name)
+            return super(GSelect, self).render_option(selected_choices, option_value, option_label)
 
     class GForm(ModelForm):
         class Meta:
             model = Player
             fields = ('groups',)
+            widgets = {'groups': GSelect()}
 
     if request.method == 'POST':
         form = GForm(request.POST, instance=profile)

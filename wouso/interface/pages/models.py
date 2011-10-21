@@ -7,6 +7,7 @@ class StaticPage(models.Model):
     name = models.CharField(max_length=100, blank=False)
     title         = models.CharField(max_length=200, blank=False)
     html_contents = models.TextField()
+    hidden = models.BooleanField(default=False, blank=True)
 
     def __unicode__(self): 
         return "%s (%s)" % (self.position, self.title)
