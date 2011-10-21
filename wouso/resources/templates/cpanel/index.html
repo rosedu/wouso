@@ -8,7 +8,20 @@
 
 {% block content %}
 
- <div class="subgroups">
+<h1>Dashboard</h1>
+
+<h2>QPool</h2>
+<p>Qotd: {{nr_future_questions}} future available questions. </p>
+<p> {{nr_questions}} total questions. </p>
+
+<h2>Quest</h2>
+<p>{% if  active_quests %}One active quest{% else %}No quest active{% endif %}. Total: {{ total_quests }}</p>
+
+<h2>Information</h2>
+    <p>Django version: {{ django_version }}</p>
+    <p>WoUSO version: {{ wouso_version }}</p>
+
+<div>
     <h2>Artifacts</h2>
     <table>
         <tr>
@@ -23,18 +36,6 @@
     </table>
 </div>
 
-<h1>Dashboard</h1>
-
-<h2>QPool</h2>
-<p>Qotd: {{nr_future_questions}} future available questions. </p>
-<p> {{nr_questions}} total questions. </p>
-
-<h2>Quest</h2>
-<p>{% if  active_quests %}One active quest{% else %}No quest active{% endif %}. Total: {{ total_quests }}</p>
-
-<h2>Information</h2>
-    <p>Django version: {{ django_version }}</p>
-    <p>WoUSO version: {{ wouso_version }}</p>
 {% endblock %}
 
 {% block sidebar %}
@@ -49,6 +50,7 @@
         </li>
         <li class="artifacts"><a href="{% url artifact_home %}">Artifacts</a></li>
         <li class="static"><a href="{% url admin:pages_staticpage_changelist %}" target="blank">Static Pages</a></li>
+        <li class="static"><a href="{% url admin:pages_newsitem_changelist %}" target="blank">News</a></li>
         <li class="custom"><a href="{% url customization %}">Customization</a></li>
         
         </ul>

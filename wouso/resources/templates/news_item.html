@@ -6,8 +6,15 @@
 
 {% block sectioncontent %}
 
-    {{ n.title }}<br />
-    {{ n.text }}<br />
-    By {{ n.author }}, on {{ n.date_pub }}
+    <h3>{{ n.title }}</h3>
+    <div class="news-text">
+    {% autoescape off %}
+        {{ n.text }}
+    {% endautoescape %}
+    </div>
+
+    <div class="second">
+    By {% player_simple n.author %}, on {{ n.date_pub }}
+    </div>
 
 {% endblock %}

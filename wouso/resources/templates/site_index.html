@@ -74,9 +74,14 @@
 
     <div id="news">
     {% block news %}
-    {% for n in news %}
-        <li><a href="{% url news_item_view n.pk %}">{{n.title}}</a></li>
-    {% endfor %}
+        <h2>{% trans 'News' %}</h2>
+        <ul>
+        {% for n in news %}
+            <li><a href="{% url news_item_view n.pk %}">{{n.title}}</a></li>
+        {% empty %}
+            <li class="empty">{% trans 'No news' %}</li>
+        {% endfor %}
+        </ul>
     {% if more %}
         <a href="{% url news_index_view %}">{% trans 'All news' %}</a>
     {% endif %}
