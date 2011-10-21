@@ -1,13 +1,13 @@
 {% extends 'cpanel/index.html' %}
 
-{% block title %}CPanel{% endblock %}
+{% block sectiontitle %}Quests{% endblock %}
 
-{% block content %}
+{% block sectioncontent %}
 
 {% if quest %}
-<h2>Edit quest #{{ quest.id }}</h2>
+<h3>Edit quest #{{ quest.id }}</h3>
 {% else %}
-<h2>New quest</h2>
+<h3>New quest</h3>
 {% endif %}
 
 <form method="post">

@@ -1,14 +1,11 @@
 {% extends 'cpanel/index.html' %}
 
-{% block title %}CPanel{% endblock %}
+{% block sectiontitle %}Questions importer{% endblock %}
 
-{% block content %}
+{% block sectioncontent %}
 
-<h1>Questions importer</h1>
-
-<h2>Category</h2>
-
-<pre>File syntax:
+<p>File syntax:</p>
+<pre>
 ? Question text
 on many lines
 - wrong answer
@@ -22,16 +19,18 @@ on two lines
 <form id="file_import" action="{% url importer_send %}"  method="POST" enctype="multipart/form-data">
     {% csrf_token %}
 
+<label for="category">Category:</label>
     <select name="category" id="category">
     {% for category in categories %}
         <option value="{{category}}">{{category}}</option>
     {% endfor %}
     </select>
-
-    <input type="file" name="file"/> <br/>
-    <input type="checkbox" name="all_active" value="all_active"> Set all active <br />
-
-    <input type="submit" value="Send file"/>
+    <input type="file" name="file"/>
+<br/>
+<br/>
+    <input type="checkbox" name="all_active" value="all_active" id="all_active"><label for="all_active">Set all active</label> <br />
+<br/>
+    <button type="submit">Send file</button>
 </form>
 
 {% endblock %}

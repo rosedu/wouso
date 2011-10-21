@@ -2,11 +2,10 @@
 {% block scripts %}
     <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
 {% endblock %}
-{% block title %}Special Quests{% endblock %}
 
-{% block content %}
+{% block sectiontitle %}Special Quests{% endblock %}
 
-<h2>Special Quest</h2>
+{% block sectioncontent %}
 
 <ul class="tabs">
     <li ><a href="{% url specialquest_home %}">Tasks</a></li>
@@ -36,4 +35,6 @@
         {% endfor %}
     </table>
     {% endblock %}
+    </div>
+</div>
 {% endblock %}

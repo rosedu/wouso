@@ -1,15 +1,15 @@
 {% extends 'cpanel/index.html' %}
 {% load user %}
 
-{% block title %}CPanel{% endblock %}
+{% block sectiontitle %}Set groups{% endblock %}
 
-{% block content %}
-
-<h1>Set groups</h1>
+{% block sectioncontent %}
 
 <form method="post" action="">
-<input type="hidden" name="to" value="{{to.id}}" />User: {% player to %}
+<input type="hidden" name="to" value="{{to.id}}" />
 
+    User: {% player to %}
+    Groups: {{ to.groups.all }}
 <table>
 {{ form }}
 </table>

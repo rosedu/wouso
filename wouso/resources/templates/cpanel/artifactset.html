@@ -2,11 +2,9 @@
 {% load user %}
 {% load artifacts %}
 
-{% block title %}CPanel{% endblock %}
+{% block sectiontitle %}Set artifact{% endblock %}
 
-{% block content %}
-
-<h2>Set artifact</h2>
+{% block sectioncontent %}
 
 <form method="post" action="">
 <input type="hidden" name="to" value="{{to.id}}" />User: {% player to %}
@@ -22,10 +20,14 @@ amount:
 
 {% if user.is_staff %}
 <!-- kind of an edit, TODO: write interface code -->
+
+<div class="spacer"></div>
 <h4>Existing</h4>
 <ul class="simple">
 {% for a in to.artifact_amounts.all %}
     <li>{% artifact a %} {{ a.artifact.title }} {{ a.amount }} <a href="{% url admin:user_playerartifactamount_change a.id %}">✍</a></li>
+{% empty %}
+    <li class="empty">None</li>
 {% endfor %}
 </ul>
 {% endif %}
