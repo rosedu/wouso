@@ -1,5 +1,8 @@
+import datetime
 from django.db import models
 from django.core.urlresolvers import reverse
+from core.user.models import Player ## this needs to be fixed to wouso.core.user.models
+
 
 class StaticPage(models.Model):
     position      = models.IntegerField(primary_key=True)
@@ -9,9 +12,19 @@ class StaticPage(models.Model):
     html_contents = models.TextField()
     hidden = models.BooleanField(default=False, blank=True)
 
-    def __unicode__(self): 
+    def __unicode__(self):
         return "%s (%s)" % (self.position, self.title)
 
     def html_link(self):
         return '<a href="%s">%s</a>' % (reverse('static_page', args=(self.slug,)),
                                         self.name)
+
+
+class NewsItem(models.Model):
+    title = models.CharField(max_length=100)
+    text = models.CharField(max_length=500)
+    author = models.ForeignKey(Player)
+    date_pub = models.DateField(default=datetime.date.today)
+
+    def __unicode__(self):
+        return unicode(self.title)
