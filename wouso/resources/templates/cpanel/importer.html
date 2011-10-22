@@ -28,6 +28,12 @@ on two lines
     {% endfor %}
     </select>
 
+    <select name="tags" id="tags" multiple="multiple">
+    {% for tag in tags %}
+        <option value="{{tag}}">{{tag}}</option>
+    {% endfor %}
+    </select>
+
     <input type="file" name="file"/> <br/>
     <input type="checkbox" name="all_active" value="all_active"> Set all active <br />
 
