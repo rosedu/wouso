@@ -16,8 +16,8 @@ class StaticPage(models.Model):
         return "%s (%s)" % (self.position, self.title)
 
     def html_link(self):
-        return '<a href="%s">%s</a>' % (reverse('static_page', args=(self.slug,)),
-                                        self.name)
+        return '<a href="%s" id="page-%s">%s</a>' % (reverse('static_page', args=(self.slug,)),
+                                        self.slug, self.name)
 
 
 class NewsItem(models.Model):
