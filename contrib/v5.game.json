@@ -647,7 +647,7 @@
   "model": "scoring.formula",
   "fields": {
    "owner": "ChallengeGame",
-   "formula": "points=3",
+   "formula": "points=6",
    "description": "Points earned when winning a challenge"
   }
  },
@@ -656,7 +656,7 @@
   "model": "scoring.formula",
   "fields": {
    "owner": "ChallengeGame",
-   "formula": "points=-1",
+   "formula": "points=2",
    "description": "Points earned when losing a challenge"
   }
  },
@@ -665,8 +665,17 @@
   "model": "scoring.formula",
   "fields": {
    "owner": "ChallengeGame",
-   "formula": "points=1",
+   "formula": "points=4",
    "description": "Points earned when drawing a challenge"
+  }
+ },
+ {
+  "pk": "chall-warranty",
+  "model": "scoring.formula",
+  "fields": {
+   "owner": "ChallengeGame",
+   "formula": "points=-3",
+   "description": "Points taken as a warranty for challenge"
   }
  },
  {
@@ -733,10 +742,19 @@
   }
  },
  {
+  "pk": "bonus-points",
+  "model": "scoring.formula",
+  "fields": {
+   "owner": null,
+   "formula": "points={points}",
+   "description": "Give bonus points"
+  }
+ },
+ {
   "pk": "theme",
   "model": "config.setting",
   "fields": {
-   "value": "default"
+   "value": "blackout"
   }
  },
  {
@@ -778,7 +796,7 @@
   "pk": "intro",
   "model": "config.setting",
   "fields": {
-   "value": "WoUSO este un joc realizat pentru studen\u0163ii cursului de Utilizarea Sistemelor de Operare din Facultatea de Automatic\u0103 \u015fi Calculatoare."
+   "value": "<b>World of USO</b> e un joc simplu realizat pentru studen\u021bii cursului de <b>USO</b> (Utilizarea Sistemelor de Operare) din <a href=\"http://acs.pub.ro/\" target=\"_blank\">Facultatea de Automatic\u0103 \u0219i Calculatoare</a> a <a href=\"http://www.pub.ro/\" target=\"_blank\">Universit\u0103\u021bii Politehnica Bucure\u0219ti</a>. <b>World of USO</b> are 3 p\u0103r\u021bi: <b>Question of the Day</b>, <b>Challenge</b> \u0219i <b>The Quest</b>."
   }
  },
  {
@@ -813,7 +831,7 @@
   "pk": "extrainfo",
   "model": "config.setting",
   "fields": {
-   "value": ""
+   "value": "Folosi\u021bi contul de pe <b>cs.curs.pub.ro</b> pentru a v\u0103 autentifica. Dac\u0103 ave\u021bi probleme, contacta\u021bi-ne la <b>wouso@rosedu.org</b>"
   }
  },
  {
@@ -849,6 +867,7 @@
   "model": "pages.staticpage",
   "fields": {
    "html_contents": "The story starts here.",
+   "hidden": false,
    "title": "Povestea",
    "slug": "poveste",
    "name": "Povestea"
@@ -858,7 +877,8 @@
   "pk": 1,
   "model": "pages.staticpage",
   "fields": {
-   "html_contents": "You can find us on one of the following:\r\n\r\n<ul>\r\n<li><a href=\"http://lists.rosedu.org/cgi-bin/mailman/listinfo/rosedu-general\">rosedu-general mailing list</a></li>\r\n<li>#rosedu IRC channel on Freenode</li>\r\n<li><a href=\"http://projects.rosedu.org/projects/wousodjango\">Redmine project</a> and git repo</li>\r\n</ul>",
+   "html_contents": "<p>\r\n\tYou can find us on one of the following:\r\n\t<br /><br />\r\n\t<a href=\"http://lists.rosedu.org/cgi-bin/mailman/listinfo/rosedu-general\" target=\"_blank\">rosedu-general</a> mailing list;\r\n\t<br />\r\n\t<a href=\"http://webchat.freenode.net/?channels=rosedu\" target=\"_blank\">#rosedu</a> IRC channel on <a href=\"http://freenode.net/\" target=\"_blank\">Freenode</a>;\r\n\t<br />\r\n\t<a href=\"http://projects.rosedu.org/projects/wousodjango\" target=\"_blank\">Redmine project</a> and <a href=\"#\">git repo</a>.\r\n</p>\r\n\r\n<iframe src=\"//www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2Fpages%2FWorld-of-USO%2F286034231424804&amp;width=300&amp;colorscheme=dark&amp;show_faces=false&amp;border_color&amp;stream=false&amp;header=false&amp;height=62&amp;appId=149686905091779\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:300px; height:62px;\" allowTransparency=\"true\"></iframe>",
+   "hidden": false,
    "title": "Contact us",
    "slug": "contact",
    "name": "Contact"
@@ -868,7 +888,8 @@
   "pk": 2,
   "model": "pages.staticpage",
   "fields": {
-   "html_contents": "<h3>Developers</h3>\r\n<ul class=\"none\">\r\n<li><a href=\"http://alex.eftimie.ro/\" title=\"Alex Eftimie\"><img class=\"avatar\" src=\"http://www.gravatar.com/avatar/49bd6ade5bea5cea998ec50d76047c29.jpg?d=monsterid\" /></a></li>\r\n<li><a href=\"\" title=\"Mihnea Dobrescu-Balaur\"><img class=\"avatar\" src=\"http://www.gravatar.com/avatar/959c3839e720a10d4885f40dbf941797.jpg?d=monsterid\" /></a></li>\r\n<li><a href=\"\" title=\"Mircea-\u0218tefan Ghideu\"><img class=\"avatar\" src=\"http://www.gravatar.com/avatar/eaba5c724e366351f8925ed4fa0743f3.jpg?d=monsterid\" /></a></li>\r\n<li><br/><br/><br/>\u0219i <a href=\"http://projects.rosedu.org/projects/wousodjango/\">mul\u021bi al\u021bii</a>.</li>\r\n</ul>\r\n<p style=\"clear:both\"></p>\r\n<h3>Design</h3>\r\n<ul class=\"none\">\r\n<li><a href=\"http://swarm.cs.pub.ro/~cdogaru/\" title=\"C\u0103t\u0103lin Dogaru\"><img class=\"avatar\" src=\"http://www.gravatar.com/avatar/b01691dcb932148802ef78c12bfcd7b8.jpg?d=monsterid\" /></a>\r\n</li>\r\n</ul>\r\n\r\n<p style=\"clear:both\"></p>\r\n<h3>Poveste \u0219i con\u021binut</h3>\r\n<p>R\u0103zvan Deaconescu \u0219i echipa wouso-content.</p>",
+   "html_contents": "<h3>Development</h3>\r\n\r\n<div class=\"spacer-small\">\r\n\t<!-- -->\r\n</div><!-- .spacer-small -->\r\n\r\n<a href=\"http://alex.eftimie.ro/\" target=\"_blank\" title=\"Alex Eftimie\"><img class=\"avatar\" height=\"80\" src=\"http://www.gravatar.com/avatar/49bd6ade5bea5cea998ec50d76047c29.jpg\" width=\"80\" /></a>\r\n<a href=\"#\" title=\"Mihnea Dobrescu-Balaur\"><img class=\"avatar\" height=\"80\" src=\"http://www.gravatar.com/avatar/959c3839e720a10d4885f40dbf941797.jpg\" width=\"80\" /></a>\r\n<a href=\"#\" title=\"Mircea-\u0218tefan Ghideu\"><img class=\"avatar\" height=\"80\" src=\"http://www.gravatar.com/avatar/eaba5c724e366351f8925ed4fa0743f3.jpg\" width=\"80\" /></a>\r\n\r\n<div class=\"clear spacer-small\">\r\n\t<!-- -->\r\n</div><!-- .clear .spacer-small -->\r\n\r\n<p>\u0219i <a href=\"http://projects.rosedu.org/projects/wousodjango/\" target=\"_blank\">mul\u021bi al\u021bii</a>.</p>\r\n\r\n<div class=\"spacer\">\r\n\t<!-- -->\r\n</div><!-- .spacer -->\r\n\r\n<h3>Design</h3>\r\n\r\n<div class=\"spacer-small\">\r\n\t<!-- -->\r\n</div><!-- .spacer-small -->\r\n\r\n<a href=\"http://swarm.cs.pub.ro/~cdogaru/\" target=\"_blank\" title=\"C\u0103t\u0103lin Dogaru\"><img class=\"avatar\" height=\"80\" src=\"http://www.gravatar.com/avatar/b01691dcb932148802ef78c12bfcd7b8.jpg\" width=\"80\" /></a>\r\n\r\n<div class=\"clear spacer-small\">\r\n\t<!-- -->\r\n</div><!-- .clear .spacer-small -->\r\n\r\n<p>\u0219i <a href=\"#\" title=\"Dorian Dogaru\">Dorian Dogaru</a>.</p>\r\n\r\n<div class=\"spacer\">\r\n\t<!-- -->\r\n</div><!-- .spacer -->\r\n\r\n<h3>Poveste \u0219i con\u021binut</h3>\r\n\r\n<p><a href=\"http://swarm.cs.pub.ro/~razvan/blog/\" title=\"R\u0103zvan Deaconescu\">R\u0103zvan Deaconescu</a> \u0219i echipa <a href=\"#\">wouso-content</a>.</p>",
+   "hidden": false,
    "title": "Credits",
    "slug": "credits",
    "name": "Credits"
