@@ -11,7 +11,7 @@ from wouso.core import scoring
 
 # marche
 def bazaar(request):
-    player = request.user.get_profile()
+    player = request.user.get_profile() if request.user.is_authenticated() else None
     spells = Spell.objects.all()
 
     rate = scoring.calculate('gold-points-rate', gold=1)['points']
