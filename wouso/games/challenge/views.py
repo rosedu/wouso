@@ -20,6 +20,9 @@ def index(request):
     challs = ChallengeGame.get_active(chall_user)
     played = ChallengeGame.get_played(chall_user)[:10]
 
+    if not chall_user.is_eligible():
+        return do_result(request, error='Ne pare rau, nu esti anul I, nu poti provoca. Te invitam pe wouso-next.rosedu.org')
+
     return render_to_response('challenge/index.html',
             {'challenges': challs, 'played': played, 'challuser': chall_user},
             context_instance=RequestContext(request))
@@ -80,8 +83,11 @@ def launch(request, to_id):
 
     user_from = request.user.get_profile().get_extension(ChallengeUser)
 
+    if (not user_to.is_eligible()) or (not user_from.is_eligible()):
+        return do_result(request, error='Ne pare rau, doar studentii de anul I pot provoca/fi provocati')
+
     if not user_from.can_launch():
-        return do_result(request, _('You cannot challenge.'))
+        return do_result(request, _('You cannot launch another challenge today.'))
 
     if user_from.can_challenge(user_to):
         try:
@@ -91,7 +97,7 @@ def launch(request, to_id):
             return do_result(request, e.message)
         return do_result(request, message=_('Successfully challenged'))
     else:
-        return do_result(request, _('This user cannot be challenged by you.'))
+        return do_result(request, _('This user cannot be challenged.'))
 
 
 @login_required
