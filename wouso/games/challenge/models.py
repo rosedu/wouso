@@ -76,10 +76,9 @@ class Participant(models.Model):
 
     @property
     def challenge(self):
-        #return Challenge.objects.get(Q(user_from=self)|Q(user_to=self))
         try:
             return Challenge.objects.get(Q(user_from=self)|Q(user_to=self))
-        except:
+        except Challenge.DoesNotExist:
             return None
 
     def __unicode__(self):
@@ -119,15 +118,17 @@ class Challenge(models.Model):
         c = Challenge(user_from=uf, user_to=ut, date=datetime.now())
         c.save()
 
-        # set last_launched
-        user_from.last_launched = datetime.now()
-        user_from.save()
-
         # TODO: better question selection
         #limit = 5
         for q in questions[:Challenge.LIMIT]:
             c.questions.add(q)
 
+        # set last_launched
+        user_from.last_launched = datetime.now()
+        user_from.save()
+
+        # take 3 points from user_from
+        scoring.score(user_from, ChallengeGame, 'chall-warranty', external_id=c.id)
         return c
 
     @staticmethod
@@ -161,6 +162,8 @@ class Challenge(models.Model):
     def accept(self):
         self.status = 'A'
         self.save()
+        # take warranty from user_to
+        scoring.score(self.user_to.user, ChallengeGame, 'chall-warranty', external_id=self.id)
 
     def refuse(self, auto=False):
         self.status = 'R'
@@ -178,8 +181,13 @@ class Challenge(models.Model):
                                      arguments=dict(chall_from=self.user_from), \
                                      game=ChallengeGame.get_instance())
         self.save()
+        # give warranty back to initiator
+        scoring.unset(self.user_from.user, ChallengeGame, 'chall-warranty', external_id=self.id)
 
     def cancel(self):
+        # give warranty back to initiator
+        scoring.unset(self.user_from.user, ChallengeGame, 'chall-warranty', external_id=self.id)
+
         self.user_from.user.last_launched = datetime(1, 1, 1)
         self.user_from.user.save()
         self.delete()
@@ -439,18 +447,21 @@ class ChallengeGame(Game):
         """ Returns a list of formulas used by qotd """
         fs = []
         chall_game = kls.get_instance()
-        fs.append(Formula(id='chall-won', formula='points=3',
+        fs.append(Formula(id='chall-won', formula='points=6',
             owner=chall_game.game,
             description='Points earned when winning a challenge')
         )
-        fs.append(Formula(id='chall-lost', formula='points=-1',
+        fs.append(Formula(id='chall-lost', formula='points=2',
             owner=chall_game.game,
             description='Points earned when losing a challenge')
         )
-        fs.append(Formula(id='chall-draw', formula='points=1',
+        fs.append(Formula(id='chall-draw', formula='points=4',
             owner=chall_game.game,
             description='Points earned when drawing a challenge')
         )
+        fs.append(Formula(id='chall-warranty', formula='points=-3',
+            owner=chall_game.game,
+            description='Points taken as a warranty for challenge'))
         return fs
 
     @classmethod

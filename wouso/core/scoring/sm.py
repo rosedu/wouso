@@ -83,7 +83,27 @@ def score(user, game, formula, external_id=None, percents=100, **params):
 
 def unset(user, game, formula, external_id=None, **params):
     """ Remove all history records by the external_id, formula and game given to the user """
-    return History.objects.filter(user=user, game=game.get_instance(), formula=formula, external_id=external_id).delete()
+    for history in History.objects.filter(user=user, game=game.get_instance(), formula=formula, external_id=external_id):
+        if history.coin.name == 'points':
+            user.points -= history.amount
+        history.delete()
+    user.save()
+    update_points(user, game)
+
+def update_points(player, game):
+    level = God.get_level_for_points(player.points)
+    if level != player.level_no:
+        if level < player.level_no:
+            signal_msg = ugettext_noop("downgraded to level {level}")
+        else:
+            signal_msg = ugettext_noop("upgraded to level {level}")
+
+        signals.addActivity.send(sender=None, user_from=player,
+                             user_to=player, message=signal_msg,
+                             arguments=dict(level=level),
+                             game=game)
+        player.level_no = level
+        player.save()
 
 def score_simple(player, coin, amount, game=None, formula=None,
     external_id=None, percents=100):
@@ -106,19 +126,8 @@ def score_simple(player, coin, amount, game=None, formula=None,
     # update user.points asap
     if coin.name == 'points':
         player.points += amount
-        level = God.get_level_for_points(player.points)
-        if level != player.level_no:
-            if level < player.level_no:
-                signal_msg = ugettext_noop("downgraded to level {level}")
-            else:
-                signal_msg = ugettext_noop("upgraded to level {level}")
-
-            signals.addActivity.send(sender=None, user_from=player,
-                                 user_to=player, message=signal_msg,
-                                 arguments=dict(level=level),
-                                 game=game)
-            player.level_no = level
         player.save()
+        update_points(player, game)
 
     logging.debug("Scored %s with %f %s" % (user, amount, coin))
     return hs
