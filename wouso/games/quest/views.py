@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -44,6 +45,11 @@ def sidebar_widget(request):
         quest_progress = None
     else:
         quest_progress = 1.0 * quest_user.current_level / quest.count * 100
+
+    if quest_user.finished:
+        time_passed = datetime.now() - quest_user.finished_time
+        if time_passed > timedelta(seconds=600): # ten minutes
+            return ''
 
     return render_string('quest/sidebar.html',
             {'quest': quest, 'quser': quest_user,
