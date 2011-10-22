@@ -15,6 +15,8 @@ upat = [
     url(r'^qpool/qotd/schedule$', 'wouso.interface.cpanel.views.qotd_schedule', name='qotd_schedule'),
     url(r'^qpool/search/$', 'wouso.interface.cpanel.views.qpool_search', name='qpool_search'),
     url(r'^qpool/(?P<cat>\w*)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
+    url(r'^qpool/remove_all/(?P<cat>\w+)/$', 'wouso.interface.cpanel.views.remove_all', name='remove_all'),
+
 
     url(r'^artifact/$', 'wouso.interface.cpanel.views.artifact_home', name='artifact_home'),
     url(r'^artifact/user_set/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.artifactset', name='artifact_set'),

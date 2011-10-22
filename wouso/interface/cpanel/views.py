@@ -134,6 +134,7 @@ def question_edit(request, id=None):
                                'module': 'qpool',
                                'categs': CATEGORIES},
                               context_instance=RequestContext(request))
+
 @login_required
 def question_switch(request, id):
     question = get_object_or_404(Question, pk=id)
@@ -146,6 +147,19 @@ def question_switch(request, id):
         go_back = reverse('wouso.interface.cpanel.views.qpool_home')
 
     return HttpResponseRedirect(go_back)
+
+@login_required
+def remove_all(request, cat=None):
+    if cat is None:
+        return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
+
+    category = Category.objects.filter(name=cat)[0]
+    questions = Question.objects.filter(category=category)
+
+    for q in questions:
+        q.delete()
+
+    return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
 
 @login_required
 def question_del(request, id):

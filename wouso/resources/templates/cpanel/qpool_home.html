@@ -13,7 +13,7 @@
         </ul>
     {% endif %}
     {% if cat == 'challenge' %}
-        <h3> Active tags </h3>    
+        <h3> Active tags </h3>
         {% if tags == 0 %}
             <p>No available tags.</p>
         {% else %}
@@ -26,7 +26,7 @@
 
     {% if cat != 'search' %}
         <ul class="menu no-border">
-            <li><a class="button" onclick="return confirm('Are you sure?');">Remove all</a></li>
+            <li><a class="button" href="{% url remove_all cat=cat %}" onclick="return confirm('Are you sure?');">Remove all</a></li>
         </ul>
     {% endif %}
 {% endblock %}
