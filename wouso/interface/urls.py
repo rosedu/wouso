@@ -69,7 +69,7 @@ urlpatterns = patterns('',
     (r'^admin/djangologdb/', include('djangologdb.urls')),
 
     # Static: not in a real deployment
-    (r'^static/(?P<path>.*)$', 'django.views.static.serve',
-        {'document_root': settings.MEDIA_ROOT}),
+    #(r'^static/(?P<path>.*)$', 'django.views.static.serve',
+    #    {'document_root': settings.MEDIA_ROOT}),
 
 )
