@@ -481,7 +481,7 @@ class ChallengeGame(Game):
         if not request.user.is_anonymous():
             from views import header_link
             return header_link(request)
-        return None
+        return dict(text=_('Challenges'), link='')
 
     @classmethod
     def get_sidebar_widget(kls, request):

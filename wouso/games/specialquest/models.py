@@ -94,7 +94,7 @@ class SpecialQuestGame(Game):
         if not request.user.is_anonymous():
             from views import header_link
             return header_link(request)
-        return None
+        return dict(text=_('Special'), link='')
 
     @classmethod
     def get_profile_superuser_actions(kls, request, player):

@@ -19,7 +19,8 @@ def header_footer(request):
             h = game.get_header_link(request)
             if h:
                 header.append((h, game.get_instance().name))
-    except: pass
+    except Exception as e:
+        logging.exception(e)
 
     # add also messages and magic link
     try:
@@ -29,7 +30,8 @@ def header_footer(request):
         h = Bazaar.get_header_link(request)
         if h:
             header.append((h, 'Magic'))
-    except Exception as e: logging.exception(e); pass
+    except Exception as e:
+        logging.exception(e)
 
     footer = []
     try:
