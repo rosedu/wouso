@@ -118,9 +118,13 @@ class SpecialQuestGame(Game):
             targetuser = player.get_extension(SpecialQuestUser)
             if not squser.self_group and not targetuser.group:
                 return ''
+            if squser.active or targetuser.active:
+                return ''
             if ((squser.self_group is not None) and (targetuser in squser.self_group.members.all())) or ((targetuser.group is not None) and (squser in targetuser.group.members.all())):
                 return '<span class="button">%s</span>' % _('Special mate')
             if targetuser.group is not None:
                 return '<span class="button">%s</span>' % _('Other group')
+            if Invitation.objects.filter(to=targetuser, group=squser.group).count() > 0:
+                return '<span class="button">%s</span>' % _('Invited')
             return '<a class="button" href="%s" title="%s">%s</a>' % (url, _("Invite in my Special Quest group"), _('Invite'))
         return ''
