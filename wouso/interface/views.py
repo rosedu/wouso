@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core import serializers
+from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.http import Http404, HttpResponseRedirect, HttpResponse
@@ -31,6 +32,23 @@ def get_wall(page=u'1'):
 
 def anonymous_homepage(request):
     return render_to_response('splash.html', context_instance=RequestContext(request))
+
+def hub(request):
+    if request.user.is_anonymous():
+        return anonymous_homepage(request)
+
+    # check first time
+    profile = request.user.get_profile()
+    activity = Activity.objects.filter(user_from=profile).count()
+    if activity < 2:
+        # first timer, show povestea
+        from wouso.interface.pages.models import StaticPage
+        try:
+            story = StaticPage.objects.get(slug='poveste')
+        except: pass
+        else:
+            return HttpResponseRedirect(reverse('static_page', args=(story.slug,)))
+    return homepage(request)
 
 def homepage(request, page=u'1'):
     """ First page shown """

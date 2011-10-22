@@ -160,7 +160,7 @@ INSTALLED_APPS = (
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 LOGIN_URL = '/user/login/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/hub/'
 
 AUTH_PROFILE_MODULE = 'user.Player'
 
