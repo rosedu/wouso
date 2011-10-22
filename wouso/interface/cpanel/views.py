@@ -1,4 +1,5 @@
 import datetime
+from django.contrib.auth import models as auth
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import  HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -33,6 +34,9 @@ def dashboard(request):
     # artifacts
     artifact_groups = Group.objects.all()
 
+    # admins
+    staff_group, new = auth.Group.objects.get_or_create(name='Staff')
+
     return render_to_response('cpanel/index.html',
                               {'nr_future_questions' : nr_future_questions,
                                'nr_questions' : nr_questions,
@@ -41,7 +45,9 @@ def dashboard(request):
                                'module': 'home',
                                'artifact_groups': artifact_groups,
                                'django_version': get_version(),
-                               'wouso_version': WOUSO_VERSION},
+                               'wouso_version': WOUSO_VERSION,
+                               'staff': staff_group,
+                               },
                               context_instance=RequestContext(request))
 
 @login_required
@@ -334,6 +340,18 @@ def groupset(request, id):
                               {'to': profile,
                                'form': form},
                               context_instance=RequestContext(request))
+
+@login_required
+def stafftoggle(request, id):
+    profile = get_object_or_404(Player, pk=id)
+
+    staff_group, new = auth.Group.objects.get_or_create(name='Staff')
+    if staff_group in profile.user.groups.all():
+        profile.user.groups.remove(staff_group)
+    else:
+        profile.user.groups.add(staff_group)
+
+    return HttpResponseRedirect(reverse('player_profile', args=(id,)))
 
 # 'I am lazy' hack comes in
 import sys

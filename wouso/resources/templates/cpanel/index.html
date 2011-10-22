@@ -1,6 +1,7 @@
 {% extends 'interface/section_base.html' %}
 {%  load artifacts %}
 {%  load cpanel %}
+{%  load user %}
 
 {% block title %}CPanel{% endblock %}
 
@@ -14,6 +15,10 @@
 <h3>Information</h3>
     <p>Django version: {{ django_version }}</p>
     <p>WoUSO version: {{ wouso_version }}</p>
+<h4>Staff</h4>
+    {% for u in staff.user_set.all %}
+    {% player_simple u %}
+    {% endfor %}
 </div>
 
 <h3>QPool</h3>

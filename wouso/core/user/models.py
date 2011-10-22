@@ -128,7 +128,11 @@ class Player(models.Model):
     # it doesnt work this way, instead provide it as a property
     # see: http://stackoverflow.com/questions/583327/django-model-with-2-foreign-keys-from-the-same-table
     #spells = models.ManyToManyField(Spell, blank=True, through='PlayerSpellDue')
-    
+
+    def in_staff_group(self):
+        staff, new = Group.objects.get_or_create(name='Staff')
+        return staff in self.user.groups.all()
+
     @property
     def spells(self):
         return self.playerspelldue_set.all()

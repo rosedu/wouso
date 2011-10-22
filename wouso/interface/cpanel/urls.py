@@ -26,6 +26,7 @@ upat = [
     url(r'^artifact/(?P<group>\w*)/$', 'wouso.interface.cpanel.views.artifact_home', name='artifact_home'),
 
     url(r'^group/set/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.groupset', name='group_set'),
+    url(r'^staff/toggle/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.stafftoggle', name='staff_toggle'),
 ]
 
 for g in get_cpanel_games():
