@@ -1,4 +1,4 @@
-{% extends 'site_base.html' %}
+{% extends 'interface/section_base.html' %}
 {%  load artifacts %}
 {%  load cpanel %}
 
@@ -6,39 +6,42 @@
 
 {% block css %}li.{{module}} {font-weight: bold}{% endblock %}
 
-{% block content %}
+{% block sectiontitle %}Dashboard{% endblock %}
 
-<h1>Dashboard</h1>
+{% block sectioncontent %}
 
-<h2>QPool</h2>
+<div class="subgroups">
+<h3>Information</h3>
+    <p>Django version: {{ django_version }}</p>
+    <p>WoUSO version: {{ wouso_version }}</p>
+</div>
+
+<h3>QPool</h3>
 <p>Qotd: {{nr_future_questions}} future available questions. </p>
 <p> {{nr_questions}} total questions. </p>
 
-<h2>Quest</h2>
+<h3>Quest</h3>
 <p>{% if  active_quests %}One active quest{% else %}No quest active{% endif %}. Total: {{ total_quests }}</p>
 
-<h2>Information</h2>
-    <p>Django version: {{ django_version }}</p>
-    <p>WoUSO version: {{ wouso_version }}</p>
-
-<div>
-    <h2>Artifacts</h2>
-    <table>
-        <tr>
-        {%  for g in artifact_groups %}
-        <td valign="top">
-            <h3>{{ g }}</h3>
-            {% for a in g.artifact_set.all %}
-                {% artifact a %} {{ a.name }}<br/>
-            {% endfor %}
-        </td>
-        {%  endfor %}
-    </table>
-</div>
+<div class="spacer"></div>
+<h3>Artifacts</h3>
+<table>
+    <tr>
+    {%  for g in artifact_groups %}
+    <td valign="top">
+        <h4>{{ g }}</h4>
+        {% for a in g.artifact_set.all %}
+            {% artifact a %} {{ a.name }}<br/>
+        {% endfor %}
+    </td>
+    {%  endfor %}
+</table>
 
 {% endblock %}
 
 {% block sidebar %}
+<div class="widget-top"></div>
+<div class="widget-middle">
 <h2>Tools</h2>
     <div class="widget-content">
         <ul class="menu">
@@ -71,5 +74,8 @@
     <div class="widget-content">
         {% block extra_sidebar %}
         {% endblock %}
+        <div class="clearer spacer"></div>
     </div>
+</div>
+<div class="widget-bottom"></div>
 {% endblock %}

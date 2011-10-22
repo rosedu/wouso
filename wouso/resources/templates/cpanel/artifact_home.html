@@ -6,14 +6,12 @@
     <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
 {% endblock %}
 
-{% block title %}Artifacts{% endblock %}
+{% block sectiontitle %}Artifacts{% endblock %}
 
 {% block extra_sidebar %}
 {% endblock %}
 
-{% block content %}
-
-<h2>Artifacts</h2>
+{% block sectioncontent %}
 
 <div class="actions">
     <a class="button" href="{% url artifact_new %}">{% trans 'Add artifact' %}</a>
@@ -49,8 +47,8 @@
             <td>{{ a.title }}</td>
             <td>{{ a.path }}</td>
             <td class="actions" nowrap>
-                <a href="{% url artifact_edit a.id %}">✍</a>
-                <a href="{% url artifact_del a.id %}" onclick="return confirm('really?');">✕</a>
+                <a class="button-min" href="{% url artifact_edit a.id %}">✍</a>
+                <a class="button-min" href="{% url artifact_del a.id %}" onclick="return confirm('really?');">✕</a>
             </td>
         </tr>
     {% empty %}

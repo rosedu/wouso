@@ -6,6 +6,7 @@
 /wouso/settings.py
 /wouso/localsettings.py
 /wouso/resources/static/upload/*
+/wouso/resources/static/themes/blackout
 /docs/_build
 src/
 build/

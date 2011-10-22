@@ -2,11 +2,10 @@
 {% block scripts %}
     <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
 {% endblock %}
-{% block title %}Special Quests{% endblock %}
 
-{% block content %}
+{% block sectiontitle %}Special Quests{% endblock %}
 
-<h2>Special Quest</h2>
+{% block sectioncontent %}
 
 <ul class="tabs">
     <li class="active"><a href="{% url specialquest_home %}">Tasks</a></li>
@@ -44,4 +43,6 @@
 
     <div class="info second" style="clear:both">Current date and time:  {% now "d/m/Y H:i" %}</div>
     {% endblock %}
+    </div>
+</div>
 {% endblock %}

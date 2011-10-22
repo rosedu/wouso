@@ -4,7 +4,7 @@
     <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
 {% endblock %}
 
-{% block title %}CPanel{% endblock %}
+{% block sectiontitle %}Question pool{% endblock %}
 
 {% block extra_sidebar %}
     {% if cat == 'qotd' %}
@@ -23,11 +23,15 @@
             </form>
         {% endif %}
     {% endif %}
+
+    {% if cat != 'search' %}
+        <ul class="menu no-border">
+            <li><a class="button" onclick="return confirm('Are you sure?');">Remove all</a></li>
+        </ul>
+    {% endif %}
 {% endblock %}
 
-{% block content %}
-
-<h2>Question pool</h2>
+{% block sectioncontent %}
 
 <div class="actions">
     <a class="button" href="{% url question_new %}">{% trans 'Add question' %}</a>
@@ -44,11 +48,12 @@
 
 <div class="tab_container">
     <div id="tab-1" class="tab_content">
+    <div class="spacer"></div>
     {% if cat == 'search' %}
     <form>
     <p>Search for questions containing:
         <input type="text" name="q" value="{{q}}" />
-        <button type="submit">{% trans 'Search'%}</button>
+        <div class="actions"><button type="submit">{% trans 'Search'%}</button></div>
     </p>
     </form>
     {% endif %}
@@ -74,14 +79,14 @@
                 <div class="second">{% if q.tag %}tags: {{ q.tag }}{% endif %}</div>
             </td>
             <td>
-            <a class="button" href="{% url switch_active q.id %}">{% if q.active %}<span class="ok">yes</span>
+            <a class="button button-min" href="{% url switch_active q.id %}">{% if q.active %}<span class="ok">yes</span>
             {% else %}<span class="wrong">no</span>
             {% endif %}
             </a>
             </td>
             <td class="actions" nowrap>
-                <a href="{% url question_edit q.id%}">✍</a>
-                <a href="{% url question_del q.id%}" onclick="return confirm('really?');">✕</a>
+                <a class="button-min" href="{% url question_edit q.id%}">✍</a>
+                <a class="button-min" href="{% url question_del q.id%}" onclick="return confirm('really?');">✕</a>
             </td>
         </tr>
     {% empty %}
