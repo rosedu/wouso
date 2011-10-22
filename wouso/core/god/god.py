@@ -19,7 +19,7 @@ class DefaultGod:
             owner=None,
             description='Gold spent on spells')
         )
-        fs.append(Formula(id='gold-points-rate', formula='points={gold}*9,gold=-{gold}',
+        fs.append(Formula(id='gold-points-rate', formula='points={gold}*3,gold=-{gold}',
             owner=None,
             description='Exchange gold in points')
         )
@@ -29,6 +29,8 @@ class DefaultGod:
         )
         fs.append(Formula(id='bonus-gold', formula='gold={gold}', owner=None,
             description='Give bonus gold to the poor people'))
+        fs.append(Formula(id='bonus-points', formula='points={points}', owner=None,
+            description='Give bonus points'))
         return fs
 
     def get_user_level(self, level_no, player):

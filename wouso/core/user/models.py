@@ -336,5 +336,8 @@ def user_post_save(sender, instance, **kwargs):
                                  user_to=profile,
                                  message=signal_msg,
                                  game=None)
+        # give 15 bonus points
+        from wouso.core.scoring import score
+        score(profile, None, 'bonus-points', points=15)
 
 models.signals.post_save.connect(user_post_save, User)
