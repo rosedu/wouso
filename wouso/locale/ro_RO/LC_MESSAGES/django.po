@@ -7,24 +7,24 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wouso VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-13 21:10+0300\n"
-"PO-Revision-Date: 2011-10-13 21:10+0200\n"
-"Last-Translator: Alex Eftimie <alex@eftimie.ro>\n"
+"POT-Creation-Date: 2011-10-23 02:35+0300\n"
+"PO-Revision-Date: 2011-10-23 02:42+0200\n"
+"Last-Translator: Alex Eftimie <alex@rosedu.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: core/scoring/sm.py:112
+#: core/scoring/sm.py:97
 msgid "downgraded to level {level}"
 msgstr "a coborât la nivelul {level}"
 
-#: core/scoring/sm.py:114
+#: core/scoring/sm.py:99
 msgid "upgraded to level {level}"
 msgstr "a promovat la nivelul {level}"
 
-#: core/user/models.py:327
+#: core/user/models.py:333
 msgid "has joined the game."
 msgstr "a intrat în joc."
 
@@ -36,11 +36,43 @@ msgstr "Tu"
 msgid "used {artifact} to enable one more challenge."
 msgstr "a folosit {artifact} pentru a activa încă o provocare."
 
-#: games/challenge/models.py:171
+#: games/challenge/models.py:175
+msgid "has refused challenge from {chall_from} (expired)"
+msgstr "a refuzat provocarea de la {chall_from} (expirată)"
+
+#: games/challenge/models.py:177
 msgid "has refused challenge from {chall_from}"
 msgstr "a refuzat provocarea de la {chall_from}"
 
-#: games/challenge/models.py:275
+#: games/challenge/models.py:257
+msgid "expired"
+msgstr "expirată"
+
+#: games/challenge/models.py:260
+msgid "{seconds} seconds"
+msgstr "{seconds} secunde"
+
+#: games/challenge/models.py:262
+msgid "1 minute"
+msgstr "1 minut"
+
+#: games/challenge/models.py:264
+msgid "{minutes} minutes"
+msgstr "{minutes} minute"
+
+#: games/challenge/models.py:266
+msgid "1 minute and {s} seconds"
+msgstr "1 minut și {s} secunde"
+
+#: games/challenge/models.py:268
+msgid "{m} minutes and {s} seconds"
+msgstr "{m} minute și {s} secunde"
+
+#: games/challenge/models.py:269
+msgid "(in {time})"
+msgstr "(în {time})"
+
+#: games/challenge/models.py:301
 msgid ""
 "draw result between {user_to} and {user_from}:\n"
 "{extra}"
@@ -48,15 +80,15 @@ msgstr ""
 "rezultat nul în provocarea {user_to} vs {user_from}:\n"
 "{extra}"
 
-#: games/challenge/models.py:291
+#: games/challenge/models.py:317
 msgid "won challenge with {user_lost}: {extra}"
 msgstr "a câștigat provocarea cu {user_lost}: {extra}"
 
-#: games/challenge/models.py:464
+#: games/challenge/models.py:499
 msgid "Challenged"
 msgstr "Provocat"
 
-#: games/challenge/models.py:465
+#: games/challenge/models.py:500
 msgid "Challenge!"
 msgstr "Provoacă!"
 
@@ -95,15 +127,15 @@ msgstr "Nu ai artefactul necesar."
 
 #: games/challenge/views.py:173
 #: games/challenge/templates/challenge/index.html:4
-#: games/challenge/templates/challenge/index.html:8
+#: games/challenge/templates/challenge/index.html:5
 #: games/challenge/templates/challenge/sidebar.html:5
 msgid "Challenges"
 msgstr "Provocări"
 
-#: games/challenge/templates/challenge/challenge.html:12
-#: games/challenge/templates/challenge/result.html:8
-msgid "Challenge"
-msgstr "Provocare"
+#: games/challenge/templates/challenge/challenge.html:4
+#: games/challenge/templates/challenge/challenge.html:5
+msgid "Challenge #"
+msgstr "Provocare #"
 
 #: games/challenge/templates/challenge/challenge.html:26
 #, python-format
@@ -129,23 +161,23 @@ msgstr ""
 msgid "Submit"
 msgstr "Trimite"
 
-#: games/challenge/templates/challenge/index.html:11
+#: games/challenge/templates/challenge/index.html:10
 msgid "You cannot launch another challenge today."
 msgstr "Nu poți lansa altă provocare astăzi."
 
-#: games/challenge/templates/challenge/index.html:14
+#: games/challenge/templates/challenge/index.html:13
 msgid "Use artifact"
 msgstr "Folosește artefact"
 
-#: games/challenge/templates/challenge/index.html:18
+#: games/challenge/templates/challenge/index.html:17
 msgid "To launch a challenge, find the player you want to challenge and click on the <em>Challenge</em> button, next to his profile."
 msgstr "Pentru a lansa o provocare, găsește jucătorul pe care vrei să-l provoci și, din pagina de profil, folosește butonul <em>Challenge</em>."
 
-#: games/challenge/templates/challenge/index.html:21
+#: games/challenge/templates/challenge/index.html:20
 msgid "Active"
 msgstr "Active"
 
-#: games/challenge/templates/challenge/index.html:40
+#: games/challenge/templates/challenge/index.html:39
 #: games/challenge/templates/challenge/sidebar.html:11
 msgid "Play"
 msgstr "Joacă"
@@ -161,14 +193,15 @@ msgstr "Jucate"
 
 #: games/challenge/templates/challenge/message.html:3
 #: games/challenge/templates/challenge/result.html:4
+#: games/challenge/templates/challenge/result.html:5
 msgid "Challenge result"
 msgstr "Rezultat provocare"
 
 #: games/challenge/templates/challenge/message.html:7
-msgid "Challenge error"
-msgstr "Eroare provocare"
+msgid "Challenge"
+msgstr "Provocare"
 
-#: games/challenge/templates/challenge/result.html:10
+#: games/challenge/templates/challenge/result.html:8
 msgid "You scored:"
 msgstr "Ai obținut:"
 
@@ -189,13 +222,12 @@ msgid "has given a wrong answer to QotD."
 msgstr "a răspuns greșit la întrebarea zilei."
 
 #: games/qotd/templates/qotd/done.html:4
+#: games/qotd/templates/qotd/done.html:5
+#: games/qotd/templates/qotd/index.html:4
+#: games/qotd/templates/qotd/index.html:5
 #: games/qotd/templates/qotd/sidebar.html:4
 msgid "Question of the Day"
 msgstr "Întrebarea zilei"
-
-#: games/qotd/templates/qotd/done.html:10
-msgid "Question"
-msgstr "Întrebare"
 
 #: games/qotd/templates/qotd/done.html:17
 msgid "correct"
@@ -205,13 +237,9 @@ msgstr "corect"
 msgid "No question for today."
 msgstr "Nicio întrebare astăzi."
 
-#: games/qotd/templates/qotd/index.html:9
+#: games/qotd/templates/qotd/index.html:10
 msgid "You must provide an answer"
 msgstr "Trebuie să dai un răspuns"
-
-#: games/qotd/templates/qotd/index.html:13
-msgid "Question of the day"
-msgstr "Întrebarea zilei"
 
 #: games/qotd/templates/qotd/sidebar.html:9
 msgid "QotD has been disabled"
@@ -247,7 +275,7 @@ msgstr "a început questul {quest}"
 msgid "Quest"
 msgstr "Quest"
 
-#: games/quest/templates/quest/index.html:9
+#: games/quest/templates/quest/index.html:8
 #, python-format
 msgid ""
 "\n"
@@ -256,11 +284,11 @@ msgstr ""
 "\n"
 "Disponibil până la %(end)s. Progresul tău: %(time_took)s\n"
 
-#: games/quest/templates/quest/index.html:15
+#: games/quest/templates/quest/index.html:14
 msgid "Quest finished!"
 msgstr "Quest terminat!"
 
-#: games/quest/templates/quest/index.html:18
+#: games/quest/templates/quest/index.html:17
 #, python-format
 msgid ""
 "\n"
@@ -269,15 +297,15 @@ msgstr ""
 "\n"
 "Ai trecut %(count)s nivele în %(time_took)s.\n"
 
-#: games/quest/templates/quest/index.html:33
+#: games/quest/templates/quest/index.html:32
 msgid "Answer"
 msgstr "Răspunde"
 
-#: games/quest/templates/quest/none.html:7
+#: games/quest/templates/quest/none.html:4
 msgid "No Quest"
 msgstr "Lipsă quest"
 
-#: games/quest/templates/quest/none.html:10
+#: games/quest/templates/quest/none.html:8
 msgid "We are sorry, there is no active quest."
 msgstr "Ne pare rău, niciun quest nu este activ."
 
@@ -297,54 +325,196 @@ msgstr "Joacă!"
 msgid "No quest active."
 msgstr "Niciun quest activ."
 
-#: games/specialquest/views.py:59
+#: games/specialquest/models.py:124
+msgid "Special mate"
+msgstr "Coechipier special"
+
+#: games/specialquest/models.py:126
+msgid "Other group"
+msgstr "Alt grup"
+
+#: games/specialquest/models.py:128
+msgid "Invited"
+msgstr "Invitat"
+
+#: games/specialquest/models.py:129
+msgid "Invite in my Special Quest group"
+msgstr "Invită în grupul meu de Quest Special"
+
+#: games/specialquest/models.py:129
+#: games/specialquest/templates/specialquest/invite.html:12
+msgid "Invite"
+msgstr "Invită"
+
+#: games/specialquest/views.py:67
+msgid "You already have a group"
+msgstr "Deja ai un grup"
+
+#: games/specialquest/views.py:72
+msgid "Please specify a name"
+msgstr "Te rog specifică un nume"
+
+#: games/specialquest/views.py:76
+msgid "A group with this name already exists"
+msgstr "Un grup cu acest nume există deja"
+
+#: games/specialquest/views.py:93
+msgid "You don't have a group"
+msgstr "Nu ai un grup"
+
+#: games/specialquest/views.py:95
+msgid "User already in a group"
+msgstr "Jucătorul este deja în grup"
+
+#: games/specialquest/views.py:99
+msgid "Invitation sent"
+msgstr "Invitație trimisă"
+
+#: games/specialquest/views.py:135
 msgid "Special"
 msgstr "Special"
 
 #: games/specialquest/templates/specialquest/cpanel_manage.html:4
+#: games/specialquest/templates/specialquest/create.html:5
+#: games/specialquest/templates/specialquest/group.html:5
 #: games/specialquest/templates/specialquest/index.html:4
+#: games/specialquest/templates/specialquest/index.html:9
+#: games/specialquest/templates/specialquest/invite.html:5
 #: games/specialquest/templates/specialquest/sidebar.html:4
 #: games/specialquest/templates/specialquest/task.html:4
 msgid "Special Quest"
 msgstr "Quest special"
 
-#: games/specialquest/templates/specialquest/index.html:8
-msgid "Special quest"
-msgstr "Quest special"
+#: games/specialquest/templates/specialquest/create.html:6
+msgid "Create a group"
+msgstr "Crează grup"
 
-#: games/specialquest/templates/specialquest/index.html:9
+#: games/specialquest/templates/specialquest/create.html:10
+msgid "Group name:"
+msgstr "Nume grup:"
+
+#: games/specialquest/templates/specialquest/create.html:12
+msgid "Create"
+msgstr "Crează"
+
+#: games/specialquest/templates/specialquest/group.html:6
+msgid "Group:"
+msgstr "Grup:"
+
+#: games/specialquest/templates/specialquest/group.html:9
+msgid "Owner"
+msgstr "Proprietar"
+
+#: games/specialquest/templates/specialquest/group.html:10
+#: resources/templates/profile/groups.html:19
+msgid "Members"
+msgstr "Membri"
+
+#: games/specialquest/templates/specialquest/group.html:16
+msgid "If you want to invite more players to this group, click on Invite on their profile"
+msgstr "Dacă dorești să inviți mai mulți jucători în acest grup, folosește butonul Invită de pe profilul lor"
+
+#: games/specialquest/templates/specialquest/index.html:7
+msgid "Tasks"
+msgstr "Sarcini"
+
+#: games/specialquest/templates/specialquest/index.html:15
 msgid "Special quest hasn't started yet. Keep your eyes on it!"
 msgstr "Questul special nu a început încă. Stai cu ochii pe el!"
 
-#: games/specialquest/templates/specialquest/index.html:11
-msgid "Tasks"
-msgstr "Sarcini"
+#: games/specialquest/templates/specialquest/index.html:18
+msgid "Done tasks"
+msgstr "Sarcini rezolvate"
+
+#: games/specialquest/templates/specialquest/index.html:29
+msgid "Not done tasks"
+msgstr "Sarcini nerezolvate"
+
+#: games/specialquest/templates/specialquest/index.html:44
+msgid "Your group"
+msgstr "Grupul tău"
+
+#: games/specialquest/templates/specialquest/index.html:44
+#: games/specialquest/templates/specialquest/index.html:50
+msgid "View group"
+msgstr "Vizualizează grupul"
+
+#: games/specialquest/templates/specialquest/index.html:48
+#, python-format
+msgid "Your group, %(group)s, is not active."
+msgstr "Grupul tău, %(group)s, nu a fost activat."
+
+#: games/specialquest/templates/specialquest/index.html:52
+msgid "Leave this group"
+msgstr "Părăsește acest grup"
+
+#: games/specialquest/templates/specialquest/index.html:55
+msgid "In order to play the special quest, you need to set up a group. You can do that by either:"
+msgstr "Pentru a juca Questul special, trebuie să configurezi un grup. Poți face asta fie:"
+
+#: games/specialquest/templates/specialquest/index.html:56
+msgid "Create a new group"
+msgstr "Creând un grup now"
+
+#: games/specialquest/templates/specialquest/index.html:57
+msgid "or"
+msgstr "sau"
+
+#: games/specialquest/templates/specialquest/index.html:58
+msgid "Accept one of these group invitations:"
+msgstr "Acceptând o invitație în grup din următoarele:"
+
+#: games/specialquest/templates/specialquest/index.html:61
+#: resources/templates/profile/points_history.html:14
+msgid "from"
+msgstr "de la"
+
+#: games/specialquest/templates/specialquest/index.html:61
+msgid "Accept"
+msgstr "Acceptă"
+
+#: games/specialquest/templates/specialquest/index.html:61
+msgid "Refuse"
+msgstr "Refuză"
+
+#: games/specialquest/templates/specialquest/index.html:63
+msgid "no invitations."
+msgstr "nicio invitație."
+
+#: games/specialquest/templates/specialquest/invite.html:6
+msgid "Group invitation"
+msgstr "Invitație la grup"
+
+#: games/specialquest/templates/specialquest/invite.html:9
+#, python-format
+msgid "Invite %(to)s to %(group)s"
+msgstr "Invită %(to)s la %(group)s"
 
 #: games/specialquest/templates/specialquest/sidebar.html:9
 msgid "No tasks to do."
 msgstr "Niciun task disponibil."
 
-#: games/specialquest/templates/specialquest/task.html:9
+#: games/specialquest/templates/specialquest/task.html:7
 msgid "Misterious task"
 msgstr "Task misterios"
 
-#: games/specialquest/templates/specialquest/task.html:10
+#: games/specialquest/templates/specialquest/task.html:16
 msgid "Access forbidden."
 msgstr "Acces interzis."
 
-#: games/specialquest/templates/specialquest/task.html:13
+#: games/specialquest/templates/specialquest/task.html:18
 msgid "Reward"
 msgstr "Premiu"
 
-#: games/specialquest/templates/specialquest/task.html:16
+#: games/specialquest/templates/specialquest/task.html:21
 msgid "Days left including today"
 msgstr "Zile rămase inclusiv azi"
 
-#: games/specialquest/templates/specialquest/task.html:18
+#: games/specialquest/templates/specialquest/task.html:23
 msgid "Deadline passed"
 msgstr "Deadline depășit"
 
-#: interface/magic/models.py:10
+#: interface/magic/models.py:16
 #: resources/templates/bazaar.html:5
 #: resources/templates/bazaar.html.py:12
 msgid "Magic"
@@ -354,41 +524,41 @@ msgstr "Magie"
 msgid "Rate: 1 gold = {rate} points, 1 gold = {rate2} points"
 msgstr ""
 
-#: interface/magic/views.py:37
+#: interface/magic/views.py:41
 msgid "Exchange is disabled"
 msgstr "Schimbul este dezactivat"
 
-#: interface/magic/views.py:43
+#: interface/magic/views.py:47
 msgid "Invalid amounts"
 msgstr "Cantități nevalide"
 
-#: interface/magic/views.py:49
-#: interface/magic/views.py:55
+#: interface/magic/views.py:53
+#: interface/magic/views.py:59
 msgid "Insufficient points"
 msgstr "Puncte insuficiente"
 
-#: interface/magic/views.py:53
-#: interface/magic/views.py:63
+#: interface/magic/views.py:57
+#: interface/magic/views.py:67
 msgid "Converted successfully"
 msgstr "Convertire realizată cu succes"
 
-#: interface/magic/views.py:60
+#: interface/magic/views.py:64
 msgid "Insufficient gold"
 msgstr "Aur insuficient"
 
-#: interface/magic/views.py:65
+#: interface/magic/views.py:69
 msgid "Unknown action"
 msgstr "Acțiune necunoscută"
 
-#: interface/magic/views.py:67
+#: interface/magic/views.py:71
 msgid "Expected post"
 msgstr "Se aștepta formular POST"
 
-#: interface/magic/views.py:81
+#: interface/magic/views.py:85
 msgid "Insufficient gold amount"
 msgstr "Cantitate de aur insuficientă"
 
-#: interface/magic/views.py:86
+#: interface/magic/views.py:90
 msgid "Successfully aquired"
 msgstr "Achiziționat cu succes"
 
@@ -451,7 +621,7 @@ msgstr "Schimbă punctele pe aur sau aurul pe puncte"
 
 #: resources/templates/bazaar.html:59
 #: resources/templates/profile/groups.html:21
-#: resources/templates/profile/profile.html:76
+#: resources/templates/profile/profile.html:77
 #: resources/templates/top/maintop.html:23
 msgid "Points"
 msgstr "Puncte"
@@ -531,7 +701,7 @@ msgstr "Autentificare"
 #: resources/templates/mobile_index.html:5
 #: resources/templates/site_index.html:60
 #: resources/templates/profile/group.html:40
-#: resources/templates/profile/profile.html:74
+#: resources/templates/profile/profile.html:75
 msgid "Activity"
 msgstr "Activitate"
 
@@ -546,9 +716,17 @@ msgstr "Scurtături"
 msgid "Top"
 msgstr "Clasament"
 
+#: resources/templates/news_index.html:4
+#: resources/templates/news_index.html:5
+#: resources/templates/news_item.html:4
+#: resources/templates/news_item.html:5
+#: resources/templates/site_index.html:77
+msgid "News"
+msgstr "Știri"
+
 #: resources/templates/site_base.html:47
-#: resources/templates/cpanel/qpool_home.html:42
-#: resources/templates/cpanel/qpool_home.html:51
+#: resources/templates/cpanel/qpool_home.html:46
+#: resources/templates/cpanel/qpool_home.html:56
 msgid "Search"
 msgstr "Caută"
 
@@ -581,6 +759,14 @@ msgstr "Artefacte"
 msgid "Spells"
 msgstr "Vrăji"
 
+#: resources/templates/site_index.html:82
+msgid "No news"
+msgstr "Nicio știre"
+
+#: resources/templates/site_index.html:86
+msgid "All news"
+msgstr "Toate știrile"
+
 #: resources/templates/splash.html:16
 msgid "username"
 msgstr "nume utilizator"
@@ -593,11 +779,11 @@ msgstr "parola"
 msgid "Sorry, no recent activity."
 msgstr "Ne pare rău, nicio activitate recentă."
 
-#: resources/templates/cpanel/artifact_home.html:19
+#: resources/templates/cpanel/artifact_home.html:17
 msgid "Add artifact"
 msgstr "Adaugă artefact"
 
-#: resources/templates/cpanel/qpool_home.html:33
+#: resources/templates/cpanel/qpool_home.html:37
 msgid "Add question"
 msgstr "Adaugă întrebare"
 
@@ -712,7 +898,7 @@ msgid "Sorry, no users in this group"
 msgstr "Ne pare rău, niciun jucător în acest grup"
 
 #: resources/templates/profile/group.html:85
-#: resources/templates/profile/profile.html:94
+#: resources/templates/profile/profile.html:95
 msgid "Rank"
 msgstr "Rang"
 
@@ -733,12 +919,8 @@ msgstr "Grupuri"
 msgid "Name"
 msgstr "Nume"
 
-#: resources/templates/profile/groups.html:19
-msgid "Members"
-msgstr "Membri"
-
 #: resources/templates/profile/groups.html:20
-#: resources/templates/profile/profile.html:75
+#: resources/templates/profile/profile.html:76
 msgid "Position"
 msgstr "Poziție"
 
@@ -750,10 +932,6 @@ msgstr "Istoric punctaj"
 msgid "Scoring history for:"
 msgstr "Istoric punctare pentru:"
 
-#: resources/templates/profile/points_history.html:14
-msgid "from"
-msgstr "de la"
-
 #: resources/templates/profile/profile.html:48
 msgid "Send a message"
 msgstr "Trimite mesaj"
@@ -762,21 +940,21 @@ msgstr "Trimite mesaj"
 msgid "Cast a spell on this player"
 msgstr "Fă o vrajă acestui jucător"
 
-#: resources/templates/profile/profile.html:65
+#: resources/templates/profile/profile.html:66
 #: resources/templates/top/maintop.html:25
 msgid "Last seen"
 msgstr "Văzut"
 
-#: resources/templates/profile/profile.html:69
+#: resources/templates/profile/profile.html:70
 #: resources/templates/top/maintop.html:44
 msgid "Never"
 msgstr "Niciodată"
 
-#: resources/templates/profile/profile.html:143
+#: resources/templates/profile/profile.html:144
 msgid "No points registered for this player."
 msgstr "Niciun punct înregistrat pentru acest jucător."
 
-#: resources/templates/profile/profile.html:145
+#: resources/templates/profile/profile.html:146
 msgid "History"
 msgstr "Istoric"
 
@@ -824,6 +1002,18 @@ msgstr "Top grupe"
 #: resources/templates/top/sidebar_series.html:4
 msgid "Top series"
 msgstr "Top serii"
+
+#~ msgid "Challenge error"
+#~ msgstr "Eroare provocare"
+
+#~ msgid "Question"
+#~ msgstr "Întrebare"
+
+#~ msgid "Question of the day"
+#~ msgstr "Întrebarea zilei"
+
+#~ msgid "Special quest"
+#~ msgstr "Quest special"
 
 #~ msgid "You cannot play this challenge."
 #~ msgstr "Nu poți juca această provocare."
