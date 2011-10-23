@@ -130,6 +130,10 @@ class DefaultGod:
 
         if (spell.name == 'steal') and (destination.points < spell.percents):
             return False
+
+        if (spell.name == 'steal') and (source == destination):
+            return False
+
         return True
     
     def post_cast(self, psdue):
