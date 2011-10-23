@@ -52,6 +52,9 @@ def dashboard(request):
 
 @login_required
 def customization(request):
+    if not request.user.is_superuser:
+        return HttpResponseRedirect(reverse('dashboard'))
+
     customization = Customization()
     switchboard = Switchboard()
 
