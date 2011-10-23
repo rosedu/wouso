@@ -59,8 +59,9 @@
         <li class="artifacts"><a href="{% url artifact_home %}">Artifacts</a></li>
         <li class="static"><a href="{% url admin:pages_staticpage_changelist %}" target="blank">Static Pages</a></li>
         <li class="static"><a href="{% url admin:pages_newsitem_changelist %}" target="blank">News</a></li>
-        <li class="custom"><a href="{% url customization %}">Customization</a></li>
-        
+        {% if user.is_superuser %}
+            <li class="custom"><a href="{% url customization %}">Customization</a></li>
+        {% endif %}
         </ul>
     </div>
     <div class="widget-content">
