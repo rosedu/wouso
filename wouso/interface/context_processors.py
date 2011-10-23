@@ -33,8 +33,6 @@ def header_footer(request):
     except Exception as e:
         logging.exception(e)
 
-    print header
-
     footer = []
     try:
         for game in get_games():
