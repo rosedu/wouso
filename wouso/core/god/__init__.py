@@ -15,6 +15,9 @@ def get_god():
     global God
     if God is None:
         from wouso.core.god.god import DefaultGod
+        from wouso.settings import LEVEL_LIMITS
+        if LEVEL_LIMITS:
+            DefaultGod.LEVEL_LIMITS = LEVEL_LIMITS
         God = DefaultGod()
 
     return God
