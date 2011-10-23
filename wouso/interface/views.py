@@ -175,10 +175,13 @@ def ajax_get(request, model, id=0):
     return HttpResponse(serializers.serialize('json', (obj,)))
 
 def ajax_notifications(request):
-    context = RequestContext(request)
-    count = 0
-    # TODO use reduce
-    for h in context.get('heads', []):
-        count += h[0].get('count', 0)
+    if request.user.is_authenticated():
+        context = RequestContext(request)
+        count = 0
+        # TODO use reduce
+        for h in context.get('heads', []):
+            count += h[0].get('count', 0)
+    else:
+        count = -1
 
     return HttpResponse('{"count": %d}' % count)
