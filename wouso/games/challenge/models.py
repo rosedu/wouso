@@ -11,6 +11,7 @@ from wouso.core.qpool.models import Question
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.game.models import Game
 from wouso.core import scoring
+from wouso.core.god import God
 from wouso.core.scoring.models import Formula
 from wouso.interface.activity import signals
 
@@ -19,6 +20,9 @@ class ChallengeUser(Player):
     """ Extension of the userprofile, customized for challenge """
 
     last_launched = models.DateTimeField(default=datetime(1, 1, 1), blank=True, null=True)
+
+    def is_eligible(self):
+        return God.user_is_eligible(self, ChallengeGame)
 
     def can_launch(self):
         """ Check if 1 challenge per day restriction apply

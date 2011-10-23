@@ -157,3 +157,15 @@ class DefaultGod:
             psdue.delete()
             return True
         return False
+
+    def user_is_eligible(self, user, game=None):
+        if game is not None:
+            game = str(game.__name__)
+
+        if game == 'ChallengeGame':
+            from wouso.core.user import models
+            others, new = models.PlayerGroup.objects.get_or_create(name='Others')
+            if others in user.groups.all():
+                return False
+
+        return True
