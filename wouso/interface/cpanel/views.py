@@ -345,11 +345,12 @@ def groupset(request, id):
 def stafftoggle(request, id):
     profile = get_object_or_404(Player, pk=id)
 
-    staff_group, new = auth.Group.objects.get_or_create(name='Staff')
-    if staff_group in profile.user.groups.all():
-        profile.user.groups.remove(staff_group)
-    else:
-        profile.user.groups.add(staff_group)
+    if profile != request.user.get_profile():
+        staff_group, new = auth.Group.objects.get_or_create(name='Staff')
+        if staff_group in profile.user.groups.all():
+            profile.user.groups.remove(staff_group)
+        else:
+            profile.user.groups.add(staff_group)
 
     return HttpResponseRedirect(reverse('player_profile', args=(id,)))
 
