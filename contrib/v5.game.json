@@ -343,17 +343,6 @@
   }
  },
  {
-  "pk": 29,
-  "model": "magic.artifact",
-  "fields": {
-   "image": "",
-   "percents": 100,
-   "group": 1,
-   "name": "dispell",
-   "title": "Cur\u0103\u021b\u0103 toate vr\u0103jile"
-  }
- },
- {
   "pk": 30,
   "model": "magic.artifact",
   "fields": {
@@ -486,13 +475,47 @@
   }
  },
  {
-  "pk": 29,
-  "model": "magic.spell",
+  "pk": 42,
+  "model": "magic.artifact",
   "fields": {
-   "due_days": 3,
-   "price": 100.0,
-   "type": "o",
-   "description": "\u00cenl\u0103tur\u0103 toate vr\u0103jile active pe juc\u0103torul pe care este aplicat\u0103."
+   "image": "",
+   "percents": 100,
+   "group": 1,
+   "name": "dispell",
+   "title": "Cur\u0103\u021b\u0103 toate vr\u0103jile"
+  }
+ },
+ {
+  "pk": 43,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 3,
+   "group": 1,
+   "name": "steal",
+   "title": "Fur\u0103 3 puncte"
+  }
+ },
+ {
+  "pk": 44,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 6,
+   "group": 1,
+   "name": "steal",
+   "title": "Fur\u0103 6 puncte"
+  }
+ },
+ {
+  "pk": 45,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 9,
+   "group": 1,
+   "name": "steal",
+   "title": "Fur\u0103 9 puncte"
   }
  },
  {
@@ -613,6 +636,46 @@
    "price": 90.0,
    "type": "p",
    "description": "Face juc\u0103torul c\u0103ruia i se aplic\u0103 imun la orice fel de vr\u0103ji."
+  }
+ },
+ {
+  "pk": 42,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 1,
+   "price": 100.0,
+   "type": "o",
+   "description": "\u00cenl\u0103tur\u0103 toate vr\u0103jile active pe juc\u0103torul pe care este aplicat\u0103."
+  }
+ },
+ {
+  "pk": 43,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 1,
+   "price": 7.0,
+   "type": "n",
+   "description": "Fur\u0103 3 puncte de la un juc\u0103tor."
+  }
+ },
+ {
+  "pk": 44,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 1,
+   "price": 12.0,
+   "type": "n",
+   "description": "Fur\u0103 6 puncte de la un juc\u0103tor."
+  }
+ },
+ {
+  "pk": 45,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 1,
+   "price": 15.0,
+   "type": "n",
+   "description": "Fur\u0103 9 puncte de la un juc\u0103tor."
   }
  },
  {
@@ -748,6 +811,15 @@
    "owner": null,
    "formula": "points={points}",
    "description": "Give bonus points"
+  }
+ },
+ {
+  "pk": "steal-points",
+  "model": "scoring.formula",
+  "fields": {
+   "owner": null,
+   "formula": "points={points}",
+   "description": "Steal points using spells"
   }
  },
  {
