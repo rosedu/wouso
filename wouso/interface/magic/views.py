@@ -10,7 +10,7 @@ from wouso.core.magic.models import Spell
 from wouso.core import scoring
 
 # marche
-def bazaar(request):
+def bazaar(request, message='', error=''):
     player = request.user.get_profile() if request.user.is_authenticated() else None
     spells = Spell.objects.all()
 
@@ -27,7 +27,9 @@ def bazaar(request):
                               'rate': rate, 'rate_text': rate_text,
                               'cast': cast_spells,
                               'unseen_count': unseen_count,
-                              'theowner': player},
+                              'theowner': player,
+                              'message': message,
+                              'error': error},
                               context_instance=RequestContext(request))
 
 @login_required
@@ -89,7 +91,11 @@ def bazaar_buy(request, spell):
                       price=spell.price)
         message = _("Successfully aquired")
 
+    return bazaar(request, message=message, error=error)
+    # TODO: use django-flash
+    """
     return render_to_response('bazaar_buy.html',
                               {'error': error, 'message': message,
                               },
                               context_instance=RequestContext(request))
+    """
