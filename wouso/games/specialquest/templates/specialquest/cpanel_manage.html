@@ -2,12 +2,15 @@
 {% load i18n %}
 {% load user %}
 {% block title %}{% trans 'Special Quest' %}{% endblock %}
+{% block sectiontitle %}
+    {% player mplayer %} {% if mplayer.group %}and his group: <a href="{% url specialquest_group mplayer.group.id %}">{{ mplayer.group }}</a>{% endif %}
+{% endblock %}
 
-{% block content %}
+{% block sectioncontent %}
 
-<h2>{% player mplayer %} {% if mplayer.group %}and his group: <a href="{% url specialquest_group mplayer.group.id %}">{{ mplayer.group }}</a>{% endif %}</h2>
 <span class="points">Gold: {{ mplayer.coins.gold }}</span>
 
+{% if mplayer.done_tasks.all %}
 Done tasks:
 <ul>
     {% for task in mplayer.done_tasks.all %}
@@ -17,7 +20,9 @@ Done tasks:
 <li>None yet</li>
     {% endfor %}
 </ul>
+{% endif %}
 
+{% if tasks_not_done %}
 Not done tasks:
 <ul>
   {% for task in tasks_not_done %}
@@ -27,7 +32,9 @@ Not done tasks:
 <li class="empty">None yet</li>
   {% endfor %}
 </ul>
+{% endif %}
 
+<div class="spacer"></div>
 <h4>Give bonus:</h4>
     <form action="" method="post">
     Gold: <input class="big" type="text" size="3" value="0" name="gold">
