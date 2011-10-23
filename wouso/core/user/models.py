@@ -294,6 +294,11 @@ class Player(models.Model):
             return 0
         return psa.amount
 
+    def steal_points(self, userto, amount):
+        from wouso.core import scoring
+        scoring.score(self, None, 'steal-points', external_id=userto.id, points=-amount)
+        scoring.score(userto, None, 'steal-points', external_id=self.id, points=amount)
+
     # special:
 
     def get_extension(self, cls):

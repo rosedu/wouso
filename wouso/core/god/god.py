@@ -31,6 +31,8 @@ class DefaultGod:
             description='Give bonus gold to the poor people'))
         fs.append(Formula(id='bonus-points', formula='points={points}', owner=None,
             description='Give bonus points'))
+        fs.append(Formula(id='steal-points', formula='points={points}', owner=None,
+            description='Steal points using spells'))
         return fs
 
     def get_user_level(self, level_no, player):
@@ -100,6 +102,7 @@ class DefaultGod:
               'cure',   # delete all negative spells
               'curse',  # prevent cast of positive spells, or cure and dispell
               'immunity', # prevent cast of any spells, or cure and dispell
+              'steal',  # allow users to steal points, one from another
         ]
         for g in get_games():
             ms.extend(g.get_modifiers())
@@ -124,6 +127,9 @@ class DefaultGod:
 
         if source.has_modifier('curse'):
             return False
+
+        if (spell.name == 'steal') and (destination.points < spell.percents):
+            return False
         return True
     
     def post_cast(self, psdue):
@@ -140,6 +146,10 @@ class DefaultGod:
             for psd in psdue.player.spells.filter(spell__type='n'):
                 psd.delete()
             # also delete itself
+            psdue.delete()
+            return True
+        if psdue.spell.name == 'steal':
+            psdue.player.steal_points(psdue.source, psdue.spell.percents)
             psdue.delete()
             return True
         return False
