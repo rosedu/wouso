@@ -43,7 +43,7 @@
     {% block search %}
     <div id="search">
         <form method="post" action="/search/" style="float:right;">
-            <input id="query" type="text" name="query" size="10" />
+            <input id="query" type="text" name="query" size="10" value="{{ search_query }}"/>
             <button type=submit>{% trans 'Search' %}</button>
         </form>
         <script type="text/javascript">

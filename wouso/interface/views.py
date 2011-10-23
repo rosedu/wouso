@@ -14,7 +14,7 @@ from wouso.interface import logger, detect_mobile
 from wouso.interface.pages.models import NewsItem
 from wouso.core.game import get_games
 from wouso.interface.forms import *
-from wouso.core.user.models import Player
+from wouso.core.user.models import Player, PlayerGroup
 from wouso.core.magic.models import Spell
 from wouso.core import scoring
 from wouso.interface.activity.models import Activity
@@ -104,8 +104,13 @@ def search(request):
                 r = Player.objects.filter(Q(user__first_name__icontains=word) | Q(user__last_name__icontains=word))
                 searchresults = searchresults.union(r)
 
+        # search groups
+        group_results = PlayerGroup.objects.filter(Q(name__icontains=query)|Q(title__icontains=query))
+
         return render_to_response('search_results.html',
-                                  {'searchresults': searchresults},
+                                  {'searchresults': searchresults,
+                                   'groupresults': group_results,
+                                   'search_query': query},
                                   context_instance=RequestContext(request))
 
     return render_to_response('site_base.html', context_instance=RequestContext(request))
@@ -119,6 +124,7 @@ def instantsearch(request):
         users = User.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query))
         user_ids = [u.id for u in users]
         searchresults = Player.objects.filter(user__in=user_ids)
+
         return render_to_response('interface/instant_search_results.txt',
                                   {'searchresults': searchresults},
                                   context_instance=RequestContext(request))

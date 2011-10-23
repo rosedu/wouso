@@ -1,4 +1,5 @@
 {% extends 'site_base.html' %}
+{% load user %}
 
 {% block title %}{{block.super}} > Rezultatele cautarii{% endblock %}
 
@@ -8,6 +9,12 @@
 <ul>
 {% for sr in searchresults %}
     <li><a href="{% url interface.profile.views.user_profile sr.id %}">{{sr.user.first_name}} {{sr.user.last_name}}</a></li>
+{% endfor %}
+</ul>
+
+<ul>
+{% for gr in groupresults %}
+    <li>{% player_group gr %}</li>
 {% endfor %}
 </ul>
 
