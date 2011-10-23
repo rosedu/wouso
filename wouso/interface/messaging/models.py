@@ -1,7 +1,8 @@
+from datetime import datetime
 from django.db import models
 from django.contrib import admin
+from django.utils.translation import ugettext as _
 from wouso.core.user.models import Player
-from datetime import datetime
 
 class MessagingUser(Player):
     '''extension of the user profile, customized for messages'''
@@ -43,7 +44,7 @@ class Message(models.Model):
         if not request.user.is_anonymous():
             from views import header_link
             return header_link(request)
-        return None
+        return dict(text=_('Messages'), link='')
 
 
 #admin

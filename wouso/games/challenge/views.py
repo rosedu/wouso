@@ -158,16 +158,17 @@ def use_one_more(request):
 
 def header_link(request):
     profile = request.user.get_profile()
-    if not profile:
-        return None
-    chall_user = profile.get_extension(ChallengeUser)
-    challs = ChallengeGame.get_active(chall_user)
-    # remove launched challenges by the user
-    challs = [c for c in challs if not (c.status == 'L' and c.user_from.user == chall_user)]
-    # remove refused challenges
-    challs = [c for c in challs if not c.status == 'R']
+    if profile:
+        chall_user = profile.get_extension(ChallengeUser)
+        challs = ChallengeGame.get_active(chall_user)
+        # remove launched challenges by the user
+        challs = [c for c in challs if not (c.status == 'L' and c.user_from.user == chall_user)]
+        # remove refused challenges
+        challs = [c for c in challs if not c.status == 'R']
 
-    count = len(challs)
+        count = len(challs)
+    else:
+        count = 0
     url = reverse('wouso.games.challenge.views.index')
 
     return dict(link=url, count=count, text=_('Challenges'))

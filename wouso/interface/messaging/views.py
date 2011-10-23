@@ -85,11 +85,11 @@ def message(request, mid):
 
 def header_link(request):
     profile = request.user.get_profile()
-    if not profile:
-        return None
-
-    msg_user = profile.get_extension(MessagingUser)
-    msgs = Message.objects.filter(receiver=msg_user).filter(read=False)
-    count = len(msgs)
+    if profile:
+        msg_user = profile.get_extension(MessagingUser)
+        msgs = Message.objects.filter(receiver=msg_user).filter(read=False)
+        count = len(msgs)
+    else:
+        count = 0
     url = reverse('wouso.interface.messaging.views.home')
     return dict(link=url, count=count, text=_('Messages'))
