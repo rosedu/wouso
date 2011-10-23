@@ -59,6 +59,7 @@ urlpatterns = patterns('',
     # Some dynamic shite
     url(r'^ajax/do/(?P<name>.*)/$', 'wouso.interface.views.ajax', name='ajax_do'),
     url(r'^ajax/get/(?P<model>.*)/(?P<id>\d+)/$', 'wouso.interface.views.ajax_get', name='ajax_get'),
+    url(r'^ajax/notifications/$', 'wouso.interface.views.ajax_notifications', name='ajax_notifications'),
 
     # Games
     (r'^g/', include('wouso.games.urls')),
