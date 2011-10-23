@@ -36,11 +36,29 @@
 {% endfor %}
 </td>
 <td> {{ user.points }} </td>
+<td align="center">
 {% if toptype %}
-<td> {{ user.weeklyprogress }} </td>
+    {% if user.weeklyprogress == 0 %}
+            -
+        {% else %}
+            {% if user.weeklyprogress < 0 %}
+                <span class="wrong">{{ user.weeklyprogress }}</span>
+            {% else %}
+                <span class="ok">+{{ user.weeklyprogress }}</span>
+            {% endif %}
+        {% endif %}
 {% else %}
-<td> {{ user.progress }} </td>
+        {% if user.progress == 0 %}
+            -
+        {% else %}
+            {% if user.progress < 0 %}
+                <span class="wrong">{{ user.progress }}</span>
+            {% else %}
+                <span class="ok">+{{ user.progress }}</span>
+            {% endif %}
+        {% endif %}
 {% endif %}
+</td>
 <td nowrap> {% if user.last_seen %}{{ user.last_seen }}{% else %}{% trans 'Never' %}{% endif %} </td>
 </tr>
 {% endfor %}

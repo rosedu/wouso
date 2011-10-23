@@ -35,8 +35,8 @@ class TopUser(ObjectHistory, Player):
     def progress(self):
         """ Return position difference between last two recorded positions. """
         try:
-            yesterday = History.objects.filter(user=self).order_by('-date')[0]
-            daybefore = History.objects.filter(user=self).order_by('-date')[1]
+            yesterday = History.objects.filter(user=self, relative_to=None).order_by('-date')[0]
+            daybefore = History.objects.filter(user=self, relative_to=None).order_by('-date')[1]
         except Exception as e:
             return 0
         return yesterday.position - daybefore.position
