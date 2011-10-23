@@ -173,3 +173,12 @@ def ajax_get(request, model, id=0):
     obj = get_object_or_404(model, pk=id)
 
     return HttpResponse(serializers.serialize('json', (obj,)))
+
+def ajax_notifications(request):
+    context = RequestContext(request)
+    count = 0
+    # TODO use reduce
+    for h in context.get('heads', []):
+        count += h[0].get('count', 0)
+
+    return HttpResponse('{"count": %d}' % count)
