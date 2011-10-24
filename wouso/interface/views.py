@@ -22,7 +22,7 @@ from wouso.interface.top.models import TopUser, History as TopHistory
 
 def get_wall(page=u'1'):
     ''' Returns activity for main wall, paginated.'''
-    activity_list = Activity.objects.all().order_by('-timestamp')
+    activity_list = Activity.objects.all().exclude(user_from__groups__name='Others').order_by('-timestamp')
     paginator = Paginator(activity_list, 10)
     try:
         activity = paginator.page(page)
