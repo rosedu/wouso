@@ -5,3 +5,11 @@ admin.site.register(SpecialQuestUser)
 admin.site.register(SpecialQuestTask)
 admin.site.register(SpecialQuestGroup)
 admin.site.register(Invitation)
+
+class SpecialQuestUserInline(admin.TabularInline):
+    model = SpecialQuestUser
+
+class SpecialQuestGroupAdmin(admin.modelAdmin):
+    inlines = [
+        SpecialQuestUserInline,
+    ]
