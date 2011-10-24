@@ -7,7 +7,10 @@
 
 {% block sectioncontent %}
 <form method="post" action="">
-<label>{% trans 'Group name:' %}</label><input type="text" name="name" class="big" />
+<label>{% trans 'Group name:' %}</label>
+    <div class="spacer"></div>
+    <input id="subject" type="text" name="name" class="big" />
+    <div class="spacer"></div>
 <div>
 <button type="submit">{% trans 'Create' %}</button>
 </div>
