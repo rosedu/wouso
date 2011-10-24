@@ -997,11 +997,11 @@ msgstr "Topul a fost dezactivat"
 
 #: resources/templates/top/sidebar_groups.html:4
 msgid "Top groups"
-msgstr "Top grupe"
+msgstr "Top clase"
 
 #: resources/templates/top/sidebar_series.html:4
 msgid "Top series"
-msgstr "Top serii"
+msgstr "Top rase"
 
 #~ msgid "Challenge error"
 #~ msgstr "Eroare provocare"
