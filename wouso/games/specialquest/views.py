@@ -11,7 +11,7 @@ from models import SpecialQuestUser, SpecialQuestTask, SpecialQuestGame, Special
 
 
 @login_required
-def index(request):
+def index(request, error=''):
     user = request.user.get_profile().get_extension(SpecialQuestUser)
     tasks_done, tasks_not_done = SpecialQuestGame.tasks_for_user(user)
     today = date.today()
@@ -19,7 +19,7 @@ def index(request):
 
     return render_to_response('specialquest/index.html',
                     {'tasks_done': tasks_done, 'tasks_not_done': tasks_not_done,
-                     'squser': user},
+                     'squser': user, 'error': error},
                     context_instance=RequestContext(request))
 
 def task(request, task_id):
@@ -37,6 +37,10 @@ def task(request, task_id):
 def setup_accept(request, group_id):
     user = request.user.get_profile().get_extension(SpecialQuestUser)
     group = get_object_or_404(SpecialQuestGroup, pk=group_id)
+
+    if group.active:
+        error = _('Group is already active, you cannot accept the invitation')
+        return index(request, error)
 
     user.group = group
     user.save()

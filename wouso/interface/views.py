@@ -22,7 +22,7 @@ from wouso.interface.top.models import TopUser, History as TopHistory
 
 def get_wall(page=u'1'):
     ''' Returns activity for main wall, paginated.'''
-    activity_list = Activity.objects.all().order_by('-timestamp')
+    activity_list = Activity.objects.all().exclude(user_from__groups__name='Others').order_by('-timestamp')
     paginator = Paginator(activity_list, 10)
     try:
         activity = paginator.page(page)
@@ -96,7 +96,10 @@ def search(request):
     if form.is_valid():
         query = form.cleaned_data['query']
         if len(query.split()) == 1:
-            searchresults = Player.objects.filter(Q(user__first_name__icontains=query) | Q(user__last_name__icontains=query))
+            searchresults = Player.objects.filter(Q(user__first_name__icontains=query) | Q(user__last_name__icontains=query) | Q(user__username__icontains=query))
+            # special queries
+            if query == 'outsiders':
+                searchresults = Player.objects.filter(groups=None)
         else:
             query = query.split()
             searchresults = set()
