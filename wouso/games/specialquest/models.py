@@ -45,7 +45,8 @@ class SpecialQuestTask(models.Model):
 
 class SpecialQuestUser(Player):
     group = models.ForeignKey('SpecialQuestGroup', blank=True, default=None, null=True)
-    done_tasks = models.ManyToManyField(SpecialQuestTask, related_name="%(app_label)s_%(class)s_done")
+    done_tasks = models.ManyToManyField(SpecialQuestTask, blank=True, default=None, null=True,
+                                        related_name="%(app_label)s_%(class)s_done")
 
     @property
     def active(self):
@@ -68,7 +69,7 @@ class SpecialQuestGame(Game):
         proxy = True
 
     user_model = SpecialQuestUser
-    
+
     def __init__(self, *args, **kwargs):
         # Set parent's fields
         self._meta.get_field('verbose_name').default = "Special Quest"
