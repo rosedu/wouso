@@ -320,7 +320,7 @@ class Player(models.Model):
 
     def __unicode__(self):
         ret = u"%s %s" % (self.user.first_name, self.user.last_name)
-        return ret if ret != ' ' else self.user.__unicode__()
+        return ret if ret != u" " else self.user.__unicode__()
 
 # Hack for having user and user's profile always in sync
 def user_post_save(sender, instance, **kwargs):

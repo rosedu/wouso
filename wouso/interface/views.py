@@ -96,7 +96,11 @@ def search(request):
     if form.is_valid():
         query = form.cleaned_data['query']
         if len(query.split()) == 1:
-            searchresults = Player.objects.filter(Q(user__first_name__icontains=query) | Q(user__last_name__icontains=query))
+            searchresults = Player.objects.filter(Q(user__first_name__icontains=query) | Q(user__last_name__icontains=query) | Q(user__username__icontains=query))
+            # special queries
+            if query == 'outsiders':
+                searchresults = Player.objects.filter(groups=None)
+                print searchresults.all()
         else:
             query = query.split()
             searchresults = set()
