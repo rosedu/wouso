@@ -343,8 +343,9 @@ def user_post_save(sender, instance, **kwargs):
                                  game=None)
         # give 15 bonus points
         from wouso.core.scoring import score
+        from wouso.settings import STARTING_POINTS
         try:
-            score(profile, None, 'bonus-points', points=15)
+            score(profile, None, 'bonus-points', points=STARTING_POINTS)
         except: pass # This might fail when formulas are not set-up, i.e. superuser syncdb profile creation
 
 models.signals.post_save.connect(user_post_save, User)
