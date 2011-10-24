@@ -73,7 +73,10 @@
     </div>
     <div class="widget-content">
         <ul class="menu">
+        {% if user.is_staff or user.is_superuser %}
         <li><a href="{% url admin:index %}">Django Admin</a></li>
+        <li><a href="{% url admin:activity_activity_changelist %}">Activity Monitor</a></li>
+        {% endif %}
         </ul>
     </div>
     <br/>
