@@ -64,6 +64,11 @@ def user_profile(request, id, page=u'1'):
         profile_actions += g.get_profile_actions(request, profile)
         profile_superuser_actions += g.get_profile_superuser_actions(request, profile)
 
+        # some hackish introspection
+        if hasattr(g, 'user_model'):
+            model = getattr(g, 'user_model')
+            setattr(profile, model.__name__.lower(), profile.get_extension(model))
+
     return render_to_response('profile/profile.html',
                               {'profile': profile,
                                'avatar': avatar,

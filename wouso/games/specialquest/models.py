@@ -67,6 +67,8 @@ class SpecialQuestGame(Game):
         # A Game extending core.game.models.Game should be set as proxy
         proxy = True
 
+    user_model = SpecialQuestUser
+    
     def __init__(self, *args, **kwargs):
         # Set parent's fields
         self._meta.get_field('verbose_name').default = "Special Quest"
