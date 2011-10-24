@@ -100,7 +100,6 @@ def search(request):
             # special queries
             if query == 'outsiders':
                 searchresults = Player.objects.filter(groups=None)
-                print searchresults.all()
         else:
             query = query.split()
             searchresults = set()
