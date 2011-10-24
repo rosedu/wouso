@@ -29,6 +29,8 @@ class Switchboard(ConfigGroup):
         for a in ('Qproposal', 'Top', 'Magic', 'Chat', 'Bazaar-Exchange'):
             p.append(BoolSetting.get('disable-%s' % a))
 
+        p.append(BoolSetting.get('disable_login'))
+
         return p
 
 class GamesSwitchboard(ConfigGroup):
