@@ -10,6 +10,9 @@ class Invitation(models.Model):
     group = models.ForeignKey('SpecialQuestGroup')
     to = models.ForeignKey('SpecialQuestUser')
 
+    def __unicode__(self):
+        return u"Invitation from %s to %s" % (self.group.owner, self.to)
+
 class SpecialQuestGroup(models.Model):
     owner = models.ForeignKey('SpecialQuestUser', related_name='owned_groups')
     name = models.CharField(max_length=100)
