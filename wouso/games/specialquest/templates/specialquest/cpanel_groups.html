@@ -1,4 +1,5 @@
 {% extends 'cpanel/index.html' %}
+{% load user %}
 {% block scripts %}
     <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
 {% endblock %}
@@ -18,15 +19,18 @@
     <table>
         <tr>
             <th>Name</th>
+            <th>Owner</th>
             <th>Members</th>
             <th>Active</th>
         </tr>
         {% for t in groups %}
             <tr>
                 <td>{{ t.name }}</td>
-                <td>{{ t.members.count }}</td>
+                <td>{% player t.owner %}</td>
+                <td align="center">{{ t.members.count }}</td>
                 <td>{{ t.active }}</td>
                 <td class="actions" nowrap>
+                    <a href="{% url specialquest_group t.id %}">View members</a>
                     <a href="{% url admin:specialquest_specialquestgroup_change t.id %}" title="edit">✍</a>
                 </td>
             </tr>

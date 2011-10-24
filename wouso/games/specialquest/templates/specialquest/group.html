@@ -6,12 +6,17 @@
 {% block sectiontitle %}{% trans 'Group:' %} {{ sqgroup.name }}{% endblock %}
 
 {% block sectioncontent %}
-    <p>{% trans 'Owner' %}: {% player_simple sqgroup.owner %}</p>
+    <p>{% trans 'Owner' %}: {% player sqgroup.owner %}</p>
     <p>{% trans 'Members' %}: {{ sqgroup.members.count }}</p>
-    <ul>
+    <table>
         {% for m in sqgroup.members.all %}
-            <li>{% player_simple m %}</li>
+            <tr>
+                <td width="60%">{% player m %}</td>
+                <td>{% player_group m.proximate_group %}</td>
+                <td>{% coin_amount m.coins.gold 'gold' %}</td>
+            </tr>
         {% endfor %}
-    </ul>
+    </table>
+    <div class="spacer"></div>
     <p>{% blocktrans %}If you want to invite more players to this group, click on Invite on their profile{% endblocktrans %}</p>
 {% endblock %}
