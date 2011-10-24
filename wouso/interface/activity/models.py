@@ -43,6 +43,9 @@ class Activity(models.Model):
         else:
             return (None, None)
 
+    def __unicode__(self):
+        return u"[%s] %s %s" % (self.game, self.user_from, self.user_to)
+
 def addActivity_handler(sender, **kwargs):
     """ Callback function for addActivity signal """
     a = Activity()
