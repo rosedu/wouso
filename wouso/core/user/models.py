@@ -334,6 +334,13 @@ def user_post_save(sender, instance, **kwargs):
             pass
         else:
             profile.groups.add(default_group)
+ 
+        try:
+            default_series = PlayerGroup.objects.get(pk=int(ChoicesSetting.get('default_series').get_value()))
+        except (PlayerGroup.DoesNotExist, ValueError):
+            pass
+        else:
+            profile.groups.add(default_series)
         # kick some activity
         signal_msg = ugettext_noop('has joined the game.')
 
