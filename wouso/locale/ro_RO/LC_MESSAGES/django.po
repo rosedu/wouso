@@ -387,7 +387,7 @@ msgstr "Quest special"
 
 #: games/specialquest/templates/specialquest/create.html:6
 msgid "Create a group"
-msgstr "Crează grup"
+msgstr "Creează grup"
 
 #: games/specialquest/templates/specialquest/create.html:10
 msgid "Group name:"
@@ -454,7 +454,7 @@ msgstr "Pentru a juca Questul special, trebuie să configurezi un grup. Poți fa
 
 #: games/specialquest/templates/specialquest/index.html:56
 msgid "Create a new group"
-msgstr "Creând un grup now"
+msgstr "Creând un grup nou"
 
 #: games/specialquest/templates/specialquest/index.html:57
 msgid "or"
