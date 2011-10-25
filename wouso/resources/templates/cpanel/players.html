@@ -13,6 +13,7 @@
     <th>series</th>
     <th>A#</th>
     <th>Qotd#</th>
+    <th>Ch#</th>
 </tr>
 {% for p in players %}
 <tr><td>{% player p %}</td>
@@ -21,6 +22,7 @@
     <td>{{ p.series }}</td>
     <td>{{ p.activity_count }}</td>
     <td>{{ p.qotd_count }}</td>
+    <td>{{ p.chall_count }}</td>
 </tr>
 {% endfor %}
 </table>
