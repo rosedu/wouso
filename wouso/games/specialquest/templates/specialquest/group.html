@@ -3,7 +3,8 @@
 {% load user %}
 
 {% block title %}{% trans 'Special Quest' %}{% endblock %}
-{% block sectiontitle %}{% trans 'Group:' %} {{ sqgroup.name }}{% endblock %}
+{% block sectiontitle %}{% trans 'Group:' %} {{ sqgroup.name }}
+<span class="points">{% if sqgroup.active %}{% trans 'Active' %}{% else %}{% trans 'Inactive' %}{% endif %}</span>{% endblock %}
 
 {% block sectioncontent %}
     <p>{% trans 'Owner' %}: {% player sqgroup.owner %}</p>
@@ -18,5 +19,7 @@
         {% endfor %}
     </table>
     <div class="spacer"></div>
+    {% if not sqgroup.active %}
     <p>{% blocktrans %}If you want to invite more players to this group, click on Invite on their profile{% endblocktrans %}</p>
+    {% endif %}
 {% endblock %}

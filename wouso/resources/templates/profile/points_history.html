@@ -3,7 +3,10 @@
 {% load user %}
 
 {% block title %}{% trans 'Scoring history' %}{% endblock %}
-{% block sectiontitle %}{% trans 'Scoring history for:' %}{% player pplayer %}{% endblock %}
+{% block sectiontitle %}{% trans 'Scoring history for:' %}{% player pplayer %}
+
+<span class="points">{% coin_amount pplayer.points %} {% coin_amount pplayer.coins.gold 'gold' %}</span>
+{% endblock %}
 
 {% block sectioncontent %}
 
