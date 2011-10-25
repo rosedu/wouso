@@ -56,3 +56,22 @@ def gettop(request, toptype=0, sortcrit=0, page=1):
                             'is_top': True,
                             'top': Top},
                            context_instance=RequestContext(request))
+
+def pyramid(request):
+    s = []
+    for g in PlayerGroup.objects.exclude(show_in_top=False).filter(gclass=1).order_by('name'):
+        columns = []
+        players = []
+        i, j = 1, 0
+        for p in g.player_set.all().order_by('-points'):
+            players.append(p)
+            if len(players) == i:
+                columns.append(list(players))
+                players = []
+                i += 1
+        g.columns = columns
+        s.append(g)
+
+    return render_to_response('top/pyramid.html',
+                            {'series': s, 'top': Top},
+                            context_instance=RequestContext(request))
