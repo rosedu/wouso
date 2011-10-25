@@ -14,7 +14,7 @@
 {% if top.disabled %}
     {% trans 'Top has been disabled.' %}
 {% else %}
-<table>
+<table border="0" cellspacing="0" cellpadding="0">
     {% for s in series %}
     <tr>
     <th colspan="6" class="head-{{ s.name }}">{{ s }}</th>
@@ -24,7 +24,7 @@
     {% for c in s.columns %}
     <td valign="center">
         {% for u in c %}
-        <img class="avatar" width="50" src="{% player_avatar u %}" /><br/>
+        <a href="{% url player_profile u.id %}"><img class="avatar" width="32" src="{% player_avatar u %}" /></a><br/>
         {% endfor %}
     </td>
     {% endfor %}
