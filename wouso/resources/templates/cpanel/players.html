@@ -1,0 +1,28 @@
+{% extends 'cpanel/index.html' %}
+{% load user %}
+
+{% block sectiontitle %}Players{% endblock %}
+
+{% block sectioncontent %}
+
+<table>
+<tr>
+    <th>Name</th>
+    <th></th>
+    <th></th>
+    <th>series</th>
+    <th>A#</th>
+    <th>Qotd#</th>
+</tr>
+{% for p in players %}
+<tr><td>{% player p %}</td>
+    <td>{% coin_amount p.points %}</td>
+    <td>{% coin_amount p.coins.gold 'gold' %}</td>
+    <td>{{ p.series }}</td>
+    <td>{{ p.activity_count }}</td>
+    <td>{{ p.qotd_count }}</td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}
