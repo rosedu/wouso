@@ -58,7 +58,7 @@ def homepage(request, page=u'1'):
     profile = request.user.get_profile()
     # gather users online in the last ten minutes
     oldest = datetime.datetime.now() - datetime.timedelta(minutes = 10)
-    online_last10 = Player.objects.filter(last_seen__gte=oldest)
+    online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
     activity = get_wall(page)
 
     topuser = profile.get_extension(TopUser)
