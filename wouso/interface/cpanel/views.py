@@ -365,8 +365,11 @@ def players(request):
         return History.objects.filter(user=self, game__name='QotdGame').count()
     def ac(self):
         return Activity.objects.filter(user_from=self).count()
+    def cc(self):
+        return History.objects.filter(user=self, game__name='ChallengeGame').count()
     Player.qotd_count = qotdc
     Player.activity_count = ac
+    Player.chall_count = cc
     all = Player.objects.all().order_by('-user__date_joined')
 
     return render_to_response('cpanel/players.html', dict(players=all), context_instance=RequestContext(request))
