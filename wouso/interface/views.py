@@ -71,7 +71,7 @@ def homepage(request, page=u'1'):
     else:
         template = 'site_index.html'
 
-    news = NewsItem.objects.all().order_by('-date_pub')
+    news = NewsItem.objects.all().order_by('-date_pub', '-id')
     more = False
     if len(news) > 10:
         more = True
