@@ -1,18 +1,21 @@
-{% extends base_template %}
+{% extends 'interface/section_base.html' %}
 {% load i18n %}
 {% load user %}
 
 {% block title %}{% trans 'Scoring history' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Scoring history for:' %}{% player pplayer %}{% endblock %}
 
-{% block content %}
-
-<h2>{% trans 'Scoring history for:' %}{% player pplayer %}</h2>
+{% block sectioncontent %}
 
 <ul>
 {% for h in history %}
     <li>{{ h.timestamp }} {% coin_amount h.amount h.coin %}
         {% if h.game %}{% trans 'from' %} {% trans h.game.verbose_name %}{% endif %}
-        <span class="points"><em>({{ h.formula }})</em></span>
+        <span class="points"><em>({{ h.formula }})</em>
+        {% if player.user.is_superuser or player.in_staff_group %}
+            <a href="{% url admin:scoring_history_change h.id %}" class="">✍</a>
+        {% endif %}
+        </span>
     </li>
 {% endfor %}
 </ul>
