@@ -17,9 +17,12 @@ class Customization(ConfigGroup):
         logo = Setting.get('logo')
 
         default_group = ChoicesSetting.get('default_group')
-        default_group.choices = [(unicode(g), str(g.id)) for g in PlayerGroup.objects.filter(gclass=1)]
+        default_group.choices = [(unicode(g), str(g.id)) for g in PlayerGroup.objects.filter(gclass=0)]
 
-        return [title, intro, theme, logo, hf, default_group, einfo]
+        default_series = ChoicesSetting.get('default_series')
+        default_series.choices = [(unicode(g), str(g.id)) for g in PlayerGroup.objects.filter(gclass=1)]
+
+        return [title, intro, theme, logo, hf, default_group, default_series, einfo]
 
 class Switchboard(ConfigGroup):
     name = 'Disable features'
