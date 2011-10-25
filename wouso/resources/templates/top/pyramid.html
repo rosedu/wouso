@@ -1,0 +1,35 @@
+{% extends 'interface/section_base.html' %}
+{% load artifacts %}
+{% load i18n %}
+{% load user %}
+
+{% block title %}{% trans 'Top' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Pyramid' %}{% endblock %}
+
+{% block sidebar %}
+    {% include 'top/sidebar.html' %}
+{% endblock %}
+
+{% block sectioncontent %}
+{% if top.disabled %}
+    {% trans 'Top has been disabled.' %}
+{% else %}
+<table>
+    {% for s in series %}
+    <tr>
+    <th colspan="6" class="head-{{ s.name }}">{{ s }}</th>
+    </tr>
+
+    <tr>
+    {% for c in s.columns %}
+    <td valign="center">
+        {% for u in c %}
+        <img class="avatar" width="50" src="{% player_avatar u %}" /><br/>
+        {% endfor %}
+    </td>
+    {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endblock %}
