@@ -357,6 +357,20 @@ def stafftoggle(request, id):
 
     return HttpResponseRedirect(reverse('player_profile', args=(id,)))
 
+@login_required
+def players(request):
+    from wouso.core.scoring.models import History
+    from wouso.interface.activity.models import Activity
+    def qotdc(self):
+        return History.objects.filter(user=self, game__name='QotdGame').count()
+    def ac(self):
+        return Activity.objects.filter(user_from=self).count()
+    Player.qotd_count = qotdc
+    Player.activity_count = ac
+    all = Player.objects.all().order_by('-user__date_joined')
+
+    return render_to_response('cpanel/players.html', dict(players=all), context_instance=RequestContext(request))
+
 # 'I am lazy' hack comes in
 import sys
 import types

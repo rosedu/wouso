@@ -113,7 +113,7 @@ def search(request):
         return render_to_response('search_results.html',
                                   {'searchresults': searchresults,
                                    'groupresults': group_results,
-                                   'search_query': query},
+                                   'search_query': form.cleaned_data['query']},
                                   context_instance=RequestContext(request))
 
     return render_to_response('site_base.html', context_instance=RequestContext(request))
