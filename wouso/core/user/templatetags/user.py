@@ -26,7 +26,7 @@ def player_simple(user):
     """ Render only the player name with link to player's profile """
     link = reverse('wouso.interface.profile.views.user_profile', args=(user.id,))
 
-    return u'<a href="%s">%s</a>' % (link, user)
+    return u'<a href="%s" title="%s [%d]">%s</a>' % (link, user.level.title if user.level else '', user.level_no, user)
 
 @register.simple_tag
 def player_simple2(user, user2):
