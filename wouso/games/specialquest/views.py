@@ -56,9 +56,9 @@ def setup_leave(request):
         pass
     else:
         user.group = None
+        user.save()
         if group.owner == user:
             group.delete()
-        user.save()
 
     return HttpResponseRedirect(reverse('specialquest_index_view'))
 
