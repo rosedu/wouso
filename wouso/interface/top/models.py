@@ -39,7 +39,7 @@ class TopUser(ObjectHistory, Player):
             daybefore = History.objects.filter(user=self, relative_to=None).order_by('-date')[1]
         except Exception as e:
             return 0
-        return yesterday.position - daybefore.position
+        return - (yesterday.position - daybefore.position)
 
     @property
     def weeklyprogress(self):
@@ -48,7 +48,7 @@ class TopUser(ObjectHistory, Player):
             day1weekprior = History.objects.filter(user=self).order_by('-date')[7]
         except Exception as e:
             return 0
-        return yesterday.position - day1weekprior.position
+        return -(yesterday.position - day1weekprior.position)
 
     @property
     def position(self):
