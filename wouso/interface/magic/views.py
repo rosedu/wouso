@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from wouso.core.config.models import BoolSetting
-from wouso.core.user.models import Player, PlayerSpellDue
+from wouso.core.user.models import Player, PlayerSpellDue, SpellHistory
 from wouso.core.magic.models import Spell
 from wouso.core import scoring
 
@@ -89,6 +89,7 @@ def bazaar_buy(request, spell):
         player.add_spell(spell)
         scoring.score(player, None, 'buy-spell', external_id=spell.id,
                       price=spell.price)
+        SpellHistory.bought(player, spell)
         message = _("Successfully aquired")
 
     return bazaar(request, message=message, error=error)

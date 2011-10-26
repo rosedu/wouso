@@ -71,10 +71,11 @@ def main(args):
             # launched and accepted before yesterday, but not played by both
             c.set_expired()
 
-    from wouso.core.user.models import PlayerSpellDue
+    from wouso.core.user.models import PlayerSpellDue, SpellHistory
     spells = PlayerSpellDue.get_expired(today)
     print 'Updating expired spells (%d)' % spells.count()
     for s in spells:
+        SpellHistory.expired(s.player, s.spell)
         s.delete()
 
     print 'Done.'
