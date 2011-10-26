@@ -9,10 +9,10 @@
         <li><a href="{% url news_item_view n.pk %}">{{n.title}}</a></li>
     {% endfor %}
     {% if news_page.has_previous %}
-        <a href="{% url wouso.interface.views.homepage %}"> &raquo; </a>
+        <a href="{% url wouso.interface.views.homepage page=activity.previous_page_number %}"> &laquo;</a>
     {% endif %}
 
     {% if news_page.has_next %}
-        <a href="{% url wouso.interface.views.homepage page=activity.next_page_number %}"> &laquo;</a>
+        <a href="{% url wouso.interface.views.homepage page=activity.next_page_number %}"> &raquo;</a>
     {% endif %}
 {% endblock %}

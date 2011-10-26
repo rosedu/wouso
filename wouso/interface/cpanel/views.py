@@ -1,6 +1,7 @@
 import datetime
 from django.contrib.auth import models as auth
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.http import  HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
@@ -88,7 +89,7 @@ def games(request):
 CATEGORIES = (('Qotd', 'qotd'), ('Challenge', 'challenge'), ('Quest', 'quest'))
 
 @login_required
-def qpool_home(request, cat=None):
+def qpool_home(request, cat=None, page=u'1'):
     if cat is None:
         cat = 'qotd'
 
@@ -99,8 +100,14 @@ def qpool_home(request, cat=None):
     tags = Tag.objects.all().exclude(name__in=['qotd', 'challenge', 'quest'])
     form = TagsForm(tags=tags)
 
+    paginator = Paginator(questions, 15)
+    try:
+        q_page = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        q_page = paginator.page(paginator.num_pages)
+
     return render_to_response('cpanel/qpool_home.html',
-                              {'questions': questions,
+                              {'q_page': q_page,
                                'categs': CATEGORIES,
                                'cat': cat,
                                'form': form,

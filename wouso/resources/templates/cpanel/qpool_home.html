@@ -69,7 +69,7 @@
             <th>Active</th>
             <th>Actions</th>
         </th>
-    {% for q in questions %}
+    {% for q in q_page.object_list %}
         <tr>
             {% if cat == 'search' %}<td>{{q.id}}</td>{% endif %}
             {% if cat == 'qotd' %}
@@ -89,9 +89,25 @@
                 <a class="button-min" href="{% url question_del q.id%}" onclick="return confirm('really?');">✕</a>
             </td>
         </tr>
+
     {% empty %}
     <tr><td colspan=3>No questions</td></tr>
     {% endfor %}
+    <div class="pagination">
+        <span class="step-links">
+            {% if q_page.has_previous %}
+                <a href="{% url qpool_home page=q_page.previous_page_number %}"> &laquo;</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ q_page.number }} of {{ q_page.paginator.num_pages }}.
+            </span>
+
+            {% if q_page.has_next %}
+                <a href="{% url qpool_home page=q_page.next_page_number %}"> &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
     </table>
     </div>
 </div>

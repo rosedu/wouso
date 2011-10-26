@@ -5,6 +5,7 @@ upat = [
     url(r'^$', 'wouso.interface.cpanel.views.dashboard', name='dashboard'),
     url(r'^customization/$', 'wouso.interface.cpanel.views.customization', name='customization'),
     url(r'^qpool/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
+    url(r'^qpool/(?P<page>\d+)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
     url(r'^qpool/edit/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.question_edit', name='question_edit'),
     url(r'^qpool/del/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.question_del', name='question_del'),
     url(r'^qpool/set_active_categories', 'wouso.interface.cpanel.views.set_active_categories', name='set_active_categories'),
@@ -15,6 +16,7 @@ upat = [
     url(r'^qpool/qotd/schedule$', 'wouso.interface.cpanel.views.qotd_schedule', name='qotd_schedule'),
     url(r'^qpool/search/$', 'wouso.interface.cpanel.views.qpool_search', name='qpool_search'),
     url(r'^qpool/(?P<cat>\w*)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
+    url(r'^qpool/(?P<cat>\w*)/(?P<page>\d+)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
     url(r'^qpool/remove_all/(?P<cat>\w+)/$', 'wouso.interface.cpanel.views.remove_all', name='remove_all'),
 
 
