@@ -96,7 +96,7 @@
     <div class="pagination">
         <span class="step-links">
             {% if q_page.has_previous %}
-                <a href="{% url qpool_home page=q_page.previous_page_number %}"> &laquo;</a>
+                <a href="{% url qpool_home cat=cat page=q_page.previous_page_number %}"> &laquo;</a>
             {% endif %}
 
             <span class="current">
@@ -104,7 +104,7 @@
             </span>
 
             {% if q_page.has_next %}
-                <a href="{% url qpool_home page=q_page.next_page_number %}"> &raquo;</a>
+                <a href="{% url qpool_home cat=cat page=q_page.next_page_number %}"> &raquo;</a>
             {% endif %}
         </span>
     </div>
