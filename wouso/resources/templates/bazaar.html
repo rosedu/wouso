@@ -30,8 +30,12 @@
                 </div>
             </td>
             <td nowrap="nowrap">
-                {% if s.due_days > 1 %}
-                    {{ s.due_days }} {% trans 'days' %}
+                {% if s.due_days == 1 %}
+                    {% trans '1 day' %}
+                {% else %}
+                    {% if s.due_days > 1 %}
+                        {{ s.due_days }} {% trans 'days' %}
+                    {% endif %}
                 {% endif %}
             </td>
             <td align="right" >
