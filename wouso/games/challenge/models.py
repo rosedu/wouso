@@ -36,6 +36,12 @@ class ChallengeUser(Player):
             return False
         return True
 
+    def has_enough_points(self):
+        """ Check if the user has 30 points to challenge
+        """
+        REQ_POINTS = 30
+        return self.points >= REQ_POINTS
+
     def can_challenge(self, user):
         """ Check if the target user is available.
         """
@@ -273,7 +279,7 @@ class Challenge(models.Model):
                 ret = _('{m} minutes and {s} seconds').format(m=seconds / 60, s=seconds % 60)
             return _('(in {time})').format(time=ret)
 
-        return '%.2fp %s - %.2fp %s' % (user_won.score, formatTime(user_won.seconds_took),
+        return '%dp %s - %dp %s' % (user_won.score, formatTime(user_won.seconds_took),
                                         user_lost.score, formatTime(user_lost.seconds_took))
 
     def played(self):
@@ -290,7 +296,7 @@ class Challenge(models.Model):
                 u.percents = u.user.modifier_percents('challenge-affect-scoring')
             else:
                 u.percents = 100
-        
+
         if self.user_to.score > self.user_from.score:
             result = (self.user_to, self.user_from)
         elif self.user_from.score > self.user_to.score:
