@@ -279,7 +279,7 @@ class Challenge(models.Model):
                 ret = _('{m} minutes and {s} seconds').format(m=seconds / 60, s=seconds % 60)
             return _('(in {time})').format(time=ret)
 
-        return '%.2fp %s - %.2fp %s' % (user_won.score, formatTime(user_won.seconds_took),
+        return '%dp %s - %dp %s' % (user_won.score, formatTime(user_won.seconds_took),
                                         user_lost.score, formatTime(user_lost.seconds_took))
 
     def played(self):
