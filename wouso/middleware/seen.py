@@ -8,7 +8,7 @@ class Seen:
                 profile = request.user.get_profile()
             except:
                 profile = None
-            logging.debug('seen' + str(profile))
+            #logging.debug('seen' + str(profile))
             if profile:
                 profile.last_seen = datetime.now()
                 profile.save()
