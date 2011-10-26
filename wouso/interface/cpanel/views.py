@@ -2,6 +2,7 @@ import datetime
 from django.contrib.auth import models as auth
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
+from django import forms
 from django.http import  HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
@@ -320,6 +321,32 @@ def artifact_del(request, id):
         go_back = reverse('wouso.interface.cpanel.views.artifact_home')
 
     return HttpResponseRedirect(go_back)
+
+@login_required
+def tag_questions(request):
+    class TagForm(forms.Form):
+        questions = forms.MultipleChoiceField(choices=[(q.pk, q.text) for q in Question.objects.all()])
+        tag = forms.ChoiceField(choices=[(t.pk, t.name) for t in Tag.objects.all().exclude(name__in=['qotd', 'quest', 'challenge'])])
+
+    if request.method == 'POST':
+        form = TagForm(request.POST)
+        if form.is_valid():
+            q_pks = form.cleaned_data['questions']
+            tag_pk =  form.cleaned_data['tag']
+            tag = Tag.objects.get(pk=tag_pk)
+            for pk in q_pks:
+                q = Question.objects.get(pk=pk)
+                q.tags.add(tag)
+                q.save()
+            return render_to_response('cpanel/tagged.html',
+                                    {'nr': len(q_pks)},
+                                      context_instance=RequestContext(request))
+    else:
+        form = TagForm()
+
+    return render_to_response('cpanel/tag_questions.html',
+                            {'form': form},
+                              context_instance=RequestContext(request))
 
 @login_required
 def groupset(request, id):
