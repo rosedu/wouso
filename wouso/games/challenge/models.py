@@ -82,7 +82,8 @@ class Participant(models.Model):
     seconds_took = models.IntegerField(null=True, blank=True)
     played = models.BooleanField(default=False)
     responses = models.TextField(default='', blank=True, null=True)
-    score = models.FloatField(null=True, blank=True)
+    #score = models.FloatField(null=True, blank=True)
+    score = models.IntegerField(null=True, blank=True)
 
     @property
     def challenge(self):
@@ -339,7 +340,7 @@ class Challenge(models.Model):
         """
         points = 0.0
         for r, v in responses.iteritems():
-            checked = missed = 0
+            checked, missed = 0, 0
             q = Question.objects.get(id=r)
             for a in q.answers.all():
                 if a.correct:
@@ -359,7 +360,7 @@ class Challenge(models.Model):
                 qpoints = float(checked) / correct_count - float(missed) / wrong_count
             qpoints = qpoints if qpoints > 0 else 0
             points += qpoints
-        return points
+        return int(100.0 * points)
 
     def set_played(self, user, responses):
         """ Set user's results. If both users have played, also update self and activity. """
