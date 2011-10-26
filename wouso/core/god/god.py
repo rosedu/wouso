@@ -142,6 +142,10 @@ class DefaultGod:
 
         Returns True if action has been taken, False if not.
         """
+        # Always executed, so log
+        from wouso.core.user.models import SpellHistory
+        SpellHistory.used(psdue.source, psdue.spell, psdue.player)
+
         if psdue.spell.name == 'dispell':
             for psd in psdue.player.spells:
                 psd.delete()
