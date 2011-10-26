@@ -1,0 +1,26 @@
+{% extends 'cpanel/index.html' %}
+{% load i18n %}
+{% block scripts %}
+    <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
+{% endblock %}
+
+{% block sectiontitle %}Tag questions{% endblock %}
+
+{% block extra_sidebar %}
+
+{% endblock %}
+
+{% block sectioncontent %}
+<form method="post" action="">
+<input type="hidden" name="to" value="{{to.id}}" />
+
+
+<table>
+{{ form }}
+</table>
+
+<button type="submit">Save</button>
+{% csrf_token %}
+</form>
+
+{% endblock %}
