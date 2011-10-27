@@ -145,6 +145,17 @@ class DefaultGod:
         # Always executed, so log
         from wouso.core.user.models import SpellHistory
         SpellHistory.used(psdue.source, psdue.spell, psdue.player)
+        # Also trigger anonimous activiy
+        from wouso.interface.activity import signals
+        if psdue.source == psdue.player:
+            signal_msg = 'a facut o vraja asupra sa.'
+        else:
+            signal_msg = 'a facut o vraja asupra {to}.'
+        signals.addActivity.send(sender=None, user_from=psdue.source,
+                                 user_to=psdue.player,
+                                 message=signal_msg,
+                                 arguments=dict(to=psdue.player),
+                                 game=None)
 
         if psdue.spell.name == 'dispell':
             for psd in psdue.player.spells:
