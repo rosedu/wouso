@@ -33,17 +33,25 @@ Category: {{ question.category }}
         </tr>
         {% endfor %}
     {% endfor %}
+
+    {% if question.category.name != 'proposed' %}
     <tr><td colspan="2"><label for="active">Active: </label>
         <input id="active" type="checkbox" name="active" {% if question.active %}checked{% endif %} /></td>
     </tr>
+    {% endif %}
+
     {% if question.category.name == 'qotd' %}
     <tr><td><label for="schedule">Schedule (dd.mm.yyyy):</label></td>
         <td><input type="text" value="{{ question.scheduled }}" name="schedule" id="schedule"/></td>
     </tr>
     {% endif %}
+    {% if question.category.name == 'proposed' %}
+    <tr><td colspan="2">Proposed for: {% for t in question.tags.all  %}{{ t.name }} {% endfor %}</td></tr>
+    {% else %}
     <tr><td><label for="tags">Tags:</label></td>
         <td>{{ form.tags }}</td>
     </tr>
+    {% endif %}
     {% if not question %}
     <tr><td>Category: </td><td>
         <select name="category">
