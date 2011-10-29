@@ -51,7 +51,7 @@ class ChallengeUser(Player):
             return False
         if user.has_modifier('challenge-cannot-be-challenged'):
             return False
-        return True
+        return God.user_can_interact_with(self, user, game=ChallengeGame)
 
     def has_one_more(self):
         return self.has_modifier('challenge-one-more')
@@ -150,13 +150,20 @@ class Challenge(models.Model):
         yesterday = today + timedelta(days=-1)
         return Challenge.objects.filter(date__lt=yesterday).filter(Q(status='A')|Q(status='L'))
 
-    @staticmethod
-    def exist_last_day(today, user_from, user_to):
+    @classmethod
+    def exist_last_day(cls, today, user_from, user_to):
         """
         Return true if there are any challenges between the two users in the last day
         """
         yesterday = today + timedelta(days=-1)
         return Challenge.objects.filter(user_from__user=user_from, user_to__user=user_to, date__gt=yesterday).count() > 0
+
+    @classmethod
+    def last_between(cls, user_from, user_to):
+        try:
+            return Challenge.objects.filter(user_from__user=user_from, user_to__user=user_to).exclude(status='R').order_by('-date')[0]
+        except IndexError:
+            return None
 
     @property
     def participants(self):
