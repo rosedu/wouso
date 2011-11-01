@@ -145,7 +145,7 @@ class DefaultGod:
         # Always executed, so log
         from wouso.core.user.models import SpellHistory
         SpellHistory.used(psdue.source, psdue.spell, psdue.player)
-        # Also trigger anonimous activiy
+        # Also trigger anonymous activiy
         from wouso.interface.activity import signals
         if psdue.source == psdue.player:
             signal_msg = 'a facut o vraja asupra sa.'
@@ -181,6 +181,28 @@ class DefaultGod:
             from wouso.core.user import models
             others, new = models.PlayerGroup.objects.get_or_create(name='Others')
             if others in user.groups.all():
+                return False
+
+        return True
+
+    def user_can_interact_with(self, user_from, user_to, game=None):
+        if game is not None:
+            game = str(game.__name__)
+
+        if game == 'ChallengeGame':
+            from datetime import datetime
+            from math import ceil
+            from wouso.interface.top.models import TopUser
+            from wouso.games.challenge.models import Challenge
+
+            lastch = Challenge.last_between(user_from, user_to)
+            if lastch:
+                elapsed_days = (datetime.now() - lastch.date).days
+                position_diff = abs(user_from.get_extension(TopUser).position - user_to.get_extension(TopUser).position)
+                rule = ceil(position_diff * 0.1)
+                #print "AICI", user_from, user_to, lastch, elapsed_days,'days', rule,'rule'
+                if rule <= elapsed_days:
+                    return True
                 return False
 
         return True
