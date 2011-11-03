@@ -86,6 +86,7 @@
         <ul class="menu">
         <li class="home"><a href="{% url dashboard %}">Dashboard</a></li>
         <li class="qpool"><a href="{% url qpool_home %}">Question Pool</a>
+        <li class="lastchalls"><a href="{% url lastchalls %}">Last challenges</a></li>
             <ul class="submenu">
             <li class="qpool_import"></li>
             </ul>
@@ -96,7 +97,7 @@
             <li class="custom"><a href="{% url customization %}">Customization</a></li>
             <li><a href="{% url all_players %}">Players</a></li>
             <li><a href="{% url races_groups %}">Races & groups</a></li>
-            {% endif %}
+        {% endif %}
         </ul>
     </div>
     <div class="widget-content">

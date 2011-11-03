@@ -25,7 +25,6 @@ from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm, SpellForm
 from django.contrib.auth.models import User
 
-
 @staff_required
 def dashboard(request):
     from wouso.games.quest.models import Quest, QuestGame
@@ -678,3 +677,13 @@ def the_bell(request):
     addActivity.send(sender=None, user_from=player, game=None, message=message)
 
     return redirect('dashboard')
+
+@login_required
+def lastchalls(request):
+    # TODO: this should not be here, but in a cpanel.py file
+    from wouso.games.challenge.models import Challenge
+
+    last30 = Challenge.objects.filter(status__in=['P', 'D']).order_by('-date')[:30]
+    return render_to_response('cpanel/lastchalls.html',
+                            {'last30': last30},
+                            context_instance=RequestContext(request))
