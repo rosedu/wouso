@@ -94,7 +94,7 @@ def qpool_home(request, cat=None, page=u'1'):
     if cat is None:
         cat = 'qotd'
 
-    questions = get_questions_with_category(str(cat), endorsed_only=False)
+    questions = get_questions_with_category(str(cat), active_only=False, endorsed_only=False)
     if cat == 'qotd':
         questions = questions.order_by('schedule__day')
 
