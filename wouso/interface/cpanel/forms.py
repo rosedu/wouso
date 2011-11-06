@@ -38,7 +38,7 @@ class QuestionForm(forms.Form):
             if not new:
                 a = Answer.objects.get(pk=i)
             else:
-                if not data['answer_%d' % i]:
+                if data['answer_%d' % i] is None or not data['answer_%d' % i].strip():
                     continue
                 a = Answer.objects.create(question=self.instance)
             a.text = data['answer_%d' % i]
