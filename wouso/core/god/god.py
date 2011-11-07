@@ -200,6 +200,8 @@ class DefaultGod:
                 elapsed_days = (datetime.now() - lastch.date).days
                 position_diff = abs(user_from.get_extension(TopUser).position - user_to.get_extension(TopUser).position)
                 rule = ceil(position_diff * 0.1)
+                if rule > 7:
+                    rule = 7 # nu bloca mai mult de 7 zile
                 #print "AICI", user_from, user_to, lastch, elapsed_days,'days', rule,'rule'
                 if rule <= elapsed_days:
                     return True
