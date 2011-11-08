@@ -7,7 +7,7 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from wouso.core.user.models import PlayerGroup
 from wouso.interface.top.models import History, TopUser, Top
 
-PERPAGE = 10
+PERPAGE = 20
 def gettop(request, toptype=0, sortcrit=0, page=1):
     # toptype = 0 means overall top
     # toptype = 1 means top for 1 week
@@ -75,3 +75,12 @@ def pyramid(request):
     return render_to_response('top/pyramid.html',
                             {'series': s, 'top': Top},
                             context_instance=RequestContext(request))
+
+def topclasses(request):
+    # top classes
+    classes = PlayerGroup.objects.exclude(show_in_top=False, parent__show_in_top=False).filter(gclass=0).order_by('points')
+    classes = list(classes)
+    classes = reversed(sorted(classes, key=lambda obj: obj.live_points))
+
+    return render_to_response('top/classes.html', {'classes':classes, 'top':Top},
+                              context_instance=RequestContext(request))

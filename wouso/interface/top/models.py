@@ -102,7 +102,7 @@ class Top(App):
     @classmethod
     def get_sidebar_widget(kls, request):
         top5 = TopUser.objects.exclude(user__is_superuser=True).exclude(groups__name='Others')
-        top5 = top5.order_by('-points')[:5]
+        top5 = top5.order_by('-points')[:10]
         is_top = request.get_full_path().startswith('/top/')
         return render_string('top/sidebar.html',
             {'topusers': top5, 'is_top': is_top, 'top': Top}
