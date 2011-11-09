@@ -16,6 +16,8 @@ def index(request):
     quest_user = request.user.get_profile().get_extension(QuestUser)
     if quest_user.current_quest is None:
         quest_user.set_current(quest)
+    elif not quest_user.current_quest.is_active:
+        quest_user.set_current(quest)
 
     message = ''
     if request.method == "POST":

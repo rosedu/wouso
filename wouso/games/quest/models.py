@@ -118,6 +118,15 @@ class Quest(models.Model):
         return self.end - datetime.datetime.now()
 
     @property
+    def is_active(self):
+        acum = datetime.datetime.now()
+        if self.end < acum:
+            return False
+        elif self.start > acum:
+            return False
+        return True
+
+    @property
     def status(self):
         """ Current activity status.
         Note (alexef): I'm not particulary happy with this
@@ -181,7 +190,7 @@ class QuestGame(Game):
         try:
             return Quest.objects.get(start__lte=datetime.datetime.now(),
                                 end__gte=datetime.datetime.now())
-        except Quest.DoesNotExist:
+        except: # Quest.DoesNotExist:
             return None
 
     @classmethod
