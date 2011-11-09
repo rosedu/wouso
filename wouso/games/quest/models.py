@@ -173,7 +173,7 @@ class Quest(models.Model):
         self.save()
 
     def __unicode__(self):
-        return "%s - %s" % (self.start, self.end)
+        return "%s - %s %s" % (self.start, self.end, self.title)
 
 class QuestGame(Game):
     """ Each game must extend Game """
