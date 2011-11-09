@@ -54,6 +54,9 @@ class QuestUser(Player):
             qr = QuestResult(user=self, quest=self.current_quest, level=self.current_level)
             qr.save()
 
+            if self.current_level < self.current_quest.count:
+                return
+
             # sending the signal
             signal_msg = ugettext_noop("has finished quest {quest}")
             signals.addActivity.send(sender=None, user_from=self,
