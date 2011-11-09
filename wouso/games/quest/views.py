@@ -48,7 +48,7 @@ def sidebar_widget(request):
     else:
         quest_progress = 1.0 * quest_user.current_level / quest.count * 100
 
-    if quest_user.finished:
+    if quest_user.finished and (quest_user.current_quest == quest):
         time_passed = datetime.now() - quest_user.finished_time
         if time_passed > timedelta(seconds=600): # ten minutes
             return ''
