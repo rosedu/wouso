@@ -527,7 +527,7 @@ class ChallengeGame(Game):
     @classmethod
     def get_profile_superuser_actions(kls, request, player):
         url = reverse('wouso.games.challenge.views.history', args=(player.id,))
-        return '<a class="button" href="%s">%s</a>' % (url, _('Challenge history'))
+        return '<a class="button" href="%s">%s</a>' % (url, _('Challenges'))
 
 # Hack for having participants in sync
 def challenge_post_delete(sender, instance, **kwargs):
