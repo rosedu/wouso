@@ -14,7 +14,9 @@ from wouso.core.magic.models import Artifact, Group
 from wouso.core.qpool.models import Schedule, Question, Tag, Category
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
+from wouso.core import scoring
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
+from wouso.interface.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm
 
@@ -156,8 +158,28 @@ def question_edit(request, id=None):
 def question_switch(request, id):
     question = get_object_or_404(Question, pk=id)
 
-    question.active = not question.active
-    question.save()
+    # qproposal - endorse part
+    proposed_cat = Category.objects.filter(name='proposed')[0]
+    if question.category == proposed_cat:
+        if not question.endorsed_by:
+            player = question.proposed_by.get_profile()
+            staff_user = request.user
+            question.endorsed_by = staff_user
+            question.save()
+            amount = 0
+            for tag in question.tags.all():
+                if tag.name == 'qotd':
+                    amount = QOTD_GOLD
+                elif tag.name == 'challenge':
+                    amount = CHALLENGE_GOLD
+                elif tag.name == 'quest':
+                    amount = QUEST_GOLD
+            scoring.score(player, None, 'bonus-gold', external_id=staff_user.id, gold=amount)
+
+    # regular activation of question
+    else:
+        question.active = not question.active
+        question.save()
 
     go_back = request.META.get('HTTP_REFERER', None)
     if not go_back:
