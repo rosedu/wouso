@@ -1,0 +1,29 @@
+{% extends 'interface/section_base.html' %}
+{% load artifacts %}
+{% load i18n %}
+{% block title %}{% trans 'Challenge history' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Challenge history' %}{% endblock %}
+
+{% block sectioncontent %}
+
+<ul class="answers">
+{% for c in challenges %}
+    <li>
+    {{ c.date }}
+    <a href="{% url interface.profile.views.user_profile c.user_from.user.id %}">{{ c.user_from }}</a> vs.
+    <a href="{% url interface.profile.views.user_profile c.user_to.user.id %}">{{ c.user_to }}</a>
+     - Result:  {% if c.status == "D" %} Draw
+                {% else %} {% if c.status == "P" %} Won by {{ c.winner }}
+                {% else %} Pending {% endif %}
+                {% endif %}
+
+    {% if user.is_superuser %} | superuser:
+        {% if c.status == "A" %}<a href="{% url games.challenge.views.setplayed c.id %}">Set played</a>{% endif %}
+    {% endif %}
+    </li>
+{% empty %}
+    <li class="empty">{% trans 'No challenges.' %}</li>
+{% endfor %}
+</ul>
+
+{% endblock %}
