@@ -139,19 +139,30 @@ def question_edit(request, id=None):
     else:
         question = None
 
+    categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
+
     if request.method == 'POST':
         form = QuestionForm(request.POST, instance=question)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
+            newq = Question.objects.get(pk=question.id)
+            if (newq.endorsed_by is None):
+                newq.endorsed_by = request.user
+                newq.save()
+            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home', args = (newq.category.name,)))
     else:
-        form = QuestionForm(instance=question)
+        show_users = False
+        if question.category:
+            if question.category.name == 'proposed':
+                show_users = True
+
+        form = QuestionForm(instance=question, users=show_users)
 
     return render_to_response('cpanel/question_edit.html',
                               {'question': question,
                                'form': form,
                                'module': 'qpool',
-                               'categs': CATEGORIES},
+                               'categs': categs},
                               context_instance=RequestContext(request))
 
 @login_required
