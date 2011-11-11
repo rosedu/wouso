@@ -144,17 +144,17 @@ def question_edit(request, id=None):
     if request.method == 'POST':
         form = QuestionForm(request.POST, instance=question)
         if form.is_valid():
-            form.save()
-            newq = Question.objects.get(pk=question.id)
+            newq = form.save()
             if (newq.endorsed_by is None):
                 newq.endorsed_by = request.user
                 newq.save()
             return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home', args = (newq.category.name,)))
     else:
         show_users = False
-        if question.category:
-            if question.category.name == 'proposed':
-                show_users = True
+        if question:
+            if question.category:
+                if question.category.name == 'proposed':
+                    show_users = True
 
         form = QuestionForm(instance=question, users=show_users)
 
