@@ -80,7 +80,7 @@ class QuestionForm(forms.Form):
             tag, new = Tag.objects.get_or_create(name=t)
             self.instance.tags.add(tag)
         self.instance.save()
-
+        return self.instance
 
 class TagsForm(forms.Form):
     def __init__(self, data=None, instance=None, tags=[]):
