@@ -14,7 +14,9 @@
     <a href="{% url interface.profile.views.user_profile c.user_to.user.id %}">{{ c.user_to }}</a>
      - Result:  {% if c.status == "D" %} Draw
                 {% else %} {% if c.status == "P" %} Won by {{ c.winner }}
-                {% else %} Pending {% endif %}
+                {% else %} {% if c.status == "R" %} Refused
+                {% else %} Pending [{{ c.status }}]{% endif %}
+                {% endif %}
                 {% endif %}
 
     {% if user.is_superuser %} | superuser:
