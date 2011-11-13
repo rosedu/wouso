@@ -39,7 +39,7 @@ class QuestionAdmin(admin.ModelAdmin):
     form = QuestionForm
     exclude = ('tags',)
     list_display = ('question', 'tag', 'scheduled', 'category', 'active', 'id', 'proposed_by', 'endorsed_by')
-    list_filter = ('active', 'category', 'endorsed_by')
+    list_filter = ('active', 'category', 'tags')
 
 class Questions2(admin.ModelAdmin):
     list_display = ('text')
