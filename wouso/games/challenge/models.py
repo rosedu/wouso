@@ -445,7 +445,7 @@ class ChallengeGame(Game):
         user = user.get_extension(ChallengeUser)
         try:
             challs = [p.challenge for p in Participant.objects.filter(
-                Q(user=user, played=False)) if p.challenge.is_launched() or p.challenge.is_runnable()]
+                Q(user=user, played=False)).order_by('-id') if p.challenge.is_launched() or p.challenge.is_runnable()]
         except Participant.DoesNotExist:
             challs = []
         return challs
@@ -455,7 +455,7 @@ class ChallengeGame(Game):
         """ Return a list of played (scored TODO) challenges for a user """
         try:
             challs = [p.challenge for p in Participant.objects.filter(
-                Q(user=user, played=True))]
+                Q(user=user, played=True)).order_by('-id')]
         except Participant.DoesNotExist:
             challs = []
         return challs
