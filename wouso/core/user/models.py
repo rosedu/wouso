@@ -213,6 +213,10 @@ class Player(models.Model):
         res = PlayerArtifactAmount.objects.filter(player=self, artifact__name=modifier)
         for a in res:
             percents += a.amount * a.artifact.percents
+        # now add spells to that
+        res = PlayerSpellDue.objects.filter(player=self, spell__name=modifier)
+        for a in res:
+            percents += a.spell.percents
         return percents
 
     def use_modifier(self, modifier, amount):

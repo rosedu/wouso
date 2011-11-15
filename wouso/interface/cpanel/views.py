@@ -139,19 +139,30 @@ def question_edit(request, id=None):
     else:
         question = None
 
+    categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
+
     if request.method == 'POST':
         form = QuestionForm(request.POST, instance=question)
         if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
+            newq = form.save()
+            if (newq.endorsed_by is None):
+                newq.endorsed_by = request.user
+                newq.save()
+            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home', args = (newq.category.name,)))
     else:
-        form = QuestionForm(instance=question)
+        show_users = False
+        if question:
+            if question.category:
+                if question.category.name == 'proposed':
+                    show_users = True
+
+        form = QuestionForm(instance=question, users=show_users)
 
     return render_to_response('cpanel/question_edit.html',
                               {'question': question,
                                'form': form,
                                'module': 'qpool',
-                               'categs': CATEGORIES},
+                               'categs': categs},
                               context_instance=RequestContext(request))
 
 @login_required
@@ -253,14 +264,21 @@ def import_from_upload(request):
     all_active = False
     if request.POST.has_key('all_active'):
         all_active = True
+        endorsed_by = request.user
+    else:
+        endorsed_by = None
 
-    category = Category.objects.filter(name=cat)[0]
+    if cat is not None:
+        category = Category.objects.get(name=cat)
+    else:
+        category = None
     tags = [Tag.objects.filter(name=tag)[0] for tag in tags]
     infile = request.FILES.get('file', None)
     if not infile:
         return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.importer'))
 
-    nr = import_from_file(infile, endorsed_by=request.user, category=category, tags=tags, all_active=all_active)
+
+    nr = import_from_file(infile, proposed_by=request.user, endorsed_by=endorsed_by, category=category, tags=tags, all_active=all_active)
     return render_to_response('cpanel/imported.html', {'module': 'qpool', 'nr': nr},
                               context_instance=RequestContext(request))
 
