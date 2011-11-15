@@ -66,6 +66,7 @@ upat = [
     url(r'^system_message/group/(?P<group>\d+)/$', 'wouso.interface.cpanel.views.system_message_group', name='system_message_group'),
 
     url(r'^lastchalls/$', 'wouso.interface.cpanel.views.lastchalls', name='lastchalls'),
+    url(r'^grandchallenge/$', 'wouso.interface.cpanel.views.grandchalls', name='grandchallenge'),
 ]
 
 for g in get_cpanel_games():
