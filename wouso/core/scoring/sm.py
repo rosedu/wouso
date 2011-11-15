@@ -120,16 +120,17 @@ def score_simple(player, coin, amount, game=None, formula=None,
     coin = Coin.get(coin)
     formula = Formula.get(formula)
 
-    hs = History.objects.create(user=user, coin=coin, amount=1.0 * amount * percents / 100,
+    computed_amount = 1.0 * amount * percents / 100
+    hs = History.objects.create(user=user, coin=coin, amount=computed_amount,
         game=game, formula=formula, external_id=external_id, percents=percents)
 
     # update user.points asap
     if coin.name == 'points':
-        player.points += amount
+        player.points += computed_amount
         player.save()
         update_points(player, game)
 
-    logging.debug("Scored %s with %f %s" % (user, amount, coin))
+    logging.debug("Scored %s with %f %s" % (user, computed_amount, coin))
     return hs
 
 def history_for(user, game, external_id=None, formula=None, coin=None):
