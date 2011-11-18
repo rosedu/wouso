@@ -96,6 +96,19 @@ class Quest(models.Model):
     questions = models.ManyToManyField(Question)
     order = models.CharField(max_length=1000,default="",blank=True)
 
+    def get_formula(self, type='quest-ok'):
+        """ Allow specific formulas for specific quests.
+        Hackish by now, think of a better approach in next version
+        TODO
+        """
+        if type not in ('quest-ok', 'quest-finish-ok'):
+            return None
+        try:
+            formula = Formula.objects.get(id='%s-%d' % (type, self.id))
+        except Formula.DoesNotExist:
+            formula = Formula.objects.get(id=type)
+        return formula
+
     @property
     def count(self):
         return self.questions.count()
@@ -155,12 +168,12 @@ class Quest(models.Model):
         if not user.current_level == self.count and \
                 answer.lower() == question.answers.all()[0].text.lower():
             # score current progress
-            scoring.score(user, QuestGame, 'quest-ok', level=(user.current_level + 1))
+            scoring.score(user, QuestGame, self.get_formula('quest-ok'), level=(user.current_level + 1))
             user.current_level += 1
             if user.current_level == self.count:
                 user.finish_quest()
                 # score finishing
-                scoring.score(user, QuestGame, 'quest-finish-ok')
+                scoring.score(user, QuestGame, self.get_formula('quest-finish-ok'))
             user.save()
             return True
         return False

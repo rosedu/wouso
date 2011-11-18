@@ -6,20 +6,24 @@
 
 <table>
     <tr>
+        <th>#</th>
         <th>Date</th>
         <th>Title</th>
         <th>Levels</th>
         <th>Status</th>
+        <th>Formula</th>
         <th></th>
     </tr>
     {% for q in quests %}
         <tr>
+            <td>{{ q.id }}</td>
             <td nowrap>Starts {{ q.start|date:"d/m/Y H:i" }}
             <div class="second">ends: {{q.end|date:"d/m/Y H:i"}}</div>
             </td>
             <td width="100%">{{ q.title }}</td>
             <td align="center">{{ q.count }}</td>
             <td>{{ q.status }}</td>
+            <td nowrap="nowrap">{{ q.get_formula }}</td>
             <td class="actions" nowrap>
                 <a href="{% url quest_edit q.id%}" title="edit">✍</a>
                 <a href="{% url quest_sort q.id%}" title="sort">➝</a>
