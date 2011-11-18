@@ -327,8 +327,14 @@ class Challenge(models.Model):
             self.status = 'P'
             self.user_won, self.user_lost = result
             self.winner = self.user_won.user
+            diff_race = self.user_won.user.series != self.user_lost.user.series
+            diff_class = self.user_won.user.proximate_group != self.user_lost.user.proximate_group
+            diff_race = 1 if diff_race else 0
+            diff_class = 1 if diff_class else 0
             scoring.score(self.user_won.user, ChallengeGame, 'chall-won',
-                external_id=self.id, percents=self.user_won.percents, points=self.user_won.score, points2=self.user_lost.score)
+                external_id=self.id, percents=self.user_won.percents,
+                points=self.user_won.score, points2=self.user_lost.score,
+                different_race=diff_race, different_class=diff_class)
             scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
                 external_id=self.id, points=self.user_lost.score, points2=self.user_lost.score)
             # send activty signal
@@ -439,7 +445,7 @@ class ChallengeGame(Game):
         user = user.get_extension(ChallengeUser)
         try:
             challs = [p.challenge for p in Participant.objects.filter(
-                Q(user=user, played=False)) if p.challenge.is_launched() or p.challenge.is_runnable()]
+                Q(user=user, played=False)).order_by('-id') if p.challenge.is_launched() or p.challenge.is_runnable()]
         except Participant.DoesNotExist:
             challs = []
         return challs
@@ -449,7 +455,7 @@ class ChallengeGame(Game):
         """ Return a list of played (scored TODO) challenges for a user """
         try:
             challs = [p.challenge for p in Participant.objects.filter(
-                Q(user=user, played=True))]
+                Q(user=user, played=True)).order_by('-id')]
         except Participant.DoesNotExist:
             challs = []
         return challs
@@ -465,9 +471,9 @@ class ChallengeGame(Game):
         """ Returns a list of formulas used by qotd """
         fs = []
         chall_game = kls.get_instance()
-        fs.append(Formula(id='chall-won', formula='points=6',
+        fs.append(Formula(id='chall-won', formula='points=6+{different_race}+{different_class}',
             owner=chall_game.game,
-            description='Points earned when winning a challenge')
+            description='Points earned when winning a challenge. Arguments: different_race (int 0,1), different_class (int 0,1)')
         )
         fs.append(Formula(id='chall-lost', formula='points=2',
             owner=chall_game.game,
@@ -517,6 +523,11 @@ class ChallengeGame(Game):
                 return '<span class="button">%s</span>' % _('Challenged')
             return '<a class="button ajaxify" href="%s">%s</a>' % (url, _('Challenge!'))
         return ''
+
+    @classmethod
+    def get_profile_superuser_actions(kls, request, player):
+        url = reverse('wouso.games.challenge.views.history', args=(player.id,))
+        return '<a class="button" href="%s">%s</a>' % (url, _('Challenges'))
 
 # Hack for having participants in sync
 def challenge_post_delete(sender, instance, **kwargs):

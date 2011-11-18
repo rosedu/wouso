@@ -54,6 +54,9 @@ class QuestUser(Player):
             qr = QuestResult(user=self, quest=self.current_quest, level=self.current_level)
             qr.save()
 
+            if self.current_level < self.current_quest.count:
+                return
+
             # sending the signal
             signal_msg = ugettext_noop("has finished quest {quest}")
             signals.addActivity.send(sender=None, user_from=self,
@@ -118,6 +121,15 @@ class Quest(models.Model):
         return self.end - datetime.datetime.now()
 
     @property
+    def is_active(self):
+        acum = datetime.datetime.now()
+        if self.end < acum:
+            return False
+        elif self.start > acum:
+            return False
+        return True
+
+    @property
     def status(self):
         """ Current activity status.
         Note (alexef): I'm not particulary happy with this
@@ -161,7 +173,7 @@ class Quest(models.Model):
         self.save()
 
     def __unicode__(self):
-        return "%s - %s" % (self.start, self.end)
+        return "%s - %s %s" % (self.start, self.end, self.title)
 
 class QuestGame(Game):
     """ Each game must extend Game """
@@ -181,7 +193,7 @@ class QuestGame(Game):
         try:
             return Quest.objects.get(start__lte=datetime.datetime.now(),
                                 end__gte=datetime.datetime.now())
-        except Quest.DoesNotExist:
+        except: # Quest.DoesNotExist:
             return None
 
     @classmethod

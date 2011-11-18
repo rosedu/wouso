@@ -14,7 +14,9 @@ from wouso.core.magic.models import Artifact, Group
 from wouso.core.qpool.models import Schedule, Question, Tag, Category
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
+from wouso.core import scoring
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
+from wouso.interface.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm
 
@@ -94,7 +96,7 @@ def qpool_home(request, cat=None, page=u'1'):
     if cat is None:
         cat = 'qotd'
 
-    questions = get_questions_with_category(str(cat), endorsed_only=False)
+    questions = get_questions_with_category(str(cat), active_only=False, endorsed_only=False)
     if cat == 'qotd':
         questions = questions.order_by('schedule__day')
 
@@ -137,27 +139,58 @@ def question_edit(request, id=None):
     else:
         question = None
 
+    categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
+
     if request.method == 'POST':
         form = QuestionForm(request.POST, instance=question)
         if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
+            newq = form.save()
+            if (newq.endorsed_by is None):
+                newq.endorsed_by = request.user
+                newq.save()
+            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home', args = (newq.category.name,)))
     else:
-        form = QuestionForm(instance=question)
+        show_users = False
+        if question:
+            if question.category:
+                if question.category.name == 'proposed':
+                    show_users = True
+
+        form = QuestionForm(instance=question, users=show_users)
 
     return render_to_response('cpanel/question_edit.html',
                               {'question': question,
                                'form': form,
                                'module': 'qpool',
-                               'categs': CATEGORIES},
+                               'categs': categs},
                               context_instance=RequestContext(request))
 
 @login_required
 def question_switch(request, id):
     question = get_object_or_404(Question, pk=id)
 
-    question.active = not question.active
-    question.save()
+    # qproposal - endorse part
+    proposed_cat = Category.objects.filter(name='proposed')[0]
+    if question.category == proposed_cat:
+        if not question.endorsed_by:
+            player = question.proposed_by.get_profile()
+            staff_user = request.user
+            question.endorsed_by = staff_user
+            question.save()
+            amount = 0
+            for tag in question.tags.all():
+                if tag.name == 'qotd':
+                    amount = QOTD_GOLD
+                elif tag.name == 'challenge':
+                    amount = CHALLENGE_GOLD
+                elif tag.name == 'quest':
+                    amount = QUEST_GOLD
+            scoring.score(player, None, 'bonus-gold', external_id=staff_user.id, gold=amount)
+
+    # regular activation of question
+    else:
+        question.active = not question.active
+        question.save()
 
     go_back = request.META.get('HTTP_REFERER', None)
     if not go_back:
@@ -231,14 +264,21 @@ def import_from_upload(request):
     all_active = False
     if request.POST.has_key('all_active'):
         all_active = True
+        endorsed_by = request.user
+    else:
+        endorsed_by = None
 
-    category = Category.objects.filter(name=cat)[0]
+    if cat is not None:
+        category = Category.objects.get(name=cat)
+    else:
+        category = None
     tags = [Tag.objects.filter(name=tag)[0] for tag in tags]
     infile = request.FILES.get('file', None)
     if not infile:
         return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.importer'))
 
-    nr = import_from_file(infile, endorsed_by=request.user, category=category, tags=tags, all_active=all_active)
+
+    nr = import_from_file(infile, proposed_by=request.user, endorsed_by=endorsed_by, category=category, tags=tags, all_active=all_active)
     return render_to_response('cpanel/imported.html', {'module': 'qpool', 'nr': nr},
                               context_instance=RequestContext(request))
 

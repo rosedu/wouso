@@ -194,3 +194,13 @@ def sidebar_widget(request):
         return ''
 
     return render_string('challenge/sidebar.html', {'challenges': challs, 'chall_user': chall_user})
+
+def history(request, playerid):
+    player = get_object_or_404(ChallengeUser, pk=playerid)
+
+    challs = [p.challenge for p in Participant.objects.filter(user=player)]
+    challs = sorted(challs, key=lambda c: c.date)
+
+    return render_to_response('challenge/history.html', {'challplayer': player, 'challenges': challs},
+                              context_instance=RequestContext(request))
+

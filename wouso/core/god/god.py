@@ -145,6 +145,17 @@ class DefaultGod:
         # Always executed, so log
         from wouso.core.user.models import SpellHistory
         SpellHistory.used(psdue.source, psdue.spell, psdue.player)
+        # Also trigger anonymous activiy
+        from wouso.interface.activity import signals
+        if psdue.source == psdue.player:
+            signal_msg = 'a facut o vraja asupra sa.'
+        else:
+            signal_msg = 'a facut o vraja asupra {to}.'
+        signals.addActivity.send(sender=None, user_from=psdue.source,
+                                 user_to=psdue.player,
+                                 message=signal_msg,
+                                 arguments=dict(to=psdue.player),
+                                 game=None)
 
         if psdue.spell.name == 'dispell':
             for psd in psdue.player.spells:
@@ -189,6 +200,8 @@ class DefaultGod:
                 elapsed_days = (datetime.now() - lastch.date).days
                 position_diff = abs(user_from.get_extension(TopUser).position - user_to.get_extension(TopUser).position)
                 rule = ceil(position_diff * 0.1)
+                if rule > 7:
+                    rule = 7 # nu bloca mai mult de 7 zile
                 #print "AICI", user_from, user_to, lastch, elapsed_days,'days', rule,'rule'
                 if rule <= elapsed_days:
                     return True

@@ -1,0 +1,32 @@
+{% extends 'interface/section_base.html' %}
+{% load artifacts %}
+{% load i18n %}
+{% load user %}
+
+{% block title %}{% trans 'Top' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Groups' %}{% endblock %}
+
+{% block sidebar %}
+    {% include 'top/sidebar.html' %}
+{% endblock %}
+
+{% block sectioncontent %}
+{% if top.disabled %}
+    {% trans 'Top has been disabled.' %}
+{% else %}
+<table border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <th>{% trans 'Group' %}</th>
+        <th>{% trans 'Series' %}</th>
+        <th>{% trans 'Points' %}</th>
+    </tr>
+    {% for s in classes %}
+    <tr>
+    <td>{% player_group s %}</td>
+    <td>{% player_group s.parent %}</td>
+    <td>{% coin_amount s.live_points %}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% endblock %}

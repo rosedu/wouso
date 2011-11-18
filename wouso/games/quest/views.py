@@ -16,6 +16,9 @@ def index(request):
     quest_user = request.user.get_profile().get_extension(QuestUser)
     if quest_user.current_quest is None:
         quest_user.set_current(quest)
+    elif not quest_user.current_quest.is_active:
+        quest_user.finish_quest()
+        quest_user.set_current(quest)
 
     message = ''
     if request.method == "POST":
@@ -46,7 +49,7 @@ def sidebar_widget(request):
     else:
         quest_progress = 1.0 * quest_user.current_level / quest.count * 100
 
-    if quest_user.finished:
+    if quest_user.finished and (quest_user.current_quest == quest):
         time_passed = datetime.now() - quest_user.finished_time
         if time_passed > timedelta(seconds=600): # ten minutes
             return ''

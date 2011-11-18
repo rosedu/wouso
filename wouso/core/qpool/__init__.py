@@ -2,7 +2,7 @@
 
 from django.db.models import Q
 
-def get_questions_with_tags(tlist, select='any', active_only=False, endorsed_only=True):
+def get_questions_with_tags(tlist, select='any', active_only=True, endorsed_only=True):
     if isinstance(tlist, str):
         result = models.Question.objects.filter(tags__name=tlist)
     else:
@@ -22,7 +22,7 @@ def get_questions_with_tags(tlist, select='any', active_only=False, endorsed_onl
         result = result.exclude(endorsed_by__isnull=True)
     return result
 
-def get_questions_with_category(category='all', active_only=False, endorsed_only=True):
+def get_questions_with_category(category='all', active_only=True, endorsed_only=False):
     ''' can be called with all, string for category name or instance of Category '''
     if category == 'all':
         result = models.Question.objects.all()
