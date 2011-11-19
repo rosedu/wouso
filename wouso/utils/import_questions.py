@@ -54,6 +54,9 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
 
     nr_imported = 0
 
+
+    state = 'question'
+
     for line in opened_file:
         line = line.strip()
         if not line:
@@ -111,7 +114,10 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
         else:
             # continuation line
             if state == 'question':
-                q['text'] += '\n' + line
+                if q.has_key('text'):
+                    q['text'] += '\n' + line
+                else:
+                    q['text'] = line
 
             else:
                 a['text'] += '\n' + line
