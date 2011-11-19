@@ -63,7 +63,8 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
             continue
 
         # parse line according to its beginning
-        if line[0] == '?':
+        # second condition (or ____) is for windows reasons
+        if line[0] == '?' or (ord(line[0]) == 239 and line[3] == '?'):
             if not a_saved:
                 answers.append(a)
                 a_saved = True
