@@ -53,8 +53,8 @@ class GrandChallengeGame(Game):
         self._meta.get_field('verbose_name').default = "GrandChallenges"
         self._meta.get_field('short_name').default = ""
         # the url field takes as value only a named url from module's urls.py
-        self._meta.get_field('url').default = "challenge_index_view" # aici
-        super(ChallengeGame, self).__init__(*args, **kwargs)
+        self._meta.get_field('url').default = "grandchallenge_index_view" # aici
+        super(GrandChallengeGame, self).__init__(*args, **kwargs)
 
     def start(self, user_list):
         assert user_list == NUM_USERS
