@@ -69,20 +69,32 @@ def manage_player(request, player_id):
 
     if request.method == "POST":
         # do bonuses
-        try:
-            amount = int(request.POST.get('gold', 0))
-        except ValueError:
-            amount = 0
-        if amount > 0:
-            scoring.score(player, None, 'bonus-gold', external_id=request.user.get_profile().id, gold=amount)
-            message = 'Successfully given bonus'
-        else:
-            error = 'Invalid amount'
+        if request.POST.get('gold', False):
+            try:
+                amount = int(request.POST.get('gold', 0))
+            except ValueError:
+                amount = 0
+            if amount > 0:
+                scoring.score(player, None, 'bonus-gold', external_id=request.user.get_profile().id, gold=amount)
+                message = 'Successfully given bonus'
+            else:
+                error = 'Invalid amount'
+        elif request.POST.get('points', False):
+            try:
+                amount = int(request.POST.get('points', 0))
+                assert amount > 0
+            except (ValueError, AssertionError):
+                error = 'Invalid amount'
+            else:
+                scoring.score(player, None, 'penalty-points', external_id=request.user.get_profile().id, points=amount)
+                message = 'Successfully punished'
 
-    bonuses = scoring.History.objects.filter(user=player, formula__id='bonus-gold')
+    bonuses = scoring.History.objects.filter(user=player, formula__id='bonus-gold').order_by('-timestamp')
+    penalties = scoring.History.objects.filter(user=player, formula__id='penalty-points').order_by('-timestamp')
 
     return render_to_response('specialquest/cpanel_manage.html',
-                    dict(mplayer=player, tasks_not_done=tasks_not_done, message=message, error=error, bonuses=bonuses),
+                    dict(mplayer=player, tasks_not_done=tasks_not_done, message=message, error=error,
+                         bonuses=bonuses, penalties=penalties),
                     context_instance=RequestContext(request))
 
 @permission_required('specialquest.change_specialquestuser')

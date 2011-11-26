@@ -33,6 +33,8 @@ class DefaultGod:
             description='Give bonus points'))
         fs.append(Formula(id='steal-points', formula='points={points}', owner=None,
             description='Steal points using spells'))
+        fs.append(Formula(id='penalty-points', formula='points=-{points}', owner=None,
+            description='Take back points from user'))
         return fs
 
     def get_user_level(self, level_no, player):
