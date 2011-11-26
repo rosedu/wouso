@@ -54,13 +54,17 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
 
     nr_imported = 0
 
+
+    state = 'question'
+
     for line in opened_file:
         line = line.strip()
         if not line:
             continue
 
         # parse line according to its beginning
-        if line[0] == '?':
+        # second condition (or ____) is for windows reasons
+        if line[0] == '?' or (ord(line[0]) == 239 and line[3] == '?'):
             if not a_saved:
                 answers.append(a)
                 a_saved = True
@@ -111,7 +115,10 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
         else:
             # continuation line
             if state == 'question':
-                q['text'] += '\n' + line
+                if q.has_key('text'):
+                    q['text'] += '\n' + line
+                else:
+                    q['text'] = line
 
             else:
                 a['text'] += '\n' + line

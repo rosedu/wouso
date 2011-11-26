@@ -203,7 +203,7 @@ class Player(models.Model):
             pass
 
         try:
-            return PlayerSpellDue.objects.get(player=self, spell__name=modifier)
+            return PlayerSpellDue.objects.filter(player=self, spell__name=modifier).count() > 0
         except PlayerSpellDue.DoesNotExist:
             pass
         return False

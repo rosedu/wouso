@@ -134,6 +134,15 @@ class DefaultGod:
         if (spell.name == 'steal') and (source == destination):
             return False
 
+        if spell.name == 'challenge-affect-scoring':
+            existing = destination.spells.filter(spell__name='challenge-affect-scoring')
+            if existing.count() > 0:
+                # check if a spell with the same sign +/- exists
+                for sp in existing:
+                    if (sp.spell.percents * spell.percents) > 0:
+                        return False
+                # in order to apply this new spell, cancel existing, sign contrary, spells
+                existing.delete()
         return True
     
     def post_cast(self, psdue):
