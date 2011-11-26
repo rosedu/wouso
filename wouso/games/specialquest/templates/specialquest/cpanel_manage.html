@@ -43,10 +43,26 @@ Not done tasks:
     </div>
     {% csrf_token %}
     </form>
+
+<h4>Penalty points:</h4>
+    <form action="" method="post">
+    Points: <input class="big" type="text" size="3" value="0" name="points"/>
+    <div class="actions">
+        <button type="submit">Punish this player</button>
+    </div>
+    {% csrf_token %}
+    </form>
+
 <p>History:</p>
 <ul>
     {% for bonus in bonuses %}
     <li>{{ bonus.timestamp }} - {{ bonus.amount }} {{ bonus.coin }} from {% player bonus.external_id %}</li>
+    {% endfor %}
+</ul>
+<hr/>
+<ul>
+    {% for penalty in penalties %}
+    <li>{{ penalty.timestamp }} - {{ penalty.amount }} {{ penalty.coin }} by {% player penalty.external_id %}</li>
     {% endfor %}
 </ul>
 {% endblock %}
