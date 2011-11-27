@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from wouso.games.challenge.models import ChallengeUser, Challenge, ChallengeGame
 from wouso.core.user.models import Player
 from wouso.core import scoring
+from wouso.core.scoring.models import Formula
 
 class ChallengeTestCase(unittest.TestCase):
     def setUp(self):
@@ -77,3 +78,18 @@ class ChallengeTestCase(unittest.TestCase):
             # pass some more time, challenge cannot be submited any more
             mock_datetime.now.return_value = just_now + timedelta(minutes=10)
             self.assertFalse(chall.check_timedelta(self.chall_user))
+
+    def testScoring(self):
+        chall = Challenge.create(user_from=self.chall_user, user_to=self.chall_user2, ignore_questions=True)
+
+        chall.user_from.seconds_took = 10
+        chall.user_from.score = 100
+        chall.user_from.save()
+        chall.user_to.seconds_took = 10
+        chall.user_to.score = 10
+        chall.user_to.save()
+
+        formula = Formula.objects.get(id='chall-won')
+        formula.formula = 'points=10 + min(10, int(3 * {winner_points}/{loser_points}))'
+        formula.save()
+        chall.played()

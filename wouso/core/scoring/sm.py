@@ -59,12 +59,15 @@ def calculate(formula, **params):
         frml = formula.formula.format(**params)
         # Apparently, Python does not allow assignments inside eval
         # Using this workaround for now
-        ass = frml.split(',')
+        ass = frml.split(';')
         for a in ass:
             asp = a.split('=')
             coin = asp[0].strip()
             expr = '='.join(asp[1:])
-            result = eval(expr)
+            try:
+                result = eval(expr)
+            except ZeroDivisionError as e:
+                result = 0
             ret[coin] = result
     except Exception as e:
         raise FormulaParsingError(e)
