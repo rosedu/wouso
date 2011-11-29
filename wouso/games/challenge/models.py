@@ -334,6 +334,10 @@ class Challenge(models.Model):
             winner_points = self.user_won.user.points
             loser_points = self.user_lost.user.points
 
+            # warranty not affected by percents
+            scoring.score(self.user_won.user, ChallengeGame, 'chall-warranty-return',
+                          external_id=self.id)
+
             scoring.score(self.user_won.user, ChallengeGame, 'chall-won',
                 external_id=self.id, percents=self.user_won.percents,
                 points=self.user_won.score, points2=self.user_lost.score,
@@ -491,6 +495,9 @@ class ChallengeGame(Game):
         fs.append(Formula(id='chall-warranty', formula='points=-3',
             owner=chall_game.game,
             description='Points taken as a warranty for challenge'))
+        fs.append(Formula(id='chall-warranty-return', formula='points=3',
+            owner=chall_game.game,
+            description='Points given back as a warranty taken for challenge'))
         return fs
 
     @classmethod
