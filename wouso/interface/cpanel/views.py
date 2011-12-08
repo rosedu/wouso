@@ -692,7 +692,6 @@ def lastchalls(request):
 def grandchalls(request):
     gchalls = GrandChallenge.objects.all()
     #gchalls = Challenge.objects.filter(status__in=['P', 'D']).order_by('-date')[:30]
-    #proba
     return render_to_response('cpanel/grandchallenge.html',
                             {'gchalls': gchalls},
                             context_instance=RequestContext(request))
