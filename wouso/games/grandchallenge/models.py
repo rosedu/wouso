@@ -1,6 +1,7 @@
 from django.db import models
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player
+from wouso.games.challenge.models import Challenge
 
 
 # Create your models here.
@@ -21,7 +22,7 @@ class GrandChallengeUser(Player):
                 ret.append(c.user_from)
         return ret
 
-class GrandChallenge(models.Model):
+class GrandChallenge(Challenge):
     def __init__(self, user_from, user_to):
         self.user_from = user_from
         self.user_to = user_to
@@ -47,7 +48,10 @@ class GrandChallenge(models.Model):
 class GrandChallengeGame(Game):
     """ Each game must extend Game """
     NUM_USERS = 16
-    
+    # trebuie o lista cu utilizatorii ramasi in sistem
+    # atat pentru verificare start, cat si pentru continuare turneu
+    last = None
+
     def __init__(self, *args, **kwargs):
         # Set parent's fields
         self._meta.get_field('verbose_name').default = "GrandChallenges"
