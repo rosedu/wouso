@@ -18,18 +18,7 @@ class GrandChallengeUser(Player):
     """ Extension of the user profile for GrandChallenge """
     lost = models.IntegerField(default="0")
 
-    @classmethod
-    def eligible(cls, result):
-        return filter(lambda u: u.lost==result, u.ALL)
-
-    def played_with(self, cls):
-        ret = []
-        for c in [c for c in cls.ALL if not c.active]:
-            if c.user_from == self:
-                ret.append(c.user_to)
-            elif c.user_to == self:
-                ret.append(c.user_from)
-        return ret
+       
 
 class GrandChallenge(Challenge):
     def __init__(self, user_from, user_to):
@@ -38,7 +27,6 @@ class GrandChallenge(Challenge):
         self.__class__.ALL.append(self)
         self.won, self.lost = None, None
         self.active = True
-
 
 
     @classmethod
@@ -64,6 +52,58 @@ class GrandChallenge(Challenge):
             self.user_from.lost += 1
         self.active = False
         print self.won, " won"
+     
+    @classmethod       
+    def played_with(cls, user):
+        ret = []
+        for c in [c for c in cls.ALL if not c.active]:
+            if c.user_from == user:
+                ret.append(c.user_to)
+            elif c.user_to == user:
+                ret.append(c.user_from)
+        return ret
+         
+        
+    @classmethod
+    def play_round(cls, l_w):
+    # joc toate provocarile active
+    #print Challenge.all;
+    
+        for c in GrandChallenge.active():
+            c.play()
+    
+    # pentru jucatorii care nu au pierdut de 2 ori
+    # generez noi provocari
+    #Iulian
+        if (l_w == 0):
+            all = GrandChallengeGame.eligible(0)
+        elif(l_w == 1): 
+            all = GrandChallengeGame.eligible(1)
+        
+    
+
+        while len(all):
+        
+            u = all[0]
+	# print "elig", u
+        # nu e respectata# gasesc un jucator cu care nu am mai jucat 
+        # si care are acelasi numar de pierdute
+        # Iulian
+            played = GrandChallenge.played_with(u)
+            numbLosser = len(GrandChallengeGame.eligible(1))        
+	        
+            efm = [eu for eu in all if ((eu.lost == u.lost) and (eu != u) and ( (eu not in played) or (numbLosser == 2)) )]
+        
+        #print efm
+            if not len(efm):
+                break
+        #print "efm", efm
+            try:
+                adversar = efm[0]
+                all.remove(adversar)
+                all.remove(u)
+                GrandChallenge(u, adversar)
+            except: pass
 
 class GrandChallengeGame(Game):
     """ Each game must extend Game """
@@ -72,6 +112,12 @@ class GrandChallengeGame(Game):
     # atat pentru verificare start, cat si pentru continuare turneu
     last = None
 
+    round_number = 0;
+    ALL = []
+    #Iulian - primii 16
+    base_query = TopUser.objects.exclude(user__is_superuser=True)
+    allUsers = base_query.order_by('-points')[:NUM_USERS]
+    
     def __init__(self, *args, **kwargs):
         # Set parent's fields
         self._meta.get_field('verbose_name').default = "GrandChallenges"
@@ -87,10 +133,15 @@ class GrandChallengeGame(Game):
         for user in user_list:
             u = user.user
             u = u.get_profile().get_extension(GrandChallengeUser)
-                      
+            GrandChallengeGame.ALL.append(u)
             if last is None:
                 last = u
             else:
                 GrandChallenge(u, last)
                 last = None
 
+    @classmethod
+    def eligible(cls, result):
+        return filter(lambda user: user.lost==result, cls.ALL)
+    
+    
