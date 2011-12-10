@@ -1,3 +1,4 @@
+import hashlib
 import logging
 import datetime
 from django.db import models
@@ -222,6 +223,10 @@ class QuestGame(Game):
             owner=quest_game.game,
             description='Bonus points earned when finishing the entire quest. No arguments.')
         )
+        fs.append(Formula(id='finalquest-ok', formula='points{level+level_users}',
+            owner=quest_game.game,
+            description='Bonus points earned when finishing the final quest. Arguments: level, level_users')
+        )
         return fs
 
     @classmethod
@@ -230,3 +235,44 @@ class QuestGame(Game):
             from views import sidebar_widget
             return sidebar_widget(request)
         return None
+
+class FinalQuest(Quest):
+    def check_answer(self, user, answer):
+        if user.current_quest != self:
+            user.finish_quest()
+            user.set_current(self)
+            return False
+
+        try:
+            question = self.levels[user.current_level]
+        except IndexError:
+            logging.error("No such question")
+
+        user_hash = hashlib.sha1(
+            '%s%s%s' % (user.last_name[::-1], question.answers.all()[0].text, user.first_name)
+        )
+        if not user.current_level == self.count and \
+                answer.lower() == user_hash.hexdigest():
+            # score current progress
+            scoring.score(user, QuestGame, self.get_formula('quest-ok'), level=(user.current_level + 1))
+            user.current_level += 1
+            if user.current_level == self.count:
+                user.finish_quest()
+                # score finishing
+                scoring.score(user, QuestGame, self.get_formula('quest-finish-ok'))
+            user.save()
+            return True
+        return False
+
+    def give_level_bonus(self):
+        for level in xrange(len(self.levels)):
+            users = QuestUser.objects.filter(current_level=level)
+
+            for user in users:
+                scoring.score(
+                        user,
+                        QuestGame,
+                        self.get_formula('finalquest-ok'),
+                        level=level,
+                        level_users=users.count()
+                )
