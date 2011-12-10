@@ -6,7 +6,7 @@
 
 {% block sectioncontent %}
 
-{% if not challuser.can_launch %}
+{% if not challuser.can_launch or not challuser.has_enough_points%}
 <p>{% trans 'You cannot launch another challenge today.' %}
     {% if challuser.has_one_more %}
     You can use the {% artifact challuser.has_one_more %} artifact to enable one more challenge.
@@ -15,6 +15,7 @@
 </p>
 {% else %}
 <p>{% trans 'To launch a challenge, find the player you want to challenge and click on the <em>Challenge</em> button, next to his profile.' %}</p>
+<a href="{% url games.challenge.views.challenge_random %}">Challange random player</a>
 {% endif %}
 
 <h3>{% trans 'Active' %}</h3>
