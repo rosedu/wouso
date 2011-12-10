@@ -27,6 +27,11 @@
             <td class="actions" nowrap>
                 <a href="{% url quest_edit q.id%}" title="edit" class="button-min">✍</a>
                 <a href="{% url quest_sort q.id%}" title="sort" class="button-min">➝</a>
+                {% if q.id == final.id %}
+                    <td>
+                    <a class="button" href="{% url final_results %}">Results</a>
+                    </td>
+                {% endif %}
             </td>
         </tr>
     {% empty %}

@@ -102,7 +102,7 @@ class Quest(models.Model):
         Hackish by now, think of a better approach in next version
         TODO
         """
-        if type not in ('quest-ok', 'quest-finish-ok'):
+        if type not in ('quest-ok', 'quest-finish-ok', 'finalquest-ok'):
             return None
         try:
             formula = Formula.objects.get(id='%s-%d' % (type, self.id))
@@ -223,7 +223,7 @@ class QuestGame(Game):
             owner=quest_game.game,
             description='Bonus points earned when finishing the entire quest. No arguments.')
         )
-        fs.append(Formula(id='finalquest-ok', formula='points{level+level_users}',
+        fs.append(Formula(id='finalquest-ok', formula='points={level}+{level_users}',
             owner=quest_game.game,
             description='Bonus points earned when finishing the final quest. Arguments: level, level_users')
         )

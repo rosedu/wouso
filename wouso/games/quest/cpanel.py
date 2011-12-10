@@ -6,15 +6,21 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from wouso.core.qpool import get_questions_with_category
-from models import Quest
+from models import Quest, QuestUser, FinalQuest
 from forms import QuestCpanel
 
 @permission_required('quest.change_quest')
 def quest_home(request):
     quests = Quest.objects.all()
+    final = FinalQuest.objects.all()
+    if final.count():
+        final = final[0]
+    else:
+        final = None
 
     return render_to_response('quest/cpanel_home.html',
                               {'quests': quests,
+                               'final': final,
                                'module': 'quest'},
                               context_instance=RequestContext(request))
 
@@ -57,3 +63,38 @@ def quest_sort(request, id):
                               {'quest': quest,
                                'module': 'quest'},
                               context_instance=RequestContext(request))
+
+@permission_required('quest.change_quest')
+def final_results(request):
+    try:
+        final = FinalQuest.objects.all()[0] # TODO
+    except IndexError:
+        return render_to_response('quest/cpanel_final_results.html',
+                            context_instance=RequestContext(request))
+
+    # fetch levels
+    levels = []
+    for level in xrange(len(final.levels)):
+        level_data = {'id': level, 'users': []}
+        for user in QuestUser.objects.filter(current_quest=final, current_level=level):
+            level_data['users'].append(user)
+        levels.append(level_data)
+
+    return render_to_response('quest/cpanel_final_results.html',
+                              {'quest': final,
+                               'module': 'quest',
+                               'levels': levels},
+                              context_instance=RequestContext(request))
+
+@permission_required('quest.change_quest')
+def final_score(request):
+    try:
+        final = FinalQuest.objects.all()[0]
+    except IndexError:
+        final = None
+    else:
+        final.give_level_bonus()
+
+    return render_to_response('quest/cpanel_final_results.html',
+                              {'quest': final, 'done': True},
+                            context_instance=RequestContext(request))
