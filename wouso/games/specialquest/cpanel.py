@@ -130,5 +130,9 @@ def manage_player_unset(request, player_id, task_id):
     if task in player.done_tasks.all():
         player.done_tasks.remove(task)
         scoring.unset(player, SpecialQuestGame, 'specialquest-passed', external_id=task.id)
+        signal_msg = ugettext_noop('completed special quest {task_name}')
+        arguments = dict(task_name=task.name)
+        from wouso.interface.activity.models import Activity
+        Activity.delete(SpecialQuestGame.get_instance(), player, player, signal_msg, arguments)
 
     return HttpResponseRedirect(reverse('specialquest_manage', args=(player.id,)))

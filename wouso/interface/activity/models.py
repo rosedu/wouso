@@ -43,6 +43,14 @@ class Activity(models.Model):
         else:
             return (None, None)
 
+    @classmethod
+    def delete(cls, game, user_from, user_to, message, arguments):
+        """ Note: must be called with the _same_ arguments as the original to work """
+        for k in arguments.keys():
+            arguments[k] = unicode(arguments[k])
+        arguments = json.dumps(arguments)
+        cls.objects.filter(game=game, user_from=user_from, user_to=user_to, message_string=message, arguments=arguments).delete()
+
     def __unicode__(self):
         return u"[%s] %s %s" % (self.game, self.user_from, self.user_to)
 
