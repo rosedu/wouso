@@ -5,9 +5,11 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.utils.translation import ugettext_noop, ugettext as _
 from wouso.core.user.models import Player
 from wouso.core import scoring
 from wouso.core.qpool import get_questions_with_category
+from wouso.interface.activity import signals
 from models import SpecialQuestTask, SpecialQuestUser, SpecialQuestGame, SpecialQuestGroup
 from forms import TaskForm
 
@@ -111,6 +113,12 @@ def manage_player_set(request, player_id, task_id):
             if task not in member.done_tasks.all():
                 member.done_tasks.add(task)
                 scoring.score(member, SpecialQuestGame, 'specialquest-passed',external_id=task.id, value=task.value)
+
+                signal_msg = ugettext_noop('completed special quest {task_name}')
+                signals.addActivity.send(sender=None, user_from=member, \
+                                         user_to=member, \
+                                         message=signal_msg, arguments=dict(task_name=task.name), \
+                                         game=SpecialQuestGame.get_instance())
 
     return HttpResponseRedirect(reverse('specialquest_manage', args=(player.id,)))
 
