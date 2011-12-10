@@ -12,4 +12,6 @@ urlpatterns = patterns('',
     url(r'^use_artifact/$', 'wouso.games.challenge.views.use_one_more'),
 
     url(r'^history/(?P<playerid>\d+)/$', 'wouso.games.challenge.views.history'),
+
+    url(r'^randomchallenge/$', 'wouso.games.challenge.views.challenge_random'),
 )
