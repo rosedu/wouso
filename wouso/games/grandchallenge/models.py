@@ -140,8 +140,6 @@ class GrandChallengeGame(Game):
         super(GrandChallengeGame, self).__init__(*args, **kwargs)
 
 
-
-
     #schimbat!!!!!!!
     @staticmethod
     def start():
