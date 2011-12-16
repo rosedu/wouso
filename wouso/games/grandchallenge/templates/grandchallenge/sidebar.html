@@ -1,0 +1,14 @@
+{% extends 'interface/sidebar_widget.html' %}
+{% load i18n %}
+
+{% block title %}{%  trans 'Grand Challenge' %}{% endblock %}
+
+{% block content %}
+
+{% if not active %}
+    {% trans 'Grand Challenge has not started yet' %}
+{% else %}
+    <a href="{% url games.grandchallenge.views.index %}" class="">{% trans 'Check now' %}</a>!
+{% endif %}
+
+{% endblock %}

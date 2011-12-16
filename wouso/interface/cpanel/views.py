@@ -887,10 +887,27 @@ def lastchalls(request):
                             {'last30': last30},
                             context_instance=RequestContext(request))
 
+
+@login_required
+def grandchalls_start(request):
+    """ Start the game """
+    GrandChallengeGame.start(GrandChallengeGame.allUsers)
+    users = sorted(GrandChallengeGame.allUsers, key=lambda u: u.user)
+    gchalls = sorted(GrandChallenge.get_challenges(), key=lambda gc: gc.branch)
+    GrandChallengeGame.round_number += 1
+
+    return render_to_response('cpanel/grandchallenge.html',
+                            {'gchalls': gchalls,
+                            'nr': GrandChallengeGame.round_number - 1,
+                            'users': users},
+                            context_instance=RequestContext(request))
+
+
 @login_required
 def grandchalls(request):
     gchalls = GrandChallenge.objects.all()
     #gchalls = Challenge.objects.filter(status__in=['P', 'D']).order_by('-date')[:30]
     return render_to_response('cpanel/grandchallenge.html',
-                            {'gchalls': gchalls},
+                            {'gchalls': gchalls,
+                            'nr': GrandChallengeGame.round_number - 1},
                             context_instance=RequestContext(request))
