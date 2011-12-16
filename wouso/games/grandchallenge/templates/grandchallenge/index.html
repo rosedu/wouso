@@ -1,0 +1,43 @@
+{% extends 'interface/section_base.html'%}
+{% load i18n %}
+{% block title %}{% trans 'GrandChallenges' %}{% endblock %}
+{% block sectiontitle %}{% trans 'GrandChallenges' %}{% endblock %}
+
+{% block sectioncontent %}
+
+<h3>{% trans 'Active' %}</h3>
+<ul class="answers">
+{% if not active %}
+    {% trans 'No challenges in this category.' %}
+{% else %}
+{% for c in active %}
+    {{ c.date }}
+    <a href="{% url interface.profile.views.user_profile c.user_from.user.id %}">{{ c.user_from }}</a> vs.
+    <a href="{% url interface.profile.views.user_profile c.user_to.user.id %}">{{ c.user_to }}</a> - Status:
+    {% ifequal c.won gcuser %} Won
+    {% else %} {% ifequal c.lost gcuser %} Lost
+    {% else %} {% if c.active == True %} <span class="points"><a>{% trans 'Play round' %}</a></span>
+    {% endif %}{% endif %}{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if played %}
+<h3>{% trans 'Played' %}</h3>
+<ul class="answers">
+{% for c in played %}
+    <li>
+    {{ c.date }}
+    <a href="{% url interface.profile.views.user_profile c.user_from.user.id %}">{{ c.user_from }}</a> vs.
+    <a href="{% url interface.profile.views.user_profile c.user_to.user.id %}">{{ c.user_to }}</a>
+     - Result:  {% ifequal c.won == gcuser %} Won
+                {% else %} {% ifequal c.lost == gcuser %} Won by {{ c.won }}
+                {% else %} Pending
+                {% endif %}{% endif %}
+    </li>
+{% empty %}
+    <li class="empty">{% trans 'No challenges in this category.' %}</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}

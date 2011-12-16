@@ -158,7 +158,7 @@ class GrandChallengeGame(Game):
     @classmethod
     def eligible(cls, result):
         return filter(lambda user: user.lost==result, cls.ALL)
-    
+
     @classmethod
     def is_final(cls):
         arb_win  = cls.eligible(0)
@@ -184,3 +184,10 @@ class GrandChallengeGame(Game):
         if((len(arb_win) == 0) and (len(arb_lose) == 2)):
             return False
         return True
+
+    @classmethod
+    def get_sidebar_widget(kls, request):
+        if not request.user.is_anonymous():
+            from views import sidebar_widget
+            return sidebar_widget(request)
+        return None
