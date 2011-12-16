@@ -172,6 +172,8 @@ WOUSO_VERSION = '4.0'
 LEVEL_LIMITS = None # Override this with an iterable
 STARTING_POINTS = 15
 
+FINAL_QUEST_CHECKER_PATH = '/home/wouso/fqchecker/' # Folder containing task-01/check, task-02/, task-03/check etc
+
 # please don't remove this yet
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
     from localsettings import *
