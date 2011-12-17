@@ -1,5 +1,8 @@
+import os
+import hashlib
 import logging
 import datetime
+import subprocess
 from django.db import models
 from django.utils.translation import ugettext_noop
 from wouso.core.user.models import Player
@@ -9,6 +12,7 @@ from wouso.core.scoring.models import Formula
 from wouso.core.qpool.models import Question
 from wouso.core.qpool import get_questions_with_tags
 from wouso.interface.activity import signals
+from wouso import settings
 
 # Quest will use QPool questions tagged 'quest'
 
@@ -19,13 +23,18 @@ class QuestUser(Player):
     finished_time = models.DateTimeField(default=None, blank=True, null=True)
     finished = models.BooleanField(default=False, blank=True)
 
+    def is_current(self, quest):
+        return (self.current_quest.id == quest.id) if (self.current_quest and quest) else (self.current_quest == quest)
+
     @property
     def started(self):
         """
         Check if we started the current quest.
         """
         quest = QuestGame.get_current()
-        return self.current_quest == quest
+        if (not quest) or (not self.current_quest):
+            return False
+        return self.current_quest.id == quest.id
 
     @property
     def current_question(self):
@@ -94,20 +103,24 @@ class Quest(models.Model):
     end = models.DateTimeField()
     title = models.CharField(default="", max_length=100)
     questions = models.ManyToManyField(Question)
-    order = models.CharField(max_length=1000,default="",blank=True)
+    order = models.CharField(max_length=1000, default="", blank=True)
 
     def get_formula(self, type='quest-ok'):
         """ Allow specific formulas for specific quests.
         Hackish by now, think of a better approach in next version
         TODO
         """
-        if type not in ('quest-ok', 'quest-finish-ok'):
+        if type not in ('quest-ok', 'quest-finish-ok', 'finalquest-ok'):
             return None
         try:
             formula = Formula.objects.get(id='%s-%d' % (type, self.id))
         except Formula.DoesNotExist:
             formula = Formula.objects.get(id=type)
         return formula
+
+    def is_final(self):
+        final = FinalQuest.objects.filter(id=self.id).count()
+        return final > 0
 
     @property
     def count(self):
@@ -201,13 +214,17 @@ class QuestGame(Game):
         self._meta.get_field('url').default = "quest_index_view"
         super(QuestGame, self).__init__(*args, **kwargs)
 
-    @staticmethod
-    def get_current():
+    @classmethod
+    def get_current(cls):
         try:
-            return Quest.objects.get(start__lte=datetime.datetime.now(),
+            return FinalQuest.objects.get(start__lte=datetime.datetime.now(),
+                end__gte=datetime.datetime.now())
+        except:
+            try:
+                return Quest.objects.get(start__lte=datetime.datetime.now(),
                                 end__gte=datetime.datetime.now())
-        except: # Quest.DoesNotExist:
-            return None
+            except:
+                return None
 
     @classmethod
     def get_formulas(kls):
@@ -222,6 +239,10 @@ class QuestGame(Game):
             owner=quest_game.game,
             description='Bonus points earned when finishing the entire quest. No arguments.')
         )
+        fs.append(Formula(id='finalquest-ok', formula='points={level}+{level_users}',
+            owner=quest_game.game,
+            description='Bonus points earned when finishing the final quest. Arguments: level, level_users')
+        )
         return fs
 
     @classmethod
@@ -230,3 +251,54 @@ class QuestGame(Game):
             from views import sidebar_widget
             return sidebar_widget(request)
         return None
+
+class FinalQuest(Quest):
+    def check_answer(self, user, answer):
+        self.error = ''
+        if user.current_quest.id != self.id:
+            user.finish_quest()
+            user.set_current(self)
+            return False
+
+        try:
+            question = self.levels[user.current_level]
+        except IndexError:
+            logging.error("No such question")
+
+        # Get the checker path
+        path = os.path.join(settings.FINAL_QUEST_CHECKER_PATH, 'task-%02d' % user.current_level, 'check')
+        if not os.path.exists(path):
+            self.error = 'No checker for level %d' % user.current_level
+            return False
+
+        # Run checker path
+        args = [path, user.user.username, answer, str(question.answer)]
+        p = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        retval = p.wait()
+
+        if retval > 1:
+            self.error = 'Error running checker for %d' % user.current_level
+
+        if not user.current_level == self.count and \
+            (retval == 0):
+            scoring.score(user, QuestGame, self.get_formula('quest-ok'), level=(user.current_level + 1))
+            user.current_level += 1
+            user.save()
+            if user.current_level == self.count:
+                user.finish_quest()
+                scoring.score(user, QuestGame, self.get_formula('quest-finish-ok'))
+            return True
+        return False
+
+    def give_level_bonus(self):
+        for level in xrange(len(self.levels)):
+            users = QuestUser.objects.filter(current_level=level)
+
+            for user in users:
+                scoring.score(
+                        user,
+                        QuestGame,
+                        self.get_formula('finalquest-ok'),
+                        level=level,
+                        level_users=users.count()
+                )

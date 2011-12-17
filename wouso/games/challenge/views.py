@@ -204,3 +204,21 @@ def history(request, playerid):
     return render_to_response('challenge/history.html', {'challplayer': player, 'challenges': challs},
                               context_instance=RequestContext(request))
 
+
+def challenge_random(request):
+
+    current_player = request.user.get_profile().get_extension(ChallengeUser)
+
+   # selects challengeable players
+    players = ChallengeUser.objects.exclude(user = current_player.user)
+    players = players.exclude(groups__name="Others")
+    players = [p for p in players if current_player.can_challenge(p)]
+
+    no_players = len(players)
+
+    # selects the user to be challenged
+    import random
+    i = random.randrange(0, no_players)
+
+    return launch(request, players[i].id)
+

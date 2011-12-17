@@ -331,10 +331,19 @@ class Challenge(models.Model):
             diff_class = self.user_won.user.proximate_group != self.user_lost.user.proximate_group
             diff_race = 1 if diff_race else 0
             diff_class = 1 if diff_class else 0
+            winner_points = self.user_won.user.points
+            loser_points = self.user_lost.user.points
+
+            # warranty not affected by percents
+            scoring.score(self.user_won.user, ChallengeGame, 'chall-warranty-return',
+                          external_id=self.id)
+
             scoring.score(self.user_won.user, ChallengeGame, 'chall-won',
                 external_id=self.id, percents=self.user_won.percents,
                 points=self.user_won.score, points2=self.user_lost.score,
-                different_race=diff_race, different_class=diff_class)
+                different_race=diff_race, different_class=diff_class,
+                winner_points=winner_points, loser_points=loser_points,
+            )
             scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
                 external_id=self.id, points=self.user_lost.score, points2=self.user_lost.score)
             # send activty signal
@@ -486,6 +495,9 @@ class ChallengeGame(Game):
         fs.append(Formula(id='chall-warranty', formula='points=-3',
             owner=chall_game.game,
             description='Points taken as a warranty for challenge'))
+        fs.append(Formula(id='chall-warranty-return', formula='points=3',
+            owner=chall_game.game,
+            description='Points given back as a warranty taken for challenge'))
         return fs
 
     @classmethod

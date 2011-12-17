@@ -25,8 +25,13 @@
             <td>{{ q.status }}</td>
             <td nowrap="nowrap">{{ q.get_formula }}</td>
             <td class="actions" nowrap>
-                <a href="{% url quest_edit q.id%}" title="edit">✍</a>
-                <a href="{% url quest_sort q.id%}" title="sort">➝</a>
+                <a href="{% url quest_edit q.id%}" title="edit" class="button-min">✍</a>
+                <a href="{% url quest_sort q.id%}" title="sort" class="button-min">➝</a>
+                {% if q.id == final.id %}
+                    <td>
+                    <a class="button" href="{% url final_results %}">Results</a>
+                    </td>
+                {% endif %}
             </td>
         </tr>
     {% empty %}
@@ -35,7 +40,10 @@
 </table>
 
 <a class="button" href="{% url quest_new %}">New quest</a>
+{% if not final %}
+<a class="button" href="{% url quest_create_finale %}">Create final quest</a>
+{% endif %}
 
-<div class="info second" style="clear:both">Current date and time:  {% now "d/m/Y H:i" %}</div>
+<div class="info second" style="clear:both">Current date and time:  {% now "d/m/Y H:i" %}. Final quest checker path: {{ final_checker }}</div>
 
 {% endblock %}

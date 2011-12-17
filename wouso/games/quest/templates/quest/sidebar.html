@@ -1,7 +1,7 @@
 {% extends 'interface/sidebar_widget.html' %}
 {% load i18n %}
 
-{% block title %}{% trans 'Quest' %}{% endblock %}
+{% block title %}{% if quest.is_final %}{% trans 'Final Quest' %}{% else %}{% trans 'Quest' %}{% endif %}{% endblock %}
 
 {% block content %}
 

@@ -1,0 +1,24 @@
+{% extends 'cpanel/index.html' %}
+{% load user %}
+{% block title %}CPanel{% endblock %}
+{% block sectiontitle %}Final quest results{% endblock %}
+
+{% block sectioncontent %}
+
+{% for level in levels %}
+    <h3>{{ level.id }}</h3>
+    <ul>
+    {% for user in level.users %}
+        <li>{% player user %} TODO: points</li>
+    {% endfor %}
+    </ul>
+{% endfor %}
+
+{% if done %}
+    <p>Done!</p>
+{% else %}
+    {% if quest %}
+    <a href="{% url final_second_score %}" class="button">Score finale!</a>
+    {% endif %}
+{% endif %}
+{% endblock %}
