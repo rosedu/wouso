@@ -19,7 +19,7 @@ Available until {{ end }}. Your progress: {{ time_took }}
 {% endblocktrans %}
 </p>
 {% else %}
-<p style="color:red">{{ message }}</p>
+<p style="color:red">{{ quest.error }}</p>
 
 <h3>Level #{{ progress.current_level }}:</h3>
 <p>{{ progress.current_question.text }}</p>

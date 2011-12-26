@@ -67,6 +67,15 @@ class Question(models.Model):
                             help_text="Use %text for initial text, %user for the user that sees the question.")
 
     @property
+    def answer(self):
+        """ First answer, useful for quests, where there is only one answer allowed
+        """
+        try:
+            return Answer.objects.filter(question=self).all()[0]
+        except Answer.DoesNotExist, IndexError:
+            return None
+
+    @property
     def answers(self):
         """ A list of answers """
         try:
