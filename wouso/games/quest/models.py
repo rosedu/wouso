@@ -272,8 +272,8 @@ class FinalQuest(Quest):
             return False
 
         # Run checker path
-        args = [path, user.user.username, answer, str(question.answer)]
-        p = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        args = [path, user.user.username, answer]
+        p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         retval = p.wait()
 
         if retval > 1:
