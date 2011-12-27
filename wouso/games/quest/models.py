@@ -266,7 +266,7 @@ class FinalQuest(Quest):
             logging.error("No such question")
 
         # Get the checker path
-        path = os.path.join(settings.FINAL_QUEST_CHECKER_PATH, 'task-%02d' % user.current_level, 'check')
+        path = os.path.join(settings.FINAL_QUEST_CHECKER_PATH, 'task-%02d' % (user.current_level + 1), 'check')
         if not os.path.exists(path):
             self.error = 'No checker for level %d' % user.current_level
             return False
