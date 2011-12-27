@@ -266,14 +266,16 @@ class FinalQuest(Quest):
             logging.error("No such question")
 
         # Get the checker path
-        path = os.path.join(settings.FINAL_QUEST_CHECKER_PATH, 'task-%02d' % user.current_level, 'check')
+        path = os.path.join(settings.FINAL_QUEST_CHECKER_PATH, 'task-%02d' % (user.current_level + 1), 'check')
         if not os.path.exists(path):
             self.error = 'No checker for level %d' % user.current_level
             return False
 
         # Run checker path
-        args = [path, user.user.username, answer, str(question.answer)]
-        p = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+        args = [path, user.user.username, answer]
+        work_dir = os.path.join(settings.FINAL_QUEST_CHECKER_PATH, 'task-%02d' % (user.current_level + 1))
+        p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=work_dir)
         retval = p.wait()
 
         if retval > 1:
