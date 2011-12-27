@@ -24,7 +24,7 @@ def index(request):
         return do_result(request, error='Ne pare rau, nu esti anul I, nu poti provoca. Te invitam pe wouso-next.rosedu.org')
 
     return render_to_response('challenge/index.html',
-            {'challenges': challs, 'played': played, 'challuser': chall_user},
+            {'challenges': challs, 'played': played, 'challuser': chall_user, 'challenge': ChallengeGame},
             context_instance=RequestContext(request))
 
 @login_required
@@ -83,6 +83,9 @@ def launch(request, to_id):
 
     user_from = request.user.get_profile().get_extension(ChallengeUser)
 
+    if ChallengeGame.disabled():
+        return do_result(request, error='Provocarile sunt dezactivate')
+
     if (not user_to.is_eligible()) or (not user_from.is_eligible()):
         return do_result(request, error='Ne pare rau, doar studentii de anul I pot provoca/fi provocati')
 
@@ -105,6 +108,9 @@ def launch(request, to_id):
 
 @login_required
 def accept(request, id):
+    if ChallengeGame.disabled():
+        return do_result(request, error='Provocarile sunt dezactivate')
+
     chall = get_object_or_404(Challenge, pk=id)
 
     user_to = request.user.get_profile().get_extension(ChallengeUser)
@@ -193,7 +199,7 @@ def sidebar_widget(request):
     if not challs:
         return ''
 
-    return render_string('challenge/sidebar.html', {'challenges': challs, 'chall_user': chall_user})
+    return render_string('challenge/sidebar.html', {'challenges': challs, 'challenge': ChallengeGame,  'chall_user': chall_user})
 
 def history(request, playerid):
     player = get_object_or_404(ChallengeUser, pk=playerid)
@@ -209,7 +215,7 @@ def challenge_random(request):
 
     current_player = request.user.get_profile().get_extension(ChallengeUser)
 
-   # selects challengeable players
+    # selects challengeable players
     players = ChallengeUser.objects.exclude(user = current_player.user)
     players = players.exclude(groups__name="Others")
     players = [p for p in players if current_player.can_challenge(p)]

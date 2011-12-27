@@ -6,6 +6,9 @@
 
 {% block sectioncontent %}
 
+{% if challenge.disabled %}
+<p>{% trans 'Challenges are disabled.' %}</p>
+{% else %}
 {% if not challuser.can_launch or not challuser.has_enough_points%}
 <p>{% trans 'You cannot launch another challenge today.' %}
     {% if challuser.has_one_more %}
@@ -15,7 +18,8 @@
 </p>
 {% else %}
 <p>{% trans 'To launch a challenge, find the player you want to challenge and click on the <em>Challenge</em> button, next to his profile.' %}</p>
-<a href="{% url games.challenge.views.challenge_random %}">Challange random player</a>
+<a href="{% url games.challenge.views.challenge_random %}">Challenge random player</a>
+{% endif %}
 {% endif %}
 
 <h3>{% trans 'Active' %}</h3>

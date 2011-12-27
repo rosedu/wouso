@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wouso VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-27 11:49+0300\n"
-"PO-Revision-Date: 2011-10-27 11:50+0200\n"
+"POT-Creation-Date: 2011-12-27 23:50+0200\n"
+"PO-Revision-Date: 2011-12-27 23:51+0200\n"
 "Last-Translator: Alex Eftimie <alex@rosedu.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -16,15 +16,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: core/scoring/sm.py:97
+#: core/scoring/sm.py:100
 msgid "downgraded to level {level}"
 msgstr "a coborât la nivelul {level}"
 
-#: core/scoring/sm.py:99
+#: core/scoring/sm.py:102
 msgid "upgraded to level {level}"
 msgstr "a promovat la nivelul {level}"
 
-#: core/user/models.py:385
+#: core/user/models.py:389
 msgid "has joined the game."
 msgstr "a intrat în joc."
 
@@ -36,43 +36,43 @@ msgstr "Tu"
 msgid "used {artifact} to enable one more challenge."
 msgstr "a folosit {artifact} pentru a activa încă o provocare."
 
-#: games/challenge/models.py:186
+#: games/challenge/models.py:193
 msgid "has refused challenge from {chall_from} (expired)"
 msgstr "a refuzat provocarea de la {chall_from} (expirată)"
 
-#: games/challenge/models.py:188
+#: games/challenge/models.py:195
 msgid "has refused challenge from {chall_from}"
 msgstr "a refuzat provocarea de la {chall_from}"
 
-#: games/challenge/models.py:268
+#: games/challenge/models.py:275
 msgid "expired"
 msgstr "expirată"
 
-#: games/challenge/models.py:271
+#: games/challenge/models.py:278
 msgid "{seconds} seconds"
 msgstr "{seconds} secunde"
 
-#: games/challenge/models.py:273
+#: games/challenge/models.py:280
 msgid "1 minute"
 msgstr "1 minut"
 
-#: games/challenge/models.py:275
+#: games/challenge/models.py:282
 msgid "{minutes} minutes"
 msgstr "{minutes} minute"
 
-#: games/challenge/models.py:277
+#: games/challenge/models.py:284
 msgid "1 minute and {s} seconds"
 msgstr "1 minut și {s} secunde"
 
-#: games/challenge/models.py:279
+#: games/challenge/models.py:286
 msgid "{m} minutes and {s} seconds"
 msgstr "{m} minute și {s} secunde"
 
-#: games/challenge/models.py:280
+#: games/challenge/models.py:287
 msgid "(in {time})"
 msgstr "(în {time})"
 
-#: games/challenge/models.py:312
+#: games/challenge/models.py:319
 msgid ""
 "draw result between {user_to} and {user_from}:\n"
 "{extra}"
@@ -80,23 +80,24 @@ msgstr ""
 "rezultat nul în provocarea {user_to} vs {user_from}:\n"
 "{extra}"
 
-#: games/challenge/models.py:328
+#: games/challenge/models.py:350
 msgid "won challenge with {user_lost}: {extra}"
 msgstr "a câștigat provocarea cu {user_lost}: {extra}"
 
-#: games/challenge/models.py:495
-#: games/challenge/views.py:183
+#: games/challenge/models.py:520
+#: games/challenge/models.py:542
+#: games/challenge/views.py:189
 #: games/challenge/templates/challenge/index.html:4
 #: games/challenge/templates/challenge/index.html:5
 #: games/challenge/templates/challenge/sidebar.html:5
 msgid "Challenges"
 msgstr "Provocări"
 
-#: games/challenge/models.py:510
+#: games/challenge/models.py:535
 msgid "Challenged"
 msgstr "Provocat"
 
-#: games/challenge/models.py:511
+#: games/challenge/models.py:536
 msgid "Challenge!"
 msgstr "Provoacă!"
 
@@ -105,36 +106,36 @@ msgstr "Provoacă!"
 msgid "You have already submitted this challenge and scored %.2f points"
 msgstr "Ai trimis deja răspunsurile și ai marcat %.2f puncte"
 
-#: games/challenge/views.py:90
-#: games/challenge/templates/challenge/index.html:10
+#: games/challenge/views.py:93
+#: games/challenge/templates/challenge/index.html:13
 msgid "You cannot launch another challenge today."
 msgstr "Nu poți lansa altă provocare astăzi."
 
-#: games/challenge/views.py:93
+#: games/challenge/views.py:96
 msgid "You need at least 30 points to launch a challenge"
 msgstr "Ai nevoie de cel puțin 30 de puncte pentru a lansa o provocare"
 
-#: games/challenge/views.py:101
+#: games/challenge/views.py:104
 msgid "Successfully challenged"
 msgstr "Provocat cu succes"
 
-#: games/challenge/views.py:103
+#: games/challenge/views.py:106
 msgid "This user cannot be challenged."
 msgstr "Acest jucător nu poate fi provocat."
 
-#: games/challenge/views.py:115
+#: games/challenge/views.py:121
 msgid "Challenge cannot be accepted."
 msgstr "Provocarea nu poate fi acceptată."
 
-#: games/challenge/views.py:126
+#: games/challenge/views.py:132
 msgid "You cannot refuse this challenge."
 msgstr "Nu poți refuza această provocare."
 
-#: games/challenge/views.py:136
+#: games/challenge/views.py:142
 msgid "You cannot cancel this challenge."
 msgstr "Nu poți anula această provocare."
 
-#: games/challenge/views.py:165
+#: games/challenge/views.py:171
 msgid "You don't have the artifact."
 msgstr "Nu ai artefactul necesar."
 
@@ -167,30 +168,43 @@ msgstr ""
 msgid "Submit"
 msgstr "Trimite"
 
-#: games/challenge/templates/challenge/index.html:13
+#: games/challenge/templates/challenge/history.html:4
+#: games/challenge/templates/challenge/history.html:5
+msgid "Challenge history"
+msgstr "Istoric provocări"
+
+#: games/challenge/templates/challenge/history.html:27
+msgid "No challenges."
+msgstr "Nicio provocare."
+
+#: games/challenge/templates/challenge/index.html:10
+msgid "Challenges are disabled."
+msgstr "Provocările sunt dezactivate."
+
+#: games/challenge/templates/challenge/index.html:16
 msgid "Use artifact"
 msgstr "Folosește artefact"
 
-#: games/challenge/templates/challenge/index.html:17
+#: games/challenge/templates/challenge/index.html:20
 msgid "To launch a challenge, find the player you want to challenge and click on the <em>Challenge</em> button, next to his profile."
 msgstr "Pentru a lansa o provocare, găsește jucătorul pe care vrei să-l provoci și, din pagina de profil, folosește butonul <em>Challenge</em>."
 
-#: games/challenge/templates/challenge/index.html:20
+#: games/challenge/templates/challenge/index.html:25
 #: games/specialquest/templates/specialquest/group.html:7
 msgid "Active"
 msgstr "Active"
 
-#: games/challenge/templates/challenge/index.html:39
-#: games/challenge/templates/challenge/sidebar.html:11
+#: games/challenge/templates/challenge/index.html:44
+#: games/challenge/templates/challenge/sidebar.html:14
 msgid "Play"
 msgstr "Joacă"
 
-#: games/challenge/templates/challenge/index.html:53
-#: games/challenge/templates/challenge/index.html:75
+#: games/challenge/templates/challenge/index.html:58
+#: games/challenge/templates/challenge/index.html:80
 msgid "No challenges in this category."
 msgstr "Nicio provocare în această categorie."
 
-#: games/challenge/templates/challenge/index.html:58
+#: games/challenge/templates/challenge/index.html:63
 msgid "Played"
 msgstr "Jucate"
 
@@ -208,11 +222,15 @@ msgstr "Provocare"
 msgid "You scored:"
 msgstr "Ai obținut:"
 
-#: games/challenge/templates/challenge/sidebar.html:14
+#: games/challenge/templates/challenge/sidebar.html:9
+msgid "Challenges are disabled"
+msgstr "Provocările sunt dezactivate"
+
+#: games/challenge/templates/challenge/sidebar.html:17
 msgid "No active challenges"
 msgstr "Nicio provocare activă"
 
-#: games/challenge/templates/challenge/sidebar.html:17
+#: games/challenge/templates/challenge/sidebar.html:20
 msgid "You cannot challenge"
 msgstr "Nu poți provoca"
 
@@ -264,11 +282,11 @@ msgstr "Răspunde acum"
 msgid "No question for today"
 msgstr "Nicio întrebare astăzi"
 
-#: games/quest/models.py:58
+#: games/quest/models.py:70
 msgid "has finished quest {quest}"
 msgstr "a terminat questul {quest}"
 
-#: games/quest/models.py:77
+#: games/quest/models.py:89
 msgid "has started quest {quest}"
 msgstr "a început questul {quest}"
 
@@ -311,6 +329,10 @@ msgstr "Lipsă quest"
 #: games/quest/templates/quest/none.html:8
 msgid "We are sorry, there is no active quest."
 msgstr "Ne pare rău, niciun quest nu este activ."
+
+#: games/quest/templates/quest/sidebar.html:4
+msgid "Final Quest"
+msgstr "Quest final"
 
 #: games/quest/templates/quest/sidebar.html:11
 msgid "Start quest!"
@@ -639,6 +661,7 @@ msgstr "Schimbă punctele pe aur sau aurul pe puncte"
 #: resources/templates/bazaar.html:63
 #: resources/templates/profile/groups.html:21
 #: resources/templates/profile/profile.html:78
+#: resources/templates/top/classes.html:21
 #: resources/templates/top/maintop.html:23
 msgid "Points"
 msgstr "Puncte"
@@ -727,6 +750,7 @@ msgid "Bookmarks"
 msgstr "Scurtături"
 
 #: resources/templates/mobile_index.html:15
+#: resources/templates/top/classes.html:6
 #: resources/templates/top/maintop.html:5
 #: resources/templates/top/maintop.html:14
 #: resources/templates/top/pyramid.html:6
@@ -879,11 +903,13 @@ msgstr "rang"
 
 #: resources/templates/profile/group.html:21
 #: resources/templates/profile/profile.html:23
+#: resources/templates/top/classes.html:19
 msgid "Group"
 msgstr "Grup"
 
 #: resources/templates/profile/group.html:22
 #: resources/templates/profile/profile.html:24
+#: resources/templates/top/classes.html:20
 msgid "Series"
 msgstr "Serie"
 
@@ -934,6 +960,7 @@ msgstr "Evoluția poziției comparată cu grupuri de același tip"
 
 #: resources/templates/profile/groups.html:6
 #: resources/templates/profile/groups.html:14
+#: resources/templates/top/classes.html:7
 msgid "Groups"
 msgstr "Grupuri"
 
@@ -1001,6 +1028,7 @@ msgstr "Intră"
 msgid "Statistics"
 msgstr "Statistici"
 
+#: resources/templates/top/classes.html:15
 #: resources/templates/top/maintop.html:17
 #: resources/templates/top/pyramid.html:15
 msgid "Top has been disabled."
@@ -1026,15 +1054,16 @@ msgstr "Topul a fost dezactivat"
 msgid "Top groups"
 msgstr "Top clase"
 
+#: resources/templates/top/sidebar_groups.html:12
+msgid "Complet"
+msgstr "Complet"
+
 #: resources/templates/top/sidebar_series.html:4
 msgid "Top series"
 msgstr "Top rase"
 
 #~ msgid "You cannot challenge."
 #~ msgstr "Nu poți provoca."
-
-#~ msgid "Challenge error"
-#~ msgstr "Eroare provocare"
 
 #~ msgid "Question"
 #~ msgstr "Întrebare"
