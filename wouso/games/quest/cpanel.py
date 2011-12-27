@@ -35,11 +35,11 @@ def quest_edit(request, id=None):
         quest = None
 
     form = QuestCpanel(instance=quest)
-    form.fields['questions'].queryset = get_questions_with_category('quest')
+    form.fields['questions'].queryset = get_questions_with_category('quest').order_by('-id')
 
     if request.method == 'POST':
         form = QuestCpanel(request.POST, instance=quest)
-        form.fields['questions'].queryset = get_questions_with_category('quest')
+        form.fields['questions'].queryset = get_questions_with_category('quest').order_by('-id')
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('wouso.games.quest.cpanel.quest_home'))
