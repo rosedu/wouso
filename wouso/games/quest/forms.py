@@ -3,7 +3,7 @@ from django.contrib.admin import widgets
 from models import Quest
 
 class QuestForm(forms.Form):
-    answer = forms.CharField(max_length=200)
+    answer = forms.CharField(max_length=4000)
 
 class QuestCpanel(forms.ModelForm):
     class Meta:
