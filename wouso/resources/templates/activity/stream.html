@@ -2,22 +2,43 @@
 {% load i18n %}
 
 <ul class="activity-stream">
-{% for ac in activity.object_list %}
-    <li class="activity-line">
-    <div class="activity-source"><a href="{{ ac.get_game_absolute_url }}" title="{% trans ac.game_name %}">{% trans ac.game_name %}</a></div>
-        <a href="{% url wouso.interface.profile.views.user_profile ac.user_from.id %}"><img class="avatar medium" src="{% player_avatar ac.user_from %}" /></a>
-        <div class="activity-message">
-            {% if ac.user_from %}<strong>{% player_simple ac.user_from %}</strong>{% endif %}
-            {% autoescape off %}{{ ac.message }}{% endautoescape %}</div>
-        {% if ac.user_from != ac.user_to %}
-        <div class="activity-second">
-            <a href="{% url wouso.interface.profile.views.user_profile ac.user_to.id %}"><img class="avatar small" src="{%  player_avatar ac.user_to %}" /></a>
-            <div><strong>{% player_simple ac.user_to %}</strong></div>
-        </div>
-        {% endif %}
-        <div class="activity-timestamp">{{ ac.timestamp }}</div>
-    </li>
-{% empty %}
-    <li class="activity-line empty">{% trans 'Sorry, no recent activity.' %}</li>
-{% endfor %}
+    {% for ac in activity.object_list %}
+        <li class="activity-line">
+            <div class="activity-source">
+                <a href="{{ ac.get_game_absolute_url }}" title="{% trans ac.game_name %}">{% trans ac.game_name %}</a>
+            </div>
+
+            <a class="player-avatar" href="{% url wouso.interface.profile.views.user_profile ac.user_from.id %}">
+                <img class="avatar medium player-avatar-image" src="{% player_avatar ac.user_from %}&d=http://wouso.eftimie.ro/static/themes/blackout/library/images/avatar.jpg" />
+
+                <div class="player-avatar-race player-avatar-race-{{ ac.user_from.series.name|lower}}"></div>
+            </a>
+
+            <div class="activity-message">
+                {% if ac.user_from %}
+                    <strong>{% player_simple ac.user_from %}</strong>
+                {% endif %}
+
+                {% autoescape off %}
+                    {{ ac.message }}
+                {% endautoescape %}
+            </div>
+
+            {% if ac.user_from != ac.user_to %}
+                <div class="activity-second">
+                    <a class="player-avatar-small" href="{% url wouso.interface.profile.views.user_profile ac.user_to.id %}">
+                        <img class="avatar small player-avatar-image" src="{%  player_avatar ac.user_to %}&d=http://wouso.eftimie.ro/static/themes/blackout/library/images/avatar.jpg" />
+
+                        <div class="player-avatar-race player-avatar-race-{{ ac.user_to.series.name|lower }}"></div>
+                    </a>
+
+                    <div><strong>{% player_simple ac.user_to %}</strong></div>
+                </div>
+            {% endif %}
+
+            <div class="activity-timestamp">{{ ac.timestamp }}</div>
+        </li>
+    {% empty %}
+        <li class="activity-line empty">{% trans 'Sorry, no recent activity.' %}</li>
+    {% endfor %}
 </ul>

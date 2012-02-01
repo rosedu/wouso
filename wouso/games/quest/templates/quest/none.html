@@ -1,10 +1,17 @@
-{% extends 'interface/section_base.html' %}
-{% load i18n %}
-{% block title %}{% trans 'Quest' %}{% endblock %}
-{% block sectiontitle %}{% trans 'No Quest' %}{% endblock %}
+{% extends base_template %}
 
-{% block sectioncontent %}
-<p>
-{% trans 'We are sorry, there is no active quest.' %}
-</p>
+{% load i18n %}
+
+{% block title %}{% trans 'Quest' %}{% endblock %}
+
+{% block content %}
+    <div class="section">
+        <h2>{% trans 'No Quest' %}</h2>
+
+        <div class="section-content">
+            <p>
+                {% trans 'We are sorry, there is no active quest.' %}
+            </p>
+        </div><!-- .section-content -->
+    </div><!-- .section -->
 {% endblock %}

@@ -1,38 +1,69 @@
-{% extends 'interface/section_base.html' %}
+{% extends base_template %}
+
 {% load i18n %}
 {% block title %}{% trans 'Quest' %}{% endblock %}
-{% block sectiontitle %}{{ quest.title }}{% endblock %}
 
-{% block sectioncontent %}
-<div class="second">
-{% blocktrans with quest.end as end and progress.time_took as time_took %}
-Available until {{ end }}. Your progress: {{ time_took }}
-{% endblocktrans %}
-</div>
+{% block content %}
+    <div class="section">
+        <h2>{{ quest.title }}</h2>
 
-{% if progress.finished %}
-<p>{% trans 'Quest finished!' %}</p>
+        <div class="section-content">
+            <div class="second">
+                {% blocktrans with quest.end as end and progress.time_took as time_took %}
+                    Available until {{ end }}. Your progress: {{ time_took }}
+                {% endblocktrans %}
+            </div>
 
-<p>
-{% blocktrans with quest.count as count and progress.time_took as time_took %}
-    You passed {{ count }} levels in {{ time_took }}.
-{% endblocktrans %}
-</p>
-{% else %}
-<p style="color:red">{{ quest.error }}</p>
+            {% if progress.finished %}
+                <p>{% trans 'Quest finished!' %}</p>
 
-<h3>Level #{{ progress.current_level }}:</h3>
-<p>{{ progress.current_question.text }}</p>
-<form method="post" action="{% url games.quest.views.index %}">
-    <table>
-    {{ form.answer }}
-    </table>
-    {% csrf_token %}
-    <div class="actions">
-        <button type="submit" class="default">{% trans 'Answer' %}</button>
-    </div>
-</form>
+                <p>
+                    {% blocktrans with quest.count as count and progress.time_took as time_took %}
+                        You passed {{ count }} levels in {{ time_took }}.
+                    {% endblocktrans %}
+                </p>
+            {% else %}
+                <p style="color:red">{{ quest.error }}</p>
 
-<p style="clear:both"></p>
-{% endif %}
+                <h3>Nivel curent #{{ progress.current_level }}
+                {% if progress.current_level < quest.count|add:-1 %}. Nivelul următor #{{ progress.current_level|add:1 }}
+                {% else %} - ultimul {% endif %}
+                </h3>
+
+                <div class="spacer">
+                    <!-- -->
+                </div><!-- .spacer -->
+
+                <p>
+                {%autoescape off %}
+                {{ progress.current_question.text }}
+                {% endautoescape %}
+                </p>
+
+                <div class="spacer">
+                    <!-- -->
+                </div><!-- .spacer -->
+
+                <form method="post" action="{% url games.quest.views.index %}">
+                    <table>
+                        {{ form.answer }}
+                    </table>
+
+                    {% csrf_token %}
+
+                    <div class="clear spacer">
+                        <!-- -->
+                    </div><!-- .clear .spacer -->
+
+                    <div class="actions">
+                        <button type="submit" class="default">{% trans 'Answer' %}</button>
+                    </div>
+                </form>
+
+                <div class="clear">
+                    <!-- -->
+                </div><!-- .clear -->
+            {% endif %}
+        </div><!-- .section-content -->
+    </div><!-- .section -->
 {% endblock %}
