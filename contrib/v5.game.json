@@ -742,6 +742,15 @@
   }
  },
  {
+  "pk": "chall-warranty-return",
+  "model": "scoring.formula",
+  "fields": {
+   "owner": "ChallengeGame",
+   "formula": "points=3",
+   "description": "Points given back as a warranty taken for challenge"
+  }
+ },
+ {
   "pk": "quest-ok",
   "model": "scoring.formula",
   "fields": {
@@ -757,6 +766,15 @@
    "owner": "QuestGame",
    "formula": "points=10",
    "description": "Bonus points earned when finishing the entire quest. No arguments."
+  }
+ },
+ {
+  "pk": "finalquest-ok",
+  "model": "scoring.formula",
+  "fields": {
+   "owner": "QuestGame",
+   "formula": "points={level}+{level_users}",
+   "description": "Bonus points earned when finishing the final quest. Arguments: level, level_users"
   }
  },
  {
@@ -782,7 +800,7 @@
   "model": "scoring.formula",
   "fields": {
    "owner": null,
-   "formula": "points={gold}*9,gold=-{gold}",
+   "formula": "points={gold}*9;gold=-{gold}",
    "description": "Exchange gold in points"
   }
  },
@@ -791,7 +809,7 @@
   "model": "scoring.formula",
   "fields": {
    "owner": null,
-   "formula": "points=-{points},gold={points}*0.1",
+   "formula": "points=-{points};gold={points}*0.1",
    "description": "Exchange points in gold"
   }
  },
@@ -823,38 +841,33 @@
   }
  },
  {
-  "pk": "theme",
-  "model": "config.setting",
+  "pk": "penalty-points",
+  "model": "scoring.formula",
   "fields": {
-   "value": "blackout"
+   "owner": null,
+   "formula": "points=-{points}",
+   "description": "Take back points from user"
   }
  },
  {
-  "pk": "disable-QotdGame",
+  "pk": "default_group",
   "model": "config.setting",
   "fields": {
-   "value": ""
+   "value": "19"
   }
  },
  {
-  "pk": "disable-SpecialQuestGame",
+  "pk": "default_series",
   "model": "config.setting",
   "fields": {
-   "value": ""
+   "value": "1"
   }
  },
  {
-  "pk": "disable-Top",
+  "pk": "test",
   "model": "config.setting",
   "fields": {
-   "value": ""
-  }
- },
- {
-  "pk": "disable-Qproposal",
-  "model": "config.setting",
-  "fields": {
-   "value": "True"
+   "value": "test"
   }
  },
  {
@@ -872,28 +885,35 @@
   }
  },
  {
-  "pk": "hidden_footer",
+  "pk": "theme",
+  "model": "config.setting",
+  "fields": {
+   "value": "blackout"
+  }
+ },
+ {
+  "pk": "disable-Top",
   "model": "config.setting",
   "fields": {
    "value": ""
   }
  },
  {
-  "pk": "logo",
+  "pk": "disable-Qproposal",
+  "model": "config.setting",
+  "fields": {
+   "value": "True"
+  }
+ },
+ {
+  "pk": "disable-QotdGame",
   "model": "config.setting",
   "fields": {
    "value": ""
   }
  },
  {
-  "pk": "disable-ChallengeGame",
-  "model": "config.setting",
-  "fields": {
-   "value": ""
-  }
- },
- {
-  "pk": "disable-QuestGame",
+  "pk": "disable-SpecialQuestGame",
   "model": "config.setting",
   "fields": {
    "value": ""
@@ -907,10 +927,17 @@
   }
  },
  {
-  "pk": "default_group",
+  "pk": "hidden_footer",
   "model": "config.setting",
   "fields": {
-   "value": "19"
+   "value": ""
+  }
+ },
+ {
+  "pk": "logo",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
   }
  },
  {
@@ -932,6 +959,34 @@
   "model": "config.setting",
   "fields": {
    "value": "True"
+  }
+ },
+ {
+  "pk": "disable_login",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "disable_header_autoreload",
+  "model": "config.setting",
+  "fields": {
+   "value": "True"
+  }
+ },
+ {
+  "pk": "disable-ChallengeGame",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "disable-QuestGame",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
   }
  },
  {
