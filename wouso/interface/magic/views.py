@@ -23,7 +23,7 @@ def bazaar(request, message='', error=''):
 
     # TODO: think of smth better
     cast_spells.update(seen=True)
-    return render_to_response('bazaar.html', {'spells': spells,
+    return render_to_response('magic/bazaar.html', {'spells': spells,
                               'rate': rate, 'rate_text': rate_text,
                               'cast': cast_spells,
                               'unseen_count': unseen_count,
@@ -72,7 +72,7 @@ def bazaar_exchange(request):
     else:
         error = _('Expected post')
 
-    return render_to_response('bazaar_buy.html',
+    return render_to_response('magic/bazaar_buy.html',
                 {'error': error,
                 'message': message, 'tab': 'exchange'},
                 context_instance=RequestContext(request))

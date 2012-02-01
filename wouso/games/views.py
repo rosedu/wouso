@@ -12,6 +12,6 @@ def games(request):
             'name': model._meta.verbose_name}
         )
 
-    return render_to_response('games.html',
+    return render_to_response('interface/games.html',
             {'games': wgs},
             context_instance=RequestContext(request))

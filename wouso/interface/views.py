@@ -110,7 +110,7 @@ def search(request):
         # search groups
         group_results = PlayerGroup.objects.filter(Q(name__icontains=query)|Q(title__icontains=query))
 
-        return render_to_response('search_results.html',
+        return render_to_response('interface/search_results.html',
                                   {'searchresults': searchresults,
                                    'groupresults': group_results,
                                    'search_query': form.cleaned_data['query']},

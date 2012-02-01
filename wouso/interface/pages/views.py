@@ -26,13 +26,13 @@ def news_index(request, page=u'1'):
     except (EmptyPage, InvalidPage):
         news_page = paginator.page(paginator.num_pages)
 
-    return render_to_response('news_index.html',
+    return render_to_response('pages/news_index.html',
                             {'news_page': news_page},
                               context_instance=RequestContext(request))
 
 def news_item(request, item_id):
     n = get_object_or_404(NewsItem, pk=item_id)
 
-    return render_to_response('news_item.html',
+    return render_to_response('pages/news_item.html',
                             {'n': n},
                               context_instance=RequestContext(request))
