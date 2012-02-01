@@ -25,7 +25,9 @@
         <div id="content">
             <h2>{{ config_title }}</h2>
             <p>
+                {% autoescape off %}
                 {{config_intro}}
+                {% endautoescape %}
 			</p>
 		</div>
 

@@ -1,8 +1,10 @@
 /* convert all links with class ajaxify in smth smarter */
+var url_base = '';
+
 /* reload header */
 function reload_header() {
     $.ajax({
-        url: '/ajax/header/',
+        url: url_base + '/ajax/header/',
         success: function(data) {
             $('#topbar').html(data);
         },
@@ -15,7 +17,7 @@ function reload_header() {
 /* reload activity */
 function reload_activity() {
     $.ajax({
-        url: '/ajax/activity/',
+        url: url_base + '/ajax/activity/',
         success: function(data) {
             $('#wall').html(data);
         },
@@ -29,7 +31,7 @@ function reload_activity() {
 $(document).ready(function (){
     /* button links */
     $('.ajaxify').bind('click', function () {
-        url = this;
+        url = url_base + this;
         $.ajax({
             url: url + '?ajax=1',
             success: function(data) {
