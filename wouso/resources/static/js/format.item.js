@@ -11,7 +11,7 @@ function selectItem(li) {
     var id = text.substr(text.lastIndexOf(":") + 1);
     id = id.substr(0, id.indexOf("<"));
 
-    document.location = '/player/' + id;
+    document.location = url_base + '/player/' + id + '/';
 }
 
 function selectItemMessaging(li) {
@@ -65,7 +65,7 @@ function messagingView(id) {
         container = $('#message');
 
     $.ajax({
-        url: url_base + '/m/view/' + id,
+        url: url_base + '/m/view/' + id + '/',
         success: function(data) {
             container.html(data);
         }
