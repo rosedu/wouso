@@ -126,7 +126,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    # 'django.contrib.sites',
+    'django.contrib.sites',
     'django.contrib.messages',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
@@ -150,6 +150,10 @@ INSTALLED_APPS = (
     'wouso.interface.messaging',
     'wouso.interface.chat',
     'wouso.interface.statistics',
+
+    # Needed for API Oauth
+    'piston',
+    'wouso.interface.api',
 
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
