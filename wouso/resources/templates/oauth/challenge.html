@@ -1,1 +1,10 @@
-Here I am
+{% extends 'piston/base.html' %}
+
+{% block content %}
+    <h1>Unauthenticated</h1>
+
+    <p>Our API uses OAuth for authentication.</p>
+
+    <p>If you're seeing this page, it means you're not correctly authenticated.</p>
+
+{% endblock %}

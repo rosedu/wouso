@@ -181,6 +181,7 @@ FINAL_QUEST_CHECKER_PATH = '/home/wouso/fqchecker/' # Folder containing task-01/
 FORCE_SCRIPT_NAME = '' # Change this in localsettings
 
 OAUTH_CALLBACK_VIEW = 'wouso.interface.api.views.request_token_ready'
+OAUTH_AUTH_VIEW = 'wouso.interface.api.views.oauth_auth_view'
 
 # please don't remove this yet
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):

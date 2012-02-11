@@ -8,7 +8,7 @@ from handlers import NotificationsHandler
 from authentication import SessionAuthentication
 
 sessionauth = SessionAuthentication()
-authoauth = OAuthAuthentication(realm='Snowy')
+authoauth = OAuthAuthentication(realm='Wouso')
 AUTHENTICATORS = [authoauth, sessionauth]
 ad = {'authentication': AUTHENTICATORS}
 
@@ -23,4 +23,8 @@ urlpatterns += patterns(
     url(r'^oauth/request_token/$','oauth_request_token'),
     url(r'^oauth/authorize/$','oauth_user_auth'),
     url(r'^oauth/access_token/$','oauth_access_token'),
+)
+
+urlpatterns += patterns('wouso.interface.api.views',
+    url(r'^oauth/request_token_ready/$', 'request_token_ready'),
 )

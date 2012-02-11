@@ -1,7 +1,5 @@
 __author__ = 'alex'
 
-import re
-
 from piston.handler import BaseHandler
 
 class NotificationsHandler(BaseHandler):
