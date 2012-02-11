@@ -3,6 +3,10 @@ class App:
     """ Interface extended by Game and by Top and Qproposal Activity"""
 
     @classmethod
+    def name(kls):
+        return kls.__name__
+
+    @classmethod
     def disabled(kls):
         """ Search for a disabled config setting.
         """
@@ -16,6 +20,12 @@ class App:
         """ Return the sidebar widget, for current HttpRequest request.
         This is called in interface.context_processors.sidebar """
         return None
+
+    @classmethod
+    def get_unread_count(kls, request):
+        """ Return the app-specific unread counter.
+        """
+        return 0
 
     @classmethod
     def get_header_link(kls, request):
@@ -40,3 +50,10 @@ class App:
         """ Return html content for player's profile view
         in the superuser row """
         return ''
+
+    @classmethod
+    def get_api(kls):
+        """ Return a dictionary with url-regex keys, and PistonHandler values.
+        """
+
+        return {}

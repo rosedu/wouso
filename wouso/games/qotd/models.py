@@ -106,3 +106,16 @@ class QotdGame(Game):
             from views import sidebar_widget
             return sidebar_widget(request)
         return None
+
+    @classmethod
+    def get_api(kls):
+        from piston.handler import BaseHandler
+        class QotdHandler(BaseHandler):
+            methods_allowed = ('GET',)
+            def read(self, request):
+                question = kls.get_for_today()
+                if question:
+                    return {'text': question.text}
+                return {}
+
+        return {r'^qotd/today/$': QotdHandler}

@@ -7,15 +7,6 @@ from wouso.interface.pages.models import StaticPage
 # Get a specific logger for this module
 logger = logging.getLogger('interface')
 
-# Stop using this. Thanks!
-#def render_response(template, request, data=None):
-#    """ Provide game context render_to response TODO: get rid of this"""
-#
-#    return render_to_response(template,
-#            data,
-#            context_instance=RequestContext(request)
-#        )
-
 def render_string(template, data=None):
     """ Provide game context render_to_string, used by widget generators """
 
@@ -33,4 +24,3 @@ def detect_mobile(request):
             if i in s:
                 return True
     return False
-                
