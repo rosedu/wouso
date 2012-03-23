@@ -5,7 +5,7 @@ from piston.resource import Resource
 from piston.authentication import OAuthAuthentication
 from wouso.core.game import get_games
 
-from handlers import NotificationsHandler
+from handlers import NotificationsHandler, InfoHandler
 from authentication import SessionAuthentication
 
 # needed by oauth
@@ -29,6 +29,7 @@ notifications_resource = Resource(handler=NotificationsHandler, **ad)
 
 urlpatterns += patterns('',
     url(r'^notifications/(?P<type>[^/]+)/$', notifications_resource),
+    url(r'^info/$', Resource(handler=InfoHandler, **ad)),
 )
 
 for g in get_games():

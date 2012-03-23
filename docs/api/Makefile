@@ -128,3 +128,9 @@ doctest:
 	$(SPHINXBUILD) -b doctest $(ALLSPHINXOPTS) $(BUILDDIR)/doctest
 	@echo "Testing of doctests in the sources finished, look at the " \
 	      "results in $(BUILDDIR)/doctest/output.txt."
+
+
+deploy: html
+	scp -r _build/html/* wouso@rosedu.org:public_html/api/
+	@echo "Done. Goto http://wouso.rosedu.org/api/"
+

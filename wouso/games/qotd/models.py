@@ -1,5 +1,6 @@
 from datetime import date, datetime, time
 from django.db import models
+from django.http import Http404
 from django.utils.translation import ugettext_noop
 from wouso.interface.activity import signals
 from wouso.core.user.models import Player
@@ -114,8 +115,13 @@ class QotdGame(Game):
             methods_allowed = ('GET',)
             def read(self, request):
                 question = kls.get_for_today()
+                try:
+                    qotduser = request.user.get_profile().get_extension(QotdUser)
+                except models.Model.DoesNotExist:
+                    raise Http404()
                 if question:
-                    return {'text': question.text}
+                    return {'text': question.text, 'answers': dict([(a.id, a.text) for a in question.answers]),
+                            'had_answered': qotduser.has_answered}
                 return {}
 
         return {r'^qotd/today/$': QotdHandler}
