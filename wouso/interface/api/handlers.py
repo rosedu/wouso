@@ -4,6 +4,7 @@ from piston.handler import BaseHandler
 from piston.utils import rc
 from wouso.core.game import get_games
 from wouso.core.user.models import Player
+from wouso.core.magic.models import Spell
 from wouso.interface.apps import get_apps
 
 class NotificationsHandler(BaseHandler):
@@ -42,3 +43,22 @@ class InfoHandler(BaseHandler):
                 'email': player.user.email,
                 'level': player.level,
         }
+
+class BazaarHandler(BaseHandler):
+    methods_allowed = ('GET',)
+    object_name = 'spells'
+
+    def get_queryset(self, user=None):
+        return Spell.objects.all()
+
+    def read(self, request):
+        try:
+            player = request.user.get_profile()
+        except Player.DoesNotExist:
+            return rc.NOT_FOUND
+
+        return {self.object_name: self.get_queryset(user=player)}
+
+class BazaarInventoryHandler(BazaarHandler):
+    def get_queryset(self, user=None):
+        return user.spells_available
