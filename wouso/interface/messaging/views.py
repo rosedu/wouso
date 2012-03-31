@@ -8,7 +8,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from wouso.core.user.models import Player
-from wouso.interface.messaging.models import Message, MessagingUser
+from wouso.interface.messaging.models import Message, MessagingUser, MessageApp
 from wouso.interface.messaging.forms import ComposeForm
 
 
@@ -84,12 +84,7 @@ def message(request, mid):
     raise Http404
 
 def header_link(request):
-    profile = request.user.get_profile()
-    if profile:
-        msg_user = profile.get_extension(MessagingUser)
-        msgs = Message.objects.filter(receiver=msg_user).filter(read=False)
-        count = len(msgs)
-    else:
-        count = 0
+    # TODO refactor this lame thing
+    count = MessageApp.get_unread_count(request)
     url = reverse('wouso.interface.messaging.views.home')
     return dict(link=url, count=count, text=_('Messages'))

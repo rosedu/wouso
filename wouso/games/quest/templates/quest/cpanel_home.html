@@ -40,7 +40,10 @@
 </table>
 
 <a class="button" href="{% url quest_new %}">New quest</a>
+{% if not final %}
+<a class="button" href="{% url quest_create_finale %}">Create final quest</a>
+{% endif %}
 
-<div class="info second" style="clear:both">Current date and time:  {% now "d/m/Y H:i" %}</div>
+<div class="info second" style="clear:both">Current date and time:  {% now "d/m/Y H:i" %}. Final quest checker path: {{ final_checker }}</div>
 
 {% endblock %}

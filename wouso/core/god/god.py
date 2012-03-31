@@ -88,7 +88,7 @@ class DefaultGod:
             next_limit = DefaultGod.LEVEL_LIMITS[level_no - 1]
         except:
             next_limit = 1000
-    
+
         points_gained = points - current_limit
         if next_limit > current_limit:
             percent = round(100.0 * points_gained / (next_limit - current_limit))
@@ -121,6 +121,13 @@ class DefaultGod:
     def can_cast(self, spell, source, destination):
         """ Check if destination can receive spell from source
         """
+        source_play = source.race.can_play if source.race else False
+        destin_play = destination.race.can_play if destination.race else False
+
+        if source_play != destin_play:
+            # This prevents Others from casting spells on actual players.
+            return False
+
         if destination.has_modifier('immunity'):
             return False
 
@@ -146,7 +153,7 @@ class DefaultGod:
                 # in order to apply this new spell, cancel existing, sign contrary, spells
                 existing.delete()
         return True
-    
+
     def post_cast(self, psdue):
         """ Execute action after a spell is cast. This is used to implement specific spells
         such as 'clean any existing spell' cast.

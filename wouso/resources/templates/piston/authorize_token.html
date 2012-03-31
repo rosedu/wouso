@@ -1,0 +1,16 @@
+{% extends 'piston/base.html' %}
+
+{% block title %}Authorize Token{% endblock %}
+
+{% block content %}
+    <h1>Authorize Token</h1>
+
+    <p>Are you sure do you want to authorize <strong>{{ consumer.name }}</strong> to access al your wouso data?</p>
+
+    <form action="{% url piston.authentication.oauth_user_auth %}" method="POST">
+      {{ form.as_table }}
+      {% csrf_token %}
+      <button type="submit"><strong>Confirm</strong></button>
+      <button onclick="javascript:window.close(); return false;"/>Cancel</button>
+    </form>
+{% endblock %}

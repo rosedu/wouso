@@ -1,6 +1,8 @@
+import os
 import hashlib
 import logging
 import datetime
+import subprocess
 from django.db import models
 from django.utils.translation import ugettext_noop
 from wouso.core.user.models import Player
@@ -10,6 +12,7 @@ from wouso.core.scoring.models import Formula
 from wouso.core.qpool.models import Question
 from wouso.core.qpool import get_questions_with_tags
 from wouso.interface.activity import signals
+from wouso import settings
 
 # Quest will use QPool questions tagged 'quest'
 
@@ -20,13 +23,18 @@ class QuestUser(Player):
     finished_time = models.DateTimeField(default=None, blank=True, null=True)
     finished = models.BooleanField(default=False, blank=True)
 
+    def is_current(self, quest):
+        return (self.current_quest.id == quest.id) if (self.current_quest and quest) else (self.current_quest == quest)
+
     @property
     def started(self):
         """
         Check if we started the current quest.
         """
         quest = QuestGame.get_current()
-        return self.current_quest == quest
+        if (not quest) or (not self.current_quest):
+            return False
+        return self.current_quest.id == quest.id
 
     @property
     def current_question(self):
@@ -95,7 +103,7 @@ class Quest(models.Model):
     end = models.DateTimeField()
     title = models.CharField(default="", max_length=100)
     questions = models.ManyToManyField(Question)
-    order = models.CharField(max_length=1000,default="",blank=True)
+    order = models.CharField(max_length=1000, default="", blank=True)
 
     def get_formula(self, type='quest-ok'):
         """ Allow specific formulas for specific quests.
@@ -109,6 +117,10 @@ class Quest(models.Model):
         except Formula.DoesNotExist:
             formula = Formula.objects.get(id=type)
         return formula
+
+    def is_final(self):
+        final = FinalQuest.objects.filter(id=self.id).count()
+        return final > 0
 
     @property
     def count(self):
@@ -202,13 +214,17 @@ class QuestGame(Game):
         self._meta.get_field('url').default = "quest_index_view"
         super(QuestGame, self).__init__(*args, **kwargs)
 
-    @staticmethod
-    def get_current():
+    @classmethod
+    def get_current(cls):
         try:
-            return Quest.objects.get(start__lte=datetime.datetime.now(),
+            return FinalQuest.objects.get(start__lte=datetime.datetime.now(),
+                end__gte=datetime.datetime.now())
+        except:
+            try:
+                return Quest.objects.get(start__lte=datetime.datetime.now(),
                                 end__gte=datetime.datetime.now())
-        except: # Quest.DoesNotExist:
-            return None
+            except:
+                return None
 
     @classmethod
     def get_formulas(kls):
@@ -238,7 +254,8 @@ class QuestGame(Game):
 
 class FinalQuest(Quest):
     def check_answer(self, user, answer):
-        if user.current_quest != self:
+        self.error = ''
+        if user.current_quest.id != self.id:
             user.finish_quest()
             user.set_current(self)
             return False
@@ -248,19 +265,30 @@ class FinalQuest(Quest):
         except IndexError:
             logging.error("No such question")
 
-        user_hash = hashlib.sha1(
-            '%s%s%s' % (user.last_name[::-1], question.answers.all()[0].text, user.first_name)
-        )
+        # Get the checker path
+        path = os.path.join(settings.FINAL_QUEST_CHECKER_PATH, 'task-%02d' % (user.current_level + 1), 'check')
+        if not os.path.exists(path):
+            self.error = 'No checker for level %d' % user.current_level
+            return False
+
+        # Run checker path
+
+        args = [path, user.user.username, answer]
+        work_dir = os.path.join(settings.FINAL_QUEST_CHECKER_PATH, 'task-%02d' % (user.current_level + 1))
+        p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=work_dir)
+        retval = p.wait()
+
+        if retval > 1:
+            self.error = 'Error running checker for %d' % user.current_level
+
         if not user.current_level == self.count and \
-                answer.lower() == user_hash.hexdigest():
-            # score current progress
+            (retval == 0):
             scoring.score(user, QuestGame, self.get_formula('quest-ok'), level=(user.current_level + 1))
             user.current_level += 1
+            user.save()
             if user.current_level == self.count:
                 user.finish_quest()
-                # score finishing
                 scoring.score(user, QuestGame, self.get_formula('quest-finish-ok'))
-            user.save()
             return True
         return False
 

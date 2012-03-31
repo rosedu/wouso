@@ -6,7 +6,7 @@ import settings
 setup_environ(settings)
 
 from django.contrib.auth.models import Group, Permission
-from wouso.core.user.models import PlayerGroup
+from wouso.core.user.models import PlayerGroup, Race
 
 if __name__ == '__main__':
     print 'Setting up groups...',
@@ -14,7 +14,7 @@ if __name__ == '__main__':
     groups = range(311, 316)
     for i in series:
         g,nw = Group.objects.get_or_create(name=i)
-        pg,nw = PlayerGroup.objects.get_or_create(group=g,name=i,gclass=1)
+        pg,nw = Race.objects.get_or_create(group=g,name=i,gclass=1)
         if i == 'Others':
             pg.show_in_top = False
             pg.save()
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     staff, new = Group.objects.get_or_create(name='Staff')
     cpanel_perm = Permission.objects.get(codename='change_setting')
     staff.permissions.add(cpanel_perm)
-    
+
     # Dump
     print "Groups: "
     for c in PlayerGroup.objects.all():

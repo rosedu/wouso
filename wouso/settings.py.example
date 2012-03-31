@@ -126,7 +126,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    # 'django.contrib.sites',
+    'django.contrib.sites',
     'django.contrib.messages',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
@@ -151,6 +151,10 @@ INSTALLED_APPS = (
     'wouso.interface.chat',
     'wouso.interface.statistics',
 
+    # Needed for API Oauth
+    'piston',
+    'wouso.interface.api',
+
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'djangologdb',
@@ -171,6 +175,13 @@ WOUSO_VERSION = '4.0'
 
 LEVEL_LIMITS = None # Override this with an iterable
 STARTING_POINTS = 15
+
+FINAL_QUEST_CHECKER_PATH = '/home/wouso/fqchecker/' # Folder containing task-01/check, task-02/, task-03/check etc
+
+FORCE_SCRIPT_NAME = '' # Change this in localsettings
+
+OAUTH_CALLBACK_VIEW = 'wouso.interface.api.views.request_token_ready'
+OAUTH_AUTH_VIEW = 'wouso.interface.api.views.oauth_auth_view'
 
 # please don't remove this yet
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):

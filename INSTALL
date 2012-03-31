@@ -15,3 +15,7 @@ Hints:
 
 Requirements:
 	# easy install django-logdb
+
+Server setup:
+	add in crontab ./scripts/eot.bash, daily.
+

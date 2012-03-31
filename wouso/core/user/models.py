@@ -9,6 +9,7 @@ from wouso.core.magic.models import Artifact, Spell
 
 class GroupArtifactAmount(models.Model):
     """ Tie artifact and amount to the owner group """
+    # Refactor move it to magic
     class Meta:
         unique_together = ('group', 'artifact')
     group = models.ForeignKey('PlayerGroup')
@@ -60,10 +61,14 @@ class PlayerGroup(models.Model):
     def __unicode__(self):
         return self.name if self.title == '' else self.title
 
+class Race(PlayerGroup):
+    can_play = models.BooleanField(default=False, blank=True)
+
 class InsufficientAmount(Exception): pass
 
 class PlayerArtifactAmount(models.Model):
     """ Tie artifact and amount to the owner user """
+    # Refactor move it to magic
     class Meta:
         unique_together = ('player', 'artifact')
     player = models.ForeignKey('Player')
@@ -75,6 +80,7 @@ class PlayerArtifactAmount(models.Model):
 
 class PlayerSpellAmount(models.Model):
     """ Tie spells to collecting user """
+    # Refactor: move it to magic
     class Meta:
         unique_together = ('player', 'spell')
     player = models.ForeignKey('Player')
@@ -86,6 +92,7 @@ class PlayerSpellAmount(models.Model):
 
 class PlayerSpellDue(models.Model):
     """ Tie spell, casting user, duration with the victim player """
+    # Refactor: move it to magic
     class Meta:
         unique_together = ('player', 'spell')
     player = models.ForeignKey('Player')
@@ -101,7 +108,7 @@ class PlayerSpellDue(models.Model):
 
     def __unicode__(self):
         return u"%s casted on %s until %s [%s]" % (self.spell, self.player, self.due, self.source)
-    
+
 class Player(models.Model):
     """ Base class for the game user. This is extended by game specific
     player models.
@@ -123,6 +130,9 @@ class Player(models.Model):
     # spells available for casting
     spells_collection = models.ManyToManyField(Spell, blank=True, through='PlayerSpellAmount', related_name='spell_collection')
     groups = models.ManyToManyField(PlayerGroup, blank=True)
+
+    # race
+    race = models.ForeignKey(Race, blank=False, default=None, null=True, related_name='player_race')
 
     # spells casted on itself
     # it doesnt work this way, instead provide it as a property
@@ -174,7 +184,12 @@ class Player(models.Model):
     def series(self):
         """ Return the group with class == 1, for which the user
         is a member of, or None.
+
+        TODO: get rid of old gclass=1 series, we now have race.
         """
+        if self.race:
+            return self.race
+
         res = self.groups.filter(gclass=1)
         if not res:
             return None
@@ -327,6 +342,7 @@ class Player(models.Model):
         return ret if ret != u" " else self.user.__unicode__()
 
 class SpellHistory(models.Model):
+    # Refactor: move it to magic
     TYPES = (('b', 'bought'), ('u', 'used'), ('c', 'cleaned'), ('e', 'expired'))
 
     type = models.CharField(max_length=1, choices=TYPES)
@@ -365,7 +381,7 @@ class SpellHistory(models.Model):
         if self.type == 'e':
             return u"%s expired %s" % (self.user_from, self.spell)
         return "%s %s %s" % (self.type, self.user_from, self.spell)
-    
+
 # Hack for having user and user's profile always in sync
 def user_post_save(sender, instance, **kwargs):
     profile, new = Player.objects.get_or_create(user=instance)
@@ -378,7 +394,7 @@ def user_post_save(sender, instance, **kwargs):
             pass
         else:
             profile.groups.add(default_group)
- 
+
         try:
             default_series = PlayerGroup.objects.get(pk=int(ChoicesSetting.get('default_series').get_value()))
         except (PlayerGroup.DoesNotExist, ValueError):

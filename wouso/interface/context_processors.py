@@ -7,13 +7,14 @@ from wouso.interface.messaging.models import Message
 from wouso.interface.magic.models import Bazaar
 from wouso.interface.statistics.views import footer_link as stats_link
 from wouso.interface import get_static_pages, detect_mobile
+from wouso.settings import FORCE_SCRIPT_NAME
 
 def header_footer(request):
     """ Generate header and footer bar contents.
     """
     #TODO ordering, using config
 
-    header = [] 
+    header = []
     try:
         for game in get_games():
             h = game.get_header_link(request)
@@ -97,8 +98,10 @@ def sidebar(request):
 
 def context(request):
     """ Make all configuration settings available as config_name
-    and also define some game context """
+    and also define some game context
+    """
     settings = {}
+    settings['basepath'] = FORCE_SCRIPT_NAME
     for s in Setting.objects.all():
         settings['config_' + s.name.replace('-','_')] = s.get_value()
 

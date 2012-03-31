@@ -5,7 +5,8 @@ from wouso.core.user.models import (Player, PlayerGroup,
                                     PlayerArtifactAmount,
                                     PlayerSpellAmount,
                                     PlayerSpellDue,
-                                    SpellHistory)
+                                    SpellHistory,
+                                    Race)
 
 class UserProfileInline(admin.StackedInline):
     model = Player
@@ -25,3 +26,4 @@ admin.site.register(PlayerArtifactAmount)
 admin.site.register(PlayerSpellAmount)
 admin.site.register(PlayerSpellDue)
 admin.site.register(SpellHistory, SHAdmin)
+admin.site.register(Race)

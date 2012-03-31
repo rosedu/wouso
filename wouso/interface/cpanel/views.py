@@ -403,7 +403,7 @@ def groupset(request, id):
     class GForm(ModelForm):
         class Meta:
             model = Player
-            fields = ('groups',)
+            fields = ('race', 'groups',)
             widgets = {'groups': GSelect()}
 
     if request.method == 'POST':

@@ -1,5 +1,7 @@
+var url_base = '/';
+
 function formatItem( row ) {
-    return row[0] + "<br />"+ 
+    return row[0] + "<br />"+
         row[4]+" "+
         "<small><i>" + row[2] + " (" + row[3] + ") " +
         row[1] + " puncte</small></i>" + "<span class='hidden'>:" + row[6] + "</span>";
@@ -9,7 +11,7 @@ function selectItem(li) {
     var id = text.substr(text.lastIndexOf(":") + 1);
     id = id.substr(0, id.indexOf("<"));
 
-    document.location = '/player/' + id;
+    document.location = url_base + '/player/' + id + '/';
 }
 
 function selectItemMessaging(li) {
@@ -36,7 +38,7 @@ function messagingReset() {
 
 function messagingOut() {
     $.ajax({
-        url: '/searchone/?q=' + $('#to_input').val(),
+        url: url_base + '/searchone/?q=' + $('#to_input').val(),
         success: function(data) {
             var res = data.split("|");
             messagingUpdate(res[0], res[1]);
@@ -63,7 +65,7 @@ function messagingView(id) {
         container = $('#message');
 
     $.ajax({
-        url: '/m/view/' + id,
+        url: url_base + '/m/view/' + id + '/',
         success: function(data) {
             container.html(data);
         }

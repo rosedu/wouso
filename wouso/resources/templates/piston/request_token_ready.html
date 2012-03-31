@@ -1,0 +1,21 @@
+{% extends 'piston/base.html' %}
+
+{% block title %}Request Token{% endblock %}
+
+{% block content %}
+    {% if error %}
+    <h1>Error</h1>
+
+    <p>{{ error }}</p>
+    {% else %}
+    <h1>Request token ready</h1>
+
+    <p>Please enter the following verifier in your application, for the authorization process to finish.</p>
+
+    <p>
+        <label for="verifier">Verifier:</label>
+        <input name="verifier" id="verifier" type="text" value="{{ token.verifier }}" />
+    </p>
+    <button onclick="javascript:window.close(); return false;">Close</button>
+    {% endif %}
+{% endblock %}

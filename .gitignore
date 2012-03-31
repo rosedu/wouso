@@ -14,3 +14,4 @@ build/
 .project
 .DS_Store
 .idea
+/pip-log.txt

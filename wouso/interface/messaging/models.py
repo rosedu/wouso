@@ -2,6 +2,7 @@ from datetime import datetime
 from django.db import models
 from django.contrib import admin
 from django.utils.translation import ugettext as _
+from wouso.core.app import App
 from wouso.core.user.models import Player
 
 class MessagingUser(Player):
@@ -46,6 +47,14 @@ class Message(models.Model):
             return header_link(request)
         return dict(text=_('Messages'), link='')
 
+class MessageApp(App):
+
+    @classmethod
+    def get_unread_count(kls, request):
+        if not request.user.get_profile():
+            return -1
+        msg_user = request.user.get_profile().get_extension(MessagingUser)
+        return Message.objects.filter(receiver=msg_user).filter(read=False).count()
 
 #admin
 admin.site.register(MessagingUser)

@@ -6,7 +6,7 @@
 {% block content %}
 <ol class="top">
 {% for g in topseries %}
-    <li>{% player_group g %} <span class="points">{{ g.live_points }}</span></li>
+    <li>{% player_group g %} <span class="points">{{ g.live_points|floatformat }}</span></li>
 {% endfor %}
 </ol>
 {% endblock %}

@@ -1,11 +1,25 @@
-<div class="widget">
-<h2>{% block title %}Block title{% endblock %}</h2>
+<div class="widget-top">
+	<!-- -->
+</div><!-- .widget-top -->
 
-<div class="widget-content">
-{% block content %}
+<div class="widget-middle">
+	<h2>
+		{% block title %}
+			Block title
+		{% endblock %}
+	</h2>
 
-Block content
+	<div class="widget-content">
+		{% block content %}
+			Block content
+		{% endblock %}
+	</div><!-- .widget-content -->
+</div><!-- .widget-middle -->
 
-{% endblock %}
-</div>
-</div>
+<div class="widget-bottom">
+	<!-- -->
+</div><!-- .widget-bottom -->
+
+<div class="spacer">
+	<!-- -->
+</div><!-- .spacer -->
