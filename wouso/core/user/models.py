@@ -144,6 +144,10 @@ class Player(models.Model):
         return staff in self.user.groups.all()
 
     @property
+    def race_name(self):
+        return self.race.name if self.race else ''
+
+    @property
     def spells(self):
         return self.playerspelldue_set.all()
 
