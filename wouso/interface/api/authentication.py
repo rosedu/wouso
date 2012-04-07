@@ -1,3 +1,5 @@
+from django.contrib.auth.models import User
+
 __author__ = 'alex'
 
 # This code is copied from http://yml-blog.blogspot.com/2009/10/django-piston-authentication-against.html
@@ -21,3 +23,19 @@ class SessionAuthentication(object):
     def challenge(self):
         import piston
         return piston.authentication.OAuthAuthentication().challenge()
+
+class SimpleAuthentication(SessionAuthentication):
+
+    def is_authenticated(self, request):
+        user = request.GET.get('user')
+
+        if not user:
+            return False
+
+        try:
+            user = User.objects.get(username=user)
+        except User.DoesNotExist:
+            return False
+
+        request.user = user
+        return True

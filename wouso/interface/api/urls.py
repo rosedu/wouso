@@ -6,7 +6,7 @@ from piston.authentication import OAuthAuthentication
 from wouso.core.game import get_games
 
 from handlers import *
-from authentication import SessionAuthentication
+from authentication import SessionAuthentication, SimpleAuthentication
 
 # needed by oauth
 urlpatterns = patterns(
@@ -22,8 +22,9 @@ urlpatterns += patterns(
 
 # API:
 sessionauth = SessionAuthentication()
+simple = SimpleAuthentication()
 authoauth = OAuthAuthentication(realm='Wouso')
-ad = {'authentication': [authoauth, sessionauth]}
+ad = {'authentication': [simple, authoauth, sessionauth]}
 
 notifications_resource = Resource(handler=NotificationsHandler, **ad)
 

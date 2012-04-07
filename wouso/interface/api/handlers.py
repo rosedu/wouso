@@ -38,7 +38,7 @@ class InfoHandler(BaseHandler):
         return {'first_name': player.user.first_name,
                 'last_name': player.user.last_name,
                 'points': player.points,
-                'race': player.race.name,
+                'race': player.race_name,
                 'level_no': player.level_no,
                 'email': player.user.email,
                 'level': player.level,
