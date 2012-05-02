@@ -5,12 +5,12 @@
 DEBUG = True
 
 # Setup logging
-import logging
-from djangologdb.handlers import DjangoDatabaseHandler, add_handler
-logging.basicConfig(level=logging.DEBUG if DEBUG else logging.INFO)
+#import logging
+#from djangologdb.handlers import DjangoDatabaseHandler, add_handler
+#logging.basicConfig(level=logging.DEBUG if DEBUG else logging.INFO)
 # This will get the default (root) logger; any further getLogger calls will inherit root
-logger = logging.getLogger()
-add_handler(logger, DjangoDatabaseHandler())
+#logger = logging.getLogger()
+#add_handler(logger, DjangoDatabaseHandler())
 
 # Configuration
 import os.path
@@ -157,7 +157,7 @@ INSTALLED_APPS = (
 
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'djangologdb',
+    #'djangologdb',
     'django_nose',
 )
 
