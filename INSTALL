@@ -6,15 +6,14 @@ WoUSO Installation
 First run:
 	cp settings.py.example settings.py #and customize for your needs
 	./manage.py syncdb
+		- choose yes, and create a super user
+	./default_setup.bash
 	./manage.py runserver
 
 Hints:
     * for active development, you may "ln -s" settings.py instead of copying.
     * also, if you want to drop tables for one app, i.e. core.user, use:
 		./manage.py sqlclear user | ./manage.py dbshell
-
-Requirements:
-	# easy install django-logdb
 
 Server setup:
 	add in crontab ./scripts/eot.bash, daily.
