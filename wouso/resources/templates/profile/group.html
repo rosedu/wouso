@@ -17,7 +17,7 @@
         <div class="rank">{% if top.disabled %}-{% else %}{% trans 'rank' %}: {{ top.position }}{% endif %}</div>
     </div>
 
-    <h2>{{ group }} {% if group.title != '' %}<small>[{{ group.name }}]</small>{% endif %}</h2>
+    <h2>TODO Races {{ group }} {% if group.title != '' %}<small>[{{ group.name }}]</small>{% endif %}</h2>
     <h3>{% if group.gclass == 0 %}{% trans 'Group' %}{% else %}
         {% if group.gclass == 1 %}{% trans 'Series' %}{% endif %}
         {% endif %}

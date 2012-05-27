@@ -36,6 +36,7 @@ def main(args):
         p.points = p.live_points
         p.save()
     # get position on distinct classes
+    #TODO fixme
     for cls in PlayerGroup.objects.values_list('gclass').distinct():
         cls = cls[0]
         for i,p in enumerate(PlayerGroup.objects.filter(gclass=cls).order_by('-points')):

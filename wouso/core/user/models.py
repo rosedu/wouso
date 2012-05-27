@@ -9,22 +9,26 @@ from wouso.core.magic.models import  Spell, PlayerArtifactAmount, PlayerSpellAmo
 
 from .. import deprecated
 
-class PlayerGroup(models.Model):
-    """ Group players together in a hierchical way """
-    # TODO: check if the perms Group linking is of any use
-    group = models.ForeignKey(Group, unique=True, related_name="%(class)s_related")
+class Race(models.Model):
+    """ Groups a large set of players together and it's used extensively for 'can_play' checks.
+    """
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=100, default='', blank=True)
-    gclass = models.IntegerField(default=0)
-    parent = models.ForeignKey('PlayerGroup', default=None, null=True, blank=True)
-    show_in_top = models.BooleanField(default=True, blank=True)
+
+    @property
+    def children(self):
+        return self.playergroup_set.all()
+
+class PlayerGroup(models.Model):
+    """ Group players together in a hierchical way """
+    name = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, default='', blank=True)
+    parent = models.ForeignKey('Race', default=None, null=True, blank=True)
 
     artifacts = models.ManyToManyField('magic.Artifact', blank=True, through='magic.GroupArtifactAmount')
 
     # used only for sorting and position
     points = models.FloatField(default=0)
-    _sisters = []
-    _children = []
 
     @property
     def live_points(self):
@@ -35,27 +39,24 @@ class PlayerGroup(models.Model):
         return p['total']
 
     @property
+    @deprecated('Please get rid of me')
     def children(self):
         """ All groups with parent set to this group, cached """
-        return self.playergroup_set.all()
+        return []
 
     @property
+    @deprecated('Please get rid of me')
     def sisters(self):
         """ All groups with the same parent as this group or of the same
         class, if parent is not set.
         """
-        if not self._sisters:
-            if self.parent:
-                self._sisters = list(self.parent.children.exclude(id=self.id).exclude(show_in_top=False))
-            else:
-                self._sisters = list(PlayerGroup.objects.filter(gclass=self.gclass).exclude(id=self.id).exclude(show_in_top=False))
-        return self._sisters
+        if self.parent:
+            return list(self.parent.children.exclude(id=self.id).exclude(show_in_top=False))
+        else:
+            return []
 
     def __unicode__(self):
         return self.name if self.title == '' else self.title
-
-class Race(PlayerGroup):
-    can_play = models.BooleanField(default=False, blank=True)
 
 class Player(models.Model):
     """ Base class for the game user. This is extended by game specific
@@ -159,31 +160,25 @@ class Player(models.Model):
         return History.user_coins(self.user)
 
     @property
+    @deprecated('Does not make sense any more')
     def proximate_group(self):
         """ Return the group with minimum class, for which the user
         is a member of, or None.
         """
-        res = self.groups.aggregate(gclass=models.Min('gclass'))
-        if res['gclass'] is None:
+        if self.groups.count():
+            return self.groups.all()[0]
+        else:
             return None
 
-        return self.groups.filter(gclass=res['gclass'])[0]
-
     @property
+    @deprecated('There is race waiting to be used')
     def series(self):
         """ Return the group with class == 1, for which the user
         is a member of, or None.
 
         TODO: get rid of old gclass=1 series, we now have race.
         """
-        if self.race:
-            return self.race
-
-        res = self.groups.filter(gclass=1)
-        if not res:
-            return None
-
-        return res[0]
+        return None
 
     def level_progress(self):
         """ Return a dictionary with: points_gained, points_left, next_level """

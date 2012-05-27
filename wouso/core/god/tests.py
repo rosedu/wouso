@@ -17,8 +17,7 @@ class GodTestCase(TestCase):
 
     def test_others_are_not_elligible_for_challenge(self):
         god = get_god()
-        group, new = Group.objects.get_or_create(name="Others")
-        others, new = PlayerGroup.objects.get_or_create(name="Others", group=group)
+        others, new = PlayerGroup.objects.get_or_create(name="Others")
 
         self.player.groups.add(others)
         self.assertFalse(god.user_is_eligible(self.player, ChallengeGame))
@@ -41,8 +40,7 @@ class GodTestCase(TestCase):
     def test_user_can_interact_with_others(self):
         user2 = User.objects.create(username='testgod2')
         player2 = user2.get_profile()
-        group, new = Group.objects.get_or_create(name="Others")
-        others, new = PlayerGroup.objects.get_or_create(name="Others", group=group)
+        others, new = PlayerGroup.objects.get_or_create(name="Others")
         player2.groups.add(others)
 
         god = get_god()
