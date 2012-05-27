@@ -6,6 +6,7 @@
 import sys
 from datetime import date
 from django.core.management import setup_environ
+from wouso.core.magic.models import SpellHistory
 
 def init():
     import settings
@@ -71,7 +72,8 @@ def main(args):
             # launched and accepted before yesterday, but not played by both
             c.set_expired()
 
-    from wouso.core.user.models import PlayerSpellDue, SpellHistory
+    from wouso.core.user.models import PlayerSpellDue
+
     spells = PlayerSpellDue.get_expired(today)
     print 'Updating expired spells (%d)' % spells.count()
     for s in spells:
