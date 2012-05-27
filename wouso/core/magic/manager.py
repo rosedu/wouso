@@ -1,3 +1,5 @@
+import logging
+
 from wouso.core.god import God
 from wouso.core.magic.models import PlayerSpellDue, PlayerSpellAmount, PlayerArtifactAmount
 
@@ -108,3 +110,31 @@ class MagicManager(object):
         except PlayerSpellAmount.DoesNotExist:
             return 0
         return psa.amount
+
+    def cast_spell(self, spell, source, due):
+        """ Curse self with given spell from source, for due time. """
+        try:
+            psamount = PlayerSpellAmount.objects.get(player=source, spell=spell)
+            assert psamount.amount > 0
+        except (PlayerSpellAmount.DoesNotExist, AssertionError):
+            return False
+
+        # Pre-cat God actions: immunity and curse ar done by this
+        # check
+        if not God.can_cast(spell, source, self.player):
+            return False
+
+        try:
+            psdue = PlayerSpellDue.objects.create(player=self.player, source=source, spell=spell, due=due)
+        except Exception as e:
+            logging.exception(e)
+            return False
+            # Post-cast God action (there are specific modifiers, such as clean-spells
+        # that are implemented in God
+        God.post_cast(psdue)
+        psamount.amount -= 1
+        if not psamount.amount:
+            psamount.delete()
+        else:
+            psamount.save()
+        return True

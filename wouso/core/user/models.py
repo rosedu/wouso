@@ -179,36 +179,8 @@ class Player(models.Model):
         """ Return a dictionary with: points_gained, points_left, next_level """
         return God.get_level_progress(self)
 
-
-    def cast_spell(self, spell, source, due):
-        """ Curse self with given spell from source, for due time. """
-        try:
-            psamount = PlayerSpellAmount.objects.get(player=source, spell=spell)
-            assert psamount.amount > 0
-        except (PlayerSpellAmount.DoesNotExist, AssertionError):
-            return False
-
-        # Pre-cat God actions: immunity and curse ar done by this
-        # check
-        if not God.can_cast(spell, source, self):
-            return False
-
-        try:
-            psdue = PlayerSpellDue.objects.create(player=self, source=source, spell=spell, due=due)
-        except Exception as e:
-            logging.exception(e)
-            return False
-        # Post-cast God action (there are specific modifiers, such as clean-spells
-        # that are implemented in God
-        God.post_cast(psdue)
-        psamount.amount -= 1
-        if psamount.amount == 0:
-            psamount.delete()
-        else:
-            psamount.save()
-        return True
-
     def steal_points(self, userto, amount):
+        # TODO (re)move it
         from wouso.core import scoring
         scoring.score(self, None, 'steal-points', external_id=userto.id, points=-amount)
         scoring.score(userto, None, 'steal-points', external_id=self.id, points=amount)
