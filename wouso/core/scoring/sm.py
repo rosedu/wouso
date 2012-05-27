@@ -11,7 +11,12 @@ from wouso.interface.activity import signals
 
 class NotSetupError(Exception): pass
 class InvalidFormula(Exception): pass
-class FormulaParsingError(Exception): pass
+class FormulaParsingError(Exception):
+    def __init__(self, formula):
+        super(FormulaParsingError, self).__init__()
+        self.formula = formula
+    def __unicode__(self):
+        return unicode(self.formula)
 class InvalidScoreCall(Exception): pass
 
 CORE_POINTS = ('points','gold')
@@ -70,7 +75,8 @@ def calculate(formula, **params):
                 result = 0
             ret[coin] = result
     except Exception as e:
-        raise FormulaParsingError(e)
+        logging.exception(e)
+        raise FormulaParsingError(formula)
 
     return ret
 

@@ -54,7 +54,7 @@ class ScoringTestCase(unittest.TestCase):
         self.assertEqual(ret['_test'], 15)
 
         # Multiple coins
-        formula2.formula='_test=5*3, points=4'
+        formula2.formula='_test=5*3; points=4'
 
         ret = scoring.calculate(formula2)
         self.assertTrue(isinstance(ret, dict))

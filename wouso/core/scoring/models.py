@@ -53,6 +53,7 @@ class Formula(ScoringModel, models.Model):
     A formula is owned by a game, or by the system (set owner to None)
     """ 
     id = models.CharField(max_length=100, primary_key=True)
+    # TODO refactor formula name, make it explicit
     formula = models.CharField(max_length=500, default='')
     owner = models.ForeignKey(Game, null=True, blank=True)
     description = models.CharField(max_length=500, default='')
