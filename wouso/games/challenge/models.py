@@ -6,7 +6,8 @@ from django.db import models
 from django.db.models import Q, Max
 from django.utils.translation import ugettext_noop, ugettext as _
 from django.core.urlresolvers import reverse
-from wouso.core.user.models import Player, InsufficientAmount
+from wouso.core.user.models import Player
+from wouso.core.magic.manager import InsufficientAmount
 from wouso.core.qpool.models import Question
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.game.models import Game
