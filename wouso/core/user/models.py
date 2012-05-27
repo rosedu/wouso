@@ -7,6 +7,8 @@ from wouso.interface.activity import signals
 from wouso.core.god import God
 from wouso.core.magic.models import  Spell, PlayerArtifactAmount, PlayerSpellAmount, PlayerSpellDue
 
+from .. import deprecated
+
 class PlayerGroup(models.Model):
     """ Group players together in a hierchical way """
     # TODO: check if the perms Group linking is of any use
@@ -93,40 +95,51 @@ class Player(models.Model):
         return MagicManager(self)
 
     @property
+    @deprecated
     def spells(self):
         return self.magic.spells
 
     @property
+    @deprecated
     def spells_cast(self):
         return self.magic.spells_cast
 
     @property
+    @deprecated
     def spells_available(self):
         return self.magic.spells_available
 
     @property
+    @deprecated
     def artifact_amounts(self):
         return self.magic.artifact_amounts
 
     @property
+    @deprecated
     def spell_amounts(self):
         return self.magic.spell_amounts
 
+    @deprecated('Function deprecated, please use player.magic.has_modifier instead')
     def has_modifier(self, modifier):
         return self.magic.has_modifier(modifier)
 
+    @deprecated('Function deprecated, please use player.magic.modifier_percents instead')
     def modifier_percents(self, modifier):
         return self.magic.modifier_percents(modifier)
 
+    @deprecated('Function deprecated, please use player.magic.use_modifier instead')
     def use_modifier(self, modifier, amount):
         return self.magic.use_modifier(modifier, amount)
 
+    @deprecated('Function deprecated, please use player.magic.give_modifier instead')
     def give_modifier(self, modifier, amount):
         return self.magic.give_modifier(modifier, amount)
 
+    @deprecated('Function deprecated, please use player.magic.add_spell instead')
     def add_spell(self, spell):
         self.magic.add_spell(spell)
 
+    @deprecated('Function deprecated, please use player.magic.spell_stock instead')
     def spell_stock(self, spell):
         return self.magic.spell_stock(spell)
 
