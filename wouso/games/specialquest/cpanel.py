@@ -82,7 +82,7 @@ def manage_player(request, player_id):
         elif request.POST.get('points', False):
             try:
                 amount = int(request.POST.get('points', 0))
-                assert amount > 0
+                #assert amount > 0
             except (ValueError, AssertionError):
                 error = 'Invalid amount'
             else:
