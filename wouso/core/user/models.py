@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext_noop
 from wouso.interface.activity import signals
 from wouso.core.god import God
-from wouso.core.magic.models import  Spell, PlayerArtifactAmount, PlayerSpellAmount
+from wouso.core.magic.models import  Spell, PlayerArtifactAmount, PlayerSpellAmount, PlayerSpellDue
 
 class PlayerGroup(models.Model):
     """ Group players together in a hierchical way """
@@ -56,25 +56,6 @@ class Race(PlayerGroup):
 
 class InsufficientAmount(Exception): pass
 
-
-class PlayerSpellDue(models.Model):
-    """ Tie spell, casting user, duration with the victim player """
-    # Refactor: move it to magic
-    class Meta:
-        unique_together = ('player', 'spell')
-    player = models.ForeignKey('Player')
-    spell = models.ForeignKey(Spell)
-    source = models.ForeignKey('Player', related_name='spell_source')
-    due = models.DateTimeField()
-
-    seen = models.BooleanField(default=False, blank=True) # if the target have seen it
-
-    @staticmethod
-    def get_expired(date):
-        return PlayerSpellDue.objects.filter(due__lte=date)
-
-    def __unicode__(self):
-        return u"%s casted on %s until %s [%s]" % (self.spell, self.player, self.due, self.source)
 
 class Player(models.Model):
     """ Base class for the game user. This is extended by game specific
