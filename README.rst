@@ -20,8 +20,7 @@ Installing
 
 3. Install `django-piston` (by hand, because of a weird bug_)::
 
-    curl 'http://pypi.python.org/packages/source/d/django-piston/django-piston-0.2.3.tar.gz'
-    | tar xzf -
+    curl 'http://pypi.python.org/packages/source/d/django-piston/django-piston-0.2.3.tar.gz' | tar xzf -
     cd django-piston-0.2.3; python setup.py install
     cd ..; rm -r django-piston-02.3
 
