@@ -1,5 +1,6 @@
 from wouso.core.magic.models import Artifact, Group
 from wouso.core.game import get_games
+from django.contrib.auth.models import Group as DjangoGroup
 
 class DefaultGod:
     """ A basic God implementation and also the base class for other gods.
@@ -197,7 +198,8 @@ class DefaultGod:
 
         if game == 'ChallengeGame':
             from wouso.core.user import models
-            others, new = models.PlayerGroup.objects.get_or_create(name='Others')
+            group, new = DjangoGroup.objects.get_or_create(name='Others')
+            others, new = models.PlayerGroup.objects.get_or_create(name='Others', group=group)
             if others in user.groups.all():
                 return False
 
