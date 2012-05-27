@@ -1,4 +1,4 @@
-from wouso.core.magic.models import Artifact, Group
+from wouso.core.magic.models import Artifact, Group, SpellHistory
 from wouso.core.game import get_games
 from django.contrib.auth.models import Group as DjangoGroup
 
@@ -163,7 +163,6 @@ class DefaultGod:
         Returns True if action has been taken, False if not.
         """
         # Always executed, so log
-        from wouso.core.user.models import SpellHistory
         SpellHistory.used(psdue.source, psdue.spell, psdue.player)
         # Also trigger anonymous activiy
         from wouso.interface.activity import signals

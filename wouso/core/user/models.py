@@ -1,4 +1,3 @@
-from datetime import datetime
 import logging
 from django.db import models
 from django.contrib.auth.models import User, Group
@@ -344,47 +343,6 @@ class Player(models.Model):
     def __unicode__(self):
         ret = u"%s %s" % (self.user.first_name, self.user.last_name)
         return ret if ret != u" " else self.user.__unicode__()
-
-class SpellHistory(models.Model):
-    # Refactor: move it to magic
-    TYPES = (('b', 'bought'), ('u', 'used'), ('c', 'cleaned'), ('e', 'expired'))
-
-    type = models.CharField(max_length=1, choices=TYPES)
-    user_from = models.ForeignKey(Player, related_name='sh_from')
-    user_to = models.ForeignKey(Player, blank=True, null=True, default=None, related_name='sh_to')
-    date = models.DateTimeField(auto_now_add=True)
-    spell = models.ForeignKey(Spell)
-
-    @classmethod
-    def log(cls, type, user, spell, user_to=None):
-        cls.objects.create(user_from=user, spell=spell, user_to=user_to, type=type)
-
-    @classmethod
-    def bought(cls, user, spell):
-        cls.log('b', user, spell)
-
-    @classmethod
-    def expired(cls, user, spell):
-        cls.log('e', user, spell)
-
-    @classmethod
-    def used(cls, user, spell, dest):
-        if spell.name == 'dispell':
-            type = 'c'
-        else:
-            type = 'u'
-        cls.log(type, user, spell, user_to=dest)
-
-    def __unicode__(self):
-        if self.type == 'b':
-            return u"%s bought %s" % (self.user_from, self.spell)
-        if self.type == 'c':
-            return u"%s cleared %s" % (self.user_from, self.user_to)
-        if self.type == 'u':
-            return u"%s cast %s on %s" % (self.user_from, self.spell, self.user_to)
-        if self.type == 'e':
-            return u"%s expired %s" % (self.user_from, self.spell)
-        return "%s %s %s" % (self.type, self.user_from, self.spell)
 
 # Hack for having user and user's profile always in sync
 def user_post_save(sender, instance, **kwargs):
