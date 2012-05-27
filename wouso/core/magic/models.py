@@ -97,3 +97,12 @@ class SpellHistory(models.Model):
             return u"%s expired %s" % (self.user_from, self.spell)
         return "%s %s %s" % (self.type, self.user_from, self.spell)
 
+
+class GroupArtifactAmount(models.Model):
+    """ Tie artifact and amount to the owner group """
+    # Refactor move it to magic
+    class Meta:
+        unique_together = ('group', 'artifact')
+    group = models.ForeignKey('user.PlayerGroup')
+    artifact = models.ForeignKey(Artifact)
+    amount = models.IntegerField(default=1)
