@@ -62,7 +62,7 @@ class QotdTestCase(unittest.TestCase):
         self.assertEqual(len(h1) + 1, len(h2))
 
         coins = scoring.user_coins(self.qotd_user)
-        self.assertEqual(coins['points'], 3)
+        self.assertGreater(coins['points'], 0)
 
 def _make_question_for_today(user, text):
     category = Category(name='qotd')
