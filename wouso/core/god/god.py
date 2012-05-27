@@ -52,9 +52,10 @@ class DefaultGod:
         try:
             artifact = Artifact.objects.get(name=name, group=group)
         except Artifact.DoesNotExist:
-            artifact = Artifact.objects.get(name=name, group=Artifact.DEFAULT())
-        except Artifact.DoesNotExist:
-            return None
+            try:
+                artifact = Artifact.objects.get(name=name, group=Artifact.DEFAULT())
+            except Artifact.DoesNotExist:
+                return None
 
         return artifact
 
