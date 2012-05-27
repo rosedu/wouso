@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User, Group
 from django.test import TestCase
 from . import get_god
+import unittest
 from wouso.core.user.models import PlayerGroup
 from wouso.games.challenge.models import ChallengeGame
 
@@ -27,5 +28,24 @@ class GodTestCase(TestCase):
         self.assertTrue(god.user_is_eligible(self.player, ChallengeGame))
 
 
+    def test_user_can_interact_with_users(self):
+        user2 = User.objects.create(username='testgod2')
+        player2 = user2.get_profile()
 
+        god = get_god()
+
+        self.assertTrue(god.user_can_interact_with(self.player, player2))
+
+
+    @unittest.expectedFailure
+    def test_user_can_interact_with_others(self):
+        user2 = User.objects.create(username='testgod2')
+        player2 = user2.get_profile()
+        group, new = Group.objects.get_or_create(name="Others")
+        others, new = PlayerGroup.objects.get_or_create(name="Others", group=group)
+        player2.groups.add(others)
+
+        god = get_god()
+
+        self.assertFalse(god.user_can_interact_with(self.player, player2))
 
