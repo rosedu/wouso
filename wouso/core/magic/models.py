@@ -132,3 +132,23 @@ class PlayerSpellAmount(models.Model):
 
     def __unicode__(self):
         return u"%s has %s [%d]" % (self.player, self.spell, self.amount)
+
+
+class PlayerSpellDue(models.Model):
+    """ Tie spell, casting user, duration with the victim player """
+    # Refactor: move it to magic
+    class Meta:
+        unique_together = ('player', 'spell')
+    player = models.ForeignKey('user.Player')
+    spell = models.ForeignKey(Spell)
+    source = models.ForeignKey('user.Player', related_name='spell_source')
+    due = models.DateTimeField()
+
+    seen = models.BooleanField(default=False, blank=True) # if the target have seen it
+
+    @staticmethod
+    def get_expired(date):
+        return PlayerSpellDue.objects.filter(due__lte=date)
+
+    def __unicode__(self):
+        return u"%s casted on %s until %s [%s]" % (self.spell, self.player, self.due, self.source)

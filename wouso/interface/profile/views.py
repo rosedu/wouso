@@ -9,9 +9,9 @@ from django.db.models import Q
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
-from wouso.core.user.models import Player, PlayerGroup, PlayerSpellDue
+from wouso.core.user.models import Player, PlayerGroup
 from wouso.core.scoring.models import History
-from wouso.core.magic.models import Spell
+from wouso.core.magic.models import Spell, PlayerSpellDue
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, GroupHistory
 from wouso.interface.top.models import History as TopHistory

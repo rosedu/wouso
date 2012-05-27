@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from wouso.core.app import App
-from wouso.core.user.models import PlayerSpellDue
+from wouso.core.magic.models import PlayerSpellDue
 
 class Bazaar(App):
     @classmethod

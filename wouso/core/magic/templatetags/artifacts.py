@@ -1,6 +1,5 @@
 import django
-from wouso.core.user.models import (  PlayerSpellDue)
-from wouso.core.magic.models import Spell, PlayerArtifactAmount, PlayerSpellAmount
+from wouso.core.magic.models import Spell, PlayerArtifactAmount, PlayerSpellAmount, PlayerSpellDue
 
 register = django.template.Library()
 

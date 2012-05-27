@@ -1,9 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as OldUserAdmin
-from wouso.core.magic.models import SpellHistory, PlayerArtifactAmount, PlayerSpellAmount
+from wouso.core.magic.models import SpellHistory, PlayerArtifactAmount, PlayerSpellAmount, PlayerSpellDue
 from wouso.core.user.models import (Player, PlayerGroup,
-                                    PlayerSpellDue,
                                     Race)
 
 class UserProfileInline(admin.StackedInline):
