@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext_noop
 from wouso.interface.activity import signals
 from wouso.core.god import God
-from wouso.core.magic.models import Artifact, Spell, GroupArtifactAmount, PlayerArtifactAmount
+from wouso.core.magic.models import  Spell, PlayerArtifactAmount, PlayerSpellAmount
 
 class PlayerGroup(models.Model):
     """ Group players together in a hierchical way """
@@ -56,17 +56,6 @@ class Race(PlayerGroup):
 
 class InsufficientAmount(Exception): pass
 
-class PlayerSpellAmount(models.Model):
-    """ Tie spells to collecting user """
-    # Refactor: move it to magic
-    class Meta:
-        unique_together = ('player', 'spell')
-    player = models.ForeignKey('Player')
-    spell = models.ForeignKey(Spell)
-    amount = models.IntegerField(default=1)
-
-    def __unicode__(self):
-        return u"%s has %s [%d]" % (self.player, self.spell, self.amount)
 
 class PlayerSpellDue(models.Model):
     """ Tie spell, casting user, duration with the victim player """
@@ -106,7 +95,7 @@ class Player(models.Model):
     # artifacts available for using
     artifacts = models.ManyToManyField('magic.Artifact', blank=True, through='magic.PlayerArtifactAmount')
     # spells available for casting
-    spells_collection = models.ManyToManyField(Spell, blank=True, through='PlayerSpellAmount', related_name='spell_collection')
+    spells_collection = models.ManyToManyField(Spell, blank=True, through='magic.PlayerSpellAmount', related_name='spell_collection')
     groups = models.ManyToManyField(PlayerGroup, blank=True)
 
     # race
