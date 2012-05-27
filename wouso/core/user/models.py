@@ -55,9 +55,6 @@ class PlayerGroup(models.Model):
 class Race(PlayerGroup):
     can_play = models.BooleanField(default=False, blank=True)
 
-class InsufficientAmount(Exception): pass
-
-
 class Player(models.Model):
     """ Base class for the game user. This is extended by game specific
     player models.
