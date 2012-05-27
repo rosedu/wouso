@@ -46,7 +46,7 @@ def user_profile(request, id, page=u'1'):
         filter(Q(user_to=id) | Q(user_from=id)).order_by('-timestamp')
 
     top_user = profile.get_extension(TopUser)
-    top_user.topgroups = list(profile.groups.all().order_by('-gclass'))
+    top_user.topgroups = list(profile.groups.all())
     for g in top_user.topgroups:
         g.week_evolution = top_user.week_evolution(relative_to=g)
         g.position = TopHistory.get_user_position(top_user, relative_to=g)
@@ -86,9 +86,9 @@ def player_group(request, id, page=u'1'):
     top_users = group.player_set.all().order_by('-points')
     subgroups = group.children.order_by('-points')
     if group.parent:
-        sistergroups = group.parent.children.exclude(show_in_top=False).order_by('-points')
+        sistergroups = group.parent.children.all().order_by('-points')
     else:
-        sistergroups = PlayerGroup.objects.filter(gclass=group.gclass).exclude(show_in_top=False).order_by('-points')
+        sistergroups = None
     history = GroupHistory(group)
 
     for g in group.sisters:
@@ -115,7 +115,7 @@ def player_group(request, id, page=u'1'):
 @login_required
 def groups_index(request):
     PlayerGroup.top = lambda(self): GroupHistory(self)
-    groups = PlayerGroup.objects.filter(gclass=1).order_by('name')
+    groups = PlayerGroup.objects.exclude(parent=None).order_by('name')
     
     return render_to_response('profile/groups.html',
                               {'groups': groups},

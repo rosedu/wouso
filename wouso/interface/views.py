@@ -62,7 +62,7 @@ def homepage(request, page=u'1'):
     activity = get_wall(page)
 
     topuser = profile.get_extension(TopUser)
-    topgroups = list(profile.groups.all().order_by('-gclass'))
+    topgroups = list(profile.groups.all())
     for g in topgroups:
         g.position = TopHistory.get_user_position(topuser, relative_to=g)
 

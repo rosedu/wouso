@@ -44,8 +44,8 @@ def gettop(request, toptype=0, sortcrit=0, page=1):
     except (EmptyPage, InvalidPage):
         users = paginator.page(0)
 
-    topseries = PlayerGroup.objects.exclude(show_in_top=False).filter(gclass=1).order_by('-points')
-    topgroups = PlayerGroup.objects.exclude(show_in_top=False).filter(gclass=0).order_by('-points')[:5]
+    topseries = [] #PlayerGroup.objects.exclude(parent=None).order_by('-points') TODO: top races
+    topgroups = PlayerGroup.objects.exclude(parent=None).order_by('-points')[:5]
 
     return render_to_response('top/maintop.html',
                            {'allUsers':      users,
@@ -59,7 +59,7 @@ def gettop(request, toptype=0, sortcrit=0, page=1):
 
 def pyramid(request):
     s = []
-    for g in PlayerGroup.objects.exclude(show_in_top=False).filter(gclass=1).order_by('name'):
+    for g in PlayerGroup.objects.exclude(show_in_top=False).filter(parent=None).order_by('name'): #TODO races
         columns = []
         players = []
         i, j = 1, 0
@@ -78,7 +78,7 @@ def pyramid(request):
 
 def topclasses(request):
     # top classes
-    classes = PlayerGroup.objects.exclude(show_in_top=False, parent__show_in_top=False).filter(gclass=0).order_by('points')
+    classes = PlayerGroup.objects.exclude(parent=None).order_by('points')
     classes = list(classes)
     classes = reversed(sorted(classes, key=lambda obj: obj.live_points))
 
