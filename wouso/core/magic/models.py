@@ -106,3 +106,16 @@ class GroupArtifactAmount(models.Model):
     group = models.ForeignKey('user.PlayerGroup')
     artifact = models.ForeignKey(Artifact)
     amount = models.IntegerField(default=1)
+
+
+class PlayerArtifactAmount(models.Model):
+    """ Tie artifact and amount to the owner user """
+    # Refactor move it to magic
+    class Meta:
+        unique_together = ('player', 'artifact')
+    player = models.ForeignKey('user.Player')
+    artifact = models.ForeignKey(Artifact)
+    amount = models.IntegerField(default=1)
+
+    def __unicode__(self):
+        return u"%s has %s [%d]" % (self.player, self.artifact, self.amount)
