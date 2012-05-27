@@ -139,7 +139,7 @@ def magic_cast(request, destination=None, spell=None):
                 error = _('Invalid number of days')
             else:
                 due = datetime.now() + timedelta(days=days)
-                if destination.cast_spell(spell, source=player, due=due):
+                if destination.magic.cast_spell(spell, source=player, due=due):
                     return HttpResponseRedirect(reverse('wouso.interface.profile.views.user_profile', args=(destination.id,)))
                 else:
                     error = _('Cast failed.')
