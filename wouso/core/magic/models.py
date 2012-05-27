@@ -119,3 +119,16 @@ class PlayerArtifactAmount(models.Model):
 
     def __unicode__(self):
         return u"%s has %s [%d]" % (self.player, self.artifact, self.amount)
+
+
+class PlayerSpellAmount(models.Model):
+    """ Tie spells to collecting user """
+    # Refactor: move it to magic
+    class Meta:
+        unique_together = ('player', 'spell')
+    player = models.ForeignKey('user.Player')
+    spell = models.ForeignKey(Spell)
+    amount = models.IntegerField(default=1)
+
+    def __unicode__(self):
+        return u"%s has %s [%d]" % (self.player, self.spell, self.amount)
