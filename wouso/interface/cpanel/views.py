@@ -18,7 +18,7 @@ from wouso.core import scoring
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
 from wouso.interface.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
-from forms import QuestionForm, TagsForm
+from forms import QuestionForm, TagsForm, UserForm
 
 
 @login_required
@@ -447,6 +447,18 @@ def players(request):
     all = Player.objects.all().order_by('-user__date_joined')
 
     return render_to_response('cpanel/players.html', dict(players=all), context_instance=RequestContext(request))
+
+@login_required
+def add_player(request):
+    form = UserForm()
+    if request.method == "POST":
+        user = UserForm(data = request.POST)
+        if user.is_valid():
+            user.save()
+            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.players'))
+        else:
+            form = user
+    return render_to_response('cpanel/add_player.html', {'form': form}, context_instance=RequestContext(request))
 
 # 'I am lazy' hack comes in
 import sys

@@ -32,6 +32,8 @@ upat = [
     url(r'^staff/toggle/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.stafftoggle', name='staff_toggle'),
 
     url(r'^players/$', 'wouso.interface.cpanel.views.players', name='all_players'),
+
+    url(r'^add_player/$', 'wouso.interface.cpanel.views.add_player', name='add_player'),
 ]
 
 for g in get_cpanel_games():
