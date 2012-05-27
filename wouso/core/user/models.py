@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext_noop
 from wouso.interface.activity import signals
 from wouso.core.god import God
-from wouso.core.magic.models import Artifact, Spell, GroupArtifactAmount
+from wouso.core.magic.models import Artifact, Spell, GroupArtifactAmount, PlayerArtifactAmount
 
 class PlayerGroup(models.Model):
     """ Group players together in a hierchical way """
@@ -16,7 +16,7 @@ class PlayerGroup(models.Model):
     parent = models.ForeignKey('PlayerGroup', default=None, null=True, blank=True)
     show_in_top = models.BooleanField(default=True, blank=True)
 
-    artifacts = models.ManyToManyField(Artifact, blank=True, through=GroupArtifactAmount)
+    artifacts = models.ManyToManyField('magic.Artifact', blank=True, through='magic.GroupArtifactAmount')
 
     # used only for sorting and position
     points = models.FloatField(default=0)
@@ -55,18 +55,6 @@ class Race(PlayerGroup):
     can_play = models.BooleanField(default=False, blank=True)
 
 class InsufficientAmount(Exception): pass
-
-class PlayerArtifactAmount(models.Model):
-    """ Tie artifact and amount to the owner user """
-    # Refactor move it to magic
-    class Meta:
-        unique_together = ('player', 'artifact')
-    player = models.ForeignKey('Player')
-    artifact = models.ForeignKey(Artifact)
-    amount = models.IntegerField(default=1)
-
-    def __unicode__(self):
-        return u"%s has %s [%d]" % (self.player, self.artifact, self.amount)
 
 class PlayerSpellAmount(models.Model):
     """ Tie spells to collecting user """
@@ -116,7 +104,7 @@ class Player(models.Model):
     last_seen = models.DateTimeField(null=True, blank=True)
 
     # artifacts available for using
-    artifacts = models.ManyToManyField(Artifact, blank=True, through='PlayerArtifactAmount')
+    artifacts = models.ManyToManyField('magic.Artifact', blank=True, through='magic.PlayerArtifactAmount')
     # spells available for casting
     spells_collection = models.ManyToManyField(Spell, blank=True, through='PlayerSpellAmount', related_name='spell_collection')
     groups = models.ManyToManyField(PlayerGroup, blank=True)

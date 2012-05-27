@@ -1,9 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as OldUserAdmin
-from wouso.core.magic.models import SpellHistory
+from wouso.core.magic.models import SpellHistory, PlayerArtifactAmount
 from wouso.core.user.models import (Player, PlayerGroup,
-                                    PlayerArtifactAmount,
                                     PlayerSpellAmount,
                                     PlayerSpellDue,
                                     Race)
