@@ -9,20 +9,27 @@ class Group(models.Model):
     
     def __unicode__(self):
         return self.name
-    
+
+class Modifier(models.Model):
+    class Meta:
+        abstract = True
+
+    name = models.CharField(max_length=100)
+
 class Artifact(models.Model):
     """ The generic artifact model. This should contain the name (identifier) and group,
     but also personalization such as: image (icon) and title
     """
     class Meta:
         unique_together = ('name', 'group', 'percents')
+
     name = models.CharField(max_length=64) # level-1, quest-bun, etc
     title = models.CharField(max_length=100) # Maturator
     image = models.ImageField(upload_to=settings.MEDIA_ARTIFACTS_DIR, blank=True, null=True)
     group = models.ForeignKey(Group)
 
     percents = models.IntegerField(default=100)
-    
+
     @property
     def path(self):
         """ Image can be stored inside uploads or in theme, return the
@@ -97,6 +104,15 @@ class SpellHistory(models.Model):
             return u"%s expired %s" % (self.user_from, self.spell)
         return "%s %s %s" % (self.type, self.user_from, self.spell)
 
+# Tolbe
+
+class RaceArtifactAmount(models.Model):
+    class Meta:
+        unique_together = ('race', 'artifact')
+
+    race = models.ForeignKey('user.Race')
+    artifact = models.ForeignKey(Artifact)
+    amount = models.IntegerField(default=1)
 
 class GroupArtifactAmount(models.Model):
     """ Tie artifact and amount to the owner group """

@@ -15,6 +15,8 @@ class Race(models.Model):
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=100, default='', blank=True)
 
+    artifacts = models.ManyToManyField('magic.Artifact', blank=True, through='magic.RaceArtifactAmount')
+
     @property
     def children(self):
         return self.playergroup_set.all()
