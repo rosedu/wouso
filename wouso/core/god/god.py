@@ -192,7 +192,7 @@ class DefaultGod:
             return True
         return False
 
-    def user_is_eligible(self, user, game=None):
+    def user_is_eligible(self, player, game=None):
         if game is not None:
             game = str(game.__name__)
 
@@ -200,12 +200,12 @@ class DefaultGod:
             from wouso.core.user import models
             group, new = DjangoGroup.objects.get_or_create(name='Others')
             others, new = models.PlayerGroup.objects.get_or_create(name='Others', group=group)
-            if others in user.groups.all():
+            if others in player.groups.all():
                 return False
 
         return True
 
-    def user_can_interact_with(self, user_from, user_to, game=None):
+    def user_can_interact_with(self, player_from, player_to, game=None):
         if game is not None:
             game = str(game.__name__)
 
@@ -215,14 +215,13 @@ class DefaultGod:
             from wouso.interface.top.models import TopUser
             from wouso.games.challenge.models import Challenge
 
-            lastch = Challenge.last_between(user_from, user_to)
+            lastch = Challenge.last_between(player_from, player_to)
             if lastch:
                 elapsed_days = (datetime.now() - lastch.date).days
-                position_diff = abs(user_from.get_extension(TopUser).position - user_to.get_extension(TopUser).position)
+                position_diff = abs(player_from.get_extension(TopUser).position - player_to.get_extension(TopUser).position)
                 rule = ceil(position_diff * 0.1)
                 if rule > 7:
                     rule = 7 # nu bloca mai mult de 7 zile
-                #print "AICI", user_from, user_to, lastch, elapsed_days,'days', rule,'rule'
                 if rule <= elapsed_days:
                     return True
                 return False
