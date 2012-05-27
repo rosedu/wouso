@@ -2,6 +2,7 @@ import logging
 from django.db import models
 from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext_noop
+from wouso.core.magic.manager import MagicManager
 from wouso.interface.activity import signals
 from wouso.core.god import God
 from wouso.core.magic.models import  Spell, PlayerArtifactAmount, PlayerSpellAmount, PlayerSpellDue
@@ -69,7 +70,6 @@ class Player(models.Model):
     points = models.FloatField(default=0, blank=True, null=True)
 
     level_no = models.IntegerField(default=1, blank=True, null=True)
-    #level = models.ForeignKey(Artifact, default=Artifact.get_level_1, related_name='user_level', blank=True, null=True)
 
     last_seen = models.DateTimeField(null=True, blank=True)
 
@@ -82,11 +82,6 @@ class Player(models.Model):
     # race
     race = models.ForeignKey(Race, blank=False, default=None, null=True, related_name='player_race')
 
-    # spells casted on itself
-    # it doesnt work this way, instead provide it as a property
-    # see: http://stackoverflow.com/questions/583327/django-model-with-2-foreign-keys-from-the-same-table
-    #spells = models.ManyToManyField(Spell, blank=True, through='PlayerSpellDue')
-
     def in_staff_group(self):
         staff, new = Group.objects.get_or_create(name='Staff')
         return staff in self.user.groups.all()
@@ -95,18 +90,50 @@ class Player(models.Model):
     def race_name(self):
         return self.race.name if self.race else ''
 
+    # Magic manager
+    @property
+    def magic(self):
+        return MagicManager(self)
+
     @property
     def spells(self):
-        return self.playerspelldue_set.all()
+        return self.magic.spells
 
     @property
     def spells_cast(self):
-        return PlayerSpellDue.objects.filter(source=self)
+        return self.magic.spells_cast
 
     @property
     def spells_available(self):
-        return PlayerSpellAmount.objects.filter(player=self)
+        return self.magic.spells_available
 
+    @property
+    def artifact_amounts(self):
+        return self.magic.artifact_amounts
+
+    @property
+    def spell_amounts(self):
+        return self.magic.spell_amounts
+
+    def has_modifier(self, modifier):
+        return self.magic.has_modifier(modifier)
+
+    def modifier_percents(self, modifier):
+        return self.magic.modifier_percents(modifier)
+
+    def use_modifier(self, modifier, amount):
+        return self.magic.use_modifier(modifier, amount)
+
+    def give_modifier(self, modifier, amount):
+        return self.magic.give_modifier(modifier, amount)
+
+    def add_spell(self, spell):
+        self.magic.add_spell(spell)
+
+    def spell_stock(self, spell):
+        return self.magic.spell_stock(spell)
+
+    # Other stuff
     @property
     def level(self):
         """ Return an artifact object for the current level_no.
@@ -148,86 +175,10 @@ class Player(models.Model):
 
         return res[0]
 
-    @property
-    def artifact_amounts(self):
-        return self.playerartifactamount_set
-
-    @property
-    def spell_amounts(self):
-        return self.playerspellamount_set
-
     def level_progress(self):
         """ Return a dictionary with: points_gained, points_left, next_level """
         return God.get_level_progress(self)
 
-    def has_modifier(self, modifier):
-        """ Check for an artifact with id = modifier
-        or for an active spell cast on me with id = modifier
-        """
-        try:
-            return PlayerArtifactAmount.objects.get(player=self, artifact__name=modifier)
-        except PlayerArtifactAmount.DoesNotExist:
-            pass
-
-        try:
-            return PlayerSpellDue.objects.filter(player=self, spell__name=modifier).count() > 0
-        except PlayerSpellDue.DoesNotExist:
-            pass
-        return False
-
-    def modifier_percents(self, modifier):
-        percents = 100
-        res = PlayerArtifactAmount.objects.filter(player=self, artifact__name=modifier)
-        for a in res:
-            percents += a.amount * a.artifact.percents
-        # now add spells to that
-        res = PlayerSpellDue.objects.filter(player=self, spell__name=modifier)
-        for a in res:
-            percents += a.spell.percents
-        return percents
-
-    def use_modifier(self, modifier, amount):
-        """ Substract amount of modifier artifact from players collection.
-        If the current amount is less than amount, raise an exception.
-        If the amount after substraction is zero, delete the corresponding
-        artifact amount object.
-        """
-        paamount = self.has_modifier(modifier)
-        if amount > paamount.amount:
-            raise InsufficientAmount()
-
-        paamount.amount -= amount
-        if paamount.amount == 0:
-            paamount.delete()
-        else:
-            paamount.save()
-        return paamount
-
-    def give_modifier(self, modifier, amount):
-        """ Add given amount to existing, or creat new artifact amount
-        for the current user.
-        """
-        if amount <= 0:
-            return
-
-        paamount = self.has_modifier(modifier)
-        if not paamount:
-            artifact = God.get_artifact_for_modifier(modifier, self)
-            paamount = PlayerArtifactAmount.objects.create(player=self, artifact=artifact, amount=amount)
-        else:
-            paamount.amount += amount
-            paamount.save()
-        return paamount
-
-    def add_spell(self, spell):
-        """ Add a spell to self collection """
-        try:
-            psamount = PlayerSpellAmount.objects.get(player=self, spell=spell)
-        except PlayerSpellAmount.DoesNotExist:
-            psamount = PlayerSpellAmount.objects.create(player=self, spell=spell)
-            return
-        psamount.amount += 1
-        psamount.save()
 
     def cast_spell(self, spell, source, due):
         """ Curse self with given spell from source, for due time. """
@@ -256,14 +207,6 @@ class Player(models.Model):
         else:
             psamount.save()
         return True
-
-
-    def spell_stock(self, spell):
-        try:
-            psa = PlayerSpellAmount.objects.get(player=self, spell=spell)
-        except PlayerSpellAmount.DoesNotExist:
-            return 0
-        return psa.amount
 
     def steal_points(self, userto, amount):
         from wouso.core import scoring
