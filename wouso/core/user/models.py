@@ -4,16 +4,7 @@ from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext_noop
 from wouso.interface.activity import signals
 from wouso.core.god import God
-from wouso.core.magic.models import Artifact, Spell
-
-class GroupArtifactAmount(models.Model):
-    """ Tie artifact and amount to the owner group """
-    # Refactor move it to magic
-    class Meta:
-        unique_together = ('group', 'artifact')
-    group = models.ForeignKey('PlayerGroup')
-    artifact = models.ForeignKey(Artifact)
-    amount = models.IntegerField(default=1)
+from wouso.core.magic.models import Artifact, Spell, GroupArtifactAmount
 
 class PlayerGroup(models.Model):
     """ Group players together in a hierchical way """
