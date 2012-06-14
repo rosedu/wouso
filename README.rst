@@ -7,6 +7,15 @@ ACS.
 
 Installing
 ----------
+You must have installed:
+
+    python >= 2.7
+    python-django
+    python-imaging
+    python-virtualenv
+    python-dev
+    libsqlite3-dev
+    sqlite3
 
 1. Install Python >= 2.7 and virtualenv; activate the virtualenv::
 
