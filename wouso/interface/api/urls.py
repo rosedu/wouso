@@ -34,6 +34,7 @@ urlpatterns += patterns('',
     url(r'^info/$', Resource(handler=InfoHandler, **ad)),
     url(r'^bazaar/$', Resource(handler=BazaarHandler, **ad)),
     url(r'^bazaar/inventory/$', Resource(handler=BazaarInventoryHandler, **ad)),
+    url(r'^search/(?P<query>[^/]+)/$', Resource(handler=Search, **ad)),
 )
 
 for g in get_games():

@@ -83,6 +83,36 @@ Base api:
     :statuscode 401: not authorized
     :statuscode 404: current user doesn't have a profile
 
+.. http:get:: /api/search/<query string>/
+
+    Search for players matching query string.
+
+    **Example request**:
+     .. sourcecode:: http
+
+        GET /api/search/alex/ HTTP/1.1
+        Host: wouso-next.rosedu.org
+        Accept: application/json, text/javascript
+        Authorization: OAuth oauth_version="1.0",oauth_nonce="a1df9b758e16eaebe8a2208d1e210bfb",oauth_timestamp="1312861474",oauth_consumer_key="xxxxxx",oauth_token="xxxxx",oauth_signature_method="PLAINTEXT",oauth_signature="xxxxxx"
+
+    **Example response**:
+     .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Vary: Accept
+        Content-Type: text/javascript
+
+        [
+            {
+                "id":	1,
+                "first_name": "Alex",
+                "last_name": "Eftimie",
+            }
+        ]
+
+    :statuscode 200: no error
+    :statuscode 401: not authorized
+
 .. http:get:: /api/bazaar/
 
     Returns a list of all available spells for buying.

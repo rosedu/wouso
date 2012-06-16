@@ -1,9 +1,10 @@
-from wouso.interface.top.models import TopUser
 
 __author__ = 'alex'
 
 from piston.handler import BaseHandler
 from piston.utils import rc
+from django.db.models.query_utils import Q
+from wouso.interface.top.models import TopUser
 from wouso.core.user.templatetags.user import player_avatar
 from wouso.core.game import get_games
 from wouso.core.user.models import Player
@@ -27,6 +28,15 @@ class ApiRoot(BaseHandler):
             'Notifications': '%s/api/notifications/all/%s' % (base, query),
         }
         return api
+
+class Search(BaseHandler):
+    methods_allowed = ('GET',)
+
+    def read(self, request, query):
+        query = query.strip()
+        searchresults = Player.objects.filter(Q(user__first_name__icontains=query) | Q(user__last_name__icontains=query) | Q(user__username__icontains=query))
+
+        return [{'first_name': p.user.first_name, 'last_name': p.user.last_name, 'id': p.id} for p in searchresults]
 
 class NotificationsHandler(BaseHandler):
     methods_allowed = ('GET',)
