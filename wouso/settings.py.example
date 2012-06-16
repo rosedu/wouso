@@ -155,10 +155,9 @@ INSTALLED_APPS = (
     'piston',
     'wouso.interface.api',
 
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
     #'djangologdb',
     'django_nose',
+    'wouso.interface.api.c2dm',
 )
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
@@ -182,6 +181,8 @@ FORCE_SCRIPT_NAME = '' # Change this in localsettings
 
 OAUTH_CALLBACK_VIEW = 'wouso.interface.api.views.request_token_ready'
 OAUTH_AUTH_VIEW = 'wouso.interface.api.views.oauth_auth_view'
+
+C2DM_AUTH_TOKEN = '' # Change this to a ClientLogin token from Google
 
 # please don't remove this yet
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
