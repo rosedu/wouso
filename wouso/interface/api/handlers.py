@@ -15,7 +15,7 @@ from wouso.core import scoring
 from wouso.interface.apps import get_apps
 
 class ApiRoot(BaseHandler):
-    methods_allowed = ('GET',)
+    allowed_methods = ('GET',)
 
     def read(self, request):
         base = 'http://%s' % request.get_host()
@@ -32,7 +32,7 @@ class ApiRoot(BaseHandler):
         return api
 
 class Search(BaseHandler):
-    methods_allowed = ('GET',)
+    allowed_methods = ('GET',)
 
     def read(self, request, query):
         query = query.strip()
@@ -41,7 +41,7 @@ class Search(BaseHandler):
         return [{'first_name': p.user.first_name, 'last_name': p.user.last_name, 'id': p.id} for p in searchresults]
 
 class NotificationsHandler(BaseHandler):
-    methods_allowed = ('GET',)
+    allowed_methods = ('GET',)
 
     def read(self, request, type):
         notifs = {}
@@ -60,7 +60,7 @@ class NotificationsHandler(BaseHandler):
             return rc.BAD_REQUEST
 
 class InfoHandler(BaseHandler):
-    methods_allowed = ('GET',)
+    allowed_methods = ('GET',)
 
     def read(self, request):
         try:
@@ -94,7 +94,7 @@ class InfoHandler(BaseHandler):
         }
 
 class BazaarHandler(BaseHandler):
-    methods_allowed = ('GET',)
+    allowed_methods = ('GET',)
     object_name = 'spells'
 
     def get_queryset(self, user=None):
