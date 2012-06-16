@@ -57,18 +57,26 @@ Base api:
         {
             first_name: "Alex",
             last_name: "Eftimie",
+            avatar:  "http://www.gravatar.com/avatar/d43fad239b039cebdb4206cdc692f314.jpg",
             level: {
                 name: "level-1",
                 title: "Level 1",
                 image: "",
                 percents: 100,
-                group_id: 2,
                 id: 2
             },
             level_no: 1,
+            level_progress: {
+                percent: 50,
+                next_level: 2,
+                points_gained: 55,
+                points_left: 45,
+            }
             race: "CA",
+            group: "CA311",
             email: "alex@rosedu.org",
-            points: 0
+            points: 0,
+            gold: 0,
         }
 
     :statuscode 200: no error

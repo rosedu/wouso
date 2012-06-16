@@ -1,10 +1,14 @@
+from wouso.interface.top.models import TopUser
+
 __author__ = 'alex'
 
 from piston.handler import BaseHandler
 from piston.utils import rc
+from wouso.core.user.templatetags.user import player_avatar
 from wouso.core.game import get_games
 from wouso.core.user.models import Player
 from wouso.core.magic.models import Spell
+from wouso.core.god import God
 from wouso.interface.apps import get_apps
 
 class NotificationsHandler(BaseHandler):
@@ -35,13 +39,29 @@ class InfoHandler(BaseHandler):
         except Player.DoesNotExist:
             return rc.NOT_FOUND
 
+        level = {
+            'name': player.level.name,
+            'title': player.level.title,
+            'image': player.level.image,
+            'id': player.level.id,
+        } if player.level else {}
+
+        group = player.groups.all()[0].name if player.groups.count() else None
+        gold = player.coins['gold'] if 'gold' in player.coins.keys() else 0
+        topuser = player.get_extension(TopUser)
+
         return {'first_name': player.user.first_name,
                 'last_name': player.user.last_name,
-                'points': player.points,
-                'race': player.race_name,
-                'level_no': player.level_no,
                 'email': player.user.email,
-                'level': player.level,
+                'avatar': player_avatar(player),
+                'points': player.points,
+                'gold': gold,
+                'race': player.race_name,
+                'group': group,
+                'level_no': player.level_no,
+                'level': level,
+                'level_progress': God.get_level_progress(player),
+                'rank': topuser.position,
         }
 
 class BazaarHandler(BaseHandler):
