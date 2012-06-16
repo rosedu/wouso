@@ -222,6 +222,18 @@ Base api:
     :statuscode 200: no error
     :statuscode 401: not authorized
 
+.. http:post:: /api/bazaar/exchange/gold/points/
+
+    Attempts to exchange an amount sent as POST parameter. Returns success or error.
+
+    Posible errors:
+     * Invalid Amount
+     * Insufficient Amount
+
+.. http:post:: /api/bazaar/exchange/points/gold/
+
+    The same as gold to points.
+
 Game API
 --------
 

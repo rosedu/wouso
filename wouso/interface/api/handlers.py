@@ -1,3 +1,5 @@
+from wouso.core.scoring.models import Coin
+
 __author__ = 'alex'
 
 from piston.handler import BaseHandler
@@ -135,3 +137,35 @@ class BazaarBuy(BaseHandler):
                 price=spell.price)
             SpellHistory.bought(player, spell)
             return {'success': True}
+
+class BazaarExchange(BaseHandler):
+    allowed_methods = ('POST',)
+
+    def create(self, request, coin, tocoin):
+        try:
+            coin = Coin.objects.get(id=coin)
+            tocoin = Coin.objects.get(id=tocoin)
+        except Coin.DoesNotExist:
+            return {'success': False, 'error': 'Invalid coin'}
+
+        attrs = self.flatten_dict(request.POST)
+        if 'amount' not in attrs.keys():
+            return {'success': False, 'error': 'Amount not provided'}
+
+        player = request.user.get_profile()
+        try:
+            amount = int(attrs['amount'])
+            assert amount > 0
+        except (ValueError, AssertionError):
+            return {'success': False, 'error': 'Invalid Amount'}
+
+        if player.coins[coin.id] < amount:
+            return {'success': False, 'error': 'Insufficient amount'}
+
+        # TODO: change me
+        if coin.id == 'points':
+            scoring.score(player, None, 'points-gold-rate', points=amount)
+        elif coin.id == 'gold':
+            scoring.score(player, None, 'gold-points-rate', gold=amount)
+
+        return {'success': True, 'coins': player.coins}
