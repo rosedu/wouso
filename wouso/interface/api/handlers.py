@@ -1,4 +1,5 @@
 from wouso.core.scoring.models import Coin
+from wouso.interface.messaging.models import Message, MessagingUser
 
 __author__ = 'alex'
 
@@ -174,3 +175,49 @@ class BazaarExchange(BaseHandler):
             scoring.score(player, None, 'gold-points-rate', gold=amount)
 
         return {'success': True, 'coins': player.coins}
+
+class Messages(BaseHandler):
+    LIMIT = 100
+
+    def read(self, request, type='all'):
+        player = request.user.get_profile()
+        msguser = player.get_extension(MessagingUser)
+        if type == 'all':
+            return Message.objects.filter(Q(sender=msguser)|Q(receiver=msguser))[:self.LIMIT]
+        elif type == 'sent':
+            return Message.objects.filter(sender=msguser)[:self.LIMIT]
+        elif type == 'recv':
+            return Message.objects.filter(receiver=msguser)[:self.LIMIT]
+
+class MessagesSender(BaseHandler):
+    allowed_methods = ('POST',)
+
+    def create(self, request):
+        attrs = self.flatten_dict(request.POST)
+        sender = request.user.get_profile()
+
+        if 'receiver' not in attrs.keys():
+            return {'success': False, 'error': 'Missing receiver'}
+
+        try:
+            if attrs['receiver'].isdigit():
+                receiver = Player.objects.get(pk=attrs['receiver'])
+            else:
+                receiver = Player.objects.get(user__username=attrs['receiver'])
+        except Player.DoesNotExist:
+            return {'success': False, 'error': 'Invalid receiver'}
+
+        if 'text' not in attrs.keys():
+            return {'success': False, 'error': 'Missing text'}
+
+        if 'subject' not in attrs.keys():
+            attrs['subject'] = ''
+
+        try:
+            reply_to = Message.objects.get(pk=attrs['reply_to'])
+        except (KeyError, Message.DoesNotExist):
+            reply_to = None
+
+        Message.send(sender, receiver, attrs['subject'], attrs['text'], reply_to=reply_to)
+
+        return {'success': True}

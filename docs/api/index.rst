@@ -234,6 +234,23 @@ Base api:
 
     The same as gold to points.
 
+Messages API
+------------
+.. http:get:: /api/messages/(type)
+
+    Returns all messages by type:
+     * all
+     * sent
+     * recv
+
+.. http:post:: /api/messages/send/
+
+    Sends a message, using POST parameters:
+     * receiver (*mandatory, id or username)
+     * text (*mandatory)
+     * subject
+     * reply_to (id of the message to reply_to)
+
 Game API
 --------
 
