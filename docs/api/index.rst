@@ -189,6 +189,12 @@ Game API
 
     Attempt to response QotD, by sending the answer id as POST data. In case of error, success is set to false, and an error message is provided.
 
+    Error messages:
+     * No question for today
+     * User already answered
+     * Answer not provided
+     * Invalid answer
+
     **Example request**:
      .. sourcecode:: http
 
