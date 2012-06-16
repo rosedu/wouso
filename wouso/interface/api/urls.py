@@ -29,6 +29,7 @@ ad = {'authentication': [simple, authoauth, sessionauth]}
 notifications_resource = Resource(handler=NotificationsHandler, **ad)
 
 urlpatterns += patterns('',
+    url(r'^$', Resource(handler=ApiRoot, **ad)),
     url(r'^notifications/(?P<type>[^/]+)/$', notifications_resource),
     url(r'^info/$', Resource(handler=InfoHandler, **ad)),
     url(r'^bazaar/$', Resource(handler=BazaarHandler, **ad)),

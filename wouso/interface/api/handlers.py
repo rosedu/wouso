@@ -11,6 +11,23 @@ from wouso.core.magic.models import Spell
 from wouso.core.god import God
 from wouso.interface.apps import get_apps
 
+class ApiRoot(BaseHandler):
+    methods_allowed = ('GET',)
+
+    def read(self, request):
+        base = 'http://%s' % request.get_host()
+        fullpath = request.get_full_path()
+        if '?' in fullpath:
+            query = fullpath[fullpath.rindex('?'):]
+        else:
+            query = ''
+
+        api = {
+            'Info': '%s/api/info/%s' % (base, query),
+            'Notifications': '%s/api/notifications/all/%s' % (base, query),
+        }
+        return api
+
 class NotificationsHandler(BaseHandler):
     methods_allowed = ('GET',)
 
