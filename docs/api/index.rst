@@ -185,6 +185,49 @@ Game API
     :statuscode 401: not authorized
     :statuscode 404: user doesn't have a profile
 
+.. http:post:: /api/qotd/today/
+
+    Attempt to response QotD, by sending the answer id as POST data. In case of error, success is set to false, and an error message is provided.
+
+    **Example request**:
+     .. sourcecode:: http
+
+        POST /api/qotd/today/ HTTP/1.1
+        Host: wouso-next.rosedu.org
+        Accept: application/json, text/javascript
+        Authorization: OAuth oauth_version="1.0",oauth_nonce="a1df9b758e16eaebe8a2208d1e210bfb",oauth_timestamp="1312861474",oauth_consumer_key="xxxxxx",oauth_token="xxxxx",oauth_signature_method="PLAINTEXT",oauth_signature="xxxxxx"
+        Content-Type: application/x-www-form-urlencoded
+        Content-Length: 9
+
+        answer=11
+
+    **Example response**:
+     .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Vary: Accept
+        Content-Type: text/javascript
+
+        {
+            success:	true
+            correct:    true
+        }
+
+    **Second example response**:
+     .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Vary: Accept
+        Content-Type: text/javascript
+
+        {
+            success:	false
+            error: "User already answered"
+        }
+
+    :statuscode 200: no error
+    :statuscode 401: not authorized
+    :statuscode 404: user doesn't have a profile
 
 Indices and tables
 ==================

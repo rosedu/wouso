@@ -6,7 +6,7 @@ from wouso.interface.activity import signals
 from wouso.core.user.models import Player
 from wouso.core.game.models import Game
 from wouso.core import scoring
-from wouso.core.qpool.models import Schedule
+from wouso.core.qpool.models import Schedule, Answer
 from wouso.core.scoring.models import Formula
 
 # Qotd uses questions from qpool
@@ -46,7 +46,7 @@ class QotdUser(Player):
             return False
         else:
             now = datetime.now()
-            today_start = datetime.combine(now, time())
+            today_start = datetime.combine(now, time(0, 0, 0))
             today_end = datetime.combine(now, time(23, 59, 59))
             return today_start <= self.last_answered <= today_end
 
@@ -112,7 +112,7 @@ class QotdGame(Game):
     def get_api(kls):
         from piston.handler import BaseHandler
         class QotdHandler(BaseHandler):
-            methods_allowed = ('GET',)
+            methods_allowed = ('GET', 'POST')
             def read(self, request):
                 question = kls.get_for_today()
                 try:
@@ -123,5 +123,27 @@ class QotdGame(Game):
                     return {'text': question.text, 'answers': dict([(a.id, a.text) for a in question.answers]),
                             'had_answered': qotduser.has_answered}
                 return {}
+
+            def create(self, request):
+                question = kls.get_for_today()
+                try:
+                    qotduser = request.user.get_profile().get_extension(QotdUser)
+                except models.Model.DoesNotExist:
+                    raise Http404()
+                if not question:
+                    return {'success': False, 'error': 'No question for today'}
+                if qotduser.has_answered:
+                    return {'success': False, 'error': 'User already answered'}
+                attrs = self.flatten_dict(request.data)
+                if 'answer' not in attrs.keys():
+                    return {'success': False, 'error': 'Answer not provided'}
+                try:
+                    answer_id = int(attrs['answer'])
+                    answer = Answer.objects.get(pk=answer_id)
+                except ValueError, Answer.DoesNotExist:
+                    return {'success': False, 'error': 'Invalid answer'}
+                else:
+                    qotduser.set_answered(answer.id, answer.correct)
+                    return {'success': True, 'correct': answer.correct, 'has_answered': qotduser.has_answered}
 
         return {r'^qotd/today/$': QotdHandler}
