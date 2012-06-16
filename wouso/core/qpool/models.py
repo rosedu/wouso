@@ -84,6 +84,10 @@ class Question(models.Model):
             return None
 
     @property
+    def correct_answers(self):
+        return Answer.objects.filter(question=self, correct=True)
+
+    @property
     def shuffled_answers(self):
         """ A list of permuted answers, for displaying
         """
