@@ -358,7 +358,7 @@ class Challenge(models.Model):
     def _calculate_points(self, responses):
         """ Response contains a dict with question id and checked answers ids.
         Example:
-            1 : {14}, - has answered answer with id 14 at the question with id 1
+            1 : [14], - has answered answer with id 14 at the question with id 1
         """
         points = 0.0
         for r, v in responses.iteritems():
@@ -540,6 +540,70 @@ class ChallengeGame(Game):
     def get_profile_superuser_actions(kls, request, player):
         url = reverse('wouso.games.challenge.views.history', args=(player.id,))
         return '<a class="button" href="%s">%s</a>' % (url, _('Challenges'))
+
+    @classmethod
+    def get_api(kls):
+        from piston.handler import BaseHandler
+        from piston.utils import rc
+        class ChallengesHandler(BaseHandler):
+            methods_allowed = ('GET',)
+            def read(self, request):
+                player = request.user.get_profile()
+                challuser = player.get_extension(ChallengeUser)
+                return ChallengeGame.get_active(challuser)
+
+        class ChallengeHandler(BaseHandler):
+            methods_allowed = ('GET',)
+            def read(self, request, challenge_id):
+                player = request.user.get_profile()
+                try:
+                    challenge = Challenge.objects.get(pk=challenge_id)
+                except Challenge.DoesNotExist:
+                    return rc.NOT_FOUND
+
+                try:
+                    p = challenge.participant_for_player(player)
+                except ValueError:
+                    return rc.NOT_FOUND
+
+                return {'status': challenge.status,
+                        'from': challenge.user_from,
+                        'to': challenge.user_to,
+                        'date': challenge.date,
+                        'questions': [{'text': q.text, 'answers': dict([(a.id, a.text) for a in q.answers])} for q in challenge.questions.all()]
+                }
+
+            def create(self, request, challenge_id):
+                """ Attempt to respond
+                """
+                player = request.user.get_profile()
+                try:
+                    challenge = Challenge.objects.get(pk=challenge_id)
+                except Challenge.DoesNotExist:
+                    return rc.NOT_FOUND
+
+                try:
+                    p = challenge.participant_for_player(player)
+                except ValueError:
+                    return rc.NOT_FOUND
+
+                if p.played:
+                    return {'success': False, 'error': 'Already played'}
+
+                data = self.flatten_dict(request.POST)
+                responses = {}
+                for i, q in enumerate(challenge.questions.all()):
+                    responses[q.id] = data[i]
+
+                # TODO more
+                challenge.set_played(challuser, responses)
+
+                return {'success': True}
+
+
+        return {r'^challenge/list/$': ChallengesHandler,
+                r'^challenge/(?P<challenge_id>\d+)/': ChallengeHandler
+        }
 
 # Hack for having participants in sync
 def challenge_post_delete(sender, instance, **kwargs):
