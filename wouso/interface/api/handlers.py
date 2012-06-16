@@ -1,4 +1,3 @@
-
 __author__ = 'alex'
 
 from piston.handler import BaseHandler
@@ -7,9 +6,10 @@ from django.db.models.query_utils import Q
 from wouso.interface.top.models import TopUser
 from wouso.core.user.templatetags.user import player_avatar
 from wouso.core.game import get_games
-from wouso.core.user.models import Player
+from wouso.core.user.models import Player, SpellHistory
 from wouso.core.magic.models import Spell
 from wouso.core.god import God
+from wouso.core import scoring
 from wouso.interface.apps import get_apps
 
 class ApiRoot(BaseHandler):
@@ -109,3 +109,29 @@ class BazaarHandler(BaseHandler):
 class BazaarInventoryHandler(BazaarHandler):
     def get_queryset(self, user=None):
         return user.spells_available
+
+class BazaarBuy(BaseHandler):
+    allowed_methods = ('POST',)
+
+    def create(self, request):
+        attrs = self.flatten_dict(request.POST)
+
+        if 'spell' not in attrs.keys():
+            return {'success': False, 'error': 'Spell not provided'}
+
+        try:
+            spell = int(attrs['spell'])
+            spell = Spell.objects.get(pk=spell)
+        except (ValueError, Spell.DoesNotExist):
+            return {'success': False, 'error': 'No such spell'}
+
+        # TODO refactor
+        player = request.user.get_profile()
+        if spell.price > player.coins.get('gold', 0):
+            return {'success': False, 'error': 'Insufficient gold'}
+        else:
+            player.add_spell(spell)
+            scoring.score(player, None, 'buy-spell', external_id=spell.id,
+                price=spell.price)
+            SpellHistory.bought(player, spell)
+            return {'success': True}

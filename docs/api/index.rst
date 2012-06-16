@@ -187,6 +187,41 @@ Base api:
     :statuscode 401: not authorized
     :statuscode 404: current user does not have a profile
 
+.. http:post:: /api/bazaar/buy/
+
+    Attempts to buy a spell sent as POST parameter. Returns success or error.
+
+    Posible errors:
+     * Spell not provided
+     * No such spell
+     * Insufficient gold
+
+    **Example request**:
+     .. sourcecode:: http
+
+        POST /api/bazaar/buy/ HTTP/1.1
+        Host: wouso-next.rosedu.org
+        Accept: application/json, text/javascript
+        Authorization: OAuth oauth_version="1.0",oauth_nonce="a1df9b758e16eaebe8a2208d1e210bfb",oauth_timestamp="1312861474",oauth_consumer_key="xxxxxx",oauth_token="xxxxx",oauth_signature_method="PLAINTEXT",oauth_signature="xxxxxx"
+        Content-Type: application/x-www-form-urlencoded
+        Content-Length: 7
+
+        spell=1
+
+    **Example response**:
+     .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Vary: Accept
+        Content-Type: text/javascript
+
+        {
+            success: true
+        }
+
+    :statuscode 200: no error
+    :statuscode 401: not authorized
+
 Game API
 --------
 
