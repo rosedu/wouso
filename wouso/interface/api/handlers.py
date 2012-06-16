@@ -63,11 +63,17 @@ class NotificationsHandler(BaseHandler):
 class InfoHandler(BaseHandler):
     allowed_methods = ('GET',)
 
-    def read(self, request):
-        try:
-            player = request.user.get_profile()
-        except Player.DoesNotExist:
-            return rc.NOT_FOUND
+    def read(self, request, player_id=None):
+        if player_id:
+            try:
+                player = Player.objects.get(pk=player_id)
+            except Player.DoesNotExist:
+                return rc.NOT_FOUND
+        else:
+            try:
+                player = request.user.get_profile()
+            except Player.DoesNotExist:
+                return rc.NOT_FOUND
 
         level = {
             'name': player.level.name,
