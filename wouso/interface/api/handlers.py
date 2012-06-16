@@ -1,3 +1,4 @@
+from datetime import datetime
 from wouso.core.scoring.models import Coin
 from wouso.interface.messaging.models import Message, MessagingUser
 
@@ -225,5 +226,31 @@ class MessagesSender(BaseHandler):
             reply_to = None
 
         Message.send(sender, receiver, attrs['subject'], attrs['text'], reply_to=reply_to)
+
+        return {'success': True}
+
+class CastHandler(BaseHandler):
+    allowed_methods = ('POST',)
+
+    def create(self, request, player_id):
+        player = request.user.get_profile()
+        try:
+            destination = Player.objects.get(pk=player_id)
+        except Player.DoesNotExist:
+            return rc.NOT_FOUND
+
+        attrs = self.flatten_dict(request.POST)
+
+        if 'spell' not in attrs.keys():
+            return {'success': False, 'error': 'Missing spell'}
+
+        try:
+            spell = Spell.objects.get(pk=attrs['spell'])
+            assert spell in [s.spell for s in player.spells_available]
+        except (Spell.DoesNotExist, AssertionError):
+            return {'success': False, 'error': 'No such spell available'}
+
+        if not destination.cast_spell(spell, source=player, due=datetime.now()):
+            return {'succes': False, 'error': 'Cast failed'}
 
         return {'success': True}

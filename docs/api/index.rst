@@ -234,6 +234,10 @@ Base api:
 
     The same as gold to points.
 
+.. http:post:: /api/player/<player_id>/cast/
+
+    Cast a spell given as POST parameter to player_id.
+
 Messages API
 ------------
 .. http:get:: /api/messages/(type)
