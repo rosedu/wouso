@@ -109,8 +109,13 @@ class BazaarHandler(BaseHandler):
         return {self.object_name: self.get_queryset(user=player)}
 
 class BazaarInventoryHandler(BazaarHandler):
-    def get_queryset(self, user=None):
-        return user.spells_available
+    def read(self, request):
+        player = request.user.get_profile()
+
+        return {'spells_available': player.spells_available,
+                'spells_onme': player.spells,
+                'spells_cast': player.spells_cast
+        }
 
 class BazaarBuy(BaseHandler):
     allowed_methods = ('POST',)
