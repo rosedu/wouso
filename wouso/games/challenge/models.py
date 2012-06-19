@@ -566,6 +566,8 @@ class ChallengeGame(Game):
                 except ValueError:
                     return rc.NOT_FOUND
 
+                challenge.set_start(player)
+
                 return {'status': challenge.status,
                         'from': challenge.user_from,
                         'to': challenge.user_to,
@@ -577,6 +579,7 @@ class ChallengeGame(Game):
                 """ Attempt to respond
                 """
                 player = request.user.get_profile()
+                challuser = player.get_extension(ChallengeUser)
                 try:
                     challenge = Challenge.objects.get(pk=challenge_id)
                 except Challenge.DoesNotExist:
@@ -592,13 +595,12 @@ class ChallengeGame(Game):
 
                 data = self.flatten_dict(request.POST)
                 responses = {}
-                for i, q in enumerate(challenge.questions.all()):
-                    responses[q.id] = data[i]
+                for q in challenge.questions.all():
+                    responses[q.id] = [int(a) if a else '' for a in data.get(str(q.id), '').split(',')]
 
-                # TODO more
-                challenge.set_played(challuser, responses)
+                result = challenge.set_played(challuser, responses)
 
-                return {'success': True}
+                return {'success': True, 'result': result}
 
 
         return {r'^challenge/list/$': ChallengesHandler,

@@ -9,6 +9,9 @@ Welcome to Wouso API's documentation!
 Base api:
 --------
 
+Notifications
+~~~~~~~~~~~~~
+
 .. http:post:: /api/notifications/register/
 
     Register a new Android device for push notifications. POST data must contain `registration_id`.
@@ -42,6 +45,9 @@ Base api:
 
     :statuscode 200: no error
     :statuscode 401: not authorized
+
+Player information
+~~~~~~~~~~~~~~~~~~
 
 .. http:get:: /api/info/
 
@@ -120,6 +126,9 @@ Base api:
 
     :statuscode 200: no error
     :statuscode 401: not authorized
+
+Magic and Bazaar
+~~~~~~~~~~~~~~~~
 
 .. http:get:: /api/bazaar/
 
@@ -306,6 +315,9 @@ Messages API
 Game API
 --------
 
+Question of the Day
+~~~~~~~~~~~~~~~~~~
+
 .. http:get:: /api/qotd/today/
 
     Get Question of The Day for current date.
@@ -388,6 +400,44 @@ Game API
     :statuscode 200: no error
     :statuscode 401: not authorized
     :statuscode 404: user doesn't have a profile
+
+Challenge
+~~~~~~~~~
+.. http:get:: /api/challenge/list/
+
+    Return a list of all active challenges.
+
+.. http:get:: /api/challenge/(challenge_id)/
+
+    Return information and questions (content) for given challenge. Also set it as started for user requesting.
+
+.. http:post:: /api/challenge/(challenge_id)/
+
+    Post answers to a challenge. These must be mapped as a list of POST parameters, using the question id as key, and answers ids comma separated.
+
+    **Example request**:
+     .. sourcecode:: http
+
+        POST /api/challenge/1/ HTTP/1.1
+        Host: wouso-next.rosedu.org
+        Accept: application/json, text/javascript
+        Authorization: OAuth oauth_version="1.0",oauth_nonce="a1df9b758e16eaebe8a2208d1e210bfb",oauth_timestamp="1312861474",oauth_consumer_key="xxxxxx",oauth_token="xxxxx",oauth_signature_method="PLAINTEXT",oauth_signature="xxxxxx"
+        Content-Type: application/x-www-form-urlencoded
+        Content-Length: 25
+
+        12=1&13=4&14=5,6&16=9&17=
+
+    This request sends the following answers:
+
+    .. sourcecode:: json
+
+        {
+            12: [ 1 ],
+            13: [ 4 ],
+            14: [ 5, 6 ],
+            16: [ 9 ],
+            17: [ ]
+        }
 
 Indices and tables
 ==================
