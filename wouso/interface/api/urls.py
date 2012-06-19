@@ -48,6 +48,10 @@ urlpatterns += patterns('',
     url(r'^top/player/$', Resource(handler=TopPlayers, **ad)),
     url(r'^top/race/(?P<race_id>\d+)/player/$', Resource(handler=TopPlayers, **ad)),
     url(r'^top/group/(?P<group_id>\d+)/player/$', Resource(handler=TopPlayers, **ad)),
+
+    url(r'^group/(?P<group_id>\d+)/$', Resource(handler=GroupHandler, **ad)),
+    url(r'^group/(?P<group_id>\d+)/(?P<type>activity)/$', Resource(handler=GroupHandler, **ad)),
+    url(r'^group/(?P<group_id>\d+)/(?P<type>evolution)/$', Resource(handler=GroupHandler, **ad)),
 )
 
 for g in get_games():

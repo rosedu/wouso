@@ -264,6 +264,19 @@ Top API
 
     Returns top players in the game.
 
+Group API
+---------
+.. http:get:: /api/group/(group_id)/
+
+    Returns information about the group: name, member count, rank.
+
+.. http:get:: /api/group/(group_id)/activity/
+
+    Returns latest activity for group members.
+
+.. http:get:: /api/group/(group_id)/evolution/
+
+    Returns group points evolution.
 
 Messages API
 ------------

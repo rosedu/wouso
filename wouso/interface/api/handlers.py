@@ -1,6 +1,7 @@
 from datetime import datetime
 from django.db.models.aggregates import Sum
 from wouso.core.scoring.models import Coin
+from wouso.interface.activity.models import Activity
 from wouso.interface.messaging.models import Message, MessagingUser
 
 __author__ = 'alex'
@@ -8,7 +9,7 @@ __author__ = 'alex'
 from piston.handler import BaseHandler
 from piston.utils import rc
 from django.db.models.query_utils import Q
-from wouso.interface.top.models import TopUser
+from wouso.interface.top.models import TopUser, GroupHistory
 from wouso.core.user.templatetags.user import player_avatar
 from wouso.core.game import get_games
 from wouso.core.user.models import Player, SpellHistory, Race, PlayerGroup
@@ -16,6 +17,15 @@ from wouso.core.magic.models import Spell
 from wouso.core.god import God
 from wouso.core import scoring
 from wouso.interface.apps import get_apps
+
+def get_fullpath(request):
+    base = 'http://%s' % request.get_host()
+    fullpath = request.get_full_path()
+    if '?' in fullpath:
+        query = fullpath[fullpath.rindex('?'):]
+    else:
+        query = ''
+    return base + fullpath, query
 
 class ApiRoot(BaseHandler):
     allowed_methods = ('GET',)
@@ -319,3 +329,31 @@ class TopPlayers(BaseHandler):
         qs = qs.order_by('-points')
 
         return [dict(first_name=p.user.first_name, last_name=p.user.last_name, id=p.id, points=p.points) for p in qs]
+
+class GroupHandler(BaseHandler):
+    allowed_methods = ('GET',)
+
+    def read(self, request, group_id, type=None):
+        try:
+            group = PlayerGroup.objects.get(pk=group_id)
+        except PlayerGroup.DoesNotExist:
+            return rc.NOT_FOUND
+
+        gh = GroupHistory(group)
+        fp, q = get_fullpath(request)
+
+        if type is None: # General information
+            return {
+                'id': group.id,
+                'name': group.name,
+                'points': group.live_points,
+                'members': group.player_set.count(),
+                'rank': gh.position,
+                'activity': '%sactivity/%s' % (fp, q),
+                'evolution': '%sevolution/%s' % (fp, q),
+            }
+        elif type == 'activity':
+            qs = Activity.objects.filter(Q(user_to__groups=group) | Q(user_from__groups=group)).distinct().order_by('-timestamp')
+            return [dict(user_from=unicode(a.user_from), user_to=unicode(a.user_to), message=a.message, date=a.timestamp) for a in qs]
+        elif type == 'evolution':
+            return gh.week_evolution()
