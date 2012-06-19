@@ -16,6 +16,9 @@ from wouso.core.scoring.models import Formula
 from wouso.interface.activity import signals
 
 
+class ChallengeException(Exception):
+    pass
+
 class ChallengeUser(Player):
     """ Extension of the userprofile, customized for challenge """
 
@@ -75,6 +78,19 @@ class ChallengeUser(Player):
     def can_play(self, challenge):
         return challenge.can_play(self)
 
+    def launch_against(self, destination):
+        destination = destination.get_extension(ChallengeUser)
+
+        if destination.id == self.id:
+            raise ChallengeException('Cannot launch against myself')
+
+        if not self.can_launch():
+            raise ChallengeException('Player cannot launch')
+
+        if not self.can_challenge(destination):
+            raise ChallengeException('Player cannot launch against this opponent')
+
+        return Challenge.create(user_from=self, user_to=destination)
 
 class Participant(models.Model):
     user = models.ForeignKey(ChallengeUser)
@@ -120,7 +136,7 @@ class Challenge(models.Model):
 
         questions = [q for q in get_questions_with_category('challenge')]
         if (len(questions) < 5) and not ignore_questions:
-            raise ValueError('Too few questions')
+            raise ChallengeException('Too few questions')
         shuffle(questions)
 
         uf, ut = Participant(user=user_from), Participant(user=user_to)
@@ -552,9 +568,30 @@ class ChallengeGame(Game):
                 challuser = player.get_extension(ChallengeUser)
                 return ChallengeGame.get_active(challuser)
 
+        class ChallengeLaunch(BaseHandler):
+            methods_allowed = ('GET',)
+
+            def read(self, request, player_id):
+                player = request.user.get_profile()
+                challuser = player.get_extension(ChallengeUser)
+
+                try:
+                    player2 = Player.objects.get(pk=player_id)
+                except Player.DoesNotExist:
+                    return rc.NOT_FOUND
+
+                challuser2 = player2.get_extension(ChallengeUser)
+
+                try:
+                    chall = challuser.launch_against(challuser2)
+                except ChallengeException as e:
+                    return {'success': False, 'error': unicode(e)}
+
+                return {'success': True, 'challenge': chall}
+
         class ChallengeHandler(BaseHandler):
             methods_allowed = ('GET',)
-            def read(self, request, challenge_id):
+            def read(self, request, challenge_id, action='play'):
                 player = request.user.get_profile()
                 try:
                     challenge = Challenge.objects.get(pk=challenge_id)
@@ -566,14 +603,17 @@ class ChallengeGame(Game):
                 except ValueError:
                     return rc.NOT_FOUND
 
-                challenge.set_start(player)
+                if action == 'play':
+                    challenge.set_start(player)
 
-                return {'status': challenge.status,
-                        'from': challenge.user_from,
-                        'to': challenge.user_to,
-                        'date': challenge.date,
-                        'questions': [{'text': q.text, 'answers': dict([(a.id, a.text) for a in q.answers])} for q in challenge.questions.all()]
-                }
+                    return {'status': challenge.status,
+                            'from': challenge.user_from,
+                            'to': challenge.user_to,
+                            'date': challenge.date,
+                            'questions': [{'text': q.text, 'answers': dict([(a.id, a.text) for a in q.answers])} for q in challenge.questions.all()]
+                    }
+
+                return {'success': False, 'error': 'Unknown action'}
 
             def create(self, request, challenge_id):
                 """ Attempt to respond
@@ -607,7 +647,8 @@ class ChallengeGame(Game):
 
 
         return {r'^challenge/list/$': ChallengesHandler,
-                r'^challenge/(?P<challenge_id>\d+)/': ChallengeHandler
+                r'^challenge/launch/(?P<player_id>\d+)/$': ChallengeLaunch,
+                r'^challenge/(?P<challenge_id>\d+)/': ChallengeHandler,
         }
 
 # Hack for having participants in sync

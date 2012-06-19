@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from wouso.core.user.models import Player
+from wouso.games.challenge.models import ChallengeException
 from wouso.interface import render_string
 from models import ChallengeUser, ChallengeGame, Challenge, Participant
 from forms import ChallengeForm
@@ -98,7 +99,7 @@ def launch(request, to_id):
     if user_from.can_challenge(user_to):
         try:
             chall = Challenge.create(user_from=user_from, user_to=user_to)
-        except ValueError as e:
+        except ChallengeException as e:
             # Some error occurred during question fetch. Clean up, and display error
             return do_result(request, e.message)
         return do_result(request, message=_('Successfully challenged'))
