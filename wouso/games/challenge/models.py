@@ -593,25 +593,54 @@ class ChallengeGame(Game):
             methods_allowed = ('GET',)
             def read(self, request, challenge_id, action='play'):
                 player = request.user.get_profile()
+                challuser = player.get_extension(ChallengeUser)
                 try:
                     challenge = Challenge.objects.get(pk=challenge_id)
                 except Challenge.DoesNotExist:
                     return rc.NOT_FOUND
 
                 try:
-                    p = challenge.participant_for_player(player)
+                    participant = challenge.participant_for_player(player)
                 except ValueError:
                     return rc.NOT_FOUND
 
                 if action == 'play':
-                    challenge.set_start(player)
+                    if not challenge.is_runnable():
+                        return {'success': False, 'error': 'Challenge is not runnable'}
 
-                    return {'status': challenge.status,
-                            'from': challenge.user_from,
-                            'to': challenge.user_to,
+                    if not participant.start:
+                        challenge.set_start(player)
+
+                    if challenge.is_expired_for_user(player):
+                        return {'success': False, 'error': 'Challenge expired for this user'}
+
+                    return {'success': True,
+                            'status': challenge.status,
+                            'from': unicode(challenge.user_from.user),
+                            'to': unicode(challenge.user_to.user),
                             'date': challenge.date,
-                            'questions': [{'text': q.text, 'answers': dict([(a.id, a.text) for a in q.answers])} for q in challenge.questions.all()]
+                            'seconds': challenge.time_for_user(challuser),
+                            'questions': dict([(q.id ,{'text': q.text, 'answers': dict([(a.id, a.text) for a in q.answers])}) for q in challenge.questions.all()]),
                     }
+
+                if action == 'refuse':
+                    if challenge.user_to.user == challuser and challenge.is_launched():
+                        challenge.refuse()
+                        return {'success': True}
+                    else:
+                        return {'success': False, 'error': 'Cannot refuse this challenge'}
+                if action == 'cancel':
+                    if challenge.user_from.user == challuser and challenge.is_launched():
+                        challenge.cancel()
+                        return {'success': True}
+                    else:
+                        return {'success': False, 'error': 'Cannot cancel this challenge'}
+                if action == 'accept':
+                    if challenge.user_to.user == challuser and challenge.is_launched():
+                        challenge.accept()
+                        return {'success': True}
+                    else:
+                        return {'success': False, 'error': 'Cannot accept this challenge'}
 
                 return {'success': False, 'error': 'Unknown action'}
 
@@ -648,7 +677,8 @@ class ChallengeGame(Game):
 
         return {r'^challenge/list/$': ChallengesHandler,
                 r'^challenge/launch/(?P<player_id>\d+)/$': ChallengeLaunch,
-                r'^challenge/(?P<challenge_id>\d+)/': ChallengeHandler,
+                r'^challenge/(?P<challenge_id>\d+)/$': ChallengeHandler,
+                r'^challenge/(?P<challenge_id>\d+)/(?P<action>refuse|cancel|accept)/$': ChallengeHandler,
         }
 
 # Hack for having participants in sync

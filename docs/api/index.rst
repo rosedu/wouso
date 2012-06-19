@@ -407,9 +407,58 @@ Challenge
 
     Return a list of all active challenges.
 
+.. http:get:: /api/challenge/launch/(player_id)/
+
+    Launch a new challenge against given player.
+
+.. http:get:: /api/challenge/(challenge_id)/accept/
+
+    Accept specific challenge.
+
+.. http:get:: /api/challenge/(challenge_id)/refuse/
+
+    Refuse specific challenge.
+
+.. http:get:: /api/challenge/(challenge_id)/cancel/
+
+    Cancel specific challenge.
+
 .. http:get:: /api/challenge/(challenge_id)/
 
     Return information and questions (content) for given challenge. Also set it as started for user requesting.
+
+    **Example response**:
+
+     .. sourcecode:: json
+
+        {
+            success: true,
+            status: "A",
+            date: "2012-06-19 19:59:32"
+            from: "test",
+            to: "admin",
+            seconds: 61,
+            questions: {
+                21: {
+                    text: "S Which is the codename of current WoUSO devel version?",
+                    answers: {
+                        81: "Piranha",
+                        82: "4",
+                        83: "no codename",
+                        84: "nom nom nom"
+                    }
+                },
+                26: {
+                    text: "S In lumea UNIX un proces poate avea un singur proces parinte. In momentul in care parintele este omorat printr-ul semnal SIGKILL, procesul copil",
+                    answers: {
+                        101: "este automat omorat si el",
+                        102: "devine orfan, isi termina executia, fara a fi adoptat de nimeni",
+                        103: "devine orfan si este automat adoptat de parintele parintelui (bunicul procesului)",
+                        104: "devine orfan si este automat adoptat de procesul "init""
+                    }
+                }
+            }
+        }
 
 .. http:post:: /api/challenge/(challenge_id)/
 
