@@ -59,6 +59,9 @@ def calculate(formula, **params):
     if formula is None:
         raise InvalidFormula(formula)
 
+    if not formula.formula:
+        return {}
+
     ret = {}
     try:
         frml = formula.formula.format(**params)
