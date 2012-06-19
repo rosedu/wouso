@@ -34,10 +34,12 @@ urlpatterns += patterns('',
     url(r'^info/$', Resource(handler=InfoHandler, **ad)),
     url(r'^player/(?P<player_id>\d+)/info/$', Resource(handler=InfoHandler, **ad)),
     url(r'^player/(?P<player_id>\d+)/cast/$', Resource(handler=CastHandler, **ad)),
+
     url(r'^bazaar/$', Resource(handler=BazaarHandler, **ad)),
     url(r'^bazaar/inventory/$', Resource(handler=BazaarInventoryHandler, **ad)),
     url(r'^bazaar/buy/$', Resource(handler=BazaarBuy, **ad)),
     url(r'^bazaar/exchange/(?P<coin>gold|points)/(?P<tocoin>gold|points)/$', Resource(handler=BazaarExchange, **ad)),
+
     url(r'^search/(?P<query>[^/]+)/$', Resource(handler=Search, **ad)),
     url(r'^messages/(?P<type>all|sent|recv)/$', Resource(handler=Messages, **ad)),
     url(r'^messages/send/$', Resource(handler=MessagesSender, **ad)),
