@@ -40,3 +40,23 @@ class BazaarApi(TestCase):
         player = self.user.get_profile()
 
         self.assertTrue(spell in [s.spell for s in player.spells_available])
+
+class NotificationRegister(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user('_test', '', password='test')
+        self.client.login(username='_test', password='test')
+
+    def test_notification_register_fail(self):
+        response = self.client.post('/api/notifications/register/')
+
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(data['error'], 'No registration_id provided')
+
+
+    def test_notification_register_ok(self):
+        response = self.client.post('/api/notifications/register/', {'registration_id': '1245'})
+
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.content)
+        self.assertEqual(data['success'], True)

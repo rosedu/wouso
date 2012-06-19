@@ -1,15 +1,11 @@
 from datetime import datetime
-from django.db.models.aggregates import Sum
-from wouso.core.scoring.models import Coin
-from wouso.interface.activity.models import Activity
-from wouso.interface.messaging.models import Message, MessagingUser
-
-__author__ = 'alex'
-
 from piston.handler import BaseHandler
 from piston.utils import rc
+
 from django.db.models.query_utils import Q
-from wouso.interface.top.models import TopUser, GroupHistory
+from django.db.models.aggregates import Sum
+
+from wouso.core.scoring.models import Coin
 from wouso.core.user.templatetags.user import player_avatar
 from wouso.core.game import get_games
 from wouso.core.user.models import Player, SpellHistory, Race, PlayerGroup
@@ -17,6 +13,10 @@ from wouso.core.magic.models import Spell
 from wouso.core.god import God
 from wouso.core import scoring
 from wouso.interface.apps import get_apps
+from wouso.interface.activity.models import Activity
+from wouso.interface.api.c2dm.models import register_device
+from wouso.interface.messaging.models import Message, MessagingUser
+from wouso.interface.top.models import TopUser, GroupHistory
 
 def get_fullpath(request):
     base = 'http://%s' % request.get_host()
@@ -71,6 +71,27 @@ class NotificationsHandler(BaseHandler):
             return {'count': notifs[type], 'type': type}
         else:
             return rc.BAD_REQUEST
+
+class NotificationsRegister(BaseHandler):
+    allowed_methods = ('POST',)
+
+    def create(self, request):
+        attrs = self.flatten_dict(request.POST)
+
+        if 'registration_id' not in attrs.keys():
+            return {'success': False, 'error': 'No registration_id provided'}
+
+        player = request.user.get_profile()
+
+        register_device(player, attrs['registration_id'])
+        return {'success': True}
+
+class NotificationsDevices(BaseHandler):
+    allowed_methods = ('GET',)
+
+    def read(self, request):
+        player = request.user.get_profile()
+        return [dict(registration_id=d.registration_id) for d in player.device_set.all()]
 
 class InfoHandler(BaseHandler):
     allowed_methods = ('GET',)

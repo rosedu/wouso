@@ -9,6 +9,14 @@ Welcome to Wouso API's documentation!
 Base api:
 --------
 
+.. http:post:: /api/notifications/register/
+
+    Register a new Android device for push notifications. POST data must contain `registration_id`.
+
+.. http:post:: /api/notifications/devices/
+
+    List registered Android devices which will receive push notifications.
+
 .. http:get:: /api/notifications/all/
 
     Return the notification count for the requesting user.
