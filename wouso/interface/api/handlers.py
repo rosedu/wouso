@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.db.models.aggregates import Sum
 from wouso.core.scoring.models import Coin
 from wouso.interface.messaging.models import Message, MessagingUser
 
@@ -10,7 +11,7 @@ from django.db.models.query_utils import Q
 from wouso.interface.top.models import TopUser
 from wouso.core.user.templatetags.user import player_avatar
 from wouso.core.game import get_games
-from wouso.core.user.models import Player, SpellHistory
+from wouso.core.user.models import Player, SpellHistory, Race, PlayerGroup
 from wouso.core.magic.models import Spell
 from wouso.core.god import God
 from wouso.core import scoring
@@ -259,3 +260,62 @@ class CastHandler(BaseHandler):
             return {'succes': False, 'error': 'Cast failed'}
 
         return {'success': True}
+
+class TopRaces(BaseHandler):
+    allowed_methods = ('GET',)
+
+    def read(self, request):
+        races = []
+        for r in Race.objects.all():
+            races.append([r, r.player_set.aggregate(points=Sum('points'))['points']])
+
+        races.sort(lambda a, b: a[1] - b[1] if a[1] and b[1] else 0)
+        races = [(r.name, dict(id=r.id, points=p)) for r,p in races]
+
+        return dict(races)
+
+class TopGroups(BaseHandler):
+    allowed_methods = ('GET',)
+
+    def read(self, request, race_id=None):
+        if race_id:
+            try:
+                race = Race.objects.get(pk=race_id)
+            except Race.DoesNotExist:
+                return rc.NOT_FOUND
+            qs = race.player_set.distinct('playergroup').values('groups')
+            qs = [PlayerGroup.objects.get(pk=g['groups']) for g in qs]
+        else:
+            qs = PlayerGroup.objects.all()
+
+        groups = []
+        for g in qs:
+            groups.append([g, g.player_set.aggregate(points=Sum('points'))['points']])
+
+        groups.sort(lambda a, b: a[1] - b[1] if a[1] and b[1] else 0)
+        groups = [(r.name, dict(id=r.id, points=p)) for r,p in groups]
+
+        return dict(groups)
+
+class TopPlayers(BaseHandler):
+    allowed_methods = ('GET',)
+
+    def read(self, request, group_id=None, race_id=None):
+        if race_id:
+            try:
+                race = Race.objects.get(pk=race_id)
+            except Race.DoesNotExist:
+                return rc.NOT_FOUND
+            qs = race.player_set.all()
+        elif group_id:
+            try:
+                group = PlayerGroup.objects.get(pk=group_id)
+            except PlayerGroup.DoesNotExist:
+                return rc.NOT_FOUND
+            qs = group.player_set.all()
+        else:
+            qs = Player.objects.all()
+
+        qs = qs.order_by('-points')
+
+        return [dict(first_name=p.user.first_name, last_name=p.user.last_name, id=p.id, points=p.points) for p in qs]

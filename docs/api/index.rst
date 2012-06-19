@@ -238,6 +238,33 @@ Base api:
 
     Cast a spell given as POST parameter to player_id.
 
+Top API
+-------
+.. http:get:: /api/top/race/
+
+    Returns top races in the game.
+
+.. http:get:: /api/top/race/(race_id)/group/
+
+    Returns top groups in selected race.
+
+.. http:get:: /api/top/race/(race_id)/player/
+
+    Returns top groups in selected race.
+
+.. http:get:: /api/top/group/
+
+    Returns top groups in the game.
+
+.. http:get:: /api/top/group/(group_id)/player/
+
+    Returns top players in selected group.
+
+.. http:get:: /api/top/player/
+
+    Returns top players in the game.
+
+
 Messages API
 ------------
 .. http:get:: /api/messages/(type)

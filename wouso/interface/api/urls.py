@@ -41,6 +41,13 @@ urlpatterns += patterns('',
     url(r'^search/(?P<query>[^/]+)/$', Resource(handler=Search, **ad)),
     url(r'^messages/(?P<type>all|sent|recv)/$', Resource(handler=Messages, **ad)),
     url(r'^messages/send/$', Resource(handler=MessagesSender, **ad)),
+
+    url(r'^top/race/$', Resource(handler=TopRaces, **ad)),
+    url(r'^top/group/$', Resource(handler=TopGroups, **ad)),
+    url(r'^top/race/(?P<race_id>\d+)/group/$', Resource(handler=TopGroups, **ad)),
+    url(r'^top/player/$', Resource(handler=TopPlayers, **ad)),
+    url(r'^top/race/(?P<race_id>\d+)/player/$', Resource(handler=TopPlayers, **ad)),
+    url(r'^top/group/(?P<group_id>\d+)/player/$', Resource(handler=TopPlayers, **ad)),
 )
 
 for g in get_games():
