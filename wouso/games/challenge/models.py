@@ -595,8 +595,11 @@ class ChallengeGame(Game):
 
                 data = self.flatten_dict(request.POST)
                 responses = {}
-                for q in challenge.questions.all():
-                    responses[q.id] = [int(a) if a else '' for a in data.get(str(q.id), '').split(',')]
+                try:
+                    for q in challenge.questions.all():
+                        responses[q.id] = [int(a) if a else '' for a in data.get(str(q.id), '').split(',')]
+                except (IndexError, ValueError):
+                    return {'success': False, 'error': 'Unable to parse answers'}
 
                 result = challenge.set_played(challuser, responses)
 
