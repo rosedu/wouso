@@ -566,7 +566,7 @@ class ChallengeGame(Game):
             def read(self, request):
                 player = request.user.get_profile()
                 challuser = player.get_extension(ChallengeUser)
-                return ChallengeGame.get_active(challuser)
+                return [dict(status=c.status, date=c.date, id=c.id, user_from=c.user_from.user, user_to=c.user_to.user) for c in ChallengeGame.get_active(challuser)]
 
         class ChallengeLaunch(BaseHandler):
             methods_allowed = ('GET',)
