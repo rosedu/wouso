@@ -1,40 +1,43 @@
 {% load user %}
 {% load artifacts %}
 {% load i18n %}
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <HEAD>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<TITLE>{% block title %}{{config_title}}{% endblock %}</TITLE>
-<LINK rel="stylesheet" type="text/css" href="/static/css/style.css" />
-<style type="text/css">
-    @import url("/static/css/autocomplete.css");
-    {% if config_logo %}
-    div#logo {
-        background: url({{ config_logo}}) no-repeat;
-    }
-    {% endif %}
-    {% block css %}{% endblock %}
-</style>
-<script type="text/javascript" src="/static/js/jquery-1.6.2.min.js"></script>
-<script type="text/javascript" src="/static/js/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/static/js/jquery.autocomplete.js"></script>
-<script type="text/javascript" src="/static/js/format.item.js"></script>
-<script type="text/javascript" src="/static/js/jquery.timers.js"></script>
-<script type="text/javascript" src="/static/js/ajaxify.js"></script>
-<script type="text/javascript">
-    var url_base = '{{ basepath }}';
-</script>
-{% if not config_disable_header_autoreload %}
-<script type="text/javascript">
-    $(document).ready(function (){$(document).everyTime(10000, reload_header);});
-</script>{% endif %}
-{% block scripts %}{% endblock %}
-<LINK rel="stylesheet" type="text/css" href="/static/themes/{{ config_theme }}/styles.css" />
+    <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <TITLE>{% block title %}{{config_title}}{% endblock %}</TITLE>
+    <LINK rel="stylesheet" type="text/css" href="/static/css/style.css" />
+    <style type="text/css">
+        @import url("/static/css/autocomplete.css");
+        {% if config_logo %}
+        div#logo {
+            background: url({{ config_logo}}) no-repeat;
+        }
+        {% endif %}
+        {% block css %}{% endblock %}
+    </style>
+    <script type="text/javascript" src="/static/js/jquery-1.6.2.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.autocomplete.js"></script>
+    <script type="text/javascript" src="/static/js/format.item.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.timers.js"></script>
+    <script type="text/javascript" src="/static/js/ajaxify.js"></script>
+    <script type="text/javascript">
+        var url_base = '{{ basepath }}';
+    </script>
+
+    {% if not config_disable_header_autoreload %}
+    <script type="text/javascript">
+        $(document).ready(function (){$(document).everyTime(10000, reload_header);});
+    </script>{% endif %}
+
+    {% block scripts %}{% endblock %}
+    <LINK rel="stylesheet" type="text/css" href="/static/themes/{{ config_theme }}/styles.css" />
 </HEAD>
 
 <BODY>
-<div id="container">
+    <div id="container">
     <div id="header">
         <div id="topbar">
             {% include 'interface/header.html' %}

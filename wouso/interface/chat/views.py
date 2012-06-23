@@ -5,8 +5,10 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils import simplejson
 from models import *
-from datetime import datetime, timedelta
+
+import datetime
 from wouso.core.config.models import BoolSetting
+from wouso.core.user.models import Player
 
 def create_room(roomName, deletable=False, renameable=False):
     ''' creates a new chatroom and saves it '''
@@ -58,13 +60,25 @@ def index(request):
     if BoolSetting.get('disable-Chat').get_value():
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
 
+    profile = request.user.get_profile()
+    # gather users online in the last ten minutes
+    oldest = datetime.datetime.now() - datetime.timedelta(minutes = 10)
+    online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
+
+
     user = request.user.get_profile()
-    return render_to_response('chat.html', {'user': user},
-            context_instance=RequestContext(request))
+    return render_to_response('chat.html', 
+							{'user': user,
+							
+							'last10': online_last10,
+
+							},
+           					context_instance=RequestContext(request))
 
 @login_required
 def sendmessage(request):
     user = get_author(request)
+
     if request.POST['opcode'] == 'message':
         try:
             add_message(request.POST['msg'], user, None)

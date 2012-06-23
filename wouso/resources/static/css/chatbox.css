@@ -6,24 +6,30 @@
 }
 
 #ShoutboxHideButton {
-    position: absolute;
+	width:100px;
+	height:300px;    
+	position: absolute;
     right: 0px;
     bottom: 0px;
 }
 
 #ShoutboxShowButton {
     display: none;
+	width:100px;
+	height:300px;  
     position: absolute;
     right: 5px;
     bottom: 5px;
 }
 
 #ShoutboxTextArea {
+
     display:block;
     padding: 3px;
     text-align:left;
     height:200px;
     width:200px;
+    
     border-color: black;
     border-style: solid;
     border-width: thin;
@@ -34,7 +40,7 @@
     display:block;
     padding: 3px;
     text-align:left;
-    width:200px;
+    width:300px;
 }
 
 #ShoutboxUserName {
@@ -42,6 +48,14 @@
     padding: 3px;
     text-align:left;
     width:200px;
+}
+
+#ShoutboxUserList {
+    list-style-type: none;
+    display:block;
+    text-align:left;
+    width:100px;
+	height:200px	;	
 }
 
 #warn_spam {

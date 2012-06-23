@@ -2,15 +2,14 @@ $(document).ready(function() {
 
     /* hide button */
     $("#ShoutboxHideButton").click(function() {
-        $("#Shoutbox").hide("slide", {direction: "down"});
-        $("#ShoutboxShowButton").delay("350").show("slide");
+        $("#Shoutbox").hide("slide", {direction: "right"});
+        $("#ShoutboxShowButton").delay("350").show("slide", {direction:"right"});
     });
 
     /* show button */
     $("#ShoutboxShowButton").click(function() {
         $("#ShoutboxShowButton").hide();
-        $("#ShoutboxTextArea").append("<hr />");
-        $("#Shoutbox").show("slide", {direction: "down"});
+        $("#Shoutbox").show("slide", {direction: "right"});
     });
 
     /* csrf crap */

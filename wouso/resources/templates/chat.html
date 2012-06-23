@@ -1,27 +1,61 @@
 {% extends 'site_base.html' %}
-
+{% load i18n %}
+{% load artifacts %}
+{% load user %}
 {% block title %}{{block.super}} -- Chatbox{% endblock %}
+
 {% block scripts %}
+
 <script type="text/javascript" src="/static/js/chatbox.js"></script>
+
+<script language="javascript" type="text/javascript" ></script>
+
+
+
+
+
+
 <LINK rel="stylesheet" type="text/css" href="/static/css/chatbox.css" />
 {% endblock %}
 
 {% csrf_token %}
 {% block content %}
 
+<a href="javascript:location.reload(true)">Refresh this page</a>
+
+
+
+            {% for u in last10	 %}
+                {% player u %}
+		{% empty %}
+	cucu
+            {% endfor %}
+
 <div id="Shoutbox">
-    <div id="ShoutboxTextArea"></div>
+    
 
-    <input type="text" readonly=true id="ShoutboxUserName" value="{{user}}"/>
+		<table >	    
+		
+			<tr><td><div id="ShoutboxTextArea"></div></td>
 
-    <input type="text" id="ShoutboxTextBox"/>
+				<!--<input type="text" readonly=true id="ShoutboxUserName" value="{{user}}"/> -->
+				<td><input type="text" readonly=true id="ShoutboxUserList" value="
+					as"/></td>
+				<td rowspan = "3" style="width:100px; hight:300px"><button type="button" style="width: 100px; height:300px; background-color:Transparent;" id="ShoutboxHideButton"> >> </button></td>
+			</tr>
+			<tr>
+				<td colspan = "2"><input type="text" id="ShoutboxTextBox"/></td>
+			</tr>
+    		<tr>
+				<td colspan = "2"><input type="button" id="ShoutboxSendButton" value="Send"/><td>
+			</tr>
+		
+		</table>
 
-    <input type="button" id="ShoutboxSendButton" value="Send"/>
 
-    <button type="button" id="ShoutboxHideButton">Hide</button>
 </div>
 
-<button type="button" id="ShoutboxShowButton">Show</button>
+<button type="button" style="width: 100px; height:300px;  background-color:Transparent;" id="ShoutboxShowButton"><<</button>
 
 {% endblock %}
 
