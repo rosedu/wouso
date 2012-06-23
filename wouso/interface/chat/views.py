@@ -6,9 +6,11 @@ from django.template import RequestContext
 from django.utils import simplejson
 from models import *
 
-import datetime
+
 from wouso.core.config.models import BoolSetting
-from wouso.core.user.models import Player
+from datetime import datetime, timedelta
+#import datetime
+
 
 def create_room(roomName, deletable=False, renameable=False):
     ''' creates a new chatroom and saves it '''
@@ -60,9 +62,9 @@ def index(request):
     if BoolSetting.get('disable-Chat').get_value():
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
 
-    profile = request.user.get_profile()
+
     # gather users online in the last ten minutes
-    oldest = datetime.datetime.now() - datetime.timedelta(minutes = 10)
+    oldest = datetime.now() - timedelta(minutes = 10)
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
 
 
