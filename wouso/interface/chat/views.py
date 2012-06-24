@@ -66,15 +66,14 @@ def index(request):
     # gather users online in the last ten minutes
     oldest = datetime.now() - timedelta(minutes = 10)
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
-
+    
+	#sorted(online_last10, key=lambda Player: Player.name)
 
     user = request.user.get_profile()
     return render_to_response('chat.html', 
 							{'user': user,
-							
 							'last10': online_last10,
-
-							},
+								},
            					context_instance=RequestContext(request))
 
 @login_required
