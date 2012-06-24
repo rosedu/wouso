@@ -82,7 +82,6 @@ $(document).ready(function() {
                 return false;
             }
 
-            $('#ShoutboxUserName').val(obj.user);
 
             var i;
 
@@ -91,7 +90,8 @@ $(document).ready(function() {
             }
 
         }
-        else if (res.status == 400) {
+		/*For not spaming*/        
+		else if (res.status == 400) {
             $('#ShoutboxTextArea').append('<p id="warn_spam"> Stop spamming! </p>');
         }
         AutoScroll();

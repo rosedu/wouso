@@ -25,11 +25,11 @@
 
 
 
-            {% for u in last10	 %}
-                {% player u %}
-		{% empty %}
-	cucu
-            {% endfor %}
+	{% for u in last10	 %}
+        {{u}}
+	{% empty %}
+		cucu
+    {% endfor %}
 
 <div id="Shoutbox">
     
@@ -39,8 +39,11 @@
 			<tr><td><div id="ShoutboxTextArea"></div></td>
 
 				<!--<input type="text" readonly=true id="ShoutboxUserName" value="{{user}}"/> -->
-				<td><input type="text" readonly=true id="ShoutboxUserList" value="
-					as"/></td>
+				<td><div id="ShoutboxUserList">
+				{% for u in last10	 %}
+                	{% player u %}</br>
+				
+            {% endfor %}</td>
 				<td rowspan = "3" style="width:100px; hight:300px"><button type="button" style="width: 100px; height:300px; background-color:Transparent;" id="ShoutboxHideButton"> >> </button></td>
 			</tr>
 			<tr>
