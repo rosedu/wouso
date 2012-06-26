@@ -69,7 +69,7 @@ def index(request):
 
 	#sorted(online_last10, key=lambda Player: Player.name)
     all_message = ChatMessage.objects.all()
-    all_message = all_message[len(all_message)-10:]
+    all_message = all_message[len(all_message)-10:] if len(all_message) > 10 else all_message
 
     user = request.user.get_profile()
     return render_to_response('chat.html', 
@@ -86,7 +86,7 @@ def online_players(request):
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
 
     user = request.user.get_profile()
-    return render_to_response('chat.html', 
+    return render_to_response('chat_last.html', 
 							{
 							'last': online_last10,
 							},
