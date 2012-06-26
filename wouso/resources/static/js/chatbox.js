@@ -46,9 +46,44 @@ $(document).ready(function() {
         var args = {type:'POST', url:'m/', data:mdata, complete:ReceiveMessage};
         $.ajax(args);
     }
+    function NewUsers() {
+        var mdata = {'opcode': 'keepAlive'};
+        var args = {type:'POST', url:'last/', data:mdata, complete:UpdateUsers};
+        $.ajax(args);
+    }
 
+    $(document).everyTime(3000, NewUsers);
     $(document).everyTime(1000, SendPing);
     $(document).everyTime(500, AutoScroll);
+    
+    //here
+    //var content = $.get('last10/');
+    //$('#ShoutboxUserList').html(content)
+
+    var UpdateUsers = function() {
+        var i;
+               
+        $('#ShoutboxUserList').val('');
+        var  content = $.get('/chat/last');
+        html = '<div>{% for u in content %}' +
+               '{% player u %}</br>' +
+               '{% endfor %}</div>';
+        $('#ShoutboxUserList').html(content)
+        var output = '';
+        var property;
+        
+        var a = "{{content}}"
+            $('#ShoutboxUserList').append(a+"<br/>");
+            $('#ShoutboxUserList').append(content+"<br/>");
+                      
+        
+        
+        AutoScroll();
+
+    };
+
+
+
 
 
     function AddToHist(input) {
@@ -86,7 +121,7 @@ $(document).ready(function() {
             var i;
 
             for (i = 0; i < obj.count; ++i) {
-                $('#ShoutboxTextArea').append(obj.msgs[i].user + " : " + obj.msgs[i].text + "<br />" )
+                $('#ShoutboxTextArea').append(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />" )
             }
 
         }
@@ -101,7 +136,6 @@ $(document).ready(function() {
     /* clear on refresh */
     $('#ShoutboxTextArea').val("");
     $('#ShoutboxTextBox').val('');
-
     /* create an emtpy array sized for 10 elements */
     var hist = [];
     var i = hist.length % 10; // iter pentru inserare
@@ -175,4 +209,40 @@ $(document).ready(function() {
 
     });
 
+// emoticons
+var emoticons = {                 
+	'>:D' : 'emoticon_evilgrin.png',
+	':D' : 'emoticon_grin.png',
+	'=D' : 'emoticon_happy.png',
+	':\\)' : 'emoticon_smile.png',
+	':O' : 'emoticon_surprised.png',
+	':P' : 'emoticon_tongue.png',
+	':\\(' : 'emoticon_unhappy.png',
+	':3' : 'emoticon_waii.png',
+	';\\)' : 'emoticon_wink.png',
+	'\\(ball\\)' : 'sport_soccer.png'
+}
+
+/**
+ * Regular expression maddness!!!
+ * Replace the above strings for their img counterpart
+ */
+
+var img_dir = "/static/img/";
+function replace_emoticons(text) {
+	$.each(emoticons, function(char, img) {
+		re = new RegExp(char,'g');
+		// replace the following at will
+		text = text.replace(re, '<img src="'+img_dir+img+'" />');
+	});
+	
+    return text;
+}
+
+
+
 });
+
+
+
+

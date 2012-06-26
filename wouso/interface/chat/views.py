@@ -66,15 +66,33 @@ def index(request):
     # gather users online in the last ten minutes
     oldest = datetime.now() - timedelta(minutes = 10)
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
-    
+
 	#sorted(online_last10, key=lambda Player: Player.name)
+    all_message = ChatMessage.objects.all()
+    all_message = all_message[len(all_message)-10:]
 
     user = request.user.get_profile()
     return render_to_response('chat.html', 
 							{'user': user,
 							'last10': online_last10,
-								},
+							'log':all_message,							
+							},
            					context_instance=RequestContext(request))
+
+@login_required
+def online_players(request):
+    # gather users online in the last ten minutes
+    oldest = datetime.now() - timedelta(minutes = 10)
+    online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
+
+    user = request.user.get_profile()
+    return render_to_response('chat.html', 
+							{
+							'last': online_last10,
+							},
+           					context_instance=RequestContext(request))
+    
+
 
 @login_required
 def sendmessage(request):
