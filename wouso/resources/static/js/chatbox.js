@@ -47,19 +47,15 @@ $(document).ready(function() {
         $.ajax(args);
     }
     function NewUsers() {
-        var mdata = {'opcode': 'keepAlive'};
-        var args = {type:'POST', url:'last/', data:mdata, complete:UpdateUsers};
-        $.ajax(args);
+        $.get('/chat/last/', function (data) {
+			$('#ShoutboxUserList').html(data);
+		});
     }
 
     $(document).everyTime(3000, NewUsers);
     $(document).everyTime(1000, SendPing);
     $(document).everyTime(500, AutoScroll);
     
-    //here
-    //var content = $.get('last10/');
-    //$('#ShoutboxUserList').html(content)
-
     var UpdateUsers = function() {
         var i;
                
