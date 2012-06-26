@@ -23,27 +23,28 @@
 
 <a href="javascript:location.reload(true)">Refresh this page</a>
 
+<br/>
+ss
 
 
-	{% for u in last10	 %}
-        {{u}}
-	{% empty %}
-		cucu
-    {% endfor %}
 
 <div id="Shoutbox">
     
 
 		<table >	    
 		
-			<tr><td><div id="ShoutboxTextArea"></div></td>
+			<tr><td><div id="ShoutboxTextArea">
+					{% for u in log	 %}
+                		{{u}}</br>
+				
+            		{% endfor %}	
+					</div></td>
 
 				<!--<input type="text" readonly=true id="ShoutboxUserName" value="{{user}}"/> -->
 				<td><div id="ShoutboxUserList">
-				{% for u in last10	 %}
-                	{% player u %}</br>
-				
-            {% endfor %}</td>
+                    {% for u in last10	 %}
+                        {% player u %}</br>
+                    {% endfor %}</div></td>
 				<td rowspan = "3" style="width:100px; hight:300px"><button type="button" style="width: 100px; height:300px; background-color:Transparent;" id="ShoutboxHideButton"> >> </button></td>
 			</tr>
 			<tr>

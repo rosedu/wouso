@@ -25,7 +25,8 @@ class ChatMessage(models.Model):
     timeStamp = models.DateTimeField(null=True, blank=False, default=None)
 
     def __unicode__(self):
-        return self.author.__unicode__() + ' : ' + self.content + ' @ ' + self.timeStamp.strftime("%A, %d %B %Y %I:%M %p")
+        #return self.author.__unicode__() + ' : ' + self.content + ' @ ' + self.timeStamp.strftime("%A, %d %B %Y %I:%M %p")
+        return self.author.__unicode__() + ' : ' + self.content
 
 # admin interface
 admin.site.register(ChatRoom)
