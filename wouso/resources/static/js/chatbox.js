@@ -56,27 +56,6 @@ $(document).ready(function() {
     $(document).everyTime(1000, SendPing);
     $(document).everyTime(500, AutoScroll);
     
-    var UpdateUsers = function() {
-        var i;
-               
-        $('#ShoutboxUserList').val('');
-        var  content = $.get('/chat/last');
-        html = '<div>{% for u in content %}' +
-               '{% player u %}</br>' +
-               '{% endfor %}</div>';
-        $('#ShoutboxUserList').html(content)
-        var output = '';
-        var property;
-        
-        var a = "{{content}}"
-            $('#ShoutboxUserList').append(a+"<br/>");
-            $('#ShoutboxUserList').append(content+"<br/>");
-                      
-        
-        
-        AutoScroll();
-
-    };
 
 
 
