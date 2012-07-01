@@ -5,6 +5,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils import simplejson
 from models import *
+from forms import *
 
 
 from wouso.core.config.models import BoolSetting
@@ -80,19 +81,37 @@ def index(request):
            					context_instance=RequestContext(request))
 
 @login_required
+def log_request(request):
+
+
+
+    all_message = ChatMessage.objects.all()
+    all_message = all_message[len(all_message)-50:] if len(all_message) > 50 else all_message
+
+
+    return render_to_response('online.html', 
+							{
+							'log':all_message,
+							},
+           					context_instance=RequestContext(request))
+    
+@login_required
 def online_players(request):
     # gather users online in the last ten minutes
     oldest = datetime.now() - timedelta(minutes = 10)
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
 
+    userlistform = UserlistForm()
+    
+
+    userlistform.fields['users'].choices = [(x, x.id) for x in online_last10]
     user = request.user.get_profile()
     return render_to_response('chat_last.html', 
 							{
 							'last': online_last10,
+                            "userlistform":userlistform,
 							},
            					context_instance=RequestContext(request))
-    
-
 
 @login_required
 def sendmessage(request):

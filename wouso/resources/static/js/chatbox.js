@@ -10,6 +10,21 @@ $(document).ready(function() {
     $("#ShoutboxShowButton").click(function() {
         $("#ShoutboxShowButton").hide();
         $("#Shoutbox").show("slide", {direction: "right"});
+        
+    });
+
+    $("#ShoutboxProfileButton").click(function() {
+        var selectmenu=document.getElementById("mymenu")
+        var url_profile = "/player/"+ selectmenu.value + "/";
+        window.location = url_profile
+
+    });
+
+    $("#ShoutboxMesajeButton").click(function() {
+        var selectmenu=document.getElementById("mymenu")
+        var url_profile = "/m/create/to="+ selectmenu.value;
+        window.location = url_profile
+
     });
 
     /* csrf crap */
@@ -44,6 +59,8 @@ $(document).ready(function() {
     function SendPing() {
         var mdata = {'opcode': 'keepAlive'};
         var args = {type:'POST', url:'m/', data:mdata, complete:ReceiveMessage};
+        var selectmenu=document.getElementById("mymenu")
+
         $.ajax(args);
     }
     function NewUsers() {
@@ -52,13 +69,32 @@ $(document).ready(function() {
 		});
     }
 
-    $(document).everyTime(3000, NewUsers);
+    function NewLog() {
+        $.get('/chat/log/', function (data) {
+			$('#ShoutboxTextArea').html(replace_emoticons(data));
+            $(document).ready(AutoScroll);
+
+        });
+
+    }
+
+    $(document).ready(NewUsers);
+    $(document).everyTime(6000, NewUsers);
+    $(document).ready(NewLog);
     $(document).everyTime(1000, SendPing);
-    $(document).everyTime(500, AutoScroll);
-    
 
 
 
+
+    //selectmenu.onchange=function(){ //run some code when "onchange" event fires
+        /*var chosenoption=this.options[this.selectedIndex] //this refers to "selectmenu"
+        if (chosenoption.value!="nothing"){
+            window.open(chosenoption.value, "", "") //open target site (based on option's value attr) in new window
+        }
+        */
+    //   var chosenoption=this.options[this.selectedIndex]
+        //$('#ShoutboxTextArea').append(chosenoption.value +" ")
+    //}
 
 
     function AddToHist(input) {
@@ -70,6 +106,7 @@ $(document).ready(function() {
         k = 0;
         was_writing = 0;
     }
+
 
     var SendMessage = function() {
         var input = $('#ShoutboxTextBox').val();
@@ -120,7 +157,13 @@ $(document).ready(function() {
     var change_dir; // anti inertie la schimbare de directie
     var was_writing;
 
+
+
     $('#ShoutboxSendButton').click(SendMessage);
+
+
+
+
 
     function HistUp() {
         if (was_writing) {
