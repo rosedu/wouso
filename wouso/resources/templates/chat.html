@@ -25,43 +25,40 @@
 
 <br/>
 ss
-
+<A HREF="javascript:alert
+('Your resolution is '+screen.width+'x'+screen.height);">
+    Click for your screen resolution</A>
 
 
 <div id="Shoutbox">
-        <table >	    
+        <table >
 		
-            <tr><td><div id="ShoutboxTextArea">
-                    {% for u in log	 %}
-                        {{u}}</br>
-                    {% endfor %}	
-					</div></td>
-
-				<!--<input type="text" readonly=true id="ShoutboxUserName" value="{{user}}"/> -->
-                <td><div id="ShoutboxUserList">
-                    {% for u in last10%}
-                        {% player u %}</br>
-                    {% endfor %}</div>
-                </td>
+            <tr><td colspan="1"><div id="ShoutboxTextArea"></div></td>
+                <td colspan="1"><div id="ShoutboxUserList"></div></td>
                 
                 <td rowspan = "3" style="width:100px; hight:300px">
-                    <button type="button" style="width: 100px; height:300px; 
+                    <button type="button" style="width: 100px; height:300px; height: 100%;
                         background-color:Transparent;" id="ShoutboxHideButton"> 
                         >> 
                     </button>
                 </td>
             </tr>
             <tr>
-                <td colspan = "2"><input type="text" id="ShoutboxTextBox"/></td>
+                <td colspan = "1"><input type="text" id="ShoutboxTextBox"/></td>
+                <td colspan = "1"><input type="button" id="ShoutboxProfileButton" value="P"/>
+                                  <input type="button" id="ShoutboxMesajeButton" value="M"/>
+                                  <input type="button" id="C" value="C"/><td>
             </tr>
             <tr>
-                <td colspan = "2"><input type="button" id="ShoutboxSendButton" value="Send"/><td>
+                <td colspan = "1"><input type="button" id="ShoutboxSendButton" value="Send"/><td>
+
+
             </tr>
         </table>
 
 </div>
 
-<button type="button" style="width: 100px; height:300px;  background-color:Transparent;" id="ShoutboxShowButton"><<</button>
+<button type="button" style="width: 100px; height:100%;  background-color:Transparent;" id="ShoutboxShowButton"><<</button>
 
 {% endblock %}
 

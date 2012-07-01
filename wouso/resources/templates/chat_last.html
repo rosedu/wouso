@@ -1,6 +1,16 @@
 {% load user %}
 
-{% for u in last	 %}
-		{% player u %}</br>
-{% endfor %}
+<!--
+<select multiple="multiple" name="cars">
+  <option value="volvo">Volvo</option>
+  <option value="saab">Saab</option>
+  <option value="opel">Opel</option>
+  <option value="audi">Audi</option>
+</select>
+-->
+    <select id="mymenu" multiple="multiple"  style="width: 100px; height: 300px">
+        {% for u in last	 %}
+		    <option id="player" value="{{ u.id }}"> {{u}} </option>
+        {% endfor %}
+    </select>
 

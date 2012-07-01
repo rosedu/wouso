@@ -1,5 +1,6 @@
 #Shoutbox {
     /* display: none; */
+    height: 100%;
     position: absolute;
     right: 5px;
     bottom: 5px;
@@ -27,8 +28,8 @@
     display:block;
     padding: 3px;
     text-align:left;
-    height:200px;
-    width:200px;
+    height:500px;
+    width:350px;
     
     border-color: black;
     border-style: solid;
@@ -40,7 +41,7 @@
     display:block;
     padding: 3px;
     text-align:left;
-    width:300px;
+    width:350px;
 }
 
 #ShoutboxUserName {
@@ -54,8 +55,8 @@
     display:block;
     padding: 3px;
     text-align:left;
-    height:200px;
-    width:100px;
+    height:500px;
+    width:150px;
     
     border-color: black;
     border-style: solid;
