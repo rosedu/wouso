@@ -63,31 +63,17 @@ def index(request):
     if BoolSetting.get('disable-Chat').get_value():
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
 
-
-    # gather users online in the last ten minutes
-    oldest = datetime.now() - timedelta(minutes = 10)
-    online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
-
-	#sorted(online_last10, key=lambda Player: Player.name)
-    all_message = ChatMessage.objects.all()
-    all_message = all_message[len(all_message)-10:] if len(all_message) > 10 else all_message
-
     user = request.user.get_profile()
     return render_to_response('chat.html', 
 							{'user': user,
-							'last10': online_last10,
-							'log':all_message,							
 							},
            					context_instance=RequestContext(request))
 
 @login_required
 def log_request(request):
 
-
-
     all_message = ChatMessage.objects.all()
     all_message = all_message[len(all_message)-50:] if len(all_message) > 50 else all_message
-
 
     return render_to_response('online.html', 
 							{
@@ -97,19 +83,14 @@ def log_request(request):
     
 @login_required
 def online_players(request):
+
     # gather users online in the last ten minutes
     oldest = datetime.now() - timedelta(minutes = 10)
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
 
-    userlistform = UserlistForm()
-    
-
-    userlistform.fields['users'].choices = [(x, x.id) for x in online_last10]
-    user = request.user.get_profile()
-    return render_to_response('chat_last.html', 
+    return render_to_response('chat_last.html',
 							{
 							'last': online_last10,
-                            "userlistform":userlistform,
 							},
            					context_instance=RequestContext(request))
 
@@ -124,3 +105,10 @@ def sendmessage(request):
             return HttpResponseBadRequest()
     
     return HttpResponse(simplejson.dumps(serve_message(user)))
+
+
+def header_link(request):
+
+
+    url = reverse('wouso.interface.chat.views.index')
+    return dict(link=url, count=10, text=_('Meages'))

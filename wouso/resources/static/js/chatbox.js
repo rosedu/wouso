@@ -1,3 +1,10 @@
+
+var selectID= null;
+function select(id){
+    selectID = id
+}
+
+
 $(document).ready(function() {
 
     /* hide button */
@@ -10,22 +17,22 @@ $(document).ready(function() {
     $("#ShoutboxShowButton").click(function() {
         $("#ShoutboxShowButton").hide();
         $("#Shoutbox").show("slide", {direction: "right"});
-        
     });
 
+
+
+
     $("#ShoutboxProfileButton").click(function() {
-        var selectmenu=document.getElementById("mymenu")
-        var url_profile = "/player/"+ selectmenu.value + "/";
+        var url_profile = "/player/"+ selectID + "/";
         window.location = url_profile
 
     });
 
     $("#ShoutboxMesajeButton").click(function() {
-        var selectmenu=document.getElementById("mymenu")
-        var url_profile = "/m/create/to="+ selectmenu.value;
+        var url_profile = "/m/create/to="+ selectID;
         window.location = url_profile
 
-    });
+    })
 
     /* csrf crap */
     $.ajaxSetup({
@@ -59,8 +66,6 @@ $(document).ready(function() {
     function SendPing() {
         var mdata = {'opcode': 'keepAlive'};
         var args = {type:'POST', url:'m/', data:mdata, complete:ReceiveMessage};
-        var selectmenu=document.getElementById("mymenu")
-
         $.ajax(args);
     }
     function NewUsers() {
@@ -78,23 +83,12 @@ $(document).ready(function() {
 
     }
 
+    $(document).everyTime(500, AutoScroll);
     $(document).ready(NewUsers);
-    $(document).everyTime(6000, NewUsers);
+    $(document).everyTime(200000, NewUsers);
     $(document).ready(NewLog);
     $(document).everyTime(1000, SendPing);
 
-
-
-
-    //selectmenu.onchange=function(){ //run some code when "onchange" event fires
-        /*var chosenoption=this.options[this.selectedIndex] //this refers to "selectmenu"
-        if (chosenoption.value!="nothing"){
-            window.open(chosenoption.value, "", "") //open target site (based on option's value attr) in new window
-        }
-        */
-    //   var chosenoption=this.options[this.selectedIndex]
-        //$('#ShoutboxTextArea').append(chosenoption.value +" ")
-    //}
 
 
     function AddToHist(input) {
@@ -111,7 +105,7 @@ $(document).ready(function() {
     var SendMessage = function() {
         var input = $('#ShoutboxTextBox').val();
 
-        if (input) {
+            if (input) {
             AddToHist(input);
             var msgdata = {'opcode':'message', 'msg':input, 'room':''};
             var args = {type:"POST", url:"m/", data:msgdata, complete:ReceiveMessage};
@@ -148,6 +142,8 @@ $(document).ready(function() {
     /* clear on refresh */
     $('#ShoutboxTextArea').val("");
     $('#ShoutboxTextBox').val('');
+
+
     /* create an emtpy array sized for 10 elements */
     var hist = [];
     var i = hist.length % 10; // iter pentru inserare
@@ -227,35 +223,30 @@ $(document).ready(function() {
 
     });
 
-// emoticons
-var emoticons = {                 
-	'>:D' : 'emoticon_evilgrin.png',
-	':D' : 'emoticon_grin.png',
-	'=D' : 'emoticon_happy.png',
-	':\\)' : 'emoticon_smile.png',
-	':O' : 'emoticon_surprised.png',
-	':P' : 'emoticon_tongue.png',
-	':\\(' : 'emoticon_unhappy.png',
-	':3' : 'emoticon_waii.png',
-	';\\)' : 'emoticon_wink.png',
-	'\\(ball\\)' : 'sport_soccer.png'
-}
 
-/**
- * Regular expression maddness!!!
- * Replace the above strings for their img counterpart
- */
 
-var img_dir = "/static/img/";
-function replace_emoticons(text) {
-	$.each(emoticons, function(char, img) {
-		re = new RegExp(char,'g');
-		// replace the following at will
-		text = text.replace(re, '<img src="'+img_dir+img+'" />');
-	});
-	
-    return text;
-}
+    var emoticons = {
+        '>:D' : 'emoticon_evilgrin.png',
+        ':D' : 'emoticon_grin.png',
+        '=D' : 'emoticon_happy.png',
+        ':\\)' : 'emoticon_smile.png',
+        ':O' : 'emoticon_surprised.png',
+        ':P' : 'emoticon_tongue.png',
+        ':\\(' : 'emoticon_unhappy.png',
+        ':3' : 'emoticon_waii.png',
+        ';\\)' : 'emoticon_wink.png',
+        '\\(ball\\)' : 'sport_soccer.png'
+    }
+
+    var img_dir = "/static/img/";
+    function replace_emoticons(text) {
+        $.each(emoticons, function(char, img) {
+            re = new RegExp(char,'g');
+            text = text.replace(re, '<img src="'+img_dir+img+'" />');
+        });
+
+        return text;
+    }
 
 
 

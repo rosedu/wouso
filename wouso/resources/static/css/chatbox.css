@@ -6,6 +6,35 @@
     bottom: 5px;
 }
 
+#Privatebox{
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+
+}
+
+#PrivateboxTextArea {
+
+    display:block;
+    padding: 3px;
+    text-align:left;
+    height:150px;
+    width:150px;
+    background-color: white;
+
+    border-color: black;
+    border-style: solid;
+    border-width: thin;
+    overflow: auto;
+}
+
+#PrivateboxTextBox {
+    display:block;
+    padding: 3px;
+    text-align:left;
+    width:150px;
+}
+
 #ShoutboxHideButton {
 	width:100px;
 	height:300px;    
@@ -30,7 +59,8 @@
     text-align:left;
     height:500px;
     width:350px;
-    
+    background-color: white;
+
     border-color: black;
     border-style: solid;
     border-width: thin;
@@ -57,7 +87,8 @@
     text-align:left;
     height:500px;
     width:150px;
-    
+
+    background-color: white;
     border-color: black;
     border-style: solid;
     border-width: thin;
