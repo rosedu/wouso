@@ -8,9 +8,30 @@
   <option value="audi">Audi</option>
 </select>
 -->
-    <select id="mymenu" multiple="multiple"  style="width: 100px; height: 300px">
+<!--    <select id="mymenu" multiple="multiple"  style="width: 100px; height: 300px">
         {% for u in last	 %}
 		    <option id="player" value="{{ u.id }}"> {{u}} </option>
         {% endfor %}
     </select>
+- ->
 
+<script>
+    var sel = null;
+
+    function select(id) {
+        sel = id;
+    }
+
+    function do_profile() {
+        if (sel == null){}
+        else
+            window.location = "/player/" + sel + "/";
+    }
+</script>
+-->
+{% for u in last %}
+    <li><a href="#" id="{{u.id}}" onclick="select(this.id)" > {{u}} </a></li>
+{% endfor %}
+
+<!--button onclick="do_profile()">Profile</button>
+-->

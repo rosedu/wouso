@@ -12,49 +12,53 @@
 
 
 
-
-
-
 <LINK rel="stylesheet" type="text/css" href="/static/css/chatbox.css" />
 {% endblock %}
 
 {% csrf_token %}
 {% block content %}
 
-<a href="javascript:location.reload(true)">Refresh this page</a>
 
-<br/>
-ss
+
 <A HREF="javascript:alert
 ('Your resolution is '+screen.width+'x'+screen.height);">
     Click for your screen resolution</A>
 
+<div id="Privetbox" style="border-style:solid; border-width: thin; width: 162px">
+    <div style="background: blue">
+        <input type="button" id="nume" style="border:none; text-align:left; background: transparent; width: 97px" value="@ Iulian"/>
+        <input type="button" id="minimize" style="border: none; background: transparent" value="_"/>
+        <input type="button" id="exit" style="border: none; background: transparent" value="X"/>
+    </div>
+    <div id="PrivateboxTextArea" style="azimuth: center;"></div>
+    <input type="text" id="PrivateboxTextBox"/>
+</div>
 
 <div id="Shoutbox">
-        <table >
-		
-            <tr><td colspan="1"><div id="ShoutboxTextArea"></div></td>
-                <td colspan="1"><div id="ShoutboxUserList"></div></td>
-                
-                <td rowspan = "3" style="width:100px; hight:300px">
-                    <button type="button" style="width: 100px; height:300px; height: 100%;
-                        background-color:Transparent;" id="ShoutboxHideButton"> 
-                        >> 
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td colspan = "1"><input type="text" id="ShoutboxTextBox"/></td>
-                <td colspan = "1"><input type="button" id="ShoutboxProfileButton" value="P"/>
-                                  <input type="button" id="ShoutboxMesajeButton" value="M"/>
-                                  <input type="button" id="C" value="C"/><td>
-            </tr>
-            <tr>
-                <td colspan = "1"><input type="button" id="ShoutboxSendButton" value="Send"/><td>
+    <table >
+
+        <tr><td colspan="1"><div id="ShoutboxTextArea"></div></td>
+            <td colspan="1"><div id="ShoutboxUserList"></div></td>
+
+            <td rowspan = "3" style="width:100px; hight:300px">
+                <button type="button" style="width: 100px; height:300px; height: 100%;
+                    background-color:Transparent;" id="ShoutboxHideButton">
+                    >>
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <td colspan = "1"><input type="text" id="ShoutboxTextBox"/></td>
+            <td colspan = "1"><input type="button" id="ShoutboxProfileButton" value="P"/>
+                              <input type="button" id="ShoutboxMesajeButton" value="M"/>
+                              <input type="button" id="C" value="C"/><td>
+        </tr>
+        <tr>
+            <td colspan = "1"><input type="button" id="ShoutboxSendButton" value="Send"/><td>
 
 
-            </tr>
-        </table>
+        </tr>
+    </table>
 
 </div>
 
