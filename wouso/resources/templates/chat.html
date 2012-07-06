@@ -24,15 +24,8 @@
 ('Your resolution is '+screen.width+'x'+screen.height);">
     Click for your screen resolution</A>
 
-<div id="Privetbox" style="border-style:solid; border-width: thin; width: 162px">
-    <div style="background: blue">
-        <input type="button" id="nume" style="border:none; text-align:left; background: transparent; width: 97px" value="@ Iulian"/>
-        <input type="button" id="minimize" style="border: none; background: transparent" value="_"/>
-        <input type="button" id="exit" style="border: none; background: transparent" value="X"/>
-    </div>
-    <div id="PrivateboxTextArea" style="azimuth: center;"></div>
-    <input type="text" id="PrivateboxTextBox"/>
-</div>
+
+
 
 <div id="Shoutbox">
     <table >
@@ -63,6 +56,22 @@
 </div>
 
 <button type="button" style="width: 100px; height:100%;  background-color:Transparent;" id="ShoutboxShowButton"><<</button>
+
+
+<div class="Privatebox" id="Privatebox">
+    <div style="background: blue">
+        <input type="button" id="UserName"   class="PrivateboxUserName"/>
+        <input type="button" id="ExitButton" class="PrivateboxExitButton" value="x"/>
+    </div>
+    <div id="PrivateboxTextArea" ></div>
+    <input type="text" id="PrivateboxTextBox"/>
+</div>
+
+<div class="Privatebox" id="PrivateboxMinimize" style="background: blue;">
+    <input type="button" id="UserNameMinimize"   class="PrivateboxUserName"/>
+    <input type="button" id="ExitButtonMinimize" class="PrivateboxExitButton" value="x"/>
+</div>
+
 
 {% endblock %}
 

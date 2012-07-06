@@ -1,11 +1,18 @@
 
 var selectID= null;
-function select(id){
+var myID = null;
+var UserName = null;
+function select(id, uid, Name){
     selectID = id
+    myID = uid
+    UserName = Name
 }
 
 
+
 $(document).ready(function() {
+    $("#Privatebox").hide();
+    $("#PrivateboxMinimize").hide();
 
     /* hide button */
     $("#ShoutboxHideButton").click(function() {
@@ -32,7 +39,46 @@ $(document).ready(function() {
         var url_profile = "/m/create/to="+ selectID;
         window.location = url_profile
 
+    });
+
+    $("#ExitButton").click(function(){
+        $("#Privatebox").hide();
     })
+
+    $("#ExitButtonMinimize").click(function(){
+        $("#PrivateboxMinimize").hide();
+    })
+
+    $("#UserName").click(function(){
+        $("#Privatebox").hide();
+        $("#PrivateboxMinimize").show();
+
+    })
+
+    $("#UserNameMinimize").click(function(){
+        $("#Privatebox").show();
+        $("#PrivateboxMinimize").hide();
+
+    })
+
+    $("#C").click(function() {
+        if (selectID == myID)
+            var url_profile = "Nu ai cum sa faci chat cu tine"
+        else if (selectID < myID)
+            var url_profile = selectID + "-" + myID;
+        else
+            var url_profile = myID + "-" + selectID;
+        var print = '#ShoutboxUserList';
+        $(print).append(url_profile + "</br>");
+
+        $("#Privatebox").show();
+        $("#PrivateboxTextArea").append('da');
+
+        $("#UserName").attr('value', UserName+'     _')
+        $("#UserNameMinimize").attr('value',UserName + '     _')
+
+    })
+
 
     /* csrf crap */
     $.ajaxSetup({
@@ -68,6 +114,7 @@ $(document).ready(function() {
         var args = {type:'POST', url:'m/', data:mdata, complete:ReceiveMessage};
         $.ajax(args);
     }
+
     function NewUsers() {
         $.get('/chat/last/', function (data) {
 			$('#ShoutboxUserList').html(data);
@@ -85,7 +132,7 @@ $(document).ready(function() {
 
     $(document).everyTime(500, AutoScroll);
     $(document).ready(NewUsers);
-    $(document).everyTime(200000, NewUsers);
+    $(document).everyTime(6000, NewUsers);
     $(document).ready(NewLog);
     $(document).everyTime(1000, SendPing);
 
@@ -106,11 +153,11 @@ $(document).ready(function() {
         var input = $('#ShoutboxTextBox').val();
 
             if (input) {
-            AddToHist(input);
-            var msgdata = {'opcode':'message', 'msg':input, 'room':''};
-            var args = {type:"POST", url:"m/", data:msgdata, complete:ReceiveMessage};
-            $.ajax(args);
-            $('#ShoutboxTextBox').val("");
+                AddToHist(input);
+                var msgdata = {'opcode':'message', 'msg':input, 'room': ''};
+                var args = {type:"POST", url:"m/", data:msgdata, complete:ReceiveMessage};
+                $.ajax(args);
+                $('#ShoutboxTextBox').val("");
         }
         return false;
     };
@@ -123,11 +170,9 @@ $(document).ready(function() {
                 return false;
             }
 
-
             var i;
-
             for (i = 0; i < obj.count; ++i) {
-                $('#ShoutboxTextArea').append(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />" )
+                $('#ShoutboxTextArea').append(obj.count+" " +obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />" )
             }
 
         }
@@ -200,6 +245,14 @@ $(document).ready(function() {
             k--;
         }
     }
+
+
+    $("#PrivateboxTextBox").keyup(function(event) {
+        if (event.keyCode == 13) {
+            /* enter */
+           SendMessage()
+        }
+    });
 
     $("#ShoutboxTextBox").keyup(function(event) {
         if (event.keyCode == 13) {

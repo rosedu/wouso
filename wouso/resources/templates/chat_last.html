@@ -30,7 +30,7 @@
 </script>
 -->
 {% for u in last %}
-    <li><a href="#" id="{{u.id}}" onclick="select(this.id)" > {{u}} </a></li>
+    <li><a href="#" id="{{u.id}}" onclick="select(this.id, '{{user.id}}','{{user.username}}')" > {{u}} </a></li>
 {% endfor %}
 
 <!--button onclick="do_profile()">Profile</button>

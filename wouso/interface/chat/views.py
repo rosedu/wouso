@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils import simplejson
 from models import *
-from forms import *
+
 
 
 from wouso.core.config.models import BoolSetting
@@ -63,16 +63,25 @@ def index(request):
     if BoolSetting.get('disable-Chat').get_value():
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
 
+    oldest = datetime.now() - timedelta(minutes = 10)
+    online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
+
     user = request.user.get_profile()
     return render_to_response('chat.html', 
 							{'user': user,
+                             'last': online_last10,
 							},
            					context_instance=RequestContext(request))
 
 @login_required
 def log_request(request):
 
-    all_message = ChatMessage.objects.all()
+    Room = None
+    #for i in ChatRoom.objects.all():
+    #    if i.name == '':
+    #        Room = i
+
+    all_message = ChatMessage.objects.filter(destRoom=Room)
     all_message = all_message[len(all_message)-50:] if len(all_message) > 50 else all_message
 
     return render_to_response('online.html', 
@@ -86,7 +95,7 @@ def online_players(request):
 
     # gather users online in the last ten minutes
     oldest = datetime.now() - timedelta(minutes = 10)
-    online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
+    online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('user__username')
 
     return render_to_response('chat_last.html',
 							{
@@ -97,10 +106,25 @@ def online_players(request):
 @login_required
 def sendmessage(request):
     user = get_author(request)
+    sw = False
+    room = None
+    #if request.POST['room'] != '':
+
+    #    for i in ChatRoom.objects.all():
+    #        if i.name == request.POST['room']:
+    #            sw = True
+    #            room = i
+
+    #    if sw != True:
+    #        create_room(request.POST['room'])
+    #ChatRoom.objects.get(name="x")
 
     if request.POST['opcode'] == 'message':
         try:
-            add_message(request.POST['msg'], user, None)
+
+            add_message(request.POST['msg'], user, room)
+
+
         except ValueError:
             return HttpResponseBadRequest()
     

@@ -9,12 +9,17 @@ class ChatUser(Player):
     canCreateRoom = models.BooleanField(null=False, blank=False, default=True)
     lastMessageTS = models.DateTimeField(null=True, blank=False, default=datetime.now)
 
+
+
 class ChatRoom(models.Model):
     ''' basic chatroom '''
 
     name = models.CharField(max_length=128, null=False, blank=False, default=None)
     deletable = models.BooleanField(null=False, blank=False, default=None)
     renameable = models.BooleanField(null=False, blank=False, default=None)
+
+
+
 
 class ChatMessage(models.Model):
     ''' chat message '''
