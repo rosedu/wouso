@@ -6,11 +6,28 @@
     bottom: 5px;
 }
 
-#Privatebox{
+.Privatebox{
     position: absolute;
-    right: 5px;
+    right: 150px;
     bottom: 5px;
 
+    border-style:solid;
+    border-width: thin;
+    width: 162px;
+    background:#ffffff
+}
+
+.PrivateboxUserName{
+    border:none;
+    text-align:left;
+    background: transparent;
+    width: 133px;
+
+}
+
+.PrivateboxExitButton{
+    border: none;
+    background: transparent
 }
 
 #PrivateboxTextArea {
