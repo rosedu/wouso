@@ -17,11 +17,22 @@
     background:#ffffff
 }
 
+.Privatebox2{
+    position: absolute;
+    right: 325px;
+    bottom: 5px;
+
+    border-style:solid;
+    border-width: thin;
+    width: 162px;
+    background:#ffffff
+}
+
 .PrivateboxUserName{
     border:none;
     text-align:left;
     background: transparent;
-    width: 133px;
+    width: 130px;
 
 }
 
@@ -30,7 +41,7 @@
     background: transparent
 }
 
-#PrivateboxTextArea {
+.PrivateboxTextArea {
 
     display:block;
     padding: 3px;
@@ -45,7 +56,7 @@
     overflow: auto;
 }
 
-#PrivateboxTextBox {
+.PrivateboxTextBox {
     display:block;
     padding: 3px;
     text-align:left;

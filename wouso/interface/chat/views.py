@@ -6,6 +6,7 @@ from django.template import RequestContext
 from django.utils import simplejson
 from models import *
 
+from django.utils.translation import ugettext as _
 
 
 from wouso.core.config.models import BoolSetting
@@ -46,7 +47,7 @@ def serve_message(user):
     msgs = []
     for m in query:
         mesaj = {}
-        mesaj['room'] = ''
+        mesaj['room'] = m.destRoom.name
         mesaj['user'] = unicode(m.author)
         mesaj['text'] = m.content
         lastTS = m.timeStamp
@@ -76,7 +77,7 @@ def index(request):
 @login_required
 def log_request(request):
 
-    Room = None
+    Room = RoomExist('global')
     #for i in ChatRoom.objects.all():
     #    if i.name == '':
     #        Room = i
@@ -107,9 +108,10 @@ def online_players(request):
 def sendmessage(request):
     user = get_author(request)
     sw = False
-    room = None
-    #if request.POST['room'] != '':
 
+
+    #else:
+    #    room = ChatRoom.objects.get(name = request.POST['room'])
     #    for i in ChatRoom.objects.all():
     #        if i.name == request.POST['room']:
     #            sw = True
@@ -120,6 +122,7 @@ def sendmessage(request):
     #ChatRoom.objects.get(name="x")
 
     if request.POST['opcode'] == 'message':
+        room = RoomExist(request.POST['room'])
         try:
 
             add_message(request.POST['msg'], user, room)
@@ -130,9 +133,10 @@ def sendmessage(request):
     
     return HttpResponse(simplejson.dumps(serve_message(user)))
 
+def RoomExist(name):
+    try:
+        return ChatRoom.objects.get(name = name)
+    except ChatRoom.DoesNotExist:
+        create_room(name)
+        return ChatRoom.object.get(name = name)
 
-def header_link(request):
-
-
-    url = reverse('wouso.interface.chat.views.index')
-    return dict(link=url, count=10, text=_('Meages'))
