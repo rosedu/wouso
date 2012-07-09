@@ -6,6 +6,7 @@ from wouso.interface.apps.qproposal.models import Qproposal
 from wouso.interface.apps.messaging.models import Message
 from wouso.interface.apps.magic.models import Bazaar
 from wouso.interface.apps.statistics.views import footer_link as stats_link
+from wouso.interface.chat.models import Chat
 from wouso.interface import get_static_pages, detect_mobile
 from wouso.settings import FORCE_SCRIPT_NAME
 
@@ -28,9 +29,15 @@ def header_footer(request):
         h = Message.get_header_link(request)
         if h:
             header.append((h, 'Message'))
+
         h = Bazaar.get_header_link(request)
         if h:
             header.append((h, 'Magic'))
+
+        h = Chat.get_header_link(request)
+        if h:
+            header.append((h, 'Chat'))
+
     except Exception as e:
         logging.exception(e)
 
