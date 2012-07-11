@@ -6,8 +6,6 @@ from django.template import RequestContext
 from django.utils import simplejson
 from models import *
 
-from django.utils.translation import ugettext as _
-
 
 from wouso.core.config.models import BoolSetting
 from datetime import datetime, timedelta
@@ -19,9 +17,11 @@ def create_room(roomName, deletable=False, renameable=False):
     newRoom = ChatRoom(name=roomName, deletable=deletable, renameable=renameable)
     newRoom.save()
 
+
 def get_author(request):
 
     return request.user.get_profile().get_extension(ChatUser)
+
 
 def add_message(text, sender, toRoom):
 
@@ -35,7 +35,9 @@ def add_message(text, sender, toRoom):
     else:
         raise ValueError('Spam')
 
+
 def serve_message(user):
+
 
     obj = {'user': unicode(user)}
     query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS)
@@ -59,6 +61,7 @@ def serve_message(user):
 
     return obj
 
+
 @login_required
 def index(request):
     if BoolSetting.get('disable-Chat').get_value():
@@ -73,6 +76,7 @@ def index(request):
                              'last': online_last10,
 							},
            					context_instance=RequestContext(request))
+
 
 @login_required
 def log_request(request):
@@ -90,7 +94,8 @@ def log_request(request):
 							'log':all_message,
 							},
            					context_instance=RequestContext(request))
-    
+
+
 @login_required
 def online_players(request):
 
@@ -106,20 +111,8 @@ def online_players(request):
 
 @login_required
 def sendmessage(request):
+
     user = get_author(request)
-    sw = False
-
-
-    #else:
-    #    room = ChatRoom.objects.get(name = request.POST['room'])
-    #    for i in ChatRoom.objects.all():
-    #        if i.name == request.POST['room']:
-    #            sw = True
-    #            room = i
-
-    #    if sw != True:
-    #        create_room(request.POST['room'])
-    #ChatRoom.objects.get(name="x")
 
     if request.POST['opcode'] == 'message':
         room = RoomExist(request.POST['room'])
@@ -133,10 +126,10 @@ def sendmessage(request):
     
     return HttpResponse(simplejson.dumps(serve_message(user)))
 
-def RoomExist(name):
+def RoomExist(room_name):
     try:
-        return ChatRoom.objects.get(name = name)
+        return ChatRoom.objects.get(name = room_name)
     except ChatRoom.DoesNotExist:
-        create_room(name)
-        return ChatRoom.object.get(name = name)
+        create_room(room_name)
+        return ChatRoom.objects.get(name = room_name)
 

@@ -8,7 +8,6 @@
 
 .Privatebox{
     position: absolute;
-    right: 150px;
     bottom: 5px;
 
     border-style:solid;
@@ -20,6 +19,17 @@
 .Privatebox2{
     position: absolute;
     right: 325px;
+    bottom: 5px;
+
+    border-style:solid;
+    border-width: thin;
+    width: 162px;
+    background:#ffffff
+}
+
+.Privatebox3{
+    position: absolute;
+    right: 500px;
     bottom: 5px;
 
     border-style:solid;
