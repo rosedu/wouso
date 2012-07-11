@@ -2,15 +2,101 @@
 var selectID= null;
 var UserName = null;
 
-function select(id, uid, Name){
-    selectID = id
-    myID = uid
-    UserName = Name
+function select(id, Name){
+    selectID = id;
+    UserName = Name;
 }
 
 
-
 $(document).ready(function() {
+
+
+    var firstFreeChat = 1;
+    var room_id = [];
+    var max_room = 1;
+
+    function SwitchWindows(from){
+        var i;
+
+        for (i = from; i< firstFreeChat; i++){
+
+            $("#PrivateboxTextArea" + i).text($("#PrivateboxTextArea" + (i + 1)).text());
+            $("#UserName" + i).attr('value',$("#UserName" + (i + 1)).attr('value'));
+            $("#UserNameMinimize" + i).attr('value',$("#UserNameMinimize" + (i + 1)).attr('value'));
+
+            room_id[i] = room_id[i + 1];
+        }
+        firstFreeChat --;
+        $("#PrivateboxTextArea" + firstFreeChat).text("");
+        $("#Privatebox" + firstFreeChat).hide();
+        $("#PrivateboxMinimize" + firstFreeChat).hide();
+
+
+    }
+
+
+    var SendMessage1 = function(id) {
+        var input = $('#PrivateboxTextBox' + id).val();
+
+        if (input) {
+            var msgdata = {'opcode':'message', 'msg':input, 'room': room_id[id]};
+            var args = {type:"POST", url:"m/", data:msgdata, complete:ReceiveMessage};
+            $.ajax(args);
+            $('#PrivateboxTextBox' + id).val("");
+        }
+        return false;
+    };
+
+    function init_chat(id){
+        var position = 175 * id;
+        var html = '<div class="Privatebox" id="Privatebox' + id + '" style="right: ' + position + 'px">'+
+            '    <div style="background: blue">'+
+            '        <input type="button" id="UserName' + id + '" class="PrivateboxUserName"/>'+
+            '        <input type="button" id="ExitButton' + id + '" class="PrivateboxExitButton" value="x"/>'+
+            '    </div>'+
+            '    <div id="PrivateboxTextArea' + id + '" class="PrivateboxTextArea" ></div>'+
+            '    <input type="text" id="PrivateboxTextBox' + id + '" class="PrivateboxTextBox"/>'+
+            '</div>'+
+
+            '<div class="Privatebox" id="PrivateboxMinimize' + id + '" style="background: blue; right: ' + position + 'px">'+
+            '<input type="button" id="UserNameMinimize' + id + '"   class="PrivateboxUserName"/>'+
+            '<input type="button" id="ExitButtonMinimize' + id + '" class="PrivateboxExitButton" value="x"/>'+
+            '</div>';
+
+        $("#chat").append(html);
+
+        $("#ExitButton" + id).click(function(){
+            SwitchWindows(id);
+        });
+
+        $("#ExitButtonMinimize" + id).click(function(){
+            SwitchWindows(id);
+        });
+
+        $("#UserName" + id).click(function(){
+            $("#Privatebox" + id).hide();
+            $("#PrivateboxMinimize" + id).show();
+
+        });
+
+        $("#UserNameMinimize" + id).click(function(){
+            $("#Privatebox" + id).show();
+            $("#PrivateboxMinimize" + id).hide();
+
+        });
+
+        $("#PrivateboxTextBox" + id).keyup(function(event) {
+            if (event.keyCode == 13) {
+                /* enter */
+                SendMessage1(id)
+            }
+        });
+
+        $("#PrivateboxMinimize" + id).hide();
+
+        max_room ++;
+    }
+
 
 
     /* clear on refresh */
@@ -26,13 +112,6 @@ $(document).ready(function() {
     var nr_max_steps; // limita pt k
     var change_dir; // anti inertie la schimbare de directie
     var was_writing;
-    var room_id = [];
-
-    $("#Privatebox1").hide();
-    $("#PrivateboxMinimize1").hide();
-
-    $("#Privatebox2").hide();
-    $("#PrivateboxMinimize2").hide();
 
 
     /* hide button */
@@ -50,78 +129,26 @@ $(document).ready(function() {
     /* profile button */
     $("#ShoutboxProfileButton").click(function() {
         if(selectID != null){
-            var url_profile = "/player/"+ selectID + "/";
-            window.location = url_profile
+            window.location = "/player/" + selectID + "/";
         }
     });
 
     /* write a messaje button */
     $("#ShoutboxMesajeButton").click(function() {
         if(selectID != null){
-            var url_profile = "/m/create/to="+ selectID;
-            window.location = url_profile
+            window.location = "/m/create/to=" + selectID;
         }
     });
 
 
 
-    /* private button events */
-    $("#ExitButton1").click(function(){
-        $("#PrivateboxTextArea1").text("")
-        $("#Privatebox1").hide();
-    })
-
-    $("#ExitButtonMinimize1").click(function(){
-        $("#PrivateboxTextArea1").text("")
-        $("#PrivateboxMinimize1").hide();
-    })
-
-    $("#UserName1").click(function(){
-        $("#Privatebox1").hide();
-        $("#PrivateboxMinimize1").show();
-
-    })
-
-    $("#UserNameMinimize1").click(function(){
-        $("#Privatebox1").show();
-        $("#PrivateboxMinimize1").hide();
-
-    })
-
-
-    $("#ExitButton2").click(function(){
-        $("#PrivateboxTextArea2").text("")
-        $("#Privatebox2").hide();
-    })
-
-    $("#ExitButtonMinimize2").click(function(){
-        $("#PrivateboxTextArea2").text("")
-        $("#PrivateboxMinimize2").hide();
-    })
-
-    $("#UserName2").click(function(){
-        $("#Privatebox2").hide();
-        $("#PrivateboxMinimize2").show();
-
-    })
-
-    $("#UserNameMinimize2").click(function(){
-        $("#Privatebox2").show();
-        $("#PrivateboxMinimize2").hide();
-
-    })
-
-
-
-    var firstFreeChat = 1;
-
-    var chat_room = "null=null"
+    var chat_room = "null=null";
     /* chat button*/
     $("#C").click(function() {
         if(selectID != null){
 
             if (selectID == myID)
-                alert("Nu ai cum sa faci chat cu tine")
+                alert("Nu ai cum sa faci chat cu tine");
             else if (selectID < myID)
                 chat_room = selectID + "-" + myID;
             else
@@ -130,17 +157,20 @@ $(document).ready(function() {
             var print = '#ShoutboxUserList';
             $(print).append(chat_room + "</br>");
 
-            if (selectID != myID){
+            if (selectID != myID && RoomNotExist(chat_room)){
+                if(max_room > firstFreeChat)
+                    $('#Privatebox' + firstFreeChat).show();
+                else
+                    init_chat(firstFreeChat);
 
-                $('#Privatebox' + firstFreeChat).show();
-
-                $("#UserName" + firstFreeChat).attr('value', UserName+'     _')
-                $("#UserNameMinimize" + firstFreeChat).attr('value',UserName + '     _')
-                room_id[firstFreeChat] = chat_room
+                $("#UserName" + firstFreeChat).attr('value', UserName+'     _');
+                $("#UserNameMinimize" + firstFreeChat).attr('value',UserName + '     _');
+                room_id[firstFreeChat] = chat_room;
                 firstFreeChat ++;
+
             }
         }
-    })
+    });
 
 
     /* csrf crap */
@@ -211,38 +241,35 @@ $(document).ready(function() {
         was_writing = 0;
     }
 
-    function isForMe(room){
-        var first = room.split("-")
-        var i
+    function IsForMe(room){
+        var first = room.split("-");
+        var i;
         for (i = 0; i < first.length; i++)
             if(myID == first[i])
-                return true
+                return true;
 
-        return false
+        return false;
 
     }
 
-
-    function getRoom(room){
-        var i
+    function RoomNotExist(room){
+        var i;
         for (i = 1; i <= firstFreeChat; i++)
             if(room_id[i] == room)
-                return i
-        firstFreeChat ++
+                return false;
+        return true;
+    }
+
+    function GetRoom(room){
+        var i;
+        for (i = 1; i <= firstFreeChat; i++)
+            if(room_id[i] == room)
+                return i;
+        firstFreeChat ++;
         return firstFreeChat - 1
     }
 
-    var SendMessage1 = function(id) {
-        var input = $('#PrivateboxTextBox' + id).val();
 
-        if (input) {
-            var msgdata = {'opcode':'message', 'msg':input, 'room': room_id[id]};
-            var args = {type:"POST", url:"m/", data:msgdata, complete:ReceiveMessage};
-            $.ajax(args);
-            $('#PrivateboxTextBox' + id).val("");
-        }
-        return false;
-    };
 
     var SendMessage = function() {
         var input = $('#ShoutboxTextBox').val();
@@ -270,16 +297,19 @@ $(document).ready(function() {
             for (i = 0; i < obj.count; ++i) {
                 if(obj.msgs[i].room != 'global'){
 
-                    if(isForMe(obj.msgs[i].room)){
-                        room = getRoom(obj.msgs[i].room)
-                        if($('#Privatebox' + room).is(':hidden') && $('#PrivateboxMinimize' + room).is(':hidden') ){
-                            $('#Privatebox' + room).show()
-                            $("#UserName" + room).attr('value',obj.msgs[i].user+'     _')
-                            $("#UserNameMinimize" + room).attr('value',obj.msgs[i].user + '     _')
-                            room_id[room] = obj.msgs[i].room
+                    if(IsForMe(obj.msgs[i].room)){
+                        room = GetRoom(obj.msgs[i].room);
+                        if(RoomNotExist(obj.msgs[i].room)){
+                            if(max_room > room)
+                                $('#Privatebox' + room).show();
+                            else
+                                init_chat(room);
+                            $("#UserName" + room).attr('value',obj.msgs[i].user+'     _');
+                            $("#UserNameMinimize" + room).attr('value',obj.msgs[i].user + '     _');
+                            room_id[room] = obj.msgs[i].room;
                         }
-                        chat_room = obj.msgs[i].room
-                        $('#PrivateboxTextArea'+room).append(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />" )
+                        chat_room = obj.msgs[i].room;
+                        $('#PrivateboxTextArea'+room).append(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />" );
 
                     }
                 }
@@ -341,21 +371,6 @@ $(document).ready(function() {
         }
     }
 
-
-    $("#PrivateboxTextBox1").keyup(function(event) {
-        if (event.keyCode == 13) {
-            /* enter */
-           SendMessage1(1)
-        }
-    });
-
-    $("#PrivateboxTextBox2").keyup(function(event) {
-        if (event.keyCode == 13) {
-            /* enter */
-            SendMessage1(2)
-        }
-    });
-
     $("#ShoutboxTextBox").keyup(function(event) {
         if (event.keyCode == 13) {
             /* enter */
@@ -391,12 +406,12 @@ $(document).ready(function() {
         ':3' : 'emoticon_waii.png',
         ';\\)' : 'emoticon_wink.png',
         '\\(ball\\)' : 'sport_soccer.png'
-    }
+    };
 
     var img_dir = "/static/img/";
     function replace_emoticons(text) {
-        $.each(emoticons, function(char, img) {
-            re = new RegExp(char,'g');
+        $.each(emoticons, function(character, img) {
+            var re = new RegExp(character,'g');
             text = text.replace(re, '<img src="'+img_dir+img+'" />');
         });
 
