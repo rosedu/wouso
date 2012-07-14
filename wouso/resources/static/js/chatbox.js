@@ -1,4 +1,5 @@
 
+/* get id and name of a specific user. */
 var selectID= null;
 var UserName = null;
 
@@ -8,19 +9,98 @@ function select(id, Name){
 }
 
 
+/* blink box header when receive a new message */
+var timer = [];
+function SwitchColor(room){
+
+    if(timer[room] % 2 == 0 ){
+        $('#Privatebar' + room).attr('style',"background: blue");
+        $('#PrivatebarMinimize' + room).attr('style',"background: blue");
+    }
+    else{
+        $('#Privatebar' + room).attr('style',"background: red");
+        $('#PrivatebarMinimize' + room).attr('style',"background: red");
+    }
+    timer[room] ++;
+}
+
+
 $(document).ready(function() {
 
 
+
+    /* csrf crap */
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                // Only send the token to relative URLs i.e. locally.
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            }
+        }
+    });
+
+
+
+
+
+
+    /* blinking staff. */
+    var ti = [];
+    var StopTimer = function(id){
+        clearTimeout(ti[id]);
+        $('#Privatebar' + id).attr('style',"background: blue");
+        $('#PrivatebarMinimize' + id).attr('style',"background: blue");
+        timer[id] = null;
+    };
+
+    /* create an emtpy array sized for 10 elements */
+    var hist = [];
+    var i = hist.length % 10; // iter pentru inserare
+    var j = (i + 9) % 10; // iter pentru de unde incepe cautarea
+    var k = 0; // iter pentru pasi de history
+    var nr_max_steps; // limita pt k
+    var change_dir; // anti inertie la schimbare de directie
+    var was_writing;
+    var initial  = 1;
+
+    /* Private chat staff */
     var firstFreeChat = 1;
     var room_id = [];
     var max_room = 1;
+    var chat_room = "null=null";
+    var log_number = [];
 
+    /* Switching on close */
+    /*TODO: get windows status */
     function SwitchWindows(from){
         var i;
+        for (i = from; i< firstFreeChat; i++)
+            //$("#OldLog" + (i + 1)).remove();
+            $("#OldLog" + i).remove();
 
         for (i = from; i< firstFreeChat; i++){
-
-            $("#PrivateboxTextArea" + i).text($("#PrivateboxTextArea" + (i + 1)).text());
+            //$("#OldLog" + (i + 1)).remove();
+            //$("#OldLog" + i).remove();
+            //$("#PrivateboxTextArea" + i).text($("#PrivateboxTextArea" + (i + 1)).text());
+            //$("#PrivateboxTextArea" + (i + 1)).clone().text($("#PrivateboxTextArea" + i));
+            $("#PrivateboxTextArea" + i).html($("#PrivateboxTextArea" + (i + 1)).html());
+            //$("#PrivateboxTextArea" + i).prepend('<a href="#"  id="OldLog' + i + '"> show log...</br> </a>');
+            insert_log_button(i);
             $("#UserName" + i).attr('value',$("#UserName" + (i + 1)).attr('value'));
             $("#UserNameMinimize" + i).attr('value',$("#UserNameMinimize" + (i + 1)).attr('value'));
 
@@ -30,11 +110,12 @@ $(document).ready(function() {
         $("#PrivateboxTextArea" + firstFreeChat).text("");
         $("#Privatebox" + firstFreeChat).hide();
         $("#PrivateboxMinimize" + firstFreeChat).hide();
-
-
     }
 
+    /* TODO: Cand apas pe PrivatecboxTextAreea sa ma trimita in field*/
 
+    /* Sending private messages */
+    /* TODO: change name!!*/
     var SendMessage1 = function(id) {
         var input = $('#PrivateboxTextBox' + id).val();
 
@@ -47,72 +128,120 @@ $(document).ready(function() {
         return false;
     };
 
+    /* Give old log to the players when they ask. */
+    /* TODO: change url name!!! */
+    var GiveMeOldLog = function(id) {
+
+        var msgdata = {'room': room_id[id], 'number':log_number[id]};
+        var args = {type:"POST", url:"logP/", data:msgdata, complete:PrintOnTextArea};
+        $.ajax(args);
+        return false;
+    };
+
+    var PrintOnTextArea = function(res, status){
+        $('#ShoutboxUserList').append(status);
+        var obj = jQuery.parseJSON(res.responseText);
+        if (!obj) {
+            return false;
+        }
+        var i;
+        var room = GetRoom(obj.msgs[0].room);
+        log_number[room] += obj.count;
+        for (i = obj.count - 1; i >= 0; --i) {
+            $('#OldLog' + room).after(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />" )
+        }
+        /*TODO: option scroll down.*/
+        //$('#PrivateboxTextArea'+room).scrollTop($('#PrivateboxTextArea'+room)[0].scrollHeight);
+    };
+
+    function insert_log_button(id){
+
+        $("#PrivateboxTextArea" + id).prepend('<a href="#"  id="OldLog' + id + '"> show older log...</br> </a>');
+
+        $("#OldLog" + id).click(function(){
+            GiveMeOldLog(id);
+            StopTimer(id);
+        });
+    }
+
+
+
+    /* Generate private boxes when you need.*/
     function init_chat(id){
+        //Position in page
         var position = 175 * id;
         var html = '<div class="Privatebox" id="Privatebox' + id + '" style="right: ' + position + 'px">'+
-            '    <div style="background: blue">'+
+            '    <div id="Privatebar' + id + '" style="background: blue">'+
             '        <input type="button" id="UserName' + id + '" class="PrivateboxUserName"/>'+
             '        <input type="button" id="ExitButton' + id + '" class="PrivateboxExitButton" value="x"/>'+
             '    </div>'+
-            '    <div id="PrivateboxTextArea' + id + '" class="PrivateboxTextArea" ></div>'+
+            '    <div id="PrivateboxTextArea' + id + '" class="PrivateboxTextArea" >' +
+        //    '        <a href="#"  id="OldLog' + id + '"> show older log...</br> </a>' +
+
+            '    </div>'+
             '    <input type="text" id="PrivateboxTextBox' + id + '" class="PrivateboxTextBox"/>'+
             '</div>'+
 
-            '<div class="Privatebox" id="PrivateboxMinimize' + id + '" style="background: blue; right: ' + position + 'px">'+
-            '<input type="button" id="UserNameMinimize' + id + '"   class="PrivateboxUserName"/>'+
-            '<input type="button" id="ExitButtonMinimize' + id + '" class="PrivateboxExitButton" value="x"/>'+
+            '<div class="Privatebox" id="PrivateboxMinimize' + id + '" style="right: ' + position + 'px">'+
+            '    <div id="PrivatebarMinimize' + id + '" style="background: blue">'+
+            '      <input type="button" id="UserNameMinimize' + id + '"   class="PrivateboxUserName"/>'+
+            '      <input type="button" id="ExitButtonMinimize' + id + '" class="PrivateboxExitButton" value="x"/>'+
+            '    </div>'+
+
             '</div>';
 
-        $("#chat").append(html);
+        //Appending
+        $("#PrivateChatBoxes").append(html);
+
 
         $("#ExitButton" + id).click(function(){
             SwitchWindows(id);
+            StopTimer(id);
         });
 
         $("#ExitButtonMinimize" + id).click(function(){
             SwitchWindows(id);
+            StopTimer(id);
         });
 
         $("#UserName" + id).click(function(){
+            StopTimer(id);
             $("#Privatebox" + id).hide();
             $("#PrivateboxMinimize" + id).show();
 
         });
 
         $("#UserNameMinimize" + id).click(function(){
+            StopTimer(id);
             $("#Privatebox" + id).show();
             $("#PrivateboxMinimize" + id).hide();
 
         });
 
+        $("#PrivateboxTextBox" + id).click(function(){
+            StopTimer(id);
+        });
+
+        $("#PrivateboxTextArea" + id).click(function(){
+            StopTimer(id);
+        });
+
         $("#PrivateboxTextBox" + id).keyup(function(event) {
+            StopTimer(id);
             if (event.keyCode == 13) {
                 /* enter */
-                SendMessage1(id)
+                SendMessage1(id);
             }
         });
 
         $("#PrivateboxMinimize" + id).hide();
-
+        log_number[id] = 0;
         max_room ++;
+
     }
 
-
-
     /* clear on refresh */
-    $('#ShoutboxTextArea').val("");
     $('#ShoutboxTextBox').val('');
-
-
-    /* create an emtpy array sized for 10 elements */
-    var hist = [];
-    var i = hist.length % 10; // iter pentru inserare
-    var j = (i + 9) % 10; // iter pentru de unde incepe cautarea
-    var k = 0; // iter pentru pasi de history
-    var nr_max_steps; // limita pt k
-    var change_dir; // anti inertie la schimbare de directie
-    var was_writing;
-
 
     /* hide button */
     $("#ShoutboxHideButton").click(function() {
@@ -140,10 +269,8 @@ $(document).ready(function() {
         }
     });
 
-
-
-    var chat_room = "null=null";
     /* chat button*/
+    /* TODO: Change name.*/
     $("#C").click(function() {
         if(selectID != null){
 
@@ -154,18 +281,16 @@ $(document).ready(function() {
             else
                 chat_room = myID + "-" + selectID;
 
-            var print = '#ShoutboxUserList';
-            $(print).append(chat_room + "</br>");
-
             if (selectID != myID && RoomNotExist(chat_room)){
+                room_id[firstFreeChat] = chat_room;
                 if(max_room > firstFreeChat)
                     $('#Privatebox' + firstFreeChat).show();
                 else
                     init_chat(firstFreeChat);
-
+                insert_log_button(firstFreeChat);
                 $("#UserName" + firstFreeChat).attr('value', UserName+'     _');
                 $("#UserNameMinimize" + firstFreeChat).attr('value',UserName + '     _');
-                room_id[firstFreeChat] = chat_room;
+
                 firstFreeChat ++;
 
             }
@@ -173,48 +298,21 @@ $(document).ready(function() {
     });
 
 
-    /* csrf crap */
-    $.ajaxSetup({
-                beforeSend: function(xhr, settings) {
-                    function getCookie(name) {
-                        var cookieValue = null;
-                        if (document.cookie && document.cookie != '') {
-                            var cookies = document.cookie.split(';');
-                            for (var i = 0; i < cookies.length; i++) {
-                                var cookie = jQuery.trim(cookies[i]);
-                                // Does this cookie string begin with the name we want?
-                                if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                                    break;
-                                }
-                            }
-                        }
-                        return cookieValue;
-                    }
-                    if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
-                    // Only send the token to relative URLs i.e. locally.
-                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-                    }
-                }
-            });
 
+    /* Scrolling down function */
     function AutoScroll() {
         $('#ShoutboxTextArea').scrollTop($('#ShoutboxTextArea')[0].scrollHeight);
     }
 
-    function SendPing() {
-        var mdata = {'opcode': 'keepAlive'};
-        var args = {type:'POST', url:'m/', data:mdata, complete:ReceiveMessage};
-        $.ajax(args);
-    }
-
-
+    /* Update users list */
     function NewUsers() {
         $.get('/chat/last/', function (data) {
 			$('#ShoutboxUserList').html(data);
 		});
     }
 
+    /* Last 50 messages that was write in global chat.*/
+    /* TODO: Maybe Change the name*/
     function NewLog() {
         $.get('/chat/log/', function (data) {
 			$('#ShoutboxTextArea').html(replace_emoticons(data));
@@ -224,10 +322,19 @@ $(document).ready(function() {
 
     }
 
-    $(document).everyTime(500, AutoScroll);
+     /* See if I got new message */
+    function SendPing() {
+        var mdata = {'opcode': 'keepAlive'};
+        var args = {type:'POST', url:'m/', data:mdata, complete:ReceiveMessage};
+        $.ajax(args);
+        initial = 0;
+    }
+
+
+    $(document).ready(AutoScroll);
     $(document).ready(NewUsers);
-    $(document).everyTime(6000, NewUsers);
     $(document).ready(NewLog);
+    $(document).everyTime(6000, NewUsers);
     $(document).everyTime(1000, SendPing);
 
 
@@ -270,7 +377,7 @@ $(document).ready(function() {
     }
 
 
-
+    /* Send function for global chat.*/
     var SendMessage = function() {
         var input = $('#ShoutboxTextBox').val();
 
@@ -286,6 +393,7 @@ $(document).ready(function() {
 
 
 
+    /* Receive function for every kind of messages.*/
     var ReceiveMessage = function(res, status) {
         if (status == "success") {
             var obj = jQuery.parseJSON(res.responseText);
@@ -295,34 +403,44 @@ $(document).ready(function() {
             }
             var i;
             for (i = 0; i < obj.count; ++i) {
-                if(obj.msgs[i].room != 'global'){
-
-                    if(IsForMe(obj.msgs[i].room)){
+                if(obj.msgs[i].room == 'global' && initial == 0){
+                    $('#ShoutboxTextArea').append(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />" );
+                    AutoScroll();
+                }
+                else {
+                    if (!IsForMe(obj.msgs[i].room)) {
+                    } else {
                         room = GetRoom(obj.msgs[i].room);
-                        if(RoomNotExist(obj.msgs[i].room)){
-                            if(max_room > room)
+                        if (RoomNotExist(obj.msgs[i].room)) {
+                            if (max_room > room)
                                 $('#Privatebox' + room).show();
                             else
                                 init_chat(room);
-                            $("#UserName" + room).attr('value',obj.msgs[i].user+'     _');
-                            $("#UserNameMinimize" + room).attr('value',obj.msgs[i].user + '     _');
+                            insert_log_button(room);
+
+                            $("#UserName" + room).attr('value', obj.msgs[i].user + '     _');
+                            $("#UserNameMinimize" + room).attr('value', obj.msgs[i].user + '     _');
                             room_id[room] = obj.msgs[i].room;
                         }
-                        chat_room = obj.msgs[i].room;
-                        $('#PrivateboxTextArea'+room).append(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />" );
+                        if (obj.msgs[i].user != myName && timer[room] == null) {
+                            timer[room] = 1;
+                            ti[room] = setInterval('SwitchColor(room)', 500);
+                        }
+                        //chat_room = obj.msgs[i].room;
+                        log_number[room] ++;
+                        $('#PrivateboxTextArea' + room).append(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />");
+                        $('#PrivateboxTextArea' + room).scrollTop($('#PrivateboxTextArea' + room)[0].scrollHeight);
 
                     }
                 }
-                else if(obj.msgs[i].room == 'global')
-                $('#ShoutboxTextArea').append(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />" )
             }
+
 
         }
 		/*For not spaming*/        
 		else if (res.status == 400) {
             $('#ShoutboxTextArea').append('<p id="warn_spam"> Stop spamming! </p>');
         }
-        AutoScroll();
 
     };
 
@@ -331,6 +449,7 @@ $(document).ready(function() {
 
     $('#ShoutboxSendButton').click(SendMessage);
 
+    /* History for keys.*/
     function HistUp() {
         if (was_writing) {
             /* bagat in hist */
@@ -371,6 +490,7 @@ $(document).ready(function() {
         }
     }
 
+    /* Global chat key events. */
     $("#ShoutboxTextBox").keyup(function(event) {
         if (event.keyCode == 13) {
             /* enter */
@@ -394,7 +514,8 @@ $(document).ready(function() {
     });
 
 
-
+    /* Emoticons and the replace function. */
+    /* TODO: More emoticons.*/
     var emoticons = {
         '>:D' : 'emoticon_evilgrin.png',
         ':D' : 'emoticon_grin.png',

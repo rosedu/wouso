@@ -19,6 +19,10 @@ class ChatUser(Player):
 class ChatRoom(models.Model):
     ''' basic chatroom '''
 
+    def __init__(self, *args, **kwargs):
+        super(ChatRoom, self).__init__(*args, **kwargs)
+        self.DoesNotExist = None
+
     name = models.CharField(max_length=128, null=False, blank=False, default=None)
     deletable = models.BooleanField(null=False, blank=False, default=None)
     renameable = models.BooleanField(null=False, blank=False, default=None)

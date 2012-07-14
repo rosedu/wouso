@@ -10,33 +10,11 @@
     position: absolute;
     bottom: 5px;
 
-    border-style:solid;
-    border-width: thin;
+    border: thin solid;
     width: 162px;
     background:#ffffff
 }
 
-.Privatebox2{
-    position: absolute;
-    right: 325px;
-    bottom: 5px;
-
-    border-style:solid;
-    border-width: thin;
-    width: 162px;
-    background:#ffffff
-}
-
-.Privatebox3{
-    position: absolute;
-    right: 500px;
-    bottom: 5px;
-
-    border-style:solid;
-    border-width: thin;
-    width: 162px;
-    background:#ffffff
-}
 
 .PrivateboxUserName{
     border:none;
@@ -60,9 +38,7 @@
     width:150px;
     background-color: white;
 
-    border-color: black;
-    border-style: solid;
-    border-width: thin;
+    border: thin solid black;
     overflow: auto;
 }
 
@@ -77,8 +53,8 @@
 	width:100px;
 	height:300px;    
 	position: absolute;
-    right: 0px;
-    bottom: 0px;
+    right: 5px;
+    bottom: 5px;
 }
 
 #ShoutboxShowButton {
@@ -99,9 +75,7 @@
     width:350px;
     background-color: white;
 
-    border-color: black;
-    border-style: solid;
-    border-width: thin;
+    border: thin solid black;
     overflow: auto;
 }
 
@@ -127,10 +101,8 @@
     width:150px;
 
     background-color: white;
-    border-color: black;
-    border-style: solid;
-    border-width: thin;
-    overflow: auto;	
+    border: thin solid black;
+    overflow: auto;
 }
 
 #warn_spam {

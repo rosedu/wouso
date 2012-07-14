@@ -1,37 +1,6 @@
 {% load user %}
 
-<!--
-<select multiple="multiple" name="cars">
-  <option value="volvo">Volvo</option>
-  <option value="saab">Saab</option>
-  <option value="opel">Opel</option>
-  <option value="audi">Audi</option>
-</select>
--->
-<!--    <select id="mymenu" multiple="multiple"  style="width: 100px; height: 300px">
-        {% for u in last	 %}
-		    <option id="player" value="{{ u.id }}"> {{u}} </option>
-        {% endfor %}
-    </select>
-- ->
 
-<script>
-    var sel = null;
-
-    function select(id) {
-        sel = id;
-    }
-
-    function do_profile() {
-        if (sel == null){}
-        else
-            window.location = "/player/" + sel + "/";
-    }
-</script>
--->
 {% for u in last %}
     <li><a href="#" id="{{u.id}}" onclick="select('{{u.id}}','{{u}}')" > {{u}} </a></li>
 {% endfor %}
-
-<!--button onclick="do_profile()">Profile</button>
--->
