@@ -82,9 +82,6 @@ def index(request):
 def log_request(request):
 
     Room = RoomExist('global')
-    #for i in ChatRoom.objects.all():
-    #    if i.name == '':
-    #        Room = i
 
     all_message = ChatMessage.objects.filter(destRoom=Room)
     all_message = all_message[len(all_message)-50:] if len(all_message) > 50 else all_message
@@ -108,6 +105,43 @@ def online_players(request):
 							'last': online_last10,
 							},
            					context_instance=RequestContext(request))
+
+
+def serve(user, Room, position):
+
+    number = int(position)
+    all_message = ChatMessage.objects.filter(destRoom=Room)
+    all_message = all_message[len(all_message)-number-10:] if len(all_message) > (10 + number) else all_message
+
+    obj = {'user': unicode(user)}
+    #query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS)
+    obj['count'] = 10
+
+    if not all_message:
+        return None
+
+    msgs = []
+    for m in all_message:
+        mesaj = {}
+        mesaj['room'] = m.destRoom.name
+        mesaj['user'] = unicode(m.author)
+        mesaj['text'] = m.content
+        msgs.append(mesaj)
+
+    obj['msgs'] = msgs
+
+    return obj
+
+
+@login_required
+def log(request):
+
+    user = get_author(request)
+    position = request.POST['number']
+
+    Room = RoomExist(request.POST['room'])
+    return HttpResponse(simplejson.dumps(serve(user, Room, position)))
+
 
 @login_required
 def sendmessage(request):
