@@ -146,16 +146,16 @@ def log(request):
 
 @login_required
 def sendmessage(request):
-
+    """ Default endpoint (/chat/m/)
+    """
     user = get_author(request)
 
-    if request.REQUEST['opcode'] == 'message':
-        room = roomexist(request.REQUEST['room'])
+    data = request.REQUEST
+
+    if data['opcode'] == 'message':
+        room = roomexist(data['room'])
         try:
-
-            add_message(request.REQUEST['msg'], user, room)
-
-
+            add_message(data['msg'], user, room)
         except ValueError:
             return HttpResponseBadRequest()
     

@@ -459,7 +459,6 @@ $(document).ready(function() {
         $.get('/chat/log/', function (data) {
 			$('#ShoutboxTextArea').html(replace_emoticons(data));
             $(document).ready(AutoScroll);
-
         });
 
     }
