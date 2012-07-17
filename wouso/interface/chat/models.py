@@ -29,6 +29,9 @@ class ChatRoom(models.Model):
 
     participants = models.ManyToManyField('ChatUser', blank=True, related_name='participant')
 
+    def to_dict(self):
+        return {'id': self.id, 'name': self.name}
+
     def __unicode__(self):
         return self.name
 
