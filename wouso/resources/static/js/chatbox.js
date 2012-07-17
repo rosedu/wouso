@@ -1,6 +1,5 @@
-
 /* get id and name of a specific user. */
-var selectID= null;
+var selectID = null;
 var UserName = null;
 
 
@@ -13,22 +12,22 @@ var log_number = [];
 var text_context = [];
 var users_name = [];
 
-function PutBoxName(id){
+function PutBoxName(id) {
     $("#UserName" + id).attr('value', users_name[id]);
-    $("#UserNameMinimize" + id).attr('value',users_name[id]);
+    $("#UserNameMinimize" + id).attr('value', users_name[id]);
 }
 
 /* TODO: change name.*/
-function getval(){
+function getval() {
 
-    var value =  $("#zz option:last").val();
-    if(firstFreeChat == 3)
+    var value = $("#zz option:last").val();
+    if (firstFreeChat == 3)
         $("#zz").hide();
     return value;
 }
 
 /* TODO: Change zz name*/
-function remove_last(){
+function remove_last() {
     $("#zz option:last").remove();
 
 }
@@ -65,50 +64,50 @@ function SW(id, with_id) {
 }
 
 
-function select(id, Name){
+function select(id, Name) {
     selectID = id;
     UserName = Name;
 
     $('.cl_item').attr('style', 'font-weight: normal');
-    $('#cl_'+id).attr('style', 'font-weight: bold; background-color:#ffffff;');
+    $('#cl_' + id).attr('style', 'font-weight: bold; background-color:#ffffff;');
     $('.caction').attr('disabled', false);
 }
 
 /* TODO: changre*/
-var aa = function(){
+var aa = function () {
     //$("#zz").attr("tabindex", 1);
     $("#ShoutboxUserList").append("mata");
     id = $("#zz option:selected").val();
     SW(id, 1);
-    $("#zz").append('<option value="'+ id +'" >'+ users_name[id] +'  </option>');
+    $("#zz").append('<option value="' + id + '" >' + users_name[id] + '  </option>');
 
     $("#zz option:selected").remove();
-    $("#zz option:first").attr('selected','selected');
+    $("#zz option:first").attr('selected', 'selected');
 };
 
 /* blink box header when receive a new message */
 var timer = [];
-function SwitchColor(room){
+function SwitchColor(room) {
 
-    if(timer[room] % 2 == 0 ){
-        $('#Privatebar' + room).attr('style',"background: blue");
-        $('#PrivatebarMinimize' + room).attr('style',"background: blue");
+    if (timer[room] % 2 == 0) {
+        $('#Privatebar' + room).attr('style', "background: blue");
+        $('#PrivatebarMinimize' + room).attr('style', "background: blue");
     }
-    else{
-        $('#Privatebar' + room).attr('style',"background: red");
-        $('#PrivatebarMinimize' + room).attr('style',"background: red");
+    else {
+        $('#Privatebar' + room).attr('style', "background: red");
+        $('#PrivatebarMinimize' + room).attr('style', "background: red");
     }
-    timer[room] ++;
+    timer[room]++;
 }
 
 
-$(document).ready(function() {
+$(document).ready(function () {
 
 
 
     /* csrf crap */
     $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
+        beforeSend:function (xhr, settings) {
             function getCookie(name) {
                 var cookieValue = null;
                 if (document.cookie && document.cookie != '') {
@@ -124,6 +123,7 @@ $(document).ready(function() {
                 }
                 return cookieValue;
             }
+
             if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
                 // Only send the token to relative URLs i.e. locally.
                 xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
@@ -134,10 +134,10 @@ $(document).ready(function() {
 
     /* blinking staff. */
     var ti = [];
-    var StopTimer = function(id){
+    var StopTimer = function (id) {
         clearTimeout(ti[id]);
-        $('#Privatebar' + id).attr('style',"background: blue");
-        $('#PrivatebarMinimize' + id).attr('style',"background: blue");
+        $('#Privatebar' + id).attr('style', "background: blue");
+        $('#PrivatebarMinimize' + id).attr('style', "background: blue");
         timer[id] = null;
     };
 
@@ -149,19 +149,19 @@ $(document).ready(function() {
     var nr_max_steps; // limita pt k
     var change_dir; // anti inertie la schimbare de directie
     var was_writing;
-    var initial  = 1;
+    var initial = 1;
 
 
     /* Switching on close */
     /*TODO: get windows status */
-    function SwitchWindows(from){
+    function SwitchWindows(from) {
         var i;
-        if(firstFreeChat <= 3){
+        if (firstFreeChat <= 3) {
 
-            for (i = from; i< firstFreeChat; i++)
+            for (i = from; i < firstFreeChat; i++)
                 $("#OldLog" + i).remove();
 
-            for (i = from; i< firstFreeChat; i++){
+            for (i = from; i < firstFreeChat; i++) {
 
                 /* Switch the text from the right windows. */
                 $("#PrivateboxTextArea" + i).html($("#PrivateboxTextArea" + (i + 1)).html());
@@ -174,10 +174,10 @@ $(document).ready(function() {
                 PutBoxName(i);
 
                 /* Put the same status as before. */
-                if($("#Privatebox" + (i + 1)).is(":visible")){
+                if ($("#Privatebox" + (i + 1)).is(":visible")) {
                     $("#Privatebox" + i).show();
                     $("#PrivateboxMinimize" + i).hide();
-                }else{
+                } else {
                     $("#Privatebox" + i).hide();
                     $("#PrivateboxMinimize" + i).show();
                 }
@@ -189,7 +189,7 @@ $(document).ready(function() {
                 room_id[i] = room_id[i + 1];
             }
 
-            firstFreeChat --;
+            firstFreeChat--;
 
             /* Hide or remove old info. */
             log_number[firstFreeChat] = 0;
@@ -198,8 +198,8 @@ $(document).ready(function() {
             $("#Privatebox" + firstFreeChat).hide();
             $("#PrivateboxMinimize" + firstFreeChat).hide();
 
-        }else{
-            firstFreeChat --;
+        } else {
+            firstFreeChat--;
             var last = getval();
             $("#PrivateboxTextArea" + from).html(text_context[last]);
 
@@ -224,11 +224,11 @@ $(document).ready(function() {
 
     /* Sending private messages */
     /* TODO: change name!!*/
-    var SendMessage1 = function(id) {
+    var SendMessage1 = function (id) {
         var input = $('#PrivateboxTextBox' + id).val();
 
         if (input) {
-            var msgdata = {'opcode':'message', 'msg':input, 'room': room_id[id]};
+            var msgdata = {'opcode':'message', 'msg':input, 'room':room_id[id]};
             var args = {type:"POST", url:"m/", data:msgdata, complete:ReceiveMessage};
             $.ajax(args);
             $('#PrivateboxTextBox' + id).val("");
@@ -238,9 +238,9 @@ $(document).ready(function() {
 
     /* Give old log to the players when they ask. */
     /* TODO: change url name!!! */
-    var GiveMeOldLog = function(id) {
+    var GiveMeOldLog = function (id) {
 
-        var msgdata = {'room': room_id[id], 'number':log_number[id]};
+        var msgdata = {'room':room_id[id], 'number':log_number[id]};
         var args = {type:"POST", url:"logP/", data:msgdata, complete:PrintOnTextArea};
         $.ajax(args);
         return false;
@@ -256,45 +256,44 @@ $(document).ready(function() {
         var room = GetRoom(obj.msgs[1].room);
         log_number[room] += obj.count;
         for (i = obj.count - 1; i >= 0; --i) {
-            $('#OldLog' + room).after(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />" )
+            $('#OldLog' + room).after(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />")
         }
         /*TODO: option scroll down.*/
         //$('#PrivateboxTextArea'+room).scrollTop($('#PrivateboxTextArea'+room)[0].scrollHeight);
     };
 
-    function insert_log_button(id){
+    function insert_log_button(id) {
 
         $("#PrivateboxTextArea" + id).prepend('<a href="#"  id="OldLog' + id + '"> show older log...</br> </a>');
 
-        $("#OldLog" + id).click(function(){
+        $("#OldLog" + id).click(function () {
             GiveMeOldLog(id);
             StopTimer(id);
         });
     }
 
 
-
     /* Generate private boxes when you need.*/
-    function init_chat(id){
+    function init_chat(id) {
         //Position in page
         var position = 175 * id;
-        var html = '<div class="Privatebox" id="Privatebox' + id + '" style="right: ' + position + 'px">'+
-            '    <div id="Privatebar' + id + '" style="background: blue">'+
-            '        <input type="button" id="UserName' + id + '" class="PrivateboxUserName"/>'+
-            '        <input type="button" id="ExitButton' + id + '" class="PrivateboxExitButton" value="x"/>'+
-            '    </div>'+
+        var html = '<div class="Privatebox" id="Privatebox' + id + '" style="right: ' + position + 'px">' +
+            '    <div id="Privatebar' + id + '" style="background: blue">' +
+            '        <input type="button" id="UserName' + id + '" class="PrivateboxUserName"/>' +
+            '        <input type="button" id="ExitButton' + id + '" class="PrivateboxExitButton" value="x"/>' +
+            '    </div>' +
             '    <div id="PrivateboxTextArea' + id + '" class="PrivateboxTextArea" >' +
-        //    '        <a href="#"  id="OldLog' + id + '"> show older log...</br> </a>' +
+            //    '        <a href="#"  id="OldLog' + id + '"> show older log...</br> </a>' +
 
-            '    </div>'+
-            '    <input type="text" id="PrivateboxTextBox' + id + '" class="PrivateboxTextBox"/>'+
-            '</div>'+
+            '    </div>' +
+            '    <input type="text" id="PrivateboxTextBox' + id + '" class="PrivateboxTextBox"/>' +
+            '</div>' +
 
-            '<div class="Privatebox" id="PrivateboxMinimize' + id + '" style="right: ' + position + 'px">'+
-            '    <div id="PrivatebarMinimize' + id + '" style="background: blue">'+
-            '      <input type="button" id="UserNameMinimize' + id + '"   class="PrivateboxUserName"/>'+
-            '      <input type="button" id="ExitButtonMinimize' + id + '" class="PrivateboxExitButton" value="x"/>'+
-            '    </div>'+
+            '<div class="Privatebox" id="PrivateboxMinimize' + id + '" style="right: ' + position + 'px">' +
+            '    <div id="PrivatebarMinimize' + id + '" style="background: blue">' +
+            '      <input type="button" id="UserNameMinimize' + id + '"   class="PrivateboxUserName"/>' +
+            '      <input type="button" id="ExitButtonMinimize' + id + '" class="PrivateboxExitButton" value="x"/>' +
+            '    </div>' +
 
             '</div>';
 
@@ -302,39 +301,39 @@ $(document).ready(function() {
         $("#PrivateChatBoxes").append(html);
 
 
-        $("#ExitButton" + id).click(function(){
+        $("#ExitButton" + id).click(function () {
             SwitchWindows(id);
             StopTimer(id);
         });
 
-        $("#ExitButtonMinimize" + id).click(function(){
+        $("#ExitButtonMinimize" + id).click(function () {
             SwitchWindows(id);
             StopTimer(id);
         });
 
-        $("#UserName" + id).click(function(){
+        $("#UserName" + id).click(function () {
             StopTimer(id);
             $("#Privatebox" + id).hide();
             $("#PrivateboxMinimize" + id).show();
 
         });
 
-        $("#UserNameMinimize" + id).click(function(){
+        $("#UserNameMinimize" + id).click(function () {
             StopTimer(id);
             $("#Privatebox" + id).show();
             $("#PrivateboxMinimize" + id).hide();
 
         });
 
-        $("#PrivateboxTextBox" + id).click(function(){
+        $("#PrivateboxTextBox" + id).click(function () {
             StopTimer(id);
         });
 
-        $("#PrivateboxTextArea" + id).click(function(){
+        $("#PrivateboxTextArea" + id).click(function () {
             StopTimer(id);
         });
 
-        $("#PrivateboxTextBox" + id).keyup(function(event) {
+        $("#PrivateboxTextBox" + id).keyup(function (event) {
             StopTimer(id);
             if (event.keyCode == 13) {
                 /* enter */
@@ -344,7 +343,7 @@ $(document).ready(function() {
 
         $("#PrivateboxMinimize" + id).hide();
         log_number[id] = 0;
-        max_room ++;
+        max_room++;
 
     }
 
@@ -352,106 +351,103 @@ $(document).ready(function() {
     $('#ShoutboxTextBox').val('');
 
     /* hide button */
-    $("#ShoutboxHideButton").click(function() {
-        $("#Shoutbox").hide("slide", {direction: "right"});
+    $("#ShoutboxHideButton").click(function () {
+        $("#Shoutbox").hide("slide", {direction:"right"});
         $("#ShoutboxShowButton").delay("350").show("slide", {direction:"right"});
     });
 
     /* show button */
-    $("#ShoutboxShowButton").click(function() {
+    $("#ShoutboxShowButton").click(function () {
         $("#ShoutboxShowButton").hide();
-        $("#Shoutbox").show("slide", {direction: "right"});
+        $("#Shoutbox").show("slide", {direction:"right"});
     });
 
     /* profile button */
-    $("#ShoutboxProfileButton").click(function() {
-        if(selectID != null){
+    $("#ShoutboxProfileButton").click(function () {
+        if (selectID != null) {
             window.location = "/player/" + selectID + "/";
         }
     });
 
     /* write a messaje button */
-    $("#ShoutboxMesajeButton").click(function() {
-        if(selectID != null){
+    $("#ShoutboxMesajeButton").click(function () {
+        if (selectID != null) {
             window.location = "/m/create/to=" + selectID;
         }
     });
 
 
-
-
     sw = 0;
     /* TODO: change select ID*/
-    function select_bar(id, name){
-        if (sw == 0){
+    function select_bar(id, name) {
+        if (sw == 0) {
 
             html = '<select onchange="aa()" class= "Privatebox" id ="zz" style="right: 1050px; background: green;">' +
-                   '<option ></option>'+
-                   '</select>';
+                '<option ></option>' +
+                '</select>';
             $("#PrivatebarUsers").append(html);
             sw = 1;
             $("#zz").show();
         }
-        if($("#zz").is(":hidden"))
+        if ($("#zz").is(":hidden"))
             $("#zz").show();
-        $("#zz").append('<option value="'+id+'" >'+ name +'  </option>');
+        $("#zz").append('<option value="' + id + '" >' + name + '  </option>');
 
 
     }
 
     /* chat button*/
     /* TODO: Change name.*/
-    $("#C").click(function() {
-        if(selectID != null){
+    $("#C").click(function () {
+        if (selectID != null) {
 
             /* Create chat room name.*/
             if (selectID == myID)
                 alert("Nu ai cum sa faci chat cu tine");
             else {
                 // Cream camera pe server
-                var msgdata = {'opcode':'getRoom', 'from': myID, 'to': selectID};
-                var args = {type:"POST", url:"m/", data: msgdata, complete:CreateChatBox};
+                var msgdata = {'opcode':'getRoom', 'from':myID, 'to':selectID};
+                var args = {type:"POST", url:"m/", data:msgdata, complete:CreateChatBox};
                 $.ajax(args);
             }
         }
     });
 
 
-/* Create chat box and place it on screen */
-function CreateChatBox(res, status)
-{
-    var obj = jQuery.parseJSON(res.responseText);
+    /* Create chat box and place it on screen */
+    function CreateChatBox(res, status) {
+        var obj = jQuery.parseJSON(res.responseText);
 
-    chat_room = obj.name;
+        chat_room = obj.name;
 
-    /* Put the name on the list, if windows number is passed.*/
-    if( RoomNotExist(chat_room) && firstFreeChat > 2){
-        /* Create and put in the select_bar */
-        select_bar(firstFreeChat, UserName);
+        /* Put the name on the list, if windows number is passed.*/
+        if (RoomNotExist(chat_room) && firstFreeChat > 2) {
+            /* Create and put in the select_bar */
+            select_bar(firstFreeChat, UserName);
 
-        /*Initialize values.*/
-        room_id[firstFreeChat] = chat_room;
-        users_name[firstFreeChat] = UserName;
-        text_context[firstFreeChat] = "";
-        log_number[firstFreeChat] = 0;
-        firstFreeChat ++;
+            /*Initialize values.*/
+            room_id[firstFreeChat] = chat_room;
+            users_name[firstFreeChat] = UserName;
+            text_context[firstFreeChat] = "";
+            log_number[firstFreeChat] = 0;
+            firstFreeChat++;
 
+        }
+        /* Create or show next box.*/
+        else if (RoomNotExist(chat_room)) {
+            room_id[firstFreeChat] = chat_room;
+            users_name[firstFreeChat] = UserName;
+            if (max_room > firstFreeChat)
+                $('#Privatebox' + firstFreeChat).show();
+            else
+                init_chat(firstFreeChat);
+            insert_log_button(firstFreeChat);
+            $("#UserName" + firstFreeChat).attr('value', users_name[firstFreeChat] + chat_room);
+            $("#UserNameMinimize" + firstFreeChat).attr('value', users_name[firstFreeChat]);
+
+            firstFreeChat++;
+        }
     }
-    /* Create or show next box.*/
-    else if (RoomNotExist(chat_room)){
-        room_id[firstFreeChat] = chat_room;
-        users_name[firstFreeChat] = UserName;
-        if(max_room > firstFreeChat)
-            $('#Privatebox' + firstFreeChat).show();
-        else
-            init_chat(firstFreeChat);
-        insert_log_button(firstFreeChat);
-        $("#UserName" + firstFreeChat).attr('value', users_name[firstFreeChat] + chat_room);
-        $("#UserNameMinimize" + firstFreeChat).attr('value', users_name[firstFreeChat]);
-
-        firstFreeChat ++;
-    }
-}
 
 
     /* Scrolling down function */
@@ -462,29 +458,29 @@ function CreateChatBox(res, status)
     /* Update users list */
     function NewUsers() {
         $.get('/chat/last/', function (data) {
-			$('#ShoutboxUserList').html(data);
+            $('#ShoutboxUserList').html(data);
             if (selectID) {
-                $('#cl_'+selectID).attr('style', 'font-weight: bold;background-color:#ffffff;');
+                $('#cl_' + selectID).attr('style', 'font-weight: bold;background-color:#ffffff;');
                 $('.caction').attr('disabled', false);
             }
             else
                 $('.caction').attr('disabled', true);
-		});
+        });
     }
 
     /* Last 50 messages that was write in global chat.*/
     /* TODO: Maybe Change the name*/
     function NewLog() {
         $.get('/chat/log/', function (data) {
-			$('#ShoutboxTextArea').html(replace_emoticons(data));
+            $('#ShoutboxTextArea').html(replace_emoticons(data));
             $(document).ready(AutoScroll);
         });
 
     }
 
-     /* See if I got new message */
+    /* See if I got new message */
     function SendPing() {
-        var mdata = {'opcode': 'keepAlive'};
+        var mdata = {'opcode':'keepAlive'};
         var args = {type:'POST', url:'m/', data:mdata, complete:ReceiveMessage};
         $.ajax(args);
         initial = 0;
@@ -508,11 +504,11 @@ function CreateChatBox(res, status)
         was_writing = 0;
     }
 
-    function IsForMe(room){
+    function IsForMe(room) {
         var first = room.split("-");
         var i;
         for (i = 0; i < first.length; i++)
-            if(myID == first[i])
+            if (myID == first[i])
                 return true;
 
         return false;
@@ -520,43 +516,42 @@ function CreateChatBox(res, status)
     }
 
     /* Tell me if the room exist.*/
-    function RoomNotExist(room){
+    function RoomNotExist(room) {
         var i;
         for (i = 1; i <= firstFreeChat; i++)
-            if(room_id[i] == room)
+            if (room_id[i] == room)
                 return false;
         return true;
     }
 
     /* Give room id or next free chat.*/
-    function GetRoom(room){
+    function GetRoom(room) {
         var i;
         for (i = 1; i <= firstFreeChat; i++)
-            if(room_id[i] == room)
+            if (room_id[i] == room)
                 return i;
-        firstFreeChat ++;
+        firstFreeChat++;
         return firstFreeChat - 1
     }
 
 
     /* Send function for global chat.*/
-    var SendMessage = function() {
+    var SendMessage = function () {
         var input = $('#ShoutboxTextBox').val();
 
-            if (input) {
-                AddToHist(input);
-                var msgdata = {'opcode':'message', 'msg':input, 'room': 'global'};
-                var args = {type:"POST", url:"m/", data:msgdata, complete:ReceiveMessage};
-                $.ajax(args);
-                $('#ShoutboxTextBox').val("");
+        if (input) {
+            AddToHist(input);
+            var msgdata = {'opcode':'message', 'msg':input, 'room':'global'};
+            var args = {type:"POST", url:"m/", data:msgdata, complete:ReceiveMessage};
+            $.ajax(args);
+            $('#ShoutboxTextBox').val("");
         }
         return false;
     };
 
 
-
     /* Receive function for every kind of messages.*/
-    var ReceiveMessage = function(res, status) {
+    var ReceiveMessage = function (res, status) {
         if (status == "success") {
             var obj = jQuery.parseJSON(res.responseText);
 
@@ -565,8 +560,8 @@ function CreateChatBox(res, status)
             }
             var i;
             for (i = 0; i < obj.count; ++i) {
-                if(obj.msgs[i].room == 'global' && initial == 0){
-                    $('#ShoutboxTextArea').append(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />" );
+                if (obj.msgs[i].room == 'global' && initial == 0) {
+                    $('#ShoutboxTextArea').append(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />");
                     AutoScroll();
                 }
                 else {
@@ -576,7 +571,7 @@ function CreateChatBox(res, status)
                         room = GetRoom(obj.msgs[i].room);
                         if (RoomNotExist(obj.msgs[i].room)) {
 
-                            if(room >= 2){
+                            if (room >= 2) {
                                 select_bar(room, obj.msgs[i].user);
                                 room_id[room] = obj.msgs[i].room;
                                 users_name[room] = obj.msgs[i].user;
@@ -585,33 +580,33 @@ function CreateChatBox(res, status)
 
 
                             }
-                            else{
+                            else {
                                 if (max_room > room)
                                     $('#Privatebox' + room).show();
                                 else
                                     init_chat(room);
                                 insert_log_button(room);
 
-                                $("#UserName" + room).attr('value', obj.msgs[i].user );
+                                $("#UserName" + room).attr('value', obj.msgs[i].user);
                                 $("#UserNameMinimize" + room).attr('value', obj.msgs[i].user);
                                 room_id[room] = obj.msgs[i].room;
                             }
                         }
 
-                        if(room > 2){
-                            log_number[room] ++;
+                        if (room > 2) {
+                            log_number[room]++;
                             text_context[room] += obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + " <br />";
                             SW(room);
                         }
-                        else{
-                        if (obj.msgs[i].user != myName && timer[room] == null) {
-                            timer[room] = 1;
-                            ti[room] = setInterval('SwitchColor(room)', 500);
-                        }
-                        //chat_room = obj.msgs[i].room;
-                        log_number[room] ++;
-                        $('#PrivateboxTextArea' + room).append(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />");
-                        $('#PrivateboxTextArea' + room).scrollTop($('#PrivateboxTextArea' + room)[0].scrollHeight);
+                        else {
+                            if (obj.msgs[i].user != myName && timer[room] == null) {
+                                timer[room] = 1;
+                                ti[room] = setInterval('SwitchColor(room)', 500);
+                            }
+                            //chat_room = obj.msgs[i].room;
+                            log_number[room]++;
+                            $('#PrivateboxTextArea' + room).append(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />");
+                            $('#PrivateboxTextArea' + room).scrollTop($('#PrivateboxTextArea' + room)[0].scrollHeight);
                         }
                     }
                 }
@@ -619,14 +614,12 @@ function CreateChatBox(res, status)
 
 
         }
-		/*For not spaming*/        
-		else if (res.status == 400) {
+        /*For not spaming*/
+        else if (res.status == 400) {
             $('#ShoutboxTextArea').append('<p id="warn_spam"> Stop spamming! </p>');
         }
 
     };
-
-
 
 
     $('#ShoutboxSendButton').click(SendMessage);
@@ -673,7 +666,7 @@ function CreateChatBox(res, status)
     }
 
     /* Global chat key events. */
-    $("#ShoutboxTextBox").keyup(function(event) {
+    $("#ShoutboxTextBox").keyup(function (event) {
         if (event.keyCode == 13) {
             /* enter */
             $("#ShoutboxSendButton").click();
@@ -699,28 +692,28 @@ function CreateChatBox(res, status)
     /* Emoticons and the replace function. */
     /* TODO: More emoticons.*/
     var emoticons = {
-        '>:D' : 'emoticon_evilgrin.png',
-        ':D' : 'emoticon_grin.png',
-        '=D' : 'emoticon_happy.png',
-        ':\\)' : 'emoticon_smile.png',
-        ':O' : 'emoticon_surprised.png',
-        ':P' : 'emoticon_tongue.png',
-        ':\\(' : 'emoticon_unhappy.png',
-        ':3' : 'emoticon_waii.png',
-        ';\\)' : 'emoticon_wink.png',
-        '\\(ball\\)' : 'sport_soccer.png'
+        '>:D':'emoticon_evilgrin.png',
+        ':D':'emoticon_grin.png',
+        '=D':'emoticon_happy.png',
+        ':\\)':'emoticon_smile.png',
+        ':O':'emoticon_surprised.png',
+        ':P':'emoticon_tongue.png',
+        ':\\(':'emoticon_unhappy.png',
+        ':3':'emoticon_waii.png',
+        ';\\)':'emoticon_wink.png',
+        '\\(ball\\)':'sport_soccer.png'
     };
 
     var img_dir = "/static/img/";
+
     function replace_emoticons(text) {
-        $.each(emoticons, function(character, img) {
-            var re = new RegExp(character,'g');
-            text = text.replace(re, '<img src="'+img_dir+img+'" />');
+        $.each(emoticons, function (character, img) {
+            var re = new RegExp(character, 'g');
+            text = text.replace(re, '<img src="' + img_dir + img + '" />');
         });
 
         return text;
     }
-
 
 
 });
