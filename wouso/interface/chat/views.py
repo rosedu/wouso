@@ -16,7 +16,7 @@ def create_room(roomName, deletable=False, renameable=False):
     ''' creates a new chatroom and saves it '''
     newRoom = ChatRoom(name=roomName, deletable=deletable, renameable=renameable)
     newRoom.save()
-
+    return newRoom
 
 def get_author(request):
 
@@ -162,8 +162,29 @@ def sendmessage(request):
         chat_global = roomexist('global')
         if user not in chat_global.participants.all():
             chat_global.participants.add(user)
+    elif data['opcode'] == 'getRoom':
+        try:
+            user_to = Player.objects.get(id=data['to'])
+            user_to = user_to.get_extension(ChatUser)
+        except ChatUser.DoesNotExist:
+            return HttpResponseBadRequest()
+        rooms = ChatRoom.objects.exclude(name='global').filter(participants=user).filter(participants=user_to)
+        rooms = [r for r in rooms if r.participants.count() <= 2]
+        if len(rooms) > 1:
+            return HttpResponseBadRequest()
+        if rooms:
+            room = rooms[0]
+        else:
+            name = '%d-%d' % ((user.id, user_to.id) if user.id < user_to.id else (user_to.id, user.id))
+            room = create_room(name)
+        room.participants.add(user)
+        room.participants.add(user_to.id)
+        return json_response(room.to_dict())
 
     return HttpResponse(simplejson.dumps(serve_message(user)))
+
+def json_response(object):
+    return HttpResponse(simplejson.dumps(object))
 
 def roomexist(room_name):
     try:
@@ -171,4 +192,3 @@ def roomexist(room_name):
     except ChatRoom.DoesNotExist:
         create_room(room_name)
         return ChatRoom.objects.get(name = room_name)
-

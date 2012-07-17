@@ -403,42 +403,51 @@ $(document).ready(function() {
             /* Create chat room name.*/
             if (selectID == myID)
                 alert("Nu ai cum sa faci chat cu tine");
-            else if (selectID < myID)
-                chat_room = selectID + "-" + myID;
-            else
-                chat_room = myID + "-" + selectID;
-
-            /* Put the name on the list, if windows number is passed.*/
-            if(selectID != myID && RoomNotExist(chat_room) && firstFreeChat > 2){
-                /* Create and put in the select_bar */
-                select_bar(firstFreeChat, UserName);
-
-                /*Initialize values.*/
-                room_id[firstFreeChat] = chat_room;
-                users_name[firstFreeChat] = UserName;
-                text_context[firstFreeChat] = "";
-                log_number[firstFreeChat] = 0;
-                firstFreeChat ++;
-
-            }
-            /* Create or show next box.*/
-            else if (selectID != myID && RoomNotExist(chat_room)){
-                room_id[firstFreeChat] = chat_room;
-                users_name[firstFreeChat] = UserName;
-                if(max_room > firstFreeChat)
-                    $('#Privatebox' + firstFreeChat).show();
-                else
-                    init_chat(firstFreeChat);
-                insert_log_button(firstFreeChat);
-                $("#UserName" + firstFreeChat).attr('value', users_name[firstFreeChat]);
-                $("#UserNameMinimize" + firstFreeChat).attr('value', users_name[firstFreeChat]);
-
-                firstFreeChat ++;
-
+            else {
+                // Cream camera pe server
+                var msgdata = {'opcode':'getRoom', 'from': myID, 'to': selectID};
+                var args = {type:"POST", url:"m/", data: msgdata, complete:CreateChatBox};
+                $.ajax(args);
             }
         }
     });
 
+
+/* Create chat box and place it on screen */
+function CreateChatBox(res, status)
+{
+    var obj = jQuery.parseJSON(res.responseText);
+
+    chat_room = obj.name;
+
+    /* Put the name on the list, if windows number is passed.*/
+    if( RoomNotExist(chat_room) && firstFreeChat > 2){
+        /* Create and put in the select_bar */
+        select_bar(firstFreeChat, UserName);
+
+        /*Initialize values.*/
+        room_id[firstFreeChat] = chat_room;
+        users_name[firstFreeChat] = UserName;
+        text_context[firstFreeChat] = "";
+        log_number[firstFreeChat] = 0;
+        firstFreeChat ++;
+
+    }
+    /* Create or show next box.*/
+    else if (RoomNotExist(chat_room)){
+        room_id[firstFreeChat] = chat_room;
+        users_name[firstFreeChat] = UserName;
+        if(max_room > firstFreeChat)
+            $('#Privatebox' + firstFreeChat).show();
+        else
+            init_chat(firstFreeChat);
+        insert_log_button(firstFreeChat);
+        $("#UserName" + firstFreeChat).attr('value', users_name[firstFreeChat] + chat_room);
+        $("#UserNameMinimize" + firstFreeChat).attr('value', users_name[firstFreeChat]);
+
+        firstFreeChat ++;
+    }
+}
 
 
     /* Scrolling down function */
