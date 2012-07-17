@@ -2,5 +2,5 @@
 
 
 {% for u in last %}
-    <li><a href="#" id="{{u.id}}" onclick="select('{{u.id}}','{{u}}')" > {{u}} </a></li>
+    <li><a href="#" class="cl_item" id="cl_{{u.id}}" onclick="select('{{u.id}}','{{u}}')" > {{u}} </a></li>
 {% endfor %}

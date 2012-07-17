@@ -68,6 +68,10 @@ function SW(id, with_id) {
 function select(id, Name){
     selectID = id;
     UserName = Name;
+
+    $('.cl_item').attr('style', 'font-weight: normal');
+    $('#cl_'+id).attr('style', 'font-weight: bold; background-color:#ffffff;');
+    $('.caction').attr('disabled', false);
 }
 
 /* TODO: changre*/
@@ -459,6 +463,12 @@ function CreateChatBox(res, status)
     function NewUsers() {
         $.get('/chat/last/', function (data) {
 			$('#ShoutboxUserList').html(data);
+            if (selectID) {
+                $('#cl_'+selectID).attr('style', 'font-weight: bold;background-color:#ffffff;');
+                $('.caction').attr('disabled', false);
+            }
+            else
+                $('.caction').attr('disabled', true);
 		});
     }
 
