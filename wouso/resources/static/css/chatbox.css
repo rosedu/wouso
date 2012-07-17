@@ -109,3 +109,10 @@
     color: red;
     font-size: smaller;
 }
+a.cl_item {
+    text-decoration: none;
+    color: black;
+    display: block;
+    background-color: #e1e1e1;
+    padding: 3px;
+}
