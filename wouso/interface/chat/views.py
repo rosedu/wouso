@@ -158,7 +158,11 @@ def sendmessage(request):
             add_message(data['msg'], user, room)
         except ValueError:
             return HttpResponseBadRequest()
-    
+    elif data['opcode'] == 'keepAlive':
+        chat_global = roomexist('global')
+        if user not in chat_global.participants.all():
+            chat_global.participants.add(user)
+
     return HttpResponse(simplejson.dumps(serve_message(user)))
 
 def roomexist(room_name):
