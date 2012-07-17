@@ -27,7 +27,10 @@ class ChatRoom(models.Model):
     deletable = models.BooleanField(null=False, blank=False, default=None)
     renameable = models.BooleanField(null=False, blank=False, default=None)
 
+    participants = models.ManyToManyField('ChatUser', blank=True, related_name='participant')
 
+    def __unicode__(self):
+        return self.name
 
 class ChatMessage(models.Model):
     ''' chat message '''
