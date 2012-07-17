@@ -20,20 +20,20 @@ function PutBoxName(id) {
 /* TODO: change name.*/
 function getval() {
 
-    var value = $("#zz option:last").val();
+    var value = $("#selectbar_id option:last").val();
     if (firstFreeChat == 3)
-        $("#zz").hide();
+        $("#selectbar_id").hide();
     return value;
 }
 
 /* TODO: Change zz name*/
 function remove_last() {
-    $("#zz option:last").remove();
+    $("#selectbar_id option:last").remove();
 
 }
 
 /* TODO: Change name.*/
-function SW(id, with_id) {
+function switch_chat_box(id, with_id) {
 
     var aux = log_number[id];
     log_number[id] = log_number[with_id];
@@ -64,7 +64,7 @@ function SW(id, with_id) {
 }
 
 
-function select(id, Name) {
+function on_userlist_select(id, Name) {
     selectID = id;
     UserName = Name;
 
@@ -74,15 +74,15 @@ function select(id, Name) {
 }
 
 /* TODO: changre*/
-var aa = function () {
-    //$("#zz").attr("tabindex", 1);
+function on_selectbar_change() {
+    //$("#selectbar_id").attr("tabindex", 1);
     $("#ShoutboxUserList").append("mata");
-    id = $("#zz option:selected").val();
-    SW(id, 1);
-    $("#zz").append('<option value="' + id + '" >' + users_name[id] + '  </option>');
+    id = $("#selectbar_id option:selected").val();
+    switch_chat_box(id, 1);
+    $("#selectbar_id").append('<option value="' + id + '" >' + users_name[id] + '  </option>');
 
-    $("#zz option:selected").remove();
-    $("#zz option:first").attr('selected', 'selected');
+    $("#selectbar_id option:selected").remove();
+    $("#selectbar_id option:first").attr('selected', 'selected');
 };
 
 /* blink box header when receive a new message */
@@ -382,16 +382,16 @@ $(document).ready(function () {
     function select_bar(id, name) {
         if (sw == 0) {
 
-            html = '<select onchange="aa()" class= "Privatebox" id ="zz" style="right: 1050px; background: green;">' +
+            html = '<select onchange="on_selectbar_change()" class= "Privatebox" id="selectbar_id" style="right: 1050px; background: green;">' +
                 '<option ></option>' +
                 '</select>';
             $("#PrivatebarUsers").append(html);
             sw = 1;
-            $("#zz").show();
+            $("#selectbar_id").show();
         }
-        if ($("#zz").is(":hidden"))
-            $("#zz").show();
-        $("#zz").append('<option value="' + id + '" >' + name + '  </option>');
+        if ($("#selectbar_id").is(":hidden"))
+            $("#selectbar_id").show();
+        $("#selectbar_id").append('<option value="' + id + '" >' + name + '  </option>');
 
 
     }
@@ -568,7 +568,7 @@ $(document).ready(function () {
 
                     if (!IsForMe(obj.msgs[i].room)) {
                     } else {
-                        room = GetRoom(obj.msgs[i].room);
+                        var room = GetRoom(obj.msgs[i].room);
                         if (RoomNotExist(obj.msgs[i].room)) {
 
                             if (room >= 2) {
@@ -596,12 +596,12 @@ $(document).ready(function () {
                         if (room > 2) {
                             log_number[room]++;
                             text_context[room] += obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + " <br />";
-                            SW(room);
+                            switch_chat_box(room);
                         }
                         else {
                             if (obj.msgs[i].user != myName && timer[room] == null) {
                                 timer[room] = 1;
-                                ti[room] = setInterval('SwitchColor(room)', 500);
+                                ti[room] = setInterval('SwitchColor('+room+')', 500);
                             }
                             //chat_room = obj.msgs[i].room;
                             log_number[room]++;
@@ -617,6 +617,9 @@ $(document).ready(function () {
         /*For not spaming*/
         else if (res.status == 400) {
             $('#ShoutboxTextArea').append('<p id="warn_spam"> Stop spamming! </p>');
+        }
+        else if (res.status == 500) {
+            alert(res.textContent);
         }
 
     };
