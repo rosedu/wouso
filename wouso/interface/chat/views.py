@@ -40,7 +40,7 @@ def serve_message(user):
 
 
     obj = {'user': unicode(user)}
-    query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS)
+    query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS, destRoom__participants=user)
     obj['count'] = query.count()
 
     if not query:
@@ -81,7 +81,7 @@ def index(request):
 @login_required
 def log_request(request):
 
-    Room = RoomExist('global')
+    Room = roomexist('global')
 
     all_message = ChatMessage.objects.filter(destRoom=Room)
     all_message = all_message[len(all_message)-50:] if len(all_message) > 50 else all_message
@@ -97,7 +97,7 @@ def log_request(request):
 def online_players(request):
 
     # gather users online in the last ten minutes
-    oldest = datetime.now() - timedelta(minutes = 10)
+    oldest = datetime.now() - timedelta(hours = 1000)
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('user__username')
 
     return render_to_response('chat_last.html',
@@ -115,7 +115,8 @@ def serve(user, Room, position):
 
     obj = {'user': unicode(user)}
     #query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS)
-    obj['count'] = 10
+    number_query = 10 if len(all_message) == 0 else len(all_message) - number;
+    obj['count'] = number_query
 
     if not all_message:
         return None
@@ -139,7 +140,7 @@ def log(request):
     user = get_author(request)
     position = request.POST['number']
 
-    Room = RoomExist(request.POST['room'])
+    Room = roomexist(request.POST['room'])
     return HttpResponse(simplejson.dumps(serve(user, Room, position)))
 
 
@@ -148,11 +149,11 @@ def sendmessage(request):
 
     user = get_author(request)
 
-    if request.POST['opcode'] == 'message':
-        room = RoomExist(request.POST['room'])
+    if request.REQUEST['opcode'] == 'message':
+        room = roomexist(request.REQUEST['room'])
         try:
 
-            add_message(request.POST['msg'], user, room)
+            add_message(request.REQUEST['msg'], user, room)
 
 
         except ValueError:
@@ -160,7 +161,7 @@ def sendmessage(request):
     
     return HttpResponse(simplejson.dumps(serve_message(user)))
 
-def RoomExist(room_name):
+def roomexist(room_name):
     try:
         return ChatRoom.objects.get(name = room_name)
     except ChatRoom.DoesNotExist:
