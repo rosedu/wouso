@@ -155,8 +155,9 @@ def sendmessage(request):
     if data['opcode'] == 'message':
         room = roomexist(data['room'])
         try:
+            assert room is not None
             add_message(data['msg'], user, room)
-        except ValueError:
+        except (ValueError, AssertionError):
             return HttpResponseBadRequest()
     elif data['opcode'] == 'keepAlive':
         chat_global = roomexist('global')
@@ -190,5 +191,4 @@ def roomexist(room_name):
     try:
         return ChatRoom.objects.get(name = room_name)
     except ChatRoom.DoesNotExist:
-        create_room(room_name)
-        return ChatRoom.objects.get(name = room_name)
+        return None
