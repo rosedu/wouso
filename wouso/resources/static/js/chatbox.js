@@ -2,7 +2,6 @@
 var selectID = null;
 var UserName = null;
 
-
 /* Private chat staff */
 var firstFreeChat = 1;
 var room_id = [];
@@ -12,6 +11,8 @@ var log_number = [];
 var text_context = [];
 var users_name = [];
 var max_boxes = 2;
+var timer = [];
+var ti = [];
 
 function PutBoxName(id) {
     $("#UserName" + id).attr('value', users_name[id]);
@@ -58,7 +59,6 @@ function switch_chat_box(id, with_id) {
     PutBoxName(with_id);
 }
 
-
 function on_userlist_select(id, Name) {
     selectID = id;
     UserName = Name;
@@ -68,7 +68,6 @@ function on_userlist_select(id, Name) {
     $('.caction').attr('disabled', false);
 }
 
-/* TODO: changre*/
 function on_selectbar_change() {
 
     var id = $("#selectbar_id option:selected").val();
@@ -78,8 +77,8 @@ function on_selectbar_change() {
     $("#selectbar_id option:selected").remove();
     $("#selectbar_id option:first").attr('selected', 'selected');
 }
-/* blink box header when receive a new message */
-var timer = [];
+
+/* Blink box header, when receive a new message */
 function SwitchColor(room) {
 
     if (timer[room] % 2 == 0) {
@@ -93,10 +92,16 @@ function SwitchColor(room) {
     timer[room]++;
 }
 
+/* blinking staff. */
+var StopTimer = function (id) {
+    clearTimeout(ti[id]);
+    $('#Privatebar' + id).attr('style', "background: blue");
+    $('#PrivatebarMinimize' + id).attr('style', "background: blue");
+    timer[id] = null;
+};
+
 
 $(document).ready(function () {
-
-
 
     /* csrf crap */
     $.ajaxSetup({
@@ -123,16 +128,6 @@ $(document).ready(function () {
             }
         }
     });
-
-
-    /* blinking staff. */
-    var ti = [];
-    var StopTimer = function (id) {
-        clearTimeout(ti[id]);
-        $('#Privatebar' + id).attr('style', "background: blue");
-        $('#PrivatebarMinimize' + id).attr('style', "background: blue");
-        timer[id] = null;
-    };
 
     /* create an emtpy array sized for 10 elements */
     var hist = [];
@@ -374,8 +369,8 @@ $(document).ready(function () {
     /* TODO: change select ID*/
     function select_bar(id, name) {
         if (sw == 0) {
-
-            html = '<select onchange="on_selectbar_change()" class= "Privatebox" id="selectbar_id" style="right: 1050px; background: green;">' +
+            var position = 175 * (max_boxes + 1);
+            html = '<select onchange="on_selectbar_change()" class= "Privatebox" id="selectbar_id" style="right: ' + position + 'px; background: green;">' +
                 '<option ></option>' +
                 '</select>';
             $("#PrivatebarUsers").append(html);
@@ -417,13 +412,9 @@ $(document).ready(function () {
         if (RoomNotExist(chat_room) && firstFreeChat > max_boxes) {
             /* Create and put in the select_bar */
             select_bar(firstFreeChat, UserName);
-
-
-
         }
         /* Create or show next box.*/
         else if (RoomNotExist(chat_room)) {
-            room_id[firstFreeChat] = chat_room;
             users_name[firstFreeChat] = UserName;
             if (max_room > firstFreeChat)
                 $('#Privatebox' + firstFreeChat).show();
@@ -564,14 +555,7 @@ $(document).ready(function () {
                         if (RoomNotExist(obj.msgs[i].room)) {
 
                             if (room > max_boxes) {
-                                $("#ShoutboxUserList").append(room);
                                 select_bar(room, obj.msgs[i].user);
-                                room_id[room] = obj.msgs[i].room;
-                                users_name[room] = obj.msgs[i].user;
-                                text_context[room] = '';
-                                log_number[room] = 0;
-
-
                             }
                             else {
                                 if (max_room > room)
@@ -581,13 +565,13 @@ $(document).ready(function () {
                                 insert_log_button(room);
 
                                 users_name[room] = obj.msgs[i].user;
-                                text_context[room] = '';
-                                log_number[room] = 0;
+                                PutBoxName(room);
 
-                                $("#UserName" + room).attr('value', obj.msgs[i].user);
-                                $("#UserNameMinimize" + room).attr('value', obj.msgs[i].user);
-                                room_id[room] = obj.msgs[i].room;
                             }
+                            room_id[room] = obj.msgs[i].room;
+                            users_name[room] = obj.msgs[i].user;
+                            text_context[room] = '';
+                            log_number[room] = 0;
                         }
 
                         if (room > max_boxes) {
@@ -600,7 +584,6 @@ $(document).ready(function () {
                                 timer[room] = 1;
                                 ti[room] = setInterval('SwitchColor('+room+')', 500);
                             }
-                            //chat_room = obj.msgs[i].room;
                             log_number[room]++;
                             $('#PrivateboxTextArea' + room).append(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />");
                             $('#PrivateboxTextArea' + room).scrollTop($('#PrivateboxTextArea' + room)[0].scrollHeight);
@@ -622,7 +605,7 @@ $(document).ready(function () {
     };
 
 
-    $('#ShoutboxSendButton').click(SendMessage);
+
 
     /* History for keys.*/
     function HistUp() {
@@ -665,6 +648,7 @@ $(document).ready(function () {
         }
     }
 
+    $('#ShoutboxSendButton').click(SendMessage);
     /* Global chat key events. */
     $("#ShoutboxTextBox").keyup(function (event) {
         if (event.keyCode == 13) {
