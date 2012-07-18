@@ -39,18 +39,12 @@ function switch_chat_box(id, with_id) {
     log_number[id] = log_number[with_id];
     log_number[with_id] = aux;
 
-    if (text_context[id] == "") {
-        $("#OldLog" + with_id).remove();
-        text_context[id] = $("#PrivateboxTextArea1").html();
-        $("#PrivateboxTextArea" + with_id).text("");
-        //$("#PrivateboxTextArea" + switch_box).prepend('<a href="#"  id="OldLog' + switch_box + '"> show older log...</br> </a>');
-    }
-    else {
-        aux = text_context[id];
-        text_context[id] = $("#PrivateboxTextArea" + with_id).html();
-        $("#PrivateboxTextArea1").html(aux);
-        //$("#PrivateboxTextArea" + switch_box).prepend('<a href="#"  id="OldLog' + switch_box + '"> show older log...</br> </a>');
-    }
+
+    $("#OldLog" + with_id).remove();
+
+    aux = text_context[id];
+    text_context[id] = $("#PrivateboxTextArea" + with_id).html();
+    $("#PrivateboxTextArea" + with_id).html(aux);
 
     aux = users_name[id];
     users_name[id] = users_name[with_id];
@@ -75,8 +69,7 @@ function on_userlist_select(id, Name) {
 
 /* TODO: changre*/
 function on_selectbar_change() {
-    //$("#selectbar_id").attr("tabindex", 1);
-    $("#ShoutboxUserList").append("mata");
+
     id = $("#selectbar_id option:selected").val();
     switch_chat_box(id, 1);
     $("#selectbar_id").append('<option value="' + id + '" >' + users_name[id] + '  </option>');
@@ -425,12 +418,7 @@ $(document).ready(function () {
             /* Create and put in the select_bar */
             select_bar(firstFreeChat, UserName);
 
-            /*Initialize values.*/
-            room_id[firstFreeChat] = chat_room;
-            users_name[firstFreeChat] = UserName;
-            text_context[firstFreeChat] = "";
-            log_number[firstFreeChat] = 0;
-            firstFreeChat++;
+
 
         }
         /* Create or show next box.*/
@@ -442,11 +430,15 @@ $(document).ready(function () {
             else
                 init_chat(firstFreeChat);
             insert_log_button(firstFreeChat);
-            $("#UserName" + firstFreeChat).attr('value', users_name[firstFreeChat] + chat_room);
-            $("#UserNameMinimize" + firstFreeChat).attr('value', users_name[firstFreeChat]);
+            PutBoxName(firstFreeChat);
 
-            firstFreeChat++;
         }
+        /*Initialize values.*/
+        room_id[firstFreeChat] = chat_room;
+        users_name[firstFreeChat] = UserName;
+        text_context[firstFreeChat] = "";
+        log_number[firstFreeChat] = 0;
+        firstFreeChat++;
     }
 
 
@@ -518,7 +510,7 @@ $(document).ready(function () {
     /* Tell me if the room exist.*/
     function RoomNotExist(room) {
         var i;
-        for (i = 1; i <= firstFreeChat; i++)
+        for (i = 1; i < firstFreeChat; i++)
             if (room_id[i] == room)
                 return false;
         return true;
@@ -527,7 +519,7 @@ $(document).ready(function () {
     /* Give room id or next free chat.*/
     function GetRoom(room) {
         var i;
-        for (i = 1; i <= firstFreeChat; i++)
+        for (i = 1; i < firstFreeChat; i++)
             if (room_id[i] == room)
                 return i;
         firstFreeChat++;
@@ -571,7 +563,8 @@ $(document).ready(function () {
                         var room = GetRoom(obj.msgs[i].room);
                         if (RoomNotExist(obj.msgs[i].room)) {
 
-                            if (room >= 2) {
+                            if (room > 2) {
+                                $("#ShoutboxUserList").append(room);
                                 select_bar(room, obj.msgs[i].user);
                                 room_id[room] = obj.msgs[i].room;
                                 users_name[room] = obj.msgs[i].user;
@@ -587,6 +580,10 @@ $(document).ready(function () {
                                     init_chat(room);
                                 insert_log_button(room);
 
+                                users_name[room] = obj.msgs[i].user;
+                                text_context[room] = '';
+                                log_number[room] = 0;
+
                                 $("#UserName" + room).attr('value', obj.msgs[i].user);
                                 $("#UserNameMinimize" + room).attr('value', obj.msgs[i].user);
                                 room_id[room] = obj.msgs[i].room;
@@ -596,7 +593,7 @@ $(document).ready(function () {
                         if (room > 2) {
                             log_number[room]++;
                             text_context[room] += obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + " <br />";
-                            switch_chat_box(room);
+                            //switch_chat_box(room, 1);
                         }
                         else {
                             if (obj.msgs[i].user != myName && timer[room] == null) {
