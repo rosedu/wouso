@@ -11,6 +11,7 @@ var chat_room = "null=null";
 var log_number = [];
 var text_context = [];
 var users_name = [];
+var max_boxes = 2;
 
 function PutBoxName(id) {
     $("#UserName" + id).attr('value', users_name[id]);
@@ -21,7 +22,7 @@ function PutBoxName(id) {
 function getval() {
 
     var value = $("#selectbar_id option:last").val();
-    if (firstFreeChat == 3)
+    if (firstFreeChat == (max_boxes + 1))
         $("#selectbar_id").hide();
     return value;
 }
@@ -70,14 +71,13 @@ function on_userlist_select(id, Name) {
 /* TODO: changre*/
 function on_selectbar_change() {
 
-    id = $("#selectbar_id option:selected").val();
+    var id = $("#selectbar_id option:selected").val();
     switch_chat_box(id, 1);
     $("#selectbar_id").append('<option value="' + id + '" >' + users_name[id] + '  </option>');
 
     $("#selectbar_id option:selected").remove();
     $("#selectbar_id option:first").attr('selected', 'selected');
-};
-
+}
 /* blink box header when receive a new message */
 var timer = [];
 function SwitchColor(room) {
@@ -149,7 +149,7 @@ $(document).ready(function () {
     /*TODO: get windows status */
     function SwitchWindows(from) {
         var i;
-        if (firstFreeChat <= 3) {
+        if (firstFreeChat <= max_boxes + 1) {
 
             for (i = from; i < firstFreeChat; i++)
                 $("#OldLog" + i).remove();
@@ -408,13 +408,13 @@ $(document).ready(function () {
 
 
     /* Create chat box and place it on screen */
-    function CreateChatBox(res, status) {
+    function CreateChatBox(res) {
         var obj = jQuery.parseJSON(res.responseText);
 
         chat_room = obj.name;
 
         /* Put the name on the list, if windows number is passed.*/
-        if (RoomNotExist(chat_room) && firstFreeChat > 2) {
+        if (RoomNotExist(chat_room) && firstFreeChat > max_boxes) {
             /* Create and put in the select_bar */
             select_bar(firstFreeChat, UserName);
 
@@ -563,7 +563,7 @@ $(document).ready(function () {
                         var room = GetRoom(obj.msgs[i].room);
                         if (RoomNotExist(obj.msgs[i].room)) {
 
-                            if (room > 2) {
+                            if (room > max_boxes) {
                                 $("#ShoutboxUserList").append(room);
                                 select_bar(room, obj.msgs[i].user);
                                 room_id[room] = obj.msgs[i].room;
@@ -590,7 +590,7 @@ $(document).ready(function () {
                             }
                         }
 
-                        if (room > 2) {
+                        if (room > max_boxes) {
                             log_number[room]++;
                             text_context[room] += obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + " <br />";
                             //switch_chat_box(room, 1);
