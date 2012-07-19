@@ -1,9 +1,7 @@
 #Shoutbox {
     /* display: none; */
     height: 100%;
-    position: absolute;
-    right: 5px;
-    bottom: 5px;
+
 }
 
 .Privatebox{
@@ -71,8 +69,8 @@
     display:block;
     padding: 3px;
     text-align:left;
-    height:500px;
-    width:350px;
+    height:300px;
+    width:500px;
     background-color: white;
 
     border: thin solid black;
@@ -83,7 +81,7 @@
     display:block;
     padding: 3px;
     text-align:left;
-    width:350px;
+    width:500px;
 }
 
 #ShoutboxUserName {
@@ -97,7 +95,7 @@
     display:block;
     padding: 3px;
     text-align:left;
-    height:500px;
+    height:300px;
     width:150px;
 
     background-color: white;
