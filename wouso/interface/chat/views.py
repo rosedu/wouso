@@ -72,10 +72,10 @@ def index(request):
 
     user = request.user.get_profile()
     return render_to_response('chat.html', 
-							{'user': user,
+                            {'user': user,
                              'last': online_last10,
-							},
-           					context_instance=RequestContext(request))
+                            },
+                            context_instance=RequestContext(request))
 
 
 @login_required
@@ -87,10 +87,10 @@ def log_request(request):
     all_message = all_message[len(all_message)-50:] if len(all_message) > 50 else all_message
 
     return render_to_response('online.html', 
-							{
-							'log':all_message,
-							},
-           					context_instance=RequestContext(request))
+                            {
+                            'log':all_message,
+                            },
+                            context_instance=RequestContext(request))
 
 
 @login_required
@@ -101,10 +101,10 @@ def online_players(request):
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('user__username')
 
     return render_to_response('chat_last.html',
-							{
-							'last': online_last10,
-							},
-           					context_instance=RequestContext(request))
+                            {
+                            'last': online_last10,
+                            },
+                            context_instance=RequestContext(request))
 
 
 def serve(user, Room, position):
@@ -115,7 +115,7 @@ def serve(user, Room, position):
 
     obj = {'user': unicode(user)}
     #query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS)
-    number_query = 10 if len(all_message) == 0 else len(all_message) - number;
+    number_query = 10 if len(all_message) == 0 else len(all_message) - number
     obj['count'] = number_query
 
     if not all_message:
