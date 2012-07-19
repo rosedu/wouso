@@ -21,7 +21,6 @@ function put_box_name(id) {
 }
 
 function get_selected_value() {
-
     var value = $("#selectbar_id option:last").val();
     if (firstFreeChat == (max_boxes + 1))
         $("#selectbar_id").hide();
@@ -30,15 +29,12 @@ function get_selected_value() {
 
 function remove_last() {
     $("#selectbar_id option:last").remove();
-
 }
 
 function switch_chat_box(id, with_id) {
-
     var aux = log_number[id];
     log_number[id] = log_number[with_id];
     log_number[with_id] = aux;
-
 
     $("#OldLog" + with_id).remove();
 
@@ -67,7 +63,6 @@ function on_userlist_select(id, Name) {
 }
 
 function on_selectbar_change() {
-
     var id = $("#selectbar_id option:selected").val();
     switch_chat_box(id, 1);
     $("#selectbar_id").append('<option value="' + id + '" >' + users_name[id] + '  </option>');
@@ -117,7 +112,6 @@ $(document).ready(function () {
                 }
                 return cookieValue;
             }
-
             if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
                 // Only send the token to relative URLs i.e. locally.
                 xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
@@ -146,10 +140,8 @@ $(document).ready(function () {
     function switch_windows(from) {
         var i;
         if (firstFreeChat <= max_boxes + 1) {
-
             for (i = from; i < firstFreeChat; i++)
                 $("#OldLog" + i).remove();
-
             for (i = from; i < firstFreeChat; i++) {
                 text_context[i+1]  = $("#PrivateboxTextArea" + (i + 1)).html();
                 change_values(i + 1, i);
@@ -164,7 +156,6 @@ $(document).ready(function () {
                     $("#Privatebox" + i).hide();
                     $("#PrivateboxMinimize" + i).show();
                 }
-
             }
             firstFreeChat--;
             /* Hide and remove old info. */
@@ -172,7 +163,6 @@ $(document).ready(function () {
             $("#PrivateboxTextArea" + firstFreeChat).text("");
             $("#Privatebox" + firstFreeChat).hide();
             $("#PrivateboxMinimize" + firstFreeChat).hide();
-
         } else {
             firstFreeChat--;
 
@@ -223,9 +213,7 @@ $(document).ready(function () {
     };
 
     function insert_log_button(id) {
-
         $("#PrivateboxTextArea" + id).prepend('<a href="#"  id="OldLog' + id + '"> show older log...</br> </a>');
-
         $("#OldLog" + id).click(function () {
             give_me_old_log(id);
             stop_timer_for_swiching(id);
@@ -241,10 +229,7 @@ $(document).ready(function () {
             '        <input type="button" id="UserName' + id + '" class="PrivateboxUserName"/>' +
             '        <input type="button" id="ExitButton' + id + '" class="PrivateboxExitButton" value="x"/>' +
             '    </div>' +
-            '    <div id="PrivateboxTextArea' + id + '" class="PrivateboxTextArea" >' +
-            //    '        <a href="#"  id="OldLog' + id + '"> show older log...</br> </a>' +
-
-            '    </div>' +
+            '    <div id="PrivateboxTextArea' + id + '" class="PrivateboxTextArea" ></div>' +
             '    <input type="text" id="PrivateboxTextBox' + id + '" class="PrivateboxTextBox"/>' +
             '</div>' +
 
@@ -272,14 +257,12 @@ $(document).ready(function () {
             stop_timer_for_swiching(id);
             $("#Privatebox" + id).hide();
             $("#PrivateboxMinimize" + id).show();
-
         });
 
         $("#UserNameMinimize" + id).click(function () {
             stop_timer_for_swiching(id);
             $("#Privatebox" + id).show();
             $("#PrivateboxMinimize" + id).hide();
-
         });
 
         $("#PrivateboxTextBox" + id).click(function () {
@@ -293,7 +276,6 @@ $(document).ready(function () {
         $("#PrivateboxTextBox" + id).keyup(function (event) {
             stop_timer_for_swiching(id);
             if (event.keyCode == 13) {
-                /* enter */
                 SendMessage(id);
             }
         });
@@ -335,8 +317,6 @@ $(document).ready(function () {
         if ($("#selectbar_id").is(":hidden"))
             $("#selectbar_id").show();
         $("#selectbar_id").append('<option value="' + id + '" >' + name + '  </option>');
-
-
     }
 
 
@@ -356,11 +336,9 @@ $(document).ready(function () {
     /* Create chat box and place it on screen */
     function create_chat_box(res) {
         var obj = jQuery.parseJSON(res.responseText);
-
         chat_room = obj.name;
 
         /* Put the name on the list, if windows number is passed.*/
-
         if (room_not_exist(chat_room)){
             if(firstFreeChat > max_boxes) {
                 /* Create and put in the select_bar */
@@ -382,7 +360,6 @@ $(document).ready(function () {
             text_context[firstFreeChat] = "";
             log_number[firstFreeChat] = 0;
             firstFreeChat++;
-
         }
     }
 
@@ -410,7 +387,6 @@ $(document).ready(function () {
             $('#ShoutboxTextArea').html(replace_emoticons(data));
             $(document).ready(AutoScroll);
         });
-
     }
 
     /* See if I got new message */
@@ -488,20 +464,16 @@ $(document).ready(function () {
 
                             users_name[room] = obj.msgs[i].user;
                             put_box_name(room);
-
                         }
                         room_id[room] = obj.msgs[i].room;
                         users_name[room] = obj.msgs[i].user;
                         text_context[room] = '';
                         log_number[room] = 0;
                     }
-
                     log_number[room]++;
                     text_context[room] += obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + " <br />";
 
-                    if (room > max_boxes) {
-                    }
-                    else {
+                    if (room <= max_boxes){
                         if (obj.msgs[i].user != myName && timer[room] == null) {
                             timer[room] = 1;
                             ti[room] = setInterval('switch_color('+room+')', 500);
@@ -563,6 +535,7 @@ $(document).ready(function () {
     $('#ShoutboxSendButton').click(function(){
         SendMessage(0);
     });
+
     /* Global chat key events. */
     $("#ShoutboxTextBox").keyup(function (event) {
         if (event.keyCode == 13) {
@@ -581,7 +554,6 @@ $(document).ready(function () {
             /* other key */
             was_writing = 1;
         }
-
     });
 
     /* Emoticons and the replace function. */
@@ -600,14 +572,11 @@ $(document).ready(function () {
     };
 
     var img_dir = "/static/img/";
-
     function replace_emoticons(text) {
         $.each(emoticons, function (character, img) {
             var re = new RegExp(character, 'g');
             text = text.replace(re, '<img src="' + img_dir + img + '" />');
         });
-
         return text;
     }
-
 });
