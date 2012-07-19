@@ -28,7 +28,9 @@ function get_selected_value() {
     return value;
 }
 
+
 /* TODO: Change zz name*/
+
 function remove_last() {
     $("#selectbar_id option:last").remove();
 
@@ -234,7 +236,6 @@ $(document).ready(function () {
         });
     }
 
-
     /* Generate private boxes when you need.*/
     function init_chat(id) {
         //Position in page
@@ -312,18 +313,6 @@ $(document).ready(function () {
     /* clear on refresh */
     $('#ShoutboxTextBox').val('');
 
-    /* hide button */
-    $("#ShoutboxHideButton").click(function () {
-        $("#Shoutbox").hide("slide", {direction:"right"});
-        $("#ShoutboxShowButton").delay("350").show("slide", {direction:"right"});
-    });
-
-    /* show button */
-    $("#ShoutboxShowButton").click(function () {
-        $("#ShoutboxShowButton").hide();
-        $("#Shoutbox").show("slide", {direction:"right"});
-    });
-
     /* profile button */
     $("#ShoutboxProfileButton").click(function () {
         if (selectID != null) {
@@ -338,8 +327,7 @@ $(document).ready(function () {
         }
     });
 
-
-    sw = 0;
+    var sw = 0;
     /* TODO: change select ID*/
     function select_bar(id, name) {
         if (sw == 0) {
@@ -360,7 +348,7 @@ $(document).ready(function () {
 
     /* chat button*/
     /* TODO: Change name.*/
-    $("#C").click(function () {
+    $("#ShoutboxChatButton").click(function () {
         if (selectID != null) {
 
             /* Create chat room name.*/
