@@ -13,13 +13,13 @@ var users_name = [];
 var max_boxes = 2;
 var timer = [];
 var ti = [];
+room_id[0] = 'global';
 
 function put_box_name(id) {
     $("#UserName" + id).attr('value', users_name[id]);
     $("#UserNameMinimize" + id).attr('value', users_name[id]);
 }
 
-/* TODO: change name.*/
 function get_selected_value() {
 
     var value = $("#selectbar_id option:last").val();
@@ -28,15 +28,11 @@ function get_selected_value() {
     return value;
 }
 
-
-/* TODO: Change zz name*/
-
 function remove_last() {
     $("#selectbar_id option:last").remove();
 
 }
 
-/* TODO: Change name.*/
 function switch_chat_box(id, with_id) {
 
     var aux = log_number[id];
@@ -147,7 +143,6 @@ $(document).ready(function () {
     }
 
     /* Switching on close */
-    /*TODO: get windows status */
     function switch_windows(from) {
         var i;
         if (firstFreeChat <= max_boxes + 1) {
@@ -190,25 +185,26 @@ $(document).ready(function () {
     }
 
     /* Sending private messages */
-    /* TODO: change name!!*/
-    var SendMessage1 = function (id) {
-        var input = $('#PrivateboxTextBox' + id).val();
+    var SendMessage = function (id) {
+        var name;
+        if(id == 0) name = '#ShoutboxTextBox';
+        else name = '#PrivateboxTextBox' + id;
+        var input = $(name).val();
 
         if (input) {
+            AddToHist(input);
             var msgdata = {'opcode':'message', 'msg':input, 'room':room_id[id]};
             var args = {type:"POST", url:"m/", data:msgdata, complete:ReceiveMessage};
             $.ajax(args);
-            $('#PrivateboxTextBox' + id).val("");
+            $(name).val("");
         }
         return false;
     };
 
     /* Give old log to the players when they ask. */
-    /* TODO: change url name!!! */
     function give_me_old_log(id) {
-
         var msgdata = {'room':room_id[id], 'number':log_number[id]};
-        var args = {type:"POST", url:"logP/", data:msgdata, complete:PrintOnTextArea};
+        var args = {type:"POST", url:"privateLog/", data:msgdata, complete:PrintOnTextArea};
         $.ajax(args);
         return false;
     }
@@ -260,9 +256,7 @@ $(document).ready(function () {
 
             '</div>';
 
-        //Appending
         $("#PrivateChatBoxes").append(html);
-
 
         $("#ExitButton" + id).click(function () {
             switch_windows(id);
@@ -300,7 +294,7 @@ $(document).ready(function () {
             stop_timer_for_swiching(id);
             if (event.keyCode == 13) {
                 /* enter */
-                SendMessage1(id);
+                SendMessage(id);
             }
         });
 
@@ -328,7 +322,6 @@ $(document).ready(function () {
     });
 
     var sw = 0;
-    /* TODO: change select ID*/
     function select_bar(id, name) {
         if (sw == 0) {
             var position = 175 * (max_boxes + 1);
@@ -346,12 +339,9 @@ $(document).ready(function () {
 
     }
 
-    /* chat button*/
-    /* TODO: Change name.*/
+
     $("#ShoutboxChatButton").click(function () {
         if (selectID != null) {
-
-            /* Create chat room name.*/
             if (selectID == myID)
                 alert("Nu ai cum sa faci chat cu tine");
             else {
@@ -362,7 +352,6 @@ $(document).ready(function () {
             }
         }
     });
-
 
     /* Create chat box and place it on screen */
     function create_chat_box(res) {
@@ -397,7 +386,6 @@ $(document).ready(function () {
         }
     }
 
-
     /* Scrolling down function */
     function AutoScroll() {
         $('#ShoutboxTextArea').scrollTop($('#ShoutboxTextArea')[0].scrollHeight);
@@ -417,7 +405,6 @@ $(document).ready(function () {
     }
 
     /* Last 50 messages that was write in global chat.*/
-    /* TODO: Maybe Change the name*/
     function NewLog() {
         $.get('/chat/log/', function (data) {
             $('#ShoutboxTextArea').html(replace_emoticons(data));
@@ -438,6 +425,7 @@ $(document).ready(function () {
     $(document).ready(AutoScroll);
     $(document).ready(NewUsers);
     $(document).ready(NewLog);
+    $(document).ready(SendPing);
     $(document).everyTime(6000, NewUsers);
     $(document).everyTime(1000, SendPing);
 
@@ -471,22 +459,6 @@ $(document).ready(function () {
         return firstFreeChat - 1
     }
 
-
-    /* Send function for global chat.*/
-    var SendMessage = function () {
-        var input = $('#ShoutboxTextBox').val();
-
-        if (input) {
-            AddToHist(input);
-            var msgdata = {'opcode':'message', 'msg':input, 'room':'global'};
-            var args = {type:"POST", url:"m/", data:msgdata, complete:ReceiveMessage};
-            $.ajax(args);
-            $('#ShoutboxTextBox').val("");
-        }
-        return false;
-    };
-
-
     /* Receive function for every kind of messages.*/
     var ReceiveMessage = function (res, status) {
         if (status == "success") {
@@ -504,7 +476,6 @@ $(document).ready(function () {
                 else {
                     var room = GetRoom(obj.msgs[i].room);
                     if (room_not_exist(obj.msgs[i].room)) {
-
                         if (room > max_boxes) {
                             select_bar(room, obj.msgs[i].user);
                         }
@@ -539,10 +510,7 @@ $(document).ready(function () {
                         $('#PrivateboxTextArea' + room).scrollTop($('#PrivateboxTextArea' + room)[0].scrollHeight);
                     }
                 }
-
             }
-
-
         }
         /*For not spaming*/
         else if (res.status == 400) {
@@ -551,7 +519,6 @@ $(document).ready(function () {
         else if (res.status == 500) {
             alert(res.textContent);
         }
-
     };
 
     /* History for keys.*/
@@ -593,7 +560,9 @@ $(document).ready(function () {
         }
     }
 
-    $('#ShoutboxSendButton').click(SendMessage);
+    $('#ShoutboxSendButton').click(function(){
+        SendMessage(0);
+    });
     /* Global chat key events. */
     $("#ShoutboxTextBox").keyup(function (event) {
         if (event.keyCode == 13) {
@@ -614,7 +583,6 @@ $(document).ready(function () {
         }
 
     });
-
 
     /* Emoticons and the replace function. */
     /* TODO: More emoticons.*/
