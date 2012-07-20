@@ -15,6 +15,8 @@ var timer = [];
 var ti = [];
 room_id[0] = 'global';
 
+var private_users = [];
+
 function put_box_name(id) {
     $("#UserName" + id).attr('value', users_name[id]);
     $("#UserNameMinimize" + id).attr('value', users_name[id]);
@@ -30,6 +32,21 @@ function get_selected_value() {
 function remove_last() {
     $("#selectbar_id option:last").remove();
 }
+
+function Private(room_id, log_number, text_context, users_name){
+    this.room_id1 =room_id;
+    this.log_number1 = log_number;
+    this.text_context1 = text_context;
+    this.user_name1 = users_name;
+    this.timer1 = null;
+    this.ti1 = null;
+
+
+}
+
+Private.prototype.getInfo = function(){
+    return "Room: " + this.room_id1 + "</br>User: " + this.user_name1 + "</br>Log_numer: " + this.log_number1;
+};
 
 function switch_chat_box(id, with_id) {
     var aux = log_number[id];
@@ -90,7 +107,6 @@ function stop_timer_for_swiching(id) {
     $('#PrivatebarMinimize' + id).attr('style', "background: blue");
     timer[id] = null;
 }
-
 
 $(document).ready(function () {
 
@@ -355,6 +371,10 @@ $(document).ready(function () {
                 put_box_name(firstFreeChat);
             }
             /*Initialize values.*/
+
+            private_users[firstFreeChat] = new Private(chat_room, 0, "", UserName);
+            $('#ShoutboxUserList').append(private_users[firstFreeChat].getInfo());
+
             room_id[firstFreeChat] = chat_room;
             users_name[firstFreeChat] = UserName;
             text_context[firstFreeChat] = "";
