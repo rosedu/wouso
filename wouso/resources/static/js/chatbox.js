@@ -54,6 +54,7 @@ function on_userlist_select(id, Name) {
     $('.cl_item').attr('style', 'font-weight: normal');
     $('#cl_' + id).attr('style', 'font-weight: bold; background-color:#ffffff;');
     $('.caction').attr('disabled', false);
+    if (selectID == myID) $('#GlobalboxChatButton').attr('disabled', true);
 }
 
 function on_selectbar_change() {
@@ -297,16 +298,9 @@ $(document).ready(function () {
     }
 
     $("#GlobalboxChatButton").click(function () {
-        if (selectID != null) {
-            if (selectID == myID)
-                alert("Nu ai cum sa faci chat cu tine");
-            else {
-                // Cream camera pe server
-                var msgdata = {'opcode':'getRoom', 'from':myID, 'to':selectID};
-                var args = {type:"POST", url:"m/", data:msgdata, complete:create_chat_box};
-                $.ajax(args);
-            }
-        }
+        var msgdata = {'opcode':'getRoom', 'from':myID, 'to':selectID};
+        var args = {type:"POST", url:"m/", data:msgdata, complete:create_chat_box};
+        $.ajax(args);
     });
 
     /* Create chat box and place it on screen */
@@ -511,7 +505,7 @@ $(document).ready(function () {
         }
     }
 
-    $('#ShoutboxSendButton').click(function(){
+    $('#GlobalboxSendButton').click(function(){
         SendMessage(0);
     });
 
@@ -519,7 +513,7 @@ $(document).ready(function () {
     $("#GlobalboxTextBox").keyup(function (event) {
         if (event.keyCode == 13) {
             /* enter */
-            $("#ShoutboxSendButton").click();
+            $("#GlobalboxSendButton").click();
         }
         else if (event.keyCode == 38) {
             /* up_arrow */
