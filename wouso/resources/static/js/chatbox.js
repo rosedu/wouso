@@ -42,7 +42,6 @@ function switch_chat_box(id, with_id) {
     var aux = private_users[id];
     private_users[id] = private_users[with_id];
     private_users[with_id] = aux;
-    $("#OldLog" + with_id).remove();
     $("#PrivateboxTextArea" + with_id).html(private_users[with_id].text_context);
     put_box_name(with_id, private_users[with_id].user_name);
 }
@@ -122,12 +121,9 @@ $(document).ready(function () {
     function switch_windows(from) {
         var i;
         if (firstFreeChat <= max_boxes + 1) {
-            for (i = from; i < firstFreeChat; i++)
-                $("#OldLog" + i).remove();
             for (i = from; i < firstFreeChat; i++) {
                 //text_context[i+1]  = $("#PrivateboxTextArea" + (i + 1)).html();
                 change_values(i + 1, i);
-                insert_log_button(i);
                 put_box_name(i, private_users[i].user_name);
 
                 /* Put the same status as before. */
@@ -141,7 +137,6 @@ $(document).ready(function () {
             }
             firstFreeChat--;
             /* Hide and remove old info. */
-            $("#OldLog" + firstFreeChat).remove();
             $("#PrivateboxTextArea" + firstFreeChat).text("");
             $("#Privatebox" + firstFreeChat).hide();
             $("#PrivateboxMinimize" + firstFreeChat).hide();
@@ -149,7 +144,6 @@ $(document).ready(function () {
             firstFreeChat--;
             var last = get_selected_value();
             change_values(last, from);
-            insert_log_button(from);
             put_box_name(from, private_users[from].user_name);
             remove_last();
         }
@@ -190,17 +184,9 @@ $(document).ready(function () {
         for (i = obj.count - 1; i >= 0; --i) {
             var log_text = obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />";
             private_users[room].text_context = log_text + private_users[room].text_context;
-            $('#OldLog' + room).after(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />")
+            $('#PrivateboxTextArea' + room).prepend(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />");
         }
     };
-
-    function insert_log_button(id) {
-        $("#PrivateboxTextArea" + id).prepend('<a href="#"  id="OldLog' + id + '"> show older log...</br> </a>');
-        $("#OldLog" + id).click(function () {
-            give_me_old_log(id);
-            stop_timer_for_swiching(id);
-        });
-    }
 
     /* Generate private boxes when you need.*/
     function init_chat(id) {
@@ -211,7 +197,10 @@ $(document).ready(function () {
             '        <input type="button" id="UserName' + id + '" class="PrivateboxUserName"/>' +
             '        <input type="button" id="ExitButton' + id + '" class="PrivateboxExitButton" value="x"/>' +
             '    </div>' +
-            '    <div id="PrivateboxTextArea' + id + '" class="PrivateboxTextArea" ></div>' +
+            '    <div>' +
+            '       <a href="#" style="padding: 3px" id="OldLog' + id + '"> show older log...</br> </a>' +
+            '       <div id="PrivateboxTextArea' + id + '" class="PrivateboxTextArea" ></div>' +
+            '    </div>' +
             '    <input type="text" id="PrivateboxTextBox' + id + '" class="PrivateboxTextBox"/>' +
             '</div>' +
             '<div class="Privatebox" id="PrivateboxMinimize' + id + '" style="right: ' + position + 'px">' +
@@ -258,6 +247,11 @@ $(document).ready(function () {
             if (event.keyCode == 13) {
                 SendMessage(id);
             }
+        });
+
+        $("#OldLog" + id).click(function () {
+            give_me_old_log(id);
+            stop_timer_for_swiching(id);
         });
 
         $("#PrivateboxMinimize" + id).hide();
@@ -320,11 +314,9 @@ $(document).ready(function () {
                     $('#Privatebox' + firstFreeChat).show();
                 else
                     init_chat(firstFreeChat);
-                insert_log_button(firstFreeChat);
                 put_box_name(firstFreeChat, UserName);
             }
             /*Initialize values.*/
-
             private_users[firstFreeChat] = new Private(chat_room, 0, '', UserName);
             $('#GlobalboxUserList').append(private_users[firstFreeChat].getInfo());
             firstFreeChat++;
@@ -372,7 +364,6 @@ $(document).ready(function () {
     $(document).everyTime(6000, NewUsers);
     $(document).everyTime(1000, SendPing);
 
-
     /* Tell me if the room exist.*/
     function room_not_exist(room) {
         var i;
@@ -395,9 +386,8 @@ $(document).ready(function () {
     var ReceiveMessage = function (res, status) {
         if (status == "success") {
             var obj = jQuery.parseJSON(res.responseText);
-            if (!obj) {
+            if (!obj)
                 return false;
-            }
             var i;
             for (i = 0; i < obj.count; ++i) {
                 if (obj.msgs[i].room == 'global' && initial == 0) {
@@ -408,7 +398,6 @@ $(document).ready(function () {
                     var room = GetRoom(obj.msgs[i].room);
                     if (room_not_exist(obj.msgs[i].room)) {
                         if(room == firstFreeChat) firstFreeChat++;
-
                         if (room > max_boxes) {
                             select_bar(room, obj.msgs[i].user);
                         }
@@ -417,8 +406,6 @@ $(document).ready(function () {
                                 $('#Privatebox' + room).show();
                             else
                                 init_chat(room);
-                            insert_log_button(room);
-
                             put_box_name(room, obj.msgs[i].user);
                         }
                         private_users[room] = new Private(obj.msgs[i].room, 0, '', obj.msgs[i].user);
