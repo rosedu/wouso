@@ -1,4 +1,4 @@
-#Shoutbox {
+#Globalbox {
     /* display: none; */
     height: 100%;
 
@@ -64,7 +64,7 @@
     bottom: 5px;
 }
 
-#ShoutboxTextArea {
+#GlobalboxTextArea {
 
     display:block;
     padding: 3px;
@@ -77,7 +77,7 @@
     overflow: auto;
 }
 
-#ShoutboxTextBox {
+#GlobalboxTextBox {
     display:block;
     padding: 3px;
     text-align:left;
@@ -91,7 +91,7 @@
     width:200px;
 }
 
-#ShoutboxUserList {
+#GlobalboxUserList {
     display:block;
     padding: 3px;
     text-align:left;
