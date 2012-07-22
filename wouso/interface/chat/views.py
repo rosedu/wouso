@@ -36,12 +36,21 @@ def add_message(text, sender, toRoom):
         raise ValueError('Spam')
 
 
-def serve_message(user):
+def serve_message(user, room=None, position=None):
 
 
     obj = {'user': unicode(user)}
-    query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS, destRoom__participants=user)
-    obj['count'] = query.count()
+    if(room == None):
+        query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS, destRoom__participants=user)
+        obj['count'] = query.count()
+    else:
+        number = int(position)
+        query = ChatMessage.objects.filter(destRoom=room)
+        query = query[len(query)-number-10:] if len(query) > (10 + number) else query
+
+        number_query = 10 if len(query) == 0 else len(query) - number
+        obj['count'] = number_query
+
 
     if not query:
         return None
@@ -54,8 +63,9 @@ def serve_message(user):
         mesaj['text'] = m.content
         lastTS = m.timeStamp
         msgs.append(mesaj)
-    user.lastMessageTS = lastTS
-    user.save()
+    if(room == None):
+        user.lastMessageTS = lastTS
+        user.save()
 
     obj['msgs'] = msgs
 
@@ -107,41 +117,15 @@ def online_players(request):
                             context_instance=RequestContext(request))
 
 
-def serve(user, Room, position):
-
-    number = int(position)
-    all_message = ChatMessage.objects.filter(destRoom=Room)
-    all_message = all_message[len(all_message)-number-10:] if len(all_message) > (10 + number) else all_message
-
-    obj = {'user': unicode(user)}
-    #query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS)
-    number_query = 10 if len(all_message) == 0 else len(all_message) - number
-    obj['count'] = number_query
-
-    if not all_message:
-        return None
-
-    msgs = []
-    for m in all_message:
-        mesaj = {}
-        mesaj['room'] = m.destRoom.name
-        mesaj['user'] = unicode(m.author)
-        mesaj['text'] = m.content
-        msgs.append(mesaj)
-
-    obj['msgs'] = msgs
-
-    return obj
-
 
 @login_required
-def log(request):
+def private_log(request):
 
     user = get_author(request)
     position = request.POST['number']
 
-    Room = roomexist(request.POST['room'])
-    return HttpResponse(simplejson.dumps(serve(user, Room, position)))
+    room = roomexist(request.POST['room'])
+    return HttpResponse(simplejson.dumps(serve_message(user, room, position)))
 
 
 @login_required
@@ -182,7 +166,7 @@ def sendmessage(request):
         room.participants.add(user_to.id)
         return json_response(room.to_dict())
 
-    return HttpResponse(simplejson.dumps(serve_message(user)))
+    return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
 
 def json_response(object):
     return HttpResponse(simplejson.dumps(object))

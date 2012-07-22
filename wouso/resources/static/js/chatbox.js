@@ -155,7 +155,6 @@ $(document).ready(function () {
         if(id == 0) name = '#GlobalboxTextBox';
         else name = '#PrivateboxTextBox' + id;
         var input = $(name).val();
-
         if (input) {
             AddToHist(input);
             var msgdata = {'opcode':'message', 'msg':input, 'room':private_users[id].room_id};
@@ -303,7 +302,8 @@ $(document).ready(function () {
         chat_room = obj.name;
 
         /* Put the name on the list, if windows number is passed.*/
-        if (room_not_exist(chat_room)){
+        room = GetRoom(chat_room);
+        if (room == firstFreeChat){
             if(firstFreeChat > max_boxes) {
                 /* Create and put in the select_bar */
                 select_bar(firstFreeChat, UserName);
@@ -318,7 +318,6 @@ $(document).ready(function () {
             }
             /*Initialize values.*/
             private_users[firstFreeChat] = new Private(chat_room, 0, '', UserName);
-            $('#GlobalboxUserList').append(private_users[firstFreeChat].getInfo());
             firstFreeChat++;
         }
     }
@@ -364,19 +363,9 @@ $(document).ready(function () {
     $(document).everyTime(6000, NewUsers);
     $(document).everyTime(1000, SendPing);
 
-    /* Tell me if the room exist.*/
-    function room_not_exist(room) {
-        var i;
-        for (i = 1; i < firstFreeChat; i++)
-            if (private_users[i].room_id == room)
-                return false;
-        return true;
-    }
-
     /* Give room id or next free chat.*/
     function GetRoom(room) {
-        var i;
-        for (i = 1; i < firstFreeChat; i++)
+        for (var i = 1; i < firstFreeChat; i++)
             if (private_users[i].room_id == room)
                 return i;
         return firstFreeChat
@@ -396,8 +385,8 @@ $(document).ready(function () {
                 }
                 else {
                     var room = GetRoom(obj.msgs[i].room);
-                    if (room_not_exist(obj.msgs[i].room)) {
-                        if(room == firstFreeChat) firstFreeChat++;
+                    if(room == firstFreeChat){
+                        firstFreeChat++;
                         if (room > max_boxes) {
                             select_bar(room, obj.msgs[i].user);
                         }
