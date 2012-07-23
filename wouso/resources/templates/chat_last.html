@@ -2,5 +2,6 @@
 
 
 {% for u in last %}
-    <li><a href="#" class="cl_item" id="cl_{{u.id}}" onclick="on_userlist_select('{{u.id}}','{{u}}')" > {{u}} </a></li>
+
+    <li><a href="#" onmousemove="on_userlist_mouseover('{% player_avatar u%}')"  class="cl_item" id="cl_{{u.id}}" onclick="on_userlist_select('{{u.id}}','{{u}}')" > {{u}} </a></li>
 {% endfor %}

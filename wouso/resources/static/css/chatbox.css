@@ -39,6 +39,16 @@
     overflow: auto;
 }
 
+#Contactbox{
+    width: 150px;
+    height: 100px;
+    position: absolute;
+    display: none;
+    border: thin;
+    border-color: #000000;
+    background-color: #f5deb3;
+}
+
 .PrivateboxTextBox {
     display:block;
     padding: 3px;
