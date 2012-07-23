@@ -46,6 +46,35 @@ function switch_chat_box(id, with_id) {
     put_box_name(with_id, private_users[with_id].user_name);
 }
 
+jQuery(document).ready(function(){
+    $(document).mousemove(function(e){
+        tempX = e.pageX-15;
+        tempY = e.pageY-15;
+    });
+})
+
+
+function on_userlist_mouseover(name) {
+    pos = 44;
+
+
+    //$("#Contactbox").attr('style',"top:"+tempY+"px, left:" + tempX +"px");
+    //$(".pics").css("border-style","solid").css("border-width","1px").css("border-color","white");
+    $("#Contactbox").css("top",tempY+"px").css("left",tempX + "px");
+    //$("#Contactbox").attr('style','left:'+tempX+'px');
+
+    $("#Contactbox").delay(2000).show("normal");
+    //$("#Contactbox").attr("style", 'bottom:' + tempY + 'px');
+    var el = "<img class='avatar' src='+ name +' />"
+    $('#Contactbox').html(el);
+}
+function on_userlist_mouse() {
+    $("#Contactbox").append('ss');
+}
+function on_userlist_mouseout() {
+    $("#Contactbox").hide();
+}
+
 function on_userlist_select(id, Name) {
     selectID = id;
     UserName = Name;
@@ -121,7 +150,7 @@ $(document).ready(function () {
     function switch_windows(from) {
         var i;
         if (firstFreeChat <= max_boxes + 1) {
-            for (i = from; i < firstFreeChat; i++) {
+            for (i = from; i < firstFreeChat - 1; i++) {
                 //text_context[i+1]  = $("#PrivateboxTextArea" + (i + 1)).html();
                 change_values(i + 1, i);
                 put_box_name(i, private_users[i].user_name);
