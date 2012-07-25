@@ -226,7 +226,7 @@ $(document).ready(function () {
             '        <input type="button" id="ExitButton' + id + '" class="PrivateboxExitButton" value="x"/>' +
             '    </div>' +
             '    <div>' +
-            '       <a href="#" style="padding: 3px" id="OldLog' + id + '"> show older log...</br> </a>' +
+            '       <a href="#" style="padding: 3px" id="OldLog' + id + '"> show older log...</a>' +
             '       <div id="PrivateboxTextArea' + id + '" class="PrivateboxTextArea" ></div>' +
             '    </div>' +
             '    <input type="text" id="PrivateboxTextBox' + id + '" class="PrivateboxTextBox"/>' +
