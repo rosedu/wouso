@@ -54,13 +54,15 @@ jQuery(document).ready(function(){
 });
 
 
-function on_userlist_mouseover(name, score, avatar, id) {
+function on_userlist_mouseover(name, score, avatar, level, id) {
     on_userlist_select(id, name);
     $("#Contactbox").css("top",tempY+"px").css("left",1100 + "px");
     $("#Contactbox").show("normal");
-    $("#ContactboxName").html('<bold>' + name + '</bold> ');
-    $("#ContactboxPoints").html(score);
-    var el = "<img class='avatar' src=" + avatar + " style='width:75px; height:75px'/>";
+    html = "<b>" + name  + '</b></br></br>' +
+           "<div style='text-align:right'>" + 'Points ' + score + '</br>' +
+           'Level '  + level + '</div>';
+    $("#ContactboxName").html(html);
+    var el = "<img class='avatar' src=" + avatar + " style='width:60px; height:60px'/>";
     $('#ContactboxAvatar').html(el);
 }
 function on_userlist_mouse() {
