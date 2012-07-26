@@ -16,9 +16,25 @@
 {% block content %}
 </br>
 </br>
-<div id="Contactbox" onmouseout="on_userlist_mouseout()" style="right: 140px">
-    </br>
-    Stana Iulian
+<div id="Contactbox">
+    <table>
+        <tr>
+            <td><div id="ContactboxName"></div></td>
+            <td rowspan="3"><div id="ContactboxAvatar"></div></td>
+        </tr>
+        <tr>
+            <td><div id="ContactboxPoints"></div></td>
+        </tr>
+        <tr>
+            <td><div id="ContactboxVVVV"></div></td>
+        </tr>
+        <tr>
+            <td colspan = "2"><input type="button" class="caction" id="ContactboxProfileButton" value="P"/>
+                              <input type="button" class="caction" id="ContactboxMesajeButton" value="M"/>
+                              <input type="button" class="caction" id="ContactboxChatButton" value="C"/><td>
+        </tr>
+
+    </table>
 
 </div>
 
@@ -27,9 +43,6 @@
 
         <tr><td colspan="1"><div id="GlobalboxTextArea"></div></td>
             <td colspan="1"><div id="GlobalboxUserList"></div></td>
-
-            <td rowspan = "3" style="width:100px; height:300px">
-            </td>
         </tr>
         <tr>
             <td colspan = "1"><input type="text" id="GlobalboxTextBox"/></td>

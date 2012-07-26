@@ -51,22 +51,17 @@ jQuery(document).ready(function(){
         tempX = e.pageX-15;
         tempY = e.pageY-15;
     });
-})
+});
 
 
-function on_userlist_mouseover(name) {
-    pos = 44;
-
-
-    //$("#Contactbox").attr('style',"top:"+tempY+"px, left:" + tempX +"px");
-    //$(".pics").css("border-style","solid").css("border-width","1px").css("border-color","white");
-    $("#Contactbox").css("top",tempY+"px").css("left",tempX + "px");
-    //$("#Contactbox").attr('style','left:'+tempX+'px');
-
-    $("#Contactbox").delay(2000).show("normal");
-    //$("#Contactbox").attr("style", 'bottom:' + tempY + 'px');
-    var el = "<img class='avatar' src='+ name +' />"
-    $('#Contactbox').html(el);
+function on_userlist_mouseover(name, score, avatar, id) {
+    on_userlist_select(id, name);
+    $("#Contactbox").css("top",tempY+"px").css("left",1100 + "px");
+    $("#Contactbox").show("normal");
+    $("#ContactboxName").html('<bold>' + name + '</bold> ');
+    $("#ContactboxPoints").html(score);
+    var el = "<img class='avatar' src=" + avatar + " style='width:75px; height:75px'/>";
+    $('#ContactboxAvatar').html(el);
 }
 function on_userlist_mouse() {
     $("#Contactbox").append('ss');
@@ -557,4 +552,17 @@ $(document).ready(function () {
         });
         return text;
     }
+
+
+    $("#ContactboxProfileButton").click(function(){
+        $("#GlobalboxProfileButton").click();
+    });
+
+    $("#ContactboxMesajeButton").click(function(){
+        $("#GlobalboxMesajeButton").click();
+    });
+
+    $("#ContactboxChatButton").click(function(){
+        $("#GlobalboxChatButton").click();
+    });
 });
