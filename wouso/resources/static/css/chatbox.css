@@ -96,7 +96,7 @@
     padding: 3px;
     text-align:left;
     height:300px;
-    width:150px;
+    width:160px;
 
     background-color: white;
     border: thin solid black;
@@ -116,28 +116,21 @@ a.cl_item {
 }
 
 #Contactbox{
-    width: 206px;
-    height: 133px;
+    width: 220px;
+    height: 145px;
     position: absolute;
     display: none;
-    border: thin;
+
+    border: double;
     border-color: #000000;
     background-color: #f5deb3;
 }
 
 
 #ContactboxName{
-    display: block;
     padding: 3px;
     text-align: left;
     width: 100px;
 
-}
-
-#ContactboxPoints{
-    display: block;
-    padding: 3px;
-    text-align: center;
-    width: 100px;
 }
 

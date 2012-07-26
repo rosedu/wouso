@@ -20,18 +20,16 @@
     <table>
         <tr>
             <td><div id="ContactboxName"></div></td>
-            <td rowspan="3"><div id="ContactboxAvatar"></div></td>
+            <td><div id="ContactboxAvatar" style="padding: 5px"></div></td>
         </tr>
         <tr>
-            <td><div id="ContactboxPoints"></div></td>
+            <td colspan= "2"><hr></td>
         </tr>
         <tr>
-            <td><div id="ContactboxVVVV"></div></td>
-        </tr>
-        <tr>
-            <td colspan = "2"><input type="button" class="caction" id="ContactboxProfileButton" value="P"/>
-                              <input type="button" class="caction" id="ContactboxMesajeButton" value="M"/>
-                              <input type="button" class="caction" id="ContactboxChatButton" value="C"/><td>
+            <td colspan = "2" style="text-align: right;">
+                              <input type="button" class="caction" id="ContactboxProfileButton" value="P" title="View profile"/>
+                              <input type="button" class="caction" id="ContactboxMesajeButton"  value="M" title="Send a message"/>
+                              <input type="button" class="caction" id="ContactboxChatButton"    value="C" title="Make a private conversation"/><td>
         </tr>
 
     </table>
@@ -46,9 +44,12 @@
         </tr>
         <tr>
             <td colspan = "1"><input type="text" id="GlobalboxTextBox"/></td>
-            <td colspan = "1"><input type="button" class="caction" id="GlobalboxProfileButton" value="P"/>
-                              <input type="button" class="caction" id="GlobalboxMesajeButton" value="M"/>
-                              <input type="button" class="caction" id="GlobalboxChatButton" value="C"/><td>
+            <td colspan = "1"><input type="button" class="caction" id="GlobalboxProfileButton" value="P" title="View profile"/>
+                              <input type="button" class="caction" id="GlobalboxMesajeButton"  value="M" title="Send a message"/>
+                              <input type="button" class="caction" id="GlobalboxChatButton"    value="C" title="Make a private conversation"/>
+                              <input type="button" class="caction" id="222"                    value="S" title="Cast a spell on this player"/>
+                              <input type="button" class="caction" id="111"                    value="F" title="Challenge this player"/>
+            <td>
         </tr>
         <tr>
             <td colspan = "1"><input type="button" id="GlobalboxSendButton" value="Send"/><td>
