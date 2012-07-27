@@ -53,23 +53,37 @@ jQuery(document).ready(function(){
     });
 });
 
-
+function show_contact_box(){
+    $("#Contactbox").show();
+}
+var t = null;
 function on_userlist_mouseover(name, score, avatar, level, id) {
-    on_userlist_select(id, name);
+    selectID_over = null;
+    UserName_over = null;
+    t = setTimeout(function(){
+    on_userlist_select1(id, name);
     $("#Contactbox").css("top",tempY+"px").css("left",1100 + "px");
-    $("#Contactbox").show("normal");
-    html = "<b>" + name  + '</b></br></br>' +
-           "<div style='text-align:right'>" + 'Points ' + score + '</br>' +
-           'Level '  + level + '</div>';
+    $("#Contactbox").show();
+    var html = "<b>" + name  + "</b></br></br>" +
+           "<div style='text-align:right'>Points " + score + "</br>Level "  + level + "</div>";
     $("#ContactboxName").html(html);
     var el = "<img class='avatar' src=" + avatar + " style='width:60px; height:60px'/>";
-    $('#ContactboxAvatar').html(el);
+    $('#ContactboxAvatar').html(el);}, 3000);
 }
 function on_userlist_mouse() {
     $("#Contactbox").append('ss');
 }
 function on_userlist_mouseout() {
     $("#Contactbox").hide();
+    clearTimeout(t);
+}
+
+function on_userlist_select1(id, Name) {
+    selectID_over = id;
+    UserName_over = Name;
+    $('.contactaction').attr('disabled', false);
+
+    if (id == myID) $('#GlobalboxChatButton').attr('disabled', true);
 }
 
 function on_userlist_select(id, Name) {
@@ -317,22 +331,32 @@ $(document).ready(function () {
     }
 
     $("#GlobalboxChatButton").click(function () {
-        var msgdata = {'opcode':'getRoom', 'from':myID, 'to':selectID};
+        $("#GlobalboxUserList").append(selectID_over + "   " + UserName_over);
+        var sendID = (selectID_over != null)? selectID_over: selectID;
+        var msgdata = {'opcode':'getRoom', 'from':myID, 'to':sendID};
         var args = {type:"POST", url:"m/", data:msgdata, complete:create_chat_box};
         $.ajax(args);
+        $("#Contactbox").hide();
     });
 
     /* Create chat box and place it on screen */
     function create_chat_box(res) {
         var obj = jQuery.parseJSON(res.responseText);
+        var setName
         chat_room = obj.name;
 
         /* Put the name on the list, if windows number is passed.*/
         room = GetRoom(chat_room);
+        if (UserName_over != null){
+            setName = UserName_over;
+            selectID_over = null;
+            UserName_over = null;
+        }
+        else setName = UserName;
         if (room == firstFreeChat){
             if(firstFreeChat > max_boxes) {
                 /* Create and put in the select_bar */
-                select_bar(firstFreeChat, UserName);
+                select_bar(firstFreeChat, setName);
             }
             /* Create or show next box.*/
             else{
@@ -340,10 +364,10 @@ $(document).ready(function () {
                     $('#Privatebox' + firstFreeChat).show();
                 else
                     init_chat(firstFreeChat);
-                put_box_name(firstFreeChat, UserName);
+                put_box_name(firstFreeChat, setName);
             }
             /*Initialize values.*/
-            private_users[firstFreeChat] = new Private(chat_room, 0, '', UserName);
+            private_users[firstFreeChat] = new Private(chat_room, 0, '', setName);
             firstFreeChat++;
         }
     }
