@@ -29,7 +29,11 @@ def add_message(text, sender, toRoom):
 
     diff = timeStamp - sender.lastMessageTS
 
-    if diff.total_seconds() > 0.5:
+    #TODO: Putem renunta la spam:) este inutil.
+    difference_in_seconds = 1;
+    #difference_in_seconds = (diff.microseconds + (diff.seconds + diff.days * 24 * 3600) * 10**6) / 10**6
+    #if diff.total_seconds() > 0.5:
+    if difference_in_seconds > 0.5:
         msg = ChatMessage(content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp)
         msg.save()
     else:

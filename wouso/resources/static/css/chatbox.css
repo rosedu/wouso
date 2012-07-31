@@ -125,7 +125,10 @@ a.cl_item {
     border-color: #000000;
     background-color: #f5deb3;
 }
-
+.caction{
+    width:  27px;
+    height: 25px;
+}
 
 #ContactboxName{
     padding: 3px;

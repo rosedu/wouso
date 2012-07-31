@@ -56,7 +56,10 @@ jQuery(document).ready(function(){
 function show_contact_box(){
     $("#Contactbox").show();
 }
+
 var t = null;
+var selectID_over;
+var UserName_over;
 function on_userlist_mouseover(name, score, avatar, level, id) {
     selectID_over = null;
     UserName_over = null;
@@ -70,9 +73,7 @@ function on_userlist_mouseover(name, score, avatar, level, id) {
     var el = "<img class='avatar' src=" + avatar + " style='width:60px; height:60px'/>";
     $('#ContactboxAvatar').html(el);}, 3000);
 }
-function on_userlist_mouse() {
-    $("#Contactbox").append('ss');
-}
+
 function on_userlist_mouseout() {
     $("#Contactbox").hide();
     clearTimeout(t);
@@ -342,7 +343,7 @@ $(document).ready(function () {
     /* Create chat box and place it on screen */
     function create_chat_box(res) {
         var obj = jQuery.parseJSON(res.responseText);
-        var setName
+        var setName;
         chat_room = obj.name;
 
         /* Put the name on the list, if windows number is passed.*/
