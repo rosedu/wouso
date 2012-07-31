@@ -4,14 +4,14 @@ from django.test import TestCase
 
 class addPlayerTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create(username='_test', is_staff=True, is_superuser=True)
+        self.user, new = User.objects.get_or_create(username='_test1', is_staff=True, is_superuser=True)
         self.user.set_password('secret')
         self.user.save()
 
     def test_add_user(self):
         old_number = len(User.objects.all())
         self.client = Client()
-        self.client.login(username='_test', password='secret')
+        self.client.login(username='_test1', password='secret')
         User.objects.get(pk=1).is_staff
         resp = self.client.post('/cpanel/add_player/', {'username': '_test2', 'password': 'secret'})
         new_number = len(User.objects.all())
