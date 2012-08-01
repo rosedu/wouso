@@ -4,28 +4,33 @@ unittest). These will both pass when you run "manage.py test".
 
 Replace these with more appropriate tests for your application.
 """
-import unittest
 import django.test
-from django.test import TestCase
 from django.test.client import Client
 from wouso.interface.chat.views import *
 from wouso.interface.chat.models import *
 from wouso.core.user.models import User
-from datetime import datetime, timedelta
-
+from datetime import datetime
+import json
 
 class ChatTestCase(django.test.TestCase):
     def setUp(self):
         self.user, new= User.objects.get_or_create(username='_chat1')
         self.user.set_password('secret')
         self.user.save()
+
+        self.user1, new= User.objects.get_or_create(username='_chat2')
+        self.user1.set_password('secret')
+        self.user1.save()
+
+        self.user2, new= User.objects.get_or_create(username='_chat3')
+        self.user2.set_password('secret')
+        self.user2.save()
+
+
         self.chat_user = self.user.get_profile().get_extension(ChatUser)
+
         self.client = Client()
         self.client.login(username='_chat1', password='secret')
-
-
-    def create_message(self, message):
-        return self.client.post("/chat/m", message)
 
     def test_message_send_manual(self):
         room= roomexist('global')
@@ -40,25 +45,44 @@ class ChatTestCase(django.test.TestCase):
 
         self.assertEqual(len_now, len_after - 1)
 
+
+    def create_message(self, input_msg, room):
+        data = {'opcode':'message','room': room,'msg': input_msg}
+        return self.client.post('/chat/m/', data)
+
+
+    def create_getRoom(self, myID, sendID):
+        data = {'opcode':'getRoom', 'from':myID, 'to':sendID}
+        return self.client.post('/chat/m/', data)
+
+
+    def create_keepAlive(self):
+        data = {'opcode':'keepAlive'}
+        return self.client.post('/chat/m/', data)
+
     def test_message_send_url(self):
-        Room = roomexist('global')
-        len_now = len(ChatMessage.objects.filter(destRoom=Room))
-        resp = self.client.post('/chat/m/', {'opcode':'message','room':'global','msg':'salut'})
-        len_after = len(ChatMessage.objects.filter(destRoom=Room))
+        len_now = len(ChatMessage.objects.all())
+        message_content = 'salut'
+        resp = self.create_message(message_content, 'global')
+        len_after = len(ChatMessage.objects.all())
 
+        last_mess = ChatMessage.objects.all()
         self.assertEqual(len_now, len_after - 1)
+        self.assertEqual(last_mess[0].content, message_content)
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.failUnlessEqual(1 + 1, 2)
 
-__test__ = {"doctest": """
-Another way to test that 1 + 1 is equal to 2.
+    def test_message_send_url_private(self):
+        resp = self.create_getRoom(self.user.id, self.user1.id)
+        room = json.loads(resp.content)
+        room_name = str(self.user.id) + '-' + str(self.user1.id)
 
->>> 1 + 1 == 2
-True
-"""}
+        self.create_keepAlive()
+        self.create_message("Buna", room['name'])
+        self.create_message("Salut", 'global')
+
+        self.assertEqual(len(ChatMessage.objects.filter(destRoom__name=room['name'], destRoom__participants=self.user)), 1)
+        self.assertEqual(len(ChatMessage.objects.filter(destRoom__name=room['name'], destRoom__participants=self.user1)), 1)
+        self.assertEqual(len(ChatMessage.objects.filter(destRoom__name=room['name'], destRoom__participants=self.user2)), 0)
+        self.assertEqual(len(ChatMessage.objects.filter(destRoom__name='global', destRoom__participants=self.user)), 1)
+        self.assertEqual(room['name'], room_name)
 
