@@ -137,7 +137,6 @@ def sendmessage(request):
     """ Default endpoint (/chat/m/)
     """
     user = get_author(request)
-
     data = request.REQUEST
 
     if data['opcode'] == 'message':
@@ -169,14 +168,14 @@ def sendmessage(request):
         room.participants.add(user)
         room.participants.add(user_to.id)
         return json_response(room.to_dict())
-
     return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
 
 def json_response(object):
-    return HttpResponse(simplejson.dumps(object))
+     return HttpResponse(simplejson.dumps(object))
 
 def roomexist(room_name):
     try:
         return ChatRoom.objects.get(name = room_name)
     except ChatRoom.DoesNotExist:
-        return None
+        return create_room(room_name)
+
