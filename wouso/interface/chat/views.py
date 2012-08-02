@@ -177,5 +177,5 @@ def roomexist(room_name):
     try:
         return ChatRoom.objects.get(name = room_name)
     except ChatRoom.DoesNotExist:
-        return create_room(room_name)
+        return None
 
