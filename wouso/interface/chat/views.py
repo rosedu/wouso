@@ -85,7 +85,7 @@ def index(request):
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
 
     user = request.user.get_profile()
-    return render_to_response('chat.html', 
+    return render_to_response('chat/chat.html',
                             {'user': user,
                              'last': online_last10,
                             },
@@ -100,7 +100,7 @@ def log_request(request):
     all_message = ChatMessage.objects.filter(destRoom=Room)
     all_message = all_message[len(all_message)-50:] if len(all_message) > 50 else all_message
 
-    return render_to_response('online.html', 
+    return render_to_response('chat/global_log.html',
                             {
                             'log':all_message,
                             },
@@ -114,7 +114,7 @@ def online_players(request):
     oldest = datetime.now() - timedelta(hours = 1000)
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('user__username')
 
-    return render_to_response('chat_last.html',
+    return render_to_response('chat/chat_last.html',
                             {
                             'last': online_last10,
                             },
