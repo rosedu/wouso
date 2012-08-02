@@ -57,13 +57,12 @@ class ChatTestCase(django.test.TestCase):
 
 
     def create_keepAlive(self):
-        data = {'opcode':'keepAlive'}
-        return self.client.post('/chat/m/', data)
+        return self.client.post('/chat/m/', {'opcode':'keepAlive'})
 
     def test_message_send_url(self):
         len_now = len(ChatMessage.objects.all())
         message_content = 'salut'
-        resp = self.create_message(message_content, 'global')
+        self.create_message(message_content, 'global')
         len_after = len(ChatMessage.objects.all())
 
         last_mess = ChatMessage.objects.all()
@@ -80,9 +79,25 @@ class ChatTestCase(django.test.TestCase):
         self.create_message("Buna", room['name'])
         self.create_message("Salut", 'global')
 
+        self.assertEqual(room['name'], room_name)
         self.assertEqual(len(ChatMessage.objects.filter(destRoom__name=room['name'], destRoom__participants=self.user)), 1)
         self.assertEqual(len(ChatMessage.objects.filter(destRoom__name=room['name'], destRoom__participants=self.user1)), 1)
         self.assertEqual(len(ChatMessage.objects.filter(destRoom__name=room['name'], destRoom__participants=self.user2)), 0)
         self.assertEqual(len(ChatMessage.objects.filter(destRoom__name='global', destRoom__participants=self.user)), 1)
-        self.assertEqual(room['name'], room_name)
 
+
+
+    def test_message_send_more_message(self):
+
+        self.create_keepAlive()
+
+        for i in range(10):
+            message_content = 'salut' + str(i)
+            self.create_message(message_content, 'global')
+
+        last_mess = ChatMessage.objects.all()
+        for i in range(10):
+            self.assertEqual(last_mess[i].content, 'salut' + str(i))
+
+
+        self.assertEqual(len(ChatMessage.objects.filter(destRoom__name='global', destRoom__participants=self.user)), 10)
