@@ -34,11 +34,17 @@ class ChatTestCase(django.test.TestCase):
         self.user2.set_password('secret')
         self.user2.save()
 
-
         self.chat_user = self.user.get_profile().get_extension(ChatUser)
 
         self.client = Client()
+        self.client.login(username='_chat2', password='secret')
+        self.client.post('/chat/m/', {'opcode':'keepAlive'})
+        self.client.logout()
+
         self.client.login(username='_chat1', password='secret')
+        self.client.post('/chat/m/', {'opcode':'keepAlive'})
+
+
 
 
     def test_message_send_manual(self):
@@ -67,7 +73,6 @@ class ChatTestCase(django.test.TestCase):
         room = json.loads(resp.content)
         room_name = str(self.user.id) + '-' + str(self.user1.id)
 
-        self.client.post('/chat/m/', {'opcode':'keepAlive'})
         self.client.post("/chat/m/", {'opcode':'message','room': room['name'],'msg': 'Buna'})
         self.client.post("/chat/m/", {'opcode':'message','room': 'global'    ,'msg': 'Salut'})
 
@@ -81,15 +86,35 @@ class ChatTestCase(django.test.TestCase):
 
     def test_message_send_more_message(self):
 
-        self.client.post('/chat/m/', {'opcode':'keepAlive'})
-
         for i in range(10):
             message_content = 'salut' + str(i)
             self.client.post("/chat/m/", {'opcode':'message','room': 'global','msg': message_content})
 
-        last_mess = ChatMessage.objects.all()
+        last_mess = ChatMessage.objects.filter(destRoom__name='global')
         for i in range(10):
             self.assertEqual(last_mess[i].content, 'salut' + str(i))
 
 
         self.assertEqual(len(ChatMessage.objects.filter(destRoom__name='global', destRoom__participants=self.user)), 10)
+
+    def test_combine_messages(self):
+        self.test_message_send_more_message()
+
+        resp = self.client.post('/chat/m/', {'opcode':'getRoom', 'from':self.user.id, 'to':self.user1.id})
+        room1 = json.loads(resp.content)
+
+        resp = self.client.post('/chat/m/', {'opcode':'getRoom', 'from':self.user.id, 'to':self.user2.id})
+        room2 = json.loads(resp.content)
+
+
+        for i in range(10):
+            self.client.post("/chat/m/", {'opcode':'message','room': room1['name'],'msg': 'Buna' + str(i)})
+            if i % 2 == 0: self.client.post("/chat/m/", {'opcode':'message','room': room2['name'],'msg': 'Buna' + str(i)})
+
+        self.assertEqual(len(ChatMessage.objects.filter(destRoom__participants= self.user)),25) #all message
+        self.assertEqual(len(ChatMessage.objects.filter(destRoom__participants= self.user).filter(destRoom__participants= self.user1)), 20)
+        self.assertEqual(len(ChatMessage.objects.filter(destRoom__participants= self.user).filter(destRoom__participants= self.user2)), 5)
+        self.assertEqual(len(ChatMessage.objects.filter(destRoom__participants= self.user1)), 20)
+        self.assertEqual(len(ChatMessage.objects.filter(destRoom__name=room1['name'])), 10)
+        self.assertEqual(len(ChatMessage.objects.filter(destRoom__name=room2['name'])), 5)
+        self.assertEqual(len(ChatMessage.objects.filter(destRoom__participants= self.user1).filter(destRoom__participants= self.user2)), 0)
