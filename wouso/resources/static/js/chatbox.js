@@ -94,7 +94,10 @@ function on_userlist_select(id, Name) {
     $('.cl_item').attr('style', 'font-weight: normal');
     $('#cl_' + id).attr('style', 'font-weight: bold; background-color:#ffffff;');
     $('.caction').attr('disabled', false);
-    if (selectID == myID) $('#GlobalboxChatButton').attr('disabled', true);
+    if (selectID == myID){
+        $('#GlobalboxChatButton').attr('disabled', true);
+        $('#GlobalboxChallengeButton').attr('disabled', true);
+    }
 }
 
 function on_selectbar_change() {
@@ -389,6 +392,11 @@ $(document).ready(function () {
             if (selectID) {
                 $('#cl_' + selectID).attr('style', 'font-weight: bold;background-color:#ffffff;');
                 $('.caction').attr('disabled', false);
+                if (selectID == myID){
+                    $('#GlobalboxChatButton').attr('disabled', true);
+                    $('#GlobalboxChallengeButton').attr('disabled', true);
+                }
+
             }
             else
                 $('.caction').attr('disabled', true);
