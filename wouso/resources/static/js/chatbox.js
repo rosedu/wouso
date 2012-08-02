@@ -303,16 +303,20 @@ $(document).ready(function () {
 
     /* profile button */
     $("#GlobalboxProfileButton").click(function () {
-        if (selectID != null) {
-            window.location = "/player/" + selectID + "/";
-        }
+        window.location = "/player/" + selectID + "/";
     });
 
     /* write a messaje button */
     $("#GlobalboxMesajeButton").click(function () {
-        if (selectID != null) {
-            window.location = "/m/create/to=" + selectID;
-        }
+        window.location = "/m/create/to=" + selectID;
+    });
+
+    $("#GlobalboxSpellButton").click(function (){
+        window.location = "/player/cast/to-" + selectID;
+    });
+
+    $("#GlobalboxChallengeButton").click(function (){
+        window.location = "/g/challenge/launch/" + selectID;
     });
 
     var sw = 0;
