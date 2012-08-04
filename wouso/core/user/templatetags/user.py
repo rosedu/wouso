@@ -19,17 +19,22 @@ def player(user):
     link = reverse('wouso.interface.profile.views.user_profile', args=(user.id,))
 
     artif_html = artifact(user.level)
-    return u'<a href="%s">%s%s</a>' % (link, artif_html, user)
+    onmouseover="on_userlist_mouseover('%s','%s','%s','%s','%s', '1')" % (user, user.points, player_avatar(user), user.level_no, user.id)
+    onmouseout="on_userlist_mouseout()"
+
+    return u'<a href="%s" onmouseout="%s" onmouseover="%s">%s%s</a>' % (link, onmouseout , onmouseover, artif_html, user)
 
 @register.simple_tag
 def player_simple(user):
     """ Render only the player name with link to player's profile """
     link = reverse('wouso.interface.profile.views.user_profile', args=(user.id,))
+    onmouseover="on_userlist_mouseover('%s','%s','%s','%s','%s', '1')" % (user, user.points, player_avatar(user), user.level_no, user.id)
+    onmouseout="on_userlist_mouseout()"
 
     if hasattr(user, 'level'):
-        return u'<a href="%s" title="%s [%d]">%s</a>' % (link, user.level.title if user.level else '', user.level_no, user)
+        return u'<a href="%s" title="%s [%d]" onmouseout="%s" onmouseover="%s">%s</a>' % (link, user.level.title if user.level else '', user.level_no,onmouseout, onmouseover, user)
     else:
-        return u'<a href="%s" >%s</a>' % (link, user)
+        return u'<a href="%s" onmouseout="%s" onmouseover="%s" >%s</a>' % (link, onmouseout, onmouseover, user)
 
 @register.simple_tag
 def player_simple2(user, user2):
