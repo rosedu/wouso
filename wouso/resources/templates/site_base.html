@@ -17,12 +17,15 @@
         {% endif %}
         {% block css %}{% endblock %}
     </style>
+    <link  rel="stylesheet" type="text/css" href="/static/css/chatbox.css">
     <script type="text/javascript" src="/static/js/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" src="/static/js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="/static/js/jquery.autocomplete.js"></script>
     <script type="text/javascript" src="/static/js/format.item.js"></script>
     <script type="text/javascript" src="/static/js/jquery.timers.js"></script>
     <script type="text/javascript" src="/static/js/ajaxify.js"></script>
+    <script type="text/javascript" src="/static/js/contactbox.js"></script>
+    <script type="text/javascript" src="/static/js/chatbox.js"></script>
     <script type="text/javascript">
         var url_base = '{{ basepath }}';
     </script>
@@ -45,6 +48,28 @@
             <a href="{% url homepage %}" id="logoa" title="{{config_title}}"></a>
         </div>
     </div>
+
+        <div id="Contactbox" onmouseover="show_contact_box()" onmouseout="on_userlist_mouseout()">
+            <table>
+                <tr>
+                    <td><div id="ContactboxName"></div></td>
+                    <td><div id="ContactboxAvatar" style="padding: 5px"></div></td>
+                </tr>
+                <tr>
+                    <td colspan= "2"><hr></td>
+                </tr>
+                <tr>
+                    <td colspan = "2" style="text-align: right;">
+                        <input type="button" class="contactaction" id="ContactboxProfileButton" value="P" title="View profile"/>
+                        <input type="button" class="contactaction" id="ContactboxMesajeButton"  value="M" title="Send a message"/>
+                        <input type="button" class="contactaction" id="ContactboxChatButton"    value="C" title="Make a private conversation"/><td>
+                </tr>
+
+            </table>
+
+        </div>
+
+
 
     {% block search %}
     <div id="search">
@@ -85,6 +110,9 @@
     {% block content %}
     {% endblock %}
     </div>
+
+    <div id="PrivatebarUsers"></div>
+    <div id="PrivateChatBoxes"></div>
 
     <div id="footer">
         <div id="footer_links">{% autoescape off %}{{ footer }}{% endautoescape %}
