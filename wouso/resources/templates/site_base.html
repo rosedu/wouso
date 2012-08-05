@@ -111,8 +111,6 @@
     {% endblock %}
     </div>
 
-    <div id="PrivatebarUsers"></div>
-    <div id="PrivateChatBoxes"></div>
 
     <div id="footer">
         <div id="footer_links">{% autoescape off %}{{ footer }}{% endautoescape %}
@@ -123,7 +121,11 @@
         </span>
         </div>
     </div>
-	{% autoescape off %}
+
+    <div id="PrivatebarUsers"></div>
+    <div id="PrivateChatBoxes"></div>
+
+        {% autoescape off %}
     {{ config_hidden_footer }}
 	{% endautoescape %}
 </BODY>

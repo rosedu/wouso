@@ -1,7 +1,7 @@
-{% extends 'site_base.html' %}
-{% load i18n %}
-{% load artifacts %}
+{% extends base_template %}
 {% load user %}
+{% load artifacts %}
+{% load i18n %}
 {% block title %}{{block.super}} -- Chatbox{% endblock %}
 
 {% block scripts %}
@@ -12,7 +12,6 @@
 {% block content %}
 </br>
 </br>
-
 
 <div id="Globalbox">
     <table >

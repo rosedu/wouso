@@ -21,10 +21,6 @@ function get_selected_value() {
     return value;
 }
 
-function my_add(x , y){
-    return (x + y);
-}
-
 function remove_last() {
     $("#selectbar_id option:last").remove();
 }
@@ -167,7 +163,7 @@ $(document).ready(function () {
         if (input) {
             AddToHist(input);
             var msgdata = {'opcode':'message', 'msg':input, 'room':private_users[id].room_id};
-            var args = {type:"POST", url:"m/", data:msgdata, complete:ReceiveMessage};
+            var args = {type:"POST", url:"/chat/chat_m/", data:msgdata, complete:ReceiveMessage};
             $.ajax(args);
             $(name).val("");
         }
@@ -177,7 +173,7 @@ $(document).ready(function () {
     /* Give old log to the players when they ask. */
     function give_me_old_log(id) {
         var msgdata = {'room':private_users[id].room_id, 'number':private_users[id].log_number};
-        var args = {type:"POST", url:"privateLog/", data:msgdata, complete:PrintOnTextArea};
+        var args = {type:"POST", url:"/chat/privateLog/", data:msgdata, complete:PrintOnTextArea};
         $.ajax(args);
         return false;
     }
@@ -306,17 +302,16 @@ $(document).ready(function () {
     $("#GlobalboxChatButton").click(function () {
         var sendID = (selectID_over != null)? selectID_over: selectID;
         var msgdata = {'opcode':'getRoom', 'from':myID, 'to':sendID};
-        var args = {type:"POST", url:"m/", data:msgdata, complete:create_chat_box};
+        var args = {type:"POST", url:"/chat/chat_m/", data:msgdata, complete:create_chat_box};
         $.ajax(args);
         $("#Contactbox").hide();
     });
 
     /* Create chat box and place it on screen */
     function create_chat_box(res) {
-        var obj = jQuery.parseJSON(res.responseText);
+        var obj = $.parseJSON(res.responseText);
         var setName;
         chat_room = obj.name;
-
         /* Put the name on the list, if windows number is passed.*/
         room = GetRoom(chat_room);
         if (UserName_over != null){
@@ -378,7 +373,7 @@ $(document).ready(function () {
     /* See if I got new message */
     function SendPing() {
         var mdata = {'opcode':'keepAlive'};
-        var args = {type:'POST', url:'m/', data:mdata, complete:ReceiveMessage};
+        var args = {type:'POST', url:'/chat/chat_m/', data:mdata, complete:ReceiveMessage};
         $.ajax(args);
         initial = 0;
     }
@@ -445,9 +440,7 @@ $(document).ready(function () {
         else if (res.status == 400) {
             $('#GlobalboxTextArea').append('<p id="warn_spam"> Stop spamming! </p>');
         }
-        else if (res.status == 500) {
-            alert(res.textContent);
-        }
+
     };
 
     /* create an emtpy array sized for 10 elements */
@@ -558,14 +551,19 @@ $(document).ready(function () {
 
 
     $("#ContactboxProfileButton").click(function(){
-        $("#GlobalboxProfileButton").click();
+        window.location = "/player/" + selectID_over + "/";
     });
 
     $("#ContactboxMesajeButton").click(function(){
-        $("#GlobalboxMesajeButton").click();
+        window.location = "/m/create/to=" + selectID_over;
     });
 
     $("#ContactboxChatButton").click(function(){
-        $("#GlobalboxChatButton").click();
+        var sendID = (selectID_over != null)? selectID_over: selectID;
+        var msgdata = {'opcode':'getRoom', 'from':myID, 'to':sendID};
+        var args = {type:"POST", url:"/chat/chat_m/", data:msgdata, complete:create_chat_box};
+        $.ajax(args);
+        $("#Contactbox").hide();
+
     });
 });
