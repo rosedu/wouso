@@ -8,8 +8,8 @@ from django.db.models.aggregates import Sum
 from wouso.core.scoring.models import Coin
 from wouso.core.user.templatetags.user import player_avatar
 from wouso.core.game import get_games
-from wouso.core.user.models import Player, SpellHistory, Race, PlayerGroup
-from wouso.core.magic.models import Spell
+from wouso.core.user.models import Player, Race, PlayerGroup
+from wouso.core.magic.models import Spell, SpellHistory
 from wouso.core.god import God
 from wouso.core import scoring
 from wouso.interface.apps import get_apps

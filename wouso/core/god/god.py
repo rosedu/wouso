@@ -198,9 +198,8 @@ class DefaultGod:
 
         if game == 'ChallengeGame':
             from wouso.core.user import models
-            #group, new = DjangoGroup.objects.get_or_create(name='Others')
             others, new = models.PlayerGroup.objects.get_or_create(name='Others')
-            if others in player.groups.all():
+            if player in others.players.all():
                 return False
 
         return True

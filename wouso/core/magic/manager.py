@@ -16,11 +16,11 @@ class MagicManager(object):
 
     @property
     def spells_cast(self):
-        return PlayerSpellDue.objects.filter(source=self)
+        return PlayerSpellDue.objects.filter(source=self.player)
 
     @property
     def spells_available(self):
-        return PlayerSpellAmount.objects.filter(player=self)
+        return PlayerSpellAmount.objects.filter(player=self.player)
 
     @property
     def artifact_amounts(self):
@@ -106,7 +106,7 @@ class MagicManager(object):
         """ Return the count of spells an user has
         """
         try:
-            psa = PlayerSpellAmount.objects.get(player=self, spell=spell)
+            psa = PlayerSpellAmount.objects.get(player=self.player, spell=spell)
         except PlayerSpellAmount.DoesNotExist:
             return 0
         return psa.amount

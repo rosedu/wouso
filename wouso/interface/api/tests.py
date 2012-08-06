@@ -1,7 +1,7 @@
 import json
 from django.contrib.auth.models import User
 from django.test.testcases import TestCase
-from wouso.core.magic.models import Spell, Group
+from wouso.core.magic.models import Spell, ArtifactGroup
 from wouso.core.scoring.models import Formula, Coin
 
 class BazaarApi(TestCase):
@@ -24,10 +24,12 @@ class BazaarApi(TestCase):
         self.assertFalse(data['success'])
 
     def test_bazaar_buy_ok(self):
-        group = Group.objects.create(name='spells')
+        group = ArtifactGroup.objects.create(name='spells')
         spell = Spell.objects.create(price=0, group=group)
-        Formula.objects.create(id='buy-spell', formula='points=0')
-        Coin.objects.create(id='points')
+        f = Formula.objects.get_or_create(id='buy-spell')[0]
+        f.formula='points=0'
+        f.save()
+        Coin.objects.get_or_create(id='points')
 
         response = self.client.post('/api/bazaar/buy/', {'spell': spell.id})
 
@@ -39,7 +41,7 @@ class BazaarApi(TestCase):
 
         player = self.user.get_profile()
 
-        self.assertTrue(spell in [s.spell for s in player.spells_available])
+        self.assertTrue(spell in [s.spell for s in player.magic.spells_available])
 
 class NotificationRegister(TestCase):
     def setUp(self):

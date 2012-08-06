@@ -174,10 +174,7 @@ class Player(models.Model):
         """ Return the group with minimum class, for which the user
         is a member of, or None.
         """
-        if self.groups.count():
-            return self.groups.all()[0]
-        else:
-            return None
+        return self.group
 
     @property
     def group(self):
