@@ -22,7 +22,7 @@ from wouso.interface.top.models import TopUser, History as TopHistory
 
 def get_wall(page=u'1'):
     ''' Returns activity for main wall, paginated.'''
-    activity_list = Activity.objects.all().exclude(user_from__groups__name='Others', game__isnull=False).order_by('-timestamp')
+    activity_list = Activity.objects.all().exclude(user_from__playergroup__name='Others', game__isnull=False).order_by('-timestamp')
     paginator = Paginator(activity_list, 10)
     try:
         activity = paginator.page(page)
@@ -62,7 +62,7 @@ def homepage(request, page=u'1'):
     activity = get_wall(page)
 
     topuser = profile.get_extension(TopUser)
-    topgroups = list(profile.groups.all())
+    topgroups = [profile.group] if profile.group else []
     for g in topgroups:
         g.position = TopHistory.get_user_position(topuser, relative_to=g)
 
