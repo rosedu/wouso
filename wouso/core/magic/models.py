@@ -22,7 +22,6 @@ class ArtifactGroup(models.Model):
     def __unicode__(self):
         return self.name
 
-
 class Artifact(Modifier):
     """ The generic artifact model. This should contain the name (identifier) and group,
     but also personalization such as: image (icon) and title
