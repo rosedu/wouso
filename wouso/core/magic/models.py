@@ -23,7 +23,7 @@ class ArtifactGroup(models.Model):
         return self.name
 
 
-class Artifact(models.Model):
+class Artifact(Modifier):
     """ The generic artifact model. This should contain the name (identifier) and group,
     but also personalization such as: image (icon) and title
     """
