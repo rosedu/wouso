@@ -19,7 +19,7 @@ class ChallengeTestCase(unittest.TestCase):
         self.user2 = User.objects.create(username='_test2')
         self.user2.save()
         self.chall_user2 = self.user2.get_profile().get_extension(ChallengeUser)
-        scoring.setup()
+        scoring.setup_scoring()
 
     def tearDown(self):
         self.user.delete()

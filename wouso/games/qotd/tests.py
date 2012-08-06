@@ -15,7 +15,7 @@ class QotdTestCase(django.test.TestCase):
         self.user.save()
         profile = self.user.get_profile()
         self.qotd_user = profile.get_extension(QotdUser)
-        scoring.setup()
+        scoring.setup_scoring()
 
     def _get_foo_question(self, correct=2):
         """ Return a Question object selected for Today """
@@ -79,7 +79,7 @@ class PageTests(django.test.TestCase):
         self.user.save()
         profile = self.user.get_profile()
         self.qotd_user = profile.get_extension(QotdUser)
-        scoring.setup()
+        scoring.setup_scoring()
         self.client.login(username='_test', password='_test_pw')
 
     def testNoQuestion(self):

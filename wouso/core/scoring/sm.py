@@ -28,7 +28,7 @@ def check_setup():
         return False
     return True
 
-def setup():
+def setup_scoring():
     """ Prepare database for Scoring """
     for cc in CORE_POINTS:
         if not Coin.get(cc):
