@@ -2,11 +2,8 @@ from datetime import datetime, date, timedelta
 from random import shuffle
 from django.db import models
 from django.contrib.auth.models import User
-
-def validate_dynq_code():
-    # TODO: code should be validate here so we don't break the site
-    # by executing bad code
-    pass
+from wouso.core import deprecated
+from utils import validate_dynq_code
 
 class Tag(models.Model):
     """ A simple way of grouping Questions """
@@ -60,11 +57,15 @@ class Question(models.Model):
 
     category = models.ForeignKey(Category, null=True)
     tags = models.ManyToManyField(Tag, blank=True, related_name="%(app_label)s_%(class)s_related")
+
     answer_type = models.CharField(max_length=1, choices=(("R", "single choice"), ("C", "multiple choice")), default="R")
     # a dynamic question would have its code run before returning it to the caller
-    type = models.CharField(max_length=1, choices=(("S", "static"), ("D", "dynamic")), default="S")
+    type = models.CharField(max_length=1, choices=(("S", "static"), ("D", "dynamic"), ("F", "free text")), default="S")
     code = models.TextField(blank=True, validators=[validate_dynq_code],
                             help_text="Use %text for initial text, %user for the user that sees the question.")
+
+    date_added = models.DateTimeField(auto_now_add=True)
+    date_changed = models.DateTimeField(auto_now=True)
 
     @property
     def answer(self):
@@ -108,9 +109,9 @@ class Question(models.Model):
     def is_valid(self):
         """ At least one answer is required. Also check for one correct
         answer """
-        if self.answers.count() == 0:
+        if not self.answers.count():
             return False
-        if self.answers.filter(correct=True).count() == 0:
+        if not self.answers.filter(correct=True).count():
             return False
         return True
 
@@ -133,6 +134,7 @@ class Question(models.Model):
         return tag in self.tags.all()
 
     @property
+    @deprecated
     def question(self):
         # TODO check usage
         return unicode(self.text)
@@ -154,18 +156,7 @@ class Question(models.Model):
 
     def scheduled(self):
         """ Day as a string """
-        # TODO: rewrite using self.day
-        slist = Schedule.objects.filter(question=self)
-        ret = ""
-
-        # no days scheduled for the question
-        if not slist:
-            return ''
-
-        for s in slist:
-            ret += str(s) + ", "
-
-        return ret[:-2]
+        return str(self.day) if self.day else '-'
 
     def __unicode__(self):
         return unicode(self.text)
