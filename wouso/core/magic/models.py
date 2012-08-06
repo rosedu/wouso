@@ -61,6 +61,17 @@ class Artifact(Modifier):
         return u"%s [%s]" % (self.name, self.group.name)
 
 
+class NoArtifactLevel(object):
+    """
+    Mock an artifact object
+    """
+    def __init__(self, level):
+        self.name = 'level-%s' % level
+        self.title = 'Level %s' % level
+        self.image = ''
+        self.group = None
+
+
 class Spell(Artifact):
     TYPES = (('o', 'neutral'), ('p', 'positive'), ('n', 'negative'))
 
