@@ -70,6 +70,7 @@ class NoArtifactLevel(object):
         self.name = 'level-%s' % level
         self.title = 'Level %s' % level
         self.image = ''
+        self.path = 'default-%s' % self.name
         self.group = None
 
 
