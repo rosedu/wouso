@@ -21,6 +21,9 @@ class Race(models.Model):
     def children(self):
         return self.playergroup_set.all()
 
+    def __unicode__(self):
+        return self.name
+
 class PlayerGroup(models.Model):
     """ Group players together in a hierchical way """
     name = models.CharField(max_length=100)
