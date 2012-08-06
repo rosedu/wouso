@@ -16,13 +16,19 @@ class ScoringModel:
     def add(kls, id, **data):
         if isinstance(id, kls):
             id.save()
+            c = id
+        elif isinstance(id, dict):
+            c = kls.objects.create(**id)
         else:
             c = kls.objects.create(id=id, **data)
+        return c
     
     @classmethod
     def get(kls, id):
         if isinstance(id, kls):
             return id
+        if isinstance(id, dict):
+            id = id.get('id', '')
         try: 
             return kls.objects.get(id=id)
         except kls.DoesNotExist:
@@ -30,33 +36,37 @@ class ScoringModel:
     
     def __str__(self):
         return u'%s' % self.id
-            
+
+
 class Coin(ScoringModel, models.Model):
     """ Different scoring categories.
 
     A special coin is 'points' since is used for ladder and levels.
     """
     id = models.CharField(max_length=100, primary_key=True)
-    # The game owner module, or null if is a core coin
+    # The coin owner module, or null if is a core coin
     owner = models.ForeignKey(Game, blank=True, null=True)
     name = models.CharField(max_length=100)
+    # If the coin values are forced integers, else using float.
     integer = models.BooleanField(default=False, blank=True)
     
     def is_core(self):
         """ A coin is a core coin, if it doesn't have an owner """
         return self.owner is None
 
+
 class Formula(ScoringModel, models.Model):
     """ Define the way coin amounts are given to the user, based
     on keyword arguments formulas.
     
     A formula is owned by a game, or by the system (set owner to None)
-    """ 
+    """
     id = models.CharField(max_length=100, primary_key=True)
     # TODO refactor formula name, make it explicit
     formula = models.CharField(max_length=500, default='')
     owner = models.ForeignKey(Game, null=True, blank=True)
     description = models.CharField(max_length=500, default='')
+
 
 class History(models.Model):
     """ Scoring history keeps track of scoring events per user, saving

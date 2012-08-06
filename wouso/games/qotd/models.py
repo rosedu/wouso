@@ -7,7 +7,6 @@ from wouso.core.user.models import Player
 from wouso.core.game.models import Game
 from wouso.core import scoring
 from wouso.core.qpool.models import Schedule, Answer
-from wouso.core.scoring.models import Formula
 
 # Qotd uses questions from qpool
 
@@ -95,7 +94,7 @@ class QotdGame(Game):
         """ Returns a list of formulas used by qotd """
         fs = []
         qotd_game = kls.get_instance()
-        fs.append(Formula(id='qotd-ok', formula='points=3',
+        fs.append(dict(id='qotd-ok', formula='points=3',
             owner=qotd_game.game,
             description='Points earned on a correct answer')
         )

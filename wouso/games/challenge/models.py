@@ -13,7 +13,6 @@ from wouso.core.qpool import get_questions_with_category
 from wouso.core.game.models import Game
 from wouso.core import scoring
 from wouso.core.god import God
-from wouso.core.scoring.models import Formula
 from wouso.interface.activity import signals
 
 
@@ -497,22 +496,22 @@ class ChallengeGame(Game):
         """ Returns a list of formulas used by qotd """
         fs = []
         chall_game = kls.get_instance()
-        fs.append(Formula(id='chall-won', formula='points=6+{different_race}+{different_class}',
+        fs.append(dict(id='chall-won', formula='points=6+{different_race}+{different_class}',
             owner=chall_game.game,
             description='Points earned when winning a challenge. Arguments: different_race (int 0,1), different_class (int 0,1)')
         )
-        fs.append(Formula(id='chall-lost', formula='points=2',
+        fs.append(dict(id='chall-lost', formula='points=2',
             owner=chall_game.game,
             description='Points earned when losing a challenge')
         )
-        fs.append(Formula(id='chall-draw', formula='points=4',
+        fs.append(dict(id='chall-draw', formula='points=4',
             owner=chall_game.game,
             description='Points earned when drawing a challenge')
         )
-        fs.append(Formula(id='chall-warranty', formula='points=-3',
+        fs.append(dict(id='chall-warranty', formula='points=-3',
             owner=chall_game.game,
             description='Points taken as a warranty for challenge'))
-        fs.append(Formula(id='chall-warranty-return', formula='points=3',
+        fs.append(dict(id='chall-warranty-return', formula='points=3',
             owner=chall_game.game,
             description='Points given back as a warranty taken for challenge'))
         return fs

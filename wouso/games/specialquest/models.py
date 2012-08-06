@@ -110,7 +110,7 @@ class SpecialQuestGame(Game):
     def get_formulas(kls):
         fs = []
         quest_game = kls.get_instance()
-        fs.append(Formula(id='specialquest-passed', formula='gold={value}',
+        fs.append(dict(id='specialquest-passed', formula='gold={value}',
             owner=quest_game.game,
             description='Points earned when finishing a task. Arguments: value.')
         )

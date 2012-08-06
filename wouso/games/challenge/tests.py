@@ -122,6 +122,7 @@ class ChallengeTestCase(unittest.TestCase):
         chall.user_to.score = 10
         chall.user_to.save()
 
+        # TODO: improve usage of formulas inside tests.
         formula = Formula.objects.get(id='chall-won')
         formula.formula = 'points=10 + min(10, int(3 * {winner_points}/{loser_points}))'
         formula.save()
