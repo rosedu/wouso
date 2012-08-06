@@ -3,6 +3,18 @@ import os.path
 from django.db import models
 from django.conf import settings
 
+class Modifier(models.Model):
+    """ Basic unic for all the magic.
+    It is extended by:
+        - Artifact (adding image, groupping and percents)
+        - Spell (all of artifact + time cast)
+    """
+    class Meta:
+        abstract = True
+
+    name = models.CharField(max_length=100)
+
+
 class ArtifactGroup(models.Model):
     """ A group of artifacts for a Species. It cannot contain two artifacts of the same name."""
     name = models.CharField(max_length=100)
@@ -10,11 +22,6 @@ class ArtifactGroup(models.Model):
     def __unicode__(self):
         return self.name
 
-class Modifier(models.Model):
-    class Meta:
-        abstract = True
-
-    name = models.CharField(max_length=100)
 
 class Artifact(models.Model):
     """ The generic artifact model. This should contain the name (identifier) and group,
@@ -23,7 +30,6 @@ class Artifact(models.Model):
     class Meta:
         unique_together = ('name', 'group', 'percents')
 
-    name = models.CharField(max_length=64) # level-1, quest-bun, etc
     title = models.CharField(max_length=100) # Maturator
     image = models.ImageField(upload_to=settings.MEDIA_ARTIFACTS_DIR, blank=True, null=True)
     group = models.ForeignKey(ArtifactGroup)
@@ -54,6 +60,7 @@ class Artifact(models.Model):
     def __unicode__(self):
         return u"%s [%s]" % (self.name, self.group.name)
 
+
 class Spell(Artifact):
     TYPES = (('o', 'neutral'), ('p', 'positive'), ('n', 'negative'))
 
@@ -64,7 +71,6 @@ class Spell(Artifact):
 
 
 class SpellHistory(models.Model):
-    # Refactor: move it to magic
     TYPES = (('b', 'bought'), ('u', 'used'), ('c', 'cleaned'), ('e', 'expired'))
 
     type = models.CharField(max_length=1, choices=TYPES)
@@ -104,6 +110,7 @@ class SpellHistory(models.Model):
             return u"%s expired %s" % (self.user_from, self.spell)
         return "%s %s %s" % (self.type, self.user_from, self.spell)
 
+
 # Tolbe
 
 class RaceArtifactAmount(models.Model):
@@ -114,9 +121,9 @@ class RaceArtifactAmount(models.Model):
     artifact = models.ForeignKey(Artifact)
     amount = models.IntegerField(default=1)
 
+
 class GroupArtifactAmount(models.Model):
     """ Tie artifact and amount to the owner group """
-    # Refactor move it to magic
     class Meta:
         unique_together = ('group', 'artifact')
     group = models.ForeignKey('user.PlayerGroup')
@@ -126,7 +133,6 @@ class GroupArtifactAmount(models.Model):
 
 class PlayerArtifactAmount(models.Model):
     """ Tie artifact and amount to the owner user """
-    # Refactor move it to magic
     class Meta:
         unique_together = ('player', 'artifact')
     player = models.ForeignKey('user.Player')
@@ -139,7 +145,6 @@ class PlayerArtifactAmount(models.Model):
 
 class PlayerSpellAmount(models.Model):
     """ Tie spells to collecting user """
-    # Refactor: move it to magic
     class Meta:
         unique_together = ('player', 'spell')
     player = models.ForeignKey('user.Player')
@@ -152,7 +157,6 @@ class PlayerSpellAmount(models.Model):
 
 class PlayerSpellDue(models.Model):
     """ Tie spell, casting user, duration with the victim player """
-    # Refactor: move it to magic
     class Meta:
         unique_together = ('player', 'spell')
     player = models.ForeignKey('user.Player')
