@@ -2,6 +2,7 @@ import logging
 from django.db import models
 from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext_noop
+from wouso.core.game.models import Game
 from wouso.core.magic.manager import MagicManager
 from wouso.interface.activity import signals
 from wouso.core.god import God
@@ -25,12 +26,16 @@ class Race(models.Model):
         return self.name
 
 class PlayerGroup(models.Model):
-    """ Group players together in a hierchical way """
+    """ Group players together """
+    # The group owner. If null, it belongs to the core game.
+    owner = models.ForeignKey(Game, blank=True, null=True)
+
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=100, default='', blank=True)
     parent = models.ForeignKey('Race', default=None, null=True, blank=True)
 
     artifacts = models.ManyToManyField('magic.Artifact', blank=True, through='magic.GroupArtifactAmount')
+    players = models.ManyToManyField('user.Player', blank=True)
 
     # used only for sorting and position
     points = models.FloatField(default=0)
@@ -82,7 +87,6 @@ class Player(models.Model):
     artifacts = models.ManyToManyField('magic.Artifact', blank=True, through='magic.PlayerArtifactAmount')
     # spells available for casting
     spells_collection = models.ManyToManyField(Spell, blank=True, through='magic.PlayerSpellAmount', related_name='spell_collection')
-    groups = models.ManyToManyField(PlayerGroup, blank=True)
 
     # race
     race = models.ForeignKey(Race, blank=False, default=None, null=True, related_name='player_race')
@@ -173,6 +177,15 @@ class Player(models.Model):
         if self.groups.count():
             return self.groups.all()[0]
         else:
+            return None
+
+    @property
+    def group(self):
+        """ Return the core game group, if any
+        """
+        try:
+            return self.playergroup_set.filter(owner=None).get()
+        except PlayerGroup.DoesNotExist:
             return None
 
     @property
