@@ -8,12 +8,15 @@ from wouso.core.user.models import (Player, PlayerGroup,
 class UserProfileInline(admin.StackedInline):
     model = Player
 
+
 class UserAdmin(OldUserAdmin):
     inlines = [ UserProfileInline ]
+
 
 class SHAdmin(admin.ModelAdmin):
     list_display = ('date', 'user_from', 'type', '__unicode__')
     list_filter = ('type', 'spell')
+
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
