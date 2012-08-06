@@ -1,4 +1,4 @@
-from wouso.core.magic.models import Artifact, Group, SpellHistory
+from wouso.core.magic.models import Artifact, ArtifactGroup, SpellHistory
 from wouso.core.game import get_games
 from django.contrib.auth.models import Group as DjangoGroup
 
@@ -44,8 +44,8 @@ class DefaultGod:
         If there is a group for player series, use it.
         """
         try:
-            group = Group.objects.get(name=player.series.name)
-        except (Group.DoesNotExist, AttributeError):
+            group = ArtifactGroup.objects.get(name=player.series.name)
+        except (ArtifactGroup.DoesNotExist, AttributeError):
             group = Artifact.DEFAULT()
 
         name = 'level-%d' % level_no

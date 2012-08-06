@@ -3,7 +3,7 @@ import os.path
 from django.db import models
 from django.conf import settings
 
-class Group(models.Model):
+class ArtifactGroup(models.Model):
     """ A group of artifacts for a Species. It cannot contain two artifacts of the same name."""
     name = models.CharField(max_length=100)
     
@@ -26,7 +26,7 @@ class Artifact(models.Model):
     name = models.CharField(max_length=64) # level-1, quest-bun, etc
     title = models.CharField(max_length=100) # Maturator
     image = models.ImageField(upload_to=settings.MEDIA_ARTIFACTS_DIR, blank=True, null=True)
-    group = models.ForeignKey(Group)
+    group = models.ForeignKey(ArtifactGroup)
 
     percents = models.IntegerField(default=100)
 
@@ -40,7 +40,7 @@ class Artifact(models.Model):
 
     @classmethod
     def DEFAULT(kls):
-        return Group.objects.get_or_create(name='Default')[0]
+        return ArtifactGroup.objects.get_or_create(name='Default')[0]
 
     @classmethod
     def get_level_1(kls):

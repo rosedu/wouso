@@ -10,7 +10,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.conf import settings
 from wouso.core.user.models import Player, PlayerGroup
-from wouso.core.magic.models import Artifact, Group
+from wouso.core.magic.models import Artifact, ArtifactGroup
 from wouso.core.qpool.models import Schedule, Question, Tag, Category
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
@@ -36,7 +36,7 @@ def dashboard(request):
     total_quests = Quest.objects.all().count()
 
     # artifacts
-    artifact_groups = Group.objects.all()
+    artifact_groups = ArtifactGroup.objects.all()
 
     # admins
     staff_group, new = auth.Group.objects.get_or_create(name='Staff')
@@ -301,12 +301,12 @@ def artifact_home(request, group=None):
     if group is None:
         group = 'Default'
 
-    group = get_object_or_404(Group, name=group)
+    group = get_object_or_404(ArtifactGroup, name=group)
     artifacts = group.artifact_set.all()
     modifiers = God.get_all_modifiers()
 
     return render_to_response('cpanel/artifact_home.html',
-                              {'groups': Group.objects.all(),
+                              {'groups': ArtifactGroup.objects.all(),
                                'artifacts': artifacts,
                                'module': 'artifacts',
                                'group': group,
