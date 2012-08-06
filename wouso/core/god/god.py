@@ -1,4 +1,4 @@
-from wouso.core.magic.models import Artifact, ArtifactGroup, SpellHistory
+from wouso.core.magic.models import Artifact, ArtifactGroup, SpellHistory, NoArtifactLevel
 from wouso.core.game import get_games
 from django.contrib.auth.models import Group as DjangoGroup
 
@@ -55,7 +55,7 @@ class DefaultGod:
             try:
                 artifact = Artifact.objects.get(name=name, group=Artifact.DEFAULT())
             except Artifact.DoesNotExist:
-                return None
+                return NoArtifactLevel(level_no)
 
         return artifact
 

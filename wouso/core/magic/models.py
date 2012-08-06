@@ -46,6 +46,7 @@ class Artifact(Modifier):
 
     @classmethod
     def DEFAULT(kls):
+        # TODO: get rid of me
         return ArtifactGroup.objects.get_or_create(name='Default')[0]
 
     @classmethod
