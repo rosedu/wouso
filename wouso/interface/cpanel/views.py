@@ -690,9 +690,18 @@ def lastchalls(request):
 
 
 @login_required
-def grandchalls_start(request):
+def grandchalls_set_active(request):
     """ Start the game """
-    GrandChallengeGame.start(GrandChallengeGame.allUsers)
+    from wouso.games.grandchallenge.models import GrandChallengeGame
+    GrandChallengeGame.set_active()
+    return render_to_response('cpanel/grandchallenge.html',
+                            context_instance=RequestContext(request))
+
+@login_required
+def grandchalls_start(request):
+    """ Play the game """
+    from wouso.games.grandchallenge.models import GrandChallengeGame, GrandChallenge
+    GrandChallengeGame.start()
     users = sorted(GrandChallengeGame.allUsers, key=lambda u: u.user)
     gchalls = sorted(GrandChallenge.get_challenges(), key=lambda gc: gc.branch)
     GrandChallengeGame.round_number += 1
@@ -706,6 +715,7 @@ def grandchalls_start(request):
 
 @login_required
 def grandchalls(request):
+    from wouso.games.grandchallenge.models import GrandChallenge, GrandChallengeGame
     gchalls = GrandChallenge.objects.all()
     #gchalls = Challenge.objects.filter(status__in=['P', 'D']).order_by('-date')[:30]
     return render_to_response('cpanel/grandchallenge.html',
