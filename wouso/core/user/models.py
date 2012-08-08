@@ -65,7 +65,7 @@ class PlayerGroup(models.Model):
         class, if parent is not set.
         """
         if self.parent:
-            return list(self.parent.children.exclude(id=self.id).exclude(show_in_top=False))
+            return list(self.parent.children.exclude(id=self.id))
         else:
             return []
 

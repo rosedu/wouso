@@ -83,8 +83,8 @@ def user_profile(request, id, page=u'1'):
 def player_group(request, id, page=u'1'):
     group = get_object_or_404(PlayerGroup, pk=id)
 
-    top_users = group.player_set.all().order_by('-points')
-    subgroups = group.children.order_by('-points')
+    top_users = group.players.all().order_by('-points')
+    subgroups = group.children
     if group.parent:
         sistergroups = group.parent.children.all().order_by('-points')
     else:
@@ -95,7 +95,7 @@ def player_group(request, id, page=u'1'):
         g.top = GroupHistory(g)
 
     activity_list = Activity.objects.\
-        filter(Q(user_to__groups=group) | Q(user_from__groups=group)).distinct().order_by('-timestamp')
+        filter(Q(user_to__playergroup=group) | Q(user_from__playergroup=group)).distinct().order_by('-timestamp')
     paginator = Paginator(activity_list, 10)
     try:
         activity = paginator.page(page)

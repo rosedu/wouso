@@ -39,14 +39,14 @@
 
     <div class="tab_container">
         <div id="tab-1" class="tab_content">
-        <div class="subraces">
+        <div class="subgroups">
         {% if race.children %}
         <h4>{% trans 'Top subraces' %}</h4>
-        <ol class="top">{% for g in subraces %}
-            <li>{% player_race g %} <span class="points">{{ g.live_points }}</span></li>
+        <ol class="top">{% for g in race.children %}
+            <li>{% player_group g %} <span class="points">{{ g.live_points }}</span></li>
             {% endfor %}
         </ol>
-        <a href="{% url wouso.interface.profile.views.races_index %}">{% trans 'View all' %}</a>
+        <a href="{% url wouso.interface.profile.views.groups_index %}">{% trans 'View all' %}</a>
         {% endif %}
         </div>
 
@@ -55,7 +55,7 @@
             <li>{% player u %}
                 <span class="points w50">{{ u.points }}</span>
                 {% if not race.parent %}
-                <span class="points w50">{% player_race u.proximate_race  %}</span>
+                <span class="points w50">{% player_group u.group %}</span>
                 {% endif %}
             </li>
             {% empty %}
@@ -69,7 +69,7 @@
         </div>
 
         <div id="tab-3" class="tab_content">
-            <div class="subraces">
+            <div class="subgroups">
                 <h3>{% trans 'Rank' %}</h3>
                 <p>{% trans 'Global' %}: <span class="points">{{ top.position }}</span></p>
 

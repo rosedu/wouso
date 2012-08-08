@@ -17,13 +17,13 @@
         <div class="rank">{% if top.disabled %}-{% else %}{% trans 'rank' %}: {{ top.position }}{% endif %}</div>
     </div>
 
-    <h2>TODO Races {{ group }} {% if group.title != '' %}<small>[{{ group.name }}]</small>{% endif %}</h2>
+    <h2>{{ group }} {% if group.title != '' %}<small>[{{ group.name }}]</small>{% endif %}</h2>
     <h3>{% if group.gclass == 0 %}{% trans 'Group' %}{% else %}
         {% if group.gclass == 1 %}{% trans 'Series' %}{% endif %}
         {% endif %}
-        {% if group.parent %}{% trans 'part of' %} {% player_group group.parent %}{% endif %}
+        {% if group.parent %}{% trans 'part of' %} {% player_race group.parent %}{% endif %}
     </h3>
-    <h4>{{ group.player_set.count }} {% trans 'members' %}</h4>
+    <h4>{{ group.players.count }} {% trans 'members' %}</h4>
 
     {% if user.is_superuser %}
     <div class="actions">
