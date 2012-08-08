@@ -2,7 +2,7 @@ from django.contrib.auth.models import User, Group
 from django.test import TestCase
 from . import get_god
 import unittest
-from wouso.core.user.models import PlayerGroup
+from wouso.core.user.models import PlayerGroup, Race
 from wouso.games.challenge.models import ChallengeGame
 
 
@@ -17,13 +17,17 @@ class GodTestCase(TestCase):
 
     def test_others_are_not_elligible_for_challenge(self):
         god = get_god()
-        others, new = PlayerGroup.objects.get_or_create(name="Others", can_play=False)
+        others_race, new = Race.objects.get_or_create(name="Others", can_play=False)
 
-        others.players.add(self.player)
+        self.player.race = others_race
+        self.player.save()
         self.assertFalse(god.user_is_eligible(self.player, ChallengeGame))
 
     def test_users_are_elligible_for_challenge(self):
         god = get_god()
+        race = Race.objects.get_or_create(name='-race', can_play=True)[0]
+        self.player.race = race
+        self.player.save()
         self.assertTrue(god.user_is_eligible(self.player, ChallengeGame))
 
 
