@@ -2,7 +2,7 @@ from django.conf.urls.defaults import *
 #from django.conf import settings
 
 urlpatterns = patterns('',
-    (r'^$', 'wouso.interface.messaging.views.home'),
+    url(r'^$', 'wouso.interface.messaging.views.home', name='messaging'),
     url(r'^create$', 'wouso.interface.messaging.views.create', name='create'),
     url(r'^create/to=(?P<to>\d*)$', 'wouso.interface.messaging.views.create', name='create_to'),
     url(r'^create/to=(?P<to>\d*)/reply_to=(?P<reply_to>\d*)$', 'wouso.interface.messaging.views.create', name='reply_to'),

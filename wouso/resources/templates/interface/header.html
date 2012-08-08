@@ -5,7 +5,7 @@
     <span id="head-profile" class="bold">{% player player %}</span> |
     {% autoescape off %}{{ header }}{% endautoescape %}
     {% if perms.config.change_setting %}
-    <a id="head-cpanel" href="{% url wouso.interface.cpanel.views.dashboard %}">CPanel</a> |
+    <a id="head-cpanel" href="{% url dashboard %}">CPanel</a> |
     {% endif %}
     <a id="head-logout" href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %} &raquo;</a>
 {% else %}

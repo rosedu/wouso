@@ -10,8 +10,8 @@
 {% for c in challenges %}
     <li>
     {{ c.date }}
-    <a href="{% url interface.profile.views.user_profile c.user_from.user.id %}">{{ c.user_from }}</a> vs.
-    <a href="{% url interface.profile.views.user_profile c.user_to.user.id %}">{{ c.user_to }}</a>
+    <a href="{% url player_profile c.user_from.user.id %}">{{ c.user_from }}</a> vs.
+    <a href="{% url player_profile c.user_to.user.id %}">{{ c.user_to }}</a>
      - Result:  {% if c.status == "D" %} Draw
                 {% else %} {% if c.status == "P" %} Won by {{ c.winner }}
                 {% else %} {% if c.status == "R" %} Refused
@@ -20,7 +20,7 @@
                 {% endif %}
 
     {% if user.is_superuser %} | superuser:
-        {% if c.status == "A" %}<a href="{% url games.challenge.views.setplayed c.id %}">Set played</a>{% endif %}
+        {% if c.status == "A" %}<a href="{% url setplayed c.id %}">Set played</a>{% endif %}
     {% endif %}
     </li>
 {% empty %}

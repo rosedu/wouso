@@ -46,7 +46,7 @@
             <li>{% player_group g %} <span class="points">{{ g.live_points }}</span></li>
             {% endfor %}
         </ol>
-        <a href="{% url wouso.interface.profile.views.groups_index %}">{% trans 'View all' %}</a>
+        <a href="{% url groups_index %}">{% trans 'View all' %}</a>
         {% endif %}
         </div>
 

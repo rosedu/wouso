@@ -89,11 +89,11 @@
         {% include 'activity/stream.html' %}
 
         {% if activity.has_previous %}
-        <a href="{% url wouso.interface.profile.views.user_profile id=profile.id page=activity.previous_page_number %}#tab-1"> Newer </a>
+        <a href="{% url player_profile id=profile.id page=activity.previous_page_number %}#tab-1"> Newer </a>
         {% endif %}
 
         {% if activity.has_next %}
-        <a href="{% url wouso.interface.profile.views.user_profile id=profile.id page=activity.next_page_number %}#tab-1"> Older </a>
+        <a href="{% url player_profile id=profile.id page=activity.next_page_number %}#tab-1"> Older </a>
         {% endif %}
         </div>
 

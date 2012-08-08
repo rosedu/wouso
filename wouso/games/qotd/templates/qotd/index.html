@@ -12,7 +12,7 @@
 
 {% if question %}
 <p>{% autoescape off %}{{ question.text }}{% endautoescape %}</p>
-<form method="post" action="{% url games.qotd.views.index %}">
+<form method="post" action="{% url qotd_index_view %}">
 <div class="answers">
 <ul>
     {% for a in question.shuffled_answers %}

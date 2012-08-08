@@ -63,11 +63,11 @@
         </div>
         <div id="wall-navigation">
         {% if activity.has_previous %}
-            <a href="{% url wouso.interface.views.homepage %}"> &raquo; </a>
+            <a href="{% url homepage %}"> &raquo; </a>
         {% endif %}
 
         {% if activity.has_next %}
-            <a href="{% url wouso.interface.views.homepage page=activity.next_page_number %}"> &laquo;</a>
+            <a href="{% url homepage page=activity.next_page_number %}"> &laquo;</a>
         {% endif %}
         </div>
    </div>
