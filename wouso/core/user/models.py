@@ -22,8 +22,12 @@ class Race(models.Model):
     def children(self):
         return self.playergroup_set.all()
 
+    @property
+    def sisters(self):
+        return Race.objects.exclude(pk=self.pk)
+
     def __unicode__(self):
-        return self.name
+        return self.name if not self.title else self.title
 
 class PlayerGroup(models.Model):
     """ Group players together """
@@ -89,12 +93,12 @@ class Player(models.Model):
     spells_collection = models.ManyToManyField(Spell, blank=True, through='magic.PlayerSpellAmount', related_name='spell_collection')
 
     # race
-    race = models.ForeignKey(Race, blank=False, default=None, null=True, related_name='player_race')
+    race = models.ForeignKey(Race, blank=False, default=None, null=True)
 
     def in_staff_group(self):
         # TODO fixme
         staff, new = Group.objects.get_or_create(name='Staff')
-        return staff in self.user.playergroup_set.all()
+        return staff in self.user.groups.all()
 
     @property
     def race_name(self):

@@ -21,7 +21,7 @@
     <h2>{{ profile }}</h2>
     <h3>{% artifact_full profile.level %} </h3>
     <h4>{% if profile.group %}{% trans 'Group' %}: {% player_group profile.group %}{% endif %}
-    {% if profile.race %}{% trans 'Race' %}: {{ profile.race }}{% endif %}
+    {% if profile.race %}{% trans 'Race' %}: {% player_race profile.race %}{% endif %}
     </h4>
     {% if profile.artifact_amounts.all %}
         <ul class="artifacts" id="player-artifacts">

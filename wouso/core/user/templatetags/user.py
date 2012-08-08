@@ -51,6 +51,13 @@ def player_group(group):
     return u'<a href="%s%s" title="%s">%s</a>' % (link, group, group.name, group)
 
 @register.simple_tag
+def player_race(race):
+    """ Render group with link to group's profile page """
+    link = reverse('race_view', args=(race.id,))
+
+    return u'<a href="%s%s" title="%s">%s</a>' % (link, race, race.name, race)
+
+@register.simple_tag
 def player_avatar(player_obj):
     """ Return avatar's URL using the gravatar service """
     avatar = "http://www.gravatar.com/avatar/%s.jpg?d=monsterid" % md5(player_obj.user.email).hexdigest()

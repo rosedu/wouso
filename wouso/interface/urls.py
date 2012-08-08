@@ -28,6 +28,8 @@ urlpatterns = patterns('',
     url(r'^player/cast/to-(?P<destination>\d+)/$', 'wouso.interface.profile.views.magic_cast', name='magic_cast'),
     (r'^player/cast/(?P<destination>\d+)/(?P<spell>\d+)/$', 'wouso.interface.profile.views.magic_cast'),
 
+    url(r'^player2/', include('wouso.interface.profile.urls')),
+
     url(r'^magic/summary/$', 'wouso.interface.profile.views.magic_summary', name='magic_summary'),
     url(r'^magic/spell/$', 'wouso.interface.profile.views.magic_spell', name='get_spell'),
 

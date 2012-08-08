@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
-from wouso.core.user.models import Player, PlayerGroup
+from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.scoring.models import History
 from wouso.core.magic.models import Spell, PlayerSpellDue
 from wouso.interface.activity.models import Activity
@@ -111,6 +111,16 @@ def player_group(request, id, page=u'1'):
                                'activity': activity,
                                },
                               context_instance=RequestContext(request))
+
+@login_required
+def player_race(request, race_id):
+    race = get_object_or_404(Race, pk=race_id)
+
+    return render_to_response('profile/race.html',
+                            {'race': race},
+                            context_instance=RequestContext(request)
+    )
+
 
 @login_required
 def groups_index(request):
