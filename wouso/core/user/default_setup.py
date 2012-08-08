@@ -15,7 +15,7 @@ if __name__ == '__main__':
     for i in series:
         pg,nw = Race.objects.get_or_create(name=i)
         if i == 'Others':
-            pg.show_in_top = False
+            pg.can_play = False
             pg.save()
             continue
         for j in groups:

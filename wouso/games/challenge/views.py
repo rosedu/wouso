@@ -218,7 +218,7 @@ def challenge_random(request):
 
     # selects challengeable players
     players = ChallengeUser.objects.exclude(user = current_player.user)
-    players = players.exclude(groups__name="Others")
+    players = players.exclude(race__can_play=False)
     players = [p for p in players if current_player.can_challenge(p)]
 
     no_players = len(players)

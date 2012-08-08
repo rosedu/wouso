@@ -18,6 +18,8 @@ class Race(models.Model):
 
     artifacts = models.ManyToManyField('magic.Artifact', blank=True, through='magic.RaceArtifactAmount')
 
+    can_play = models.BooleanField(default=True, blank=True)
+
     @property
     def children(self):
         return self.playergroup_set.all()
@@ -42,7 +44,7 @@ class PlayerGroup(models.Model):
     players = models.ManyToManyField('user.Player', blank=True)
 
     # used only for sorting and position
-    points = models.FloatField(default=0)
+    points = models.FloatField(default=0, editable=False)
 
     @property
     def live_points(self):
@@ -81,7 +83,7 @@ class Player(models.Model):
 
     # Unique differentiator for ladder
     # Do not modify it manually, use scoring.score instead
-    points = models.FloatField(default=0, blank=True, null=True)
+    points = models.FloatField(default=0, blank=True, null=True, editable=False)
 
     level_no = models.IntegerField(default=1, blank=True, null=True)
 

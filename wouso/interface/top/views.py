@@ -29,7 +29,7 @@ def gettop(request, toptype=0, sortcrit=0, page=1):
     if pageno < 0:
         raise Http404
 
-    base_query = TopUser.objects.exclude(user__is_superuser=True).exclude(groups__name='Others')
+    base_query = TopUser.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
     allUsers = base_query.order_by('-points') #[(pageno-1)*PERPAGE:pageno*PERPAGE]
     #if (allUsers.count() == 0):
     #    raise Http404

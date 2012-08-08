@@ -197,9 +197,7 @@ class DefaultGod:
             game = str(game.__name__)
 
         if game == 'ChallengeGame':
-            from wouso.core.user import models
-            others, new = models.PlayerGroup.objects.get_or_create(name='Others')
-            if player in others.players.all():
+            if not player.race or not player.race.can_play:
                 return False
 
         return True

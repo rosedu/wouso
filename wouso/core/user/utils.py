@@ -10,7 +10,7 @@ def setup_user_groups():
 
     # Default entry race, 'Others'
     others = Race.objects.get_or_create(name='Others')[0]
-    others.show_in_top = False
+    others.can_play = False
     others.save()
     default_race = Setting.get('default_race')
     default_race.set_value(str(others.pk))
