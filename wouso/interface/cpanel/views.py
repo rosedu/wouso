@@ -424,6 +424,7 @@ def stafftoggle(request, id):
 
     if profile != request.user.get_profile():
         staff_group, new = auth.Group.objects.get_or_create(name='Staff')
+        # TODO: fixme
         if staff_group in profile.user.groups.all():
             profile.user.groups.remove(staff_group)
         else:

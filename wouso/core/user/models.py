@@ -92,8 +92,9 @@ class Player(models.Model):
     race = models.ForeignKey(Race, blank=False, default=None, null=True, related_name='player_race')
 
     def in_staff_group(self):
+        # TODO fixme
         staff, new = Group.objects.get_or_create(name='Staff')
-        return staff in self.user.groups.all()
+        return staff in self.user.playergroup_set.all()
 
     @property
     def race_name(self):
@@ -239,7 +240,7 @@ def user_post_save(sender, instance, **kwargs):
         except (PlayerGroup.DoesNotExist, ValueError):
             pass
         else:
-            profile.groups.add(default_group)
+            default_group.add(profile)
 
         try:
             default_race = Race.objects.get(pk=int(ChoicesSetting.get('default_race').get_value()))
