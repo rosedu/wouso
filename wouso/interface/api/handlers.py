@@ -374,7 +374,7 @@ class GroupHandler(BaseHandler):
                 'evolution': '%sevolution/%s' % (fp, q),
             }
         elif type == 'activity':
-            qs = Activity.objects.filter(Q(user_to__groups=group) | Q(user_from__groups=group)).distinct().order_by('-timestamp')
+            qs = Activity.get_group_activiy(group)
             return [dict(user_from=unicode(a.user_from), user_to=unicode(a.user_to), message=a.message, date=a.timestamp) for a in qs]
         elif type == 'evolution':
             return gh.week_evolution()

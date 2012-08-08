@@ -22,7 +22,7 @@ from wouso.interface.top.models import TopUser, History as TopHistory
 
 def get_wall(page=u'1'):
     ''' Returns activity for main wall, paginated.'''
-    activity_list = Activity.objects.all().exclude(user_from__playergroup__name='Others', game__isnull=False).order_by('-timestamp')
+    activity_list = Activity.get_global_activity()
     paginator = Paginator(activity_list, 10)
     try:
         activity = paginator.page(page)
@@ -39,7 +39,7 @@ def hub(request):
 
     # check first time
     profile = request.user.get_profile()
-    activity = Activity.objects.filter(user_from=profile).count()
+    activity = Activity.get_player_activity(profile).count()
     if activity < 2:
         # first timer, show povestea
         from wouso.interface.pages.models import StaticPage

@@ -17,13 +17,6 @@ from wouso.interface.top.models import TopUser, GroupHistory
 from wouso.interface.top.models import History as TopHistory
 from wouso.core.game import get_games
 
-@login_required
-def profile(request):
-    # TODO: remove this and url to this
-    list = Activity.objects.all().order_by('-timestamp')[:10]
-    return render_to_response('profile/index.html',
-                              {'activity': list},
-                              context_instance=RequestContext(request))
 
 @login_required
 def player_points_history(request, id):
@@ -42,8 +35,7 @@ def user_profile(request, id, page=u'1'):
 
     avatar = "http://www.gravatar.com/avatar/%s.jpg?d=monsterid"\
         % md5(profile.user.email).hexdigest()
-    activity_list = Activity.objects.\
-        filter(Q(user_to=id) | Q(user_from=id)).order_by('-timestamp')
+    activity_list = Activity.get_player_activity(profile)
 
     top_user = profile.get_extension(TopUser)
     #top_user.topgroups = list(profile.groups.all())
@@ -94,8 +86,7 @@ def player_group(request, id, page=u'1'):
     for g in group.sisters:
         g.top = GroupHistory(g)
 
-    activity_list = Activity.objects.\
-        filter(Q(user_to__playergroup=group) | Q(user_from__playergroup=group)).distinct().order_by('-timestamp')
+    activity_list = Activity.get_group_activiy(group)
     paginator = Paginator(activity_list, 10)
     try:
         activity = paginator.page(page)
