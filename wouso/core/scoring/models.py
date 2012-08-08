@@ -81,7 +81,9 @@ class History(models.Model):
     coin = models.ForeignKey(Coin)
     amount = models.FloatField(default=0)
     percents = models.IntegerField(default=100)
-    
+    # group same kind of bonuses together, using the same formula
+    tag = models.CharField(max_length=64, blank=True, null=True)
+
     @staticmethod
     def user_coins(user):
         """ Returns a dictionary of coins and amounts for a specific user. """
