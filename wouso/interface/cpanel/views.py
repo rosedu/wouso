@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.conf import settings
-from wouso.core.user.models import Player, PlayerGroup
+from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup
 from wouso.core.qpool.models import Schedule, Question, Tag, Category
 from wouso.core.qpool import get_questions_with_category
@@ -460,6 +460,13 @@ def add_player(request):
         else:
             form = user
     return render_to_response('cpanel/add_player.html', {'form': form}, context_instance=RequestContext(request))
+
+@login_required
+def races_groups(request):
+    return render_to_response('cpanel/races_groups.html', {'races': Race.objects.all()},
+        context_instance=RequestContext(request)
+    )
+
 
 # 'I am lazy' hack comes in
 import sys

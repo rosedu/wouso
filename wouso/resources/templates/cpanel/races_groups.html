@@ -1,0 +1,22 @@
+{% extends 'cpanel/index.html' %}
+{% load user %}
+
+{% block sectiontitle %}Races and groups{% endblock %}
+
+{% block sectioncontent %}
+
+<ul>
+    {% for r in races %}
+    <li>{{ r }} <a href="{% url admin:user_race_change r.id %}">✍</a>
+    <ul>
+        {% for g in r.children %}
+        <li>{{ g }} <a href="{% url admin:user_playergroup_change g.id %}">✍</a>
+        </li>
+        {% endfor %}
+    </ul>
+    </li>
+    {% endfor %}
+</ul>
+<a href="{% url admin:user_race_add %}">Add race</a>
+<a href="{% url admin:user_playergroup_add %}">Add player group</a>
+{% endblock %}
