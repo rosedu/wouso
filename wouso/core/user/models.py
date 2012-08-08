@@ -244,7 +244,7 @@ def user_post_save(sender, instance, **kwargs):
         except (PlayerGroup.DoesNotExist, ValueError):
             pass
         else:
-            default_group.add(profile)
+            default_group.players.add(profile)
 
         try:
             default_race = Race.objects.get(pk=int(ChoicesSetting.get('default_race').get_value()))
