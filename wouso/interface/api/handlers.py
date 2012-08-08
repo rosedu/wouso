@@ -321,7 +321,7 @@ class TopGroups(BaseHandler):
 
         groups = []
         for g in qs:
-            groups.append([g, g.player_set.aggregate(points=Sum('points'))['points']])
+            groups.append([g, g.players.aggregate(points=Sum('points'))['points']])
 
         groups.sort(lambda a, b: a[1] - b[1] if a[1] and b[1] else 0)
         groups = [(r.name, dict(id=r.id, points=p)) for r,p in groups]
@@ -343,7 +343,7 @@ class TopPlayers(BaseHandler):
                 group = PlayerGroup.objects.get(pk=group_id)
             except PlayerGroup.DoesNotExist:
                 return rc.NOT_FOUND
-            qs = group.player_set.all()
+            qs = group.players.all()
         else:
             qs = Player.objects.all()
 
@@ -368,7 +368,7 @@ class GroupHandler(BaseHandler):
                 'id': group.id,
                 'name': group.name,
                 'points': group.live_points,
-                'members': group.player_set.count(),
+                'members': group.players.count(),
                 'rank': gh.position,
                 'activity': '%sactivity/%s' % (fp, q),
                 'evolution': '%sevolution/%s' % (fp, q),

@@ -63,7 +63,7 @@ def pyramid(request):
         columns = []
         players = []
         i, j = 1, 0
-        for p in g.player_set.all().order_by('-points'):
+        for p in g.players.all().order_by('-points'):
             players.append(p)
             if len(players) == i:
                 columns.append(list(players))

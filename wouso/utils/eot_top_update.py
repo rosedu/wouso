@@ -46,7 +46,7 @@ def main(args):
             hs.save()
     print 'Updating user relative to group position: '
     for g in PlayerGroup.objects.all():
-        for i,u in enumerate(g.player_set.order_by('-points')):
+        for i,u in enumerate(g.players.order_by('-points')):
             topuser = u.get_extension(TopUser)
             position = i + 1
             hs, new = History.objects.get_or_create(user=topuser, date=today, relative_to=g)
