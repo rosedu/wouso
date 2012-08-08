@@ -53,17 +53,6 @@
         {% autoescape off %}{{ profile_actions }}{% endautoescape %}
     </div>
 
-    {% if perms.config.change_setting %}
-    <div class="actions">
-        <span class="button-list">Staff:</span>
-        <a class="button" href="{% url group_set profile.id %}">Groups</a>
-        <a class="button" href="{% url staff_toggle profile.id %}">Staff: {% if profile.in_staff_group %}<span class="ok">ON</span>{% else %}<span class="wrong">OFF</span>{% endif %}</a>
-        <a class="button" href="{% url artifact_set profile.id %}">Artifacts</a>
-        <a class="button" href="{% url admin:auth_user_change profile.user.id %}">✍</a>
-        {% autoescape off %}{{ profile_superuser_actions }}{% endautoescape %}
-    </div>
-    {% endif %}
-
     <div class="second">{% trans 'Last seen' %}:
     {% if profile.last_seen %}
         {{profile.last_seen}}
@@ -71,6 +60,23 @@
         {% trans 'Never' %}
     {% endif %}
     </div>
+
+    {% if perms.config.change_setting %}
+    <div class="actions">
+        <span class="button-list">Staff:</span>
+        <a class="button" href="{% url group_set profile.id %}">Groups</a>
+        <a class="button" href="{% url staff_toggle profile.id %}">Staff: {% if profile.in_staff_group %}<span class="ok">ON</span>{% else %}<span class="wrong">OFF</span>{% endif %}</a>
+        <a class="button" href="{% url artifact_set profile.id %}">Artifacts</a>
+        <a class="button button-min" href="{% url admin:auth_user_change profile.user.id %}">✍</a>
+        <p class="clearer"></p>
+    </div>
+    {% endif %}
+    {% if user.is_superuser %}
+    <div class="actions">
+        <span class="button-list">Admin:</span>
+        {% autoescape off %}{{ profile_superuser_actions }}{% endautoescape %}
+    </div>
+    {% endif %}
 
     <ul class="tabs">
         <li><a href="#tab-1">{% trans 'Activity' %}</a></li>

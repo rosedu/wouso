@@ -218,14 +218,15 @@ img.avatar {
     width: 500px;
     height: 300px;
 }
+p.clearer {
+    clear:both;
+}
 .actions {
     margin: 6px;
-    clear: right;
-    float: right;
+    text-align: right;
 }
 .actions a, a.button, span.button, button {
-    display: block;
-    float: left;
+    display: inline-block;
     text-align: center;
     min-width: 70px;
     max-width: 150px;
