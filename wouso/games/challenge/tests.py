@@ -159,12 +159,13 @@ class ChallengeApi(TestCase):
         # create an active challenge
         Formula.objects.create(id='chall-warranty')
         chall = Challenge.create(user_from=self.challuser2, user_to=self.challuser, ignore_questions=True)
+        chall.accept()
         response = self.client.get('/api/challenge/{id}/'.format(id=chall.id))
         data = json.loads(response.content)
 
         self.assertTrue(data)
-        self.assertEqual(data['status'], 'L')
-        self.assertEqual(data['to']['user_id'], self.challuser.id)
+        self.assertEqual(data['status'], 'A')
+        self.assertEqual(data['to'], self.challuser.user.username)
 
     def test_post_challenge(self):
         # create an active challenge, with fake questions
@@ -181,7 +182,7 @@ class ChallengeApi(TestCase):
 
         self.assertTrue(data)
         self.assertEqual(data['status'], 'A')
-        self.assertEqual(data['to']['user_id'], self.challuser.id)
+        self.assertEqual(data['to'], self.challuser.user.username)
         self.assertEqual(len(data['questions']), 5)
 
         # attempt post
