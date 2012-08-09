@@ -44,6 +44,7 @@ def setup_accept(request, group_id):
 
     user.group = group
     user.save()
+    group.players.add(request.user.get_profile())
 
     return HttpResponseRedirect(reverse('specialquest_index_view'))
 

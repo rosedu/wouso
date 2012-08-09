@@ -10,7 +10,7 @@
     <p>{% trans 'Owner' %}: {% player sqgroup.head %}</p>
     <p>{% trans 'Members' %}: {{ sqgroup.members.count }}</p>
     <table>
-        {% for m in sqgroup.members.all %}
+        {% for m in sqgroup.members %}
             <tr>
                 <td width="60%" nowrap>{% player m %}</td>
                 <td>{% player_group m.proximate_group %}</td>
@@ -18,6 +18,15 @@
             </tr>
         {% endfor %}
     </table>
+    <h3>Done tasks</h3>
+        <ul>
+        {% for info in sqgroup.completed_tasks %}
+            <li>{{ info.task }} - {{ info.date }}</li>
+        {% empty %}
+            <li>{% trans 'Nothing.' %}</li>
+        {% endfor %}
+        </ul>
+
     <div class="spacer"></div>
     {% if not sqgroup.active %}
     <p>{% blocktrans %}If you want to invite more players to this group, click on Invite on their profile{% endblocktrans %}</p>
