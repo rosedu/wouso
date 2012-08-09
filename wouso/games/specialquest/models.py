@@ -21,6 +21,7 @@ class GroupCompletion(models.Model):
 class SpecialQuestGroup(PlayerGroup):
     head = models.ForeignKey('SpecialQuestUser', related_name='owned_groups')
     active = models.BooleanField(default=False, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
 
     done_tasks = models.ManyToManyField('SpecialQuestTask', blank=True, default=None, null=True,
                                         through=GroupCompletion,
