@@ -51,13 +51,13 @@ def setup_accept(request, group_id):
 def setup_leave(request):
     user = request.user.get_profile().get_extension(SpecialQuestUser)
     group = user.group
-    if group is None or group.active or ((group.owner == user) and not group.is_empty()):
+    if group is None or group.active or ((group.head == user) and not group.is_empty()):
         # do nothing
         pass
     else:
         user.group = None
         user.save()
-        if group.owner == user:
+        if group.head == user:
             group.delete()
 
     return HttpResponseRedirect(reverse('specialquest_index_view'))
@@ -76,12 +76,10 @@ def setup_create(request):
                 error = _('Please specify a name')
             else:
                 eg = SpecialQuestGroup.objects.filter(name=name).count()
-                if eg != 0:
+                if eg:
                     error = _('A group with this name already exists')
                 else:
-                    group = SpecialQuestGroup.objects.create(owner=user, name=name)
-                    user.group = group
-                    user.save()
+                    group = SpecialQuestGroup.create(head=user, name=name)
                     return HttpResponseRedirect(reverse('specialquest_index_view'))
 
     return render_to_response('specialquest/create.html', dict(error=error), context_instance=RequestContext(request))

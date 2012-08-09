@@ -2,28 +2,33 @@ from datetime import date
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_noop, ugettext as _
-from wouso.core.user.models import Player
+from wouso.core.user.models import Player, PlayerGroup
 from wouso.core.game.models import Game
-from wouso.core.scoring.models import Formula
 
 class Invitation(models.Model):
     group = models.ForeignKey('SpecialQuestGroup')
     to = models.ForeignKey('SpecialQuestUser')
 
     def __unicode__(self):
-        return u"Invitation from %s to %s" % (self.group.owner, self.to)
+        return u"Invitation from %s to %s" % (self.group.head, self.to)
 
-class SpecialQuestGroup(models.Model):
-    owner = models.ForeignKey('SpecialQuestUser', related_name='owned_groups')
-    name = models.CharField(max_length=100)
+class SpecialQuestGroup(PlayerGroup):
+    head = models.ForeignKey('SpecialQuestUser', related_name='owned_groups')
     active = models.BooleanField(default=False, blank=True)
 
     @property
     def members(self):
-        return self.specialquestuser_set
+        return self.players
 
     def is_empty(self):
         return self.members.count() < 2
+
+    @classmethod
+    def create(cls, head, name):
+        game = SpecialQuestGame.get_instance()
+        new_group = cls.objects.create(owner=game, name=name, head=head)
+        new_group.players.add(head)
+        return new_group
 
     def __unicode__(self):
         return u"%s [%d]" % (self.name, self.members.count())
