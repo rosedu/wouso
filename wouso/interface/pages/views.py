@@ -12,7 +12,7 @@ def staticpage(request, slug):
         template = 'pages/%s.html' % slug
         loader.get_template(template)
     except:
-        template = 'static_page.html'
+        template = 'pages/static_page.html'
     return render_to_response(template,
                               {'staticpage': staticpage},
                               context_instance=RequestContext(request))
