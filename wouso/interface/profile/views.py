@@ -107,8 +107,15 @@ def player_group(request, id, page=u'1'):
 def player_race(request, race_id):
     race = get_object_or_404(Race, pk=race_id)
 
+    top_users = race.player_set.order_by('-points')
+    activity_qs = Activity.get_race_activiy(race)
+    paginator = Paginator(activity_qs, 20)
+    activity = paginator.page(1)
+
     return render_to_response('profile/race.html',
-                            {'race': race},
+                            {'race': race,
+                             'top_users': top_users,
+                             'activity': activity},
                             context_instance=RequestContext(request)
     )
 

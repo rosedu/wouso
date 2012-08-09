@@ -1,5 +1,6 @@
 import logging
 from django.db import models
+from django.db.models import Sum
 from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext_noop
 from wouso.core.game.models import Game
@@ -19,6 +20,12 @@ class Race(models.Model):
     artifacts = models.ManyToManyField('magic.Artifact', blank=True, through='magic.RaceArtifactAmount')
 
     can_play = models.BooleanField(default=True, blank=True)
+
+    @property
+    def points(self):
+        """ Sum of race members points
+        """
+        return self.player_set.aggregate(points=Sum('points'))['points']
 
     @property
     def children(self):

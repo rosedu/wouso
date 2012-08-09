@@ -1,5 +1,5 @@
 # Create your views here.
-from wouso.core.user.models import Player
+from wouso.core.user.models import Player, Race
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import Http404
@@ -44,7 +44,7 @@ def gettop(request, toptype=0, sortcrit=0, page=1):
     except (EmptyPage, InvalidPage):
         users = paginator.page(0)
 
-    topseries = [] #PlayerGroup.objects.exclude(parent=None).order_by('-points') TODO: top races
+    topseries = Race.objects.exclude(can_play=False)
     topgroups = PlayerGroup.objects.exclude(parent=None).order_by('-points')[:5]
 
     return render_to_response('top/maintop.html',
