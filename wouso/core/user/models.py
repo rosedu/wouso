@@ -33,7 +33,7 @@ class Race(models.Model):
 
     @property
     def sisters(self):
-        return Race.objects.exclude(pk=self.pk)
+        return Race.objects.filter(can_play=self.can_play).exclude(pk=self.pk)
 
     def __unicode__(self):
         return self.name if not self.title else self.title

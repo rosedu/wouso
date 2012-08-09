@@ -406,18 +406,20 @@ def groupset(request, id):
             fields = ('race',)
             widgets = {'groups': GSelect()}
 
-        group = forms.ChoiceField(choices=[(p.id, p) for p in PlayerGroup.objects.all()],
+        group = forms.ChoiceField(choices=[(0, '')] + [(p.id, p) for p in PlayerGroup.objects.all()],
                                 initial=profile.group.id if profile.group else '')
 
     if request.method == 'POST':
         form = GForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
-            new_group = get_object_or_404(PlayerGroup, pk=form.cleaned_data['group'])
             # First remove other group
             if profile.group:
                 profile.group.players.remove(profile)
-            new_group.players.add(profile)
+            # Then update, if any
+            if form.cleaned_data['group'] != '0':
+                new_group = get_object_or_404(PlayerGroup, pk=form.cleaned_data['group'])
+                new_group.players.add(profile)
     else:
         form = GForm(instance=profile)
 
