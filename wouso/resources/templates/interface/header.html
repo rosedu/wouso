@@ -1,18 +1,35 @@
 {% load user %}
 {% load i18n %}
 
-{% if user.is_authenticated %}
-    <span id="head-profile" class="bold">{% player player %}</span> |
-    {% autoescape off %}{{ header }}{% endautoescape %}
-    {% if perms.config.change_setting %}
-    <a id="head-cpanel" href="{% url dashboard %}">CPanel</a> |
+<div id="topbar">
+    <div class="first-line">
+    {% if user.is_authenticated %}
+        {% if perms.config.change_setting %}
+        <a id="head-cpanel" href="{% url dashboard %}">CPanel</a>&nbsp;
+        {% endif %}
+        <a id="head-logout" href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %} &raquo;</a>
+    {% else %}
+    {% trans 'Anonimous' %}, <a href="{% url django.contrib.auth.views.login %}">{% trans "Login" %} &raquo;</a>
     {% endif %}
-    <a id="head-logout" href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %} &raquo;</a>
-{% else %}
-{% trans 'Anonimous' %}, <a href="{% url django.contrib.auth.views.login %}">{% trans "Login" %} &raquo;</a>
-{% endif %}
+    </div>
+</div>
+
 {% if user.is_authenticated %}
 <div class="second">
-    {% coin_amount player.points %}
+    <a href="{% url player_profile player.id %}"><img src="{% player_avatar player %}" class="avatar avatar-med float-right" /></a>
+
+    <div class="header-player-info">
+        <strong>{% player player %}</strong>
+
+        <div class="second-info">
+        {% trans 'Level' %} {{ player.level_no }}
+        {% coin_amount player.points %}
+        {% coin_amount player.coins.gold 'gold' %}
+        </div>
+    </div>
 </div>
 {% endif %}
+
+<div id="menu">
+    {% autoescape off %}{{ header }}{% endautoescape %}
+</div>

@@ -63,7 +63,7 @@ def header_footer(request):
                         p[0]['link'], p[0]['text'], \
                         '<sup class="unread-count">%d</sup>' % p[0]['count'] if p[0].get('count', False) else '')
 
-    header_html = " | ".join(map(hids, header))
+    header_html = " ".join(map(hids, header))
     footer = " | ".join(footer)
 
     return {'header': header_html, 'heads': header, 'footer': footer}
