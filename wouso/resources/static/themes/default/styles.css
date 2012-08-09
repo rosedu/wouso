@@ -1,3 +1,6 @@
 #sidebar {
     clear: right;
 }
+#ajax-message {
+    left: 30%;
+}

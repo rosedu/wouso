@@ -3,6 +3,13 @@ body {
     font-size: 0.8em;
     margin: 0;
 }
+a, a:visited {
+    color: blue;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
 h1 {
     margin: 4px;
 }
