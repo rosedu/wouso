@@ -1,6 +1,14 @@
 body {
     font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
     font-size: 0.8em;
+    margin: 0;
+}
+a, a:visited {
+    color: blue;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
 }
 h1 {
     margin: 4px;
@@ -25,6 +33,9 @@ td {
 img.no-float, .no-float {
     float: none !important;
 }
+img.float-right, .float-right {
+    float: right !important;
+}
 .no-border {
     border: none !important;
 }
@@ -37,11 +48,11 @@ fieldset textarea {
 }
 div#logo {
     height: 100px;
-    width: 930px;
+    width: 260px;
     background: url(../img/logo.png) no-repeat;
 }
 #logo > a {
-    width:500px;
+    width:250px;
     height:90px;
     background-image:none;
     display:block;
@@ -53,7 +64,6 @@ div#logo {
     margin: 0 auto;
 }
 #topbar {
-    padding-top: 5px;
     text-align: right;
     position: absolute;
     margin: 0px auto;
@@ -61,8 +71,29 @@ div#logo {
     float: right;
     text-align: right;
 }
+#menu {
+    margin-top: 75px;
+    float:right;
+}
+#menu a, #menu a:visited {
+    padding: 40px 8px 4px;
+    background-color: #eee;
+    text-decoration: none;
+    color: #444;
+    border: 1px solid #aaa;
+}
+#menu a:hover {
+    background-color: #ddd;
+    color: #000;
+}
+
 #search {
     float: right;
+}
+.spacer-search {
+    clear: both;
+    height: 5px;
+    border-bottom: 1px solid #aaa;
 }
 #search button {
     display: inline-block;
@@ -204,6 +235,10 @@ img.avatar {
     margin: 4px 4px 4px 0px;
     border: 2px solid #aaa;
 }
+.avatar-med {
+    width: 64px;
+    height: 64px;
+}
 .profile h2, .profile h3, .profile h4 {
     margin: 1px;
 }
@@ -218,14 +253,15 @@ img.avatar {
     width: 500px;
     height: 300px;
 }
+p.clearer {
+    clear:both;
+}
 .actions {
     margin: 6px;
-    clear: right;
-    float: right;
+    text-align: right;
 }
 .actions a, a.button, span.button, button {
-    display: block;
-    float: left;
+    display: inline-block;
     text-align: center;
     min-width: 70px;
     max-width: 150px;
@@ -310,11 +346,33 @@ ul.menu li a {
 td.actions a, td.actions button, a.button-min {
     min-width: 20px;
 }
+div.first-line {
+    margin-top: 4px;
+}
+div.first-line a {
+    text-decoration: none;
+    border: 1px solid #aaa;
+    border-bottom: none;
+    background-color: #eee;
+    padding: 0px 5px;
+    color: #444;
+}
+div.header-player-info {
+    padding-top: 5px;
+    margin-right: 100px;
+    text-align: right;
+}
+div.second-info {
+    padding-top: 10px;
+
+    display: inline-block;
+}
 div.second {
-    font-size: 0.8em;
     color: #444;
     text-align: right;
-    clear: both;
+    width: 275px;
+    padding-top: 22px;;
+    float: right;
 }
 .sort-list {
 }
@@ -377,7 +435,7 @@ li.activity-line {
     margin: 0 auto;
     clear:both;
     list-style-type: none;
-    padding-top: 10px;
+    padding-bottom: 10px;
     max-width: 500px;
 }
 img.medium {

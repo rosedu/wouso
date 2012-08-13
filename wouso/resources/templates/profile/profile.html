@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="profile {% if profile.series %}group-{{ profile.series.name.lower }}{% endif %} {% if profile.proximate_group %}group-{{ profile.proximate_group.name.lower }}{% endif %}">
+<div class="profile group-{{ profile.race.name.lower }} {% if profile.group %}group-{{ profile.group.name.lower }}{% endif %}">
     <div class="points">
         <div class="points-big">{{ profile.points}}</div>
         <div class="rank">{% if top.disabled %}-{% else %}{% trans 'rank' %}: {{ top.position }}{% endif %}</div>
@@ -20,8 +20,8 @@
     <img src="{{ avatar }}" class="avatar" />
     <h2>{{ profile }}</h2>
     <h3>{% artifact_full profile.level %} </h3>
-    <h4>{% if profile.proximate_group %}{% trans 'Group' %}: {% player_group profile.proximate_group %}{% endif %}
-    {% if profile.series %}{% trans 'Series' %}: {% player_group profile.series %}{% endif %}
+    <h4>{% if profile.group %}{% trans 'Group' %}: {% player_group profile.group %}{% endif %}
+    {% if profile.race %}{% trans 'Race' %}: {% player_race profile.race %}{% endif %}
     </h4>
     {% if profile.artifact_amounts.all %}
         <ul class="artifacts" id="player-artifacts">
@@ -53,17 +53,6 @@
         {% autoescape off %}{{ profile_actions }}{% endautoescape %}
     </div>
 
-    {% if perms.config.change_setting %}
-    <div class="actions">
-        <span class="button-list">Staff:</span>
-        <a class="button" href="{% url group_set profile.id %}">Groups</a>
-        <a class="button" href="{% url staff_toggle profile.id %}">Staff: {% if profile.in_staff_group %}<span class="ok">ON</span>{% else %}<span class="wrong">OFF</span>{% endif %}</a>
-        <a class="button" href="{% url artifact_set profile.id %}">Artifacts</a>
-        <a class="button" href="{% url admin:auth_user_change profile.user.id %}">✍</a>
-        {% autoescape off %}{{ profile_superuser_actions }}{% endautoescape %}
-    </div>
-    {% endif %}
-
     <div class="second">{% trans 'Last seen' %}:
     {% if profile.last_seen %}
         {{profile.last_seen}}
@@ -71,6 +60,23 @@
         {% trans 'Never' %}
     {% endif %}
     </div>
+
+    {% if perms.config.change_setting %}
+    <div class="actions">
+        <span class="button-list">Staff:</span>
+        <a class="button" href="{% url group_set profile.id %}">Groups</a>
+        <a class="button" href="{% url staff_toggle profile.id %}">Staff: {% if profile.in_staff_group %}<span class="ok">ON</span>{% else %}<span class="wrong">OFF</span>{% endif %}</a>
+        <a class="button" href="{% url artifact_set profile.id %}">Artifacts</a>
+        <a class="button button-min" href="{% url admin:auth_user_change profile.user.id %}">✍</a>
+        <p class="clearer"></p>
+    </div>
+    {% endif %}
+    {% if user.is_superuser %}
+    <div class="actions">
+        <span class="button-list">Admin:</span>
+        {% autoescape off %}{{ profile_superuser_actions }}{% endautoescape %}
+    </div>
+    {% endif %}
 
     <ul class="tabs">
         <li><a href="#tab-1">{% trans 'Activity' %}</a></li>
@@ -83,11 +89,11 @@
         {% include 'activity/stream.html' %}
 
         {% if activity.has_previous %}
-        <a href="{% url wouso.interface.profile.views.user_profile id=profile.id page=activity.previous_page_number %}#tab-1"> Newer </a>
+        <a href="{% url player_profile id=profile.id page=activity.previous_page_number %}#tab-1"> Newer </a>
         {% endif %}
 
         {% if activity.has_next %}
-        <a href="{% url wouso.interface.profile.views.user_profile id=profile.id page=activity.next_page_number %}#tab-1"> Older </a>
+        <a href="{% url player_profile id=profile.id page=activity.next_page_number %}#tab-1"> Older </a>
         {% endif %}
         </div>
 

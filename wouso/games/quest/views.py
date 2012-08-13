@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from wouso.interface import render_string
+from django.template.loader import render_to_string
 from models import QuestGame, QuestUser
 from forms import QuestForm
 
@@ -54,7 +54,7 @@ def sidebar_widget(request):
         if time_passed > timedelta(seconds=600): # ten minutes
             return ''
 
-    return render_string('quest/sidebar.html',
+    return render_to_string('quest/sidebar.html',
             {'quest': quest, 'quser': quest_user,
              'quest_progress': quest_progress,
              })

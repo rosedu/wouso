@@ -4,20 +4,28 @@ unittest). These will both pass when you run "manage.py test".
 
 Replace these with more appropriate tests for your application.
 """
-
+from django.contrib.auth.models import User
 from django.test import TestCase
+from models import SpecialQuestUser, SpecialQuestGroup, SpecialQuestGame
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.failUnlessEqual(1 + 1, 2)
+class SpecialquestTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(username='_test')
+        self.user.save()
+        self.special_user = self.user.get_profile().get_extension(SpecialQuestUser)
 
-__test__ = {"doctest": """
-Another way to test that 1 + 1 is equal to 2.
+    def test_user_create_group(self):
+        group = SpecialQuestGroup.create(head=self.special_user, name='le group')
 
->>> 1 + 1 == 2
-True
-"""}
+        self.assertTrue(group)
+        self.assertEqual(group.head, self.special_user)
+        self.assertEqual(group.name, 'le group')
+        self.assertEqual(group.owner, SpecialQuestGame.get_instance())
 
+        self.assertTrue(self.user.get_profile() in group.players.all())
+
+    def test_user_invite(self):
+        pass
+
+    def test_user_accept_invite(self):
+        pass

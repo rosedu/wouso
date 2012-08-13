@@ -1,5 +1,5 @@
 from wouso.core.config.models import *
-from wouso.core.user.models import PlayerGroup
+from wouso.core.user.models import PlayerGroup, Race
 from wouso.utils import get_themes
 from wouso.core.game import get_games
 
@@ -17,12 +17,12 @@ class Customization(ConfigGroup):
         logo = Setting.get('logo')
 
         default_group = ChoicesSetting.get('default_group')
-        default_group.choices = [(unicode(g), str(g.id)) for g in PlayerGroup.objects.filter(gclass=0)]
+        default_group.choices = [(unicode(g), str(g.id)) for g in PlayerGroup.objects.all()]
 
-        default_series = ChoicesSetting.get('default_series')
-        default_series.choices = [(unicode(g), str(g.id)) for g in PlayerGroup.objects.filter(gclass=1)]
+        default_race = ChoicesSetting.get('default_race')
+        default_race.choices = [(unicode(g), str(g.id)) for g in Race.objects.all()]
 
-        return [title, intro, theme, logo, hf, default_group, default_series, einfo]
+        return [title, intro, theme, logo, hf, default_group, default_race, einfo]
 
 class Switchboard(ConfigGroup):
     name = 'Disable features'

@@ -51,7 +51,7 @@
             {% blocktrans with squser.group as group %}Your group, {{ group }}, is not active.{% endblocktrans %}
             </p>
             <p><a href="{% url specialquest_group squser.group.id %}">{% trans 'View group' %}</a></p>
-            {% if squser.group.members.count == 1 or squser.group.owner != squser %}
+            {% if squser.group.members.count == 1 or squser.group.head != squser %}
             <p><a href="{% url specialquest_leave %}">{% trans 'Leave this group' %}</a></p>
             {% endif %}
         {% else %}
@@ -61,7 +61,7 @@
             <p>{% trans 'Accept one of these group invitations:' %}
             <ul>
             {% for i in squser.invitations %}
-                <li>{{ i.group }} {% trans 'from' %} {% player_simple i.group.owner %} <a href="{% url specialquest_accept i.group.id %}">{% trans 'Accept' %}</a> <!--<a href="#">{% trans 'Refuse' %}</a>--></li>
+                <li>{{ i.group }} {% trans 'from' %} {% player_simple i.group.head %} <a href="{% url specialquest_accept i.group.id %}">{% trans 'Accept' %}</a> <!--<a href="#">{% trans 'Refuse' %}</a>--></li>
             {% empty %}
                 <li class="empty">{% trans 'no invitations.' %}</li>
             {% endfor %}

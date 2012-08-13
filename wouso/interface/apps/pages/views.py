@@ -1,8 +1,7 @@
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext, loader
-from wouso.interface import logger
-from models import StaticPage, NewsItem
+from wouso.interface.apps.pages.models import StaticPage, NewsItem
 
 def staticpage(request, slug):
     """ Perform regular search by either first or last name """
@@ -12,7 +11,7 @@ def staticpage(request, slug):
         template = 'pages/%s.html' % slug
         loader.get_template(template)
     except:
-        template = 'static_page.html'
+        template = 'pages/static_page.html'
     return render_to_response(template,
                               {'staticpage': staticpage},
                               context_instance=RequestContext(request))

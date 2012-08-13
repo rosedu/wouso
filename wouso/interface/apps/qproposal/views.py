@@ -1,4 +1,4 @@
-from forms import QuestionForm
+from wouso.interface.apps.qproposal.forms import QuestionForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from wouso.core.qpool.models import Question, Tag, Answer, Category

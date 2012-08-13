@@ -11,14 +11,14 @@ from django.contrib.contenttypes.models import ContentType
 
 # Models to be dumped/restored
 from django.contrib.auth.models import User
-from wouso.core.magic.models import Artifact, Group
+from wouso.core.magic.models import Artifact, ArtifactGroup
 from wouso.core.qpool.models import Question, Answer, Tag
 from wouso.games.quest.models import Quest
 
 
 def dump_db():
     dump_file = open('../contrib/db_dump.json', 'w')
-    models_list = [User, Tag, Question, Answer, Group, Artifact, Quest]
+    models_list = [User, Tag, Question, Answer, ArtifactGroup, Artifact, Quest]
     all_objects = []
     for model in models_list:
         all_objects = all_objects + list(model.objects.all())

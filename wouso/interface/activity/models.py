@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import ugettext as _
 from wouso.core.game import get_games
 from wouso.core.game.models import Game
@@ -42,6 +43,45 @@ class Activity(models.Model):
             return (self.game.url, None)
         else:
             return (None, None)
+
+    @classmethod
+    def filter_activity(cls, queryset, exclude_others=False, wouso_only=False):
+        if wouso_only:
+            queryset = queryset.filter(game__isnull=True)
+        if exclude_others:
+            queryset = queryset.exclude(user_from__race__can_play=False)
+        return queryset.order_by('-timestamp')
+
+    @classmethod
+    def get_global_activity(cls, exclude_others=True, wouso_only=True):
+        """ Return all game activity, ordered by timestamp, newest first
+        """
+        query = cls.objects.all()
+        return cls.filter_activity(query, exclude_others=exclude_others, wouso_only=wouso_only)
+
+    @classmethod
+    def get_player_activity(cls, player, **kwargs):
+        """
+        Return an user's activity.
+        """
+        query = cls.objects.filter(Q(user_to=player) | Q(user_from=player)).order_by('-timestamp')
+        return cls.filter_activity(query)
+
+    @classmethod
+    def get_race_activiy(cls, race, **kwargs):
+        """
+        Return all group activity
+        """
+        query = cls.objects.filter(Q(user_to__race=race) | Q(user_from__race=race)).distinct()
+        return cls.filter_activity(query, **kwargs)
+
+    @classmethod
+    def get_group_activiy(cls, group, **kwargs):
+        """
+        Return all group activity
+        """
+        query = cls.objects.filter(Q(user_to__playergroup=group) | Q(user_from__playergroup=group)).distinct()
+        return cls.filter_activity(query, **kwargs)
 
     @classmethod
     def delete(cls, game, user_from, user_to, message, arguments):

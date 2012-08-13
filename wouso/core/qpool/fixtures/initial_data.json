@@ -28,27 +28,37 @@
   }
  },
  {
+  "pk": 5,
+  "model": "qpool.category",
+  "fields": {
+   "name": "workshop"
+  }
+ },
+ {
   "pk": 1,
   "model": "qpool.tag",
   "fields": {
-    "name": "qotd",
-    "active": false
+   "active": false,
+   "category": null,
+   "name": "qotd"
   }
  },
  {
   "pk": 2,
   "model": "qpool.tag",
   "fields": {
-    "name": "challenge",
-    "active": false
+   "active": false,
+   "category": null,
+   "name": "challenge"
   }
  },
  {
   "pk": 3,
   "model": "qpool.tag",
   "fields": {
-    "name": "quest",
-    "active": false
+   "active": false,
+   "category": null,
+   "name": "quest"
   }
  }
 ]

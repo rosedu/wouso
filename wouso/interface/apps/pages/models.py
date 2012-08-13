@@ -1,7 +1,7 @@
 import datetime
 from django.db import models
 from django.core.urlresolvers import reverse
-from core.user.models import Player ## this needs to be fixed to wouso.core.user.models
+from wouso.core.user.models import Player ## this needs to be fixed to wouso.core.user.models
 
 
 class StaticPage(models.Model):

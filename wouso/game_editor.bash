@@ -2,6 +2,7 @@
 # Basic level editor, able to reset, load and save a level definition file
 # A level definition file is a JSON representation of the database.
 #
+echo "WARNING: This script is deprecated, use ./manage.py wousoctl instead"
 
 MANAGE_SCRIPT=./manage.py
 

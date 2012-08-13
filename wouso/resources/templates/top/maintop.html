@@ -28,7 +28,7 @@
 {% for user in allUsers.object_list %}
 <tr>
 <td>{% artifact user.level %}</td>
-<td><a href="{% url interface.profile.views.user_profile user.id %}">{{ user }}</a>
+<td><a href="{% url player_profile user.id %}">{{ user }}</a>
 {% for artf in user.artifacts.all %}
 <div class = "artifacts">
 {% artifact artf %}

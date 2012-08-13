@@ -2,10 +2,10 @@ import logging
 from wouso.core.game import get_games
 from wouso.core.config.models import Setting
 from wouso.interface.top.models import Top
-from wouso.interface.qproposal.models import Qproposal
-from wouso.interface.messaging.models import Message
-from wouso.interface.magic.models import Bazaar
-from wouso.interface.statistics.views import footer_link as stats_link
+from wouso.interface.apps.qproposal.models import Qproposal
+from wouso.interface.apps.messaging.models import Message
+from wouso.interface.apps.magic.models import Bazaar
+from wouso.interface.apps.statistics.views import footer_link as stats_link
 from wouso.interface import get_static_pages, detect_mobile
 from wouso.settings import FORCE_SCRIPT_NAME
 
@@ -63,7 +63,7 @@ def header_footer(request):
                         p[0]['link'], p[0]['text'], \
                         '<sup class="unread-count">%d</sup>' % p[0]['count'] if p[0].get('count', False) else '')
 
-    header_html = " | ".join(map(hids, header))
+    header_html = " ".join(map(hids, header))
     footer = " | ".join(footer)
 
     return {'header': header_html, 'heads': header, 'footer': footer}

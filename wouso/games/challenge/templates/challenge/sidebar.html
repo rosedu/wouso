@@ -11,7 +11,7 @@
 <ul class="simple">
     {% for c in challenges %}
     <li>{% player_simple2 c.user_from.user chall_user %} vs {% player_simple2 c.user_to.user chall_user %}
-        <span class="points"><a class="goto" href="{% url wouso.games.challenge.views.challenge c.id %}">{% trans 'Play' %}</a></span>
+        <span class="points"><a class="goto" href="{% url view_challenge c.id %}">{% trans 'Play' %}</a></span>
     </li>
     {% empty %}
     <li class="empty">{% trans 'No active challenges' %}</li>

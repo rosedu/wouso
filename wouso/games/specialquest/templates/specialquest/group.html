@@ -7,17 +7,26 @@
 <span class="points">{% if sqgroup.active %}{% trans 'Active' %}{% else %}{% trans 'Inactive' %}{% endif %}</span>{% endblock %}
 
 {% block sectioncontent %}
-    <p>{% trans 'Owner' %}: {% player sqgroup.owner %}</p>
+    <p>{% trans 'Owner' %}: {% player sqgroup.head %}, {% trans 'created:' %} {{ sqgroup.created }}</p>
     <p>{% trans 'Members' %}: {{ sqgroup.members.count }}</p>
     <table>
-        {% for m in sqgroup.members.all %}
+        {% for m in sqgroup.members %}
             <tr>
-                <td width="60%">{% player m %}</td>
+                <td width="60%" nowrap>{% player m %}</td>
                 <td>{% player_group m.proximate_group %}</td>
                 <td>{% coin_amount m.coins.gold 'gold' %}</td>
             </tr>
         {% endfor %}
     </table>
+    <h3>Done tasks</h3>
+        <ul>
+        {% for info in sqgroup.completed_tasks %}
+            <li>{{ info.task }} - {{ info.date }}</li>
+        {% empty %}
+            <li>{% trans 'Nothing.' %}</li>
+        {% endfor %}
+        </ul>
+
     <div class="spacer"></div>
     {% if not sqgroup.active %}
     <p>{% blocktrans %}If you want to invite more players to this group, click on Invite on their profile{% endblocktrans %}</p>
