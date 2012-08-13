@@ -142,6 +142,8 @@ INSTALLED_APPS = (
     'wouso.games.challenge',
     'wouso.games.quest',
     'wouso.games.specialquest',
+    'wouso.games.workshop',
+
     'wouso.interface',
     'wouso.interface.cpanel',
     'wouso.interface.top',

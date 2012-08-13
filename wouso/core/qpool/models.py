@@ -9,6 +9,7 @@ class Tag(models.Model):
     """ A simple way of grouping Questions """
     name = models.CharField(max_length=256)
     active = models.BooleanField(default=False)
+    category = models.ForeignKey('Category', blank=True, null=True)
 
     def __unicode__(self):
         return self.name
@@ -21,6 +22,7 @@ class Tag(models.Model):
             return
         self.active = True
         self.save()
+        # TODO: don't use name
         Question.objects.filter(tags__name=self.name).update(active=True)
 
     def set_inactive(self):
@@ -31,6 +33,7 @@ class Tag(models.Model):
             return
         self.active = False
         self.save()
+        # TODO: don't use name
         Question.objects.filter(tags__name=self.name).update(active=False)
 
 
