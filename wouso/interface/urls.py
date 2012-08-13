@@ -1,8 +1,8 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
+
 from django.contrib import admin
 admin.autodiscover()
-import wouso.games
 
 urlpatterns = patterns('',
     url(r'^$', 'wouso.interface.views.homepage', name='homepage'),
@@ -40,25 +40,25 @@ urlpatterns = patterns('',
     url(r'^search/$', 'wouso.interface.views.search', name='search'),
     (r'^instantsearch/$', 'wouso.interface.views.instantsearch'),
     (r'^searchone/$', 'wouso.interface.views.searchone'),
-    url(r'^s/(.+)/$', 'wouso.interface.pages.views.staticpage', name='static_page'),
+    url(r'^s/(.+)/$', 'wouso.interface.apps.pages.views.staticpage', name='static_page'),
 
     # Chat
     (r'^chat/', include('wouso.interface.chat.urls')),
 
     # Messaging
-    (r'^m/', include('wouso.interface.messaging.urls')),
+    (r'^m/', include('wouso.interface.apps.messaging.urls')),
 
     # News
-    (r'^n/', include('wouso.interface.pages.urls')),
+    (r'^n/', include('wouso.interface.apps.pages.urls')),
 
     # Statistics
-    (r'^stats/', include('wouso.interface.statistics.urls')),
+    (r'^stats/', include('wouso.interface.apps.statistics.urls')),
 
     # Qproposal
-    (r'^qproposal/', include('wouso.interface.qproposal.urls')),
+    (r'^qproposal/', include('wouso.interface.apps.qproposal.urls')),
 
     # Bazaar
-    url(r'^bazaar/', include('wouso.interface.magic.urls')),
+    url(r'^bazaar/', include('wouso.interface.apps.magic.urls')),
 
     # Some dynamic shite
     url(r'^ajax/do/(?P<name>.*)/$', 'wouso.interface.views.ajax', name='ajax_do'),

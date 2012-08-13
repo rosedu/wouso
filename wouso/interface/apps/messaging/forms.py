@@ -1,6 +1,6 @@
 from django import forms
 from wouso.core.user.models import Player
-from wouso.interface.messaging.models import Message
+from wouso.interface.apps.messaging.models import Message
 
 class ComposeForm(forms.Form):
     to = forms.ModelChoiceField(queryset=Player.objects.all())

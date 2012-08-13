@@ -143,13 +143,13 @@ INSTALLED_APPS = (
     'wouso.games.quest',
     'wouso.games.specialquest',
     'wouso.interface',
-    'wouso.interface.pages',
     'wouso.interface.cpanel',
     'wouso.interface.top',
     'wouso.interface.activity',
-    'wouso.interface.messaging',
     'wouso.interface.chat',
-    'wouso.interface.statistics',
+    'wouso.interface.apps.pages',
+    'wouso.interface.apps.statistics',
+    'wouso.interface.apps.messaging',
 
     # Needed for API Oauth
     'piston',

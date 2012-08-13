@@ -15,7 +15,7 @@ from wouso.core import scoring
 from wouso.interface.apps import get_apps
 from wouso.interface.activity.models import Activity
 from wouso.interface.api.c2dm.models import register_device
-from wouso.interface.messaging.models import Message, MessagingUser
+from wouso.interface.apps.messaging.models import Message, MessagingUser
 from wouso.interface.top.models import TopUser, GroupHistory
 
 def get_fullpath(request):

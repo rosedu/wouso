@@ -3,13 +3,12 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect, Http404
 from django.core.urlresolvers import reverse
-from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from wouso.core.user.models import Player
-from wouso.interface.messaging.models import Message, MessagingUser, MessageApp
-from wouso.interface.messaging.forms import ComposeForm
+from wouso.interface.apps.messaging.models import Message, MessagingUser, MessageApp
+from wouso.interface.apps.messaging.forms import ComposeForm
 
 
 @login_required
@@ -86,5 +85,5 @@ def message(request, mid):
 def header_link(request):
     # TODO refactor this lame thing
     count = MessageApp.get_unread_count(request)
-    url = reverse('wouso.interface.messaging.views.home')
+    url = reverse('messaging')
     return dict(link=url, count=count, text=_('Messages'))

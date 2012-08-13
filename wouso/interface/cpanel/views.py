@@ -16,7 +16,7 @@ from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
 from wouso.core import scoring
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
-from wouso.interface.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
+from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm
 

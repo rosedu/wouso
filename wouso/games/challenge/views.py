@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404
@@ -200,7 +201,7 @@ def sidebar_widget(request):
     if not challs:
         return ''
 
-    return render_string('challenge/sidebar.html', {'challenges': challs, 'challenge': ChallengeGame,  'chall_user': chall_user})
+    return render_to_string('challenge/sidebar.html', {'challenges': challs, 'challenge': ChallengeGame,  'chall_user': chall_user})
 
 def history(request, playerid):
     player = get_object_or_404(ChallengeUser, pk=playerid)

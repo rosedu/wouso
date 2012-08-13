@@ -2,6 +2,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
 from datetime import date, timedelta
@@ -121,7 +122,7 @@ def sidebar_widget(request):
     if not tasks:
         return ''
 
-    return render_string('specialquest/sidebar.html', {'not_done': len(tasks)})
+    return render_to_string('specialquest/sidebar.html', {'not_done': len(tasks)})
 
 def header_link(request):
     profile = request.user.get_profile()

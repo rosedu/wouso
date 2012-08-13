@@ -43,7 +43,7 @@ class Message(models.Model):
     @classmethod
     def get_header_link(kls, request):
         if not request.user.is_anonymous():
-            from views import header_link
+            from wouso.interface.apps.messaging.views import header_link
             return header_link(request)
         return dict(text=_('Messages'), link='')
 
