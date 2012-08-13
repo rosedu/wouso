@@ -1,0 +1,49 @@
+{% extends 'cpanel/index.html' %}
+{% load workshop %}
+
+{% block scripts %}
+<link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
+{% endblock %}
+
+{% block sectiontitle %}Workshop{% endblock %}
+
+{% block sectioncontent %}
+<ul class="tabs">
+    <li ><a href="{% url workshop_home %}">Schedule</a></li>
+</ul>
+
+<div class="tab_container">
+    <div id="tab-1" class="tab_content">
+        {% block tabcontent %}
+
+        <div class="subgroups">
+            <strong>Information</strong>
+            <br/>
+
+            Spot: {{ info.get_spot }}<br/>
+            Group: {{ info.get_semigroup }}<br/>
+
+        </div>
+
+        <table>
+            <tr>
+                <th>Hour/Day</th>
+                {% for d in days %}
+                    <th>{{ d.1 }}</th>
+                {% endfor %}
+            </tr>
+            {% for h in hours %}
+            <tr>
+                <td ALIGN="RIGHT">{{ h }}:00</td>
+                {% for d in days %}
+                    <td>
+                    {% get_schedule d.0 h %}
+                    </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}

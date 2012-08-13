@@ -32,6 +32,13 @@ class Semigroup(PlayerGroup):
     day = models.IntegerField(choices=DAY_CHOICES)
     hour = models.IntegerField(choices=zip(range(8, 22, 2), range(8, 22, 2)))
 
+    @classmethod
+    def get_by_day_and_hour(cls, day, hour):
+        try:
+            return cls.objects.get(day=day, hour=hour)
+        except cls.DoesNotExist:
+            return None
+
 class Workshop(models.Model):
     semigroup = models.ForeignKey(Semigroup)
     date = models.DateField(auto_now_add=True)
@@ -87,10 +94,7 @@ class WorkshopGame(Game):
         """ Return the semigroup having a laboratory right now.
         """
         day, hour = cls.get_spot(timestamp)
-        try:
-            return Semigroup.objects.get(day=day, hour=hour)
-        except Semigroup.DoesNotExist:
-            return None
+        return Semigroup.get_by_day_and_hour(day, hour)
 
     @classmethod
     def get_for_now(cls, timestamp=None, always=False):
