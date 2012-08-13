@@ -88,8 +88,10 @@ def games(request):
                                'module': 'games'},
                               context_instance=RequestContext(request))
 
+# TODO: gather categories from db.
 # used by qpool and qpool_search
-CATEGORIES = (('Qotd', 'qotd'), ('Challenge', 'challenge'), ('Quest', 'quest'), ('Proposed', 'proposed'))
+CATEGORIES = (('Qotd', 'qotd'), ('Challenge', 'challenge'), ('Quest', 'quest'), ('Proposed', 'proposed'),
+    ('Workshop', 'workshop'))
 
 @login_required
 def qpool_home(request, cat=None, page=u'1'):
