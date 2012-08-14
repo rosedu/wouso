@@ -1,0 +1,30 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Workshop' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Workshop' %}{% endblock %}
+
+{% block sectioncontent %}
+<h4>{% trans 'Current workshop' %}</h4>
+<p>{% if not workshop %}{% trans 'No current workshop' %}{% else %}
+    {% if assesment.answered %}
+        {% trans 'Already answered' %}
+    {% else %}
+        {% if workshop.is_active %}
+            <a href="{% url workshop_play %}">Play!</a>
+        {% else %}
+            You now must review other's answers.
+        {% endif %}
+    {% endif %}
+{% endif %}</p>
+
+<h4>{% trans 'Past workshops' %}</h4>
+<ul>
+    {% for a in user.get_profile.assesments.all %}
+        <li>{{ a.workshop }}
+            {% if not a.workshop.is_active %}<a href="{% url workshop_review a.workshop.id %}">{% trans 'Reviews' %}</a>{% endif %}
+            <a href="">{% trans 'Results' %}</a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

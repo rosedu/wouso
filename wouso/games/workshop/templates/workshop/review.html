@@ -1,0 +1,25 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Workshop' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Workshop' %} #{{ workshop.pk }}{% endblock %}
+
+{% block sectioncontent %}
+
+<ul>
+    {% for as in assesments %}
+    <li>{{ forloop.counter }}. {% trans 'Anonymous' %}
+
+        <ul>
+        {% for a in as.answer_set.all %}
+            <li>{{ forloop.counter }}. {{ a.question.text }}
+                <p><em>{% trans 'Answer' %}:</em> {{ a.text }}</p>
+            </li>
+        {% endfor %}
+        </ul>
+    </li>
+    {% endfor %}
+</ul>
+
+<a class="button" href="{% url workshop_index_view %}">Index</a>
+{% endblock %}

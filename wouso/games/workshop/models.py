@@ -58,12 +58,20 @@ class Workshop(models.Model):
 
     questions = models.ManyToManyField(Question, blank=True)
 
+    def is_active(self, timestamp=None):
+        timestamp = timestamp if timestamp else datetime.now()
+        if not self.active_until:
+            return False
+
+        return self.active_until >= timestamp
+
     def __unicode__(self):
         return u"#%d - on %s" % (self.pk, self.date)
 
 class Assesment(models.Model):
     workshop = models.ForeignKey(Workshop)
     player = models.ForeignKey(Player, related_name='assesments')
+
     answered = models.BooleanField(default=False, blank=True)
     time_start = models.DateTimeField(auto_now_add=True)
     time_end = models.DateTimeField(blank=True, null=True)
@@ -71,12 +79,34 @@ class Assesment(models.Model):
     reviewers = models.ManyToManyField(Player, blank=True, related_name='assesments_review')
     grade = models.IntegerField(blank=True, null=True)
 
+    def set_answered(self, answers):
+        """ Set given answer dictionary.
+        """
+        for q in self.workshop.questions.all():
+            a = Answer.objects.get_or_create(assesment=self, question=q)[0]
+            a.text = answers.get(q.id, '')
+            a.save()
+        self.answered = True
+        self.time_end = datetime.now()
+        self.save()
+
+    @classmethod
+    def get_for_player_and_workshop(cls, player, workshop):
+        try:
+            return cls.objects.get(player=player, workshop=workshop)
+        except:
+            return None
+
+    __unicode__ = lambda self: u"#%d" % self.id
+
 class Answer(models.Model):
     assesment = models.ForeignKey(Assesment)
     question = models.ForeignKey(Question)
 
     text = models.TextField(max_length=2000)
     grade = models.IntegerField(blank=True, null=True)
+
+    __unicode__ = lambda self: self.text
 
 class Review(models.Model):
     answer = models.ForeignKey(Answer)
@@ -148,6 +178,13 @@ class WorkshopGame(Game):
         return None
 
     @classmethod
+    def get_for_player_now(cls, player, timestamp=None):
+        semigroup = cls.get_semigroup(timestamp=timestamp)
+        if semigroup and player in semigroup.players.all():
+            return cls.get_for_now(timestamp=timestamp)
+        return None
+
+    @classmethod
     def get_or_create_workshop(cls, semigroup, date, questions):
         workshop, is_new = Workshop.objects.get_or_create(semigroup=semigroup, date=date)
         if is_new:
@@ -192,7 +229,8 @@ class WorkshopGame(Game):
     @classmethod
     def get_sidebar_widget(cls, request):
         semigroup = cls.get_semigroup()
+        workshop = cls.get_for_player_now(request.user.get_profile())
         sm = request.user.get_profile() in semigroup.players.all() if semigroup else False
 
         return render_to_string('workshop/sidebar.html',
-                {'semigroup': semigroup, 'workshop': cls, 'semigroup_member': sm})
+                {'semigroup': semigroup, 'workshop': workshop, 'semigroup_member': sm})
