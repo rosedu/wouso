@@ -4,7 +4,7 @@ from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template.context import RequestContext
 
 from models import DAY_CHOICES
-from models import WorkshopGame, Semigroup
+from models import WorkshopGame, Semigroup, Schedule
 from wouso.core.user.models import Player
 
 class AGForm(forms.ModelForm):
@@ -95,3 +95,13 @@ def kick_off(request, player):
         s.players.remove(player)
 
     return redirect('workshop_home')
+
+@login_required
+def schedule(request):
+    schedules = Schedule.objects.all().order_by('start_date')
+
+    return render_to_response('workshop/cpanel/schedule.html',
+                        {'module': 'workshop',
+                         'schedules': schedules},
+                        context_instance=RequestContext(request)
+    )

@@ -1,0 +1,23 @@
+{% extends 'workshop/cpanel/index.html' %}
+{% load workshop %}
+
+{% block sectiontitle %}Workshop{% endblock %}
+
+{% block tabcontent %}
+    <table>
+        <tr>
+            <th>Tag</th>
+            <th>Start</th>
+            <th>End</th>
+        </tr>
+        {% for s in schedules %}
+        <tr>
+            <td>
+                {{ s.tag }}
+            </td>
+            <td>{{ s.start_date }}</td>
+            <td>{{ s.end_date }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

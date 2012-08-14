@@ -6,4 +6,6 @@ urlpatterns = patterns('wouso.games.workshop.cpanel',
     url(r'^add-semigroup/$', 'add_group', name='ws_add_group'),
     url(r'^edit-semigroup/(?P<semigroup>\d+)$', 'edit_group', name='ws_edit_group'),
     url(r'^kick-off/(?P<player>\d+)/$', 'kick_off', name='ws_kick_off'),
+
+    url(r'^schedule/$', 'schedule', name='ws_schedule'),
 )
