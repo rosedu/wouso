@@ -33,6 +33,14 @@ class Semigroup(PlayerGroup):
     day = models.IntegerField(choices=DAY_CHOICES)
     hour = models.IntegerField(choices=zip(range(8, 22, 2), range(8, 22, 2)))
 
+    def add_player(self, player):
+        """ Add player to semigroup, remove it from any other semigroups.
+        """
+        for sg in Semigroup.objects.filter(players=player):
+            sg.players.remove(player)
+
+        self.players.add(player)
+
     @classmethod
     def get_by_day_and_hour(cls, day, hour):
         try:
@@ -159,5 +167,7 @@ class WorkshopGame(Game):
     @classmethod
     def get_sidebar_widget(cls, request):
         semigroup = cls.get_semigroup()
+        sm = request.user.get_profile() in semigroup.players.all() if semigroup else False
 
-        return render_to_string('workshop/sidebar.html', {'semigroup': semigroup, 'workshop': cls})
+        return render_to_string('workshop/sidebar.html',
+                {'semigroup': semigroup, 'workshop': cls, 'semigroup_member': sm})

@@ -6,7 +6,7 @@
 {% block content %}
 
 {% trans 'Current semigroup:' %} {{ semigroup }}<br/>
-{% if user.get_profile in semigroup.players.all %}
+{% if semigroup_member %}
         Play!
 {% else %}
         Not a member.

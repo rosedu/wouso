@@ -9,7 +9,7 @@
 
 {% block sectioncontent %}
 <ul class="tabs">
-    <li ><a href="{% url workshop_home %}">Schedule</a></li>
+    <li ><a href="{% url workshop_home %}">Timetable</a></li>
 </ul>
 
 <div class="tab_container">
@@ -20,8 +20,8 @@
             <strong>Information</strong>
             <br/>
 
-            Spot: {{ info.get_spot }}<br/>
-            Group: {{ info.get_semigroup }}<br/>
+            Current spot: {{ info.get_spot }}<br/>
+            Current group: {{ info.get_semigroup }}<br/>
 
         </div>
 
@@ -37,12 +37,16 @@
                 <td ALIGN="RIGHT">{{ h }}:00</td>
                 {% for d in days %}
                     <td>
-                    {% get_schedule d.0 h %}
+                        {% get_schedule d.0 h %}
+                        <a href="{% url ws_edit_spot d.0 h %}">✍</a>
                     </td>
                 {% endfor %}
             </tr>
             {% endfor %}
         </table>
+
+
+        <a class="button" href="{% url ws_add_group %}">Add semigroup</a>
         {% endblock %}
     </div>
 </div>

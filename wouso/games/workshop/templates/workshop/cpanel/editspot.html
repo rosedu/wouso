@@ -1,0 +1,29 @@
+{% extends 'workshop/cpanel/index.html' %}
+{% load workshop %}
+{% load user %}
+
+{% block tabcontent %}
+    Semigroup: {{ semigroup }}, Spot: day={{ semigroup.day }}, hour={{ semigroup.hour }}
+    <a href="{% url ws_edit_group semigroup.pk %}">✍</a>.
+
+    <h4>Workshop history</h4>
+    <ul>
+        {% for w in semigroup.workshop_set.all %}
+            <li>{{ w }}</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Students</h4>
+    <ul>
+        {% for p in semigroup.players.all %}
+            <li>{{ p }} <a href="{% url ws_kick_off p.id %}">x</a></li>
+        {% endfor %}
+    </ul>
+    <p>Total: {{ semigroup.players.count }}.</p>
+
+    <form action="" method="post">
+        {% player_input 'player' %}
+        {% csrf_token %}
+        <button type="submit">Add</button>
+    </form>
+{% endblock %}
