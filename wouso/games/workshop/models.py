@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.db import models
+from django.template.loader import render_to_string
 from wouso.core.game.models import Game
 from wouso.core.qpool.models import Tag, Question
 from wouso.core.user.models import PlayerGroup, Player
@@ -154,3 +155,9 @@ class WorkshopGame(Game):
 
         return dict(participated=participated, reviews=reviews, expected_reviews=expected_reviews,
                     done=done)
+
+    @classmethod
+    def get_sidebar_widget(cls, request):
+        semigroup = cls.get_semigroup()
+
+        return render_to_string('workshop/sidebar.html', {'semigroup': semigroup, 'workshop': cls})

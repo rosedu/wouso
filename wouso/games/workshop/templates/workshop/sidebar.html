@@ -1,0 +1,14 @@
+{% extends 'interface/sidebar_widget.html' %}
+{% load i18n %}
+
+{% block title %}{%  trans 'Workshop' %}{% endblock %}
+
+{% block content %}
+
+{% trans 'Current semigroup:' %} {{ semigroup }}<br/>
+{% if user.get_profile in semigroup.players.all %}
+        Play!
+{% else %}
+        Not a member.
+{% endif %}
+{% endblock %}
