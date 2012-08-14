@@ -1,4 +1,26 @@
+/**
+ * Format Item - Autocomplete functionality.
+ */
+
 var url_base = '/';
+
+function setAutocomplete(id) {
+    $(document).ready(function() {
+        $(id).autocomplete( url_base + "/instantsearch/",
+            {   minChars:3,
+                matchSubset:1,
+                matchContains:1,
+                cacheLength:10,
+                formatItem:formatItem,
+                onItemSelect:function (li) {
+                    var player_id = getSelectedPlayer(li);
+                    $(id + '_value').val(player_id);
+                },
+                selectOnly:1
+            }
+        );
+    });
+}
 
 function formatItem( row ) {
     return row[0] + "<br />"+
@@ -6,11 +28,16 @@ function formatItem( row ) {
         "<small><i>" + row[2] + " (" + row[3] + ") " +
         row[1] + " puncte</small></i>" + "<span class='hidden'>:" + row[6] + "</span>";
 }
-function selectItem(li) {
+function getSelectedPlayer(li) {
     var text = li.innerHTML;
     var id = text.substr(text.lastIndexOf(":") + 1);
     id = id.substr(0, id.indexOf("<"));
 
+    return id;
+}
+
+function selectItem(li) {
+    id = getSelectedPlayer(li);
     document.location = url_base + '/player/' + id + '/';
 }
 

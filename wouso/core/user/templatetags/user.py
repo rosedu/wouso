@@ -85,3 +85,10 @@ def spell_stock(player, spell):
         return ''
     stock = player.spell_stock(spell)
     return 'x%d' % stock if stock > 0 else '-'
+
+@register.simple_tag
+def player_input(name):
+
+    return '<input type="hidden" name="{name}" id="ac_input_{name}_value" />' \
+           '<input type="text" id="ac_input_{name}" class="ac_input big" />' \
+           '<script>setAutocomplete("#ac_input_{name}");</script>'.format(name=name)
