@@ -8,4 +8,6 @@ urlpatterns = patterns('wouso.games.workshop.cpanel',
     url(r'^kick-off/(?P<player>\d+)/$', 'kick_off', name='ws_kick_off'),
 
     url(r'^schedule/$', 'schedule', name='ws_schedule'),
+    url(r'^schedule/add/$', 'schedule_change', name='ws_schedule_change'),
+    url(r'^schedule/edit/(?P<schedule>\d+)/$', 'schedule_change', name='ws_schedule_change'),
 )

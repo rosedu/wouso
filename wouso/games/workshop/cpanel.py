@@ -105,3 +105,30 @@ def schedule(request):
                          'schedules': schedules},
                         context_instance=RequestContext(request)
     )
+
+@login_required
+def schedule_change(request, schedule=None):
+    class SCForm(forms.ModelForm):
+        class Meta:
+            model = Schedule
+            fields = ('name', 'start_date', 'end_date')
+
+    if schedule:
+        schedule = get_object_or_404(Schedule, pk=schedule)
+
+    if request.method == 'POST':
+        form = SCForm(request.POST, instance=schedule)
+        if form.is_valid():
+            sc = form.save()
+            sc.category = WorkshopGame.get_question_category()
+            sc.save()
+            return redirect('ws_schedule')
+    else:
+        form = SCForm(instance=schedule)
+
+    return render_to_response('workshop/cpanel/schedule_change.html',
+                        {'module': 'workshop',
+                         'form': form,
+                         'instance': schedule},
+                        context_instance=RequestContext(request)
+    )

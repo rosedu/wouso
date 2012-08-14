@@ -1,8 +1,8 @@
-from datetime import datetime
+from datetime import datetime, time
 from django.db import models
 from django.template.loader import render_to_string
 from wouso.core.game.models import Game
-from wouso.core.qpool.models import Tag, Question
+from wouso.core.qpool.models import Tag, Question, Category
 from wouso.core.user.models import PlayerGroup, Player
 
 DAY_CHOICES = (
@@ -25,6 +25,10 @@ class Schedule(Tag):
         """
         timestamp = timestamp if timestamp else datetime.now()
         return cls.objects.filter(start_date__lte=timestamp, end_date__gte=timestamp)
+
+    def is_active(self, timestamp=None):
+        timestamp = timestamp if timestamp else datetime.now()
+        return datetime.combine(self.start_date, time(0, 0, 0)) <= timestamp <= datetime.combine(self.end_date, time(23, 59, 59))
 
 class Semigroup(PlayerGroup):
     class Meta:
@@ -105,6 +109,14 @@ class WorkshopGame(Game):
         return Semigroup.get_by_day_and_hour(day, hour)
 
     @classmethod
+    def get_question_pool(cls, timestamp=None):
+        """ Return the questionpool active right now
+        """
+        tags = Schedule.get_current_tags(timestamp=timestamp)
+        questions = Question.objects.filter(tags__in=tags).distinct()
+        return questions
+
+    @classmethod
     def get_for_now(cls, timestamp=None, always=False):
         """ Return an workshop object or None.
 
@@ -117,8 +129,7 @@ class WorkshopGame(Game):
             return None
 
         # current tags and questions
-        tags = Schedule.get_current_tags(timestamp=timestamp)
-        questions = Question.objects.filter(tags__in=tags).distinct()
+        questions = cls.get_question_pool(timestamp=timestamp)
 
         if not questions:
             return None
@@ -162,6 +173,10 @@ class WorkshopGame(Game):
 
         return dict(participated=participated, reviews=reviews, expected_reviews=expected_reviews,
                     done=done)
+
+    @classmethod
+    def get_question_category(cls):
+        return Category.objects.get_or_create(name='workshop')[0]
 
     @classmethod
     def get_sidebar_widget(cls, request):
