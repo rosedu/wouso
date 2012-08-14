@@ -94,13 +94,18 @@ CATEGORIES = (('Qotd', 'qotd'), ('Challenge', 'challenge'), ('Quest', 'quest'), 
     ('Workshop', 'workshop'))
 
 @login_required
-def qpool_home(request, cat=None, page=u'1'):
+def qpool_home(request, cat=None, page=u'1', tag=None):
     if cat is None:
         cat = 'qotd'
 
     questions = get_questions_with_category(str(cat), active_only=False, endorsed_only=False)
+    if tag:
+        tag = get_object_or_404(Tag, pk=tag, category__name=cat)
+        questions = questions.filter(tags=tag)
+
     if cat == 'qotd':
         questions = questions.order_by('schedule__day')
+
 
     tags = Tag.objects.all().exclude(name__in=['qotd', 'challenge', 'quest'])
     form = TagsForm(tags=tags)

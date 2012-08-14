@@ -18,6 +18,7 @@ upat = [
     url(r'^qpool/search/$', 'wouso.interface.cpanel.views.qpool_search', name='qpool_search'),
     url(r'^qpool/(?P<cat>\w*)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
     url(r'^qpool/(?P<cat>\w*)/(?P<page>\d+)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
+    url(r'^qpool/(?P<cat>\w*)/tag=(?P<tag>\d+)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
     url(r'^qpool/remove_all/(?P<cat>\w+)/$', 'wouso.interface.cpanel.views.remove_all', name='remove_all'),
 
 
