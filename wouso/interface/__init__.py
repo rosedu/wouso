@@ -21,4 +21,8 @@ def detect_mobile(request):
         for i in ('nokia', 'mobile'):
             if i in s:
                 return True
+    if request.GET.get('mobile') or request.session['mobile']:
+        if request.GET.get('mobile'):
+            request.session['mobile'] = (request.GET.get('mobile') == '1')
+        return request.session['mobile']
     return False

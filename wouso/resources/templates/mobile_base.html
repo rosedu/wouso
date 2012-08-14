@@ -41,6 +41,8 @@
     </div>
 
     <div id="mobile-footer">
+        <a href="{% url homepage %}?mobile=0">Desktop</a> |
+        <a href="{% url homepage %}?mobile=1">Mobile</a>
     </div>
     {% autoescape off %}
     {{ config_hidden_footer }}
