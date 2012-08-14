@@ -13,10 +13,9 @@ DAY_CHOICES = (
     (5, 'Friday'),
 )
 
-class Schedule(models.Model):
+class Schedule(Tag):
     """ Schedule qpool tags per date intervals.
     """
-    tag = models.ForeignKey(Tag)
     start_date = models.DateField()
     end_date = models.DateField()
 
@@ -25,7 +24,7 @@ class Schedule(models.Model):
         """ Return the questions tags currently active
         """
         timestamp = timestamp if timestamp else datetime.now()
-        return Tag.objects.filter(schedule__start_date__lte=timestamp, schedule__end_date__gte=timestamp)
+        return cls.objects.filter(start_date__lte=timestamp, end_date__gte=timestamp)
 
 class Semigroup(PlayerGroup):
     class Meta:
