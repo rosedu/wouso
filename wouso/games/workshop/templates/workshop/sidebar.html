@@ -7,7 +7,11 @@
 
 {% trans 'Current semigroup:' %} {{ semigroup }}<br/>
 {% if semigroup_member %}
-        Play!
+        {% if workshop.get_for_now %}
+        <a href="">Play!</a>
+        {% else %}
+        Nothing to do here.
+        {% endif %}
 {% else %}
         Not a member.
 {% endif %}

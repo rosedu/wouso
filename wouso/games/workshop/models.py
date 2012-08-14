@@ -1,4 +1,4 @@
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from django.db import models
 from django.template.loader import render_to_string
 from wouso.core.game.models import Game
@@ -54,12 +54,19 @@ class Semigroup(PlayerGroup):
 class Workshop(models.Model):
     semigroup = models.ForeignKey(Semigroup)
     date = models.DateField(auto_now_add=True)
+    active_until = models.DateTimeField(blank=True, null=True)
 
     questions = models.ManyToManyField(Question, blank=True)
+
+    def __unicode__(self):
+        return u"#%d - on %s" % (self.pk, self.date)
 
 class Assesment(models.Model):
     workshop = models.ForeignKey(Workshop)
     player = models.ForeignKey(Player, related_name='assesments')
+    answered = models.BooleanField(default=False, blank=True)
+    time_start = models.DateTimeField(auto_now_add=True)
+    time_end = models.DateTimeField(blank=True, null=True)
 
     reviewers = models.ManyToManyField(Player, blank=True, related_name='assesments_review')
     grade = models.IntegerField(blank=True, null=True)
@@ -117,7 +124,7 @@ class WorkshopGame(Game):
         return questions
 
     @classmethod
-    def get_for_now(cls, timestamp=None, always=False):
+    def get_for_now(cls, timestamp=None, always=True):
         """ Return an workshop object or None.
 
         Workshops are selected randomly from database.
@@ -137,14 +144,18 @@ class WorkshopGame(Game):
         # Now decide if there is an workshop this week for this semigroup
         # TODO: magic. for now, always create one
         if always:
-            return cls.get_or_create_workshop(semigroup, timestamp.date(), questions)
+            return cls.get_or_create_workshop(semigroup, timestamp.date() if timestamp else datetime.today(), questions)
         return None
 
     @classmethod
     def get_or_create_workshop(cls, semigroup, date, questions):
-        workshop = Workshop.objects.get_or_create(semigroup=semigroup, date=date)[0]
-        for q in questions:
-            workshop.questions.add(q)
+        workshop, is_new = Workshop.objects.get_or_create(semigroup=semigroup, date=date)
+        if is_new:
+            for q in questions:
+                workshop.questions.add(q)
+
+            workshop.active_until = datetime.now() + timedelta(minutes=3)
+            workshop.save()
 
         return workshop
 

@@ -2,7 +2,8 @@
 {% load workshop %}
 
 {% block tabcontent %}
-    <form action="{% url ws_schedule_change instance.pk %}" method="post">
+    <form action="{% if instance %}{% url ws_schedule_change instance.pk %}{% else %}{% url ws_schedule_change %}{%endif%}"
+          method="post">
         <table>
         {{ form.as_table }}
         </table>
