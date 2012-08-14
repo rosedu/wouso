@@ -13,10 +13,9 @@ if __name__ == '__main__':
     series = ('CA', 'CB', 'CC', 'Others')
     groups = range(311, 316)
     for i in series:
-        g,nw = Group.objects.get_or_create(name=i)
-        pg,nw = Race.objects.get_or_create(group=g,name=i,gclass=1)
+        pg,nw = Race.objects.get_or_create(name=i)
         if i == 'Others':
-            pg.show_in_top = False
+            pg.can_play = False
             pg.save()
             continue
         for j in groups:

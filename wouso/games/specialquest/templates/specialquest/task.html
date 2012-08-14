@@ -12,9 +12,7 @@
 
 {% block sectioncontent %}
 
-{% if not task.is_active %}
-    <p>{% trans 'Access forbidden.' %}</p>
-{% else %}
+{% if task.is_active or task.is_archived %}
     <span class="points">{% trans 'Reward' %}: {% coin_amount task.value 'gold' %}</span>
 
     {% if days_left >= 0 %}
@@ -23,5 +21,16 @@
       <p class="wrong">{% trans 'Deadline passed' %}</p>
     {%endif%}
     <p class="task-text">{% autoescape off %}{{task.text}}{% endautoescape %}</p>
+
+    <h3>{% trans 'Teams that completed this task' %}</h3>
+        <ul>
+            {% for info in task.completed_teams %}
+                <li>{{ info.team }} - {{ info.date }}</li>
+            {% empty %}
+                <li>{% trans 'Nobody.' %}</li>
+            {% endfor %}
+        </ul>
+{% else %}
+    {% trans 'Access forbidden' %}
 {% endif %}
 {% endblock %}

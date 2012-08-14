@@ -1,16 +1,58 @@
-#Shoutbox {
+#Globalbox {
     /* display: none; */
+    height: 100%;
+
+}
+
+.Privatebox{
     position: absolute;
-    right: 5px;
     bottom: 5px;
+
+    border: thin solid;
+    width: 162px;
+    background:#ffffff
+}
+
+
+.PrivateboxUserName{
+    border:none;
+    text-align:left;
+    background: transparent;
+    width: 130px;
+
+}
+
+.PrivateboxExitButton{
+    border: none;
+    background: transparent
+}
+
+.PrivateboxTextArea {
+
+    display:block;
+    padding: 3px;
+    text-align:left;
+    height:150px;
+    width:150px;
+    background-color: white;
+
+    overflow: auto;
+}
+
+
+.PrivateboxTextBox {
+    display:block;
+    padding: 3px;
+    text-align:left;
+    width:150px;
 }
 
 #ShoutboxHideButton {
 	width:100px;
 	height:300px;    
 	position: absolute;
-    right: 0px;
-    bottom: 0px;
+    right: 5px;
+    bottom: 5px;
 }
 
 #ShoutboxShowButton {
@@ -22,25 +64,24 @@
     bottom: 5px;
 }
 
-#ShoutboxTextArea {
+#GlobalboxTextArea {
 
     display:block;
     padding: 3px;
     text-align:left;
-    height:200px;
-    width:200px;
-    
-    border-color: black;
-    border-style: solid;
-    border-width: thin;
+    height:300px;
+    width:500px;
+    background-color: white;
+
+    border: thin solid black;
     overflow: auto;
 }
 
-#ShoutboxTextBox {
+#GlobalboxTextBox {
     display:block;
     padding: 3px;
     text-align:left;
-    width:300px;
+    width:500px;
 }
 
 #ShoutboxUserName {
@@ -50,15 +91,49 @@
     width:200px;
 }
 
-#ShoutboxUserList {
-    list-style-type: none;
+#GlobalboxUserList {
     display:block;
+    padding: 3px;
     text-align:left;
-    width:100px;
-	height:200px	;	
+    height:300px;
+    width:160px;
+
+    background-color: white;
+    border: thin solid black;
+    overflow: auto;
 }
 
 #warn_spam {
     color: red;
     font-size: smaller;
 }
+a.cl_item {
+    text-decoration: none;
+    color: black;
+    display: block;
+    background-color: #e1e1e1;
+    padding: 3px;
+}
+
+#Contactbox{
+    width: 220px;
+    height: 145px;
+    position: absolute;
+    display: none;
+
+    border: double;
+    border-color: #000000;
+    background-color: #f5deb3;
+}
+.caction{
+    width:  27px;
+    height: 25px;
+}
+
+#ContactboxName{
+    padding: 3px;
+    text-align: left;
+    width: 100px;
+
+}
+

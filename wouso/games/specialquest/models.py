@@ -2,34 +2,60 @@ from datetime import date
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_noop, ugettext as _
-from wouso.core.user.models import Player
+from wouso.core.user.models import Player, PlayerGroup
 from wouso.core.game.models import Game
-from wouso.core.scoring.models import Formula
 
 class Invitation(models.Model):
     group = models.ForeignKey('SpecialQuestGroup')
     to = models.ForeignKey('SpecialQuestUser')
 
     def __unicode__(self):
-        return u"Invitation from %s to %s" % (self.group.owner, self.to)
+        return u"Invitation from %s to %s" % (self.group.head, self.to)
 
-class SpecialQuestGroup(models.Model):
-    owner = models.ForeignKey('SpecialQuestUser', related_name='owned_groups')
-    name = models.CharField(max_length=100)
+class GroupCompletion(models.Model):
+    team = models.ForeignKey('SpecialQuestGroup')
+    task = models.ForeignKey('SpecialQuestTask')
+
+    date = models.DateTimeField(auto_now_add=True)
+
+class SpecialQuestGroup(PlayerGroup):
+    head = models.ForeignKey('SpecialQuestUser', related_name='owned_groups')
     active = models.BooleanField(default=False, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    done_tasks = models.ManyToManyField('SpecialQuestTask', blank=True, default=None, null=True,
+                                        through=GroupCompletion,
+                                        related_name="%(app_label)s_%(class)s_done")
 
     @property
     def members(self):
-        return self.specialquestuser_set
+        return [p.get_extension(SpecialQuestUser) for p in self.players.all()]
+
+    @property
+    def completed_tasks(self):
+        return GroupCompletion.objects.filter(team=self).order_by('-date')
 
     def is_empty(self):
-        return self.members.count() < 2
+        return self.players.count() < 2
+
+    def set_task_done(self, task):
+        if task not in self.done_tasks.all():
+            GroupCompletion.objects.create(team=self, task=task)
+
+    @classmethod
+    def create(cls, head, name):
+        game = SpecialQuestGame.get_instance()
+        new_group = cls.objects.create(owner=game, name=name, head=head)
+        new_group.players.add(head)
+        head.group = new_group
+        head.save()
+        return new_group
 
     def __unicode__(self):
-        return u"%s [%d]" % (self.name, self.members.count())
+        return u"%s [%d]" % (self.name, self.players.count())
 
 class SpecialQuestTask(models.Model):
-    name = models.TextField()
+    name = models.CharField(max_length=200)
     text = models.TextField()
     start_date = models.DateField()
     end_date = models.DateField()
@@ -39,6 +65,15 @@ class SpecialQuestTask(models.Model):
         if today is None:
             today = date.today()
         return self.start_date <= today
+
+    def is_archived(self, today=None):
+        if today is None:
+            today = date.today()
+        return self.end_date < today
+
+    @property
+    def completed_teams(self):
+        return GroupCompletion.objects.filter(task=self).order_by('-date')
 
     def __unicode__(self):
             return unicode(self.name)
@@ -110,7 +145,7 @@ class SpecialQuestGame(Game):
     def get_formulas(kls):
         fs = []
         quest_game = kls.get_instance()
-        fs.append(Formula(id='specialquest-passed', formula='gold={value}',
+        fs.append(dict(id='specialquest-passed', formula='gold={value}',
             owner=quest_game.game,
             description='Points earned when finishing a task. Arguments: value.')
         )
@@ -126,7 +161,7 @@ class SpecialQuestGame(Game):
                 return ''
             if squser.active or targetuser.active:
                 return ''
-            if ((squser.self_group is not None) and (targetuser in squser.self_group.members.all())) or ((targetuser.group is not None) and (squser in targetuser.group.members.all())):
+            if ((squser.self_group is not None) and (targetuser in squser.self_group.members)) or ((targetuser.group is not None) and (squser in targetuser.group.members)):
                 return '<span class="button">%s</span>' % _('Special mate')
             if targetuser.group is not None:
                 return '<span class="button">%s</span>' % _('Other group')

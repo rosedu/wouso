@@ -17,12 +17,15 @@
         {% endif %}
         {% block css %}{% endblock %}
     </style>
+    <link  rel="stylesheet" type="text/css" href="/static/css/chatbox.css">
     <script type="text/javascript" src="/static/js/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" src="/static/js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="/static/js/jquery.autocomplete.js"></script>
     <script type="text/javascript" src="/static/js/format.item.js"></script>
     <script type="text/javascript" src="/static/js/jquery.timers.js"></script>
     <script type="text/javascript" src="/static/js/ajaxify.js"></script>
+    <script type="text/javascript" src="/static/js/contactbox.js"></script>
+    <script type="text/javascript" src="/static/js/chatbox.js"></script>
     <script type="text/javascript">
         var url_base = '{{ basepath }}';
     </script>
@@ -39,13 +42,34 @@
 <BODY>
     <div id="container">
     <div id="header">
-        <div id="topbar">
-            {% include 'interface/header.html' %}
-        </div>
+        {% include 'interface/header.html' %}
+
         <div id="logo">
-            <a href="{% url wouso.interface.views.homepage %}" id="logoa" title="{{config_title}}"></a>
+            <a href="{% url homepage %}" id="logoa" title="{{config_title}}"></a>
         </div>
     </div>
+
+        <div id="Contactbox" onmouseover="show_contact_box()" onmouseout="on_userlist_mouseout()">
+            <table>
+                <tr>
+                    <td><div id="ContactboxName"></div></td>
+                    <td><div id="ContactboxAvatar" style="padding: 5px"></div></td>
+                </tr>
+                <tr>
+                    <td colspan= "2"><hr></td>
+                </tr>
+                <tr>
+                    <td colspan = "2" style="text-align: right;">
+                        <input type="button" class="contactaction" id="ContactboxProfileButton" value="P" title="View profile"/>
+                        <input type="button" class="contactaction" id="ContactboxMesajeButton"  value="M" title="Send a message"/>
+                        <input type="button" class="contactaction" id="ContactboxChatButton"    value="C" title="Make a private conversation"/><td>
+                </tr>
+
+            </table>
+
+        </div>
+
+
 
     {% block search %}
     <div id="search">
@@ -54,12 +78,16 @@
             <button type=submit>{% trans 'Search' %}</button>
         </form>
         <script type="text/javascript">
+            var myID = '{{player.id}}'
+            var myName = '{{player}}'
             $(document).ready(function() {
             $("#query").autocomplete( "{{ basepath }}/instantsearch/", { minChars:3, matchSubset:1, matchContains:1, cacheLength:10, formatItem:formatItem, onItemSelect:selectItem, selectOnly:1 });
             });
         </script>
     </div>
     {% endblock %}
+
+    <div class="spacer-search"></div>
 
     <div id="sidebar">
         {% block sidebar %}
@@ -83,6 +111,7 @@
     {% endblock %}
     </div>
 
+
     <div id="footer">
         <div id="footer_links">{% autoescape off %}{{ footer }}{% endautoescape %}
         <br/>
@@ -92,7 +121,11 @@
         </span>
         </div>
     </div>
-	{% autoescape off %}
+
+    <div id="PrivatebarUsers"></div>
+    <div id="PrivateChatBoxes"></div>
+
+        {% autoescape off %}
     {{ config_hidden_footer }}
 	{% endautoescape %}
 </BODY>

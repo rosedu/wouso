@@ -11,7 +11,7 @@ from wouso.core.scoring.models import *
 if __name__ == '__main__':
     print 'Setting up the Scoring module...',
     # TODO: i'm pretty sure this can be accomplished by simple fixtures.
-    scoring.setup()
+    scoring.setup_scoring()
     print 'done!'
 
     # Dump

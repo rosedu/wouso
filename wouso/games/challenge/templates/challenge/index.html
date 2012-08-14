@@ -18,7 +18,7 @@
 </p>
 {% else %}
 <p>{% trans 'To launch a challenge, find the player you want to challenge and click on the <em>Challenge</em> button, next to his profile.' %}</p>
-<a href="{% url games.challenge.views.challenge_random %}">Challenge random player</a>
+<a href="{% url challenge_random %}">Challenge random player</a>
 {% endif %}
 {% endif %}
 
@@ -27,8 +27,8 @@
 {% for c in challenges %}
 <li>
     {{ c.date }}
-    <a href="{% url interface.profile.views.user_profile c.user_from.user.id %}">{{ c.user_from }}</a> vs.
-    <a href="{% url interface.profile.views.user_profile c.user_to.user.id %}">{{ c.user_to }}</a> - Status: {% if c.status == "R" %}Refused
+    <a href="{% url player_profile c.user_from.user.id %}">{{ c.user_from }}</a> vs.
+    <a href="{% url player_profile c.user_to.user.id %}">{{ c.user_to }}</a> - Status: {% if c.status == "R" %}Refused
     {% else %}
     {% if c.status == "L" %}Launched
     {% else %}
@@ -36,21 +36,21 @@
     {% endif %}{% endif %}{% endif %}
 
     {% ifequal c.user_to.user challuser %}
-        {% if c.is_launched %}<a href="{% url games.challenge.views.accept c.id %}">Accept</a>{% endif %}
-        {% if c.is_launched %}<a href="{% url games.challenge.views.refuse c.id %}">Refuse</a>{% endif %}
+        {% if c.is_launched %}<a href="{% url challenge_accept c.id %}">Accept</a>{% endif %}
+        {% if c.is_launched %}<a href="{% url challenge_refuse c.id %}">Refuse</a>{% endif %}
     {% endifequal %}
 
     {% if c.is_runnable %}
-        <span class="points"><a href="{% url games.challenge.views.challenge c.id %}" class="button">{% trans 'Play' %}</a></span>
+        <span class="points"><a href="{% url view_challenge c.id %}" class="button">{% trans 'Play' %}</a></span>
     {% endif %}
 
     {% ifequal c.user_from.user challuser %}
-        {% if c.is_launched %}<a href="{% url games.challenge.views.cancel c.id %}">Cancel</a>{% endif %}
+        {% if c.is_launched %}<a href="{% url challenge_cancel c.id %}">Cancel</a>{% endif %}
     {% endifequal %}
 
     {% if user.is_superuser %} | superuser:
-        {% if c.is_launched %}<a href="{% url games.challenge.views.accept c.id %}">Accept</a>{% endif %}
-        {% if c.is_launched %}<a href="{% url games.challenge.views.refuse c.id %}">Refuse</a>{% endif %}
+        {% if c.is_launched %}<a href="{% url challenge_accept c.id %}">Accept</a>{% endif %}
+        {% if c.is_launched %}<a href="{% url challenge_refuse c.id %}">Refuse</a>{% endif %}
     {% endif %}
     <div class="clear spacer"></div>
 </li>
@@ -65,15 +65,15 @@
 {% for c in played %}
     <li>
     {{ c.date }}
-    <a href="{% url interface.profile.views.user_profile c.user_from.user.id %}">{{ c.user_from }}</a> vs.
-    <a href="{% url interface.profile.views.user_profile c.user_to.user.id %}">{{ c.user_to }}</a>
+    <a href="{% url player_profile c.user_from.user.id %}">{{ c.user_from }}</a> vs.
+    <a href="{% url player_profile c.user_to.user.id %}">{{ c.user_to }}</a>
      - Result:  {% if c.status == "D" %} Draw
                 {% else %} {% if c.status == "P" %} Won by {{ c.winner }}
                 {% else %} Pending {% endif %}
                 {% endif %}
 
     {% if user.is_superuser %} | superuser:
-        {% if c.status == "A" %}<a href="{% url games.challenge.views.setplayed c.id %}">Set played</a>{% endif %}
+        {% if c.status == "A" %}<a href="{% url setplayed c.id %}">Set played</a>{% endif %}
     {% endif %}
     </li>
 {% empty %}

@@ -21,9 +21,9 @@
     <h3>{% if group.gclass == 0 %}{% trans 'Group' %}{% else %}
         {% if group.gclass == 1 %}{% trans 'Series' %}{% endif %}
         {% endif %}
-        {% if group.parent %}{% trans 'part of' %} {% player_group group.parent %}{% endif %}
+        {% if group.parent %}{% trans 'part of' %} {% player_race group.parent %}{% endif %}
     </h3>
-    <h4>{{ group.player_set.count }} {% trans 'members' %}</h4>
+    <h4>{{ group.players.count }} {% trans 'members' %}</h4>
 
     {% if user.is_superuser %}
     <div class="actions">
@@ -58,7 +58,7 @@
             {% endfor %}
         </ol>
 
-        <a href="{% url wouso.interface.profile.views.groups_index %}">{% trans 'View all' %}</a>
+        <a href="{% url groups_index %}">{% trans 'View all' %}</a>
         {% endif %}
         </div>
 

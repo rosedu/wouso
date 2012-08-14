@@ -11,51 +11,8 @@
 {% endblock %}
 {% block content %}
     {% if is_homepage %}
-    <div id="right-sidebar" class="profile {% if player.series %}group-{{ player.series.name.lower }}{% endif %} {% if player.proximate_group %}group-{{ player.proximate_group.name.lower }}{% endif %}">
-        <h2>{{ player }}</h2>
-        <div class="centered">
-            <a href="{% url player_profile player.id %}"><img src="{% player_avatar player %}" class="avatar no-float" /></a>
-            <h4>{% artifact player.level %} {{ player.level.title }}</h4>
-            <span>{% coin_amount player.points %}</span>
-            <div class="progress-bar">
-                <div class="progress" style="width: {{ player.level_progress.percent|floatformat }}%"></div>
-            </div>
-            <div class="second">{{ player.level_progress.points_left }} {% trans 'until next level' %}</div>
-        </div>
-        <h3>{% trans 'Your rank' %}</h3>
-        <p>{% trans 'Global' %}: <span class="points">{{ top.position }}</span></p>
-        {% for g in topgroups %}
-        <p>{% player_group g %}: <span class="points">{{ g.position }}</span></p>
-        {% endfor %}
-
-        {% if player.artifact_amounts.all %}
-        <h3>{% trans 'Artifacts' %}</h3>
-        {% for a in player.artifact_amounts.all %}
-            {% artifact a %}
-        {% empty %}
-        {% trans 'None.' %}
-        {% endfor %}
-        {% endif %}
-
-    {% if not config_disable_Magic %}
-        {% if player.spell_amounts.all %}
-        <h3>{% trans 'Spells' %}</h3>
-        {% for s in player.spell_amounts.all %}
-            {% artifact s %}
-        {% empty %}
-        {% trans 'None.' %}
-        {% endfor %} <br/>
-        {% endif %}
-
-        <div class="right">
-            {% if player.spells_cast or player.spells %}
-            <a href="{% url magic_summary %}">{% trans 'Summary' %}</a>
-            {% endif %}
-        </div>
     {% endif %}
 
-    </div>
-    {% endif %}
     <div id="wall-container">
         <h2>{% trans 'Activity' %}</h2>
         <div id="wall">
@@ -63,11 +20,11 @@
         </div>
         <div id="wall-navigation">
         {% if activity.has_previous %}
-            <a href="{% url wouso.interface.views.homepage %}"> &raquo; </a>
+            <a href="{% url homepage %}"> &raquo; </a>
         {% endif %}
 
         {% if activity.has_next %}
-            <a href="{% url wouso.interface.views.homepage page=activity.next_page_number %}"> &laquo;</a>
+            <a href="{% url homepage page=activity.next_page_number %}"> &laquo;</a>
         {% endif %}
         </div>
    </div>

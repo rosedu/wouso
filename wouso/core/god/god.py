@@ -1,4 +1,4 @@
-from wouso.core.magic.models import Artifact, Group
+from wouso.core.magic.models import Artifact, ArtifactGroup, SpellHistory, NoArtifactLevel
 from wouso.core.game import get_games
 from django.contrib.auth.models import Group as DjangoGroup
 
@@ -44,8 +44,8 @@ class DefaultGod:
         If there is a group for player series, use it.
         """
         try:
-            group = Group.objects.get(name=player.series.name)
-        except (Group.DoesNotExist, AttributeError):
+            group = ArtifactGroup.objects.get(name=player.series.name)
+        except (ArtifactGroup.DoesNotExist, AttributeError):
             group = Artifact.DEFAULT()
 
         name = 'level-%d' % level_no
@@ -55,7 +55,7 @@ class DefaultGod:
             try:
                 artifact = Artifact.objects.get(name=name, group=Artifact.DEFAULT())
             except Artifact.DoesNotExist:
-                return None
+                return NoArtifactLevel(level_no)
 
         return artifact
 
@@ -163,7 +163,6 @@ class DefaultGod:
         Returns True if action has been taken, False if not.
         """
         # Always executed, so log
-        from wouso.core.user.models import SpellHistory
         SpellHistory.used(psdue.source, psdue.spell, psdue.player)
         # Also trigger anonymous activiy
         from wouso.interface.activity import signals
@@ -198,10 +197,7 @@ class DefaultGod:
             game = str(game.__name__)
 
         if game == 'ChallengeGame':
-            from wouso.core.user import models
-            group, new = DjangoGroup.objects.get_or_create(name='Others')
-            others, new = models.PlayerGroup.objects.get_or_create(name='Others', group=group)
-            if others in player.groups.all():
+            if not player.race or not player.race.can_play:
                 return False
 
         return True

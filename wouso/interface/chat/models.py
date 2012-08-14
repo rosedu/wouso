@@ -2,6 +2,11 @@ from django.db import models
 from django.contrib import admin
 from core.user.models import Player
 from datetime import datetime
+from django.utils.translation import ugettext as _
+
+from wouso.core.app import App
+from django.core.urlresolvers import reverse
+
 
 class ChatUser(Player):
     ''' extension of the User object '''
@@ -9,12 +14,26 @@ class ChatUser(Player):
     canCreateRoom = models.BooleanField(null=False, blank=False, default=True)
     lastMessageTS = models.DateTimeField(null=True, blank=False, default=datetime.now)
 
+
+
 class ChatRoom(models.Model):
     ''' basic chatroom '''
+
+    def __init__(self, *args, **kwargs):
+        super(ChatRoom, self).__init__(*args, **kwargs)
+        self.DoesNotExist = None
 
     name = models.CharField(max_length=128, null=False, blank=False, default=None)
     deletable = models.BooleanField(null=False, blank=False, default=None)
     renameable = models.BooleanField(null=False, blank=False, default=None)
+
+    participants = models.ManyToManyField('ChatUser', blank=True, related_name='participant')
+
+    def to_dict(self):
+        return {'id': self.id, 'name': self.name}
+
+    def __unicode__(self):
+        return self.name
 
 class ChatMessage(models.Model):
     ''' chat message '''
@@ -25,7 +44,19 @@ class ChatMessage(models.Model):
     timeStamp = models.DateTimeField(null=True, blank=False, default=None)
 
     def __unicode__(self):
-        return self.author.__unicode__() + ' : ' + self.content + ' @ ' + self.timeStamp.strftime("%A, %d %B %Y %I:%M %p")
+        #return self.author.__unicode__() + ' : ' + self.content + ' @ ' + self.timeStamp.strftime("%A, %d %B %Y %I:%M %p")
+        return self.author.__unicode__() + ' : ' + self.content
+
+class Chat(App):
+
+    @classmethod
+    def get_header_link(kls, request):
+        url = reverse('wouso.interface.chat.views.index')
+        player = request.user.get_profile() if request.user.is_authenticated() else None
+        count = 0
+
+        return dict(link=url, text=_('Chat'), count=count)
+
 
 # admin interface
 admin.site.register(ChatRoom)

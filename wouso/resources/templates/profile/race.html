@@ -1,0 +1,109 @@
+{% extends base_template %}
+{% load artifacts %}
+{% load user %}
+{% load i18n %}
+
+{% block title %}{{ race }}{% endblock %}
+{% block scripts %}
+    <script type="text/javascript" src="/static/js/tabs.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.flot.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
+{% endblock %}
+
+{% block content %}
+<div class="profile race-{{ race.name.lower }} race-{{ race.id }}">
+    <div class="points">
+        <div class="points-big">{{ race.live_points}}</div>
+        <div class="rank">{% if top.disabled %}-{% else %}{% trans 'rank' %}: {{ top.position }}{% endif %}</div>
+    </div>
+
+    <h2>{{ race }} {% if race.title != '' %}<small>[{{ race.name }}]</small>{% endif %}</h2>
+
+    <h4>{{ race.player_set.count }} {% trans 'members' %}, {{ race.children.count }} groups</h4>
+
+    {% if user.is_superuser %}
+    <div class="actions">
+        <span class="button-list">Superuser only: </span>
+        <a class="button" href="{% url admin:user_race_change race.id %}">✍</a>
+    </div>
+    {% endif %}
+
+    <div class="second">
+    </div>
+
+    <ul class="tabs">
+        <li><a href="#tab-1">{% trans 'Top users' %}</a></li>
+        <li><a href="#tab-2">{% trans 'Activity' %}</a></li>
+        <li><a href="#tab-3">{% trans 'Evolution' %}</a></li>
+    </ul>
+
+    <div class="tab_container">
+        <div id="tab-1" class="tab_content">
+        <div class="subgroups">
+        {% if race.children %}
+        <h4>{% trans 'Top subraces' %}</h4>
+        <ol class="top">{% for g in race.children %}
+            <li>{% player_group g %} <span class="points">{{ g.live_points }}</span></li>
+            {% endfor %}
+        </ol>
+        <a href="{% url groups_index %}">{% trans 'View all' %}</a>
+        {% endif %}
+        </div>
+
+        <ol class="top">
+            {% for u in top_users %}
+            <li>{% player u %}
+                <span class="points w50">{{ u.points }}</span>
+                {% if not race.parent %}
+                <span class="points w50">{% player_group u.group %}</span>
+                {% endif %}
+            </li>
+            {% empty %}
+            <li class="empty">{% trans 'Sorry, no users in this race' %}</li>
+            {% endfor %}
+        </ol>
+        </div>
+
+        <div id="tab-2" class="tab_content">
+            {% include 'activity/stream.html' %}
+        </div>
+
+        <div id="tab-3" class="tab_content">
+            <div class="subgroups">
+                <h3>{% trans 'Rank' %}</h3>
+                <p>{% trans 'Global' %}: <span class="points">{{ top.position }}</span></p>
+
+                <h3>{% trans 'Position evolution' %}</h3>
+                <p>{% trans 'Position evolution compared with races of the same kind.' %}</p>
+                <div id="legend"></div>
+            </div>
+            <div id="graf1" class="graf placeholder"></div>
+            <script id="source" language="javascript" type="text/javascript">
+            <!-- using flot to draw evolution -->
+            $(function () {
+                var d{{ race.id }} = [[null, 12],{% for p in top.week_evolution %}[{{p.0}},{{p.1}}],{% endfor %}[7, null]];
+                {% for g in race.sisters %}
+                    var d{{ g.id }} = [{% for p in g.top.week_evolution %}[{{ p.0 }},{{ p.1 }}],{% endfor %}];
+                {% endfor %}
+                var options = { lines: { show: true }, points: { show: true },
+                    xaxis: {
+                        ticks: [[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7]]
+                        },
+                    yaxis: {
+                        transform: function (v) { return -v; },
+                        inverseTransform: function (v) { return -v; },
+                    },
+                    legend: {
+                        container: $('#legend'),
+                    },
+                };
+                $("#tab-3").bind('custom', function() {
+                    $.plot($("#graf1"), [{ label: "<strong>{{ race.name }}</strong>", color: "green", data: d{{ race.id }} }, {% for g in race.sisters %}{label: "{{ g.name }}", data:d{{ g.id }}},{% endfor %}], options);
+                    $('#tab-3').unbind('custom');
+                });
+            });
+            </script>
+        </div>
+    </div>
+</div>
+{% endblock %}

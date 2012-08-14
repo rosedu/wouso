@@ -26,7 +26,7 @@
         {% for t in groups %}
             <tr>
                 <td>{{ t.name }}</td>
-                <td>{% player t.owner %}</td>
+                <td>{% player t.head %}</td>
                 <td align="center">{{ t.members.count }}</td>
                 <td>{{ t.active }}</td>
                 <td class="actions" nowrap>
