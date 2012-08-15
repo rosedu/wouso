@@ -8,9 +8,9 @@ var max_room;
 var max_boxes;
 var private_users;
 if(sessionStorage.firstFreeChat){
-    firstFreeChat = sessionStorage.firstFreeChat;
+    firstFreeChat = parseInt(sessionStorage.firstFreeChat);
     max_room = 1;
-    max_boxes = sessionStorage.max_boxes;
+    max_boxes = parseInt(sessionStorage.max_boxes);
     private_users = JSON.parse(sessionStorage.private_users);
 }
 else{
@@ -147,7 +147,8 @@ $(document).ready(function () {
     /* Switching on close */
     function switch_windows(from) {
         var i;
-        if (firstFreeChat <= max_boxes + 1) {
+        var max_value = max_room + 1;
+        if (firstFreeChat <= max_value) {
             for (i = from; i < firstFreeChat - 1; i++) {
                 //text_context[i+1]  = $("#PrivateboxTextArea" + (i + 1)).html();
                 change_values(i + 1, i);
