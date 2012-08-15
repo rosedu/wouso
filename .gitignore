@@ -16,3 +16,4 @@ build/
 .idea
 /pip-log.txt
 instance
+/docs/api/_build/
