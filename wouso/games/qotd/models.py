@@ -87,16 +87,25 @@ class QotdGame(Game):
         user.set_answered(choice, correct) # answer id
 
         if correct:
-            scoring.score(user, QotdGame, 'qotd-ok')
+            now = datetime.now()
+            midday = datetime.combine(now, time(12, 0, 0))
+            if datetime.now() < midday:
+                scoring.score(user, QotdGame, 'qotd-ok-morning')
+            else:
+                scoring.score(user, QotdGame, 'qotd-ok-evening')
 
     @classmethod
     def get_formulas(kls):
         """ Returns a list of formulas used by qotd """
         fs = []
         qotd_game = kls.get_instance()
-        fs.append(dict(id='qotd-ok', formula='points=3',
+        fs.append(dict(id='qotd-ok-morning', formula='points=4',
             owner=qotd_game.game,
-            description='Points earned on a correct answer')
+            description='Points earned on a correct answer in the morning')
+        )
+        fs.append(dict(id='qotd-ok-evening', formula='points=3',
+            owner=qotd_game.game,
+            description='Points earned on a correct answer in the evening')
         )
         return fs
 
