@@ -276,12 +276,26 @@ $(document).ready(function () {
             $("#PrivateboxTextBox" + id).focus();
         });
 
-        $("#PrivateboxTextBox" + id).keyup(function (event) {
+
+        $("#PrivateboxTextBox" + id).keydown(function (event) {
+
             stop_timer_for_swiching(id);
             if (event.keyCode == 13) {
                 SendMessage(id);
             }
+            if (event.keyCode == 9){
+                var next;
+                if(firstFreeChat > max_boxes)
+                    next = id % max_boxes + 1 ;
+                else
+                    next = (id + 1) % firstFreeChat;
+                $("#PrivateboxTextBox" + next).focus();
+                return false;
+            }
+
         });
+
+
 
         $("#OldLog" + id).click(function () {
             give_me_old_log(id);
