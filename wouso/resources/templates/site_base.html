@@ -35,6 +35,7 @@
 
 <BODY>
 <div id="container">
+    {% block header %}
     <div id="header">
         {% include 'interface/header.html' %}
 
@@ -42,6 +43,7 @@
             <a href="{% url homepage %}" id="logoa" title="{{config_title}}"></a>
         </div>
     </div>
+    {% endblock %}
 
     {% block search %}
     <div id="search">
@@ -55,8 +57,8 @@
             });
         </script>
     </div>
-    {% endblock %}
 
+    {% endblock %}
     <div class="spacer-search"></div>
 
     <div id="sidebar">
@@ -66,12 +68,12 @@
         {% endfor %}
         {% endblock %}
         {% if last10 %}
-	<div class="widget">
-        <h2>{% trans 'Online players' %}</h2>
-            {% for u in last10 %}
-                {% player u %}
-            {% endfor %}
-	</div>
+            <div class="widget">
+                <h2>{% trans 'Online players' %}</h2>
+                    {% for u in last10 %}
+                        {% player u %}
+                    {% endfor %}
+            </div>
         {% endif %}
     </div>
 
@@ -82,6 +84,7 @@
     </div>
 
     <div id="footer">
+        {% block footer %}
         <div id="footer_links">{% autoescape off %}{{ footer }}{% endautoescape %}
         <br/>
         <span id="poweredby">
@@ -89,6 +92,7 @@
         <a href="http://www.rosedu.org/"></a>
         </span>
         </div>
+        {% endblock %}
     </div>
 	{% autoescape off %}
     {{ config_hidden_footer }}
