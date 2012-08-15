@@ -50,6 +50,7 @@ function Private(room_id, log_number, text_context, users_name){
     this.user_name = users_name;
     this.timer = null;
     this.time_set = null;
+    this.hidden_position = true;
 }
 
 Private.prototype.getInfo = function(){
@@ -254,12 +255,16 @@ $(document).ready(function () {
             stop_timer_for_swiching(id);
             $("#Privatebox" + id).hide();
             $("#PrivateboxMinimize" + id).show();
+            private_users[id].hidden_position = false;
+            sessionStorage.private_users = JSON.stringify(private_users);
         });
 
         $("#UserNameMinimize" + id).click(function () {
             stop_timer_for_swiching(id);
             $("#Privatebox" + id).show();
             $("#PrivateboxMinimize" + id).hide();
+            private_users[id].hidden_position = true;
+            sessionStorage.private_users = JSON.stringify(private_users);
         });
 
         $("#PrivateboxTextBox" + id).click(function () {
@@ -422,6 +427,10 @@ $(document).ready(function () {
                 $("#PrivateboxTextArea" + i).html(private_users[i].text_context);
                 if(private_users[i].time_set)
                     private_users[i].time_set = setInterval('switch_color(' + i + ')', 500);
+                if(private_users[i].hidden_position == false){
+                        $("#Privatebox" + i).hide();
+                        $("#PrivateboxMinimize" + i).show();
+                }
             }
         }
     }
