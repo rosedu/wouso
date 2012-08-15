@@ -267,6 +267,7 @@ $(document).ready(function () {
 
         $("#PrivateboxTextArea" + id).click(function () {
             stop_timer_for_swiching(id);
+            $("#PrivateboxTextBox" + id).focus();
         });
 
         $("#PrivateboxTextBox" + id).keyup(function (event) {
@@ -357,6 +358,7 @@ $(document).ready(function () {
                 }else
                     init_chat(firstFreeChat);
                 put_box_name(firstFreeChat, setName);
+                $("#PrivateboxTextBox" + firstFreeChat).focus();
             }
             /*Initialize values.*/
             private_users[firstFreeChat] = new Private(chat_room, 0, '', setName);
