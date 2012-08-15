@@ -107,6 +107,7 @@ function stop_timer_for_swiching(id) {
     $('#Privatebar' + id).attr('style', "background: blue");
     $('#PrivatebarMinimize' + id).attr('style', "background: blue");
     private_users[id].timer = null;
+    private_users[id].time_set = null;
     sessionStorage.private_users = JSON.stringify(private_users);
 }
 
@@ -419,6 +420,8 @@ $(document).ready(function () {
                 init_chat(i);
                 put_box_name(i, private_users[i].user_name);
                 $("#PrivateboxTextArea" + i).html(private_users[i].text_context);
+                if(private_users[i].time_set)
+                    private_users[i].time_set = setInterval('switch_color(' + i + ')', 500);
             }
         }
     }
