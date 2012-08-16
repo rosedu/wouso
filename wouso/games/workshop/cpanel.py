@@ -6,6 +6,7 @@ from django.template.context import RequestContext
 from models import DAY_CHOICES
 from models import WorkshopGame, Semigroup, Schedule
 from wouso.core.user.models import Player
+from wouso.games.workshop.models import Workshop
 
 class AGForm(forms.ModelForm):
     class Meta:
@@ -130,5 +131,38 @@ def schedule_change(request, schedule=None):
                         {'module': 'workshop',
                          'form': form,
                          'instance': schedule},
+                        context_instance=RequestContext(request)
+    )
+
+@login_required
+def workshops(request):
+    workshops = Workshop.objects.all().order_by('-date')
+    return render_to_response('workshop/cpanel/workshops.html',
+                        {'module': 'workshop',
+                         'workshops': workshops,
+                         },
+                        context_instance=RequestContext(request)
+    )
+
+@login_required
+def workshop_mark4review(request, workshop):
+    workshop = get_object_or_404(Workshop, pk=workshop)
+
+    if workshop.is_started():
+        WorkshopGame.start_reviewing(workshop)
+
+    return redirect('ws_workshops')
+
+@login_required
+def workshop_reviewers(request, workshop):
+    workshop = get_object_or_404(Workshop, pk=workshop)
+
+    if workshop.is_started():
+        return redirect('ws_workshops')
+
+    return render_to_response('workshop/cpanel/workshop_map.html',
+                        {'module': workshop,
+                         'workshop': workshop,
+                         },
                         context_instance=RequestContext(request)
     )

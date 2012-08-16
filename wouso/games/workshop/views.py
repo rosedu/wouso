@@ -3,7 +3,7 @@ from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template.context import RequestContext
 from django.utils.translation import ugettext as _
 from models import WorkshopGame
-from wouso.games.workshop.models import Assesment, Workshop
+from wouso.games.workshop.models import Assesment, Workshop, Answer, Review
 
 @login_required
 def index(request, extra_context=None):
@@ -64,9 +64,17 @@ def review(request, workshop):
     assesment = Assesment.get_for_player_and_workshop(player, workshop)
 
     if not assesment:
-        return do_error(_('Cannot review an workshop you did not participate to.'))
+        return do_error(request, _('Cannot review an workshop you did not participate to.'))
 
     assesments = player.assesments_review.filter(workshop=workshop)
+
+    if request.method == 'POST':
+        answer = get_object_or_404(Answer, pk=request.GET.get('a'))
+        review = Review.objects.get_or_create(reviewer=player, answer=answer)[0]
+
+        review.feedback = request.POST['feedback_%d' % answer.id]
+        review.answer_grade = request.POST['grade_%d' % answer.id]
+        review.save()
 
     return render_to_response('workshop/review.html',
                 {'assesment': assesment,

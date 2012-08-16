@@ -1,0 +1,24 @@
+{% extends 'workshop/cpanel/index.html' %}
+{% load workshop %}
+{% load i18n %}
+
+{% block sectiontitle %}Workshop #{{ workshop.id }}{% endblock %}
+
+{% block tabcontent %}
+<p>Assesments and reviewers:</p>
+
+<ul>
+    {% for as in workshop.assesment_set.all %}
+    <li>
+        {{ as.player }}
+        <ul>
+            {% for r in as.reviewers.all %}
+            <li>{{ r }}</li>
+            {% endfor %}
+        </ul>
+    </li>
+    {% endfor %}
+</ul>
+
+    <a class="button" href="{% url ws_workshops %}">Workshops</a>
+{% endblock %}

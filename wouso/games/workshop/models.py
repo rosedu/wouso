@@ -52,11 +52,21 @@ class Semigroup(PlayerGroup):
             return None
 
 class Workshop(models.Model):
+    STATUSES = (
+        (0, 'Started'),
+        (1, 'Reviewing'),
+        (2, 'Grading'),
+        (3, 'Archived'),
+    )
     semigroup = models.ForeignKey(Semigroup)
     date = models.DateField(auto_now_add=True)
     active_until = models.DateTimeField(blank=True, null=True)
+    status = models.IntegerField(choices=STATUSES, default=0)
 
     questions = models.ManyToManyField(Question, blank=True)
+
+    def is_started(self):
+        return self.status == 0
 
     def is_active(self, timestamp=None):
         timestamp = timestamp if timestamp else datetime.now()
@@ -64,6 +74,9 @@ class Workshop(models.Model):
             return False
 
         return self.active_until >= timestamp
+
+    def is_reviewable(self):
+        return self.status == 1
 
     def __unicode__(self):
         return u"#%d - on %s" % (self.pk, self.date)
@@ -106,17 +119,23 @@ class Answer(models.Model):
     text = models.TextField(max_length=2000)
     grade = models.IntegerField(blank=True, null=True)
 
+    @property
+    def reviewers(self):
+        return Player.objects.filter(id__in=Review.objects.filter(answer=self).values('reviewer'))
+
     __unicode__ = lambda self: self.text
 
 class Review(models.Model):
     answer = models.ForeignKey(Answer)
     reviewer = models.ForeignKey(Player)
 
-    feedback = models.TextField(max_length=2000)
-    answer_grade = models.IntegerField()
+    feedback = models.TextField(max_length=2000, blank=True, null=True)
+    answer_grade = models.IntegerField(blank=True, null=True)
 
-    review_reviewer = models.ForeignKey(Player, related_name='reviews')
+    review_reviewer = models.ForeignKey(Player, related_name='reviews', blank=True, null=True)
     review_grade = models.IntegerField(blank=True, null=True)
+
+    __unicode__ = lambda self: u"%s by %s" % (self.feedback, self.reviewer)
 
 class WorkshopGame(Game):
     class Meta:
@@ -205,7 +224,11 @@ class WorkshopGame(Game):
         # TODO: magic, now only rotate
         pp_rotated = [participating_players[-1]] + participating_players[:-1]
         for i,a in enumerate(workshop.assesment_set.all()):
+            a.reviewers.clear()
             a.reviewers.add(pp_rotated[i])
+
+        workshop.status = 1 # reviewing
+        workshop.save()
 
     @classmethod
     def get_player_info(cls, player, workshop):

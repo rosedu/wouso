@@ -10,4 +10,8 @@ urlpatterns = patterns('wouso.games.workshop.cpanel',
     url(r'^schedule/$', 'schedule', name='ws_schedule'),
     url(r'^schedule/add/$', 'schedule_change', name='ws_schedule_change'),
     url(r'^schedule/edit/(?P<schedule>\d+)/$', 'schedule_change', name='ws_schedule_change'),
+
+    url(r'^workshops/$', 'workshops', name='ws_workshops'),
+    url(r'^workshops/rev/(?P<workshop>\d+)/$', 'workshop_mark4review', name='ws_mark_for_review'),
+    url(r'^workshops/map/(?P<workshop>\d+)/$', 'workshop_reviewers', name='ws_reviewers_map'),
 )
