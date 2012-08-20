@@ -78,17 +78,12 @@ def serve_message(user, room=None, position=None):
 
 @login_required
 def index(request):
-    player = request.user.get_profile() if request.user.is_authenticated() else None
+
     if BoolSetting.get('disable-Chat').get_value():
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
-
-    oldest = datetime.now() - timedelta(minutes = 10)
-    online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
-
     user = request.user.get_profile()
     return render_to_response('chat/chat.html',
                             {'chat_user': user,
-                             'last': online_last10,
                             },
                             context_instance=RequestContext(request))
 
