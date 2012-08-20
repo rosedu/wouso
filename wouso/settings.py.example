@@ -123,6 +123,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 INSTALLED_APPS = (
+    'wouso.core.django_qunit', #qunit test.
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -189,3 +190,11 @@ C2DM_AUTH_TOKEN = '' # Change this to a ClientLogin token from Google
 # please don't remove this yet
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
     from localsettings import *
+
+
+BASE_PATH = os.path.dirname(__file__)
+
+QUNIT_TEST_DIRECTORY = os.path.join(BASE_PATH, 'qunit_tests')
+
+
+

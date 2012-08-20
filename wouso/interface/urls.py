@@ -80,4 +80,7 @@ urlpatterns = patterns('',
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
 
+    #qunit test url.
+    url(r'^qunit/', include('wouso.core.django_qunit.urls'))
+
 )
