@@ -296,8 +296,6 @@ $(document).ready(function () {
 
         });
 
-
-
         $("#OldLog" + id).click(function () {
             give_me_old_log(id);
             stop_timer_for_swiching(id);
