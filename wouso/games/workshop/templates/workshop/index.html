@@ -22,7 +22,8 @@
 <ul>
     {% for a in user.get_profile.assesments.all %}
         <li>{{ a.workshop }}
-            {% if not a.workshop.is_active %}<a href="{% url workshop_review a.workshop.id %}">{% trans 'Reviews' %}</a>{% endif %}
+            {% if not a.workshop.is_active %}
+                <a href="{% url workshop_review a.workshop.id %}">{% trans 'Your reviews' %}</a>{% endif %}
             <a href="">{% trans 'Results' %}</a>
         </li>
     {% endfor %}

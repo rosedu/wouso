@@ -8,6 +8,10 @@
 {% block sectiontitle %}Workshop{% endblock %}
 
 {% block sectioncontent %}
+<div class="actions">
+    {% now "M. d, Y, H:i:s" %}
+</div>
+
 <ul class="tabs">
     <li ><a href="{% url workshop_home %}">Timetable</a></li>
     <li ><a href="{% url ws_schedule %}">Schedule</a></li>
