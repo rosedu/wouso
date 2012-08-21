@@ -113,3 +113,19 @@ def review_change(request, review):
                  'form': form},
                 context_instance=RequestContext(request)
     )
+
+@login_required
+def results(request, workshop):
+    player = request.user.get_profile()
+    workshop = get_object_or_404(Workshop, pk=workshop)
+
+    assesment = Assesment.get_for_player_and_workshop(player, workshop)
+
+    if not assesment:
+        return do_error(request, _('Cannot view results for an workshop you did not participate to.'))
+
+    return render_to_response('workshop/results.html',
+                {'assesment': assesment,
+                 'workshop': workshop},
+                context_instance=RequestContext(request)
+    )

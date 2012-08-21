@@ -13,7 +13,7 @@
         {% if workshop.is_active %}
             <a href="{% url workshop_play %}">Play!</a>
         {% else %}
-            You now must review other's answers.
+            {% trans "You now must review other's answers." %}
         {% endif %}
     {% endif %}
 {% endif %}</p>
@@ -24,7 +24,7 @@
         <li>{{ a.workshop }}
             {% if not a.workshop.is_active %}
                 <a href="{% url workshop_review a.workshop.id %}">{% trans 'Your reviews' %}</a>{% endif %}
-            <a href="">{% trans 'Results' %}</a>
+            <a href="{% url workshop_results a.workshop.id %}">{% trans 'Results' %}</a>
         </li>
     {% endfor %}
 </ul>

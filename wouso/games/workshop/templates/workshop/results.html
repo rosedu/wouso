@@ -1,0 +1,32 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Workshop' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Results for workshop' %} #{{ workshop.pk }}{% endblock %}
+
+{% block sectioncontent %}
+
+<p>{% trans "Your final grade is:" %} {{ assesment.grade }}</p>
+<ul>
+{% for a in assesment.answer_set.all %}
+    <li>{{ forloop.counter }}. {{ a.question.text }}
+        <p> <em>{% trans 'Your answer' %}:</em>
+            <tt>{{ a.text }}</tt> <em>Grade:</em> <strong>{{ a.grade }}</strong>
+            <ul>
+            {% for r in a.review_set.all %}
+                <li>
+                    {% trans 'Anonymous' %}{{ forloop.counter }}
+                    <tt>{{ r.feedback }}</tt>
+                    <br/>
+                    <em>grade:</em> <strong>{{ r.answer_grade }}</strong>,
+                    <em>review grade:</em> <strong>{{ r.review_grade }}</strong>
+                </li>
+            {% endfor %}
+            </ul>
+        </p>
+    </li>
+{% endfor %}
+</ul>
+
+<a class="button" href="{% url workshop_index_view %}">Index</a>
+{% endblock %}
