@@ -16,7 +16,7 @@
 {% csrf_token %}
 {% trans 'Cast: ' %}<select name="spell" id="spell-selector">
         <option></option>
-        {% for s in player.spells_available.all %}<option value="{{ s.spell.id }}">{{ s.spell.title }} ({{ s.amount }})</option>
+        {% for s in player.magic.spells_available.all %}<option value="{{ s.spell.id }}">{{ s.spell.title }} ({{ s.amount }})</option>
         {% endfor %}
       </select>
 {% trans 'on' %} {% player destination %}
