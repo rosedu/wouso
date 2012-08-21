@@ -31,7 +31,7 @@
         </ul>
     {% endif %}
         <ul class="artifacts" id="player-spells">
-        {% for s in profile.spells.all %}
+        {% for s in profile.magic.spells.all %}
             <li>{% if s.source.id == player.id %}{% spell_due s %}
                 {% else %}{% if profile.id == player.id %}
                 {% spell_due s %}
