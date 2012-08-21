@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.conf import settings
+from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup
 from wouso.core.qpool.models import Schedule, Question, Tag, Category
@@ -21,7 +22,7 @@ from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm
 
 
-@login_required
+@staff_required
 def dashboard(request):
     from wouso.games.quest.models import Quest, QuestGame
     from django import get_version
