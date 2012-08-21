@@ -1,10 +1,10 @@
 from django import forms
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template.context import RequestContext
 
 from models import DAY_CHOICES
 from models import WorkshopGame, Semigroup, Schedule
+from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player
 from wouso.games.workshop.models import Workshop, Assesment, Review
 
@@ -13,7 +13,7 @@ class AGForm(forms.ModelForm):
         model = Semigroup
         fields = ('name', 'day', 'hour')
 
-@login_required
+@staff_required
 def workshop_home(request, **kwargs):
     return render_to_response('workshop/cpanel/index.html',
                         {'module': 'workshop',
@@ -23,7 +23,7 @@ def workshop_home(request, **kwargs):
                         context_instance=RequestContext(request)
     )
 
-@login_required
+@staff_required
 def add_group(request):
     if request.method == 'POST':
         form = AGForm(request.POST)
@@ -42,7 +42,7 @@ def add_group(request):
                         context_instance=RequestContext(request)
     )
 
-@login_required
+@staff_required
 def edit_group(request, semigroup):
     semigroup = get_object_or_404(Semigroup, pk=semigroup)
 
@@ -65,7 +65,7 @@ def edit_group(request, semigroup):
     )
 
 
-@login_required
+@staff_required
 def edit_spot(request, day, hour):
     sg = Semigroup.get_by_day_and_hour(day, hour)
 
@@ -87,7 +87,7 @@ def edit_spot(request, day, hour):
                         context_instance=RequestContext(request)
     )
 
-@login_required
+@staff_required
 def kick_off(request, player):
     player = get_object_or_404(Player, pk=player)
 
@@ -97,7 +97,7 @@ def kick_off(request, player):
 
     return redirect('workshop_home')
 
-@login_required
+@staff_required
 def schedule(request):
     schedules = Schedule.objects.all().order_by('start_date')
 
@@ -107,7 +107,7 @@ def schedule(request):
                         context_instance=RequestContext(request)
     )
 
-@login_required
+@staff_required
 def schedule_change(request, schedule=None):
     class SCForm(forms.ModelForm):
         class Meta:
@@ -134,7 +134,7 @@ def schedule_change(request, schedule=None):
                         context_instance=RequestContext(request)
     )
 
-@login_required
+@staff_required
 def workshops(request):
     workshops = Workshop.objects.all().order_by('-date')
     return render_to_response('workshop/cpanel/workshops.html',
@@ -144,7 +144,7 @@ def workshops(request):
                         context_instance=RequestContext(request)
     )
 
-@login_required
+@staff_required
 def workshop_mark4review(request, workshop):
     workshop = get_object_or_404(Workshop, pk=workshop)
 
@@ -153,7 +153,7 @@ def workshop_mark4review(request, workshop):
 
     return redirect('ws_workshops')
 
-@login_required
+@staff_required
 def workshop_mark4grading(request, workshop):
     workshop = get_object_or_404(Workshop, pk=workshop)
 
@@ -162,7 +162,7 @@ def workshop_mark4grading(request, workshop):
 
     return redirect('ws_workshops')
 
-@login_required
+@staff_required
 def workshop_reviewers(request, workshop):
     workshop = get_object_or_404(Workshop, pk=workshop)
 
@@ -176,7 +176,7 @@ def workshop_reviewers(request, workshop):
                         context_instance=RequestContext(request)
     )
 
-@login_required
+@staff_required
 def workshop_grade_assesment(request, assesment):
     assesment = get_object_or_404(Assesment, pk=assesment)
     assistant = request.user.get_profile()
