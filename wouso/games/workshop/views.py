@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template.context import RequestContext
@@ -80,5 +81,35 @@ def review(request, workshop):
                 {'assesment': assesment,
                  'workshop': workshop,
                  'assesments': assesments},
+                context_instance=RequestContext(request)
+    )
+
+@login_required
+def review_change(request, review):
+    review = get_object_or_404(Review, pk=review)
+    player = request.user.get_profile()
+
+    if review.reviewer != player:
+        return do_error(request, _('Cannot change another review'))
+
+    if not review.workshop.is_reviewable():
+        return do_error(request, _('Workshop not reviewable'))
+
+    class RCForm(forms.ModelForm):
+        class Meta:
+            model = Review
+            fields = ('feedback', 'answer_grade')
+
+    if request.method == 'POST':
+        form = RCForm(request.POST, instance=review)
+        if form.is_valid():
+            form.save()
+            return redirect('workshop_review', workshop=review.workshop.id)
+    else:
+        form = RCForm(instance=review)
+
+    return render_to_response('workshop/review_change.html',
+                {'review': review,
+                 'form': form},
                 context_instance=RequestContext(request)
     )

@@ -135,6 +135,8 @@ class Review(models.Model):
     review_reviewer = models.ForeignKey(Player, related_name='reviews', blank=True, null=True)
     review_grade = models.IntegerField(blank=True, null=True)
 
+    # Properties and methods
+    workshop = property(lambda self: self.answer.assesment.workshop)
     __unicode__ = lambda self: u"%s by %s" % (self.feedback, self.reviewer)
 
 class WorkshopGame(Game):

@@ -23,9 +23,13 @@
                             {% else %}
                                 {% trans 'Anonymous' %}{{ forloop.counter }}
                             {% endif %}:
-                            <tt>{{ r.feedback }}</tt>,
+                            <tt>{{ r.feedback }}</tt>
+                            <br/>
                             <em>grade:</em> <strong>{{ r.answer_grade }}</strong>,
                             <em>review grade:</em> <strong>{{ r.review_grade }}</strong>
+                            {% if r.reviewer == user.get_profile %}
+                                <a class="button" href="{% url workshop_edit_review r.id %}">{% trans 'Change' %}</a>
+                            {% endif %}
                         </li>
                     {% endfor %}
                     </ul>
