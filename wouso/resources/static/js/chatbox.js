@@ -222,7 +222,7 @@ $(document).ready(function () {
     function init_chat(id) {
         //Position in page
         var position = 175 * id;
-        var html = '<div class="Privatebox" id="Privatebox' + id + '" style="right: ' + position + 'px">' +
+        var html = '<div class="Privatebox" id="Privatebox' + id + '" style="right: ' + position + 'px; position:fixed">' +
             '    <div id="Privatebar' + id + '" style="background: blue">' +
             '        <input type="button" id="UserName' + id + '" class="PrivateboxUserName"/>' +
             '        <input type="button" id="ExitButton' + id + '" class="PrivateboxExitButton" value="x"/>' +
@@ -233,7 +233,7 @@ $(document).ready(function () {
             '    </div>' +
             '    <input type="text" id="PrivateboxTextBox' + id + '" class="PrivateboxTextBox"/>' +
             '</div>' +
-            '<div class="Privatebox" id="PrivateboxMinimize' + id + '" style="right: ' + position + 'px">' +
+            '<div class="Privatebox" id="PrivateboxMinimize' + id + '" style="right: ' + position + 'px; ; position:fixed">' +
             '    <div id="PrivatebarMinimize' + id + '" style="background: blue">' +
             '      <input type="button" id="UserNameMinimize' + id + '"   class="PrivateboxUserName"/>' +
             '      <input type="button" id="ExitButtonMinimize' + id + '" class="PrivateboxExitButton" value="x"/>' +
