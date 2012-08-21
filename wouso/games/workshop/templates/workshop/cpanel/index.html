@@ -20,18 +20,19 @@
 
 <div class="tab_container">
     <div id="tab-1" class="tab_content">
-        {% block tabcontent %}
 
         <div class="subgroups">
-            <strong>Information</strong>
-            <br/>
-
-            Current spot: {{ info.get_spot }}<br/>
-            Current group: {{ info.get_semigroup }}<br/>
-            Current qpool: {{ info.get_question_pool.count }}<br/>
-
+        {% block information %}
+            {% if info %}
+        <p>
+        Current spot: {{ info.get_spot }}<br/>
+        Current group: {{ info.get_semigroup }}<br/>
+        Current qpool: {{ info.get_question_pool.count }}<br/>
+        </p>{% endif %}
+        {% endblock %}
         </div>
 
+        {% block tabcontent %}
         <table>
             <tr>
                 <th>Hour/Day</th>
