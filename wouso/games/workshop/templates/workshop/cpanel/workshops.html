@@ -32,8 +32,11 @@
                 {% if w.is_started and not w.is_active %}
                 <a href="{% url ws_mark_for_review w.id %}">Mark for review</a>
                 {% endif %}
+                {% if w.is_reviewable %}
+                <a href="{% url ws_mark_for_grading w.id %}">Mark for grading</a>
+                {% endif %}
                 {% if not w.is_started %}
-                <a href="{% url ws_reviewers_map w.id %}">Reviewers map</a>
+                    <a href="{% url ws_reviewers_map w.id %}">{% if w.is_gradable %}Grades{% else %}Reviewers map{% endif %}</a>
                 {% endif %}
             </td>
         </tr>

@@ -78,6 +78,13 @@ class Workshop(models.Model):
     def is_reviewable(self):
         return self.status == 1
 
+    def is_gradable(self):
+        return self.status == 2
+
+    def set_gradable(self):
+        self.status = 2
+        self.save()
+
     def __unicode__(self):
         return u"#%d - on %s" % (self.pk, self.date)
 
@@ -101,6 +108,13 @@ class Assesment(models.Model):
             a.save()
         self.answered = True
         self.time_end = datetime.now()
+        self.save()
+
+    def update_grade(self):
+        """ Set grade as sum of every answer final grade
+        """
+        grade = Answer.objects.filter(assesment=self).aggregate(grade=models.Sum('grade'))['grade']
+        self.grade = grade
         self.save()
 
     @classmethod

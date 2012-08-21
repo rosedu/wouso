@@ -6,20 +6,27 @@
 
 {% block sectioncontent %}
 
-<p>{% trans "Your final grade is:" %} {{ assesment.grade }}</p>
+<p>{% trans "Your final grade is:" %} <strong>{{ assesment.grade }}</strong></p>
 <ul>
 {% for a in assesment.answer_set.all %}
     <li>{{ forloop.counter }}. {{ a.question.text }}
         <p> <em>{% trans 'Your answer' %}:</em>
-            <tt>{{ a.text }}</tt> <em>Grade:</em> <strong>{{ a.grade }}</strong>
+            <tt>{{ a.text }}</tt>
             <ul>
             {% for r in a.review_set.all %}
                 <li>
+                    {% if r.reviewer.in_staff_group %}
+                    <strong>{% trans 'Assistant' %}</strong>
+                        <tt>{{ r.feedback }}</tt>
+                        <br/>
+                        <em>grade:</em> <strong>{{ a.grade }}</strong>
+                    {% else %}
                     {% trans 'Anonymous' %}{{ forloop.counter }}
                     <tt>{{ r.feedback }}</tt>
                     <br/>
                     <em>grade:</em> <strong>{{ r.answer_grade }}</strong>,
                     <em>review grade:</em> <strong>{{ r.review_grade }}</strong>
+                    {% endif %}
                 </li>
             {% endfor %}
             </ul>

@@ -13,5 +13,8 @@ urlpatterns = patterns('wouso.games.workshop.cpanel',
 
     url(r'^workshops/$', 'workshops', name='ws_workshops'),
     url(r'^workshops/rev/(?P<workshop>\d+)/$', 'workshop_mark4review', name='ws_mark_for_review'),
+    url(r'^workshops/grd/(?P<workshop>\d+)/$', 'workshop_mark4grading', name='ws_mark_for_grading'),
     url(r'^workshops/map/(?P<workshop>\d+)/$', 'workshop_reviewers', name='ws_reviewers_map'),
+
+    url(r'^grade/assesment/(?P<assesment>\d+)/$', 'workshop_grade_assesment', name='ws_grade_assesment'),
 )

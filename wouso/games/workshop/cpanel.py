@@ -6,7 +6,7 @@ from django.template.context import RequestContext
 from models import DAY_CHOICES
 from models import WorkshopGame, Semigroup, Schedule
 from wouso.core.user.models import Player
-from wouso.games.workshop.models import Workshop
+from wouso.games.workshop.models import Workshop, Assesment, Review
 
 class AGForm(forms.ModelForm):
     class Meta:
@@ -154,6 +154,15 @@ def workshop_mark4review(request, workshop):
     return redirect('ws_workshops')
 
 @login_required
+def workshop_mark4grading(request, workshop):
+    workshop = get_object_or_404(Workshop, pk=workshop)
+
+    if workshop.is_reviewable():
+        workshop.set_gradable()
+
+    return redirect('ws_workshops')
+
+@login_required
 def workshop_reviewers(request, workshop):
     workshop = get_object_or_404(Workshop, pk=workshop)
 
@@ -161,8 +170,51 @@ def workshop_reviewers(request, workshop):
         return redirect('ws_workshops')
 
     return render_to_response('workshop/cpanel/workshop_map.html',
-                        {'module': workshop,
+                        {'module': 'workshop',
                          'workshop': workshop,
                          },
                         context_instance=RequestContext(request)
+    )
+
+@login_required
+def workshop_grade_assesment(request, assesment):
+    assesment = get_object_or_404(Assesment, pk=assesment)
+    assistant = request.user.get_profile()
+
+    if request.method == 'POST':
+        data = request.POST
+        for a in assesment.answer_set.all():
+            try:
+                grade = int(data.get('grade_%d' % a.id, ''))
+            except ValueError:
+                pass
+            else:
+                a.grade = grade
+                a.save()
+
+            # Update review
+            feedback = data.get('feedback_%d' % a.id, '')
+            if feedback:
+                review = Review.objects.get_or_create(answer=a, reviewer=assistant)[0]
+                review.feedback = feedback
+                review.save()
+
+            # Update other reviews' grades
+            for r in a.review_set.all():
+                try:
+                    grade = int(data.get('review_grade_%d' % r.id, ''))
+                except ValueError:
+                    pass
+                else:
+                    r.review_grade = grade
+                    r.review_reviewer = assistant
+                    r.save()
+        # Grade the entire assesment
+        assesment.update_grade()
+
+    return render_to_response('workshop/cpanel/workshop_grade_assesment.html',
+                        {'module': 'workshop',
+                         'assesment': assesment,
+                         },
+                         context_instance=RequestContext(request)
     )
