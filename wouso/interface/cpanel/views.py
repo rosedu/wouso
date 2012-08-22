@@ -371,7 +371,7 @@ def qpool_export(request, cat):
     for q in category.question_set.all():
         response.write(u'? %s\n' % q.text)
         for a in q.answers:
-            response.write(u'%s%s\n' % ('+' if a.correct else '-', a.text))
+            response.write(u'%s %s\n' % ('+' if a.correct else '-', a.text))
         response.write('\n')
 
     return response
