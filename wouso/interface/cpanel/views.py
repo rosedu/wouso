@@ -3,12 +3,13 @@ from django.contrib.auth import models as auth
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django import forms
-from django.http import  HttpResponseRedirect
+from django.http import  HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.conf import settings
+from django.template.defaultfilters import slugify
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup
@@ -361,6 +362,19 @@ def qpool_managetags(request):
                             context_instance=RequestContext(request)
     )
 
+@permission_required('config.change_setting')
+def qpool_export(request, cat):
+    category = get_object_or_404(Category, name=cat)
+    response = HttpResponse(mimetype='text/txt')
+    response['Content-Disposition'] = 'attachment; filename=question_%s_export.txt' % slugify(category.name)
+
+    for q in category.question_set.all():
+        response.write(u'? %s\n' % q.text)
+        for a in q.answers:
+            response.write(u'%s%s\n' % ('+' if a.correct else '-', a.text))
+        response.write('\n')
+
+    return response
 
 # End qpool
 

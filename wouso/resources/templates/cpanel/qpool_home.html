@@ -31,7 +31,13 @@
 
 <div class="tab_container">
     <div id="tab-1" class="tab_content">
-        <div class="spacer"></div>
+        <div class="actions">
+            {% if cat == 'qotd' %}
+            <a class="button" href="{% url qotd_schedule %}" title="schedule active questions">Automatic schedule</a>
+            {% endif %}
+            <a class="button" href="{% url qpool_export category.name %}">Export all</a>
+            <a class="button" href="{% url remove_all cat=cat %}" onclick="return confirm('Are you sure do you want to remove all questions in this category?');">Remove all</a>
+        </div>
 
         <div class="subgroups">
             {% block right-sidebar %}
@@ -76,26 +82,21 @@
 
         <table>
             <tr>
-                {% if cat == 'search' %}
                 <th>#</th>
-                {% endif %}
-                {% if cat == 'qotd' %}
-                <th>Day</th>
-                {% endif %}
                 <th>Question</th>
                 {% if cat != 'proposed' %}
                 <th>Active</th>
                 {% else %}
                 <th>Endorsed</th>
                 {% endif %}
+                {% if cat == 'qotd' %}
+                <th>Day</th>
+                {% endif %}
                 <th>Actions</th>
             </th>
         {% for q in q_page.object_list %}
             <tr>
-                {% if cat == 'search' %}<td>{{q.id}}</td>{% endif %}
-                {% if cat == 'qotd' %}
-                <td nowrap {% if q.scheduled == today %}class="bold"{%endif%}>{{ q.scheduled }}</td>
-                {% endif %}
+                <td align="right">{{ q.id }}</td>
                 <td>{{ q }}<span class="points">{% if not q.is_valid %}<span class="wrong">Invalid</span>{% endif %}</span>
                     {% if cat != 'proposed'%}
                         <div class="second">{% if q.tag %}tags: {{ q.tag }}{% endif %}</div>
@@ -120,6 +121,11 @@
                 </a>
                 </td>
                 {% endif %}
+
+                {% if cat == 'qotd' %}
+                <td nowrap {% if q.scheduled == today %}class="bold"{%endif%}>{{ q.scheduled }}</td>
+                {% endif %}
+
                 <td class="actions" nowrap>
                     <a class="button-min" href="{% url question_edit q.id%}">✍</a>
                     <a class="button-min" href="{% url question_del q.id%}" onclick="return confirm('really?');">✕</a>
@@ -156,11 +162,6 @@
 {% endblock %}
 
 {% block extra_sidebar %}
-    {% if cat == 'qotd' %}
-    <ul class="menu no-border">
-        <li><a class="button" href="{% url qotd_schedule %}" title="schedule active questions">Automatic schedule</a></li>
-    </ul>
-    {% endif %}
     {% if cat == 'challenge' %}
     <h3> Active tags </h3>
     {% if tags == 0 %}
@@ -173,9 +174,4 @@
     {% endif %}
     {% endif %}
 
-    {% if cat != 'search' and cat %}
-    <ul class="menu no-border">
-        <li><a class="button" href="{% url remove_all cat=cat %}" onclick="return confirm('Are you sure?');">Remove all</a></li>
-    </ul>
-    {% endif %}
 {% endblock %}

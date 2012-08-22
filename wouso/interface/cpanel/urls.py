@@ -15,6 +15,7 @@ upat = [
     url(r'^qpool/switch_active/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.question_switch', name='switch_active'),
     url(r'^qpool/importer/$', 'wouso.interface.cpanel.views.qpool_importer', name='importer'),
     url(r'^qpool/importer/send$', 'wouso.interface.cpanel.views.qpool_import_from_upload', name='importer_send'),
+    url(r'^qpool/exporter/(?P<cat>\w*)/$', 'wouso.interface.cpanel.views.qpool_export', name='qpool_export'),
     url(r'^qpool/qotd/schedule$', 'wouso.interface.cpanel.views.qotd_schedule', name='qotd_schedule'),
     url(r'^qpool/cat/(?P<cat>\w*)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
     url(r'^qpool/cat/(?P<cat>\w*)/(?P<page>\d+)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
