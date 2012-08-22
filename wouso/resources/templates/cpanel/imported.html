@@ -1,10 +1,10 @@
-{% extends 'cpanel/index.html' %}
+{% extends 'cpanel/importer.html' %}
 
-{% block sectiontitle %}Questions importer{% endblock %}
-
-{% block sectioncontent %}
+{% block subsectioncontent %}
 
 <h3>{{ nr }} questions successfully imported.</h3>
+
+   <a class="button" href="{% url qpool_home cat=category.name %}">View</a>
 
 {% endblock %}
 

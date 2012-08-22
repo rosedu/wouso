@@ -317,11 +317,11 @@ def qpool_import_from_upload(request):
     tags = [Tag.objects.filter(name=tag)[0] for tag in tags]
     infile = request.FILES.get('file', None)
     if not infile:
-        return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.importer'))
+        return redirect('importer')
 
 
     nr = import_from_file(infile, proposed_by=request.user, endorsed_by=endorsed_by, category=category, tags=tags, all_active=all_active)
-    return render_to_response('cpanel/imported.html', {'module': 'qpool', 'nr': nr},
+    return render_to_response('cpanel/imported.html', {'module': 'qpool', 'nr': nr, 'category': category},
                               context_instance=RequestContext(request))
 
 
