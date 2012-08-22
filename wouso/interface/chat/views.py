@@ -78,10 +78,12 @@ def serve_message(user, room=None, position=None):
 
 @login_required
 def index(request):
-
+    user = request.user.get_profile()
+    if user.has_modifier('block-global-chat-page') or user.has_modifier('block-communication'):
+        return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
     if BoolSetting.get('disable-Chat').get_value():
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
-    user = request.user.get_profile()
+
     return render_to_response('chat/chat.html',
                             {'chat_user': user,
                             },
@@ -109,6 +111,9 @@ def online_players(request):
     # gather users online in the last ten minutes
     oldest = datetime.now() - timedelta(hours = 1000)
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('user__username')
+    def is_not_blocked(x):
+        return not x.has_modifier('block-communication')
+    online_last10 = filter(is_not_blocked, online_last10)
 
     return render_to_response('chat/chat_last.html',
                             {
@@ -151,6 +156,10 @@ def sendmessage(request):
             user_to = Player.objects.get(id=data['to'])
             user_to = user_to.get_extension(ChatUser)
         except ChatUser.DoesNotExist:
+            return HttpResponseBadRequest()
+        if user.has_modifier('block-communication'):
+            return HttpResponseBadRequest()
+        if user_to.has_modifier('block-communication'):
             return HttpResponseBadRequest()
         rooms = ChatRoom.objects.exclude(name='global').filter(participants=user).filter(participants=user_to)
         rooms = [r for r in rooms if r.participants.count() <= 2]
