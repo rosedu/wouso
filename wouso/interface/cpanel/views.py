@@ -91,29 +91,55 @@ def games(request):
                                'module': 'games'},
                               context_instance=RequestContext(request))
 
-# TODO: gather categories from db.
-# used by qpool and qpool_search
-CATEGORIES = (('Qotd', 'qotd'), ('Challenge', 'challenge'), ('Quest', 'quest'), ('Proposed', 'proposed'),
-    ('Workshop', 'workshop'))
 
 @permission_required('config.change_setting')
 def qpool_home(request, cat=None, page=u'1', tag=None):
+    categories = Category.objects.all()
+
     if cat is None:
         cat = 'qotd'
 
-    questions = get_questions_with_category(str(cat), active_only=False, endorsed_only=False)
+    qs = get_questions_with_category(str(cat), active_only=False, endorsed_only=False)
     if tag:
         tag = get_object_or_404(Tag, pk=tag, category__name=cat)
-        questions = questions.filter(tags=tag)
-
-    if cat == 'qotd':
-        questions = questions.order_by('schedule__day')
-
+        qs = qs.filter(tags=tag)
 
     tags = Tag.objects.all().exclude(name__in=['qotd', 'challenge', 'quest'])
     form = TagsForm(tags=tags)
 
-    paginator = Paginator(questions, 15)
+    category = get_object_or_404(Category, name=cat)
+    session_filter_name = 'tag_filters_%s' % category.name
+    tag_filters = request.session.get(session_filter_name, [])
+    if request.GET.get('addtagfilter'):
+        tag = get_object_or_404(Tag, pk=request.GET.get('addtagfilter'))
+        tag_filters.append(tag.id)
+    if request.GET.get('remtagfilter'):
+        tag = get_object_or_404(Tag, pk=request.GET.get('remtagfilter'))
+        if tag.id in tag_filters:
+            tag_filters.remove(tag.id)
+    request.session[session_filter_name] = tag_filters
+    if tag_filters:
+        qs = qs.filter(tags__in=tag_filters)
+
+    prop_filter_name = 'prop_filters_%s' % category.name
+    prop_filters = request.session.get(prop_filter_name, [])
+    if request.GET.get('addpropfilter'):
+        prop_filters.append(request.GET.get('addpropfilter'))
+    if request.GET.get('rempropfilter'):
+        f = request.GET.get('rempropfilter')
+        if f in prop_filters:
+            prop_filters.remove(f)
+    request.session[prop_filter_name] = prop_filters
+    if 'active' in prop_filters:
+        qs = qs.filter(active=True)
+
+    # Ordering
+    if cat == 'qotd':
+        qs = qs.order_by('schedule__day')
+
+    # Pagination
+    perpage = request.session.get('qpool_perpage', 15)
+    paginator = Paginator(qs, perpage)
     try:
         q_page = paginator.page(page)
     except (EmptyPage, InvalidPage):
@@ -121,7 +147,10 @@ def qpool_home(request, cat=None, page=u'1', tag=None):
 
     return render_to_response('cpanel/qpool_home.html',
                               {'q_page': q_page,
-                               'categs': CATEGORIES,
+                               'categs': categories,
+                               'category': category,
+                               'tag_filters': tag_filters,
+                               'prop_filters': prop_filters,
                                'cat': cat,
                                'form': form,
                                'module': 'qpool',
@@ -131,6 +160,7 @@ def qpool_home(request, cat=None, page=u'1', tag=None):
 
 
 def qpool_search(request):
+    categories = Category.objects.all()
     query = request.GET.get('q', '')
     if query is not None:
         questions = Question.objects.filter(text__icontains=query)
@@ -138,7 +168,7 @@ def qpool_search(request):
         questions = []
 
     return render_to_response('cpanel/qpool_home.html',
-                           {'questions': questions, 'categs': CATEGORIES,
+                           {'questions': questions, 'categs': categories,
                             'cat': 'search', 'module': 'qpool', 'today': str(datetime.date.today()),
                             'q': query},
                            context_instance=RequestContext(request))
@@ -157,7 +187,7 @@ def qpool_edit(request, id=None):
         form = QuestionForm(request.POST, instance=question)
         if form.is_valid():
             newq = form.save()
-            if (newq.endorsed_by is None):
+            if newq.endorsed_by is None:
                 newq.endorsed_by = request.user
                 newq.save()
             return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home', args = (newq.category.name,)))
@@ -321,7 +351,7 @@ def qpool_tag_questions(request):
     else:
         form = TagForm()
 
-    return render_to_response('cpanel/qpool_tag_questions.html',
+    return render_to_response('cpanel/tag_questions.html',
             {'form': form},
         context_instance=RequestContext(request))
 

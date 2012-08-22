@@ -260,6 +260,7 @@ p.clearer {
     margin: 6px;
     text-align: right;
 }
+
 .actions a, a.button, span.button, button {
     display: inline-block;
     text-align: center;
