@@ -14,6 +14,7 @@
     </form>
 </div>
 <div class="actions">
+    <a class="button button-min" href="{% url qpool_home %}" title="Home">⌂</a>
     <a class="button" href="{% url question_new %}">{% trans 'Add question' %}</a>
     <a class="button" href="{% url importer %}">{% trans 'Import file' %}</a>
     <a class="button" href="{% url tag_questions %}">{% trans 'Tag questions' %}</a>
@@ -172,7 +173,7 @@
     {% endif %}
     {% endif %}
 
-    {% if cat != 'search' %}
+    {% if cat != 'search' and cat %}
     <ul class="menu no-border">
         <li><a class="button" href="{% url remove_all cat=cat %}" onclick="return confirm('Are you sure?');">Remove all</a></li>
     </ul>

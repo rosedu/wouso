@@ -1,11 +1,12 @@
-{% extends 'cpanel/index.html' %}
+{% extends 'cpanel/qpool_home.html' %}
 
-{% block sectiontitle %}Questions importer{% endblock %}
+{% block sectiontitle %}{{ block.super }} &raquo; Questions importer{% endblock %}
 
-{% block sectioncontent %}
-
-<p>File syntax:</p>
-<pre>
+{% block subsectioncontent %}
+    <div class="subgroups">
+        <p>You can import text files containing questions, and select the category to put them in.</p>
+        <p>File syntax:</p>
+        <pre>
 ? Question text
 on many lines
 - wrong answer
@@ -14,11 +15,15 @@ on many lines
 on two lines
 
 ? Another question
-...</pre>
+...
+        </pre>
+    </div>
 
 <form id="file_import" action="{% url importer_send %}"  method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
+<label for="file">Select input file:</label>
+    <input type="file" name="file" id="file" />
 
+    <br/>
 <label for="category">Category:</label>
     <select name="category" id="category">
     {% for category in categories %}
@@ -26,21 +31,22 @@ on two lines
     {% endfor %}
     </select>
 
-
+    <br/>
+    <!-- TODO: show only tags for selected category
 <label for="tags">Tags:</label>
 <select name="tags" id="tags" multiple="multiple">
     {% for tag in tags %}
         <option value="{{tag}}">{{tag}}</option>
     {% endfor %}
-</select>
+</select>-->
 
-<input type="file" name="file"/>
-<br/>
-<br/>
-    <input type="checkbox" name="all_active" value="all_active" id="all_active"><label for="all_active">Set all active</label> <br />
-<br/>
-    <button type="submit">Send file</button>
 
+    <br/>
+    <label for="all_active">Set all active</label><input type="checkbox" name="all_active" value="all_active" id="all_active"> <br />
+<br/>
+    <button type="submit">Import</button>
+
+{% csrf_token %}
 </form>
 
 {% endblock %}
