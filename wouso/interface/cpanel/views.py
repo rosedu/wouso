@@ -362,6 +362,22 @@ def qpool_managetags(request):
                             context_instance=RequestContext(request)
     )
 
+
+@permission_required('config.change_setting')
+def qpool_settag(request):
+    tag = get_object_or_404(Tag, pk=request.GET.get('tag'))
+    qs = request.GET.get('qs', '').split(',')
+    qs.remove('')
+    qs = map(int, qs)
+    queryset = Question.objects.filter(id__in=qs)
+    for q in queryset:
+        q.tags.add(tag)
+
+    redir = request.META.get('HTTP_REFERER', reverse('qpool_home'))
+
+    return redirect(redir)
+
+
 @permission_required('config.change_setting')
 def qpool_export(request, cat):
     category = get_object_or_404(Category, name=cat)

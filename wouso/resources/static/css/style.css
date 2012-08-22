@@ -570,3 +570,6 @@ div.group-cc {
 .question_preview {
     cursor: pointer;
 }
+.selected {
+    background-color: #f2f2f2;
+}

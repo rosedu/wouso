@@ -81,9 +81,25 @@
         </div>
 
         <!-- MAIN QUESTION TABLE -->
+        {% include 'cpanel/qpool_pagination.html' %}
+
+        Select:
+        <a onclick='$(".question_select").attr("checked", true).change();' href="#">All</a> /
+        <a onclick='$(".question_select").attr("checked", false).change();' href="#">None</a>
+
+        Action:
+        <select id="q_actions" disabled="true">
+            <option selected value="">-- Select action --</option>
+            <optgroup label="-- Add tag --" id="tag">
+                {% for t in category.tag_set.all %}
+                <option value="{{ t.id }}">{{ t }}</option>
+                {% endfor %}
+            </optgroup>
+        </select>
+
         <table>
             <tr>
-                <th>#</th>
+                <th colspan="2">#</th>
                 <th>Question</th>
                 {% if cat != 'proposed' %}
                 <th>Active</th>
@@ -96,7 +112,8 @@
                 <th>Actions</th>
             </th>
         {% for q in q_page.object_list %}
-            <tr>
+            <tr id="qr_{{ q.id }}">
+                <td><input type="checkbox" class="question_select" id="qs_{{ q.id }}"/></td>
                 <td align="right">{{ q.id }}</td>
                 <td>
                     <span class="question_preview" onclick="$('#qc_{{q.id}}').toggle();">{{ q }}</span>
@@ -143,27 +160,44 @@
         {% empty %}
         <tr><td colspan=3>No questions</td></tr>
         {% endfor %}
-        <div class="pagination">
-            <span class="step-links">
-                Page:
-                {% if q_page.has_previous %}
-                    <a href="{% url qpool_home cat=cat page=q_page.previous_page_number %}">&laquo;prev</a>
-                {% endif %}
-
-                {% for p in q_page.paginator.page_range %}
-                    {% if p == q_page.number %}
-                        <strong>{{ p }}</strong>
-                    {% else %}
-                    <a href="{% url qpool_home cat=cat page=p %}">{{ p }}</a>
-                    {% endif %}
-                {% endfor %}
-
-                {% if q_page.has_next %}
-                    <a href="{% url qpool_home cat=cat page=q_page.next_page_number %}">next&raquo;</a>
-                {% endif %}
-            </span>
-        </div>
         </table>
+        {% include 'cpanel/qpool_pagination.html' %}
+
+        <script>
+
+            function get_selection() {
+                var selection = "";
+                $('.question_select:checked').each(function () {
+                    selection += this.id.substring(3) + ',';
+                });
+                return selection;
+            }
+
+            $('.question_select').change(function () {
+                var value = $(this).is(':checked');
+                var id = this.id.substring(3);
+
+                $('#qr_' + id).toggleClass('selected', value);
+
+                if (get_selection() != '')
+                    $('#q_actions').attr('disabled', false);
+                else
+                    $('#q_actions').attr('disabled', true);
+
+            });
+
+            $('#q_actions').change(function (option) {
+                var selected = $("option:selected", this);
+                var destination = '';
+                if(selected.parent()[0].id == "tag"){
+                    // Tag was selected
+                    destination = '{% url qpool_set_tag %}?qs=' + get_selection() + '&tag=' + selected.val();
+                }
+                if (destination != '')
+                    window.location.replace(destination);
+            });
+
+        </script>
     </div> <!-- end tab-content -->
 </div> <!-- end tab-container -->
 {% endblock %} {# end subsectioncontent #}
