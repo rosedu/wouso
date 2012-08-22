@@ -112,7 +112,6 @@ def qpool_home(request, cat='qotd', page=u'1', tag=None):
 
 
     tags = Tag.objects.all().exclude(name__in=['qotd', 'challenge', 'quest'])
-    form = TagsForm(tags=tags)
 
     category = get_object_or_404(Category, name=cat)
     session_filter_name = 'tag_filters_%s' % category.name
@@ -162,11 +161,9 @@ def qpool_home(request, cat='qotd', page=u'1', tag=None):
                                'tag_filters': tag_filters,
                                'prop_filters': prop_filters,
                                'cat': cat,
-                               'form': form,
                                'search_query': query,
                                'perpage_options': (15, 50, 100),
                                'module': 'qpool',
-                               'tags': len(tags),
                                'today': str(datetime.date.today())},
                               context_instance=RequestContext(request))
 
@@ -271,8 +268,9 @@ def qotd_schedule(request):
 
 @permission_required('config.change_setting')
 def qpool_set_active_categories(request):
+    category = get_object_or_404(Category, name='challenge')
+    tags = category.tag_set.all()
     if request.method == 'POST':
-        tags = Tag.objects.all().exclude(name__in=['qotd', 'quest', 'challenge'])
         tdict = {}
         for tag in tags:
             tdict[tag.name] = [tag, False]
@@ -284,6 +282,12 @@ def qpool_set_active_categories(request):
             if tdict[tag][1] is False:
                 tdict[tag][0].set_inactive()
         return qpool_home(request, 'challenge')
+
+    form = TagsForm(tags=tags)
+    return render_to_response('cpanel/qpool_setactivetags.html',
+                        {'form': form, 'tags': tags},
+                        context_instance=RequestContext(request)
+    )
 
 
 @permission_required('config.change_setting')

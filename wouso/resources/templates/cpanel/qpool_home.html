@@ -17,7 +17,6 @@
     <a class="button button-min" href="{% url qpool_home %}" title="Home">⌂</a>
     <a class="button" href="{% url question_new %}">{% trans 'Add question' %}</a>
     <a class="button" href="{% url importer %}">{% trans 'Import file' %}</a>
-    <a class="button" href="{% url tag_questions %}">{% trans 'Tag questions' %}</a>
     <a class="button" href="{% url qpool_manage_tags %}">{% trans 'Manage tags' %}</a>
 </div>
 
@@ -34,6 +33,9 @@
         <div class="actions">
             {% if cat == 'qotd' %}
             <a class="button" href="{% url qotd_schedule %}" title="schedule active questions">Automatic schedule</a>
+            {% endif %}
+            {% if cat == 'challenge' %}
+            <a class="button" href="{% url set_active_categories %}">Set active tags</a>
             {% endif %}
             <a class="button" href="{% url qpool_export category.name %}">Export all</a>
             <a class="button" href="{% url remove_all cat=cat %}" onclick="return confirm('Are you sure do you want to remove all questions in this category?');">Remove all</a>
@@ -204,16 +206,5 @@
 {% endblock %}
 
 {% block extra_sidebar %}
-    {% if cat == 'challenge' %}
-    <h3> Active tags </h3>
-    {% if tags == 0 %}
-    <p>No available tags.</p>
-    {% else %}
-    <form action="{% url set_active_categories %}" method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit" />
-    </form>
-    {% endif %}
-    {% endif %}
 
 {% endblock %}
