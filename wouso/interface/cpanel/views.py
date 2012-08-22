@@ -353,6 +353,18 @@ def qpool_tag_questions(request):
 
 
 @permission_required('config.change_setting')
+def qpool_managetags(request):
+    tags = Tag.objects.all().order_by('category')
+
+    return render_to_response('cpanel/qpool_managetags.html',
+                            {'tags': tags},
+                            context_instance=RequestContext(request)
+    )
+
+
+# End qpool
+
+@permission_required('config.change_setting')
 def artifactset(request, id):
     profile = get_object_or_404(Player, pk=id)
     artifacts = Artifact.objects.all()
