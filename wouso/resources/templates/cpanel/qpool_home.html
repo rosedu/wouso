@@ -9,7 +9,7 @@
 {% block sectioncontent %}
 <div class="actions">
     <form method="get" action="">
-        <input class="big" type="text" name="q" value="{{ search_query }}" size="80" />
+        <input class="big" type="text" name="q" value="{{ search_query }}" size="40" />
         <button type="submit">{% trans 'Search'%}</button>
     </form>
 </div>
@@ -49,7 +49,7 @@
                 <li><em>no tags</em></li>
                 {% endfor %}
 
-                <li>Properties</li>
+                <li>Properties:</li>
                 <li>{% if 'active' in prop_filters %}
                     <strong><a href="?rempropfilter=active">active</a></strong>
                     {% else %}
@@ -57,6 +57,19 @@
                     {% endif %}
                 </li>
             </ul>
+
+            <hr size="1" noshade/>
+            <p>
+                View:
+                {% for p in perpage_options %}
+                {% if q_page.paginator.per_page == p %}
+                <strong>{{ p }}</strong>
+                {% else %}
+                <a href="?changeperpage={{ p }}">{{ p }}</a>
+                {% endif %}
+                {% endfor %}
+            </p>
+            <p>Total: {{ q_page.paginator.count }}</p>
             {% endblock %}
         </div>
 
@@ -117,16 +130,21 @@
         {% endfor %}
         <div class="pagination">
             <span class="step-links">
+                Page:
                 {% if q_page.has_previous %}
-                    <a href="{% url qpool_home cat=cat page=q_page.previous_page_number %}"> &laquo;</a>
+                    <a href="{% url qpool_home cat=cat page=q_page.previous_page_number %}">&laquo;prev</a>
                 {% endif %}
 
-                <span class="current">
-                    Page {{ q_page.number }} of {{ q_page.paginator.num_pages }}.
-                </span>
+                {% for p in q_page.paginator.page_range %}
+                    {% if p == q_page.number %}
+                        <strong>{{ p }}</strong>
+                    {% else %}
+                    <a href="{% url qpool_home cat=cat page=p %}">{{ p }}</a>
+                    {% endif %}
+                {% endfor %}
 
                 {% if q_page.has_next %}
-                    <a href="{% url qpool_home cat=cat page=q_page.next_page_number %}"> &raquo;</a>
+                    <a href="{% url qpool_home cat=cat page=q_page.next_page_number %}">next&raquo;</a>
                 {% endif %}
             </span>
         </div>

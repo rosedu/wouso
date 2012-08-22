@@ -145,6 +145,9 @@ def qpool_home(request, cat='qotd', page=u'1', tag=None):
 
     # Pagination
     perpage = request.session.get('qpool_perpage', 15)
+    if request.GET.get('changeperpage'):
+        perpage = int(request.GET.get('changeperpage'))
+    request.session['qpool_perpage'] = perpage
     paginator = Paginator(qs, perpage)
     try:
         q_page = paginator.page(page)
@@ -160,6 +163,7 @@ def qpool_home(request, cat='qotd', page=u'1', tag=None):
                                'cat': cat,
                                'form': form,
                                'search_query': query,
+                               'perpage_options': (15, 50, 100),
                                'module': 'qpool',
                                'tags': len(tags),
                                'today': str(datetime.date.today())},
