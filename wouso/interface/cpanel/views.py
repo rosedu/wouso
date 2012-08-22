@@ -93,16 +93,22 @@ def games(request):
 
 
 @permission_required('config.change_setting')
-def qpool_home(request, cat=None, page=u'1', tag=None):
+def qpool_home(request, cat='qotd', page=u'1', tag=None):
     categories = Category.objects.all()
 
-    if cat is None:
-        cat = 'qotd'
 
     qs = get_questions_with_category(str(cat), active_only=False, endorsed_only=False)
     if tag:
         tag = get_object_or_404(Tag, pk=tag, category__name=cat)
         qs = qs.filter(tags=tag)
+
+    if request.GET.get('q'):
+        # This is a search query
+        query = request.GET.get('q')
+        qs = qs.filter(text__icontains=query)
+    else:
+        query = ''
+
 
     tags = Tag.objects.all().exclude(name__in=['qotd', 'challenge', 'quest'])
     form = TagsForm(tags=tags)
@@ -153,25 +159,11 @@ def qpool_home(request, cat=None, page=u'1', tag=None):
                                'prop_filters': prop_filters,
                                'cat': cat,
                                'form': form,
+                               'search_query': query,
                                'module': 'qpool',
                                'tags': len(tags),
                                'today': str(datetime.date.today())},
                               context_instance=RequestContext(request))
-
-
-def qpool_search(request):
-    categories = Category.objects.all()
-    query = request.GET.get('q', '')
-    if query is not None:
-        questions = Question.objects.filter(text__icontains=query)
-    else:
-        questions = []
-
-    return render_to_response('cpanel/qpool_home.html',
-                           {'questions': questions, 'categs': categories,
-                            'cat': 'search', 'module': 'qpool', 'today': str(datetime.date.today()),
-                            'q': query},
-                           context_instance=RequestContext(request))
 
 
 @permission_required('config.change_setting')

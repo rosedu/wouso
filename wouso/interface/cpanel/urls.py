@@ -16,7 +16,6 @@ upat = [
     url(r'^qpool/importer/$', 'wouso.interface.cpanel.views.qpool_importer', name='importer'),
     url(r'^qpool/importer/send$', 'wouso.interface.cpanel.views.qpool_import_from_upload', name='importer_send'),
     url(r'^qpool/qotd/schedule$', 'wouso.interface.cpanel.views.qotd_schedule', name='qotd_schedule'),
-    url(r'^qpool/search/$', 'wouso.interface.cpanel.views.qpool_search', name='qpool_search'),
     url(r'^qpool/(?P<cat>\w*)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
     url(r'^qpool/(?P<cat>\w*)/(?P<page>\d+)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
     url(r'^qpool/(?P<cat>\w*)/tag=(?P<tag>\d+)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),

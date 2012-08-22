@@ -8,8 +8,8 @@
 
 {% block sectioncontent %}
 <div class="actions">
-    <form method="get" action="{% url qpool_search %}">
-        <input class="big" type="text" name="q" value="{{q}}" size="80" />
+    <form method="get" action="">
+        <input class="big" type="text" name="q" value="{{ search_query }}" size="80" />
         <button type="submit">{% trans 'Search'%}</button>
     </form>
 </div>
@@ -26,8 +26,6 @@
     {% for c in categs %}
     <li {% if cat == c.name %}class="active"{% endif %}><a href="{% url qpool_home c.name %}">{{ c.name|capfirst }}</a></li>
     {% endfor %}
-
-    <li {% if cat == 'search' %}class="active"{% endif %}><a href="{% url qpool_search %}">{% trans 'Search' %}</a></li>
 </ul>
 
 <div class="tab_container">
