@@ -565,3 +565,8 @@ div.group-cb {
 div.group-cc {
     border-top: 3px solid blue;
 }
+
+/* cpanel */
+.question_preview {
+    cursor: pointer;
+}

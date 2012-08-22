@@ -80,6 +80,7 @@
             {% endblock %}
         </div>
 
+        <!-- MAIN QUESTION TABLE -->
         <table>
             <tr>
                 <th>#</th>
@@ -97,7 +98,14 @@
         {% for q in q_page.object_list %}
             <tr>
                 <td align="right">{{ q.id }}</td>
-                <td>{{ q }}<span class="points">{% if not q.is_valid %}<span class="wrong">Invalid</span>{% endif %}</span>
+                <td>
+                    <span class="question_preview" onclick="$('#qc_{{q.id}}').toggle();">{{ q }}</span>
+                    <div id="qc_{{ q.id }}" class="hidden">
+                        {% for a in q.answers %}
+                            {% if a.correct %}+{% else %}-{% endif %}{{ a.text }}<br/>
+                        {% endfor %}
+                    </div>
+                    <span class="points">{% if not q.is_valid %}<span class="wrong">Invalid</span>{% endif %}</span>
                     {% if cat != 'proposed'%}
                         <div class="second">{% if q.tag %}tags: {{ q.tag }}{% endif %}</div>
                     {% else %}
