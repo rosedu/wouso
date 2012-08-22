@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django import forms
 from django.http import  HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -55,7 +55,8 @@ def dashboard(request):
                                },
                               context_instance=RequestContext(request))
 
-@login_required
+
+@permission_required('config.change_setting')
 def customization(request):
     if not request.user.is_superuser:
         return HttpResponseRedirect(reverse('dashboard'))
@@ -74,7 +75,8 @@ def customization(request):
                                'module': 'custom'},
                               context_instance=RequestContext(request))
 
-@login_required
+
+@permission_required('config.change_setting')
 def games(request):
     switchboard = GamesSwitchboard()
 
@@ -94,7 +96,7 @@ def games(request):
 CATEGORIES = (('Qotd', 'qotd'), ('Challenge', 'challenge'), ('Quest', 'quest'), ('Proposed', 'proposed'),
     ('Workshop', 'workshop'))
 
-@login_required
+@permission_required('config.change_setting')
 def qpool_home(request, cat=None, page=u'1', tag=None):
     if cat is None:
         cat = 'qotd'
@@ -127,6 +129,7 @@ def qpool_home(request, cat=None, page=u'1', tag=None):
                                'today': str(datetime.date.today())},
                               context_instance=RequestContext(request))
 
+
 def qpool_search(request):
     query = request.GET.get('q', '')
     if query is not None:
@@ -140,8 +143,9 @@ def qpool_search(request):
                             'q': query},
                            context_instance=RequestContext(request))
 
-@login_required
-def question_edit(request, id=None):
+
+@permission_required('config.change_setting')
+def qpool_edit(request, id=None):
     if id is not None:
         question = get_object_or_404(Question, pk=id)
     else:
@@ -173,8 +177,11 @@ def question_edit(request, id=None):
                                'categs': categs},
                               context_instance=RequestContext(request))
 
-@login_required
+
+@permission_required('config.change_setting')
 def question_switch(request, id):
+    """ Accept a proposed question
+    """
     question = get_object_or_404(Question, pk=id)
 
     # qproposal - endorse part
@@ -206,21 +213,18 @@ def question_switch(request, id):
 
     return HttpResponseRedirect(go_back)
 
-@login_required
-def remove_all(request, cat=None):
-    if cat is None:
-        return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
 
-    category = Category.objects.filter(name=cat)[0]
-    questions = Question.objects.filter(category=category)
+@permission_required('config.change_setting')
+def qpool_remove_all(request, cat=None):
+    category = get_object_or_404(Category, name=cat)
 
-    for q in questions:
-        q.delete()
+    category.question_set.all().delete()
 
-    return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
+    return redirect('qpool_home', cat=category.name)
 
-@login_required
-def question_del(request, id):
+
+@permission_required('config.change_setting')
+def qpool_delete(request, id):
     question = get_object_or_404(Question, pk=id)
 
     question.delete()
@@ -231,13 +235,15 @@ def question_del(request, id):
 
     return HttpResponseRedirect(go_back)
 
-@login_required
+
+@permission_required('config.change_setting')
 def qotd_schedule(request):
     Schedule.automatic()
-    return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home'))
+    return redirect('qpool_home', cat='qotd')
 
-@login_required
-def set_active_categories(request):
+
+@permission_required('config.change_setting')
+def qpool_set_active_categories(request):
     if request.method == 'POST':
         tags = Tag.objects.all().exclude(name__in=['qotd', 'quest', 'challenge'])
         tdict = {}
@@ -252,8 +258,9 @@ def set_active_categories(request):
                 tdict[tag][0].set_inactive()
         return qpool_home(request, 'challenge')
 
-@login_required
-def importer(request):
+
+@permission_required('config.change_setting')
+def qpool_importer(request):
     categories = Category.objects.all().exclude(name='proposed')
     tags = Tag.objects.all().exclude(name__in=['qotd', 'challenge', 'quest'])
 
@@ -263,8 +270,9 @@ def importer(request):
                             'module': 'qpool'},
                            context_instance=RequestContext(request))
 
-@login_required
-def import_from_upload(request):
+
+@permission_required('config.change_setting')
+def qpool_import_from_upload(request):
     # TODO: use form
     cat = request.POST.get('category', None)
     tags = request.POST.getlist('tags')
@@ -290,7 +298,35 @@ def import_from_upload(request):
     return render_to_response('cpanel/imported.html', {'module': 'qpool', 'nr': nr},
                               context_instance=RequestContext(request))
 
-@login_required
+
+@permission_required('config.change_setting')
+def qpool_tag_questions(request):
+    class TagForm(forms.Form):
+        questions = forms.MultipleChoiceField(choices=[(q.pk, q.text) for q in Question.objects.all()])
+        tag = forms.ChoiceField(choices=[(t.pk, t.name) for t in Tag.objects.all().exclude(name__in=['qotd', 'quest', 'challenge'])])
+
+    if request.method == 'POST':
+        form = TagForm(request.POST)
+        if form.is_valid():
+            q_pks = form.cleaned_data['questions']
+            tag_pk =  form.cleaned_data['tag']
+            tag = Tag.objects.get(pk=tag_pk)
+            for pk in q_pks:
+                q = Question.objects.get(pk=pk)
+                q.tags.add(tag)
+                q.save()
+            return render_to_response('cpanel/tagged.html',
+                    {'nr': len(q_pks)},
+                context_instance=RequestContext(request))
+    else:
+        form = TagForm()
+
+    return render_to_response('cpanel/qpool_tag_questions.html',
+            {'form': form},
+        context_instance=RequestContext(request))
+
+
+@permission_required('config.change_setting')
 def artifactset(request, id):
     profile = get_object_or_404(Player, pk=id)
     artifacts = Artifact.objects.all()
@@ -304,7 +340,9 @@ def artifactset(request, id):
                               {'to': profile,
                                'artifacts': artifacts},
                               context_instance=RequestContext(request))
-@login_required
+
+
+@permission_required('config.change_setting')
 def artifact_home(request, group=None):
     if group is None:
         group = 'Default'
@@ -322,7 +360,9 @@ def artifact_home(request, group=None):
                                },
                               context_instance=RequestContext(request))
 
-@login_required
+
+
+@permission_required('config.change_setting')
 def artifact_edit(request, id=None):
     if id is not None:
         instance = get_object_or_404(Artifact, pk=id)
@@ -358,7 +398,9 @@ def artifact_edit(request, id=None):
                             {'form': form, 'instance': instance},
                               context_instance=RequestContext(request))
 
-@login_required
+
+
+@permission_required('config.change_setting')
 def artifact_del(request, id):
     artifact = get_object_or_404(Artifact, pk=id)
 
@@ -370,33 +412,8 @@ def artifact_del(request, id):
 
     return HttpResponseRedirect(go_back)
 
-@login_required
-def tag_questions(request):
-    class TagForm(forms.Form):
-        questions = forms.MultipleChoiceField(choices=[(q.pk, q.text) for q in Question.objects.all()])
-        tag = forms.ChoiceField(choices=[(t.pk, t.name) for t in Tag.objects.all().exclude(name__in=['qotd', 'quest', 'challenge'])])
 
-    if request.method == 'POST':
-        form = TagForm(request.POST)
-        if form.is_valid():
-            q_pks = form.cleaned_data['questions']
-            tag_pk =  form.cleaned_data['tag']
-            tag = Tag.objects.get(pk=tag_pk)
-            for pk in q_pks:
-                q = Question.objects.get(pk=pk)
-                q.tags.add(tag)
-                q.save()
-            return render_to_response('cpanel/tagged.html',
-                                    {'nr': len(q_pks)},
-                                      context_instance=RequestContext(request))
-    else:
-        form = TagForm()
-
-    return render_to_response('cpanel/tag_questions.html',
-                            {'form': form},
-                              context_instance=RequestContext(request))
-
-@login_required
+@permission_required('config.change_setting')
 def groupset(request, id):
     profile = get_object_or_404(Player, pk=id)
 
@@ -436,7 +453,8 @@ def groupset(request, id):
                                'form': form},
                               context_instance=RequestContext(request))
 
-@login_required
+
+@permission_required('config.change_setting')
 def stafftoggle(request, id):
     profile = get_object_or_404(Player, pk=id)
 
@@ -450,7 +468,8 @@ def stafftoggle(request, id):
 
     return HttpResponseRedirect(reverse('player_profile', args=(id,)))
 
-@login_required
+
+@permission_required('config.change_setting')
 def players(request):
     from wouso.core.scoring.models import History
     from wouso.interface.activity.models import Activity
@@ -467,7 +486,8 @@ def players(request):
 
     return render_to_response('cpanel/players.html', dict(players=all), context_instance=RequestContext(request))
 
-@login_required
+
+@permission_required('config.change_setting')
 def add_player(request):
     form = UserForm()
     if request.method == "POST":
@@ -479,21 +499,9 @@ def add_player(request):
             form = user
     return render_to_response('cpanel/add_player.html', {'form': form}, context_instance=RequestContext(request))
 
-@login_required
+
+@permission_required('config.change_setting')
 def races_groups(request):
     return render_to_response('cpanel/races_groups.html', {'races': Race.objects.all()},
         context_instance=RequestContext(request)
     )
-
-
-# 'I am lazy' hack comes in
-import sys
-import types
-except_functions = ('login_required', 'permission_required','render_to_response', 'get_object_or_404',
-    'reverse', 'get_questions_with_category', 'get_themes', 'import_from_file')
-module = sys.modules[__name__].__dict__
-for i in module.keys():
-    if isinstance(module[i], types.FunctionType):
-        if i in except_functions:
-            continue
-        module[i] = permission_required('config.change_setting')(module[i])
