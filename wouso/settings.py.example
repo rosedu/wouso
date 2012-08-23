@@ -161,13 +161,6 @@ INSTALLED_APPS = [
     'django_nose',
     'wouso.interface.api.c2dm',
 ]
-try:
-	import django_qunit
-except ImportError:
-	pass
-else:
-	INSTALLED_APPS += ['django_qunit']
-
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 LOGIN_URL = '/user/login/'
@@ -201,5 +194,10 @@ BASE_PATH = os.path.dirname(__file__)
 
 QUNIT_TEST_DIRECTORY = os.path.join(BASE_PATH, 'qunit_tests')
 
-
+try:
+	import django_qunit
+except ImportError:
+	pass
+else:
+	INSTALLED_APPS += ['django_qunit']
 
