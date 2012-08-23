@@ -33,6 +33,8 @@ def add_message(text, sender, toRoom):
     difference_in_seconds = 1;
     #difference_in_seconds = (diff.microseconds + (diff.seconds + diff.days * 24 * 3600) * 10**6) / 10**6
     #if diff.total_seconds() > 0.5:
+    if sender.has_modifier('block-communication'):
+        return False
     if difference_in_seconds > 0.5:
         msg = ChatMessage(content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp)
         msg.save()
@@ -64,7 +66,18 @@ def serve_message(user, room=None, position=None):
         mesaj = {}
         mesaj['room'] = m.destRoom.name
         mesaj['user'] = unicode(m.author)
-        mesaj['text'] = m.content
+        if user.has_modifier('block-communication'):
+            mesaj['comand'] = 'block-communication'
+            mesaj['text'] = m.content
+            mesaj['mess_type'] = 'special'
+        elif user.has_modifier('block-global-chat-page'):
+            mesaj['comand'] = 'kick'
+            mesaj['text'] = m.content
+            mesaj['mess_type'] = 'special'
+        else:
+            mesaj['comand'] = 'normal'
+            mesaj['text'] = m.content
+            mesaj['mess_type'] = 'normal'
         lastTS = m.timeStamp
         msgs.append(mesaj)
     if(room == None):
@@ -111,8 +124,10 @@ def online_players(request):
     # gather users online in the last ten minutes
     oldest = datetime.now() - timedelta(hours = 1000)
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('user__username')
+
     def is_not_blocked(x):
         return not x.has_modifier('block-communication')
+
     online_last10 = filter(is_not_blocked, online_last10)
 
     return render_to_response('chat/chat_last.html',
@@ -132,6 +147,23 @@ def private_log(request):
     room = roomexist(request.POST['room'])
     return HttpResponse(simplejson.dumps(serve_message(user, room, position)))
 
+@login_required
+def special_message(user, room = None, message = None):
+
+    obj = {'user': unicode(user)}
+    obj['count'] = 1
+
+    msgs = []
+    mesaj = {}
+    mesaj['room'] = room
+    mesaj['user'] = user
+    mesaj['text'] = None
+    mesaj['mess_type'] = 'special'
+    mesaj['comand'] = message
+    msgs.append(mesaj)
+
+    obj['msgs'] = msgs
+    return obj
 
 @login_required
 def sendmessage(request):
@@ -148,6 +180,9 @@ def sendmessage(request):
         except (ValueError, AssertionError):
             return HttpResponseBadRequest()
     elif data['opcode'] == 'keepAlive':
+        if user.has_modifier('block-communication'):
+            return HttpResponse(simplejson.dumps(special_message(user, None, "block-communication")))
+
         chat_global = roomexist('global')
         if user not in chat_global.participants.all():
             chat_global.participants.add(user)

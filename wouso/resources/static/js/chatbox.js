@@ -1,7 +1,8 @@
 /* get id and name of a specific user. */
 var selectID = null;
 var UserName = null;
-
+var NewUserTimer = null;
+var SendPingTimer = null;
 /* Private chat staff */
 var firstFreeChat;
 var max_room;
@@ -448,12 +449,14 @@ $(document).ready(function () {
         }
     }
 
+
     $(document).ready(AutoScroll);
     $(document).ready(NewUsers);
     $(document).ready(NewLog);
     $(document).ready(SendPing);
-    $(document).everyTime(6000, NewUsers);
-    $(document).everyTime(1000, SendPing);
+    SendPingTimer = setInterval(function(){SendPing();}, 1000);
+    NewUserTimer = setInterval(function(){NewUsers();}, 6000);
+
     InitialChat();
 
     /* Give room id or next free chat.*/
@@ -472,7 +475,20 @@ $(document).ready(function () {
                 return false;
             var i;
             for (i = 0; i < obj.count; ++i) {
-                if (obj.msgs[i].room == 'global' && initial == 0) {
+
+                if(obj.msgs[i].mess_type == 'special' && obj.msgs[i].comand == 'block-communication'){
+                    clearInterval(NewUserTimer);
+                    clearInterval(SendPingTimer);
+                    NewUserTimer = null;
+                    SendPingTimer = null;
+                }
+                else if(obj.msgs[i].mess_type == 'special' && obj.msgs[i].comand == 'kick' && window.location.pathname == '/chat/'){
+                    clearInterval(NewUserTimer);
+                    clearInterval(SendPingTimer);
+                    NewUserTimer = null;
+                    SendPingTimer = null;
+                }
+                else if (obj.msgs[i].room == 'global' && initial == 0) {
                     $('#GlobalboxTextArea').append(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />");
                     AutoScroll();
                 }
@@ -513,7 +529,7 @@ $(document).ready(function () {
         else if (res.status == 400) {
             $('#GlobalboxTextArea').append('<p id="warn_spam"> Stop spamming! </p>');
         }
-
+        initial = 1;
     };
 
     /* create an emtpy array sized for 10 elements */

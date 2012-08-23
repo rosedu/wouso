@@ -1,0 +1,44 @@
+[
+{
+  "pk": 50,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 1,
+   "name": "block-communication",
+   "title": "Nu poate comunica"
+  }
+ },
+{
+  "pk": 50,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 3,
+   "price": 10.0,
+   "type": "n",
+   "description": "Inchide toata comunicarea juc\u0103torului pe care este aplicat\u0103."
+  }
+ },
+{
+  "pk": 51,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 1,
+   "name": "block-global-chat-page",
+   "title": "Nu poate comunica global"
+  }
+ },
+{
+  "pk": 51,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 3,
+   "price": 10.0,
+   "type": "n",
+   "description": "Nu permite comunicarea globala juc\u0103torului pe care este aplicat\u0103."
+  }
+ }
+]
