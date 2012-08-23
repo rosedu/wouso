@@ -489,6 +489,8 @@ div.timer {
 }
 ul.simple {
     padding-left: 0px;
+	padding-top: 0px;
+	margin: 0px;
     list-style-type: none;
 }
 ol#questions-list {
