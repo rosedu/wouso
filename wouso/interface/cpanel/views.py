@@ -110,9 +110,6 @@ def qpool_home(request, cat='qotd', page=u'1', tag=None):
     else:
         query = ''
 
-
-    tags = Tag.objects.all().exclude(name__in=['qotd', 'challenge', 'quest'])
-
     category = get_object_or_404(Category, name=cat)
     session_filter_name = 'tag_filters_%s' % category.name
     tag_filters = request.session.get(session_filter_name, [])
@@ -169,11 +166,24 @@ def qpool_home(request, cat='qotd', page=u'1', tag=None):
 
 
 @permission_required('config.change_setting')
+def qpool_new(request, cat=None):
+    form = QuestionForm()
+    categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
+
+    return render_to_response('cpanel/qpool_new.html',
+            {'form': form,
+             'module': 'qpool',
+             'categs':categs},
+            context_instance=RequestContext(request)
+    )
+
+
+@permission_required('config.change_setting')
 def qpool_edit(request, id=None):
     if id is not None:
         question = get_object_or_404(Question, pk=id)
     else:
-        question = None
+        return qpool_new(request)
 
     categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
 
@@ -194,7 +204,7 @@ def qpool_edit(request, id=None):
 
         form = QuestionForm(instance=question, users=show_users)
 
-    return render_to_response('cpanel/question_edit.html',
+    return render_to_response( 'cpanel/qpool_edit.html',
                               {'question': question,
                                'form': form,
                                'module': 'qpool',
