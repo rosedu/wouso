@@ -3,6 +3,7 @@ var selectID = null;
 var UserName = null;
 var NewUserTimer = null;
 var SendPingTimer = null;
+
 /* Private chat staff */
 var firstFreeChat;
 var max_room;
@@ -26,7 +27,6 @@ else{
     sessionStorage.private_users = JSON.stringify(private_users);
 
 }
-
 
 function put_box_name(id, user) {
     $("#UserName" + id).attr('value', user);
@@ -53,10 +53,6 @@ function Private(room_id, log_number, text_context, users_name){
     this.time_set = null;
     this.hidden_position = true;
 }
-
-Private.prototype.getInfo = function(){
-    return "Room: " + this.room_id + "</br>User: " + this.user_name + "</br>Log_numer: " + this.log_number;
-};
 
 function switch_chat_box(id, with_id) {
     var aux = private_users[id];
@@ -114,7 +110,6 @@ function stop_timer_for_swiching(id) {
 }
 
 $(document).ready(function () {
-
     /* csrf crap */
     $.ajaxSetup({
         beforeSend:function (xhr, settings) {
@@ -278,9 +273,7 @@ $(document).ready(function () {
             $("#PrivateboxTextBox" + id).focus();
         });
 
-
         $("#PrivateboxTextBox" + id).keydown(function (event) {
-
             stop_timer_for_swiching(id);
             if (event.keyCode == 13) {
                 SendMessage(id);
@@ -456,7 +449,6 @@ $(document).ready(function () {
     $(document).ready(SendPing);
     SendPingTimer = setInterval(function(){SendPing();}, 1000);
     NewUserTimer = setInterval(function(){NewUsers();}, 6000);
-
     InitialChat();
 
     /* Give room id or next free chat.*/
@@ -475,7 +467,6 @@ $(document).ready(function () {
                 return false;
             var i;
             for (i = 0; i < obj.count; ++i) {
-
                 if(obj.msgs[i].mess_type == 'special' && obj.msgs[i].comand == 'block-communication'){
                     clearInterval(NewUserTimer);
                     clearInterval(SendPingTimer);
@@ -528,6 +519,7 @@ $(document).ready(function () {
         initial = 1;
     };
 
+    //TODO:hist things
     /* create an emtpy array sized for 10 elements */
     var hist = [];
     var i = hist.length % 10; // iter pentru inserare
@@ -576,8 +568,6 @@ $(document).ready(function () {
         }
         else if (change_dir) {
             change_dir = 0;
-            //j = (j + 1) % 10;
-            /*k--;*/
         }
         if (k) {
             j = (j + 1) % 10;
@@ -593,19 +583,15 @@ $(document).ready(function () {
     /* Global chat key events. */
     $("#GlobalboxTextBox").keyup(function (event) {
         if (event.keyCode == 13) {
-            /* enter */
             $("#GlobalboxSendButton").click();
         }
         else if (event.keyCode == 38) {
-            /* up_arrow */
             HistUp();
         }
         else if (event.keyCode == 40) {
-            /* down_arrow */
             HistDown();
         }
         else {
-            /* other key */
             was_writing = 1;
         }
     });
@@ -633,7 +619,6 @@ $(document).ready(function () {
         });
         return text;
     }
-
 
     $("#ContactboxProfileButton").click(function(){
         window.location = "/player/" + selectID_over + "/";
