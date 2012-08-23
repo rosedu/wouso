@@ -66,6 +66,7 @@ class NoArtifactLevel(object):
     Mock an artifact object
     """
     def __init__(self, level):
+        self.id = ''
         self.name = 'level-%s' % level
         self.title = 'Level %s' % level
         self.image = ''
