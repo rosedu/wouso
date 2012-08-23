@@ -122,8 +122,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'wouso.interface.context_processors.context',
 )
 
-INSTALLED_APPS = (
-    'wouso.core.django_qunit', #qunit test.
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -161,7 +160,13 @@ INSTALLED_APPS = (
     #'djangologdb',
     'django_nose',
     'wouso.interface.api.c2dm',
-)
+]
+try:
+	import django_qunit
+except ImportError:
+	pass
+else:
+	INSTALLED_APPS += ['django_qunit']
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
