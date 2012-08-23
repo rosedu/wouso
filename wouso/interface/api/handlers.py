@@ -115,7 +115,7 @@ class InfoHandler(BaseHandler):
             'id': player.level.id,
         } if player.level else {}
 
-        group = player.groups.all()[0].name if player.groups.count() else None
+        group = player.group
         gold = player.coins['gold'] if 'gold' in player.coins.keys() else 0
         topuser = player.get_extension(TopUser)
 

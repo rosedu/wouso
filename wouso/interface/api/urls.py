@@ -1,19 +1,17 @@
-__author__ = 'alex'
-
+from django.views.decorators.csrf import csrf_exempt
 from django.conf.urls.defaults import *
 from piston.resource import Resource
-from piston.authentication import OAuthAuthentication
+from piston.authentication import OAuthAuthentication, oauth_request_token, oauth_user_auth, oauth_access_token
 from wouso.core.game import get_games
 
 from handlers import *
 from authentication import SessionAuthentication, SimpleAuthentication
 
 # needed by oauth
-urlpatterns = patterns(
-    'piston.authentication',
-    url(r'^oauth/request_token/$','oauth_request_token'),
-    url(r'^oauth/authorize/$','oauth_user_auth'),
-    url(r'^oauth/access_token/$','oauth_access_token'),
+urlpatterns = patterns('',
+    url(r'^oauth/request_token/$',csrf_exempt(oauth_request_token), name='oauth_request_token'),
+    url(r'^oauth/authorize/$', csrf_exempt(oauth_user_auth), name='oauth_authorize'),
+    url(r'^oauth/access_token/$', csrf_exempt(oauth_access_token), name='oauth_access_token'),
 )
 urlpatterns += patterns(
     'wouso.interface.api.views',

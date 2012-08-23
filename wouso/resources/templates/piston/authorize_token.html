@@ -7,7 +7,7 @@
 
     <p>Are you sure do you want to authorize <strong>{{ consumer.name }}</strong> to access al your wouso data?</p>
 
-    <form action="{% url piston.authentication.oauth_user_auth %}" method="POST">
+    <form action="{% url oauth_authorize %}" method="POST">
       {{ form.as_table }}
       {% csrf_token %}
       <button type="submit"><strong>Confirm</strong></button>
