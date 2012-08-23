@@ -97,6 +97,7 @@ MIDDLEWARE_CLASSES = (
     # 'djangologdb.middleware.LoggingMiddleware',
     # for last 10 minutes to work
     'wouso.middleware.Seen',
+    'wouso.middleware.DebugExceptionMiddleware',
     )
 AUTHENTICATION_BACKENDS = (
     #'wouso.middleware.ldap_connection.LDAPBackend',
