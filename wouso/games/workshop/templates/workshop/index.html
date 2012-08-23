@@ -11,8 +11,10 @@
         {% trans 'Already answered' %}
     {% else %}
         {% if workshop.is_active %}
+            {% trans 'Expires:' %} {{ workshop.active_until }}.
             <a href="{% url workshop_play %}">Play!</a>
         {% else %}
+            {% trans 'Expired:' %} {{ workshop.active_until }}.
             {% trans "You now must review other's answers." %}
         {% endif %}
     {% endif %}

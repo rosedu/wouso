@@ -38,6 +38,8 @@ def play(request):
         return do_error(request, _('No current workshop'))
     elif player not in workshop.semigroup.players.all():
         return do_error(request, _('You are not in the current semigroup'))
+    elif not workshop.is_active():
+        return do_error(request, _('Workshop is not active'))
 
     assesment = Assesment.objects.get_or_create(player=player, workshop=workshop)[0]
     if assesment.answered:

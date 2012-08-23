@@ -3,8 +3,9 @@
 {% load user %}
 
 {% block tabcontent %}
-    Semigroup: {{ semigroup }}, Spot: day={{ semigroup.day }}, hour={{ semigroup.hour }}
-    <a href="{% url ws_edit_group semigroup.pk %}">✍</a>.
+    Semigroup: {{ semigroup }},
+    Spot: {% if semigroup.day %}day={{ semigroup.day }}, hour={{ semigroup.hour }}<a href="{% url ws_edit_group semigroup.pk %}">✍</a>.
+          {% else %}Any time where there isn't any other one.{% endif %}
 
     <h4>Workshop history</h4>
     <ul>

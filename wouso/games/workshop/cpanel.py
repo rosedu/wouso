@@ -67,6 +67,7 @@ def edit_group(request, semigroup):
 
 @staff_required
 def edit_spot(request, day, hour):
+    day, hour = int(day), int(hour)
     sg = Semigroup.get_by_day_and_hour(day, hour)
 
     if not sg:

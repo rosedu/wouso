@@ -49,7 +49,7 @@ class Semigroup(PlayerGroup):
         try:
             return cls.objects.get(day=day, hour=hour)
         except cls.DoesNotExist:
-            return None
+            return cls.objects.get_or_create(day=0, hour=0, name='default', owner=WorkshopGame.get_instance())[0]
 
 class Workshop(models.Model):
     STATUSES = (
@@ -226,7 +226,7 @@ class WorkshopGame(Game):
             for q in questions:
                 workshop.questions.add(q)
 
-            workshop.active_until = datetime.now() + timedelta(minutes=3)
+            workshop.active_until = datetime.now() + timedelta(minutes=15)
             workshop.save()
 
         return workshop
@@ -267,9 +267,11 @@ class WorkshopGame(Game):
 
     @classmethod
     def get_sidebar_widget(cls, request):
+        player = request.user.get_profile()
         semigroup = cls.get_semigroup()
-        workshop = cls.get_for_player_now(request.user.get_profile())
+        workshop = cls.get_for_player_now(player)
+        assesment = Assesment.get_for_player_and_workshop(player, workshop)
         sm = request.user.get_profile() in semigroup.players.all() if semigroup else False
 
         return render_to_string('workshop/sidebar.html',
-                {'semigroup': semigroup, 'workshop': workshop, 'semigroup_member': sm})
+                {'semigroup': semigroup, 'workshop': workshop, 'semigroup_member': sm, 'assesment': assesment})
