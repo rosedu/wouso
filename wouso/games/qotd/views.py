@@ -12,14 +12,10 @@ from forms import QotdForm
 def index(request):
     if QotdGame.disabled():
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
-    #qotd = QotdGame.get_for_today()
 
     profile = request.user.get_profile()
     qotd_user = profile.get_extension(QotdUser)
 
-    #if not qotd_user.has_question:
-    #    qotd_user.set_question(qotd)
-    #else:
     qotd = qotd_user.my_question
 
     if qotd_user.has_answered:
@@ -51,11 +47,7 @@ def done(request):
     if not request.user.get_profile().get_extension(QotdUser).has_answered:
         return HttpResponseRedirect(reverse("games.qotd.views.index"))
 
-    #qotd = QotdGame.get_for_today()
     user = request.user.get_profile().get_extension(QotdUser)
-    #if not user.has_question:
-    #    user.set_question(qotd)
-    #else:
     qotd = user.my_question
 
     choice = user.last_answer

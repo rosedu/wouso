@@ -45,7 +45,6 @@ class QotdUser(Player):
             self.last_answer = choice # answer id
             self.last_answer_correct = correct
             self.last_answered = datetime.now()
-            #self.my_question = None
             self.save()
             # send signal
             if correct:
@@ -92,13 +91,7 @@ class QotdGame(Game):
     @staticmethod
     def get_for_today():
         """ Return a Question object selected for Today """
-        #question = get_questions_with_tag_for_day("qotd", date.today())
-        #try:
         sched = list(Schedule.objects.filter(day=date.today()).all())
-        #except Schedule.DoesNotExist:
-        #    return None
-        #if not sched or not sched.question.active:
-        #    return None
         if not sched:
             return None
         for q in sched:
