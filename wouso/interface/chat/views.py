@@ -53,7 +53,7 @@ def add_message(text, sender, toRoom):
     #if diff.total_seconds() > 0.5:
     if sender.has_modifier('block-communication'):
         return False
-    if sender.has_modifier('block-messages'):
+    if sender.has_modifier('change-messages'):
         text = change_text(text)
         msg = ChatMessage(content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp)
         msg.save()
