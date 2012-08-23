@@ -40,5 +40,26 @@
    "type": "n",
    "description": "Nu permite comunicarea globala juc\u0103torului pe care este aplicat\u0103."
   }
+ },
+{
+  "pk": 52,
+  "model": "magic.artifact",
+  "fields": {
+   "image": "",
+   "percents": 100,
+   "group": 1,
+   "name": "block-messages",
+   "title": "Si-a pierdut dex-ul."
+  }
+ },
+{
+  "pk": 52,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 3,
+   "price": 10.0,
+   "type": "n",
+   "description": "Juc\u0103torului pe care este aplicat\u0103, va incurca cuvintele."
+  }
  }
 ]

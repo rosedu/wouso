@@ -9,7 +9,7 @@ from models import *
 
 from wouso.core.config.models import BoolSetting
 from datetime import datetime, timedelta
-#import datetime
+import random, array
 
 
 def create_room(roomName, deletable=False, renameable=False):
@@ -22,6 +22,24 @@ def get_author(request):
 
     return request.user.get_profile().get_extension(ChatUser)
 
+def shuffle_text(text):
+    if isinstance(text, unicode):
+        temp= array.array('u', text)
+        converter= temp.tounicode
+    else:
+        temp= array.array('c', text)
+        converter= temp.tostring
+    random.shuffle(temp)
+    return converter()
+
+
+def change_text(text):
+    text = text.split(" ")
+    random.shuffle(text)
+    new_text = ""
+    for world in text:
+        new_text = new_text + world[0] + shuffle_text(world[1:len(world)-1]) + world[len(world)-1] + " "
+    return new_text
 
 def add_message(text, sender, toRoom):
 
@@ -35,7 +53,11 @@ def add_message(text, sender, toRoom):
     #if diff.total_seconds() > 0.5:
     if sender.has_modifier('block-communication'):
         return False
-    if difference_in_seconds > 0.5:
+    if sender.has_modifier('block-messages'):
+        text = change_text(text)
+        msg = ChatMessage(content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp)
+        msg.save()
+    elif difference_in_seconds > 0.5:
         msg = ChatMessage(content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp)
         msg.save()
     else:
