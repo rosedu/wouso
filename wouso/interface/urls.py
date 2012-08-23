@@ -80,8 +80,14 @@ urlpatterns = patterns('',
     # Static: not in a real deployment
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
-
-    #qunit test url.
-    url(r'^qunit/', include('wouso.core.django_qunit.urls'))
-
 )
+
+# Specific urls with import logic - soft dependencies
+try:
+	import django_qunit
+except ImportError:
+	pass
+else:
+	urlpatterns += patterns('',
+    	url(r'^qunit/', include('django_qunit.urls'))
+	)

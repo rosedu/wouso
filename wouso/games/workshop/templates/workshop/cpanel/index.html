@@ -1,0 +1,62 @@
+{% extends 'cpanel/index.html' %}
+{% load workshop %}
+
+{% block scripts %}
+<link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
+{% endblock %}
+
+{% block sectiontitle %}Workshop{% endblock %}
+
+{% block sectioncontent %}
+<div class="actions">
+    {% now "M. d, Y, H:i:s" %}
+</div>
+
+<ul class="tabs">
+    <li ><a href="{% url workshop_home %}">Timetable</a></li>
+    <li ><a href="{% url ws_schedule %}">Schedule</a></li>
+    <li ><a href="{% url ws_workshops %}">Workshops</a></li>
+</ul>
+
+<div class="tab_container">
+    <div id="tab-1" class="tab_content">
+
+        <div class="subgroups">
+        {% block information %}
+            {% if info %}
+        <p>
+        Current spot: {{ info.get_spot }}<br/>
+        Current group: {{ info.get_semigroup }}<br/>
+        Current qpool: {{ info.get_question_pool.count }}<br/>
+        </p>{% endif %}
+        {% endblock %}
+        </div>
+
+        {% block tabcontent %}
+        <table>
+            <tr>
+                <th>Hour/Day</th>
+                {% for d in days %}
+                    <th>{{ d.1 }}</th>
+                {% endfor %}
+            </tr>
+            {% for h in hours %}
+            <tr>
+                <td ALIGN="RIGHT">{{ h }}:00</td>
+                {% for d in days %}
+                    <td>
+                        {% get_schedule d.0 h %}
+                        <a href="{% url ws_edit_spot d.0 h %}">✍</a>
+                    </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+
+
+        <a class="button" href="{% url ws_add_group %}">Add semigroup</a>
+        <a class="button" href="{% url ws_edit_spot 0 0 %}">Default (testing)</a>
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}

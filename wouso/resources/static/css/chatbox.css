@@ -121,9 +121,8 @@ a.cl_item {
     position: absolute;
     display: none;
 
-    border: double;
-    border-color: #000000;
-    background-color: #f5deb3;
+	border: 1px solid #aaa;
+	background-color: #ffffff;
 }
 .caction{
     width:  27px;

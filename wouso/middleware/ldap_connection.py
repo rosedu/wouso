@@ -24,7 +24,8 @@ class LDAPBackend:
                     LDAP_FILTER % username, None)
             conn.unbind_s()
         except ldap.SERVER_DOWN:
-            raise Exception('Authentication server is down')
+            #raise Exception('Authentication server is down')
+            return None
 
         if len(result) == 0:
             return None

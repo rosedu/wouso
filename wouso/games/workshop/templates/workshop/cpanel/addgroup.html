@@ -1,0 +1,12 @@
+{% extends 'workshop/cpanel/index.html' %}
+{% load workshop %}
+
+{% block tabcontent %}
+    <form action="{% url ws_add_group %}" method="post">
+        <table>
+        {{ form.as_table }}
+        </table>
+        {% csrf_token %}
+        <button type="submit">Create</button>
+    </form>
+{% endblock %}

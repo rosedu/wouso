@@ -22,10 +22,9 @@ class TestWorkshop(TestCase):
         group = Semigroup.objects.create(name='test', day=now.weekday() + 1, hour=hour)
 
         # Create a tag, question and schedule it now
-        tag = Tag.objects.create(name='test-tag')
+        tag = Schedule.objects.create(name='test-tag', start_date=now, end_date=now + timedelta(days=1))
         question = Question.objects.create()
         question.tags.add(tag)
-        Schedule.objects.create(tag=tag, start_date=now, end_date=now + timedelta(days=1))
 
         ws = WorkshopGame.get_for_now(timestamp=now, always=True)
 

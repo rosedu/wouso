@@ -120,7 +120,7 @@ def instantsearch(request):
     form = InstantSearchForm(request.GET)
     if form.is_valid():
         query = form.cleaned_data['q']
-        users = User.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query))
+        users = User.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(username__icontains=query))
         user_ids = [u.id for u in users]
         searchresults = Player.objects.filter(user__in=user_ids)
 

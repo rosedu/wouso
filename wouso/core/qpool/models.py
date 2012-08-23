@@ -59,7 +59,7 @@ class Question(models.Model):
     active = models.BooleanField(default=False)
 
     category = models.ForeignKey(Category, null=True)
-    tags = models.ManyToManyField(Tag, blank=True, related_name="%(app_label)s_%(class)s_related")
+    tags = models.ManyToManyField(Tag, blank=True)
 
     answer_type = models.CharField(max_length=1, choices=(("R", "single choice"), ("C", "multiple choice")), default="R")
     # a dynamic question would have its code run before returning it to the caller

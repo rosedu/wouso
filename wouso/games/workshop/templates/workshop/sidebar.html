@@ -1,0 +1,27 @@
+{% extends 'interface/sidebar_widget.html' %}
+{% load i18n %}
+
+{% block title %}{%  trans 'Workshop' %}{% endblock %}
+
+{% block content %}
+{% if semigroup_member %}
+   {% trans 'Current semigroup:' %} {{ semigroup }}<br/>
+        {% if workshop %}
+            {% if workshop.is_active %}
+                {% if not assesment.answered %}
+                <a href="{% url workshop_play %}">{% trans 'Play!' %}</a>
+                {% else %}
+                {% trans 'You have answered' %}
+                {% endif %}
+            {% else %}
+                {% trans 'Workshop not active' %}
+            {% endif %}
+        {% else %}
+        {% trans 'No workshop for you.' %}
+        {% endif %}
+{% else %}
+        {% trans 'Not a member of current semigroup' %}.
+{% endif %}
+        <br/>
+        <a href="{% url workshop_index_view %}">{% trans 'Info' %}</a>
+{% endblock %}
