@@ -1,0 +1,67 @@
+{% extends 'cpanel/qpool_home.html' %}
+
+{% block title %}CPanel{% endblock %}
+{% block sectiontitle %}{{ block.super }} &raquo; {% if question %}Edit question #{{ question.id }}{% else %}New question{% endif %}{% endblock %}
+
+{% block subsectioncontent %}
+<div class="second">
+    <p>Proposed by: {{ question.proposed_by }}, Endorsed by: {{ question.endorsed_by }}</p>
+    <p>Category: {{ question.category }}</p>
+    <p>Added: {{ question.date_added }} <br/>Last modified: {{ question.date_changed }}</p>
+</div>
+
+<form method="post">
+<table>
+    <tr><td><label for="text">Text:</label></td>
+        <td><textarea id="text" name="text" rows="10" cols="50">{{ question.text}}</textarea>
+    </tr>
+        {% for a in question.answers %}
+        <tr><td><input type="checkbox" name="correct_{{a.id}}" {% if a.correct %}checked{% endif %}/></td>
+            <td><textarea name="answer_{{a.id}}" cols="50">{{ a.text }}</textarea>
+            {% if question %}
+            <a href="{% url admin:qpool_question_change question.id %}">x</a>
+            {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+
+    {% if question.category.name != 'proposed' %}
+    <tr><td colspan="2"><label for="active">Active: </label>
+        <input id="active" type="checkbox" name="active" {% if question.active %}checked{% endif %} /></td>
+    </tr>
+    {% endif %}
+
+    {% if question.category.name == 'qotd' %}
+    <tr><td><label for="schedule">Schedule (dd.mm.yyyy):</label></td>
+        <td><input type="text" value="{{ question.scheduled }}" name="schedule" id="schedule"/></td>
+    </tr>
+    {% endif %}
+    {% if question.category.name == 'proposed' %}
+    <tr><td colspan="2">Proposed for: {% for t in question.tags.all  %}{{ t.name }} {% endfor %}</td></tr>
+    {% else %}
+        {% if question %}
+        <tr><td><label for="tags">Tags:</label></td>
+            <td>{{ form.tags }}</td>
+        </tr>
+        {% endif %}
+    {% endif %}
+
+    {% if form.proposed_by %}
+    <tr><td>Proposed by:</td><td>
+        {{ form.proposed_by }}
+    </td></tr>
+    {% endif %}
+    {% if form.endorsed_by %}
+    <tr><td>Endorsed by:</td><td>
+        {{ form.endorsed_by }}
+    </td></tr>
+    {% endif %}
+    </table>
+    <div class="actions">
+        <button onclick="history.back(); return false;">Cancel</button>
+        <button type="reset">Reset</button>
+        <button type="submit" class="default">Save</button>
+    </div>
+    {% csrf_token %}
+</form>
+{% endblock %}

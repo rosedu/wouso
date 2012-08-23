@@ -21,11 +21,6 @@ class InvalidScoreCall(Exception): pass
 
 CORE_POINTS = ('points','gold')
 
-#def __init__(self):
-#    if not Scoring.check_setup():
-#        raise NotSetupError('Please setup the Scoring Module, using '+
-#        '\n\t'+'python core/scoring/default_setup.py')
-
 def check_setup():
     """ Check if the module has been setup """
 
@@ -33,7 +28,7 @@ def check_setup():
         return False
     return True
 
-def setup():
+def setup_scoring():
     """ Prepare database for Scoring """
     for cc in CORE_POINTS:
         if not Coin.get(cc):
@@ -46,7 +41,7 @@ def setup():
     # iterate through games and register formulas
     for game in get_games():
         for formula in game.get_formulas():
-            if not Formula.get(formula.id):
+            if not Formula.get(formula):
                 Formula.add(formula)
     # add wouso formulas
     for formula in God.get_system_formulas():
@@ -58,6 +53,9 @@ def calculate(formula, **params):
     formula = Formula.get(formula)
     if formula is None:
         raise InvalidFormula(formula)
+
+    if not formula.formula:
+        return {}
 
     ret = {}
     try:

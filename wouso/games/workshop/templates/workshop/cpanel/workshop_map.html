@@ -1,0 +1,35 @@
+{% extends 'workshop/cpanel/index.html' %}
+{% load workshop %}
+{% load i18n %}
+
+{% block sectiontitle %}Workshop #{{ workshop.id }}{% endblock %}
+
+{% block tabcontent %}
+<p>Assesments and reviewers:</p>
+
+<table>
+    <tr>
+        <th colspan="2">Student</th>
+        <th>Grade</th>
+    </tr>
+    {% for as in workshop.assesment_set.all %}
+    <tr>
+        <td colspan="2">{{ as.player }}</td>
+        <td><strong>{{ as.grade }}</strong></td>
+        <td>{% if workshop.is_gradable %}
+            <a href="{% url ws_grade_assesment as.id %}">Grade</a>
+            {% endif %}
+        </td>
+    </tr>
+        {% for r in as.reviewers.all %}
+        <tr>
+            <td></td>
+            <td>{{ r }}</td>
+            <td>{% get_reviewer_grade workshop r %}</td>
+        </tr>
+        {% endfor %}
+    {% endfor %}
+</table>
+
+    <a class="button" href="{% url ws_workshops %}">Workshops</a>
+{% endblock %}

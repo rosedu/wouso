@@ -4,7 +4,7 @@ var url_base = '';
 /* reload header */
 function reload_header() {
     $.ajax({
-        url: url_base + '/ajax/header/',
+        url: url_base + '/ajax/do/header/',
         success: function(data) {
             $('#topbar').html(data);
         },
@@ -17,7 +17,7 @@ function reload_header() {
 /* reload activity */
 function reload_activity() {
     $.ajax({
-        url: url_base + '/ajax/activity/',
+        url: url_base + '/ajax/do/activity/',
         success: function(data) {
             $('#wall').html(data);
         },

@@ -5,7 +5,8 @@ games_list = []
 
 def get_games():
     """ Returns a list of Game classes """
-    if games_list == []:
+    global games_list
+    if not games_list:
         for model in get_models():
             if Game in model.__bases__:
                 games_list.append(model)

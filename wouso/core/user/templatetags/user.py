@@ -46,9 +46,19 @@ def player_simple2(user, user2):
 @register.simple_tag
 def player_group(group):
     """ Render group with link to group's profile page """
-    link = reverse('wouso.interface.profile.views.player_group', args=(group.id,))
+    if group:
+        link = reverse('wouso.interface.profile.views.player_group', args=(group.id,))
 
-    return u'<a href="%s%s" title="%s">%s</a>' % (link, group, group.name, group)
+        return u'<a href="%s%s" title="%s">%s</a>' % (link, group, group.name, group)
+    else:
+        return ''
+
+@register.simple_tag
+def player_race(race):
+    """ Render group with link to group's profile page """
+    link = reverse('race_view', args=(race.id,))
+
+    return u'<a href="%s%s" title="%s">%s</a>' % (link, race, race.name, race)
 
 @register.simple_tag
 def player_avatar(player_obj):
@@ -75,3 +85,10 @@ def spell_stock(player, spell):
         return ''
     stock = player.spell_stock(spell)
     return 'x%d' % stock if stock > 0 else '-'
+
+@register.simple_tag
+def player_input(name):
+
+    return '<input type="hidden" name="{name}" id="ac_input_{name}_value" />' \
+           '<input type="text" id="ac_input_{name}" class="ac_input big" />' \
+           '<script>setAutocomplete("#ac_input_{name}");</script>'.format(name=name)

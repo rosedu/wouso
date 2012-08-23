@@ -1,0 +1,15 @@
+{% extends 'cpanel/qpool_home.html' %}
+
+{% block subsectioncontent %}
+<h3> Active tags </h3>
+{% if tags.count == 0 %}
+<p>No available tags.</p>
+{% else %}
+<form action="{% url set_active_categories %}" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit" />
+</form>
+{% endif %}
+
+   <a class="button" href="{% url qpool_home cat='challenge' %}">Back</a>
+{% endblock %}

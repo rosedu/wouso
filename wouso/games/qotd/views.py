@@ -4,7 +4,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from wouso.interface import render_string
+from django.template.loader import render_to_string
 from models import QotdUser, QotdGame
 from forms import QotdForm
 
@@ -68,4 +68,4 @@ def sidebar_widget(request):
         time_passed = datetime.now() - qotd_user.last_answered
         if time_passed > timedelta(seconds=120): # two minutes
             return ''
-    return render_string('qotd/sidebar.html', {'question': qotd, 'quser': qotd_user, 'qotd': QotdGame})
+    return render_to_string('qotd/sidebar.html', {'question': qotd, 'quser': qotd_user, 'qotd': QotdGame})

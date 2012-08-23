@@ -1,0 +1,63 @@
+{% extends 'workshop/cpanel/index.html' %}
+{% load workshop %}
+{% load i18n %}
+
+{% block sectiontitle %}Workshop{% endblock %}
+
+{% block information %}
+<p>Workshops are sets of assessments per semigroup.</p>
+
+<p>The decision to create a workshops is taken by the system, according to the timetable and
+the current scheduled question set.</p>
+
+<p>Here you can change the workshop status, and also review, grade and give feedback to students.</p>
+
+<p>The statuses of an workshop are:
+<ul>
+    <li>Started</li>
+    <li>Reviewing</li>
+    <li>Grading</li>
+    <li>Archived</li>
+</ul></p>
+{% endblock %}
+
+{% block tabcontent %}
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Date</th>
+            <th>Semigroup</th>
+            <th>Assesments</th>
+            <th>Status</th>
+        </tr>
+        {% for w in workshops%}
+        <tr>
+            <td>
+                {{ w.id }}
+            </td>
+            <td>{{ w.date }}</td>
+            <td>{{ w.semigroup }}</td>
+            <td align="right">{{ w.assesment_set.count }}</td>
+            <td>{% if w.is_active %}Active until {{ w.active_until|date:"H:i" }}
+                {% else %}Inactive, expired {{ w.active_until|date:"M. d, Y, H:i:s" }}
+                {% endif %}
+                <br/>
+                {{ w.get_status_display }}
+            </td>
+            <td>
+                <a href="{% url admin:workshop_workshop_change w.id %}">✍</a>
+                {% if w.is_started and not w.is_active %}
+                <a href="{% url ws_mark_for_review w.id %}">Mark for review</a><br/>
+                {% endif %}
+                {% if w.is_reviewable %}
+                <a href="{% url ws_mark_for_grading w.id %}">Mark for grading</a><br/>
+                {% endif %}
+                {% if not w.is_started %}
+                    <a href="{% url ws_reviewers_map w.id %}">{% if w.is_gradable %}Grades{% else %}Reviewers map{% endif %}</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}

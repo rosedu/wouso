@@ -12,7 +12,7 @@
     <li><a href="{{ g.get_instance.get_game_absolute_url }}">{% trans g.get_instance.verbose_name %}</a></li>
 {% endfor %}
     <li class="empty"></li>
-    <li><a href="{% url wouso.interface.top.views.gettop %}">{% trans 'Top' %}</a></li>
+    <li><a href="{% url view_top %}">{% trans 'Top' %}</a></li>
     <li><a href="{% url bazaar_home %}">{% trans 'Bazaar' %}</a></li>
 </ul>
 {% endblock %}

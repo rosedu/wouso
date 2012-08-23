@@ -13,15 +13,15 @@ if __name__ == '__main__':
     print 'Setting up the Artifacts...',
 
     # Spell group
-    spell_group, new = Group.objects.get_or_create(name='Spells')
+    spell_group, new = ArtifactGroup.objects.get_or_create(name='Spells')
 
     # Group groups
-    ca, new = Group.objects.get_or_create(name='CA')
-    cb, new = Group.objects.get_or_create(name='CB')
-    cc, new = Group.objects.get_or_create(name='CC')
+    ca, new = ArtifactGroup.objects.get_or_create(name='CA')
+    cb, new = ArtifactGroup.objects.get_or_create(name='CB')
+    cc, new = ArtifactGroup.objects.get_or_create(name='CC')
 
     # Create a default group
-    default_group, new = Group.objects.get_or_create(name='Default')
+    default_group, new = ArtifactGroup.objects.get_or_create(name='Default')
     for i in range(7):
         name='level-%d' % (i + 1)
         title='Level %d' % (i + 1)
@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
     # Dump
     print "Groups: "
-    for c in Group.objects.all():
+    for c in ArtifactGroup.objects.all():
         print " ", c
     print "Artifacts: "
     for f in Artifact.objects.all():

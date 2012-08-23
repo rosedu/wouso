@@ -1,0 +1,31 @@
+{% extends 'cpanel/qpool_home.html' %}
+{% load i18n %}
+
+{% block sectiontitle %}Question pool &raquo; Manage Tags{% endblock %}
+
+{% block subsectioncontent %}
+<table>
+    <tr>
+        <th>Tag</th>
+        <th>Category</th>
+        <th>Questions</th>
+    </tr>
+
+    {% for t in tags %}
+    <tr>
+        <td>{{ t }}</td>
+        <td>{{ t.category }}</td>
+        <td>{{ t.question_set.count }}</td>
+        <td><a class="button button-min" href="{% url admin:qpool_tag_change t.id %}">✍</a></td>
+        <td><a class="button button-min" href="{% url admin:qpool_tag_delete t.id %}">x</a></td>
+        <td><a href="{% url qpool_home cat=t.category.name tag=t.id %}">filter</a></td>
+    </tr>
+    {% endfor %}
+</table>
+
+<a class="button" href="{% url admin:qpool_tag_add %}">Add tag</a>
+{% endblock %}
+
+{% block extra_sidebar %}
+
+{% endblock %}

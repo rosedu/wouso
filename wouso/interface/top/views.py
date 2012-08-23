@@ -1,5 +1,5 @@
 # Create your views here.
-from wouso.core.user.models import Player
+from wouso.core.user.models import Player, Race
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import Http404
@@ -29,7 +29,7 @@ def gettop(request, toptype=0, sortcrit=0, page=1):
     if pageno < 0:
         raise Http404
 
-    base_query = TopUser.objects.exclude(user__is_superuser=True).exclude(groups__name='Others')
+    base_query = TopUser.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
     allUsers = base_query.order_by('-points') #[(pageno-1)*PERPAGE:pageno*PERPAGE]
     #if (allUsers.count() == 0):
     #    raise Http404
@@ -44,8 +44,8 @@ def gettop(request, toptype=0, sortcrit=0, page=1):
     except (EmptyPage, InvalidPage):
         users = paginator.page(0)
 
-    topseries = PlayerGroup.objects.exclude(show_in_top=False).filter(gclass=1).order_by('-points')
-    topgroups = PlayerGroup.objects.exclude(show_in_top=False).filter(gclass=0).order_by('-points')[:5]
+    topseries = Race.objects.exclude(can_play=False)
+    topgroups = PlayerGroup.objects.exclude(parent=None).order_by('-points')[:5]
 
     return render_to_response('top/maintop.html',
                            {'allUsers':      users,
@@ -59,11 +59,11 @@ def gettop(request, toptype=0, sortcrit=0, page=1):
 
 def pyramid(request):
     s = []
-    for g in PlayerGroup.objects.exclude(show_in_top=False).filter(gclass=1).order_by('name'):
+    for g in PlayerGroup.objects.exclude(show_in_top=False).filter(parent=None).order_by('name'): #TODO races
         columns = []
         players = []
         i, j = 1, 0
-        for p in g.player_set.all().order_by('-points'):
+        for p in g.players.all().order_by('-points'):
             players.append(p)
             if len(players) == i:
                 columns.append(list(players))
@@ -78,7 +78,7 @@ def pyramid(request):
 
 def topclasses(request):
     # top classes
-    classes = PlayerGroup.objects.exclude(show_in_top=False, parent__show_in_top=False).filter(gclass=0).order_by('points')
+    classes = PlayerGroup.objects.exclude(parent=None).order_by('points')
     classes = list(classes)
     classes = reversed(sorted(classes, key=lambda obj: obj.live_points))
 

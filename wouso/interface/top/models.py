@@ -1,9 +1,9 @@
 from datetime import datetime, timedelta
 from django.db import models
 from django.contrib.auth.models import User
+from django.template.loader import render_to_string
 from wouso.core.app import App
 from wouso.core.user.models import Player, PlayerGroup
-from wouso.interface import render_string
 
 class ObjectHistory:
     @property
@@ -101,10 +101,10 @@ class Top(App):
 
     @classmethod
     def get_sidebar_widget(kls, request):
-        top5 = TopUser.objects.exclude(user__is_superuser=True).exclude(groups__name='Others')
+        top5 = TopUser.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
         top5 = top5.order_by('-points')[:10]
         is_top = request.get_full_path().startswith('/top/')
-        return render_string('top/sidebar.html',
+        return render_to_string('top/sidebar.html',
             {'topusers': top5, 'is_top': is_top, 'top': Top}
         )
 

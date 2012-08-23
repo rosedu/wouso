@@ -1,6 +1,5 @@
 import datetime
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core import serializers
 from django.core.urlresolvers import reverse
@@ -9,20 +8,17 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from django.utils.translation import ugettext as _
 from wouso.interface import logger, detect_mobile
-from wouso.interface.pages.models import NewsItem
+from wouso.interface.apps.pages.models import NewsItem
 from wouso.core.game import get_games
 from wouso.interface.forms import *
 from wouso.core.user.models import Player, PlayerGroup
-from wouso.core.magic.models import Spell
-from wouso.core import scoring
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, History as TopHistory
 
 def get_wall(page=u'1'):
     ''' Returns activity for main wall, paginated.'''
-    activity_list = Activity.objects.all().exclude(user_from__groups__name='Others', game__isnull=False).order_by('-timestamp')
+    activity_list = Activity.get_global_activity()
     paginator = Paginator(activity_list, 10)
     try:
         activity = paginator.page(page)
@@ -39,10 +35,10 @@ def hub(request):
 
     # check first time
     profile = request.user.get_profile()
-    activity = Activity.objects.filter(user_from=profile).count()
+    activity = Activity.get_player_activity(profile).count()
     if activity < 2:
         # first timer, show povestea
-        from wouso.interface.pages.models import StaticPage
+        from wouso.interface.apps.pages.models import StaticPage
         try:
             story = StaticPage.objects.get(slug='poveste')
         except: pass
@@ -62,7 +58,7 @@ def homepage(request, page=u'1'):
     activity = get_wall(page)
 
     topuser = profile.get_extension(TopUser)
-    topgroups = list(profile.groups.all().order_by('-gclass'))
+    topgroups = [profile.group] if profile.group else []
     for g in topgroups:
         g.position = TopHistory.get_user_position(topuser, relative_to=g)
 
@@ -124,7 +120,7 @@ def instantsearch(request):
     form = InstantSearchForm(request.GET)
     if form.is_valid():
         query = form.cleaned_data['q']
-        users = User.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query))
+        users = User.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(username__icontains=query))
         user_ids = [u.id for u in users]
         searchresults = Player.objects.filter(user__in=user_ids)
 
@@ -168,7 +164,7 @@ def ajax(request, name):
 
 def ajax_get(request, model, id=0):
     if model == 'pages.staticpage':
-        from wouso.interface.pages.models import StaticPage
+        from wouso.interface.apps.pages.models import StaticPage
         model = StaticPage
     else:
         raise Http404

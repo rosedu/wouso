@@ -10,7 +10,7 @@ class QuestTestCase(unittest.TestCase):
         self.user.save()
         profile = self.user.get_profile()
         self.quest_user = profile.get_extension(QuestUser)
-        scoring.setup()
+        scoring.setup_scoring()
 
     def tearDown(self):
         #self.user.delete()

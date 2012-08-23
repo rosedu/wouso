@@ -84,7 +84,7 @@ def manage_player(request, player_id):
         elif request.POST.get('points', False):
             try:
                 amount = int(request.POST.get('points', 0))
-                assert amount > 0
+                #assert amount > 0
             except (ValueError, AssertionError):
                 error = 'Invalid amount'
             else:
@@ -106,9 +106,11 @@ def manage_player_set(request, player_id, task_id):
 
     if task not in player.done_tasks.all():
         if player.group:
-            members = player.group.members.all()
+            members = player.group.members
+            player.group.set_task_done(task)
         else:
             members = (player,)
+
         for member in members:
             if task not in member.done_tasks.all():
                 member.done_tasks.add(task)

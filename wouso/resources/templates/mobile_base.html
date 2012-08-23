@@ -18,14 +18,14 @@
 <div id="mobile-container">
     <div id="mobile-header">
         <div id="mobile-logo">
-            <a href="{% url interface.views.homepage %}" id="mobile-logoa"><h1>{{ config_title}}</h1></a>
+            <a href="{% url homepage %}" id="mobile-logoa"><h1>{{ config_title}}</h1></a>
         </div>
         <div id="mobile-topbar">
             {% if user.is_authenticated %}
                 <span class="bold">{% player_simple player %}</span> |
                 {% autoescape off %}{{ header }}{% endautoescape %}
                 {% if user.is_staff %}
-                <a href="{% url wouso.interface.cpanel.views.dashboard %}">CPanel</a> |
+                <a href="{% url dashboard %}">CPanel</a> |
                 {% endif %}
                 <a href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %} &raquo;</a>
             {% else %}
@@ -41,6 +41,8 @@
     </div>
 
     <div id="mobile-footer">
+        <a href="{% url homepage %}?mobile=0">Desktop</a> |
+        <a href="{% url homepage %}?mobile=1">Mobile</a>
     </div>
     {% autoescape off %}
     {{ config_hidden_footer }}

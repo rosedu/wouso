@@ -1,0 +1,27 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Workshop' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Workshop' %} #{{ workshop.pk }}{% endblock %}
+
+{% block sectioncontent %}
+<p>Workshop available until: {{ workshop.active_until }}</p>
+<p>Assesment started: {{ assesment.time_start }}</p>
+
+<form action="" method="post">
+    <table>
+        {% for q in workshop.questions.all %}
+            <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td>{{ q }}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><textarea name="answer_{{ q.id }}" rows="5" cols="80"></textarea></td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% csrf_token %}
+    <button type="submit">{% trans 'Send' %}</button>
+</form>
+{% endblock %}

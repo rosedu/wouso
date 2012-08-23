@@ -16,7 +16,7 @@
             {% trans 'You have answered wrong for today'%}
             {% endif %}
         {% else %}
-        <a href="{% url games.qotd.views.index %}" class="">{% trans 'Answer now' %}</a>!
+        <a href="{% url qotd_index_view %}" class="">{% trans 'Answer now' %}</a>!
         {% endif %}
     {% else %}
         {% trans 'No question for today' %}.

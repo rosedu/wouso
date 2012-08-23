@@ -10,7 +10,7 @@
     {% if not is_top %}
         <ol class="top">
         {% for u in topusers %}
-            <li><a  href="{% url wouso.interface.profile.views.user_profile u.id %}"
+            <li><a  href="{% url player_profile u.id %}"
                     title="{{ u.proximate_group }}/{{ u.series }}  {{u.points}}">{{ u }}</a>
             </li>
         {% endfor %}

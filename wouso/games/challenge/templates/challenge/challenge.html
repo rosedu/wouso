@@ -44,7 +44,7 @@
 </script>
 
 
-<form action="{% url games.challenge.views.challenge challenge.id %}" method="post" id="challenge_form">
+<form action="{% url view_challenge challenge.id %}" method="post" id="challenge_form">
     <ol id="questions-list">
     {% for field in form.visible_fields %}
         <li>

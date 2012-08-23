@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404
@@ -7,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from wouso.core.user.models import Player
+from wouso.games.challenge.models import ChallengeException
 from wouso.interface import render_string
 from models import ChallengeUser, ChallengeGame, Challenge, Participant
 from forms import ChallengeForm
@@ -98,7 +100,7 @@ def launch(request, to_id):
     if user_from.can_challenge(user_to):
         try:
             chall = Challenge.create(user_from=user_from, user_to=user_to)
-        except ValueError as e:
+        except ChallengeException as e:
             # Some error occurred during question fetch. Clean up, and display error
             return do_result(request, e.message)
         return do_result(request, message=_('Successfully challenged'))
@@ -199,7 +201,7 @@ def sidebar_widget(request):
     if not challs:
         return ''
 
-    return render_string('challenge/sidebar.html', {'challenges': challs, 'challenge': ChallengeGame,  'chall_user': chall_user})
+    return render_to_string('challenge/sidebar.html', {'challenges': challs, 'challenge': ChallengeGame,  'chall_user': chall_user})
 
 def history(request, playerid):
     player = get_object_or_404(ChallengeUser, pk=playerid)
@@ -217,7 +219,7 @@ def challenge_random(request):
 
     # selects challengeable players
     players = ChallengeUser.objects.exclude(user = current_player.user)
-    players = players.exclude(groups__name="Others")
+    players = players.exclude(race__can_play=False)
     players = [p for p in players if current_player.can_challenge(p)]
 
     no_players = len(players)

@@ -9,21 +9,14 @@ from django.db.models import Q
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
-from wouso.core.user.models import Player, PlayerGroup, PlayerSpellDue
+from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.scoring.models import History
-from wouso.core.magic.models import Spell
+from wouso.core.magic.models import Spell, PlayerSpellDue
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, GroupHistory
 from wouso.interface.top.models import History as TopHistory
 from wouso.core.game import get_games
 
-@login_required
-def profile(request):
-    # TODO: remove this and url to this
-    list = Activity.objects.all().order_by('-timestamp')[:10]
-    return render_to_response('profile/index.html',
-                              {'activity': list},
-                              context_instance=RequestContext(request))
 
 @login_required
 def player_points_history(request, id):
@@ -42,14 +35,13 @@ def user_profile(request, id, page=u'1'):
 
     avatar = "http://www.gravatar.com/avatar/%s.jpg?d=monsterid"\
         % md5(profile.user.email).hexdigest()
-    activity_list = Activity.objects.\
-        filter(Q(user_to=id) | Q(user_from=id)).order_by('-timestamp')
+    activity_list = Activity.get_player_activity(profile)
 
     top_user = profile.get_extension(TopUser)
-    top_user.topgroups = list(profile.groups.all().order_by('-gclass'))
-    for g in top_user.topgroups:
-        g.week_evolution = top_user.week_evolution(relative_to=g)
-        g.position = TopHistory.get_user_position(top_user, relative_to=g)
+    #top_user.topgroups = list(profile.groups.all())
+    #for g in top_user.topgroups:
+    #    g.week_evolution = top_user.week_evolution(relative_to=g)
+    #    g.position = TopHistory.get_user_position(top_user, relative_to=g)
     history = History.user_points(profile)
     paginator = Paginator(activity_list, 10)
 
@@ -83,19 +75,18 @@ def user_profile(request, id, page=u'1'):
 def player_group(request, id, page=u'1'):
     group = get_object_or_404(PlayerGroup, pk=id)
 
-    top_users = group.player_set.all().order_by('-points')
-    subgroups = group.children.order_by('-points')
+    top_users = group.players.all().order_by('-points')
+    subgroups = group.children
     if group.parent:
-        sistergroups = group.parent.children.exclude(show_in_top=False).order_by('-points')
+        sistergroups = group.parent.children.all().order_by('-points')
     else:
-        sistergroups = PlayerGroup.objects.filter(gclass=group.gclass).exclude(show_in_top=False).order_by('-points')
+        sistergroups = None
     history = GroupHistory(group)
 
     for g in group.sisters:
         g.top = GroupHistory(g)
 
-    activity_list = Activity.objects.\
-        filter(Q(user_to__groups=group) | Q(user_from__groups=group)).distinct().order_by('-timestamp')
+    activity_list = Activity.get_group_activiy(group)
     paginator = Paginator(activity_list, 10)
     try:
         activity = paginator.page(page)
@@ -113,9 +104,26 @@ def player_group(request, id, page=u'1'):
                               context_instance=RequestContext(request))
 
 @login_required
+def player_race(request, race_id):
+    race = get_object_or_404(Race, pk=race_id)
+
+    top_users = race.player_set.order_by('-points')
+    activity_qs = Activity.get_race_activiy(race)
+    paginator = Paginator(activity_qs, 20)
+    activity = paginator.page(1)
+
+    return render_to_response('profile/race.html',
+                            {'race': race,
+                             'top_users': top_users,
+                             'activity': activity},
+                            context_instance=RequestContext(request)
+    )
+
+
+@login_required
 def groups_index(request):
     PlayerGroup.top = lambda(self): GroupHistory(self)
-    groups = PlayerGroup.objects.filter(gclass=1).order_by('name')
+    groups = PlayerGroup.objects.exclude(parent=None).order_by('name')
     
     return render_to_response('profile/groups.html',
                               {'groups': groups},
@@ -139,7 +147,7 @@ def magic_cast(request, destination=None, spell=None):
                 error = _('Invalid number of days')
             else:
                 due = datetime.now() + timedelta(days=days)
-                if destination.cast_spell(spell, source=player, due=due):
+                if destination.magic.cast_spell(spell, source=player, due=due):
                     return HttpResponseRedirect(reverse('wouso.interface.profile.views.user_profile', args=(destination.id,)))
                 else:
                     error = _('Cast failed.')

@@ -45,8 +45,7 @@ You must have installed:
 
 6. Create database tables and load initial data::
 
-    ./manage.py syncdb
-    bash default_setup.bash
+    ./manage.py wousoctl --setup
 
 7. Run the server::
 
