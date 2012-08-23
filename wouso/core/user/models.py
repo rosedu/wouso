@@ -105,9 +105,9 @@ class Player(models.Model):
     race = models.ForeignKey(Race, blank=False, default=None, null=True)
 
     def in_staff_group(self):
-        # TODO fixme
+        # TODO fixme, rename me.
         staff, new = Group.objects.get_or_create(name='Staff')
-        return staff in self.user.groups.all()
+        return self.user.is_superuser or (staff in self.user.groups.all())
 
     @property
     def race_name(self):

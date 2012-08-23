@@ -1,99 +1,99 @@
-? S Which is the codename of current WoUSO devel version?
+? Which is the codename of current WoUSO devel version?
 + Piranha
 - 4
 - no codename
 - nom nom nom
-? S Dacă utilizatorul <tt>student</tt> creează un fișier folosind comanda <tt>touch fisier</tt>, iar umask este setat la 0257, pentru ce utilizatori va funcționa comanda <tt>echo "bla" > fișier</tt>?
+? Dacă utilizatorul <tt>student</tt> creează un fișier folosind comanda <tt>touch fisier</tt>, iar umask este setat la 0257, pentru ce utilizatori va funcționa comanda <tt>echo "bla" > fișier</tt>?
 + membrii grupului de care aparține fișierul
 - utilizatorul "student"
 - pentru nici un utilizator
 - oricine
-? S Care este echivalentul numeric al permisiunilor <tt>rwxr-----</tt>?
+? Care este echivalentul numeric al permisiunilor <tt>rwxr-----</tt>?
 + 740
 - 640
 - 720
 - 037
-? S Care este UID-ul utilizatorului root pe un sistem Linux?
+? Care este UID-ul utilizatorului root pe un sistem Linux?
 - 1
 - 0xdeadbeef
 + 0
 - 42
-? S Daca utilizatorul "student" creeaza un fisier cu comanda <tt>touch fisier</tt>, iar umask este setat la 0257, cine va putea edita fisierul ?
+? Daca utilizatorul "student" creeaza un fisier cu comanda <tt>touch fisier</tt>, iar umask este setat la 0257, cine va putea edita fisierul ?
 + membrii grupului de care apartine fisierul
 - utilizatorul "student"
 - nu va putea fi editat
 - oricine
-? S In lumea UNIX un proces poate avea un singur proces parinte. In momentul in care parintele este omorat printr-ul semnal SIGKILL, procesul copil
+? In lumea UNIX un proces poate avea un singur proces parinte. In momentul in care parintele este omorat printr-ul semnal SIGKILL, procesul copil
 - este automat omorat si el
 - devine orfan, isi termina executia, fara a fi adoptat de nimeni
 - devine orfan si este automat adoptat de parintele parintelui (bunicul procesului)
 + devine orfan si este automat adoptat de procesul "init"
-? S Care din comenzile de mai jos afisaza terminalul utilizat de demonul x.
+? Care din comenzile de mai jos afisaza terminalul utilizat de demonul x.
 + ps -e | grep x
 - ps -o tty | pgrep x
 - ps -eo tty | grep x
 - ps -eo tty | pgrep x
-? S Care este comanda prin care se schimba runlevel-ul curent la 3?
+? Care este comanda prin care se schimba runlevel-ul curent la 3?
 - <tt>runlevel 3</tt>
 - <tt>sysv-rc-conf 3</tt>
 + <tt>telinit 3</tt>
 - <tt>cd /etc/rc3.d</tt>
-? S Care din urmatoarele comenzi nu au ca optiune -a?
+? Care din urmatoarele comenzi nu au ca optiune -a?
 + top
 - man
 - ls
 - ps
-? S Cati utilizatori dintr-un sistem de operare Ubuntu pot folosi comanda "sudo adduser"?
+? Cati utilizatori dintr-un sistem de operare Ubuntu pot folosi comanda "sudo adduser"?
 + oricati
 - unul singur
 - nici unul
 - cate unul pentur fiecare partitie
-? S Cate statii dintr-o retea locala functionala pot avea adresa 192.168.0.32/24?
+? Cate statii dintr-o retea locala functionala pot avea adresa 192.168.0.32/24?
 + una singura
 - oricate
 - niciuna
 - cate una pentru fiecare switch
-? S Care comanda nu este legata direct de lucrul cu procese?
+? Care comanda nu este legata direct de lucrul cu procese?
 + dd
 - ps
 - top
 - pstree
-? S Care din urmatoarele NU este un drept de acces pe o intrare in sistemele de fisiere Unix?
+? Care din urmatoarele NU este un drept de acces pe o intrare in sistemele de fisiere Unix?
 - read
 - write
 - execute
 + delete
-? S Pe ce port asculta implicit conexiuni un server de <tt>SSH</tt>?
+? Pe ce port asculta implicit conexiuni un server de <tt>SSH</tt>?
 + 22
 - 21
 - 23
 - 25
-? S Care este sintaxa corecta pentru conectarea utilizatorului <tt>bob</tt> la masina cu adresa <tt>192.168.5.4</tt>?
+? Care este sintaxa corecta pentru conectarea utilizatorului <tt>bob</tt> la masina cu adresa <tt>192.168.5.4</tt>?
 + <tt>ssh bob@192.168.5.4</tt>
 - <tt>ssh bob&192.168.5.4</tt>
 - <tt>ssh bob 192.168.5.4</tt>
 - <tt>ssh 192.168.5.4:bob</tt>
-? S Care dintre urmatoarele utilitare permite descarcarea neinteractiva folosind HTTP?
+? Care dintre urmatoarele utilitare permite descarcarea neinteractiva folosind HTTP?
 + <tt>wget</tt>
 - <tt>firefox</tt>
 - <tt>elinks</tt>
 - <tt>dillo</tt>
-? S Care dintre urmatoarele protocoale este responsabil cu trimiterea mesajelor email?
+? Care dintre urmatoarele protocoale este responsabil cu trimiterea mesajelor email?
 + <tt>SMTP</tt>
 - <tt>IMAP</tt>
 - <tt>POP</tt>
 - <tt>SSH</tt>
-? S Fie variabilele $nume="gigi" si $nuamr=27. Ce afisaza echo echo "$nume\$numar"00'$nume' ?
+? Fie variabilele $nume="gigi" si $nuamr=27. Ce afisaza echo echo "$nume\$numar"00'$nume' ?
 - gigi\2700gigi
 + gigi$numar00$nume
 - gigi\2700$nume
 - gigi$numar00gigi
-? S Cati parametri poate avea un script bash?
+? Cati parametri poate avea un script bash?
 + oricati
 - 99
 - 9
 - 1
-? S Care din comenziile de mai jos sunt comenzi interne:
+? Care din comenziile de mai jos sunt comenzi interne:
 + cd
 - chmod
 - ls

@@ -1,0 +1,39 @@
+{% extends 'workshop/cpanel/index.html' %}
+{% load workshop %}
+{% load i18n %}
+
+{% block sectiontitle %}Workshop{% endblock %}
+
+{% block information %}
+    <p>Use this feature to define Qpool tags for questions available in a predefined time span.</p>
+
+    <p>Then use Qpool normally to add/change/remove questions.</p>
+{% endblock %}
+
+{% block tabcontent %}
+    <table>
+        <tr>
+            <th>Tag</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Questions</th>
+            <th>Active</th>
+        </tr>
+        {% for s in schedules %}
+        <tr>
+            <td>
+                {{ s }}
+            </td>
+            <td>{{ s.start_date }}</td>
+            <td>{{ s.end_date }}</td>
+            <td align="right">{{ s.question_set.count }}</td>
+            <td>{% if s.is_active %}{% trans 'Yes' %}{% endif %}</td>
+
+            <td><a href="{% url ws_schedule_change s.id %}">✍</a></td>
+            <td><a href="{% url qpool_home cat='workshop' tag=s.id %}">filter</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <a class="button" href="{% url ws_schedule_change %}">Add</a>
+{% endblock %}

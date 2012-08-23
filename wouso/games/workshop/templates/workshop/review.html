@@ -1,0 +1,58 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Workshop' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Reviews for workshop' %} #{{ workshop.pk }}{% endblock %}
+
+{% block sectioncontent %}
+
+<ul>
+    {% for as in assesments %}
+    <li>{{ forloop.counter }}. {% trans 'Anonymous' %}
+
+        <ul>
+        {% for a in as.answer_set.all %}
+            <li>{{ forloop.counter }}. {{ a.question.text }}
+                <p> <em>{% trans 'Answer' %}:</em>
+                    <tt>{{ a.text }}</tt> <em>Grade:</em> <strong>{{ a.grade }}</strong>
+                    <ul>
+                    {% for r in a.review_set.all %}
+                        <li>
+                            {% if r.reviewer == user.get_profile %}
+                                {{ r.reviewer }}
+                            {% else %}
+                                {% trans 'Anonymous' %}{{ forloop.counter }}
+                            {% endif %}:
+                            <tt>{{ r.feedback }}</tt>
+                            <br/>
+                            <em>grade:</em> <strong>{{ r.answer_grade }}</strong>,
+                            <em>review grade:</em> <strong>{{ r.review_grade }}</strong>
+                            {% if r.reviewer == user.get_profile and r.workshop.is_reviewable %}
+                                <a class="button" href="{% url workshop_edit_review r.id %}">{% trans 'Change' %}</a>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                    {% if user.get_profile not in  a.reviewers %}
+                        <form action="?a={{ a.id }}" method="post">
+                            Grade: <select name="grade_{{ a.id }}">
+                                <option>0</option>
+                                <option>1</option>
+                                <option>2</option>
+                            </select><br/>
+                            Feedback: <br/>
+                            <textarea name="feedback_{{ a.id }}" rows="4" cols="60"></textarea><br/>
+                            {% csrf_token %}
+                            <button type="submit">Save</button>
+                        </form>
+                    {% endif %}
+                </p>
+            </li>
+        {% endfor %}
+        </ul>
+    </li>
+    {% endfor %}
+</ul>
+
+<a class="button" href="{% url workshop_index_view %}">Index</a>
+{% endblock %}

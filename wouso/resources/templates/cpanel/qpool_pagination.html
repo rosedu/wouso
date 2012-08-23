@@ -1,0 +1,20 @@
+<div class="pagination">
+    <span class="step-links">
+        Page:
+        {% if q_page.has_previous %}
+            <a href="{% url qpool_home cat=cat page=q_page.previous_page_number %}">&laquo;prev</a>
+        {% endif %}
+
+        {% for p in q_page.paginator.page_range %}
+            {% if p == q_page.number %}
+                <strong>{{ p }}</strong>
+            {% else %}
+            <a href="{% url qpool_home cat=cat page=p %}">{{ p }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if q_page.has_next %}
+            <a href="{% url qpool_home cat=cat page=q_page.next_page_number %}">next&raquo;</a>
+        {% endif %}
+    </span>
+</div>

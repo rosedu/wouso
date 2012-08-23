@@ -122,8 +122,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'wouso.interface.context_processors.context',
 )
 
-INSTALLED_APPS = (
-    'wouso.core.django_qunit', #qunit test.
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -161,8 +160,7 @@ INSTALLED_APPS = (
     #'djangologdb',
     'django_nose',
     'wouso.interface.api.c2dm',
-)
-
+]
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 LOGIN_URL = '/user/login/'
@@ -173,7 +171,7 @@ AUTH_PROFILE_MODULE = 'user.Player'
 MEDIA_ARTIFACTS_DIR = os.path.dirname(__file__) + "/resources/static/upload/"
 MEDIA_ARTIFACTS_URL = "/static/upload/"
 
-WOUSO_VERSION = '4.0'
+WOUSO_VERSION = '4.9'
 
 LEVEL_LIMITS = None # Override this with an iterable
 STARTING_POINTS = 15
@@ -196,5 +194,10 @@ BASE_PATH = os.path.dirname(__file__)
 
 QUNIT_TEST_DIRECTORY = os.path.join(BASE_PATH, 'qunit_tests')
 
-
+try:
+	import django_qunit
+except ImportError:
+	pass
+else:
+	INSTALLED_APPS += ['django_qunit']
 

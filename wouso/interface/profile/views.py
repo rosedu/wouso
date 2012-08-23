@@ -72,6 +72,16 @@ def user_profile(request, id, page=u'1'):
                               context_instance=RequestContext(request))
 
 @login_required
+def player_contact(request, player):
+	player = get_object_or_404(Player, pk=player)
+
+	return render_to_response('profile/contactbox.html',
+								{'contactbox': player},
+								context_instance=RequestContext(request)
+	)
+
+
+@login_required
 def player_group(request, id, page=u'1'):
     group = get_object_or_404(PlayerGroup, pk=id)
 

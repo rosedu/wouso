@@ -40,7 +40,12 @@
 </HEAD>
 
 <BODY>
+	{% block contactbox %}
+		{% include 'interface/contactbox.html' %}
+	{% endblock %}
+
     <div id="container">
+	{% block header %}
     <div id="header">
         {% include 'interface/header.html' %}
 
@@ -48,6 +53,7 @@
             <a href="{% url homepage %}" id="logoa" title="{{config_title}}"></a>
         </div>
     </div>
+    {% endblock %}
 
         <div id="Contactbox" onmouseover="show_contact_box()" onmouseout="on_userlist_mouseout()">
             <table>
@@ -85,8 +91,8 @@
             });
         </script>
     </div>
-    {% endblock %}
 
+    {% endblock %}
     <div class="spacer-search"></div>
 
     <div id="sidebar">
@@ -96,12 +102,12 @@
         {% endfor %}
         {% endblock %}
         {% if last10 %}
-	<div class="widget">
-        <h2>{% trans 'Online players' %}</h2>
-            {% for u in last10 %}
-                {% player u %}
-            {% endfor %}
-	</div>
+            <div class="widget">
+                <h2>{% trans 'Online players' %}</h2>
+                    {% for u in last10 %}
+                        {% player u %}
+                    {% endfor %}
+            </div>
         {% endif %}
     </div>
 
@@ -113,6 +119,7 @@
 
 
     <div id="footer">
+        {% block footer %}
         <div id="footer_links">{% autoescape off %}{{ footer }}{% endautoescape %}
         <br/>
         <span id="poweredby">
@@ -120,6 +127,7 @@
         <a href="http://www.rosedu.org/"></a>
         </span>
         </div>
+        {% endblock %}
     </div>
 
     <div id="PrivatebarUsers"></div>

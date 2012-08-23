@@ -260,6 +260,7 @@ p.clearer {
     margin: 6px;
     text-align: right;
 }
+
 .actions a, a.button, span.button, button {
     display: inline-block;
     text-align: center;
@@ -488,6 +489,8 @@ div.timer {
 }
 ul.simple {
     padding-left: 0px;
+	padding-top: 0px;
+	margin: 0px;
     list-style-type: none;
 }
 ol#questions-list {
@@ -563,4 +566,12 @@ div.group-cb {
 }
 div.group-cc {
     border-top: 3px solid blue;
+}
+
+/* cpanel */
+.question_preview {
+    cursor: pointer;
+}
+.selected {
+    background-color: #f2f2f2;
 }

@@ -1,0 +1,16 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Workshop' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Change review for workshop' %} #{{ review.workshop.pk }}{% endblock %}
+
+{% block sectioncontent %}
+<form action="" method="post">
+    <table>
+    {{ form }}
+    </table>
+    {% csrf_token %}
+    <button type="submit">{% trans 'Save' %}</button>
+</form>
+<a class="button" href="{% url workshop_review review.workshop.id %}">{% trans 'Back to review' %}</a>
+{% endblock %}

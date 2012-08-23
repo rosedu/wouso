@@ -17,7 +17,7 @@ class QuestionForm(forms.Form):
                                         widget=forms.Textarea, required=False)
                 self.fields['correct_%d' % i] = forms.BooleanField(required=False)
 
-        alltags = Tag.objects.all().exclude(name__in=['qotd', 'challenge', 'quest'])
+        alltags = instance.category.tag_set.all() if instance and instance.category else []
         self.fields['tags'] = forms.MultipleChoiceField(
                         choices=[(tag.name, tag.name) for tag in alltags],
                         widget=forms.SelectMultiple, required=False,
