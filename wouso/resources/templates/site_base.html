@@ -40,8 +40,12 @@
 </HEAD>
 
 <BODY>
-<div id="container">
-    {% block header %}
+	{% block contactbox %}
+		{% include 'interface/contactbox.html' %}
+	{% endblock %}
+
+    <div id="container">
+	{% block header %}
     <div id="header">
         {% include 'interface/header.html' %}
 
