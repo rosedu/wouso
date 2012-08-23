@@ -12,12 +12,18 @@ from forms import QotdForm
 def index(request):
     if QotdGame.disabled():
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
-    qotd = QotdGame.get_for_today()
+    #qotd = QotdGame.get_for_today()
 
     profile = request.user.get_profile()
     qotd_user = profile.get_extension(QotdUser)
 
+    #if not qotd_user.has_question:
+    #    qotd_user.set_question(qotd)
+    #else:
+    qotd = qotd_user.my_question
+
     if qotd_user.has_answered:
+        qotd_user.reset_question()
         return HttpResponseRedirect(reverse('games.qotd.views.done'))
 
     if qotd is None:
@@ -45,8 +51,13 @@ def done(request):
     if not request.user.get_profile().get_extension(QotdUser).has_answered:
         return HttpResponseRedirect(reverse("games.qotd.views.index"))
 
-    qotd = QotdGame.get_for_today()
+    #qotd = QotdGame.get_for_today()
     user = request.user.get_profile().get_extension(QotdUser)
+    #if not user.has_question:
+    #    user.set_question(qotd)
+    #else:
+    qotd = user.my_question
+
     choice = user.last_answer
     ans = [a for a in qotd.answers if a.id == choice]
     if ans:
@@ -64,8 +75,14 @@ def sidebar_widget(request):
     qotd = QotdGame.get_for_today()
     qotd_user = request.user.get_profile().get_extension(QotdUser)
 
+    if not qotd_user.has_question:
+        qotd_user.set_question(qotd)
+    else:
+        qotd = qotd_user.my_question
+
     if qotd_user.has_answered:
         time_passed = datetime.now() - qotd_user.last_answered
+        qotd_user.reset_question()
         if time_passed > timedelta(seconds=120): # two minutes
             return ''
     return render_to_string('qotd/sidebar.html', {'question': qotd, 'quser': qotd_user, 'qotd': QotdGame})

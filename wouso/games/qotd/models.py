@@ -2,11 +2,12 @@ from datetime import date, datetime, time
 from django.db import models
 from django.http import Http404
 from django.utils.translation import ugettext_noop
+from random import shuffle
 from wouso.interface.activity import signals
 from wouso.core.user.models import Player
 from wouso.core.game.models import Game
 from wouso.core import scoring
-from wouso.core.qpool.models import Schedule, Answer
+from wouso.core.qpool.models import Schedule, Answer, Question
 
 # Qotd uses questions from qpool
 
@@ -15,12 +16,36 @@ class QotdUser(Player):
     last_answered = models.DateTimeField(null=True, blank=True, default=None)
     last_answer = models.IntegerField(default=0, blank=True)
     last_answer_correct = models.BooleanField(default=0, blank=True)
+    my_question = models.ForeignKey(Question, related_name="Mine", null=True)
+    question_date = models.DateTimeField(null=True, blank=True, default=None)
+
+    @property
+    def has_question(self):
+        if self.my_question is None:
+            return False
+        now = datetime.now()
+        today_start = datetime.combine(now, time(0, 0, 0))
+        today_end = datetime.combine(now, time(23, 59, 59))
+        if not (today_start <= self.question_date <= today_end):
+            return False
+        return True
+
+    def set_question(self, question):
+        if not self.has_question:
+            self.my_question = question
+            self.question_date = datetime.now()
+            self.save()
+
+    def reset_question(self):
+        self.my_question = None
+        self.save()
 
     def set_answered(self, choice, correct):
         if not self.has_answered:
             self.last_answer = choice # answer id
             self.last_answer_correct = correct
             self.last_answered = datetime.now()
+            #self.my_question = None
             self.save()
             # send signal
             if correct:
@@ -49,6 +74,7 @@ class QotdUser(Player):
             today_end = datetime.combine(now, time(23, 59, 59))
             return today_start <= self.last_answered <= today_end
 
+
 class QotdGame(Game):
     """ Each game must extend Game """
     class Meta:
@@ -67,13 +93,19 @@ class QotdGame(Game):
     def get_for_today():
         """ Return a Question object selected for Today """
         #question = get_questions_with_tag_for_day("qotd", date.today())
-        try:
-            sched = Schedule.objects.get(day=date.today())
-        except Schedule.DoesNotExist:
+        #try:
+        sched = list(Schedule.objects.filter(day=date.today()).all())
+        #except Schedule.DoesNotExist:
+        #    return None
+        #if not sched or not sched.question.active:
+        #    return None
+        if not sched:
             return None
-        if not sched or not sched.question.active:
-            return None
-        return sched.question
+        for q in sched:
+            if not q.question.active:
+                return None
+        shuffle(sched)
+        return sched[0].question
 
     @staticmethod
     def answered(user, question, choice):
