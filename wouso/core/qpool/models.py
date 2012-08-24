@@ -174,7 +174,7 @@ class Answer(models.Model):
         return self.text
 
 class Schedule(models.Model):
-    question = models.ForeignKey(Question, related_name="schedule")
+    question = models.OneToOneField(Question, related_name="schedule")
     day = models.DateField(default=datetime.now, blank=True)
 
     @classmethod
