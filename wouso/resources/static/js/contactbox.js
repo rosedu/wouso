@@ -15,7 +15,7 @@ jQuery(document).ready(function(){
 function set_mouseover(){
     rel_data = $(this).attr("rel");
     var text = rel_data.split(" ");
-    on_userlist_mouseover(text[0], text[1], text[2], text[3], text[4], 1);
+    on_userlist_mouseover(text[0], text[1], text[2], text[3], text[4], text[5]);
 }
 
 function show_contact_box(){
