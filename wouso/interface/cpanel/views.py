@@ -195,6 +195,8 @@ def qpool_edit(request, id=None):
                 newq.endorsed_by = request.user
                 newq.save()
             return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home', args = (newq.category.name,)))
+        else:
+            print "nevalid"
     else:
         show_users = False
         if question:

@@ -10,7 +10,9 @@
     <p>Added: {{ question.date_added }} <br/>Last modified: {{ question.date_changed }}</p>
 </div>
 
-<form method="post">
+<form method="post" action="">
+
+    {{ form.errors }}
 <table>
     <tr><td><label for="text">Text:</label></td>
         <td><textarea id="text" name="text" rows="10" cols="50">{{ question.text}}</textarea>
@@ -33,7 +35,7 @@
 
     {% if question.category.name == 'qotd' %}
     <tr><td><label for="schedule">Schedule (dd.mm.yyyy):</label></td>
-        <td><input type="text" value="{{ question.scheduled }}" name="schedule" id="schedule"/></td>
+        <td><input type="text" value="{% if question.scheduled != '-' %}{{ question.scheduled }}{% endif %}" name="schedule" id="schedule"/></td>
     </tr>
     {% endif %}
     {% if question.category.name == 'proposed' %}
