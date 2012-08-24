@@ -30,7 +30,6 @@ class QotdUser(Player):
     def set_question(self, question):
         if not self.has_question:
             self.my_question = question
-            self.question_date = datetime.now()
             self.save()
 
     def reset_question(self):

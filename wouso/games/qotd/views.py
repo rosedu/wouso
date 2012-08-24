@@ -16,7 +16,9 @@ def index(request):
     profile = request.user.get_profile()
     qotd_user = profile.get_extension(QotdUser)
 
-    qotd = qotd_user.my_question
+    if not qotd_user.has_question:
+        qotd = QotdGame.get_for_today()
+        qotd_user.set_question(qotd)
 
     if qotd_user.has_answered:
         qotd_user.reset_question()
