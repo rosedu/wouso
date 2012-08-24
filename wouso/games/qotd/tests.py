@@ -61,6 +61,16 @@ class QotdTestCase(django.test.TestCase):
         coins = scoring.user_coins(self.qotd_user)
         self.assertGreater(coins['points'], 0)
 
+    def test_multiple_qotd(self):
+        """ Test if game selects any of multiple qotd provided
+        """
+        q1 = _make_question_for_today(self.user, 'test1')
+        q2 = _make_question_for_today(self.user, 'test2')
+
+        for i in range(4):
+            a = QotdGame.get_for_today()
+            self.assertTrue(a in (q1, q2))
+
 def _make_question_for_today(user, text):
     category = Category(name='qotd')
     question = Question(text=text, proposed_by=user, category=category, active=1)
