@@ -1,6 +1,7 @@
 {% extends base_template %}
 {% load artifacts %}
 {% load i18n %}
+{% load user %}
 
 {% block title %}{% trans 'Top' %}{% endblock %}
 
@@ -28,7 +29,7 @@
 {% for user in allUsers.object_list %}
 <tr>
 <td>{% artifact user.level %}</td>
-<td><a href="{% url player_profile user.id %}">{{ user }}</a>
+<td><a href="{% url player_profile user.id %}" rel="{{user}} {{user.points}} {% player_avatar user%} {{ user.level_no }} {{user.id}} 1" class="cplayer">{{ user }}</a>
 {% for artf in user.artifacts.all %}
 <div class = "artifacts">
 {% artifact artf %}
