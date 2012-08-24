@@ -2,11 +2,12 @@ from datetime import date, datetime, time
 from django.db import models
 from django.http import Http404
 from django.utils.translation import ugettext_noop
+from random import shuffle
 from wouso.interface.activity import signals
 from wouso.core.user.models import Player
 from wouso.core.game.models import Game
 from wouso.core import scoring
-from wouso.core.qpool.models import Schedule, Answer
+from wouso.core.qpool.models import Schedule, Answer, Question
 
 # Qotd uses questions from qpool
 
@@ -15,6 +16,26 @@ class QotdUser(Player):
     last_answered = models.DateTimeField(null=True, blank=True, default=None)
     last_answer = models.IntegerField(default=0, blank=True)
     last_answer_correct = models.BooleanField(default=0, blank=True)
+    my_question = models.ForeignKey(Question, related_name="Mine", null=True)
+
+    @property
+    def has_question(self):
+        if self.my_question is None:
+            return False
+        qdate = self.my_question.schedule
+        if not (qdate.day == date.today()):
+            return False
+        return True
+
+    def set_question(self, question):
+        if not self.has_question:
+            self.my_question = question
+            self.question_date = datetime.now()
+            self.save()
+
+    def reset_question(self):
+        self.my_question = None
+        self.save()
 
     def set_answered(self, choice, correct):
         if not self.has_answered:
@@ -49,6 +70,7 @@ class QotdUser(Player):
             today_end = datetime.combine(now, time(23, 59, 59))
             return today_start <= self.last_answered <= today_end
 
+
 class QotdGame(Game):
     """ Each game must extend Game """
     class Meta:
@@ -66,14 +88,12 @@ class QotdGame(Game):
     @staticmethod
     def get_for_today():
         """ Return a Question object selected for Today """
-        #question = get_questions_with_tag_for_day("qotd", date.today())
-        try:
-            sched = Schedule.objects.get(day=date.today())
-        except Schedule.DoesNotExist:
+        sched = list(Schedule.objects.filter(day=date.today(),
+                     question__active=True).all())
+        if not sched:
             return None
-        if not sched or not sched.question.active:
-            return None
-        return sched.question
+        shuffle(sched)
+        return sched[0].question
 
     @staticmethod
     def answered(user, question, choice):
@@ -87,16 +107,18 @@ class QotdGame(Game):
         user.set_answered(choice, correct) # answer id
 
         if correct:
-            scoring.score(user, QotdGame, 'qotd-ok')
+            now = datetime.now()
+            scoring.score(user, QotdGame, 'qotd-ok', hour=now.hour)
 
     @classmethod
     def get_formulas(kls):
         """ Returns a list of formulas used by qotd """
         fs = []
         qotd_game = kls.get_instance()
-        fs.append(dict(id='qotd-ok', formula='points=3',
+        fs.append(dict(id='qotd-ok',
+            formula='points=4 + (1 if {hour} < 12 else -1)',
             owner=qotd_game.game,
-            description='Points earned on a correct answer')
+            description='Points earned on a correct answer in the morning')
         )
         return fs
 
