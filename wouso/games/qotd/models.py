@@ -88,12 +88,10 @@ class QotdGame(Game):
     @staticmethod
     def get_for_today():
         """ Return a Question object selected for Today """
-        sched = list(Schedule.objects.filter(day=date.today()).all())
+        sched = list(Schedule.objects.filter(day=date.today(),
+                     question__active=True).all())
         if not sched:
             return None
-        for q in sched:
-            if not q.question.active:
-                return None
         shuffle(sched)
         return sched[0].question
 
