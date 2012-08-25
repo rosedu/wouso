@@ -17,7 +17,6 @@ class QotdUser(Player):
     last_answer = models.IntegerField(default=0, blank=True)
     last_answer_correct = models.BooleanField(default=0, blank=True)
     my_question = models.ForeignKey(Question, related_name="Mine", null=True)
-    #question_date = models.DateTimeField(null=True, blank=True, default=None)
 
     @property
     def has_question(self):
