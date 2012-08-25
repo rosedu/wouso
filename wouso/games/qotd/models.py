@@ -17,16 +17,14 @@ class QotdUser(Player):
     last_answer = models.IntegerField(default=0, blank=True)
     last_answer_correct = models.BooleanField(default=0, blank=True)
     my_question = models.ForeignKey(Question, related_name="Mine", null=True)
-    question_date = models.DateTimeField(null=True, blank=True, default=None)
+    #question_date = models.DateTimeField(null=True, blank=True, default=None)
 
     @property
     def has_question(self):
         if self.my_question is None:
             return False
-        now = datetime.now()
-        today_start = datetime.combine(now, time(0, 0, 0))
-        today_end = datetime.combine(now, time(23, 59, 59))
-        if not (today_start <= self.question_date <= today_end):
+        qdate = self.my_question.schedule
+        if not (qdate.day == date.today()):
             return False
         return True
 
