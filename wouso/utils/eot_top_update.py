@@ -13,6 +13,7 @@ def init():
     setup_environ(settings)
 
 def main(args):
+    print "THIS IS DEPRECATED. Use `./manage.py wousocron' instead"
     try:
         init()
     except:

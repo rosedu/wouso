@@ -1,7 +1,10 @@
+from django.core.urlresolvers import reverse
 import django.db.models
+from django.utils.translation import ugettext as _
 import os.path
 from django.db import models
 from django.conf import settings
+from wouso.core.app import App
 
 class Modifier(models.Model):
     """ Basic unic for all the magic.
@@ -185,3 +188,16 @@ class PlayerSpellDue(models.Model):
 
     def __unicode__(self):
         return u"%s casted on %s until %s [%s]" % (self.spell, self.player, self.due, self.source)
+
+
+class Bazaar(App):
+    @classmethod
+    def get_header_link(kls, request):
+        url = reverse('bazaar_home')
+        player = request.user.get_profile() if request.user.is_authenticated() else None
+        if player:
+            count = PlayerSpellDue.objects.filter(player=player, seen=False).count()
+        else:
+            count = 0
+
+        return dict(link=url, text=_('Magic'), count=count)
