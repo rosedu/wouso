@@ -1,3 +1,4 @@
+import sys
 
 class App:
     """ Interface extended by Game and by Top and Qproposal Activity"""
@@ -57,3 +58,13 @@ class App:
         """
 
         return {}
+
+    @classmethod
+    def management_task(cls, datetime=lambda: datetime.now(), stdout=sys.stdout):
+        """ Execute maintance task, such as:
+        - calculate top ranks
+        - inactivate expired spells
+        - expire challenges not played
+        This method is called from wousocron management task, and the datetime might be faked.
+        """
+        pass

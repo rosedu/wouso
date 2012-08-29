@@ -1,7 +1,9 @@
-from django.core.urlresolvers import reverse
-import django.db.models
-from django.utils.translation import ugettext as _
+import sys
 import os.path
+from datetime import datetime
+from django.core.urlresolvers import reverse
+from django.db import models
+from django.utils.translation import ugettext as _
 from django.db import models
 from django.conf import settings
 from wouso.core.app import App
@@ -201,3 +203,12 @@ class Bazaar(App):
             count = 0
 
         return dict(link=url, text=_('Magic'), count=count)
+
+    @classmethod
+    def management_task(cls, datetime=lambda: datetime.now(), stdout=sys.stdout):
+        spells = PlayerSpellDue.get_expired(datetime)
+
+        stdout.write(" %d expired spells\n" % spells.count())
+        for s in spells:
+            SpellHistory.expired(s.player, s.spell)
+            s.delete()
