@@ -19,6 +19,8 @@ def index(request):
     if not qotd_user.has_question:
         qotd = QotdGame.get_for_today()
         qotd_user.set_question(qotd)
+    else:
+        qotd = qotd_user.my_question
 
     if qotd_user.has_answered:
         qotd_user.reset_question()
