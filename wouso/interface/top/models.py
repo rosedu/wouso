@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime, timedelta
 from django.db import models
 from django.contrib.auth.models import User
@@ -107,6 +108,34 @@ class Top(App):
         return render_to_string('top/sidebar.html',
             {'topusers': top5, 'is_top': is_top, 'top': Top}
         )
+
+    @classmethod
+    def management_task(cls, now=None, stdout=sys.stdout):
+        now = now if now is not None else datetime.now()
+        today = now.date()
+
+        # Global ladder
+        stdout.write(' Updating players...\n')
+        for i,u in enumerate(Player.objects.all().order_by('-points')):
+            topuser = u.get_extension(TopUser)
+            position = i + 1
+            hs, new = History.objects.get_or_create(user=topuser, date=today, relative_to=None)
+            hs.position, hs.points = position, u.points
+            hs.save()
+
+        stdout.write(' Updating group history...\n')
+        for p in PlayerGroup.objects.filter(owner=None):
+            p.points = p.live_points
+            p.save()
+
+        # In group ladder
+        for pg in PlayerGroup.objects.filter(owner=None):
+            for i, u in enumerate(pg.players.all().order_by('-points')):
+                topuser = u.get_extension(TopUser)
+                hs, new = History.objects.get_or_create(user=topuser, date=today, relative_to=pg)
+                hs.position, hs.points = i + 1, u.points
+                hs.save()
+
 
 def user_post_save(sender, instance, **kwargs):
     profile = instance.get_profile()
