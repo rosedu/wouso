@@ -19,7 +19,9 @@ class Command(BaseCommand):
 
         # Now handle games
         for g in get_games():
-            g.management_task(stdout=self.stdout)
+            if g.management_task:
+                self.stdout.write('%s ...\n' % g.name())
+                g.management_task(stdout=self.stdout)
 
         now = datetime.now()
         Setting.get('wousocron_lastrun').set_value('%s' % now)

@@ -68,3 +68,5 @@ class App:
         This method is called from wousocron management task, and the datetime might be faked.
         """
         pass
+
+    management_task = None # Disable it by default

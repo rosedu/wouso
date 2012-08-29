@@ -6,6 +6,7 @@ from django.db import models
 from django.db.models import Q, Max
 from django.utils.translation import ugettext_noop, ugettext as _
 from django.core.urlresolvers import reverse
+import sys
 from wouso.core.user.models import Player
 from wouso.core.magic.manager import InsufficientAmount
 from wouso.core.qpool.models import Question
@@ -556,6 +557,20 @@ class ChallengeGame(Game):
     def get_profile_superuser_actions(kls, request, player):
         url = reverse('wouso.games.challenge.views.history', args=(player.id,))
         return '<a class="button" href="%s">%s</a>' % (url, _('Challenges'))
+
+    @classmethod
+    def management_task(cls, now=None, stdout=sys.stdout):
+        now = now if now else datetime.now()
+        today = now.date()
+        challenges = Challenge.get_expired(today)
+        stdout.write(' Updating %d expired challenges (at %s)\n' % (len(challenges), today))
+        for c in challenges:
+            if c.is_launched():
+                # launched before yesterday, automatically refuse
+                c.refuse(auto=True)
+            else:
+                # launched and accepted before yesterday, but not played by both
+                c.set_expired()
 
     @classmethod
     def get_api(kls):
