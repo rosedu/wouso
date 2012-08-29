@@ -48,7 +48,7 @@
     <p>WoUSO version: {{ wouso_version }}</p>
 <h4>Staff</h4>
     {% for u in staff.user_set.all %}
-    {% player_simple u %}
+    {% player_simple u.get_profile %}
     {% endfor %}
 </div>
 
