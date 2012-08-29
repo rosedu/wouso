@@ -195,3 +195,16 @@ else:
 # please don't remove this yet
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
     from localsettings import *
+
+
+BASE_PATH = os.path.dirname(__file__)
+
+QUNIT_TEST_DIRECTORY = os.path.join(BASE_PATH, 'qunit_tests')
+
+try:
+	import django_qunit
+except ImportError:
+	pass
+else:
+	INSTALLED_APPS += ['django_qunit']
+

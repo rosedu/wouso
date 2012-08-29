@@ -1,41 +1,51 @@
 {% load user %}
 {% load artifacts %}
 {% load i18n %}
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <HEAD>
-<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<TITLE>{% block title %}{{config_title}}{% endblock %}</TITLE>
-<LINK rel="stylesheet" type="text/css" href="/static/css/style.css" />
-<style type="text/css">
-    @import url("/static/css/autocomplete.css");
-    {% if config_logo %}
-    div#logo {
-        background: url({{ config_logo}}) no-repeat;
-    }
-    {% endif %}
-    {% block css %}{% endblock %}
-</style>
-<script type="text/javascript" src="/static/js/jquery-1.6.2.min.js"></script>
-<script type="text/javascript" src="/static/js/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/static/js/jquery.autocomplete.js"></script>
-<script type="text/javascript" src="/static/js/format.item.js"></script>
-<script type="text/javascript" src="/static/js/jquery.timers.js"></script>
-<script type="text/javascript" src="/static/js/ajaxify.js"></script>
-<script type="text/javascript">
-    var url_base = '{{ basepath }}';
-</script>
-{% if not config_disable_header_autoreload %}
-<script type="text/javascript">
-    $(document).ready(function (){$(document).everyTime(10000, reload_header);});
-</script>{% endif %}
-{% block scripts %}{% endblock %}
-<LINK rel="stylesheet" type="text/css" href="/static/themes/{{ config_theme }}/styles.css" />
+    <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <TITLE>{% block title %}{{config_title}}{% endblock %}</TITLE>
+    <LINK rel="stylesheet" type="text/css" href="/static/css/style.css" />
+    <style type="text/css">
+        @import url("/static/css/autocomplete.css");
+        {% if config_logo %}
+        div#logo {
+            background: url({{ config_logo}}) no-repeat;
+        }
+        {% endif %}
+        {% block css %}{% endblock %}
+    </style>
+    <link  rel="stylesheet" type="text/css" href="/static/css/chatbox.css">
+    <script type="text/javascript" src="/static/js/jquery-1.6.2.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.autocomplete.js"></script>
+    <script type="text/javascript" src="/static/js/format.item.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.timers.js"></script>
+    <script type="text/javascript" src="/static/js/ajaxify.js"></script>
+    <script type="text/javascript" src="/static/js/contactbox.js"></script>
+    <script type="text/javascript" src="/static/js/chatbox.js"></script>
+    <script type="text/javascript">
+        var url_base = '{{ basepath }}';
+    </script>
+
+    {% if not config_disable_header_autoreload %}
+    <script type="text/javascript">
+        $(document).ready(function (){$(document).everyTime(10000, reload_header);});
+    </script>{% endif %}
+
+    {% block scripts %}{% endblock %}
+    <LINK rel="stylesheet" type="text/css" href="/static/themes/{{ config_theme }}/styles.css" />
 </HEAD>
 
 <BODY>
-<div id="container">
-    {% block header %}
+	{% block contactbox %}
+		{% include 'interface/contactbox.html' %}
+	{% endblock %}
+
+    <div id="container">
+	{% block header %}
     <div id="header">
         {% include 'interface/header.html' %}
 
@@ -45,6 +55,8 @@
     </div>
     {% endblock %}
 
+
+
     {% block search %}
     <div id="search">
         <form method="post" action="{{ basepath }}/search/" style="float:right;">
@@ -52,6 +64,8 @@
             <button type=submit>{% trans 'Search' %}</button>
         </form>
         <script type="text/javascript">
+            var myID = '{{player.id}}'
+            var myName = '{{player}}'
             $(document).ready(function() {
             $("#query").autocomplete( "{{ basepath }}/instantsearch/", { minChars:3, matchSubset:1, matchContains:1, cacheLength:10, formatItem:formatItem, onItemSelect:selectItem, selectOnly:1 });
             });
@@ -83,6 +97,7 @@
     {% endblock %}
     </div>
 
+
     <div id="footer">
         {% block footer %}
         <div id="footer_links">{% autoescape off %}{{ footer }}{% endautoescape %}
@@ -94,7 +109,11 @@
         </div>
         {% endblock %}
     </div>
-	{% autoescape off %}
+
+    <div id="PrivatebarUsers"></div>
+    <div id="PrivateChatBoxes"></div>
+
+        {% autoescape off %}
     {{ config_hidden_footer }}
 	{% endautoescape %}
 </BODY>

@@ -24,7 +24,7 @@ urlpatterns = patterns('',
     (r'^user/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}),
 
     url(r'^player/(?P<id>\d*)/$', 'wouso.interface.profile.views.user_profile', name='player_profile'),
-    (r'^player/(?P<id>\d*)/(?P<page>\d*)/$', 'wouso.interface.profile.views.user_profile'),
+    url(r'^player/(?P<id>\d*)/(?P<page>\d*)/$', 'wouso.interface.profile.views.user_profile', name="player_profile"),
     url(r'^player/(?P<id>\d*)/points-summary/$', 'wouso.interface.profile.views.player_points_history', name='player_points_history'),
     url(r'^player/cast/to-(?P<destination>\d+)/$', 'wouso.interface.profile.views.magic_cast', name='magic_cast'),
     (r'^player/cast/(?P<destination>\d+)/(?P<spell>\d+)/$', 'wouso.interface.profile.views.magic_cast'),
@@ -77,7 +77,6 @@ urlpatterns = patterns('',
     # Static: not in a real deployment
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
-
 )
 
 # API only when we have piston
@@ -88,3 +87,14 @@ except ImportError:
     urlpatterns += patterns('wouso.interface.views', url(r'^api/', 'no_api'))
 else:
     urlpatterns += patterns('', url(r'^api/', include('wouso.interface.api.urls')))
+
+# Specific urls with import logic - soft dependencies
+try:
+	import imp
+	imp.find_module('django_qunit')
+except ImportError:
+	pass
+else:
+	urlpatterns += patterns('',
+    	url(r'^qunit/', include('django_qunit.urls'))
+	)
