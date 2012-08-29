@@ -1,0 +1,4 @@
+# Usage: pip install -r requirements-extra
+python-ldap==2.3.13
+nose==1.1.2
+django-nose==0.1.3

@@ -16,7 +16,7 @@ Installing
 
 2. Install dependencies::
 
-    pip install -r requirements-pip
+    pip install -r requirements-pip       # optional, the same command with: requirements-extra
 
 3. Install `django-piston` (by hand, because of a weird bug_)::
 

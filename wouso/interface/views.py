@@ -184,3 +184,6 @@ def ajax_notifications(request):
         count = -1
 
     return HttpResponse('{"count": %d}' % count)
+
+def no_api(request):
+    return HttpResponse('API module inactive.')

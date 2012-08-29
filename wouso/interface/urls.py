@@ -66,9 +66,6 @@ urlpatterns = patterns('',
     url(r'^ajax/get/(?P<model>.*)/(?P<id>\d+)/$', 'wouso.interface.views.ajax_get', name='ajax_get'),
     url(r'^ajax/notifications/$', 'wouso.interface.views.ajax_notifications', name='ajax_notifications'),
 
-    # API
-    url(r'^api/', include('wouso.interface.api.urls')),
-
     # Games
     (r'^g/', include('wouso.games.urls')),
 
@@ -82,3 +79,12 @@ urlpatterns = patterns('',
         {'document_root': settings.MEDIA_ROOT}),
 
 )
+
+# API only when we have piston
+try:
+    import imp
+    imp.find_module('piston')
+except ImportError:
+    urlpatterns += patterns('wouso.interface.views', url(r'^api/', 'no_api'))
+else:
+    urlpatterns += patterns('', url(r'^api/', include('wouso.interface.api.urls')))

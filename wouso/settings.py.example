@@ -4,14 +4,6 @@
 # Global debug switch
 DEBUG = True
 
-# Setup logging
-#import logging
-#from djangologdb.handlers import DjangoDatabaseHandler, add_handler
-#logging.basicConfig(level=logging.DEBUG if DEBUG else logging.INFO)
-# This will get the default (root) logger; any further getLogger calls will inherit root
-#logger = logging.getLogger()
-#add_handler(logger, DjangoDatabaseHandler())
-
 # Configuration
 import os.path
 
@@ -123,7 +115,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'wouso.interface.context_processors.context',
 )
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -153,18 +145,9 @@ INSTALLED_APPS = (
     'wouso.interface.apps.pages',
     'wouso.interface.apps.statistics',
     'wouso.interface.apps.messaging',
+]
 
-    # Needed for API Oauth
-    'piston',
-    'wouso.interface.api',
-
-    #'djangologdb',
-    'django_nose',
-    'wouso.interface.api.c2dm',
-)
-
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-
+# Authentication settings
 LOGIN_URL = '/user/login/'
 LOGIN_REDIRECT_URL = '/hub/'
 
@@ -186,6 +169,28 @@ OAUTH_CALLBACK_VIEW = 'wouso.interface.api.views.request_token_ready'
 OAUTH_AUTH_VIEW = 'wouso.interface.api.views.oauth_auth_view'
 
 C2DM_AUTH_TOKEN = '' # Change this to a ClientLogin token from Google
+
+# Conditional installed apps
+import imp
+try:
+    imp.find_module('django_nose')
+except ImportError:
+    pass
+else:
+    INSTALLED_APPS += ['django_nose']
+    TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+try:
+    imp.find_module('piston')
+except ImportError:
+    pass
+else:
+    INSTALLED_APPS += [
+        'piston',
+        'wouso.interface.api',
+        'wouso.interface.api.c2dm'
+    ]
+
 
 # please don't remove this yet
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
