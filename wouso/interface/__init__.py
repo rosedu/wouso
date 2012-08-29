@@ -26,3 +26,11 @@ def detect_mobile(request):
             request.session['mobile'] = (request.GET.get('mobile') == '1')
         return request.session.get('mobile')
     return False
+
+def get_apps():
+    """ Returns a list of apps defined inside the wouso.interface module.
+    """
+    from wouso.core.magic.models import Bazaar
+    from wouso.interface.top.models import Top
+
+    return [Top, Bazaar]

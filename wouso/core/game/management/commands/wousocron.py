@@ -1,10 +1,26 @@
 from datetime import datetime
 from django.core.management.base import BaseCommand, CommandError
-from wouso.core.magic.models import Bazaar
+from wouso.core.game import get_games
+from wouso.core.config.models import Setting
 
 class Command(BaseCommand):
     help = 'Wouso repetitive tasks (cron)'
 
     def handle(self, *args, **options):
-        self.stdout.write('Magic management task...\n')
-        Bazaar.management_task()
+        self.stdout.write('Starting at: %s\n' % datetime.now())
+
+        # Now handle other apps
+        from wouso.interface import get_apps
+        apps = get_apps()
+
+        for a in apps:
+            self.stdout.write('%s ...\n' % a.name())
+            a.management_task(stdout=self.stdout)
+
+        # Now handle games
+        for g in get_games():
+            g.management_task(stdout=self.stdout)
+
+        now = datetime.now()
+        Setting.get('wousocron_lastrun').set_value('%s' % now)
+        self.stdout.write('Finished at: %s\n' % now)
