@@ -33,7 +33,7 @@ class Switchboard(ConfigGroup):
             p.append(BoolSetting.get('disable-%s' % a))
 
         p.append(BoolSetting.get('disable_login'))
-        p.append(BoolSetting.get('disable_header_autoreload'))
+        p.append(BoolSetting.get('enable_header_autoreload'))
 
         return p
 

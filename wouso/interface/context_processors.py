@@ -110,7 +110,7 @@ def context(request):
     settings = {}
     settings['basepath'] = FORCE_SCRIPT_NAME
     for s in Setting.objects.all():
-        settings['config_' + s.name.replace('-','_')] = s.get_value()
+        settings['config_' + s.name.replace('-','_').lower()] = s.get_value()
 
     # override theme using GET args
     if request.GET.get('theme', None) is not None:

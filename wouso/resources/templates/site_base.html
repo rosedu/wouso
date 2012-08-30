@@ -25,15 +25,18 @@
     <script type="text/javascript" src="/static/js/jquery.timers.js"></script>
     <script type="text/javascript" src="/static/js/ajaxify.js"></script>
     <script type="text/javascript" src="/static/js/contactbox.js"></script>
+    {% if not config_disable_chat %}
     <script type="text/javascript" src="/static/js/chatbox.js"></script>
+    {% endif %}
     <script type="text/javascript">
         var url_base = '{{ basepath }}';
     </script>
 
-    {% if not config_disable_header_autoreload %}
+    {% if config_enable_header_autoreload %}
     <script type="text/javascript">
         $(document).ready(function (){$(document).everyTime(10000, reload_header);});
-    </script>{% endif %}
+    </script>
+    {% endif %}
 
     {% block scripts %}{% endblock %}
     <LINK rel="stylesheet" type="text/css" href="/static/themes/{{ config_theme }}/styles.css" />

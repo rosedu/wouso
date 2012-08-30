@@ -6,6 +6,7 @@ from django.utils.translation import ugettext as _
 
 from wouso.core.app import App
 from django.core.urlresolvers import reverse
+from wouso.core.config.models import BoolSetting
 
 
 class ChatUser(Player):
@@ -51,6 +52,8 @@ class Chat(App):
 
     @classmethod
     def get_header_link(kls, request):
+        if BoolSetting.get('disable-Chat').get_value():
+            return {}
         url = reverse('wouso.interface.chat.views.index')
         player = request.user.get_profile() if request.user.is_authenticated() else None
         count = 0
