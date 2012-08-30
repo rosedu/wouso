@@ -9,7 +9,7 @@ from django.conf import settings
 from wouso.core.app import App
 
 class Modifier(models.Model):
-    """ Basic unic for all the magic.
+    """ Basic model for all the magic.
     It is extended by:
         - Artifact (adding image, groupping and percents)
         - Spell (all of artifact + time cast)
@@ -18,6 +18,19 @@ class Modifier(models.Model):
         abstract = True
 
     name = models.CharField(max_length=100)
+    title = models.CharField(max_length=100) # Maturator
+    image = models.ImageField(upload_to=settings.MEDIA_ARTIFACTS_DIR, blank=True, null=True)
+
+    percents = models.IntegerField(default=100)
+
+    @property
+    def path(self):
+        """ Image can be stored inside uploads or in theme, return the
+        full path or the css class. """
+        if self.image:
+            return "%s/%s" % (settings.MEDIA_ARTIFACTS_URL, os.path.basename(str(self.image)))
+
+        return ("%s-%s" %  (self.group, self.name)).lower()
 
 
 class ArtifactGroup(models.Model):
@@ -34,19 +47,7 @@ class Artifact(Modifier):
     class Meta:
         unique_together = ('name', 'group', 'percents')
 
-    title = models.CharField(max_length=100) # Maturator
-    image = models.ImageField(upload_to=settings.MEDIA_ARTIFACTS_DIR, blank=True, null=True)
     group = models.ForeignKey(ArtifactGroup)
-
-    percents = models.IntegerField(default=100)
-
-    @property
-    def path(self):
-        """ Image can be stored inside uploads or in theme, return the
-        full path or the css class. """
-        if self.image:
-            return "%s/%s" % (settings.MEDIA_ARTIFACTS_URL, os.path.basename(str(self.image)))
-        return "%s-%s" %  (self.group.name.lower(), self.name)
 
     @classmethod
     def DEFAULT(kls):
@@ -79,13 +80,17 @@ class NoArtifactLevel(object):
         self.group = None
 
 
-class Spell(Artifact):
+class Spell(Modifier):
     TYPES = (('o', 'neutral'), ('p', 'positive'), ('n', 'negative'))
 
     description = models.TextField() # Extended description shown in the magic place
     type = models.CharField(max_length=1, choices=TYPES, default='o')
     price = models.FloatField(default=10)       # Spell price in gold.
     due_days = models.IntegerField(default=3) # How many days may the spell be active
+
+    @property
+    def group(self):
+        return 'spells'
 
 
 class SpellHistory(models.Model):

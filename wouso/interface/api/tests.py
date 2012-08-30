@@ -24,8 +24,7 @@ class BazaarApi(TestCase):
         self.assertFalse(data['success'])
 
     def test_bazaar_buy_ok(self):
-        group = ArtifactGroup.objects.create(name='spells')
-        spell = Spell.objects.create(price=0, group=group)
+        spell = Spell.objects.create(price=0)
         f = Formula.objects.get_or_create(id='buy-spell')[0]
         f.formula='points=0'
         f.save()
