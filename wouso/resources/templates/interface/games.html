@@ -1,4 +1,4 @@
-{% extends 'site_base.html' %}
+{% extends base_template %}
 
 {% block title %}{{block.super}} > Games{% endblock %}
 
@@ -7,8 +7,12 @@
 
 <ul>
 {% for g in games %}
-    <li><a href="./{{g.link}}/">{{g.name}}</a></li>
+    <li><a href="/g/{{g.link}}/">{{g.name}}</a></li>
 {% endfor %}
 </ul>
 
+<form method="post" action="/g/">
+    <button type="submit">submit </button>
+    {% csrf_token %}
+</form>
 {% endblock %}

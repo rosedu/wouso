@@ -24,7 +24,10 @@ def index(request):
 
     if qotd_user.has_answered:
         qotd_user.reset_question()
-        return HttpResponseRedirect(reverse('games.qotd.views.done'))
+        extra = request.GET.urlencode()
+        if extra:
+            extra = '?' + extra
+        return HttpResponseRedirect(reverse('games.qotd.views.done') + extra)
 
     if qotd is None:
         form = None
@@ -34,8 +37,10 @@ def index(request):
         if form.is_valid():
             choice = int(form.cleaned_data['answers'])
             QotdGame.answered(qotd_user, qotd, choice)
-
-            return HttpResponseRedirect(reverse('games.qotd.views.done'))
+            extra = request.GET.urlencode()
+            if extra:
+                extra = '?' + extra
+            return HttpResponseRedirect(reverse('games.qotd.views.done') + extra)
     else:
         form = QotdForm(qotd)
 

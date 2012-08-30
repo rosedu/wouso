@@ -67,7 +67,10 @@ urlpatterns = patterns('',
     url(r'^ajax/notifications/$', 'wouso.interface.views.ajax_notifications', name='ajax_notifications'),
 
     # Games
-    (r'^g/', include('wouso.games.urls')),
+    url(r'^g/', include('wouso.games.urls')),
+
+    # The future
+    url(r'^ui/', 'wouso.interface.views.ui', name='ui'),
 
     # Admin related
     (r'^cpanel/', include('interface.cpanel.urls')),
@@ -90,11 +93,11 @@ else:
 
 # Specific urls with import logic - soft dependencies
 try:
-	import imp
-	imp.find_module('django_qunit')
+    import imp
+    imp.find_module('django_qunit')
 except ImportError:
-	pass
+    pass
 else:
-	urlpatterns += patterns('',
-    	url(r'^qunit/', include('django_qunit.urls'))
+    urlpatterns += patterns('',
+        url(r'^qunit/', include('django_qunit.urls'))
 	)

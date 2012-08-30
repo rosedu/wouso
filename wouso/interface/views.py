@@ -187,3 +187,9 @@ def ajax_notifications(request):
 
 def no_api(request):
     return HttpResponse('API module inactive.')
+
+def ui(request):
+    """ Show the UI template. The rest is Javascript
+    """
+
+    return render_to_response('interface/ui.html', {}, context_instance=RequestContext(request))

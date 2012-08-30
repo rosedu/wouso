@@ -1,0 +1,70 @@
+<!doctype html>
+{# does not extend anything #}
+<html>
+<head>
+    <title>{{ config_title }}</title>
+    <script type="text/javascript" src="/static/js/jquery-1.6.2.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.form.js"></script>
+    <style>
+        div.box {
+            margin: 0 auto;
+            border: 1px solid #eee;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id="launcher">
+        <a href="{% url ui %}">Reload</a>
+        <a href="{% url games %}" class="launcher">Games</a>
+        {% for h in heads %}
+        <a href="{{ h.0.link }}" id="{{ h.1 }}" class="launcher">
+            {{ h.0.text }}
+            {% if h.0.count %}<span class="menu-notification">{{ h.0.count }}</span>{% endif %}
+        </a>
+        {% endfor %}
+    </div>
+    <div id="mainbox" class="box">
+        <p>Welcome to the wouso UI!</p>
+    </div>
+
+
+<script>
+    // let the scripting begin
+    function bind_everything(box) {
+        // make links fancy
+        $(box + ' a').bind('click', function(event) {
+            bind_anchors(this, event, box);
+        });
+
+        // make forms fancy
+        $(box + ' form').submit(function () {
+            var action = $(this).attr('action') + '?ajax=1';
+            $(this).attr('action', action);
+            $(this).ajaxSubmit(function (res) {
+                $(box).empty().html(res);
+                bind_everything(box);
+            });
+            $(box).html('Sending...');
+            return false;
+        });
+    }
+
+    function bind_anchors(link, event, box) {
+        event.preventDefault();
+        $(box).html('Loading...');
+        $.get(link.href + '?ajax=1', {}, function(response){
+            $(box).empty().html(response);
+
+            bind_everything(box);
+        });
+    }
+
+    $(document).ready(function(){
+        $('a.launcher').bind('click', function(event){
+            bind_anchors(this, event, '#mainbox');
+        });
+    });
+</script>
+</body>
+</html>
