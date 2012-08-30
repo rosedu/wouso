@@ -58,7 +58,7 @@ def create(request, to=None, reply_to=None):
                             form.cleaned_data['text'],
                             reply_to=form.cleaned_data['reply_to'],
             )
-            return HttpResponseRedirect(reverse('wouso.interface.messaging.views.home'))
+            return HttpResponseRedirect(reverse('messaging'))
         #else:
         #   print form, form.is_valid(), request.POST
     return render_to_response('messaging/create.html',

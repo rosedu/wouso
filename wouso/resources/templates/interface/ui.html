@@ -4,7 +4,12 @@
 <head>
     <title>{{ config_title }}</title>
     <script type="text/javascript" src="/static/js/jquery-1.6.2.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.autocomplete.js"></script>
+    <script type="text/javascript" src="/static/js/format.item.js"></script>
     <script type="text/javascript" src="/static/js/jquery.form.js"></script>
+    <script type="text/javascript">
+        var url_base = '{{ basepath }}';
+    </script>
     <style>
         div.box {
             margin: 0 auto;
@@ -34,7 +39,8 @@
     function bind_everything(box) {
         // make links fancy
         $(box + ' a').bind('click', function(event) {
-            bind_anchors(this, event, box);
+            if (!$(this).hasClass('no-redir'))
+                bind_anchors(this, event, box);
         });
 
         // make forms fancy
