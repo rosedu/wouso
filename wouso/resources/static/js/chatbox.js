@@ -18,7 +18,7 @@ if(sessionStorage.firstFreeChat){
 else{
     firstFreeChat = 1;
     max_room = 1;
-    max_boxes = 2;
+    max_boxes = 5;
     private_users = [];
     private_users[0] = new Private('global', 0, "", null);
     sessionStorage.firstFreeChat = firstFreeChat;
