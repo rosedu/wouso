@@ -417,7 +417,6 @@ $(document).ready(function () {
         var mdata = {'opcode':'keepAlive'};
         var args = {type:'POST', url:'/chat/chat_m/', data:mdata, complete:ReceiveMessage};
         $.ajax(args);
-        initial = 0;
     }
 
     function InitialChat(){
@@ -472,10 +471,9 @@ $(document).ready(function () {
                     clearInterval(SendPingTimer);
                 }
                 else if(obj.msgs[i].mess_type == 'special' && obj.msgs[i].comand == 'kick' && window.location.pathname == '/chat/'){
-                    clearInterval(NewUserTimer);
-                    clearInterval(SendPingTimer);
+                    window.location = "/";
                 }
-                else if (obj.msgs[i].room == 'global' && initial == 0) {
+                else if (obj.msgs[i].room == 'global') {
                     $('#GlobalboxTextArea').append(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />");
                     AutoScroll();
                 }
@@ -516,7 +514,6 @@ $(document).ready(function () {
         else if (res.status == 400) {
             $('#GlobalboxTextArea').append('<p id="warn_spam"> Stop spamming! </p>');
         }
-        initial = 1;
     };
 
     //TODO:hist things
@@ -528,7 +525,6 @@ $(document).ready(function () {
     var nr_max_steps; // limita pt k
     var change_dir; // anti inertie la schimbare de directie
     var was_writing;
-    var initial = 1;
 
     function AddToHist(input) {
         /* adds input to history array */
