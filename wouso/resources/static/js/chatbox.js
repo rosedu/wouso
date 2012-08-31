@@ -144,7 +144,7 @@ $(document).ready(function () {
     function switch_windows(from) {
         var i;
         var max_value = max_room + 1;
-        if (firstFreeChat <= max_value) {
+        if (firstFreeChat <  max_value) {
             for (i = from; i < firstFreeChat - 1; i++) {
                 //text_context[i+1]  = $("#PrivateboxTextArea" + (i + 1)).html();
                 change_values(i + 1, i);
