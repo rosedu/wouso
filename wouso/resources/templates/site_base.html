@@ -68,7 +68,7 @@
         </form>
         <script type="text/javascript">
             var myID = '{{player.id}}'
-            var myName = '{{player}}'
+            var myName = '{{player.user.username}}'
             $(document).ready(function() {
             $("#query").autocomplete( "{{ basepath }}/instantsearch/", { minChars:3, matchSubset:1, matchContains:1, cacheLength:10, formatItem:formatItem, onItemSelect:selectItem, selectOnly:1 });
             });

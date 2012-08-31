@@ -7,7 +7,7 @@
 <ul class="simple">
 {% for u in last %}
     <li><a href="#" rel="{{u}},{{u.points}},{% player_avatar u%},{{ u.level_no }},{{u.id}},0"
-           class="cl_item cplayer" id="cl_{{u.id}}" onclick="on_userlist_select('{{u.id}}','{{u}}')" > {{u}}
+           class="cl_item cplayer" id="cl_{{u.id}}" onclick="on_userlist_select('{{u.id}}','{{u.user.username}}')" > {{u.user.username}}
     </a></li>
 {% endfor %}
 </ul>

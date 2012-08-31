@@ -88,7 +88,7 @@ def serve_message(user, room=None, position=None):
     for m in query:
         mesaj = {}
         mesaj['room'] = m.destRoom.name
-        mesaj['user'] = unicode(m.author)
+        mesaj['user'] = unicode(m.author.user.username)
         if user.has_modifier('block-communication'):
             mesaj['comand'] = 'block-communication'
             mesaj['text'] = m.content
@@ -145,7 +145,7 @@ def log_request(request):
 def online_players(request):
 
     # gather users online in the last ten minutes
-    oldest = datetime.now() - timedelta(minutes = 10)
+    oldest = datetime.now() - timedelta(minutes = 1000)
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('user__username')
 
     def is_not_blocked(x):
