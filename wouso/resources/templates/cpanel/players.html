@@ -14,6 +14,7 @@
     <th>A#</th>
     <th>Qotd#</th>
     <th>Ch#</th>
+	<th>Edit</th>
 </tr>
 {% for p in players %}
 <tr><td>{% player p %}</td>
@@ -22,6 +23,8 @@
     <td>{{ p.activity_count }}</td>
     <td>{{ p.qotd_count }}</td>
     <td>{{ p.chall_count }}</td>
+    <td></td>
+    <td><a class="button" href="{% url edit_player p.user_id %}">Edit</a></td>
 </tr>
 {% endfor %}
 </table>
