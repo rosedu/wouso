@@ -21,6 +21,7 @@ from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitc
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm
+from django.contrib.auth.models import User
 
 
 @staff_required
@@ -577,12 +578,28 @@ def add_player(request):
     if request.method == "POST":
         user = UserForm(data = request.POST)
         if user.is_valid():
+            user.instance.set_password(request.POST['password'])
             user.save()
             return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.players'))
         else:
             form = user
     return render_to_response('cpanel/add_player.html', {'form': form}, context_instance=RequestContext(request))
 
+
+@permission_required('config.change_setting')
+def edit_player(request, user_id):
+	user = get_object_or_404(User, pk=user_id)
+	if request.method == "POST":
+		form = UserForm(data = request.POST, instance = user)
+		if form.is_valid():
+			form.instance.set_password(request.POST['password'])
+			form.save()
+			return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.players'))
+	else:
+		form = UserForm(instance=user)
+	return render_to_response('cpanel/edit_player.html', {'form':form}, context_instance=RequestContext(request))
+	
+	return HttpResponse("yey!!")
 
 @permission_required('config.change_setting')
 def races_groups(request):
