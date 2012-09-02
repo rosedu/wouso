@@ -592,11 +592,12 @@ def edit_player(request, user_id):
 	if request.method == "POST":
 		form = UserForm(data = request.POST, instance = user)
 		if form.is_valid():
-			form.instance.set_password(request.POST['password'])
+			#form.instance.set_password(request.POST['password'])
 			form.save()
 			return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.players'))
 	else:
 		form = UserForm(instance=user)
+		form.fields['password'].widget.attrs['readonly'] = True
 	return render_to_response('cpanel/edit_player.html', {'form':form}, context_instance=RequestContext(request))
 	
 	return HttpResponse("yey!!")
