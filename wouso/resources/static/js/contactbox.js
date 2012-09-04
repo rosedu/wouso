@@ -14,7 +14,15 @@ jQuery(document).ready(function(){
 
 function set_mouseover(){
     rel_data = $(this).attr("rel");
-    var text = rel_data.split(" ");
+    var expected_number_of_fields = 6;
+    var text = rel_data.split("::", expected_number_of_fields - 1);
+    if (text[1] == undefined) {
+        text = rel_data.split(" ");
+        var difference = text.length - 6;
+        for (i = 1; i <= difference; i++)
+            text[0] = text[0].concat(" ").concat(text[i]);
+        text.splice(1, difference);
+    }
     on_userlist_mouseover(text[0], text[1], text[2], text[3], text[4], text[5]);
 }
 

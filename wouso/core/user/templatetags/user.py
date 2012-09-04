@@ -19,7 +19,7 @@ def player(user):
     link = reverse('wouso.interface.profile.views.user_profile', args=(user.id,))
 
     artif_html = artifact(user.level)
-    rel_data = u"%s %s %s %s %s 1" % (user, user.points, player_avatar(user), user.level_no, user.id)
+    rel_data = u"%s::%s::%s::%s::%s::1" % (user, user.points, player_avatar(user), user.level_no, user.id)
     return u'<a href="%s" class="cplayer" rel="%s">%s%s</a>' % (link, rel_data, artif_html, user)
 
 @register.simple_tag
