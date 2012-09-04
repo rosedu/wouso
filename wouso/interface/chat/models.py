@@ -39,10 +39,13 @@ class ChatRoom(models.Model):
 class ChatMessage(models.Model):
     ''' chat message '''
 
+    messType = models.CharField(max_length=500, null=False, blank=False, default=None)
+    comand = models.CharField(max_length=500, null=False, blank=False, default=None)
     content = models.CharField(max_length=500, null=False, blank=False, default=None)
     author = models.ForeignKey(ChatUser, null=True, blank=False, default=None)
     destRoom = models.ForeignKey(ChatRoom, null=True, blank=False, default=None)
     timeStamp = models.DateTimeField(null=True, blank=False, default=None)
+
 
     def __unicode__(self):
         #return self.author.__unicode__() + ' : ' + self.content + ' @ ' + self.timeStamp.strftime("%A, %d %B %Y %I:%M %p")

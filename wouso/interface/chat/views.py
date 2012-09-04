@@ -44,22 +44,25 @@ def change_text(text):
 def add_message(text, sender, toRoom):
 
     timeStamp = datetime.now()
-
     diff = timeStamp - sender.lastMessageTS
 
     #TODO: Putem renunta la spam:) este inutil.
     #difference_in_seconds = 1;
     difference_in_seconds = (diff.microseconds + (diff.seconds + diff.days * 24 * 3600) * 10**6) / 10**6
     #if diff.total_seconds() > 0.5:
-    print text + "  "
-    if sender.has_modifier('block-communication'):
-        return False
-    if sender.has_modifier('change-messages'):
-        text = change_text(text)
-        msg = ChatMessage(content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp)
+
+    if sender.has_modifier('block-global-chat-page'):
+        msg = ChatMessage(messType='special',comand='kick',content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp)
         msg.save()
-    elif difference_in_seconds > 0.5:
-        msg = ChatMessage(content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp)
+        return False
+    if sender.has_modifier('block-communication'):
+        msg = ChatMessage(messType='special',comand='block-communication',content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp)
+        msg.save()
+        return False
+    if difference_in_seconds > 0.5:
+        if sender.has_modifier('change-messages'):
+            text = change_text(text)
+        msg = ChatMessage(messType='normal',comand='normal',content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp)
         msg.save()
     else:
         raise ValueError('Spam')
@@ -89,18 +92,9 @@ def serve_message(user, room=None, position=None):
         mesaj = {}
         mesaj['room'] = m.destRoom.name
         mesaj['user'] = unicode(m.author.user.username)
-        if user.has_modifier('block-communication'):
-            mesaj['comand'] = 'block-communication'
-            mesaj['text'] = m.content
-            mesaj['mess_type'] = 'special'
-        elif user.has_modifier('block-global-chat-page'):
-            mesaj['comand'] = 'kick'
-            mesaj['text'] = m.content
-            mesaj['mess_type'] = 'special'
-        else:
-            mesaj['comand'] = 'normal'
-            mesaj['text'] = m.content
-            mesaj['mess_type'] = 'normal'
+        mesaj['comand'] = m.comand
+        mesaj['text'] = m.content
+        mesaj['mess_type'] = m.messType
         lastTS = m.timeStamp
         msgs.append(mesaj)
     if(room == None):
@@ -179,12 +173,12 @@ def special_message(user, room = None, message = None):
     msgs = []
     mesaj = {}
     mesaj['room'] = room
-    mesaj['user'] = user
+    mesaj['user'] = user.user.username
     mesaj['text'] = None
     mesaj['mess_type'] = 'special'
     mesaj['comand'] = message
     msgs.append(mesaj)
-
+    print msgs
     obj['msgs'] = msgs
     return obj
 
@@ -197,6 +191,14 @@ def sendmessage(request):
 
     if data['opcode'] == 'message':
         room = roomexist(data['room'])
+        if user.user.has_perm('chat.super_chat_user'):
+            text = data['msg'].split(" ")
+            if len(text) > 1 and text[0] == '/kick':
+                print "mama are mere"
+                return HttpResponse(simplejson.dumps(special_message(user, None, "kick")))
+                return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
+            else:
+                print "esti bou"
         try:
             assert room is not None
             add_message(data['msg'], user, room)
