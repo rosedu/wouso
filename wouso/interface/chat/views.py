@@ -6,7 +6,7 @@ from django.template import RequestContext
 from django.utils import simplejson
 from models import *
 
-
+from wouso.core.user.models import *
 from wouso.core.config.models import BoolSetting
 from datetime import datetime, timedelta
 import random, array
@@ -44,21 +44,25 @@ def change_text(text):
 def add_message(text, sender, toRoom):
 
     timeStamp = datetime.now()
-
     diff = timeStamp - sender.lastMessageTS
 
     #TODO: Putem renunta la spam:) este inutil.
-    difference_in_seconds = 1;
-    #difference_in_seconds = (diff.microseconds + (diff.seconds + diff.days * 24 * 3600) * 10**6) / 10**6
+    #difference_in_seconds = 1;
+    difference_in_seconds = (diff.microseconds + (diff.seconds + diff.days * 24 * 3600) * 10**6) / 10**6
     #if diff.total_seconds() > 0.5:
-    if sender.has_modifier('block-communication'):
-        return False
-    if sender.has_modifier('change-messages'):
-        text = change_text(text)
-        msg = ChatMessage(content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp)
+
+    if sender.has_modifier('block-global-chat-page'):
+        msg = ChatMessage(messType='special',comand='kick',content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp)
         msg.save()
-    elif difference_in_seconds > 0.5:
-        msg = ChatMessage(content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp)
+        return False
+    if sender.has_modifier('block-communication'):
+        msg = ChatMessage(messType='special',comand='block-communication',content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp)
+        msg.save()
+        return False
+    if difference_in_seconds > 0.5:
+        if sender.has_modifier('change-messages'):
+            text = change_text(text)
+        msg = ChatMessage(messType='normal',comand='normal',content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp)
         msg.save()
     else:
         raise ValueError('Spam')
@@ -87,19 +91,10 @@ def serve_message(user, room=None, position=None):
     for m in query:
         mesaj = {}
         mesaj['room'] = m.destRoom.name
-        mesaj['user'] = unicode(m.author)
-        if user.has_modifier('block-communication'):
-            mesaj['comand'] = 'block-communication'
-            mesaj['text'] = m.content
-            mesaj['mess_type'] = 'special'
-        elif user.has_modifier('block-global-chat-page'):
-            mesaj['comand'] = 'kick'
-            mesaj['text'] = m.content
-            mesaj['mess_type'] = 'special'
-        else:
-            mesaj['comand'] = 'normal'
-            mesaj['text'] = m.content
-            mesaj['mess_type'] = 'normal'
+        mesaj['user'] = unicode(m.author.user.username)
+        mesaj['comand'] = m.comand
+        mesaj['text'] = m.content
+        mesaj['mess_type'] = m.messType
         lastTS = m.timeStamp
         msgs.append(mesaj)
     if(room == None):
@@ -130,7 +125,7 @@ def log_request(request):
 
     Room = roomexist('global')
 
-    all_message = ChatMessage.objects.filter(destRoom=Room)
+    all_message = ChatMessage.objects.filter(destRoom=Room).filter(messType='normal')
     all_message = all_message[len(all_message)-50:] if len(all_message) > 50 else all_message
 
     return render_to_response('chat/global_log.html',
@@ -144,7 +139,7 @@ def log_request(request):
 def online_players(request):
 
     # gather users online in the last ten minutes
-    oldest = datetime.now() - timedelta(hours = 1000)
+    oldest = datetime.now() - timedelta(minutes = 1000)
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('user__username')
 
     def is_not_blocked(x):
@@ -178,12 +173,12 @@ def special_message(user, room = None, message = None):
     msgs = []
     mesaj = {}
     mesaj['room'] = room
-    mesaj['user'] = user
+    mesaj['user'] = user.user.username
     mesaj['text'] = None
     mesaj['mess_type'] = 'special'
     mesaj['comand'] = message
     msgs.append(mesaj)
-
+    print msgs
     obj['msgs'] = msgs
     return obj
 
@@ -196,6 +191,23 @@ def sendmessage(request):
 
     if data['opcode'] == 'message':
         room = roomexist(data['room'])
+        if user.user.has_perm('chat.super_chat_user'):
+            text = data['msg'].split(" ")
+            if len(text) > 1 and text[0] == '/kick':
+                try:
+                    print text[1]
+                    sender = User.objects.get(username=text[1])
+                    sender =  sender.get_profile().get_extension(ChatUser)
+                    print "ii"
+                    timeStamp = datetime.now()
+                    msg = ChatMessage(messType='special',comand='kick',content=text[1], author=sender, destRoom=room, timeStamp=timeStamp)
+
+                    print msg
+                    msg.save()
+                    return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
+                except:
+                    return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
+
         try:
             assert room is not None
             add_message(data['msg'], user, room)
