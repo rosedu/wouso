@@ -192,21 +192,22 @@ def sendmessage(request):
     if data['opcode'] == 'message':
         room = roomexist(data['room'])
         if user.user.has_perm('chat.super_chat_user'):
-            text = data['msg'].split(" ")
-            if len(text) > 1 and text[0] == '/kick':
-                try:
-                    print text[1]
-                    sender = User.objects.get(username=text[1])
-                    sender =  sender.get_profile().get_extension(ChatUser)
-                    print "ii"
-                    timeStamp = datetime.now()
-                    msg = ChatMessage(messType='special',comand='kick',content=text[1], author=sender, destRoom=room, timeStamp=timeStamp)
+            if data['msg'][0] == '/' and data['room'] == 'global':
+                text = data['msg'].split(" ")
+                if len(text) > 1 and text[0] == '/kick':
+                    try:
+                        print text[1]
+                        sender = User.objects.get(username=text[1])
+                        sender =  sender.get_profile().get_extension(ChatUser)
+                        print "ii"
+                        timeStamp = datetime.now()
+                        msg = ChatMessage(messType='special',comand='kick',content=text[1], author=sender, destRoom=room, timeStamp=timeStamp)
 
-                    print msg
-                    msg.save()
-                    return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
-                except:
-                    return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
+                        print msg
+                        msg.save()
+                        return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
+                    except:
+                        return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
 
         try:
             assert room is not None
