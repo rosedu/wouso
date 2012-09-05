@@ -90,13 +90,16 @@ def serve_message(user, room=None, position=None):
     msgs = []
     for m in query:
         mesaj = {}
-        mesaj['room'] = m.destRoom.name
-        mesaj['user'] = unicode(m.author.user.username)
-        mesaj['comand'] = m.comand
-        mesaj['text'] = m.content
-        mesaj['mess_type'] = m.messType
-        lastTS = m.timeStamp
-        msgs.append(mesaj)
+        if (m.author == user and m.messType == "special") or m.messType == "normal":
+            mesaj['room'] = m.destRoom.name
+            mesaj['user'] = unicode(m.author.user.username)
+            mesaj['comand'] = m.comand
+            mesaj['text'] = m.content
+            mesaj['mess_type'] = m.messType
+            lastTS = m.timeStamp
+            msgs.append(mesaj)
+        else:
+            continue
     if(room == None):
         user.lastMessageTS = lastTS
         user.save()

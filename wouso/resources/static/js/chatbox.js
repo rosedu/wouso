@@ -466,15 +466,12 @@ $(document).ready(function () {
                 return false;
             var i;
             for (i = 0; i < obj.count; ++i) {
-                if(obj.msgs[i].mess_type == 'special' && obj.msgs[i].comand == 'block-communication' && obj.msgs[i].user == myName){
+                if(obj.msgs[i].mess_type == 'special' && obj.msgs[i].comand == 'block-communication'){
                     clearInterval(NewUserTimer);
                     clearInterval(SendPingTimer);
                 }
-                else if(obj.msgs[i].mess_type == 'special' && obj.msgs[i].comand == 'kick' && obj.msgs[i].user == myName && window.location.pathname == '/chat/'){
+                else if(obj.msgs[i].mess_type == 'special' && obj.msgs[i].comand == 'kick' && window.location.pathname == '/chat/'){
                     window.location = "/";
-                }
-                else if(obj.msgs[i].mess_type == 'special'){
-                    continue
                 }
                 else if (obj.msgs[i].room == 'global') {
                     $('#GlobalboxTextArea').append(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />");
