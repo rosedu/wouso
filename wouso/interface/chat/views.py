@@ -72,7 +72,7 @@ def serve_message(user, room=None, position=None):
 
 
     obj = {'user': unicode(user)}
-    if(room == None):
+    if room == None:
         query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS, destRoom__participants=user)
         obj['count'] = query.count()
     else:
@@ -86,7 +86,7 @@ def serve_message(user, room=None, position=None):
 
     if not query:
         return None
-
+    lastTS = None
     msgs = []
     for m in query:
         mesaj = {}
@@ -100,7 +100,7 @@ def serve_message(user, room=None, position=None):
             msgs.append(mesaj)
         else:
             continue
-    if(room == None):
+    if room == None :
         user.lastMessageTS = lastTS
         user.save()
 
