@@ -6,7 +6,7 @@ from django.template import RequestContext
 from django.utils import simplejson
 from models import *
 
-
+from wouso.core.user.models import *
 from wouso.core.config.models import BoolSetting
 from datetime import datetime, timedelta
 import random, array
@@ -125,7 +125,7 @@ def log_request(request):
 
     Room = roomexist('global')
 
-    all_message = ChatMessage.objects.filter(destRoom=Room)
+    all_message = ChatMessage.objects.filter(destRoom=Room).filter(messType='normal')
     all_message = all_message[len(all_message)-50:] if len(all_message) > 50 else all_message
 
     return render_to_response('chat/global_log.html',
@@ -194,11 +194,20 @@ def sendmessage(request):
         if user.user.has_perm('chat.super_chat_user'):
             text = data['msg'].split(" ")
             if len(text) > 1 and text[0] == '/kick':
-                print "mama are mere"
-                return HttpResponse(simplejson.dumps(special_message(user, None, "kick")))
-                return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
-            else:
-                print "esti bou"
+                try:
+                    print text[1]
+                    sender = User.objects.get(username=text[1])
+                    sender =  sender.get_profile().get_extension(ChatUser)
+                    print "ii"
+                    timeStamp = datetime.now()
+                    msg = ChatMessage(messType='special',comand='kick',content=text[1], author=sender, destRoom=room, timeStamp=timeStamp)
+
+                    print msg
+                    msg.save()
+                    return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
+                except:
+                    return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
+
         try:
             assert room is not None
             add_message(data['msg'], user, room)
