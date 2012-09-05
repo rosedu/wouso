@@ -592,7 +592,6 @@ def edit_player(request, user_id):
 	if request.method == "POST":
 		form = UserForm(data = request.POST, instance = user)
 		if form.is_valid():
-			#form.instance.set_password(request.POST['password'])
 			form.save()
 			return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.players'))
 	else:
@@ -600,8 +599,6 @@ def edit_player(request, user_id):
 		form.fields['password'].widget.attrs['readonly'] = True
 	return render_to_response('cpanel/edit_player.html', {'form':form}, context_instance=RequestContext(request))
 	
-	return HttpResponse("yey!!")
-
 @permission_required('config.change_setting')
 def races_groups(request):
     return render_to_response('cpanel/races_groups.html', {'races': Race.objects.all()},
