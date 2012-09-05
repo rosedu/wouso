@@ -22,6 +22,20 @@ function show_contact_box(){
     $("#Contactbox").show();
 }
 
+function getElementTopLeft(id) {
+    var ele = document.getElementById(id);
+    var top = 0;
+    var left = 0;
+    var right = 0;
+    while(ele.tagName != "BODY") {
+        top += ele.offsetTop;
+        left += ele.offsetLeft;
+        ele = ele.offsetParent;
+    }
+    return { top: top, left: left, right: right};
+}
+
+
 function on_userlist_mouseover(name, score, avatar, level, id, x_position) {
     selectID_over = null;
     UserName_over = null;
@@ -29,12 +43,19 @@ function on_userlist_mouseover(name, score, avatar, level, id, x_position) {
         function(){
 
             make_buttons_changes(id, name);
-            var position = 1100;
-            if(x_position == 1 || position > window.innerWidth)
+            var position;
+            if (x_position == 1)
                 if(tempX + 220 > window.innerWidth)
                     position = window.innerWidth - 220;
                 else
                     position = tempX;
+            else {
+                var TopLeft = getElementTopLeft("GlobalboxUserList");
+                if(TopLeft.left + 360 > window.innerWidth)
+                    position = window.innerWidth - 220;
+                else
+                    position = TopLeft.left + 140
+            }
             if(tempY + 145 > window.innerHeight)
                 tempY = window.innerHeight - 145;
             $("#Contactbox").css("top",tempY+"px").css("left",position + "px");
