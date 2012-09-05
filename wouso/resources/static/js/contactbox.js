@@ -30,8 +30,13 @@ function on_userlist_mouseover(name, score, avatar, level, id, x_position) {
 
             make_buttons_changes(id, name);
             var position = 1100;
-            if(x_position == 1)
-                position = tempX;
+            if(x_position == 1 || position > window.innerWidth)
+                if(tempX + 220 > window.innerWidth)
+                    position = window.innerWidth - 220;
+                else
+                    position = tempX;
+            if(tempY + 145 > window.innerHeight)
+                tempY = window.innerHeight - 145;
             $("#Contactbox").css("top",tempY+"px").css("left",position + "px");
             $("#Contactbox").show();
 
@@ -55,5 +60,5 @@ function make_buttons_changes(id, Name) {
     UserName_over = Name;
     $('.contactaction').attr('disabled', false);
 
-    if (id == myID) $('#GlobalboxChatButton').attr('disabled', true);
+    if (id == myID) $('#ContactboxChatButton').attr('disabled', true);
 }
