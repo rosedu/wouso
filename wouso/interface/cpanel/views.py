@@ -575,7 +575,7 @@ def players(request):
 def add_player(request):
     form = UserForm()
     if request.method == "POST":
-        user = UserForm(data = request.POST)       
+        user = UserForm(data = request.POST)
         if user.is_valid():
             user.instance.set_password(request.POST['password'])
             user.save()
