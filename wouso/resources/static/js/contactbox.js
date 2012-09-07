@@ -60,9 +60,13 @@ function on_userlist_mouseover(name, score, avatar, level, id, x_position) {
                 tempY = window.innerHeight - 145;
             $("#Contactbox").css("top",tempY+"px").css("left",position + "px");
             $("#Contactbox").show();
-
-            var html = "<b>" + name  + "</b></br></br>" +
-                "<div style='text-align:right'>Points " + score + "</br>Level "  + level + "</div>";
+            name = name.split(/-| /);
+            var html;
+            if (name.length == 1)
+                html = "<b>" + name[0] + "</b></br></br>";
+            else
+                html = "<b>" + name[0] + "</b></br><b>" + name[1] + "</b>";
+            html +="<div style='text-align:right'>Points " + score + "</br>Level "  + level + "</div>";
             $("#ContactboxName").html(html);
 
             var avatar_img = "<img class='avatar' src=" + avatar + " style='width:60px; height:60px'/>";
