@@ -17,7 +17,7 @@
     {% for u in last %}
     <li><a href="#" onmouseover="on_userlist_mouseover('{{u}}','{{u.points}}','{% player_avatar u%}','{{ u.level_no }}','{{u.id}}','0')"
            onmouseout="on_userlist_mouseout()"
-           class="cl_item" id="cl_{{u.id}}" onclick="on_userlist_select('{{u.id}}','{{u.user.username}}')" > {{u.nickname}}
+           class="cl_item" id="cl_{{u.id}}" onclick="on_userlist_select('{{u.id}}','{{u.nickname}}')" > {{u.nickname}}
     </a></li>
     {% endfor %}
 </ul>

@@ -1,0 +1,23 @@
+{% extends base_template %}
+{% load artifacts %}
+{% load user %}
+{% load i18n %}
+
+{% block title %}{{ profile }}{% endblock %}
+{% block scripts %}
+<script type="text/javascript" src="/static/js/tabs.js"></script>
+<script type="text/javascript" src="/static/js/jquery.flot.min.js"></script>
+<script type="text/javascript" src="/static/js/profile_setting.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
+{% endblock %}
+
+{% block content %}
+    </br>
+    </br>
+    Nick-Name: <input type="text" id="Nick_Name" value="{{profile.nickname}}" >
+    </br>
+    First-Name: <input type="text" id="First_Name" value="{{profile.user.first_name}}">
+    </br>
+    <input type="submit" class="default" value="Save" onclick="save_changes()">
+
+{% endblock %}
