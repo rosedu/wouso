@@ -29,7 +29,7 @@
 {% for user in allUsers.object_list %}
 <tr>
 <td>{% artifact user.level %}</td>
-<td><a href="{% url player_profile user.id %}" rel="{{user}},{{user.points}},{% player_avatar user%},{{ user.level_no }},{{user.id}},1" class="cplayer">{{ user }}</a>
+<td><a href="{% url player_profile user.id %}" rel="{{user.user.first_name}},{{user.points}},{% player_avatar user%},{{ user.level_no }},{{user.id}},1" class="cplayer">{{ user }}</a>
 {% for artf in user.artifacts.all %}
 <div class = "artifacts">
 {% artifact artf %}

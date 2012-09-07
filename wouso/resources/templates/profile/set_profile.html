@@ -14,9 +14,9 @@
 {% block content %}
     </br>
     </br>
-    Nick-Name: <input type="text" id="Nick_Name" value="{{profile.nickname}}" >
+    Nick-Name: <input type="text" id="Nick_Name" value="{{profile.nickname}}" maxlength="20" size="20">
     </br>
-    First-Name: <input type="text" id="First_Name" value="{{profile.user.first_name}}">
+    First-Name: <input type="text" id="First_Name" value="{{profile.user.first_name}}" maxlength="25" size="20">
     </br>
     <input type="submit" class="default" value="Save" onclick="save_changes()">
 

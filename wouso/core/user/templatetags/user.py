@@ -19,14 +19,14 @@ def player(user):
     link = reverse('wouso.interface.profile.views.user_profile', args=(user.id,))
 
     artif_html = artifact(user.level)
-    rel_data = u"%s,%s,%s,%s,%s,1" % (user, user.points, player_avatar(user), user.level_no, user.id)
+    rel_data = u"%s,%s,%s,%s,%s,1" % (user.user.first_name, user.points, player_avatar(user), user.level_no, user.id)
     return u'<a href="%s" class="cplayer" rel="%s">%s%s</a>' % (link, rel_data, artif_html, user)
 
 @register.simple_tag
 def player_simple(user):
     """ Render only the player name with link to player's profile """
     link = reverse('wouso.interface.profile.views.user_profile', args=(user.id,))
-    rel_data_simple = u"%s,%s,%s,%s,%s,1" % (user, user.points, player_avatar(user), user.level_no, user.id)
+    rel_data_simple = u"%s,%s,%s,%s,%s,1" % (user.user.first_name, user.points, player_avatar(user), user.level_no, user.id)
 
     if hasattr(user, 'level'):
         return u'<a href="%s" title="%s [%d]" rel="%s" class="cplayer">%s</a>' % (link, user.level.title if user.level else '', user.level_no, rel_data_simple, user)
