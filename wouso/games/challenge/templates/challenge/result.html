@@ -1,18 +1,74 @@
 {% extends 'interface/section_base.html' %}
 {% load i18n %}
+{% load user %}
+{% block title %}{% trans 'Challenge #' %}{{ challenge.id }}{% endblock %}
+{% block sectiontitle %}{% trans 'Challenge #' %}{{ challenge.id }}{% endblock %}
 
-{% block title %}{% trans 'Challenge result' %}{% endblock %}
-{% block sectiontitle %}{% trans 'Challenge result' %}{% endblock %}
+
+
 
 {% block sectioncontent %}
-<p>{% trans 'You scored:' %} {{ results.points }}!</p>
 
-<!--
-<p>Details:
-<ol>
-    {% for r in results.results %}
-        <li>{{ r.checked }} checked, {{ r.missed }} missed, {{ r.points }} points</li>
+<p>{% trans 'You scored:' %} {{ points }}!</p>
+<div class="vs">
+    <div class="to">
+        <img class="avatar" src="{% player_avatar challenge.user_to.user %}" />
+        <h3>{{ challenge.user_to.user  }}</h3>
+    </div>
+    <div class="from">
+        <img class="avatar" src="{% player_avatar challenge.user_from.user %}" />
+        <h3>{{ challenge.user_from.user  }}</h3>
+    </div>
+
+    <div class="second">
+        {% ifequal challenge.user_to.user challenge_user %}
+        {% blocktrans with challenge.user_from as c_from and challenge.date as date %}
+        {{ c_from}} has challenged you on {{ date }}.
+        {% endblocktrans %}
+        {% endifequal %}
+
+        {% ifequal challenge.user_from.user challenge_user %}
+        {% blocktrans with challenge.user_to as c_to and challenge.date as date %}
+        You challenged {{ c_to }} on {{ date }}.
+        {% endblocktrans %}
+        {% endifequal %}
+    </div>
+</div>
+<div id="timer" class="timer timer-big">
+    Finished
+</div>
+
+<form id="challenge_form">
+    <ol id="questions-list">
+    {% for field, answer in questions_and_answers %}
+        <li>
+        <div class="question">
+        {% autoescape off %}
+        {{ field.label }}
+        [ You checked {{ answer.0}} from {{answer.1}} correct answers]
+        {% endautoescape %}
+        <ul class="answers">
+        {% for choice in field.field.choices %}
+            {% autoescape off %}
+            {% if choice.2 %}
+            <li><input type="checkbox" checked="yes" disabled="true" name="{{ field.html_name }}" value="{{ choice.0 }}" id="{{ field.html_name }}_{{ choice.0 }}" />
+                <label for="{{ field.html_name }}_{{ choice.0 }}" />{{ choice.1 }}</label>
+            </li>
+    
+            {% else %} 
+            <li><input type="checkbox" disabled="true" name="{{ field.html_name }}" value="{{ choice.0 }}" id="{{ field.html_name }}_{{ choice.0 }}" />
+                <label for="{{ field.html_name }}_{{ choice.0 }}" />{{ choice.1 }}</label>
+            </li>
+            {% endif %}
+            {% endautoescape %}
+        {% endfor %}
+        </ul>
+        </div>
+        </li>
     {% endfor %}
-</ol>
-</p>-->
+    </ol>
+{% csrf_token %}
+<div class="actions">
+</div>
+</form>
 {% endblock %}

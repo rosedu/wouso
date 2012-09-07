@@ -378,6 +378,7 @@ class Challenge(models.Model):
             1 : [14], - has answered answer with id 14 at the question with id 1
         """
         points = 0.0
+        results = {}
         for r, v in responses.iteritems():
             checked, missed = 0, 0
             q = Question.objects.get(id=r)
@@ -399,7 +400,8 @@ class Challenge(models.Model):
                 qpoints = float(checked) / correct_count - float(missed) / wrong_count
             qpoints = qpoints if qpoints > 0 else 0
             points += qpoints
-        return int(100.0 * points)
+            results[r] = (( checked, correct_count ))
+        return {'points': int(100.0 * points), 'results' : results}
 
     def set_played(self, user, responses):
         """ Set user's results. If both users have played, also update self and activity. """
@@ -413,15 +415,17 @@ class Challenge(models.Model):
             exp = True
             user_played.score = 0.0
         else:
-            user_played.score = self._calculate_points(responses)
+            results = self._calculate_points(responses)
+            user_played.score = results['points']
         user_played.save()
 
         if self.user_to.played and self.user_from.played:
             self.played()
 
         if exp:
-            return {'points': '0.0 (expired)'}
-        return {'points': user_played.score}
+            results = {}
+            results['points'] = '0.0 (expired)'
+        return results
 
     def can_play(self, user):
         """ Check if user can play this challenge"""
