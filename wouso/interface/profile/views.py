@@ -4,7 +4,7 @@ from django.utils import simplejson
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core import serializers
-from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.shortcuts import render_to_response, get_object_or_404
@@ -40,11 +40,15 @@ def save_profile(request):
     user = request.user.get_profile()
     data = request.REQUEST
 
-    user.nickname = data['nickname']
-    user.user.first_name = data['firstname']
-    user.save()
-    user.user.save()
-
+    try:
+        Player.objects.exclude(nickname = user.nickname).get(nickname = data['nickname'])
+        print "exista!"
+        return HttpResponseBadRequest()
+    except:
+        user.nickname = data['nickname']
+        user.user.first_name = data['firstname']
+        user.save()
+        user.user.save()
     return HttpResponse()
 
 
