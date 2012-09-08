@@ -253,8 +253,9 @@ class Challenge(models.Model):
     def time_for_user(self, user):
         now = datetime.now()
         partic = self.participant_for_player(user)
+        tlimit = Challenge.TIME_LIMIT - 5 * (user.level_no - 1)
 
-        return Challenge.TIME_LIMIT - (now - partic.start).seconds
+        return tlimit - (now - partic.start).seconds
 
     def is_expired(self, participant):
         """ This function assumes that seconds_took has been set.
