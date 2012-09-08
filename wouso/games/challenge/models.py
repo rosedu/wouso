@@ -255,7 +255,10 @@ class Challenge(models.Model):
         now = datetime.now()
         partic = self.participant_for_player(user)
 
-        return Challenge.TIME_LIMIT - (now - partic.start).seconds
+        tlimit=scoring.timer(user, ChallengeGame, 'chall-timer',
+                level=user.level_no)
+
+        return tlimit - (now - partic.start).seconds
 
     def is_expired(self, participant):
         """ This function assumes that seconds_took has been set.
@@ -519,6 +522,9 @@ class ChallengeGame(Game):
         fs.append(dict(id='chall-warranty-return', formula='points=3',
             owner=chall_game.game,
             description='Points given back as a warranty taken for challenge'))
+        fs.append(dict(id="chall-timer",
+            formula='tlimit=300 - 5 * ({level} - 1)', owner=chall_game.game,
+            description='Seconds left for a user in challenge'))
         return fs
 
     @classmethod
