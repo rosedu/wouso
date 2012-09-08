@@ -158,6 +158,7 @@ class ChallengeApi(TestCase):
     def test_get_challenge(self):
         # create an active challenge
         Formula.objects.create(id='chall-warranty')
+        Formula.objects.create(id='chall-timer')
         chall = Challenge.create(user_from=self.challuser2, user_to=self.challuser, ignore_questions=True)
         chall.accept()
         response = self.client.get('/api/challenge/{id}/'.format(id=chall.id))
@@ -170,6 +171,7 @@ class ChallengeApi(TestCase):
     def test_post_challenge(self):
         # create an active challenge, with fake questions
         Formula.objects.create(id='chall-warranty')
+        Formula.objects.create(id='chall-timer')
         category = Category.objects.create(name='challenge')
         for i in range(5):
             q = Question.objects.create(text='text %s' % i, category=category, active=True)
