@@ -469,10 +469,14 @@ $(document).ready(function () {
                 if(obj.msgs[i].mess_type == 'special' && obj.msgs[i].comand == 'block-communication'){
                     clearInterval(NewUserTimer);
                     clearInterval(SendPingTimer);
+                    if(window.location.pathname == "/chat/")
+                        window.location = "/"
                 }
                 else if(obj.msgs[i].mess_type == 'special' && obj.msgs[i].comand == 'kick' && window.location.pathname == '/chat/'){
                     window.location = "/";
                 }
+                else if(obj.msgs[i].user == myName && obj.msgs[i].mess_type == 'special')
+                    continue;
                 else if (obj.msgs[i].room == 'global') {
                     $('#GlobalboxTextArea').append(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />");
                     AutoScroll();

@@ -51,7 +51,7 @@ def add_message(text, sender, toRoom, user_to, messType, comand):
     #difference_in_seconds = 1;
     #if diff.total_seconds() > 0.5:
     difference_in_seconds = (diff.microseconds + (diff.seconds + diff.days * 24 * 3600) * 10**6) / 10**6
-    if sender.has_modifier('block-communication') or not sender.canAccessChat:
+    if sender.has_modifier('block-communication')or not sender.canAccessChat:
         return False
     if difference_in_seconds > 0.5:
         if sender.has_modifier('change-messages'):
@@ -79,41 +79,11 @@ def serve_message(user, room=None, position=None):
         obj['count'] = number_query
 
 
-    lastTS = datetime.now()
-    msgs = []
-
     if not query:
-        if user.has_modifier('block-communication') or not user.canAccessChat:
-            obj['count'] = 1
-            mesaj = {}
-            mesaj['room'] = None
-            mesaj['user'] = unicode(user.nickname)
-            mesaj['text'] = None
-            mesaj['comand'] = "block-communication"
-            mesaj['mess_type'] = "special"
-            mesaj['dest_user'] = unicode(user.nickname)
-            msgs.append(mesaj)
-            obj['msgs'] = msgs
-            print obj
-            return obj
-
-            #add_message("", user, chat_global, user, "special", "block-communication")
-        elif user.has_modifier('block-global-chat-page') or not user.canAccessChat:
-            obj['count'] = 1
-            mesaj = {}
-            mesaj['room'] = None
-            mesaj['user'] = unicode(user.nickname)
-            mesaj['text'] = None
-            mesaj['comand'] = "kick"
-            mesaj['mess_type'] = "special"
-            mesaj['dest_user'] = unicode(user.nickname)
-            msgs.append(mesaj)
-            obj['msgs'] = msgs
-            return obj
-
-            #add_message("", user, chat_global, user, "special", "kick")
         return None
 
+    lastTS = datetime.now()
+    msgs = []
     for m in query:
         mesaj = {}
         if (m.destUser == user and m.messType == "special") or m.messType == "normal":
@@ -130,7 +100,6 @@ def serve_message(user, room=None, position=None):
     if room == None:
         user.lastMessageTS = lastTS
         user.save()
-
 
     obj['msgs'] = msgs
 
@@ -197,6 +166,25 @@ def private_log(request):
     return HttpResponse(simplejson.dumps(serve_message(user, room, position)))
 
 
+@login_required
+def special_message(user, room = None, message = None):
+
+    obj = {'user': unicode(user)}
+    obj['count'] = 1
+
+    msgs = []
+    mesaj = {}
+    mesaj['room'] = room
+    mesaj['user'] = user.nickname
+    mesaj['text'] = None
+    mesaj['mess_type'] = 'special'
+    mesaj['comand'] = message
+    mesaj['dest_user'] = unicode(user.nickname)
+    msgs.append(mesaj)
+    print msgs
+    obj['msgs'] = msgs
+    return obj
+
 
 @login_required
 def sendmessage(request):
@@ -236,6 +224,13 @@ def sendmessage(request):
             return HttpResponseBadRequest()
     elif data['opcode'] == 'keepAlive':
         chat_global = roomexist('global')
+        if user.has_modifier('block-communication')or not user.canAccessChat:
+            return HttpResponse(simplejson.dumps(special_message(user, None, "block-communication")))
+
+            #add_message("", user, chat_global, user, "special", "block-communication")
+        elif user.has_modifier('block-global-chat-page') or not user.canAccessChat:
+            return HttpResponse(simplejson.dumps(special_message(user, None, "kick")))
+            #add_message("", user, chat_global, user, "special", "kick")
 
         if user not in chat_global.participants.all():
             chat_global.participants.add(user)
