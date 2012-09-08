@@ -88,24 +88,20 @@ def score(user, game, formula, external_id=None, percents=100, **params):
         for coin, amount in ret.items():
             score_simple(user, coin, amount, game, formula, external_id, percents=percents)
 
-#Only for Challenge Game
-def timer(user, game, formula, **params):
-    LIMIT = 300
+
+def timer(user, game, formula, default=300, **params):
+    """ Compute a timer value, or return default
+    """
     formula = Formula.get(formula)
     if formula is None:
         raise InvalidFormula(formula)
     if not formula.formula:
-        return LIMIT
+        return default
 
-    frml = formula.formula.format(**params)
-    asp = frml.split('=')
-    expr = '='.join(asp[1:])
-    try:
-        sec = eval(expr)
-    except ZeroDivisionError as e:
-        sec = LIMIT
-
-    return sec
+    values = calculate(formula, **params)
+    if values.has_key('tlimit'):
+        return values['tlimit']
+    return default
 
 def unset(user, game, formula, external_id=None, **params):
     """ Remove all history records by the external_id, formula and game given to the user """
