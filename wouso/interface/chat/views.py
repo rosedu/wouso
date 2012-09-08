@@ -41,28 +41,22 @@ def change_text(text):
         new_text = new_text + world[0] + shuffle_text(world[1:len(world)-1]) + world[len(world)-1] + " "
     return new_text
 
-def add_message(text, sender, toRoom):
+def add_message(text, sender, toRoom, user_to, messType, comand):
+    '''content, author, room, user_to, messType, comand'''
 
     timeStamp = datetime.now()
     diff = timeStamp - sender.lastMessageTS
 
     #TODO: Putem renunta la spam:) este inutil.
     #difference_in_seconds = 1;
-    difference_in_seconds = (diff.microseconds + (diff.seconds + diff.days * 24 * 3600) * 10**6) / 10**6
     #if diff.total_seconds() > 0.5:
+    difference_in_seconds = (diff.microseconds + (diff.seconds + diff.days * 24 * 3600) * 10**6) / 10**6
 
-    if sender.has_modifier('block-global-chat-page'):
-        msg = ChatMessage(messType='special',comand='kick',content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp)
-        msg.save()
-        return False
-    if sender.has_modifier('block-communication'):
-        msg = ChatMessage(messType='special',comand='block-communication',content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp)
-        msg.save()
-        return False
     if difference_in_seconds > 0.5:
         if sender.has_modifier('change-messages'):
             text = change_text(text)
-        msg = ChatMessage(messType='normal',comand='normal',content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp)
+        msg = ChatMessage(content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp,
+                            destUser = user_to, messType=messType, comand=comand)
         msg.save()
     else:
         raise ValueError('Spam')
@@ -86,21 +80,22 @@ def serve_message(user, room=None, position=None):
 
     if not query:
         return None
-    lastTS = None
+    lastTS = datetime.now()
     msgs = []
     for m in query:
         mesaj = {}
-        if (m.author == user and m.messType == "special") or m.messType == "normal":
+        if (m.destUser == user and m.messType == "special") or m.messType == "normal":
             mesaj['room'] = m.destRoom.name
-            mesaj['user'] = unicode(m.author.user.username)
-            mesaj['comand'] = m.comand
+            mesaj['user'] = unicode(m.author.nickname)
             mesaj['text'] = m.content
+            mesaj['comand'] = m.comand
             mesaj['mess_type'] = m.messType
+            mesaj['dest_user'] = unicode(m.destUser.nickname)
             lastTS = m.timeStamp
             msgs.append(mesaj)
         else:
             continue
-    if room == None :
+    if room == None:
         user.lastMessageTS = lastTS
         user.save()
 
@@ -167,23 +162,7 @@ def private_log(request):
     room = roomexist(request.POST['room'])
     return HttpResponse(simplejson.dumps(serve_message(user, room, position)))
 
-@login_required
-def special_message(user, room = None, message = None):
 
-    obj = {'user': unicode(user)}
-    obj['count'] = 1
-
-    msgs = []
-    mesaj = {}
-    mesaj['room'] = room
-    mesaj['user'] = user.user.username
-    mesaj['text'] = None
-    mesaj['mess_type'] = 'special'
-    mesaj['comand'] = message
-    msgs.append(mesaj)
-    print msgs
-    obj['msgs'] = msgs
-    return obj
 
 @login_required
 def sendmessage(request):
@@ -199,27 +178,25 @@ def sendmessage(request):
                 text = data['msg'].split(" ")
                 if len(text) > 1 and text[0] == '/kick':
                     try:
-                        print text[1]
-                        sender = User.objects.get(username=text[1])
-                        sender =  sender.get_profile().get_extension(ChatUser)
-                        print "ii"
-                        timeStamp = datetime.now()
-                        msg = ChatMessage(messType='special',comand='kick',content=text[1], author=sender, destRoom=room, timeStamp=timeStamp)
+                        sender = Player.objects.get(nickname=text[1])
+                        sender = sender.user.get_profile().get_extension(ChatUser)
 
-                        print msg
-                        msg.save()
+                        add_message(text[1], user, room, sender, "special", "kick")
                         return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
                     except:
                         return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
 
         try:
             assert room is not None
-            add_message(data['msg'], user, room)
+            # content, author, room, user_to, messType, comand
+            add_message(data['msg'], user, room, user, "normal", "normal")
         except (ValueError, AssertionError):
             return HttpResponseBadRequest()
     elif data['opcode'] == 'keepAlive':
         if user.has_modifier('block-communication'):
-            return HttpResponse(simplejson.dumps(special_message(user, None, "block-communication")))
+            add_message(data['msg'], user, data['room'], user, "special", "block-communication")
+        elif user.has_modifier('block-global-chat-page'):
+            add_message(data['msg'], user, data['room'], user, "special", "kick")
 
         chat_global = roomexist('global')
         if user not in chat_global.participants.all():

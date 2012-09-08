@@ -18,7 +18,7 @@ class ChatUser(Player):
 
     canCreateRoom = models.BooleanField(null=False, blank=False, default=True)
     lastMessageTS = models.DateTimeField(null=True, blank=False, default=datetime.now)
-
+    canAccessChat = models.BooleanField(null=False, blank=False, default=True)
 
 
 class ChatRoom(models.Model):
@@ -45,15 +45,16 @@ class ChatMessage(models.Model):
 
     messType = models.CharField(max_length=500, null=False, blank=False, default=None)
     comand = models.CharField(max_length=500, null=False, blank=False, default=None)
+    destUser = models.ForeignKey(ChatUser, null=True, blank=False, default=None, related_name="dest_user_for_special")
     content = models.CharField(max_length=500, null=False, blank=False, default=None)
-    author = models.ForeignKey(ChatUser, null=True, blank=False, default=None)
+    author = models.ForeignKey(ChatUser, null=True, blank=False, default=None, related_name="author_of_message")
     destRoom = models.ForeignKey(ChatRoom, null=True, blank=False, default=None)
     timeStamp = models.DateTimeField(null=True, blank=False, default=None)
 
 
     def __unicode__(self):
         #return self.author.__unicode__() + ' : ' + self.content + ' @ ' + self.timeStamp.strftime("%A, %d %B %Y %I:%M %p")
-        return self.author.user.username + ' : ' + self.content
+        return self.author.nickname + ' : ' + self.content
 
 class Chat(App):
 
