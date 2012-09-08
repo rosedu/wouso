@@ -51,7 +51,8 @@ def add_message(text, sender, toRoom, user_to, messType, comand):
     #difference_in_seconds = 1;
     #if diff.total_seconds() > 0.5:
     difference_in_seconds = (diff.microseconds + (diff.seconds + diff.days * 24 * 3600) * 10**6) / 10**6
-
+    if sender.has_modifier('block-communication') or not sender.canAccessChat:
+        return False
     if difference_in_seconds > 0.5:
         if sender.has_modifier('change-messages'):
             text = change_text(text)
@@ -78,10 +79,41 @@ def serve_message(user, room=None, position=None):
         obj['count'] = number_query
 
 
-    if not query:
-        return None
     lastTS = datetime.now()
     msgs = []
+
+    if not query:
+        if user.has_modifier('block-communication') or not user.canAccessChat:
+            obj['count'] = 1
+            mesaj = {}
+            mesaj['room'] = None
+            mesaj['user'] = unicode(user.nickname)
+            mesaj['text'] = None
+            mesaj['comand'] = "block-communication"
+            mesaj['mess_type'] = "special"
+            mesaj['dest_user'] = unicode(user.nickname)
+            msgs.append(mesaj)
+            obj['msgs'] = msgs
+            print obj
+            return obj
+
+            #add_message("", user, chat_global, user, "special", "block-communication")
+        elif user.has_modifier('block-global-chat-page') or not user.canAccessChat:
+            obj['count'] = 1
+            mesaj = {}
+            mesaj['room'] = None
+            mesaj['user'] = unicode(user.nickname)
+            mesaj['text'] = None
+            mesaj['comand'] = "kick"
+            mesaj['mess_type'] = "special"
+            mesaj['dest_user'] = unicode(user.nickname)
+            msgs.append(mesaj)
+            obj['msgs'] = msgs
+            return obj
+
+            #add_message("", user, chat_global, user, "special", "kick")
+        return None
+
     for m in query:
         mesaj = {}
         if (m.destUser == user and m.messType == "special") or m.messType == "normal":
@@ -99,6 +131,7 @@ def serve_message(user, room=None, position=None):
         user.lastMessageTS = lastTS
         user.save()
 
+
     obj['msgs'] = msgs
 
     return obj
@@ -107,7 +140,8 @@ def serve_message(user, room=None, position=None):
 @login_required
 def index(request):
     user = request.user.get_profile()
-    if user.has_modifier('block-global-chat-page') or user.has_modifier('block-communication'):
+    chat = get_author(request)
+    if user.has_modifier('block-global-chat-page') or user.has_modifier('block-communication') or not chat.canAccessChat:
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
     if BoolSetting.get('disable-Chat').get_value():
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
@@ -176,15 +210,23 @@ def sendmessage(request):
         if user.user.has_perm('chat.super_chat_user'):
             if data['msg'][0] == '/' and data['room'] == 'global':
                 text = data['msg'].split(" ")
-                if len(text) > 1 and text[0] == '/kick':
+                if len(text) > 1:
                     try:
                         sender = Player.objects.get(nickname=text[1])
                         sender = sender.user.get_profile().get_extension(ChatUser)
-
-                        add_message(text[1], user, room, sender, "special", "kick")
-                        return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
                     except:
                         return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
+
+                    if text[0] == '/kick':
+                        add_message(text[1], user, room, sender, "special", "kick")
+                    if text[0] == '/unban':
+                        sender.canAccessChat = True
+                        sender.save()
+                    if text[0] == '/ban':
+                        sender.canAccessChat = False
+                        sender.save()
+                    return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
+
 
         try:
             assert room is not None
@@ -193,12 +235,8 @@ def sendmessage(request):
         except (ValueError, AssertionError):
             return HttpResponseBadRequest()
     elif data['opcode'] == 'keepAlive':
-        if user.has_modifier('block-communication'):
-            add_message(data['msg'], user, data['room'], user, "special", "block-communication")
-        elif user.has_modifier('block-global-chat-page'):
-            add_message(data['msg'], user, data['room'], user, "special", "kick")
-
         chat_global = roomexist('global')
+
         if user not in chat_global.participants.all():
             chat_global.participants.add(user)
     elif data['opcode'] == 'getRoom':
