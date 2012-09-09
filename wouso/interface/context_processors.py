@@ -7,7 +7,7 @@ from wouso.interface.apps.qproposal.models import Qproposal
 from wouso.interface.apps.messaging.models import Message
 from wouso.interface.apps.statistics.views import footer_link as stats_link
 from wouso.interface.chat.models import Chat
-from wouso.interface import get_static_pages, detect_mobile
+from wouso.interface import get_static_pages, detect_mobile, mobile_browser
 from wouso.settings import FORCE_SCRIPT_NAME
 
 def header_footer(request):
@@ -128,6 +128,7 @@ def context(request):
         settings['base_template'] = 'mobile_base.html'
     else:
         settings['base_template'] = 'site_base.html'
+    settings['has_mobile'] = mobile_browser(request)
 
     if request.GET.get('ajax', False):
         settings['base_template'] = 'interface/ajax_message.html'
