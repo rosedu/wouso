@@ -54,7 +54,7 @@ class ChatTestCase(django.test.TestCase):
         timeStamp = datetime.now()
 
         len_now = len(ChatMessage.objects.all())
-        msg = ChatMessage(content='sss', author=self.chat_user, destRoom=room, timeStamp=timeStamp)
+        msg = ChatMessage(content='sss', author=self.chat_user, destRoom=room, timeStamp=timeStamp, messType = "normal", comand = "normal")
         msg.save()
         len_after = len(ChatMessage.objects.all())
 

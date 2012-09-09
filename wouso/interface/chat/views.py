@@ -48,9 +48,10 @@ def add_message(text, sender, toRoom, user_to, messType, comand):
     diff = timeStamp - sender.lastMessageTS
 
     #TODO: Putem renunta la spam:) este inutil.
-    #difference_in_seconds = 1;
+    difference_in_seconds = 1;
     #if diff.total_seconds() > 0.5:
-    difference_in_seconds = (diff.microseconds + (diff.seconds + diff.days * 24 * 3600) * 10**6) / 10**6
+    #difference_in_seconds = (diff.microseconds + (diff.seconds + diff.days * 24 * 3600) * 10**6) / 10**6
+
     if sender.has_modifier('block-communication')or not sender.canAccessChat:
         return False
     if difference_in_seconds > 0.5:
@@ -140,7 +141,7 @@ def log_request(request):
 def online_players(request):
 
     # gather users online in the last ten minutes
-    oldest = datetime.now() - timedelta(minutes = 1000)
+    oldest = datetime.now() - timedelta(minutes = 10)
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('user__username')
 
     def is_not_blocked(x):
