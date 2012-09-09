@@ -92,6 +92,9 @@ class Spell(Modifier):
     def group(self):
         return 'spells'
 
+    def __unicode__(self):
+        return u'spell %s' % self.name
+
 
 class SpellHistory(models.Model):
     TYPES = (('b', 'bought'), ('u', 'used'), ('c', 'cleaned'), ('e', 'expired'))
