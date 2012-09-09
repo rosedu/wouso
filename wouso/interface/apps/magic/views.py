@@ -15,6 +15,8 @@ def bazaar(request, message='', error=''):
     player = request.user.get_profile() if request.user.is_authenticated() else None
     spells = Spell.objects.all()
 
+    # Disable exchange for real
+    exchange_disabled = BoolSetting.get('disable-Bazaar-Exchange').get_value()
     try:
         rate = scoring.calculate('gold-points-rate', gold=1)['points']
         rate2 = round(1/scoring.calculate('points-gold-rate', points=1)['gold'])
@@ -33,6 +35,7 @@ def bazaar(request, message='', error=''):
                               'unseen_count': unseen_count,
                               'theowner': player,
                               'message': message,
+                              'exchange_disabled': exchange_disabled,
                               'error': error},
                               context_instance=RequestContext(request))
 

@@ -13,7 +13,9 @@
 
 <ul class="tabs">
         <li><a href="#spells" id="spells-click" class="no-redir">{% trans 'Bazaar' %}</a></li>
+        {% if not exchange_disabled %}
         <li><a href="#exchange" id="exchange-click" class="no-redir">{% trans 'Exchange' %}</a></li>
+        {% endif %}
         <li><a href="#summary" id="summary-click" class="no-redir">{% trans 'Summary' %}{% if unseen_count > 0 %}<sup class="unread-count">{{ unseen_count }}</sup>{% endif %}</a></li>
 </ul>
 
@@ -55,6 +57,7 @@
     </table>
     </div>
 
+    {% if not exchange_disabled %}
     <div id="exchange" class="tab_content">
         <br/>
     <span class="points">{{ rate_text }}</span>
@@ -75,6 +78,7 @@
         {% csrf_token %}
     </form>
     </div>
+    {% endif %}
 
     <div id="summary" class="tab_content">
     <br/>
