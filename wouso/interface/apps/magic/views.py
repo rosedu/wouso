@@ -5,6 +5,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 from wouso.core.config.models import BoolSetting
+from wouso.core.scoring.sm import InvalidFormula
 from wouso.core.user.models import Player
 from wouso.core.magic.models import Spell, SpellHistory, PlayerSpellDue
 from wouso.core import scoring
@@ -14,8 +15,11 @@ def bazaar(request, message='', error=''):
     player = request.user.get_profile() if request.user.is_authenticated() else None
     spells = Spell.objects.all()
 
-    rate = scoring.calculate('gold-points-rate', gold=1)['points']
-    rate2 = round(1/scoring.calculate('points-gold-rate', points=1)['gold'])
+    try:
+        rate = scoring.calculate('gold-points-rate', gold=1)['points']
+        rate2 = round(1/scoring.calculate('points-gold-rate', points=1)['gold'])
+    except InvalidFormula:
+        rate, rate2 = 1, 1
     rate_text = _('Rate: 1 gold = {rate} points, 1 gold = {rate2} points').format(rate=rate, rate2=rate2)
 
     cast_spells = PlayerSpellDue.objects.filter(source=player).all()
