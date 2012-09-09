@@ -100,9 +100,13 @@ class Player(models.Model):
     artifacts = models.ManyToManyField('magic.Artifact', blank=True, through='magic.PlayerArtifactAmount')
     # spells available for casting
     spells_collection = models.ManyToManyField(Spell, blank=True, through='magic.PlayerSpellAmount', related_name='spell_collection')
-
+    nickname = models.CharField(max_length=20, null=True, blank=False, default=None)
     # race
     race = models.ForeignKey(Race, blank=False, default=None, null=True)
+
+
+    def user_name(self):
+        return self.user.username
 
     def in_staff_group(self):
         # TODO fixme, rename me.
@@ -263,6 +267,7 @@ def user_post_save(sender, instance, **kwargs):
             profile.race = default_race
             profile.save()
         # kick some activity
+        profile.nickname = profile.user_name()
         signal_msg = ugettext_noop('has joined the game.')
 
         signals.addActivity.send(sender=None, user_from=profile,

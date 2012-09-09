@@ -1,8 +1,11 @@
 from hashlib import md5
+from django.utils import simplejson
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core import serializers
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
+from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from wouso.core.user.models import Player, PlayerGroup, Race
@@ -20,6 +23,31 @@ def player_points_history(request, id):
     return render_to_response('profile/points_history.html',
                             {'pplayer': player, 'history': hist},
                               context_instance=RequestContext(request))
+@login_required
+def set_profile(request):
+    user = request.user.get_profile()
+    return render_to_response('profile/set_profile.html',
+            {'profile': user,
+             },
+        context_instance=RequestContext(request))
+
+@login_required
+def save_profile(request):
+
+    user = request.user.get_profile()
+    data = request.REQUEST
+
+    try:
+        Player.objects.exclude(nickname = user.nickname).get(nickname = data['nickname'])
+        print "exista!"
+        return HttpResponseBadRequest()
+    except:
+        user.nickname = data['nickname']
+        user.user.first_name = data['firstname']
+        user.save()
+        user.user.save()
+    return HttpResponse()
+
 
 @login_required
 def user_profile(request, id, page=u'1'):

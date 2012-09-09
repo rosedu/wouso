@@ -18,7 +18,7 @@ if(sessionStorage.firstFreeChat){
 else{
     firstFreeChat = 1;
     max_room = 1;
-    max_boxes = 2;
+    max_boxes = 5;
     private_users = [];
     private_users[0] = new Private('global', 0, "", null);
     sessionStorage.firstFreeChat = firstFreeChat;
@@ -144,7 +144,7 @@ $(document).ready(function () {
     function switch_windows(from) {
         var i;
         var max_value = max_room + 1;
-        if (firstFreeChat <= max_value) {
+        if (firstFreeChat <  max_value) {
             for (i = from; i < firstFreeChat - 1; i++) {
                 //text_context[i+1]  = $("#PrivateboxTextArea" + (i + 1)).html();
                 change_values(i + 1, i);
@@ -417,7 +417,6 @@ $(document).ready(function () {
         var mdata = {'opcode':'keepAlive'};
         var args = {type:'POST', url:'/chat/chat_m/', data:mdata, complete:ReceiveMessage};
         $.ajax(args);
-        initial = 0;
     }
 
     function InitialChat(){
@@ -470,12 +469,15 @@ $(document).ready(function () {
                 if(obj.msgs[i].mess_type == 'special' && obj.msgs[i].comand == 'block-communication'){
                     clearInterval(NewUserTimer);
                     clearInterval(SendPingTimer);
+                    if(window.location.pathname == "/chat/")
+                        window.location = "/"
                 }
                 else if(obj.msgs[i].mess_type == 'special' && obj.msgs[i].comand == 'kick' && window.location.pathname == '/chat/'){
-                    clearInterval(NewUserTimer);
-                    clearInterval(SendPingTimer);
+                    window.location = "/";
                 }
-                else if (obj.msgs[i].room == 'global' && initial == 0) {
+                else if(obj.msgs[i].user == myName && obj.msgs[i].mess_type == 'special')
+                    continue;
+                else if (obj.msgs[i].room == 'global') {
                     $('#GlobalboxTextArea').append(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />");
                     AutoScroll();
                 }
@@ -516,7 +518,6 @@ $(document).ready(function () {
         else if (res.status == 400) {
             $('#GlobalboxTextArea').append('<p id="warn_spam"> Stop spamming! </p>');
         }
-        initial = 1;
     };
 
     //TODO:hist things
@@ -528,7 +529,6 @@ $(document).ready(function () {
     var nr_max_steps; // limita pt k
     var change_dir; // anti inertie la schimbare de directie
     var was_writing;
-    var initial = 1;
 
     function AddToHist(input) {
         /* adds input to history array */
