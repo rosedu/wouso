@@ -39,7 +39,9 @@
     {% endif %}
 
     {% block scripts %}{% endblock %}
+    {% if config_theme %}
     <LINK rel="stylesheet" type="text/css" href="/static/themes/{{ config_theme }}/styles.css" />
+    {% endif %}
 </HEAD>
 
 <BODY>
