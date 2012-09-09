@@ -1,10 +1,11 @@
+from django.db.utils import IntegrityError
 import logging
 
 from wouso.core.god import God
 from wouso.core.magic.models import PlayerSpellDue, PlayerSpellAmount, PlayerArtifactAmount
 
-
-class InsufficientAmount(Exception): pass
+class MagicException(Exception): pass
+class InsufficientAmount(MagicException): pass
 
 class MagicManager(object):
     def __init__(self, player):
@@ -112,24 +113,28 @@ class MagicManager(object):
         return psa.amount
 
     def cast_spell(self, spell, source, due):
-        """ Curse self with given spell from source, for due time. """
+        """ Cast a spell on this player.
+
+        Returns: error message if the spell was not cast, or None
+        """
         try:
             psamount = PlayerSpellAmount.objects.get(player=source, spell=spell)
             assert psamount.amount > 0
         except (PlayerSpellAmount.DoesNotExist, AssertionError):
-            return False
+            return 'Spell unavailable'
 
-        # Pre-cat God actions: immunity and curse ar done by this
+        # Pre-cast God actions: immunity and curse ar done by this
         # check
-        if not God.can_cast(spell, source, self.player):
-            return False
+        can_cast, error = God.can_cast(spell, source, self.player)
+        if not can_cast:
+            return error
 
         try:
             psdue = PlayerSpellDue.objects.create(player=self.player, source=source, spell=spell, due=due)
-        except Exception as e:
-            logging.exception(e)
-            return False
-            # Post-cast God action (there are specific modifiers, such as clean-spells
+        except IntegrityError:
+            return 'Cannot cast the same spell more than once'
+
+        # Post-cast God action (there are specific modifiers, such as clean-spells
         # that are implemented in God
         God.post_cast(psdue)
         psamount.amount -= 1
@@ -137,4 +142,4 @@ class MagicManager(object):
             psamount.delete()
         else:
             psamount.save()
-        return True
+        return None

@@ -122,28 +122,30 @@ class DefaultGod:
 
     def can_cast(self, spell, source, destination):
         """ Check if destination can receive spell from source
+
+        Return: a tuple of (can_cast, error_message)
         """
         source_play = source.race.can_play if source.race else False
         destin_play = destination.race.can_play if destination.race else False
 
         if source_play != destin_play:
             # This prevents Others from casting spells on actual players.
-            return False
+            return False, 'Different world races'
 
         if destination.has_modifier('immunity'):
-            return False
+            return False, 'Player has immunity'
 
         if destination.has_modifier('curse') and (spell.type != 'n'):
-            return False
+            return False, 'Player is cursed'
 
         if source.has_modifier('curse'):
-            return False
+            return False, 'Player is cursed'
 
         if (spell.name == 'steal') and (destination.points < spell.percents):
-            return False
+            return False, 'Insufficient amount'
 
         if (spell.name == 'steal') and (source == destination):
-            return False
+            return False, 'Cannot steal from self'
 
         if spell.name == 'challenge-affect-scoring':
             existing = destination.spells.filter(spell__name='challenge-affect-scoring')
@@ -151,10 +153,10 @@ class DefaultGod:
                 # check if a spell with the same sign +/- exists
                 for sp in existing:
                     if (sp.spell.percents * spell.percents) > 0:
-                        return False
+                        return False, 'Something wrong'
                 # in order to apply this new spell, cancel existing, sign contrary, spells
                 existing.delete()
-        return True
+        return True, None
 
     def post_cast(self, psdue):
         """ Execute action after a spell is cast. This is used to implement specific spells
