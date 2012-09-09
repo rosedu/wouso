@@ -91,6 +91,20 @@ def index(request):
                             },
                             context_instance=RequestContext(request))
 
+@login_required
+def archive(request):
+    user = request.user.get_profile()
+    chat = get_author(request)
+    if user.has_modifier('block-global-chat-page') or user.has_modifier('block-communication') or not chat.canAccessChat:
+        return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
+    if BoolSetting.get('disable-Chat').get_value():
+        return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
+
+    return render_to_response('chat/archive.html',
+            {'chat_user': user,
+             },
+        context_instance=RequestContext(request))
+
 
 @login_required
 def log_request(request):
