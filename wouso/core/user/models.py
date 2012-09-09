@@ -100,7 +100,7 @@ class Player(models.Model):
     artifacts = models.ManyToManyField('magic.Artifact', blank=True, through='magic.PlayerArtifactAmount')
     # spells available for casting
     spells_collection = models.ManyToManyField(Spell, blank=True, through='magic.PlayerSpellAmount', related_name='spell_collection')
-    nickname = models.CharField(max_length=20, null=True, blank=False, default=None)
+    nickname = models.CharField(max_length=20, null=True, blank=False, default="admin")
     # race
     race = models.ForeignKey(Race, blank=False, default=None, null=True)
 
