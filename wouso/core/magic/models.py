@@ -81,12 +81,16 @@ class NoArtifactLevel(object):
 
 
 class Spell(Modifier):
-    TYPES = (('o', 'neutral'), ('p', 'positive'), ('n', 'negative'))
+    TYPES = (('o', 'neutral'), ('p', 'positive'), ('n', 'negative'), ('s', 'self'))
 
     description = models.TextField() # Extended description shown in the magic place
     type = models.CharField(max_length=1, choices=TYPES, default='o')
+    due_days = models.IntegerField(default=5) # How many days may the spell be active
+    mass = models.BooleanField(default=False) # Apply spell on many players at once
+
     price = models.FloatField(default=10)       # Spell price in gold.
-    due_days = models.IntegerField(default=3) # How many days may the spell be active
+    level_required = models.IntegerField(default=0) # Level required for buying this spell
+    available = models.BooleanField(default=True)   # Spell can be bought in Bazaar
 
     @property
     def group(self):
