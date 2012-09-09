@@ -1,35 +1,28 @@
 [
  {
-  "pk": 1,
-  "model": "magic.group",
-  "fields": {
-   "name": "Spells"
-  }
- },
- {
   "pk": 2,
-  "model": "magic.group",
+  "model": "magic.artifactgroup",
   "fields": {
    "name": "CA"
   }
  },
  {
   "pk": 3,
-  "model": "magic.group",
+  "model": "magic.artifactgroup",
   "fields": {
    "name": "CB"
   }
  },
  {
   "pk": 4,
-  "model": "magic.group",
+  "model": "magic.artifactgroup",
   "fields": {
    "name": "CC"
   }
  },
  {
   "pk": 5,
-  "model": "magic.group",
+  "model": "magic.artifactgroup",
   "fields": {
    "name": "Default"
   }
@@ -344,258 +337,114 @@
  },
  {
   "pk": 30,
-  "model": "magic.artifact",
+  "model": "magic.spell",
   "fields": {
+   "due_days": 3,
+   "description": "Nu permite provocarea juc\u0103torului pe care este aplicat\u0103.",
+   "title": "Nu poate fi provocat",
    "image": "",
    "percents": 100,
-   "group": 1,
-   "name": "challenge-cannot-be-challenged",
-   "title": "Nu poate fi provocat"
+   "type": "n",
+   "price": 10.0,
+   "name": "challenge-cannot-be-challenged"
   }
  },
  {
   "pk": 31,
-  "model": "magic.artifact",
+  "model": "magic.spell",
   "fields": {
+   "due_days": 3,
+   "description": "Nu las\u0103 utilizatorul pe care este aplicat\u0103 s\u0103 provoace.",
+   "title": "Nu poate provoca",
    "image": "",
    "percents": 100,
-   "group": 1,
-   "name": "challenge-cannot-challenge",
-   "title": "Nu poate provoca"
+   "type": "n",
+   "price": 10.0,
+   "name": "challenge-cannot-challenge"
   }
  },
  {
   "pk": 32,
-  "model": "magic.artifact",
+  "model": "magic.spell",
   "fields": {
+   "due_days": 1,
+   "description": "Modific\u0103 punctajul provoc\u0103rilor, ad\u0103ug\u00e2nd 50% la punctajul aferent provoc\u0103rilor.",
+   "title": "C\u00e2\u0219tig\u0103 cu 50% mai mult",
    "image": "",
    "percents": 50,
-   "group": 1,
-   "name": "challenge-affect-scoring",
-   "title": "C\u00e2\u0219tig\u0103 cu 50% mai mult"
+   "type": "p",
+   "price": 10.0,
+   "name": "challenge-affect-scoring"
   }
  },
  {
   "pk": 33,
-  "model": "magic.artifact",
+  "model": "magic.spell",
   "fields": {
+   "due_days": 1,
+   "description": "Modific\u0103 punctajul ob\u021binut din provoc\u0103ri sc\u0103z\u00e2nd un sfert.",
+   "title": "C\u00e2\u0219tig\u0103 cu 25% mai pu\u021bin",
    "image": "",
    "percents": -25,
-   "group": 1,
-   "name": "challenge-affect-scoring",
-   "title": "C\u00e2\u0219tig\u0103 cu 25% mai pu\u021bin"
+   "type": "n",
+   "price": 10.0,
+   "name": "challenge-affect-scoring"
   }
  },
  {
   "pk": 34,
-  "model": "magic.artifact",
+  "model": "magic.spell",
   "fields": {
+   "due_days": 1,
+   "description": "Dubleaz\u0103 c\u00e2\u0219tigurile din provoc\u0103ri.",
+   "title": "C\u00e2\u0219tig\u0103 cu 100% mai mult",
    "image": "",
    "percents": 100,
-   "group": 1,
-   "name": "challenge-affect-scoring",
-   "title": "C\u00e2\u0219tig\u0103 cu 100% mai mult"
+   "type": "p",
+   "price": 30.0,
+   "name": "challenge-affect-scoring"
   }
  },
  {
   "pk": 35,
-  "model": "magic.artifact",
+  "model": "magic.spell",
   "fields": {
+   "due_days": 1,
+   "description": "M\u0103re\u0219te c\u00e2\u0219tigurile din provoc\u0103ri cu 150%.",
+   "title": "C\u00e2\u0219tig\u0103 cu 150% mai mult",
    "image": "",
    "percents": 150,
-   "group": 1,
-   "name": "challenge-affect-scoring",
-   "title": "C\u00e2\u0219tig\u0103 cu 150% mai mult"
+   "type": "p",
+   "price": 50.0,
+   "name": "challenge-affect-scoring"
   }
  },
  {
   "pk": 36,
-  "model": "magic.artifact",
+  "model": "magic.spell",
   "fields": {
+   "due_days": 1,
+   "description": "Pierde jum\u0103tate din punctajul oferit la provoc\u0103ri.",
+   "title": "C\u00e2\u0219tig\u0103 cu 50% mai pu\u021bin",
    "image": "",
    "percents": -50,
-   "group": 1,
-   "name": "challenge-affect-scoring",
-   "title": "C\u00e2\u0219tig\u0103 cu 50% mai pu\u021bin"
+   "type": "n",
+   "price": 20.0,
+   "name": "challenge-affect-scoring"
   }
  },
  {
   "pk": 37,
-  "model": "magic.artifact",
+  "model": "magic.spell",
   "fields": {
+   "due_days": 1,
+   "description": "C\u00e2\u0219tig\u0103 cu trei sferturi mai pu\u021bin din provoc\u0103ri.",
+   "title": "C\u00e2\u0219tig\u0103 cu 75% mai pu\u021bin",
    "image": "",
    "percents": -75,
-   "group": 1,
-   "name": "challenge-affect-scoring",
-   "title": "C\u00e2\u0219tig\u0103 cu 75% mai pu\u021bin"
-  }
- },
- {
-  "pk": 38,
-  "model": "magic.artifact",
-  "fields": {
-   "image": "",
-   "percents": 100,
-   "group": 1,
-   "name": "challenge-always-lose",
-   "title": "Pierde mereu"
-  }
- },
- {
-  "pk": 39,
-  "model": "magic.artifact",
-  "fields": {
-   "image": "",
-   "percents": 100,
-   "group": 1,
-   "name": "cure",
-   "title": "Vindec\u0103"
-  }
- },
- {
-  "pk": 40,
-  "model": "magic.artifact",
-  "fields": {
-   "image": "",
-   "percents": 100,
-   "group": 1,
-   "name": "curse",
-   "title": "Blesteam\u0103"
-  }
- },
- {
-  "pk": 41,
-  "model": "magic.artifact",
-  "fields": {
-   "image": "",
-   "percents": 100,
-   "group": 1,
-   "name": "immunity",
-   "title": "Imunitate"
-  }
- },
- {
-  "pk": 42,
-  "model": "magic.artifact",
-  "fields": {
-   "image": "",
-   "percents": 100,
-   "group": 1,
-   "name": "dispell",
-   "title": "Cur\u0103\u021b\u0103 toate vr\u0103jile"
-  }
- },
- {
-  "pk": 43,
-  "model": "magic.artifact",
-  "fields": {
-   "image": "",
-   "percents": 3,
-   "group": 1,
-   "name": "steal",
-   "title": "Fur\u0103 3 puncte"
-  }
- },
- {
-  "pk": 44,
-  "model": "magic.artifact",
-  "fields": {
-   "image": "",
-   "percents": 6,
-   "group": 1,
-   "name": "steal",
-   "title": "Fur\u0103 6 puncte"
-  }
- },
- {
-  "pk": 45,
-  "model": "magic.artifact",
-  "fields": {
-   "image": "",
-   "percents": 9,
-   "group": 1,
-   "name": "steal",
-   "title": "Fur\u0103 9 puncte"
-  }
- },
- {
-  "pk": 30,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 3,
-   "price": 10.0,
    "type": "n",
-   "description": "Nu permite provocarea juc\u0103torului pe care este aplicat\u0103."
-  }
- },
- {
-  "pk": 31,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 3,
-   "price": 10.0,
-   "type": "n",
-   "description": "Nu las\u0103 utilizatorul pe care este aplicat\u0103 s\u0103 provoace."
-  }
- },
- {
-  "pk": 32,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 1,
-   "price": 10.0,
-   "type": "p",
-   "description": "Modific\u0103 punctajul provoc\u0103rilor, ad\u0103ug\u00e2nd 50% la punctajul aferent provoc\u0103rilor."
-  }
- },
- {
-  "pk": 33,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 1,
-   "price": 10.0,
-   "type": "n",
-   "description": "Modific\u0103 punctajul ob\u021binut din provoc\u0103ri sc\u0103z\u00e2nd un sfert."
-  }
- },
- {
-  "pk": 34,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 1,
-   "price": 30.0,
-   "type": "p",
-   "description": "Dubleaz\u0103 c\u00e2\u0219tigurile din provoc\u0103ri."
-  }
- },
- {
-  "pk": 35,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 1,
-   "price": 50.0,
-   "type": "p",
-   "description": "M\u0103re\u0219te c\u00e2\u0219tigurile din provoc\u0103ri cu 150%."
-  }
- },
- {
-  "pk": 36,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 1,
-   "price": 20.0,
-   "type": "n",
-   "description": "Pierde jum\u0103tate din punctajul oferit la provoc\u0103ri."
-  }
- },
- {
-  "pk": 37,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 1,
    "price": 40.0,
-   "type": "n",
-   "description": "C\u00e2\u0219tig\u0103 cu trei sferturi mai pu\u021bin din provoc\u0103ri."
+   "name": "challenge-affect-scoring"
   }
  },
  {
@@ -603,9 +452,13 @@
   "model": "magic.spell",
   "fields": {
    "due_days": 3,
-   "price": 25.0,
+   "description": "Face juc\u0103torul s\u0103 piard\u0103 indiferent de r\u0103spunsurile pe care le d\u0103 el sau adversarul s\u0103u.",
+   "title": "Pierde mereu",
+   "image": "",
+   "percents": 100,
    "type": "n",
-   "description": "Face juc\u0103torul s\u0103 piard\u0103 indiferent de r\u0103spunsurile pe care le d\u0103 el sau adversarul s\u0103u."
+   "price": 25.0,
+   "name": "challenge-always-lose"
   }
  },
  {
@@ -613,9 +466,13 @@
   "model": "magic.spell",
   "fields": {
    "due_days": 1,
-   "price": 50.0,
+   "description": "Cur\u0103\u021b\u0103 toate vr\u0103jile negative active pe juc\u0103torul pe care se aplic\u0103.",
+   "title": "Vindec\u0103",
+   "image": "",
+   "percents": 100,
    "type": "o",
-   "description": "Cur\u0103\u021b\u0103 toate vr\u0103jile negative active pe juc\u0103torul pe care se aplic\u0103."
+   "price": 50.0,
+   "name": "cure"
   }
  },
  {
@@ -623,9 +480,13 @@
   "model": "magic.spell",
   "fields": {
    "due_days": 3,
-   "price": 100.0,
+   "description": "Juc\u0103torul afectat de blestem nu va mai fi afectat de vr\u0103jile pozitive sau neutre. De asemenea, nu poate s\u0103 foloseasc\u0103 vr\u0103jile pe care le are.",
+   "title": "Blesteam\u0103",
+   "image": "",
+   "percents": 100,
    "type": "n",
-   "description": "Juc\u0103torul afectat de blestem nu va mai fi afectat de vr\u0103jile pozitive sau neutre. De asemenea, nu poate s\u0103 foloseasc\u0103 vr\u0103jile pe care le are."
+   "price": 100.0,
+   "name": "curse"
   }
  },
  {
@@ -633,9 +494,13 @@
   "model": "magic.spell",
   "fields": {
    "due_days": 3,
-   "price": 90.0,
+   "description": "Face juc\u0103torul c\u0103ruia i se aplic\u0103 imun la orice fel de vr\u0103ji.",
+   "title": "Imunitate",
+   "image": "",
+   "percents": 100,
    "type": "p",
-   "description": "Face juc\u0103torul c\u0103ruia i se aplic\u0103 imun la orice fel de vr\u0103ji."
+   "price": 90.0,
+   "name": "immunity"
   }
  },
  {
@@ -643,9 +508,13 @@
   "model": "magic.spell",
   "fields": {
    "due_days": 1,
-   "price": 100.0,
+   "description": "\u00cenl\u0103tur\u0103 toate vr\u0103jile active pe juc\u0103torul pe care este aplicat\u0103.",
+   "title": "Cur\u0103\u021b\u0103 toate vr\u0103jile",
+   "image": "",
+   "percents": 100,
    "type": "o",
-   "description": "\u00cenl\u0103tur\u0103 toate vr\u0103jile active pe juc\u0103torul pe care este aplicat\u0103."
+   "price": 100.0,
+   "name": "dispell"
   }
  },
  {
@@ -653,9 +522,13 @@
   "model": "magic.spell",
   "fields": {
    "due_days": 1,
-   "price": 7.0,
+   "description": "Fur\u0103 3 puncte de la un juc\u0103tor.",
+   "title": "Fur\u0103 3 puncte",
+   "image": "",
+   "percents": 100,
    "type": "n",
-   "description": "Fur\u0103 3 puncte de la un juc\u0103tor."
+   "price": 7.0,
+   "name": "steal"
   }
  },
  {
@@ -663,9 +536,13 @@
   "model": "magic.spell",
   "fields": {
    "due_days": 1,
-   "price": 12.0,
+   "description": "Fur\u0103 6 puncte de la un juc\u0103tor.",
+   "title": "Fur\u0103 6 puncte",
+   "image": "",
+   "percents": 100,
    "type": "n",
-   "description": "Fur\u0103 6 puncte de la un juc\u0103tor."
+   "price": 12.0,
+   "name": "steal"
   }
  },
  {
@@ -673,9 +550,13 @@
   "model": "magic.spell",
   "fields": {
    "due_days": 1,
-   "price": 15.0,
+   "description": "Fur\u0103 9 puncte de la un juc\u0103tor.",
+   "title": "Fur\u0103 9 puncte",
+   "image": "",
+   "percents": 100,
    "type": "n",
-   "description": "Fur\u0103 9 puncte de la un juc\u0103tor."
+   "price": 15.0,
+   "name": "steal"
   }
  },
  {
@@ -748,6 +629,15 @@
    "owner": "ChallengeGame",
    "formula": "points=3",
    "description": "Points given back as a warranty taken for challenge"
+  }
+ },
+ {
+  "pk": "chall-timer",
+  "model": "scoring.formula",
+  "fields": {
+   "owner": "ChallengeGame",
+   "formula": "tlimit=300 - 5 * ({level} - 1)",
+   "description": "Seconds left for a user in challenge"
   }
  },
  {
@@ -853,11 +743,11 @@
   "pk": "default_group",
   "model": "config.setting",
   "fields": {
-   "value": "19"
+   "value": "1"
   }
  },
  {
-  "pk": "default_series",
+  "pk": "default_race",
   "model": "config.setting",
   "fields": {
    "value": "1"
@@ -892,10 +782,10 @@
   }
  },
  {
-  "pk": "disable-Top",
+  "pk": "disable-Chat",
   "model": "config.setting",
   "fields": {
-   "value": ""
+   "value": "True"
   }
  },
  {
@@ -914,6 +804,13 @@
  },
  {
   "pk": "disable-SpecialQuestGame",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "disable-Top",
   "model": "config.setting",
   "fields": {
    "value": ""
@@ -948,13 +845,6 @@
   }
  },
  {
-  "pk": "disable-Chat",
-  "model": "config.setting",
-  "fields": {
-   "value": ""
-  }
- },
- {
   "pk": "disable-Bazaar-Exchange",
   "model": "config.setting",
   "fields": {
@@ -966,6 +856,20 @@
   "model": "config.setting",
   "fields": {
    "value": ""
+  }
+ },
+ {
+  "pk": "enable_header_autoreload",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "default_series",
+  "model": "config.setting",
+  "fields": {
+   "value": "1"
   }
  },
  {
