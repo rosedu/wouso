@@ -82,21 +82,6 @@ After playing a challenge::
     core.scoring.score(user2, self, 'challenge-won', external_id=challenge.id, level1=user1.level, level2=user2.level)
 
 
-Discussion
-----------
-
-* AE: maybe we need a generic method: ``score(user, game, points)``
-  for simpler use cases?
-* AE: also, there shall be an api for getting user's scores history
-* GVS: Answering to AE and maybe an improvement, too long to keep it
-  here, i made a new page.
-  (https://projects.rosedu.org/projects/wousodjango/wiki/CoreModulesScoringDiscutionTemp)
-* AE: added GVS coins; not adding helper methods right now, because the
-  current proposal defines only game specific - ``get_users_at_level_x`` -
-  which should be implemented by God - who knows levels
-* AE: added `external_id` for history
-
-
 :mod:`wouso.core.scoring.models`
 --------------------------------
 .. automodule:: wouso.core.scoring.models

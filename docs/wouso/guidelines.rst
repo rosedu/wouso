@@ -7,15 +7,10 @@ Coding style
 * set ts=4
 * import order::
 
-    import python-modules
-    import django-modules
-    import wouso.[core|interface]
-    import game-modules
-
-Function usage
---------------
-
-in your views, use wouso.interface.render_response instead of render_to_response or HttpResponse
+    import <python-modules>
+    import <django-modules>
+    import <wouso.[core|interface]>
+    import <game-modules>
 
 Logging
 -------
@@ -26,7 +21,7 @@ see Logging
 Testing
 -------
 
-Write unit tests, see Scoring or Qotd for examples. The example
+Always write unit tests for your code, see Scoring or Qotd for examples. The example
 configuration file uses `nose` as the test runner. To run the full test
 suite for WoUSO::
 
@@ -36,7 +31,7 @@ Documentation
 -------------
 
 WoUSO documentation is maintained using Sphinx_ in the repository, under
-``/docs``. To update it:
+``/docs/wouso``. To update it:
 
 * Edit a page::
 

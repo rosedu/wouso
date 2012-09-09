@@ -1,9 +1,9 @@
 .. _user:
 
-Core - `User`
-=============
+Core - `Player`
+===============
 
-The UserProfile is a Django-specific way to extend the User class. In
+The user profile class is a Django-specific way to extend the User class. In
 WoUSO, we use this to store login information, basic level and title
 information, group membership, and also the artifact inventory.
 Moreover, each game may extend this class in order to store user-game
@@ -18,7 +18,7 @@ Example
 ::
 
     # games/qotd/models.py:
-    class QotdUser(UserProfile):
+    class QotdUser(Player):
         last_answered = models.DateTimeField()
         last_answer = models.IntegerField()
 

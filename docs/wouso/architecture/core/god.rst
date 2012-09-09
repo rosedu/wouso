@@ -18,8 +18,3 @@ Each game should expose its modifiers IDs, letting God manage the
 corresponding artifacts that triggers a modifier. A modifier ID is a
 string, i.e. ``challenge-can-skip``. Each game implements the modifier's
 logic, God just handles the world visible modifier - artifact.
-
-:mod:`wouso.core.god.temple`
-----------------------------
-.. automodule:: wouso.core.god.temple
-    :members:

@@ -1,48 +1,18 @@
+from datetime import datetime, timedelta
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils import simplejson
-from models import *
 
-from wouso.core.user.models import *
 from wouso.core.config.models import BoolSetting
-from datetime import datetime, timedelta
-import random, array
+from models import *
+from wouso.interface.chat.utils import  change_text, get_author
 
-
-def create_room(roomName, deletable=False, renameable=False):
-    ''' creates a new chatroom and saves it '''
-    newRoom = ChatRoom(name=roomName, deletable=deletable, renameable=renameable)
-    newRoom.save()
-    return newRoom
-
-def get_author(request):
-
-    return request.user.get_profile().get_extension(ChatUser)
-
-def shuffle_text(text):
-    if isinstance(text, unicode):
-        temp= array.array('u', text)
-        converter= temp.tounicode
-    else:
-        temp= array.array('c', text)
-        converter= temp.tostring
-    random.shuffle(temp)
-    return converter()
-
-
-def change_text(text):
-    text = text.split(" ")
-    random.shuffle(text)
-    new_text = ""
-    for world in text:
-        new_text = new_text + world[0] + shuffle_text(world[1:len(world)-1]) + world[len(world)-1] + " "
-    return new_text
 
 def add_message(text, sender, toRoom, user_to, messType, comand):
-    '''content, author, room, user_to, messType, comand'''
+    """ content, author, room, user_to, messType, comand """
 
     timeStamp = datetime.now()
     diff = timeStamp - sender.lastMessageTS
@@ -65,10 +35,10 @@ def add_message(text, sender, toRoom, user_to, messType, comand):
 
 
 def serve_message(user, room=None, position=None):
-
-
+    """
+    """
     obj = {'user': unicode(user)}
-    if room == None:
+    if room is None:
         query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS, destRoom__participants=user)
         obj['count'] = query.count()
     else:
@@ -98,7 +68,7 @@ def serve_message(user, room=None, position=None):
             msgs.append(mesaj)
         else:
             continue
-    if room == None:
+    if room is None:
         user.lastMessageTS = lastTS
         user.save()
 
@@ -253,7 +223,7 @@ def sendmessage(request):
             room = rooms[0]
         else:
             name = '%d-%d' % ((user.id, user_to.id) if user.id < user_to.id else (user_to.id, user.id))
-            room = create_room(name)
+            room = ChatRoom.create(name)
         room.participants.add(user)
         room.participants.add(user_to.id)
         return json_response(room.to_dict())
