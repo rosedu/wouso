@@ -1,13 +1,12 @@
+from datetime import datetime
 from django.db import models
 from django.contrib import admin
-from core.user.models import Player
-from datetime import datetime
+from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 
+from wouso.core.user.models import Player
 from wouso.core.app import App
-from django.core.urlresolvers import reverse
 from wouso.core.config.models import BoolSetting
-from wouso.core.user.models import *
 
 
 class ChatUser(Player):
