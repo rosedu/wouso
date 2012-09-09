@@ -5,51 +5,44 @@ Obțineți o copie a ultimei versiuni WoUSO
 -----------------------------------------
 
 1. Dacă nu aveți deja instalat, instalați git.
-2. ``git clone http://git.rosedu.org/down/wouso-django.git``.
+2. ``git clone https://github.com/rosedu/wouso.git``.
 
-Done. Acum aveți sursele WoUSO local, în directorul wouso-django. Dacă
+Done. Acum aveți sursele WoUSO local, în directorul wouso. Dacă
 întâmpinați probleme contactați-ne pe lista de discuții.
 
-WoUSO needs
------------
+Running
+-------
 
-1. Apache - Server Web
+1. Install Python >= 2.7 and virtualenv; activate the virtualenv::
 
-2. mod-wsgi - Modul Apache care permite rularea aplicațiilor Python.
+    virtualenv -p python2.7 sandbox
+    echo '*' > sandbox/.gitignore
+    . sandbox/bin/activate
 
-3. Django - Web Framework and more.
+2. Install dependencies::
 
-4. mysql - Bază de date
+    pip install -r requirements-pip       # optional, the same command with: requirements-extra
 
-5. pip - Înstalare ușoară a dependințelor (pyfacebook, django-facebookconnect)
+3. (optional) Install `django-piston` (by hand, because of a weird bug_)::
 
-6. Asigurați-vă ca le aveți instalate. Toate au o documentație foarte
-   bună și tutoriale de instalare și configurare.
+    curl 'http://pypi.python.org/packages/source/d/django-piston/django-piston-0.2.3.tar.gz' | tar xzf -
+    cd django-piston-0.2.3; python setup.py install
+    cd ..; rm -r django-piston-02.3
 
-Dacă sunteți în Ubuntu::
+.. _bug: https://bitbucket.org/jespern/django-piston/issue/173/attributeerror-module-object-has-no
 
-    apt-get install libapache2-mod-wsgi python-django apache2 mysql-server \
-        python-ldap python-mysqldb python-pip
+4. Go to `wouso` folder, run everything from there::
 
-Instați pyfacebook and django-facebookconnect::
+    cd wouso
 
-    pip install -U -r requirements-pip
+5. Copy the default settings::
 
+    cp settings.py.example settings.py
 
-Opțiuni de configurare
-----------------------
+6. Create database tables and load initial data::
 
-Adăugați un alias local în /etc/hosts 127.0.0.1 wouso.local Editați
-fișierul wouso.local astfel încât să se potrivească cu setările voastre.
-Copiați-l în /etc/apache2/sites-available
+    ./manage.py wousoctl --setup
 
-Rulați ca root::
+7. Run the server::
 
-    a2ensite wouso.local
-    service apache2 reload
-
-Final
------
-
-Ar trebui să puteți să accesați http://wouso.local. Dacă aveți probleme
-la instalare, dați un mesaj pe lista de discuții și cineva vă va ajuta.
+    ./manage.py runserver
