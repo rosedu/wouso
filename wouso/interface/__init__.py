@@ -24,10 +24,10 @@ def mobile_browser(request):
     return False
 
 def detect_mobile(request):
-    if request.GET.get('mobile') or request.session.get('mobile'):
-        if request.GET.get('mobile'):
-            request.session['mobile'] = (request.GET.get('mobile') == '1')
-        return request.session.get('mobile')
+    if request.GET.get('mobile'):
+        request.session['mobile'] = request.GET.get('mobile')
+    if request.session.get('mobile'):
+        return request.session['mobile'] == '1'
     return mobile_browser(request)
 
 def get_apps():
