@@ -59,18 +59,18 @@ def gettop(request, toptype=0, sortcrit=0, page=1):
 
 def pyramid(request):
     s = []
-    for g in PlayerGroup.objects.exclude(show_in_top=False).filter(parent=None).order_by('name'): #TODO races
+    for r in Race.objects.exclude(can_play=False):
         columns = []
         players = []
         i, j = 1, 0
-        for p in g.players.all().order_by('-points'):
+        for p in r.player_set.all().order_by('-points'):
             players.append(p)
             if len(players) == i:
                 columns.append(list(players))
                 players = []
                 i += 1
-        g.columns = columns
-        s.append(g)
+        r.columns = columns
+        s.append(r)
 
     return render_to_response('top/pyramid.html',
                             {'series': s, 'top': Top},
