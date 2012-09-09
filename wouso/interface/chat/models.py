@@ -10,7 +10,7 @@ from wouso.core.config.models import BoolSetting
 
 
 class ChatUser(Player):
-    ''' extension of the User object '''
+    """ extension of the User object """
 
     class Meta:
         permissions = (("super_chat_user", "Super chat User."),)
@@ -21,7 +21,7 @@ class ChatUser(Player):
 
 
 class ChatRoom(models.Model):
-    ''' basic chatroom '''
+    """ basic chatroom """
 
     def __init__(self, *args, **kwargs):
         super(ChatRoom, self).__init__(*args, **kwargs)
@@ -39,8 +39,15 @@ class ChatRoom(models.Model):
     def __unicode__(self):
         return self.name
 
+    @classmethod
+    def create(cls, roomName, deletable=False, renameable=False):
+        """ creates a new chatroom and saves it """
+        newRoom = cls(name=roomName, deletable=deletable, renameable=renameable)
+        newRoom.save()
+        return newRoom
+
 class ChatMessage(models.Model):
-    ''' chat message '''
+    """ chat message """
 
     messType = models.CharField(max_length=500, null=False, blank=False, default=None)
     comand = models.CharField(max_length=500, null=False, blank=False, default=None)
@@ -52,7 +59,6 @@ class ChatMessage(models.Model):
 
 
     def __unicode__(self):
-        #return self.author.__unicode__() + ' : ' + self.content + ' @ ' + self.timeStamp.strftime("%A, %d %B %Y %I:%M %p")
         return self.author.nickname + ' : ' + self.content
 
 class Chat(App):
@@ -62,7 +68,6 @@ class Chat(App):
         if BoolSetting.get('disable-Chat').get_value():
             return {}
         url = reverse('wouso.interface.chat.views.index')
-        player = request.user.get_profile() if request.user.is_authenticated() else None
         count = 0
 
         return dict(link=url, text=_('Chat'), count=count)
