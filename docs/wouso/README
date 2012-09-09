@@ -1,0 +1,6 @@
+Building
+========
+
+Make sure wouso is in your PYTHONPATH, then run `make html':
+	
+	PYTHONPATH=../../:$PYTHONPATH make html

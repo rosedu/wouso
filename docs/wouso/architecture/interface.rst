@@ -54,12 +54,12 @@ and log the data (in the database) that would be displayed on the wall.
     :members:
 
 :mod:`wouso.interface.activity.signals`
---------------------------------------
+---------------------------------------
 .. automodule:: wouso.interface.activity.signals
     :members:
 
 Usage examples
-~~~~~~~~
+~~~~~~~~~~~~~~
 
 Sending events from games::
 
