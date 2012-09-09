@@ -16,7 +16,7 @@ from wouso.core import scoring
 # marche
 def bazaar(request, message='', error=''):
     player = request.user.get_profile() if request.user.is_authenticated() else None
-    spells = Spell.objects.all()
+    spells = Spell.objects.all().order_by('-available', 'level_required')
 
     # Disable exchange for real
     exchange_disabled = BoolSetting.get('disable-Bazaar-Exchange').get_value()
@@ -95,6 +95,8 @@ def bazaar_buy(request, spell):
     error, message = '',''
     if spell.price > player.coins.get('gold', 0):
         error = _("Insufficient gold amount")
+    elif spell.level_required > player.level_no:
+        error = _("Level {level} is required to buy this spell").format(level=spell.level_required)
     else:
         player.add_spell(spell)
         scoring.score(player, None, 'buy-spell', external_id=spell.id,
@@ -103,13 +105,6 @@ def bazaar_buy(request, spell):
         message = _("Successfully aquired")
 
     return bazaar(request, message=message, error=error)
-    # TODO: use django-flash
-    """
-    return render_to_response('bazaar_buy.html',
-                              {'error': error, 'message': message,
-                              },
-                              context_instance=RequestContext(request))
-    """
 
 
 @login_required

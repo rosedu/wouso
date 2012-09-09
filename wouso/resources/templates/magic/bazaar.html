@@ -44,7 +44,11 @@
                 {% coin_amount s.price 'gold' %}
             </td>
             <td>
+                {% if user.get_profile.level_no >= s.level_required %}
                 <a href="{% url bazaar_buy s.id %}" class="button">{% trans 'Buy' %}</a>
+                {% else %}
+                <span class="button">{% blocktrans with s.level_required as level %}Level {{level}} required{% endblocktrans %}</span>
+                {% endif %}
             </td>
             <td>
                 {% spell_stock player s %}
