@@ -26,8 +26,8 @@ urlpatterns = patterns('',
     url(r'^player/(?P<id>\d*)/$', 'wouso.interface.profile.views.user_profile', name='player_profile'),
     url(r'^player/(?P<id>\d*)/(?P<page>\d*)/$', 'wouso.interface.profile.views.user_profile', name="player_profile"),
     url(r'^player/(?P<id>\d*)/points-summary/$', 'wouso.interface.profile.views.player_points_history', name='player_points_history'),
-    url(r'^player/cast/to-(?P<destination>\d+)/$', 'wouso.interface.profile.views.magic_cast', name='magic_cast'),
-    (r'^player/cast/(?P<destination>\d+)/(?P<spell>\d+)/$', 'wouso.interface.profile.views.magic_cast'),
+    url(r'^player/cast/to-(?P<destination>\d+)/$', 'wouso.interface.apps.magic.views.magic_cast', name='magic_cast'),
+    url(r'^player/cast/(?P<destination>\d+)/(?P<spell>\d+)/$', 'wouso.interface.apps.magic.views.magic_cast'),
 
     url(r'^player2/', include('wouso.interface.profile.urls')),
 

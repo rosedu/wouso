@@ -1,9 +1,12 @@
+from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext
+from exceptions import ValueError
 from wouso.core.config.models import BoolSetting
 from wouso.core.scoring.sm import InvalidFormula
 from wouso.core.user.models import Player
@@ -107,3 +110,31 @@ def bazaar_buy(request, spell):
                               },
                               context_instance=RequestContext(request))
     """
+
+
+@login_required
+def magic_cast(request, destination=None, spell=None):
+    player = request.user.get_profile()
+    destination = get_object_or_404(Player, pk=destination)
+
+    error = ''
+
+    if request.method == 'POST':
+        spell = get_object_or_404(Spell, pk=request.POST.get('spell', 0))
+        try:
+            days = int(request.POST.get('days', 0))
+        except ValueError:
+            pass
+        else:
+            if (days > spell.due_days) or ((spell.due_days > 0) and (days < 1)):
+                error = _('Invalid number of days')
+            else:
+                due = datetime.now() + timedelta(days=days)
+                if destination.magic.cast_spell(spell, source=player, due=due):
+                    return HttpResponseRedirect(reverse('wouso.interface.profile.views.user_profile', args=(destination.id,)))
+                else:
+                    error = _('Cast failed.')
+
+    return render_to_response('profile/cast.html',
+                              {'destination': destination, 'error': error},
+                              context_instance=RequestContext(request))

@@ -1,20 +1,15 @@
-from datetime import datetime, timedelta
 from hashlib import md5
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core import serializers
-from django.http import Http404, HttpResponse, HttpResponseRedirect
-from django.core.urlresolvers import reverse
-from django.db.models import Q
+from django.http import Http404, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from django.utils.translation import ugettext as _
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.scoring.models import History
 from wouso.core.magic.models import Spell, PlayerSpellDue
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, GroupHistory
-from wouso.interface.top.models import History as TopHistory
 from wouso.core.game import get_games
 
 
@@ -73,9 +68,9 @@ def user_profile(request, id, page=u'1'):
 
 @login_required
 def player_contact(request, player):
-	player = get_object_or_404(Player, pk=player)
+    player = get_object_or_404(Player, pk=player)
 
-	return render_to_response('profile/contactbox.html',
+    return render_to_response('profile/contactbox.html',
 								{'contactbox': player},
 								context_instance=RequestContext(request)
 	)
@@ -139,32 +134,7 @@ def groups_index(request):
                               {'groups': groups},
                               context_instance=RequestContext(request))
 
-@login_required
-def magic_cast(request, destination=None, spell=None):
-    player = request.user.get_profile()
-    destination = get_object_or_404(Player, pk=destination)
 
-    error = ''
-
-    if request.method == 'POST':
-        spell = get_object_or_404(Spell, pk=request.POST.get('spell', 0))
-        try:
-            days = int(request.POST.get('days', 0))
-        except ValueError:
-            pass
-        else:
-            if (days > spell.due_days) or ((spell.due_days > 0) and (days < 1)):
-                error = _('Invalid number of days')
-            else:
-                due = datetime.now() + timedelta(days=days)
-                if destination.magic.cast_spell(spell, source=player, due=due):
-                    return HttpResponseRedirect(reverse('wouso.interface.profile.views.user_profile', args=(destination.id,)))
-                else:
-                    error = _('Cast failed.')
-
-    return render_to_response('profile/cast.html',
-                              {'destination': destination, 'error': error},
-                              context_instance=RequestContext(request))
 
 @login_required
 def magic_summary(request):
