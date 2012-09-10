@@ -1,8 +1,7 @@
-from datetime import datetime, date, timedelta
 from random import shuffle
+from datetime import datetime, date, timedelta
 from django.db import models
 from django.contrib.auth.models import User
-from wouso.core import deprecated
 from utils import validate_dynq_code
 
 class Tag(models.Model):
