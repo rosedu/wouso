@@ -154,8 +154,10 @@ def private_log(request):
 @login_required
 def archive_messages(request):
 
-    date_time_started = datetime(2012, 9, 8, 0, 0, 0)
-    date_time_finished = datetime(2012, 9, 11, 0, 0, 0) + timedelta(days = 1)
+    date = request.POST['date']
+    date = date.split("/", 3)
+    date_time_started = datetime(int(date[2]), int(date[0]), int(date[1]), 0, 0, 0)
+    date_time_finished = datetime(int(date[2]), int(date[0]), int(date[1]), 0, 0, 0) + timedelta(days = 1)
     messages = ChatMessage.objects.filter(destRoom__name="global").filter(timeStamp__gte=date_time_started).filter(timeStamp__lte=date_time_finished)
 
     user = get_author(request)
