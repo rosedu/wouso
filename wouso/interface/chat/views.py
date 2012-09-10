@@ -61,6 +61,7 @@ def serve_message(user, room=None, position=None):
             mesaj['room'] = m.destRoom.name
             mesaj['user'] = unicode(m.author.nickname)
             mesaj['text'] = m.content
+            mesaj['time'] = m.timeStamp.strftime("%H:%M ")
             mesaj['comand'] = m.comand
             mesaj['mess_type'] = m.messType
             mesaj['dest_user'] = unicode(m.destUser.nickname)

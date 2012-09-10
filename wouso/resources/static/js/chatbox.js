@@ -478,7 +478,7 @@ $(document).ready(function () {
                 else if(obj.msgs[i].user == myName && obj.msgs[i].mess_type == 'special')
                     continue;
                 else if (obj.msgs[i].room == 'global') {
-                    $('#GlobalboxTextArea').append(obj.msgs[i].user + " : " + replace_emoticons(obj.msgs[i].text) + "<br />");
+                    $('#GlobalboxTextArea').append(obj.msgs[i].time + obj.msgs[i].user + ": " + replace_emoticons(obj.msgs[i].text) + "<br />");
                     AutoScroll();
                 }
                 else {
