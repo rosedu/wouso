@@ -29,7 +29,10 @@ class Modifier(models.Model):
         if self.image:
             return "%s/%s" % (settings.MEDIA_ARTIFACTS_URL, os.path.basename(str(self.image)))
 
-        return ("%s-%s" %  (self.group, self.name)).lower()
+        if hasattr(self, 'group'):
+            return ("%s-%s" %  (self.group, self.name)).lower()
+
+        return self.name.lower()
 
 
 class ArtifactGroup(models.Model):
@@ -53,15 +56,6 @@ class Artifact(Modifier):
         # TODO: get rid of me
         return ArtifactGroup.objects.get_or_create(name='Default')[0]
 
-    @classmethod
-    def get_level_1(kls):
-        """ Temporary method for setting default artifact until God and Guildes """
-        # TODO: I think this is deprecated
-        try:
-            return Artifact.objects.get(name='level-1')
-        except:
-            return None
-    
     def __unicode__(self):
         return u"%s [%s]" % (self.name, self.group.name)
 
@@ -70,10 +64,10 @@ class NoArtifactLevel(object):
     """
     Mock an artifact object
     """
-    def __init__(self, level):
+    def __init__(self, level_no):
         self.id = ''
-        self.name = 'level-%s' % level
-        self.title = 'Level %s' % level
+        self.name = 'level-%s' % level_no
+        self.title = 'Level %s' % level_no
         self.image = ''
         self.path = 'default-%s' % self.name
         self.group = None

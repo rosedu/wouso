@@ -1,9 +1,10 @@
 import unittest
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.test import TestCase
 from wouso.core import scoring
+from wouso.core.magic.templatetags.artifacts import artifact, spell_due, artifact_full
 from wouso.core.scoring.models import Coin, Formula
 from wouso.core.tests import WousoTest
 from wouso.core.user.models import Player
@@ -49,6 +50,17 @@ class ManagerTestCase(WousoTest):
 
         self.assertFalse(result)
 
+class ModifierTest(TestCase):
+    def test_path_simple(self):
+        m = Modifier(name='cici')
+        self.assertTrue(m.path)
+        self.assertEqual(m.path, 'cici')
+
+    def test_path_image(self):
+        m = Modifier(name='cici')
+        m.image = 'test.jpg'
+        self.assertTrue('test.jpg' in m.path)
+
 
 class ArtifactTestCase(unittest.TestCase):
 
@@ -61,7 +73,12 @@ class ArtifactTestCase(unittest.TestCase):
 
         self.assertRaises(IntegrityError, Artifact.objects.create, group=group, name='name')
 
-class SpellTestCase(TestCase):
+    def test_no_artifact_behavior(self):
+        noartifact = NoArtifactLevel(1)
+
+        self.assertTrue(artifact(noartifact))
+
+class SpellTestCase(WousoTest):
 
     def test_buy_spell(self):
         Coin.objects.create(id='gold')
@@ -82,3 +99,40 @@ class SpellTestCase(TestCase):
 
         player = Player.objects.get(user__username='test')
         self.assertEqual(player.coins['gold'], 90)
+
+    def test_expired(self):
+        player = self._get_player()
+        spell = Spell.objects.create(name='test-spell', available=True, price=10)
+
+        obs = PlayerSpellDue.objects.create(player=player, source=player, spell=spell, due=datetime.now() + timedelta(days=1))
+        self.assertFalse(PlayerSpellDue.get_expired(datetime.today()))
+
+        obs.due = datetime.now() - timedelta(days=1)
+        obs.save()
+
+        self.assertTrue(PlayerSpellDue.get_expired(datetime.today()))
+        self.assertIn(obs, PlayerSpellDue.get_expired(datetime.today()))
+
+        obs.due = datetime.now() - timedelta(days=1)
+        obs.save()
+
+        # Run management task: should delete expired dues
+        Bazaar.management_task()
+
+        self.assertFalse(PlayerSpellDue.get_expired(datetime.today()))
+
+
+class TemplatetagsTest(WousoTest):
+    def test_spell_due(self):
+        player = self._get_player()
+        spell = Spell.objects.create(name='test-spell', available=True, price=10)
+
+        obs = PlayerSpellDue.objects.create(player=player, source=player, spell=spell, due=datetime.now() + timedelta(days=1))
+
+        self.assertTrue(spell_due(obs))
+
+    def test_artifact_full(self):
+        self.assertFalse(artifact_full(None))
+
+        player = self._get_player()
+        self.assertTrue(artifact_full(player.level))
