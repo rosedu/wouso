@@ -22,10 +22,10 @@ def add_message(text, sender, toRoom, user_to, messType, comand):
     #if diff.total_seconds() > 0.5:
     #difference_in_seconds = (diff.microseconds + (diff.seconds + diff.days * 24 * 3600) * 10**6) / 10**6
 
-    if sender.has_modifier('block-communication')or not sender.canAccessChat:
+    if sender.has_modifier('block-communication'):
         return False
     if difference_in_seconds > 0.5:
-        if sender.has_modifier('change-messages'):
+        if sender.has_modifier('block-messages'):
             text = change_text(text)
         msg = ChatMessage(content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp,
                             destUser = user_to, messType=messType, comand=comand)
@@ -209,7 +209,7 @@ def sendmessage(request):
             return HttpResponseBadRequest()
     elif data['opcode'] == 'keepAlive':
         chat_global = roomexist('global')
-        if user.has_modifier('block-communication')or not user.canAccessChat:
+        if user.has_modifier('block-communication'):
             return HttpResponse(simplejson.dumps(special_message(user, None, "block-communication")))
 
             #add_message("", user, chat_global, user, "special", "block-communication")
