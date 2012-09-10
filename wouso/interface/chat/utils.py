@@ -18,7 +18,10 @@ def change_text(text):
     random.shuffle(text)
     new_text = ""
     for world in text:
-        new_text = new_text + world[0] + shuffle_text(world[1:len(world)-1]) + world[len(world)-1] + " "
+        if len(world) > 3:
+            new_text = new_text + world[0] + shuffle_text(world[1:len(world)-1]) + world[len(world)-1] + " "
+        else:
+            new_text = new_text + world + " "
     return new_text
 
 
