@@ -105,6 +105,7 @@ class MagicManager(object):
 
     def spell_stock(self, spell):
         """ Return the count of spells an user has
+        TODO: check usage
         """
         try:
             psa = PlayerSpellAmount.objects.get(player=self.player, spell=spell)

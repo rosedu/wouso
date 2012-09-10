@@ -1,12 +1,54 @@
 import unittest
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.test import TestCase
-
 from wouso.core import scoring
-from models import *
 from wouso.core.scoring.models import Coin, Formula
+from wouso.core.tests import WousoTest
 from wouso.core.user.models import Player
+from models import *
+from manager import MagicManager
+
+class ManagerTestCase(WousoTest):
+    """ Test the core.magic.manager.Manager helper.
+    """
+    def setUp(self):
+        self.user = User.objects.create(username='test')
+        self.player = self.user.get_profile()
+
+    def test_manager_properties(self):
+        self.assertTrue(self.player.magic)
+
+        self.assertIsInstance(self.player.magic, MagicManager)
+
+        self.assertEqual(self.player.magic.spells.count(), 0)
+        self.assertEqual(self.player.magic.spells_cast.count(), 0)
+        self.assertEqual(self.player.magic.spells_available.count(), 0)
+        self.assertEqual(self.player.magic.artifact_amounts.count(), 0)
+        self.assertEqual(self.player.magic.spell_amounts.count(), 0)
+
+        self.assertFalse(self.player.magic.has_modifier('inexistent-modifier'))
+        self.assertEqual(self.player.magic.modifier_percents('inexistent-modifier'), 100) # should return 0
+
+    def test_manager_use_modifier(self):
+        Artifact.objects.create(name='modifier-name', group=Artifact.DEFAULT())
+        self.player.magic.give_modifier('modifier-name', 1)
+        self.assertTrue(self.player.magic.has_modifier('modifier-name'))
+
+        self.player.magic.use_modifier('modifier-name', 1)
+        self.assertFalse(self.player.magic.has_modifier('modifier-name'))
+
+    def test_cast_spell(self):
+        spell = Spell.objects.create(name='le-spell')
+
+        player2 = self._get_player(2)
+        self.player.magic.add_spell(spell)
+
+        result = player2.magic.cast_spell(spell, self.player, datetime.now())
+
+        self.assertFalse(result)
+
 
 class ArtifactTestCase(unittest.TestCase):
 
