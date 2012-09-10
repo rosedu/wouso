@@ -42,6 +42,8 @@ def add(question, answers, category=None, tags=[]):
         a = Answer(question=q, **answer)
         a.save()
 
+    return q
+
 
 def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=None, tags=[], all_active=False):
     # read file and parse contents
