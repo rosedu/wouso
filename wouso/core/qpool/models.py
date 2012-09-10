@@ -22,8 +22,7 @@ class Tag(models.Model):
             return
         self.active = True
         self.save()
-        # TODO: don't use name
-        Question.objects.filter(tags__name=self.name).update(active=True)
+        self.question_set.update(active=True)
 
     def set_inactive(self):
         """ Same as activating, updates all Question objects with the
@@ -33,8 +32,7 @@ class Tag(models.Model):
             return
         self.active = False
         self.save()
-        # TODO: don't use name
-        Question.objects.filter(tags__name=self.name).update(active=False)
+        self.question_set.update(active=False)
 
 
 class Category(models.Model):
@@ -82,14 +80,11 @@ class Question(models.Model):
     @property
     def answers(self):
         """ A list of answers """
-        try:
-            return Answer.objects.filter(question=self).all()
-        except Answer.DoesNotExist:
-            return None
+        return self.answer_set.all()
 
     @property
     def correct_answers(self):
-        return Answer.objects.filter(question=self, correct=True)
+        return self.answer_set.filter(correct=True)
 
     @property
     def shuffled_answers(self):
@@ -105,58 +100,36 @@ class Question(models.Model):
     def day(self):
         """ The scheduled date for question, or None """
         try:
-            return Schedule.objects.filter(question=self)[0].day
-        except (Schedule.DoesNotExist, IndexError):
+            return self.schedule.day
+        except Schedule.DoesNotExist:
             return None
 
     def is_valid(self):
-        """ At least one answer is required. Also check for one correct
-        answer """
+        """ At least one answer is required for questions other than free text.
+        Also check for one correct answer """
+        if self.type == 'F':
+            return bool(self.text)
+
         if not self.answers.count():
             return False
         if not self.answers.filter(correct=True).count():
             return False
         return True
 
-    def add_tag(self, tag):
-        """ Adding tag helper """
-        # TODO check usage, rewrite or deprecate
-        if not isinstance(tag, Tag):
-            tag = Tag.objects.create(name=tag)
-            tag.save()
-        return self.tags.add(tag)
-
-    def has_tag(self, tag):
-        """ Has tag helper """
-        # TODO check usage, rewrite or deprecate
-        if not isinstance(tag, Tag):
-            try:
-                tag = Tag.objects.get(name=tag)
-            except Tag.DoesNotExist:
-                return False
-        return tag in self.tags.all()
-
     @property
-    @deprecated
-    def question(self):
-        # TODO check usage
-        return unicode(self.text)
+    def tags_nice(self):
+        """ Tags as a string """
+        ret = ''
 
-    def tag(self):
-        """ Tag as a string """
-        # TODO rename
-        tlist = self.tags.all()
-        ret = ""
+        if not self.tags.all():
+            return ret
 
-        # no tags assigned to the question
-        if not tlist:
-            return ''
-
-        for t in tlist:
+        for t in self.tags.all():
             ret += str(t) + ", "
 
         return ret[:-2]
 
+    @property
     def scheduled(self):
         """ Day as a string """
         return str(self.day) if self.day else '-'
@@ -165,7 +138,7 @@ class Question(models.Model):
         return unicode(self.text)
 
 class Answer(models.Model):
-    question = models.ForeignKey(Question, related_name="zanswers")
+    question = models.ForeignKey(Question)
     text = models.TextField()
     explanation = models.TextField(null=True, default='', blank=True)
     correct = models.BooleanField()
