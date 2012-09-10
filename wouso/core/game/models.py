@@ -41,7 +41,7 @@ class Game(models.Model, App):
 
     def get_game_absolute_url(self):
         """ Return a tuple for django template system """
-        return reverse(self.url)
+        return reverse(self.url) if self.url else ''
 
     def __unicode__(self):
         return self.name
