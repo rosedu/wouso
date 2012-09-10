@@ -188,7 +188,6 @@ def special_message(user, room = None, message = None):
     mesaj['comand'] = message
     mesaj['dest_user'] = unicode(user.nickname)
     msgs.append(mesaj)
-    print msgs
     obj['msgs'] = msgs
     return obj
 
