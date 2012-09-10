@@ -179,6 +179,7 @@ except ImportError:
 else:
     INSTALLED_APPS += ['django_nose']
     TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+    NOSE_ARGS = ['--cover-package=wouso']
 
 try:
     imp.find_module('piston')
