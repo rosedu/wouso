@@ -88,6 +88,25 @@ def score(user, game, formula, external_id=None, percents=100, **params):
         for coin, amount in ret.items():
             score_simple(user, coin, amount, game, formula, external_id, percents=percents)
 
+#Only for Challenge Game
+def timer(user, game, formula, **params):
+    LIMIT = 300
+    formula = Formula.get(formula)
+    if formula is None:
+        raise InvalidFormula(formula)
+    if not formula.formula:
+        return LIMIT
+
+    frml = formula.formula.format(**params)
+    asp = frml.split('=')
+    expr = '='.join(asp[1:])
+    try:
+        sec = eval(expr)
+    except ZeroDivisionError as e:
+        sec = LIMIT
+
+    return sec
+
 def unset(user, game, formula, external_id=None, **params):
     """ Remove all history records by the external_id, formula and game given to the user """
     for history in History.objects.filter(user=user, game=game.get_instance(), formula=formula, external_id=external_id):

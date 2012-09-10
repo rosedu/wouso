@@ -253,7 +253,9 @@ class Challenge(models.Model):
     def time_for_user(self, user):
         now = datetime.now()
         partic = self.participant_for_player(user)
-        tlimit = Challenge.TIME_LIMIT - 5 * (user.level_no - 1)
+
+        tlimit=scoring.timer(user, ChallengeGame, 'chall-timer',
+                level=user.level_no)
 
         return tlimit - (now - partic.start).seconds
 
@@ -515,6 +517,9 @@ class ChallengeGame(Game):
         fs.append(dict(id='chall-warranty-return', formula='points=3',
             owner=chall_game.game,
             description='Points given back as a warranty taken for challenge'))
+        fs.append(dict(id="chall-timer",
+            formula='tlimit=300 - 5 * ({level} - 1)', owner=chall_game.game,
+            description='Seconds left for a user in challenge'))
         return fs
 
     @classmethod
