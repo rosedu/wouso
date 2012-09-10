@@ -22,7 +22,7 @@ Installing
 
     curl 'http://pypi.python.org/packages/source/d/django-piston/django-piston-0.2.3.tar.gz' | tar xzf -
     cd django-piston-0.2.3; python setup.py install
-    cd ..; rm -r django-piston-02.3
+    cd ..; rm -r django-piston-0.2.3
 
 .. _bug: https://bitbucket.org/jespern/django-piston/issue/173/attributeerror-module-object-has-no
 
