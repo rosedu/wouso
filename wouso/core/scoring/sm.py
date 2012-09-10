@@ -45,7 +45,7 @@ def setup_scoring():
                 Formula.add(formula)
     # add wouso formulas
     for formula in God.get_system_formulas():
-        if not Formula.get(formula.id):
+        if not Formula.get(formula):
             Formula.add(formula)
 
 def calculate(formula, **params):
