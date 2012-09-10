@@ -606,7 +606,6 @@ $(document).ready(function () {
         ':O':'emoticon_surprised.png',
         ':P':'emoticon_tongue.png',
         ':\\(':'emoticon_unhappy.png',
-        ':3':'emoticon_waii.png',
         ';\\)':'emoticon_wink.png',
         '\\(ball\\)':'sport_soccer.png'
     };

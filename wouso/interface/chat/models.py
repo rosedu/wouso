@@ -59,7 +59,7 @@ class ChatMessage(models.Model):
 
 
     def __unicode__(self):
-        return self.author.nickname + ' : ' + self.content
+        return self.timeStamp.strftime("%H:%M") + " " + self.author.nickname + ': ' + self.content
 
 class Chat(App):
 

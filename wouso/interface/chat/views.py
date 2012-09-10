@@ -150,6 +150,25 @@ def private_log(request):
     room = roomexist(request.POST['room'])
     return HttpResponse(simplejson.dumps(serve_message(user, room, position)))
 
+@login_required
+def archive_messages(request):
+
+    date_time_started = datetime(2012, 9, 8, 0, 0, 0)
+    date_time_finished = datetime(2012, 9, 11, 0, 0, 0) + timedelta(days = 1)
+    messages = ChatMessage.objects.filter(destRoom__name="global").filter(timeStamp__gte=date_time_started).filter(timeStamp__lte=date_time_finished)
+
+    user = get_author(request)
+    obj = {'user': unicode(user)}
+    obj['count'] = messages.count()
+    msgs = []
+    for i in messages:
+        mesaj = {}
+        mesaj['text'] = str(i)
+        msgs.append(mesaj)
+
+    obj['msgs'] = msgs
+    return HttpResponse(simplejson.dumps(obj))
+
 
 @login_required
 def special_message(user, room = None, message = None):
