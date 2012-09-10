@@ -38,7 +38,7 @@ class QuestionAdmin(admin.ModelAdmin):
     inlines = [AnswersInline,TagsInline,ScheduleInline]
     form = QuestionForm
     exclude = ('tags',)
-    list_display = ('question', 'tag', 'scheduled', 'category', 'active', 'id', 'proposed_by', 'endorsed_by')
+    list_display = ('text', 'tags_nice', 'scheduled', 'category', 'active', 'id', 'proposed_by', 'endorsed_by')
     list_filter = ('active', 'category', 'tags')
 
 class Questions2(admin.ModelAdmin):
