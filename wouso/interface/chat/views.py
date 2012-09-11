@@ -18,7 +18,7 @@ def add_message(text, sender, toRoom, user_to, messType, comand):
     diff = timeStamp - sender.lastMessageTS
 
     #TODO: Putem renunta la spam:) este inutil.
-    difference_in_seconds = 1;
+    difference_in_seconds = 1
     #if diff.total_seconds() > 0.5:
     #difference_in_seconds = (diff.microseconds + (diff.seconds + diff.days * 24 * 3600) * 10**6) / 10**6
 
@@ -34,46 +34,52 @@ def add_message(text, sender, toRoom, user_to, messType, comand):
         raise ValueError('Spam')
 
 
-def serve_message(user, room=None, position=None):
+def create_message(user, query):
+    msgs = []
+    for message in query:
+        if (message.destUser == user and message.messType == "special") or message.messType == "normal":
+            msgs.append(message.to_dict())
+        else:
+            continue
+    return msgs
+
+
+def some_old_message(user, room=None, position=None):
     """
     """
     obj = {'user': unicode(user)}
-    if room is None:
-        query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS, destRoom__participants=user)
-        obj['count'] = query.count()
-    else:
-        number = int(position)
-        query = ChatMessage.objects.filter(destRoom=room)
-        query = query[len(query)-number-10:] if len(query) > (10 + number) else query
 
-        number_query = 10 if len(query) == 0 else len(query) - number
-        obj['count'] = number_query
+    number = int(position)
+    query = ChatMessage.objects.filter(destRoom=room)
+    query = query[len(query)-number-10:] if len(query) > (10 + number) else query
 
+    number_query = 10 if len(query) == 0 else len(query) - number
+    obj['count'] = number_query
 
     if not query:
         return None
 
-    lastTS = datetime.now()
-    msgs = []
-    for m in query:
-        mesaj = {}
-        if (m.destUser == user and m.messType == "special") or m.messType == "normal":
-            mesaj['room'] = m.destRoom.name
-            mesaj['user'] = unicode(m.author.nickname)
-            mesaj['text'] = m.content
-            mesaj['time'] = m.timeStamp.strftime("%H:%M ")
-            mesaj['comand'] = m.comand
-            mesaj['mess_type'] = m.messType
-            mesaj['dest_user'] = unicode(m.destUser.nickname)
-            lastTS = m.timeStamp
-            msgs.append(mesaj)
-        else:
-            continue
-    if room is None:
-        user.lastMessageTS = lastTS
-        user.save()
+    obj['msgs'] = create_message(user, query)
 
-    obj['msgs'] = msgs
+    return obj
+
+
+def serve_message(user):
+    """
+    """
+    obj = {'user': unicode(user)}
+    query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS, destRoom__participants=user)
+    obj['count'] = query.count()
+
+    if not query:
+        return None
+
+    #lastTS = message.timeStamp
+    lastTS = datetime.now()
+    user.lastMessageTS = lastTS
+    user.save()
+
+    obj['msgs'] = create_message(user, query)
 
     return obj
 
@@ -149,7 +155,7 @@ def private_log(request):
     position = request.POST['number']
 
     room = roomexist(request.POST['room'])
-    return HttpResponse(simplejson.dumps(serve_message(user, room, position)))
+    return HttpResponse(simplejson.dumps(some_old_message(user, room, position)))
 
 @login_required
 def archive_messages(request):
@@ -158,7 +164,7 @@ def archive_messages(request):
     date = date.split("/", 3)
     date_time_started = datetime(int(date[2]), int(date[0]), int(date[1]), 0, 0, 0)
     date_time_finished = datetime(int(date[2]), int(date[0]), int(date[1]), 0, 0, 0) + timedelta(days = 1)
-    messages = ChatMessage.objects.filter(destRoom__name="global").filter(timeStamp__gte=date_time_started).filter(timeStamp__lte=date_time_finished)
+    messages = ChatMessage.objects.filter(destRoom__name="global").filter(messType="normal").filter(timeStamp__gte=date_time_started).filter(timeStamp__lte=date_time_finished)
 
     user = get_author(request)
     obj = {'user': unicode(user)}
@@ -209,7 +215,7 @@ def sendmessage(request):
                         sender = Player.objects.get(nickname=text[1])
                         sender = sender.user.get_profile().get_extension(ChatUser)
                     except:
-                        return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
+                        return HttpResponse(simplejson.dumps(serve_message(user)))
 
                     if text[0] == '/kick':
                         add_message(text[1], user, room, sender, "special", "kick")
@@ -219,7 +225,7 @@ def sendmessage(request):
                     if text[0] == '/ban':
                         sender.canAccessChat = False
                         sender.save()
-                    return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
+                    return HttpResponse(simplejson.dumps(serve_message(user)))
 
 
         try:
@@ -262,7 +268,7 @@ def sendmessage(request):
         room.participants.add(user)
         room.participants.add(user_to.id)
         return json_response(room.to_dict())
-    return HttpResponse(simplejson.dumps(serve_message(user, None, None)))
+    return HttpResponse(simplejson.dumps(serve_message(user)))
 
 def json_response(object):
      return HttpResponse(simplejson.dumps(object))
