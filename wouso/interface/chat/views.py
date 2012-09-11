@@ -44,21 +44,21 @@ def create_message(user, query):
     return msgs
 
 
-def some_old_message(user, room=None, position=None):
+def some_old_message(user, room, position):
     """
     """
-    obj = {'user': unicode(user)}
 
     number = int(position)
     query = ChatMessage.objects.filter(destRoom=room)
     query = query[len(query)-number-10:] if len(query) > (10 + number) else query
 
     number_query = 10 if len(query) == 0 else len(query) - number
-    obj['count'] = number_query
 
     if not query:
         return None
 
+    obj = {'user': unicode(user)}
+    obj['count'] = number_query
     obj['msgs'] = create_message(user, query)
 
     return obj
@@ -67,18 +67,16 @@ def some_old_message(user, room=None, position=None):
 def serve_message(user):
     """
     """
-    obj = {'user': unicode(user)}
     query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS, destRoom__participants=user)
-    obj['count'] = query.count()
 
     if not query:
         return None
 
-    #lastTS = message.timeStamp
-    lastTS = datetime.now()
-    user.lastMessageTS = lastTS
+    user.lastMessageTS = datetime.now()
     user.save()
 
+    obj = {'user': unicode(user)}
+    obj['count'] = query.count()
     obj['msgs'] = create_message(user, query)
 
     return obj
@@ -87,8 +85,9 @@ def serve_message(user):
 @login_required
 def index(request):
     user = request.user.get_profile()
-    chat = get_author(request)
-    if user.has_modifier('block-global-chat-page') or user.has_modifier('block-communication') or not chat.canAccessChat:
+    chat_user = get_author(request)
+
+    if user.has_modifier('block-global-chat-page') or user.has_modifier('block-communication') or not chat_user.canAccessChat:
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
     if BoolSetting.get('disable-Chat').get_value():
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
@@ -101,8 +100,9 @@ def index(request):
 @login_required
 def archive(request):
     user = request.user.get_profile()
-    chat = get_author(request)
-    if user.has_modifier('block-global-chat-page') or user.has_modifier('block-communication') or not chat.canAccessChat:
+    chat_user = get_author(request)
+
+    if user.has_modifier('block-global-chat-page') or user.has_modifier('block-communication') or not chat_user.canAccessChat:
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
     if BoolSetting.get('disable-Chat').get_value():
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
@@ -115,7 +115,6 @@ def archive(request):
 
 @login_required
 def log_request(request):
-
     Room = roomexist('global')
 
     all_message = ChatMessage.objects.filter(destRoom=Room).filter(messType='normal')
@@ -130,8 +129,8 @@ def log_request(request):
 
 @login_required
 def online_players(request):
-
-    # gather users online in the last ten minutes
+    """ gather users online in the last ten minutes
+    """
     oldest = datetime.now() - timedelta(minutes = 10)
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('user__username')
 
@@ -150,11 +149,10 @@ def online_players(request):
 
 @login_required
 def private_log(request):
-
     user = get_author(request)
     position = request.POST['number']
-
     room = roomexist(request.POST['room'])
+
     return HttpResponse(simplejson.dumps(some_old_message(user, room, position)))
 
 @login_required
@@ -182,21 +180,20 @@ def archive_messages(request):
 @login_required
 def special_message(user, room = None, message = None):
 
+    msgs = []
+    mesaj = {
+        'room':room,
+        'user': user.nickname,
+        'text': None,
+        'mess_type': 'special',
+        'comand': message,
+        'dest_user':unicode(user.nickname)}
+    msgs.append(mesaj)
+
     obj = {'user': unicode(user)}
     obj['count'] = 1
-
-    msgs = []
-    mesaj = {}
-    mesaj['room'] = room
-    mesaj['user'] = user.nickname
-    mesaj['text'] = None
-    mesaj['mess_type'] = 'special'
-    mesaj['comand'] = message
-    mesaj['dest_user'] = unicode(user.nickname)
-    msgs.append(mesaj)
     obj['msgs'] = msgs
     return obj
-
 
 @login_required
 def sendmessage(request):
