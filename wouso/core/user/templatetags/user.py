@@ -10,7 +10,7 @@ register = template.Library()
 @register.simple_tag
 def player(user):
     """ Render player name and level image with link to player's profile """
-    if isinstance(user, str):
+    if not user or isinstance(user, str):
         return ''
 
     if isinstance(user, int) or isinstance(user, long):
@@ -25,6 +25,9 @@ def player(user):
 @register.simple_tag
 def player_simple(user):
     """ Render only the player name with link to player's profile """
+    if not user:
+        return ''
+
     link = reverse('wouso.interface.profile.views.user_profile', args=(user.id,))
     rel_data_simple = u"%s,%s,%s,%s,%s,1" % (user.user.first_name, user.points, player_avatar(user), user.level_no, user.id)
 
@@ -65,6 +68,9 @@ def player_race(race):
 @register.simple_tag
 def player_avatar(player_obj):
     """ Return avatar's URL using the gravatar service """
+    if not player_obj:
+        return ''
+
     avatar = "http://www.gravatar.com/avatar/%s.jpg?d=monsterid" % md5(player_obj.user.email).hexdigest()
 
     return avatar
