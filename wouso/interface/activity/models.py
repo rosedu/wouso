@@ -12,7 +12,7 @@ class Activity(models.Model):
     timestamp = models.DateTimeField(default=datetime.now, blank=True)
     user_from = models.ForeignKey(Player, related_name='user_from', blank=True, null=True)
     user_to = models.ForeignKey(Player, related_name='user_to', blank=True, null=True)
-    message_string = models.CharField(max_length=140)
+    message_string = models.CharField(max_length=140, blank=True, null=True)
     arguments = models.CharField(max_length=600)
     game = models.ForeignKey(Game, blank=True, null=True, help_text='Game triggering the activity, none for system activity')
 
@@ -89,6 +89,10 @@ class Activity(models.Model):
         """
         query = cls.objects.filter(Q(user_to__playergroup=group) | Q(user_from__playergroup=group)).distinct()
         return cls.filter_activity(query, **kwargs)
+
+    @classmethod
+    def get_private_activity(cls, player):
+        return cls.objects.filter(user_from=player, public=False)
 
     @classmethod
     def delete(cls, game, user_from, user_to, message, arguments):
