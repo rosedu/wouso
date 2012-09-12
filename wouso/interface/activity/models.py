@@ -21,6 +21,9 @@ class Activity(models.Model):
 
     @property
     def message(self):
+        if not self.message_string:
+            return u'action: %s' % self.action
+
         if self.arguments:
             try:
                 arguments = json.loads(self.arguments)
@@ -102,8 +105,9 @@ def save_activity_handler(sender, **kwargs):
     """ Callback function for addActivity signal """
     a = Activity()
     a.user_from = kwargs['user_from']
-    a.user_to = kwargs['user_to']
-    a.message_string = kwargs['message']
+    a.user_to = kwargs.get('user_to', None)
+    a.message_string = kwargs.get('message', '')
+    a.action = kwargs.get('action', None)
     args = kwargs.get('arguments', {})
     for k in args.keys():
         args[k] = unicode(args[k])
