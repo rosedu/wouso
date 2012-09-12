@@ -1,18 +1,17 @@
 import array
 import random
 from wouso.interface.chat.models import ChatUser, ChatMessage
-from datetime import datetime, timedelta
-
+from datetime import datetime
 
 def add_message(text, sender, toRoom, user_to, messType, comand):
     """ content, author, room, user_to, messType, command """
 
     timeStamp = datetime.now()
-    diff = timeStamp - sender.lastMessageTS
 
     #TODO: Putem renunta la spam:) este inutil.
     difference_in_seconds = 1
-    #if diff.total_seconds() > 0.5:
+    # sau>>
+    #diff = timeStamp - sender.lastMessageTS
     #difference_in_seconds = (diff.microseconds + (diff.seconds + diff.days * 24 * 3600) * 10**6) / 10**6
 
     if sender.has_modifier('block-communication'):
@@ -26,8 +25,12 @@ def add_message(text, sender, toRoom, user_to, messType, comand):
     else:
         raise ValueError('Spam')
 
-
 def create_message(user, query):
+    """
+    Common method for serve_message and some_old_message.
+    Iterate through messages query and save only those messages that
+    are normal or special, but for me.
+    """
     msgs = []
     for message in query:
         if (message.destUser == user and message.messType == "special") or message.messType == "normal":
@@ -38,6 +41,8 @@ def create_message(user, query):
 
 def serve_message(user):
     """
+    Will return all messages that wasn't already delivered.
+    Used when you write a new message or when you get a KeepAlive.
     """
     query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS, destRoom__participants=user)
 
@@ -55,8 +60,9 @@ def serve_message(user):
 
 def some_old_message(user, room, position):
     """
+    Will return last 10 message from position for a specific room.
+    Used on private chats, when you want to see some old messages.
     """
-
     number = int(position)
     query = ChatMessage.objects.filter(destRoom=room)
     query = query[len(query)-number-10:] if len(query) > (10 + number) else query
@@ -82,8 +88,11 @@ def shuffle_text(text):
     random.shuffle(temp)
     return converter()
 
-
 def change_text(text):
+    """
+    Used on block_messages spell.
+    Get a text and shuffle there words and there letter.
+    """
     text = text.split(" ")
     random.shuffle(text)
     new_text = ""
@@ -93,7 +102,6 @@ def change_text(text):
         else:
             new_text = new_text + world + " "
     return new_text
-
 
 def get_author(request):
     return request.user.get_profile().get_extension(ChatUser)
