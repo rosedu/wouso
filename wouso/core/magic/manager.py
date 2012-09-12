@@ -76,16 +76,26 @@ class MagicManager(object):
             paamount.save()
         return paamount
 
-    def give_modifier(self, modifier, amount):
+    def give_modifier(self, modifier, amount=1):
         """ Add given amount to existing, or create new artifact amount
         for the current user.
+
+        Return the PlayerArtifactAmount object after applying changes.
         """
         if amount <= 0:
             return
 
-        paamount = self.has_modifier(modifier)
+        # Check for existing artifact
+        try:
+            paamount = PlayerArtifactAmount.objects.get(player=self.player, artifact__name=modifier)
+        except PlayerArtifactAmount.DoesNotExist:
+            paamount = 0
+
         if not paamount:
             artifact = God.get_artifact_for_modifier(modifier, self.player)
+            if not artifact:
+                logging.debug('No such artifact: %s' % modifier)
+                return None
             paamount = PlayerArtifactAmount.objects.create(player=self.player, artifact=artifact, amount=amount)
         else:
             paamount.amount += amount
