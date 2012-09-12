@@ -105,7 +105,7 @@ def save_activity_handler(sender, **kwargs):
     """ Callback function for addActivity signal """
     a = Activity()
     a.user_from = kwargs['user_from']
-    a.user_to = kwargs.get('user_to', None)
+    a.user_to = kwargs.get('user_to', a.user_from)
     a.message_string = kwargs.get('message', '')
     a.action = kwargs.get('action', None)
     args = kwargs.get('arguments', {})
