@@ -103,6 +103,10 @@ def launch(request, to_id):
         except ChallengeException as e:
             # Some error occurred during question fetch. Clean up, and display error
             return do_result(request, e.message)
+        #Checking if user_to is stored in session
+        if request.session.__contains__("_user:" + user_to.user.username):
+			#TODO do something about multicount
+			print "Multicount %s <-> %s !!!!!" %(user_from.user.username,user_to.user.username)
         return do_result(request, message=_('Successfully challenged'))
     else:
         return do_result(request, _('This user cannot be challenged.'))

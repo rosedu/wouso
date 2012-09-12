@@ -1,4 +1,5 @@
 import datetime
+from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core import serializers
@@ -28,12 +29,39 @@ def get_wall(page=u'1'):
 
 def anonymous_homepage(request):
     return render_to_response('splash.html', context_instance=RequestContext(request))
+#Delete this afer finished debugging
+def test(request):
+	v = request.session.keys()
+	print v
+	for i in v:
+		print "%r %r" % (i,request.session.get(i))
+	return HttpResponse("Pagina de test!!!!")
+	
+#This is used to save data in session after logout
+def logout_view(request):
+	data = {}
+	for i in request.session.keys():
+		if "_user:" in i:
+			data[i] = request.session.get(i)
+	logout(request)
+	for i in data:
+		request.session[i] = data[i]
+	return HttpResponseRedirect("/")
 
 def hub(request):
+	#Save username in session
+    if request.user.is_authenticated():
+		#Remove entries older than 48h
+	    for i in request.session.keys():
+			if "_user:" in i and (request.session.get(i) + datetime.timedelta(minutes = 2*24*60)) < datetime.datetime.now():
+				request.session.__delitem__(i)
+	    request.session.__setitem__("_user:"+request.user.username ,  datetime.datetime.now())
+	    request.session.set_expiry(2*24*60*60)
+    
     if request.user.is_anonymous():
         return anonymous_homepage(request)
 
-    # check first time
+	# check first time
     profile = request.user.get_profile()
     activity = Activity.get_player_activity(profile).count()
     if activity < 2:

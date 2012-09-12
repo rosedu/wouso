@@ -7,7 +7,7 @@
         {% if perms.config.change_setting %}
         <a id="head-cpanel" href="{% url dashboard %}">CPanel</a>&nbsp;
         {% endif %}
-        <a id="head-logout" href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %} &raquo;</a>
+        <a id="head-logout" href="{% url wouso.interface.views.logout_view %}">{% trans "Logout" %} &raquo;</a>
     {% else %}
     {% trans 'Anonimous' %}, <a href="{% url django.contrib.auth.views.login %}">{% trans "Login" %} &raquo;</a>
     {% endif %}

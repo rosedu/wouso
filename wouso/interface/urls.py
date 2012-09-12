@@ -7,6 +7,8 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^$', 'wouso.interface.views.homepage', name='homepage'),
     url(r'^hub/$', 'wouso.interface.views.hub', name='hub'),
+    #Delete after finished
+    url(r'^test/$','wouso.interface.views.test',name = "test"),
     url(r'^(?P<page>\d*)/$', 'wouso.interface.views.homepage', name='homepage'),
 
     # TODO: refactor this into wouso.interface.top.urls and include vvvvv
@@ -21,7 +23,7 @@ urlpatterns = patterns('',
     # sortcrit = 2 means sort by last_seen descending
 
     (r'^user/login/$', 'django.contrib.auth.views.login'),
-    (r'^user/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}),
+    (r'^user/logout/$','wouso.interface.views.logout_view'),
 
     url(r'^player/(?P<id>\d*)/$', 'wouso.interface.profile.views.user_profile', name='player_profile'),
     url(r'^player/(?P<id>\d*)/(?P<page>\d*)/$', 'wouso.interface.profile.views.user_profile', name="player_profile"),
