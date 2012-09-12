@@ -83,7 +83,10 @@ def coin_amount(amount, coin=None):
         coin = Coin.get(coin)
 
     if coin is None:
-        return '%f (not setup)' % amount
+        return '(not setup)'
+
+    if isinstance(amount, Player):
+        amount = amount.coins.get(coin.name, 0)
 
     return '<div class="coin-amount coin-%s" title="%s">%s</div>' % (coin.name, coin.name, amount)
 
