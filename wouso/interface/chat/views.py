@@ -8,79 +8,7 @@ from django.utils import simplejson
 
 from wouso.core.config.models import BoolSetting
 from models import *
-from wouso.interface.chat.utils import  change_text, get_author
-
-
-def add_message(text, sender, toRoom, user_to, messType, comand):
-    """ content, author, room, user_to, messType, comand """
-
-    timeStamp = datetime.now()
-    diff = timeStamp - sender.lastMessageTS
-
-    #TODO: Putem renunta la spam:) este inutil.
-    difference_in_seconds = 1
-    #if diff.total_seconds() > 0.5:
-    #difference_in_seconds = (diff.microseconds + (diff.seconds + diff.days * 24 * 3600) * 10**6) / 10**6
-
-    if sender.has_modifier('block-communication'):
-        return False
-    if difference_in_seconds > 0.5:
-        if sender.has_modifier('block-messages'):
-            text = change_text(text)
-        msg = ChatMessage(content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp,
-                            destUser = user_to, messType=messType, comand=comand)
-        msg.save()
-    else:
-        raise ValueError('Spam')
-
-
-def create_message(user, query):
-    msgs = []
-    for message in query:
-        if (message.destUser == user and message.messType == "special") or message.messType == "normal":
-            msgs.append(message.to_dict())
-        else:
-            continue
-    return msgs
-
-
-def some_old_message(user, room, position):
-    """
-    """
-
-    number = int(position)
-    query = ChatMessage.objects.filter(destRoom=room)
-    query = query[len(query)-number-10:] if len(query) > (10 + number) else query
-
-    number_query = 10 if len(query) == 0 else len(query) - number
-
-    if not query:
-        return None
-
-    obj = {'user': unicode(user)}
-    obj['count'] = number_query
-    obj['msgs'] = create_message(user, query)
-
-    return obj
-
-
-def serve_message(user):
-    """
-    """
-    query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS, destRoom__participants=user)
-
-    if not query:
-        return None
-
-    user.lastMessageTS = datetime.now()
-    user.save()
-
-    obj = {'user': unicode(user)}
-    obj['count'] = query.count()
-    obj['msgs'] = create_message(user, query)
-
-    return obj
-
+from wouso.interface.chat.utils import  change_text, get_author, serve_message, some_old_message, add_message
 
 @login_required
 def index(request):
@@ -212,7 +140,7 @@ def sendmessage(request):
                         sender = Player.objects.get(nickname=text[1])
                         sender = sender.user.get_profile().get_extension(ChatUser)
                     except:
-                        return HttpResponse(simplejson.dumps(serve_message(user)))
+                        return json_response(serve_message(user))
 
                     if text[0] == '/kick':
                         add_message(text[1], user, room, sender, "special", "kick")
@@ -222,23 +150,23 @@ def sendmessage(request):
                     if text[0] == '/ban':
                         sender.canAccessChat = False
                         sender.save()
-                    return HttpResponse(simplejson.dumps(serve_message(user)))
+                    return json_response(serve_message(user))
 
 
         try:
             assert room is not None
-            # content, author, room, user_to, messType, comand
+            # content, author, room, user_to, messType, command
             add_message(data['msg'], user, room, user, "normal", "normal")
         except (ValueError, AssertionError):
             return HttpResponseBadRequest()
     elif data['opcode'] == 'keepAlive':
         chat_global = roomexist('global')
         if user.has_modifier('block-communication'):
-            return HttpResponse(simplejson.dumps(special_message(user, None, "block-communication")))
+            return json_response(special_message(user, None, "block-communication"))
 
             #add_message("", user, chat_global, user, "special", "block-communication")
         elif user.has_modifier('block-global-chat-page') or not user.canAccessChat:
-            return HttpResponse(simplejson.dumps(special_message(user, None, "kick")))
+            return json_response(special_message(user, None, "kick"))
             #add_message("", user, chat_global, user, "special", "kick")
 
         if user not in chat_global.participants.all():
@@ -265,7 +193,7 @@ def sendmessage(request):
         room.participants.add(user)
         room.participants.add(user_to.id)
         return json_response(room.to_dict())
-    return HttpResponse(simplejson.dumps(serve_message(user)))
+    return json_response(serve_message(user))
 
 def json_response(object):
      return HttpResponse(simplejson.dumps(object))
