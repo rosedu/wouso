@@ -43,8 +43,8 @@ def logout_view(request):
 
 def hub(request):
 	#Save username in session
-	PREFIX = "_user:"
-	MAX_TIME = 48*60*60 #48h in seconds
+    PREFIX = "_user:"
+    MAX_TIME = 48*60*60 #48h in seconds
     if request.user.is_authenticated():
 		#Remove entries older than 48h
 	    for i in request.session.keys():
