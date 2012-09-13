@@ -126,7 +126,7 @@
                     </div>
                     <span class="points">{% if not q.is_valid %}<span class="wrong">Invalid</span>{% endif %}</span>
                     {% if cat != 'proposed'%}
-                        <div class="second">{% if q.tag %}tags: {{ q.tag }}{% endif %}</div>
+                        <div class="second">{% if q.tags_nice %}tags: {{ q.tags_nice }}{% endif %}</div>
                     {% else %}
                         <div class="second"><p><b>Proposed by</b>: {{q.proposed_by}}</p>
                             <p><b>Endorsed by</b>: {{q.endorsed_by}}</p>

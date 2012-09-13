@@ -45,7 +45,7 @@ def setup_scoring():
                 Formula.add(formula)
     # add wouso formulas
     for formula in God.get_system_formulas():
-        if not Formula.get(formula.id):
+        if not Formula.get(formula):
             Formula.add(formula)
 
 def calculate(formula, **params):
@@ -87,6 +87,21 @@ def score(user, game, formula, external_id=None, percents=100, **params):
     if isinstance(ret, dict):
         for coin, amount in ret.items():
             score_simple(user, coin, amount, game, formula, external_id, percents=percents)
+
+
+def timer(user, game, formula, default=300, **params):
+    """ Compute a timer value, or return default
+    """
+    formula = Formula.get(formula)
+    if formula is None:
+        raise InvalidFormula(formula)
+    if not formula.formula:
+        return default
+
+    values = calculate(formula, **params)
+    if values.has_key('tlimit'):
+        return values['tlimit']
+    return default
 
 def unset(user, game, formula, external_id=None, **params):
     """ Remove all history records by the external_id, formula and game given to the user """
@@ -132,7 +147,7 @@ def score_simple(player, coin, amount, game=None, formula=None,
         game=game, formula=formula, external_id=external_id, percents=percents)
 
     # update user.points asap
-    if coin.name == 'points':
+    if coin.id == 'points':
         player.points += computed_amount
         player.save()
         update_points(player, game)

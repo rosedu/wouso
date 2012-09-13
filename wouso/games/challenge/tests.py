@@ -11,7 +11,7 @@ from wouso.core.user.models import Player
 from wouso.core import scoring
 from wouso.core.scoring.models import Formula
 
-class ChallengeTestCase(unittest.TestCase):
+class ChallengeTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create(username='_test')
         self.user.save()
@@ -128,6 +128,18 @@ class ChallengeTestCase(unittest.TestCase):
         formula.save()
         chall.played()
 
+    def test_variable_timer(self):
+        formula = Formula.objects.get_or_create(id='chall-timer')[0]
+        formula.formula = 'tlimit=10'
+        formula.save()
+
+        self.assertEqual(scoring.timer(self.chall_user, ChallengeGame, 'chall-timer', level=self.chall_user.level_no), 10)
+
+        formula.formula = 'tlimit={level}'
+        formula.save()
+
+        self.assertEqual(scoring.timer(self.chall_user, ChallengeGame, 'chall-timer', level=self.chall_user.level_no), self.chall_user.level_no)
+
 class ChallengeApi(TestCase):
     def setUp(self):
         self.user = User.objects.create_user('_test', '', password='test')
@@ -158,6 +170,7 @@ class ChallengeApi(TestCase):
     def test_get_challenge(self):
         # create an active challenge
         Formula.objects.create(id='chall-warranty')
+        Formula.objects.create(id='chall-timer')
         chall = Challenge.create(user_from=self.challuser2, user_to=self.challuser, ignore_questions=True)
         chall.accept()
         response = self.client.get('/api/challenge/{id}/'.format(id=chall.id))
@@ -170,6 +183,7 @@ class ChallengeApi(TestCase):
     def test_post_challenge(self):
         # create an active challenge, with fake questions
         Formula.objects.create(id='chall-warranty')
+        Formula.objects.create(id='chall-timer')
         category = Category.objects.create(name='challenge')
         for i in range(5):
             q = Question.objects.create(text='text %s' % i, category=category, active=True)

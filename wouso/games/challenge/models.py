@@ -255,7 +255,10 @@ class Challenge(models.Model):
         now = datetime.now()
         partic = self.participant_for_player(user)
 
-        return Challenge.TIME_LIMIT - (now - partic.start).seconds
+        tlimit=scoring.timer(user, ChallengeGame, 'chall-timer',
+                level=user.level_no)
+
+        return tlimit - (now - partic.start).seconds
 
     def is_expired(self, participant):
         """ This function assumes that seconds_took has been set.
@@ -311,8 +314,9 @@ class Challenge(models.Model):
         Notice the fact this is the only function where the scoring is affected
         """
         """ Handle artifacts and spells """
+        MAX_SEC = 15
         #Check for multicount:to few seconds to finish challange
-        if self.user_to.seconds_took <= 15 or self.user_from.seconds_took <= 15:
+        if self.user_to.seconds_took <= MAX_SEC or self.user_from.seconds_took <= MAX_SEC:
 			#TODO Do something about multicount
 			print "Multicount %s <--> %s" % (self.user_to.user.user.username,self.user_from.user.user.username)
 			
@@ -383,6 +387,7 @@ class Challenge(models.Model):
             1 : [14], - has answered answer with id 14 at the question with id 1
         """
         points = 0.0
+        results = {}
         for r, v in responses.iteritems():
             checked, missed = 0, 0
             q = Question.objects.get(id=r)
@@ -404,7 +409,8 @@ class Challenge(models.Model):
                 qpoints = float(checked) / correct_count - float(missed) / wrong_count
             qpoints = qpoints if qpoints > 0 else 0
             points += qpoints
-        return int(100.0 * points)
+            results[r] = (( checked, correct_count ))
+        return {'points': int(100.0 * points), 'results' : results}
 
     def set_played(self, user, responses):
         """ Set user's results. If both users have played, also update self and activity. """
@@ -418,15 +424,17 @@ class Challenge(models.Model):
             exp = True
             user_played.score = 0.0
         else:
-            user_played.score = self._calculate_points(responses)
+            results = self._calculate_points(responses)
+            user_played.score = results['points']
         user_played.save()
 
         if self.user_to.played and self.user_from.played:
             self.played()
 
         if exp:
-            return {'points': '0.0 (expired)'}
-        return {'points': user_played.score}
+            results = {}
+            results['points'] = '0.0 (expired)'
+        return results
 
     def can_play(self, user):
         """ Check if user can play this challenge"""
@@ -520,6 +528,9 @@ class ChallengeGame(Game):
         fs.append(dict(id='chall-warranty-return', formula='points=3',
             owner=chall_game.game,
             description='Points given back as a warranty taken for challenge'))
+        fs.append(dict(id="chall-timer",
+            formula='tlimit=300 - 5 * ({level} - 1)', owner=chall_game.game,
+            description='Seconds left for a user in challenge'))
         return fs
 
     @classmethod

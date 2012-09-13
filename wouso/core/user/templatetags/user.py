@@ -10,7 +10,7 @@ register = template.Library()
 @register.simple_tag
 def player(user):
     """ Render player name and level image with link to player's profile """
-    if isinstance(user, str):
+    if not user or isinstance(user, str):
         return ''
 
     if isinstance(user, int) or isinstance(user, long):
@@ -19,14 +19,17 @@ def player(user):
     link = reverse('wouso.interface.profile.views.user_profile', args=(user.id,))
 
     artif_html = artifact(user.level)
-    rel_data = u"%s %s %s %s %s 1" % (user, user.points, player_avatar(user), user.level_no, user.id)
+    rel_data = u"%s,%s,%s,%s,%s,1" % (user.user.first_name, user.points, player_avatar(user), user.level_no, user.id)
     return u'<a href="%s" class="cplayer" rel="%s">%s%s</a>' % (link, rel_data, artif_html, user)
 
 @register.simple_tag
 def player_simple(user):
     """ Render only the player name with link to player's profile """
+    if not user:
+        return ''
+
     link = reverse('wouso.interface.profile.views.user_profile', args=(user.id,))
-    rel_data_simple = u"%s %s %s %s %s 1" % (user, user.points, player_avatar(user), user.level_no, user.id)
+    rel_data_simple = u"%s,%s,%s,%s,%s,1" % (user.user.first_name, user.points, player_avatar(user), user.level_no, user.id)
 
     if hasattr(user, 'level'):
         return u'<a href="%s" title="%s [%d]" rel="%s" class="cplayer">%s</a>' % (link, user.level.title if user.level else '', user.level_no, rel_data_simple, user)
@@ -65,6 +68,9 @@ def player_race(race):
 @register.simple_tag
 def player_avatar(player_obj):
     """ Return avatar's URL using the gravatar service """
+    if not player_obj:
+        return ''
+
     avatar = "http://www.gravatar.com/avatar/%s.jpg?d=monsterid" % md5(player_obj.user.email).hexdigest()
 
     return avatar
@@ -77,7 +83,10 @@ def coin_amount(amount, coin=None):
         coin = Coin.get(coin)
 
     if coin is None:
-        return '%f (not setup)' % amount
+        return '(not setup)'
+
+    if isinstance(amount, Player):
+        amount = amount.coins.get(coin.name, 0)
 
     return '<div class="coin-amount coin-%s" title="%s">%s</div>' % (coin.name, coin.name, amount)
 

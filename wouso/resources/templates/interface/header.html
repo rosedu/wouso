@@ -1,13 +1,29 @@
 {% load user %}
 {% load i18n %}
-
+<script type="text/javascript">
+    function remove_storage(){
+        firstFreeChat = 1;
+        max_room = 1;
+        max_boxes = 5;
+        private_users = [];
+        private_users[0] = new Private('global', 0, "", null);
+        sessionStorage.firstFreeChat = firstFreeChat;
+        sessionStorage.max_room = max_room;
+        sessionStorage.max_boxes = max_boxes;
+        sessionStorage.private_users = JSON.stringify(private_users);
+    }
+</script>
 <div id="topbar">
     <div class="first-line">
     {% if user.is_authenticated %}
         {% if perms.config.change_setting %}
         <a id="head-cpanel" href="{% url dashboard %}">CPanel</a>&nbsp;
         {% endif %}
+<<<<<<< HEAD
         <a id="head-logout" href="{% url wouso.interface.views.logout_view %}">{% trans "Logout" %} &raquo;</a>
+=======
+        <a id="head-logout" href="{% url django.contrib.auth.views.logout %}" onclick="remove_storage()">{% trans "Logout" %} &raquo;</a>
+>>>>>>> ebaf5a7dbc0b931a39e4367aa5a15b22ffe4da25
     {% else %}
     {% trans 'Anonimous' %}, <a href="{% url django.contrib.auth.views.login %}">{% trans "Login" %} &raquo;</a>
     {% endif %}
@@ -23,8 +39,8 @@
 
         <div class="second-info">
         {% trans 'Level' %} {{ player.level_no }}
-        {% coin_amount player.points %}
-        {% coin_amount player.coins.gold 'gold' %}
+        {% coin_amount player %}
+        {% coin_amount player 'gold' %}
         </div>
     </div>
 </div>

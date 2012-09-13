@@ -5,14 +5,13 @@ unittest). These will both pass when you run "manage.py test".
 Replace these with more appropriate tests for your application.
 """
 import unittest
+import json
+from datetime import datetime
 import django.test
 from django.test.client import Client
 from wouso.interface.chat.views import roomexist
 from wouso.interface.chat.models import ChatUser, ChatRoom, ChatMessage
 from wouso.core.user.models import User
-from datetime import datetime
-from django.utils import simplejson
-import json
 
 class ChatTestCase(django.test.TestCase):
     """
@@ -54,7 +53,7 @@ class ChatTestCase(django.test.TestCase):
         timeStamp = datetime.now()
 
         len_now = len(ChatMessage.objects.all())
-        msg = ChatMessage(content='sss', author=self.chat_user, destRoom=room, timeStamp=timeStamp)
+        msg = ChatMessage(content='sss', author=self.chat_user, destRoom=room, timeStamp=timeStamp, messType = "normal", comand = "normal")
         msg.save()
         len_after = len(ChatMessage.objects.all())
 

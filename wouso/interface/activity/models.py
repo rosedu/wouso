@@ -3,7 +3,6 @@ from datetime import datetime
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext as _
-from wouso.core.game import get_games
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player
 from wouso.interface import logger
@@ -13,12 +12,18 @@ class Activity(models.Model):
     timestamp = models.DateTimeField(default=datetime.now, blank=True)
     user_from = models.ForeignKey(Player, related_name='user_from', blank=True, null=True)
     user_to = models.ForeignKey(Player, related_name='user_to', blank=True, null=True)
-    message_string = models.CharField(max_length=140)
+    message_string = models.CharField(max_length=140, blank=True, null=True)
     arguments = models.CharField(max_length=600)
-    game = models.ForeignKey(Game, blank=True, null=True)
+    game = models.ForeignKey(Game, blank=True, null=True, help_text='Game triggering the activity, none for system activity')
+
+    public = models.BooleanField(default=True, blank=True)
+    action = models.CharField(max_length=32, null=True, default=None, blank=True, help_text='Distinguish similar activities')
 
     @property
     def message(self):
+        if not self.message_string:
+            return u'action: %s' % self.action
+
         if self.arguments:
             try:
                 arguments = json.loads(self.arguments)
@@ -40,9 +45,9 @@ class Activity(models.Model):
     def get_game_absolute_url(self):
         """ Returns the game url """
         if self.game:
-            return (self.game.url, None)
+            return self.game.url, None
         else:
-            return (None, None)
+            return None, None
 
     @classmethod
     def filter_activity(cls, queryset, exclude_others=False, wouso_only=False):
@@ -50,6 +55,8 @@ class Activity(models.Model):
             queryset = queryset.filter(game__isnull=True)
         if exclude_others:
             queryset = queryset.exclude(user_from__race__can_play=False)
+        # Kill private activity by default
+        queryset = queryset.exclude(public=False)
         return queryset.order_by('-timestamp')
 
     @classmethod
@@ -84,6 +91,10 @@ class Activity(models.Model):
         return cls.filter_activity(query, **kwargs)
 
     @classmethod
+    def get_private_activity(cls, player):
+        return cls.objects.filter(user_from=player, public=False)
+
+    @classmethod
     def delete(cls, game, user_from, user_to, message, arguments):
         """ Note: must be called with the _same_ arguments as the original to work """
         for k in arguments.keys():
@@ -94,17 +105,19 @@ class Activity(models.Model):
     def __unicode__(self):
         return u"[%s] %s %s" % (self.game, self.user_from, self.user_to)
 
-def addActivity_handler(sender, **kwargs):
+def save_activity_handler(sender, **kwargs):
     """ Callback function for addActivity signal """
     a = Activity()
     a.user_from = kwargs['user_from']
-    a.user_to = kwargs['user_to']
-    a.message_string = kwargs['message']
+    a.user_to = kwargs.get('user_to', a.user_from)
+    a.message_string = kwargs.get('message', '')
+    a.action = kwargs.get('action', None)
     args = kwargs.get('arguments', {})
     for k in args.keys():
         args[k] = unicode(args[k])
     a.arguments = json.dumps(args)
     a.game = kwargs['game']
+    a.public = kwargs.get('public', True)
     a.save()
 
-addActivity.connect(addActivity_handler)
+addActivity.connect(save_activity_handler)

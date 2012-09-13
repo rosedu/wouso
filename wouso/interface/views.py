@@ -29,13 +29,6 @@ def get_wall(page=u'1'):
 
 def anonymous_homepage(request):
     return render_to_response('splash.html', context_instance=RequestContext(request))
-#Delete this afer finished debugging
-def test(request):
-	v = request.session.keys()
-	print v
-	for i in v:
-		print "%r %r" % (i,request.session.get(i))
-	return HttpResponse("Pagina de test!!!!")
 	
 #This is used to save data in session after logout
 def logout_view(request):
@@ -50,13 +43,15 @@ def logout_view(request):
 
 def hub(request):
 	#Save username in session
+	PREFIX = "_user:"
+	MAX_TIME = 48*60*60 #48h in seconds
     if request.user.is_authenticated():
 		#Remove entries older than 48h
 	    for i in request.session.keys():
-			if "_user:" in i and (request.session.get(i) + datetime.timedelta(minutes = 2*24*60)) < datetime.datetime.now():
+			if PREFIX in i and (request.session.get(i) + datetime.timedelta(minutes = 2*24*60)) < datetime.datetime.now():
 				request.session.__delitem__(i)
-	    request.session.__setitem__("_user:"+request.user.username ,  datetime.datetime.now())
-	    request.session.set_expiry(2*24*60*60)
+	    request.session.__setitem__(PREFIX+request.user.username ,  datetime.datetime.now())
+	    request.session.set_expiry(MAX_TIME)
     
     if request.user.is_anonymous():
         return anonymous_homepage(request)

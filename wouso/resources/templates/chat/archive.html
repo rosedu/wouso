@@ -1,0 +1,17 @@
+{% extends base_template %}
+{% load user %}
+{% load artifacts %}
+{% load i18n %}
+{% block title %}{{block.super}} -- Chatbox{% endblock %}
+
+{% block scripts %}
+
+    <script type="text/javascript" src="/static/js/archive.js"></script>
+{% endblock %}
+
+{% block content %}
+    <p>Date: <input type="text" id="datepicker">
+    <input type="submit" id="archive_day" value="archive"></p>
+    <div id="ArchiveTextArea"></div>
+
+{% endblock %}

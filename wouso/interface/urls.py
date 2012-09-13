@@ -7,8 +7,6 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^$', 'wouso.interface.views.homepage', name='homepage'),
     url(r'^hub/$', 'wouso.interface.views.hub', name='hub'),
-    #Delete after finished
-    url(r'^test/$','wouso.interface.views.test',name = "test"),
     url(r'^(?P<page>\d*)/$', 'wouso.interface.views.homepage', name='homepage'),
 
     # TODO: refactor this into wouso.interface.top.urls and include vvvvv
@@ -24,12 +22,13 @@ urlpatterns = patterns('',
 
     (r'^user/login/$', 'django.contrib.auth.views.login'),
     (r'^user/logout/$','wouso.interface.views.logout_view'),
-
     url(r'^player/(?P<id>\d*)/$', 'wouso.interface.profile.views.user_profile', name='player_profile'),
+    url(r'^player/set/$', 'wouso.interface.profile.views.set_profile', name='set_profile'),
+    url(r'^player/set/s/$','wouso.interface.profile.views.save_profile', name='player_profile'),
     url(r'^player/(?P<id>\d*)/(?P<page>\d*)/$', 'wouso.interface.profile.views.user_profile', name="player_profile"),
     url(r'^player/(?P<id>\d*)/points-summary/$', 'wouso.interface.profile.views.player_points_history', name='player_points_history'),
-    url(r'^player/cast/to-(?P<destination>\d+)/$', 'wouso.interface.profile.views.magic_cast', name='magic_cast'),
-    (r'^player/cast/(?P<destination>\d+)/(?P<spell>\d+)/$', 'wouso.interface.profile.views.magic_cast'),
+    url(r'^player/cast/to-(?P<destination>\d+)/$', 'wouso.interface.apps.magic.views.magic_cast', name='magic_cast'),
+    url(r'^player/cast/(?P<destination>\d+)/(?P<spell>\d+)/$', 'wouso.interface.apps.magic.views.magic_cast'),
 
     url(r'^player2/', include('wouso.interface.profile.urls')),
 

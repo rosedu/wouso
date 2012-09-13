@@ -62,11 +62,13 @@ def challenge(request, id):
 
     if request.method == "POST":
         form = ChallengeForm(chall, request.POST)
-
         results = chall.set_played(chall_user, form.get_response())
+        form.check_self_boxes()
+        results['results'] = form.get_results_in_order(results['results'])
+        questions_and_answers = zip(form.visible_fields(), results['results'])
 
         return render_to_response('challenge/result.html',
-            {'challenge': chall, 'results': results},
+            {'challenge': chall, 'challenge_user': chall_user, 'points': results['points'], 'form' : form,  'questions_and_answers' : questions_and_answers},
             context_instance=RequestContext(request))
     else:
         form = ChallengeForm(chall)
@@ -75,7 +77,6 @@ def challenge(request, id):
     return render_to_response('challenge/challenge.html',
             {'challenge': chall, 'form': form, 'challenge_user': chall_user, 'seconds_left': seconds_left},
             context_instance=RequestContext(request))
-
 
 @login_required
 def launch(request, to_id):
@@ -104,7 +105,8 @@ def launch(request, to_id):
             # Some error occurred during question fetch. Clean up, and display error
             return do_result(request, e.message)
         #Checking if user_to is stored in session
-        if request.session.__contains__("_user:" + user_to.user.username):
+        PREFIX = "_user:"
+        if request.session.__contains__(PREFIX + user_to.user.username):
 			#TODO do something about multicount
 			print "Multicount %s <-> %s !!!!!" %(user_from.user.username,user_to.user.username)
         return do_result(request, message=_('Successfully challenged'))

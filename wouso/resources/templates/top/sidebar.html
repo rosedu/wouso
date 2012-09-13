@@ -13,7 +13,7 @@
         <ol class="top">
         {% for u in topusers %}
             <li><a  href="{% url player_profile u.id %}"
-                    rel="{{u}} {{u.points}} {% player_avatar u%} {{ u.level_no }} {{u.id}} 1" class="cplayer"
+                    rel="{{u.user.first_name}},{{u.points}},{% player_avatar u%},{{ u.level_no }},{{u.id}},1" class="cplayer"
                     title="{{ u.proximate_group }}/{{ u.series }}  {{u.points}}">{{ u }}</a>
             </li>
         {% endfor %}

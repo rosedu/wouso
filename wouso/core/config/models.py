@@ -6,12 +6,12 @@ class Setting(models.Model):
     value = models.TextField(default='', null=True, blank=True)
 
     def set_value(self, v):
-        """ value setter, overriden by subclasses """
+        """ value setter, overridden by subclasses """
         self.value = v
         self.save()
 
     def get_value(self):
-        """ value getter, overriden by subclasses """
+        """ value getter, overridden by subclasses """
         return self.value
 
     def form(self):
@@ -20,9 +20,9 @@ class Setting(models.Model):
                     % (self.name, self.title, self.name, self.name, self.value)
 
     @classmethod
-    def get(kls, name):
+    def get(cls, name):
         """ Get or create a Setting with the name name """
-        obj, new = kls.objects.get_or_create(name=name)
+        obj, new = cls.objects.get_or_create(name=name)
         return obj
 
     @property

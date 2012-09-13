@@ -1,52 +1,53 @@
 {% load user %}
 {% load artifacts %}
 {% load i18n %}
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <HTML xmlns="http://www.w3.org/1999/xhtml">
 <HEAD>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <TITLE>{% block title %}{{config_title}}{% endblock %}</TITLE>
 <LINK rel="stylesheet" type="text/css" href="/static/css/style.css" />
-<LINK rel="stylesheet" type="text/css" href="/static/css/mobile.css" />
+<LINK rel="stylesheet" type="text/css" href="/static/css/jquery.mobile-1.1.1.min.css" />
 <script type="text/javascript" src="/static/js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.mobile-1.1.1.min.js"></script>
 <script type="text/javascript" src="/static/js/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="/static/js/format.item.js"></script>
 {% block scripts %}{% endblock %}
 </HEAD>
 
 <BODY>
-<div id="mobile-container">
-    <div id="mobile-header">
-        <div id="mobile-logo">
-            <a href="{% url homepage %}" id="mobile-logoa"><h1>{{ config_title}}</h1></a>
-        </div>
-        <div id="mobile-topbar">
-            {% if user.is_authenticated %}
-                <span class="bold">{% player_simple player %}</span> |
-                {% autoescape off %}{{ header }}{% endautoescape %}
-                {% if user.is_staff %}
-                <a href="{% url dashboard %}">CPanel</a> |
-                {% endif %}
-                <a href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %} &raquo;</a>
-            {% else %}
-            {% trans 'Anonimous' %}, <a href="{% url django.contrib.auth.views.login %}">{% trans "Login" %} &raquo;</a>
+<div id="mobile-container" data-role="page">
+    <div id="mobile-header" data-role="header">
+        <h1>{{ config_title}}</h1>
+
+        <a href="{% url homepage %}">Home</a>
+        {% if user.is_authenticated %}
+            {% player_simple player %}
+            {% for h in heads %}<a href="{{ h.0.link }}">{{ h.0.text }}</a>{% endfor %}
+            {% if user.is_staff %}
+            <a href="{% url dashboard %}">CPanel</a> 
             {% endif %}
-        </div>
+            <a href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %} &raquo;</a>
+        {% else %}
+        {% trans 'Anonimous' %}, <a href="{% url django.contrib.auth.views.login %}">{% trans "Login" %} &raquo;</a>
+        {% endif %}
     </div>
 
-    <div id="mobile-content">
+    <div id="mobile-content" data-role="content">
         <div id="ajax-message"></div>
     {% block content %}
     {% endblock %}
-    </div>
+    </div> <!-- content -->
 
-    <div id="mobile-footer">
+    <div id="mobile-footer" data-role="footer">
         <a href="{% url homepage %}?mobile=0">Desktop</a> |
         <a href="{% url homepage %}?mobile=1">Mobile</a>
-    </div>
+
     {% autoescape off %}
     {{ config_hidden_footer }}
     {% endautoescape %}
-</div>
+    </div> <!-- footer -->
+</div> <!-- page -->
 </BODY>
 </HTML>

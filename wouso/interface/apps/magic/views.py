@@ -1,10 +1,14 @@
+from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext
+from exceptions import ValueError
 from wouso.core.config.models import BoolSetting
+from wouso.core.scoring.sm import InvalidFormula
 from wouso.core.user.models import Player
 from wouso.core.magic.models import Spell, SpellHistory, PlayerSpellDue
 from wouso.core import scoring
@@ -12,10 +16,15 @@ from wouso.core import scoring
 # marche
 def bazaar(request, message='', error=''):
     player = request.user.get_profile() if request.user.is_authenticated() else None
-    spells = Spell.objects.all()
+    spells = Spell.objects.all().order_by('-available', 'level_required')
 
-    rate = scoring.calculate('gold-points-rate', gold=1)['points']
-    rate2 = round(1/scoring.calculate('points-gold-rate', points=1)['gold'])
+    # Disable exchange for real
+    exchange_disabled = BoolSetting.get('disable-Bazaar-Exchange').get_value()
+    try:
+        rate = scoring.calculate('gold-points-rate', gold=1)['points']
+        rate2 = round(1/scoring.calculate('points-gold-rate', points=1)['gold'])
+    except InvalidFormula:
+        rate, rate2 = 1, 1
     rate_text = _('Rate: 1 gold = {rate} points, 1 gold = {rate2} points').format(rate=rate, rate2=rate2)
 
     cast_spells = PlayerSpellDue.objects.filter(source=player).all()
@@ -29,6 +38,7 @@ def bazaar(request, message='', error=''):
                               'unseen_count': unseen_count,
                               'theowner': player,
                               'message': message,
+                              'exchange_disabled': exchange_disabled,
                               'error': error},
                               context_instance=RequestContext(request))
 
@@ -85,6 +95,8 @@ def bazaar_buy(request, spell):
     error, message = '',''
     if spell.price > player.coins.get('gold', 0):
         error = _("Insufficient gold amount")
+    elif spell.level_required > player.level_no:
+        error = _("Level {level} is required to buy this spell").format(level=spell.level_required)
     else:
         player.add_spell(spell)
         scoring.score(player, None, 'buy-spell', external_id=spell.id,
@@ -93,10 +105,32 @@ def bazaar_buy(request, spell):
         message = _("Successfully aquired")
 
     return bazaar(request, message=message, error=error)
-    # TODO: use django-flash
-    """
-    return render_to_response('bazaar_buy.html',
-                              {'error': error, 'message': message,
-                              },
+
+
+@login_required
+def magic_cast(request, destination=None, spell=None):
+    player = request.user.get_profile()
+    destination = get_object_or_404(Player, pk=destination)
+
+    error = ''
+
+    if request.method == 'POST':
+        spell = get_object_or_404(Spell, pk=request.POST.get('spell', 0))
+        try:
+            days = int(request.POST.get('days', 0))
+        except ValueError:
+            pass
+        else:
+            if (days > spell.due_days) or ((spell.due_days > 0) and (days < 1)):
+                error = _('Invalid number of days')
+            else:
+                due = datetime.now() + timedelta(days=days)
+                error = destination.magic.cast_spell(spell, source=player, due=due)
+                if not error:
+                    return HttpResponseRedirect(reverse('wouso.interface.profile.views.user_profile', args=(destination.id,)))
+
+                error = _('Cast failed:') + ' ' + error
+
+    return render_to_response('profile/cast.html',
+                              {'destination': destination, 'error': error},
                               context_instance=RequestContext(request))
-    """

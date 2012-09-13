@@ -1,10 +1,11 @@
+from django.db.utils import IntegrityError
 import logging
 
 from wouso.core.god import God
 from wouso.core.magic.models import PlayerSpellDue, PlayerSpellAmount, PlayerArtifactAmount
 
-
-class InsufficientAmount(Exception): pass
+class MagicException(Exception): pass
+class InsufficientAmount(MagicException): pass
 
 class MagicManager(object):
     def __init__(self, player):
@@ -75,16 +76,26 @@ class MagicManager(object):
             paamount.save()
         return paamount
 
-    def give_modifier(self, modifier, amount):
+    def give_modifier(self, modifier, amount=1):
         """ Add given amount to existing, or create new artifact amount
         for the current user.
+
+        Return the PlayerArtifactAmount object after applying changes.
         """
         if amount <= 0:
             return
 
-        paamount = self.has_modifier(modifier)
+        # Check for existing artifact
+        try:
+            paamount = PlayerArtifactAmount.objects.get(player=self.player, artifact__name=modifier)
+        except PlayerArtifactAmount.DoesNotExist:
+            paamount = 0
+
         if not paamount:
             artifact = God.get_artifact_for_modifier(modifier, self.player)
+            if not artifact:
+                logging.debug('No such artifact: %s' % modifier)
+                return None
             paamount = PlayerArtifactAmount.objects.create(player=self.player, artifact=artifact, amount=amount)
         else:
             paamount.amount += amount
@@ -104,6 +115,7 @@ class MagicManager(object):
 
     def spell_stock(self, spell):
         """ Return the count of spells an user has
+        TODO: check usage
         """
         try:
             psa = PlayerSpellAmount.objects.get(player=self.player, spell=spell)
@@ -112,24 +124,28 @@ class MagicManager(object):
         return psa.amount
 
     def cast_spell(self, spell, source, due):
-        """ Curse self with given spell from source, for due time. """
+        """ Cast a spell on this player.
+
+        Returns: error message if the spell was not cast, or None
+        """
         try:
             psamount = PlayerSpellAmount.objects.get(player=source, spell=spell)
             assert psamount.amount > 0
         except (PlayerSpellAmount.DoesNotExist, AssertionError):
-            return False
+            return 'Spell unavailable'
 
-        # Pre-cat God actions: immunity and curse ar done by this
+        # Pre-cast God actions: immunity and curse ar done by this
         # check
-        if not God.can_cast(spell, source, self.player):
-            return False
+        can_cast, error = God.can_cast(spell, source, self.player)
+        if not can_cast:
+            return error
 
         try:
             psdue = PlayerSpellDue.objects.create(player=self.player, source=source, spell=spell, due=due)
-        except Exception as e:
-            logging.exception(e)
-            return False
-            # Post-cast God action (there are specific modifiers, such as clean-spells
+        except IntegrityError:
+            return 'Cannot cast the same spell more than once'
+
+        # Post-cast God action (there are specific modifiers, such as clean-spells
         # that are implemented in God
         God.post_cast(psdue)
         psamount.amount -= 1
@@ -137,4 +153,4 @@ class MagicManager(object):
             psamount.delete()
         else:
             psamount.save()
-        return True
+        return None

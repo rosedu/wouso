@@ -24,9 +24,11 @@
     <script type="text/javascript" src="/static/js/format.item.js"></script>
     <script type="text/javascript" src="/static/js/jquery.timers.js"></script>
     <script type="text/javascript" src="/static/js/ajaxify.js"></script>
-    <script type="text/javascript" src="/static/js/contactbox.js"></script>
-    {% if not config_disable_chat %}
-    <script type="text/javascript" src="/static/js/chatbox.js"></script>
+    {% if user.is_authenticated %}
+        <script type="text/javascript" src="/static/js/contactbox.js"></script>
+        {% if not config_disable_chat %}
+            <script type="text/javascript" src="/static/js/chatbox.js"></script>
+        {% endif %}
     {% endif %}
     <script type="text/javascript">
         var url_base = '{{ basepath }}';
@@ -39,7 +41,9 @@
     {% endif %}
 
     {% block scripts %}{% endblock %}
+    {% if config_theme %}
     <LINK rel="stylesheet" type="text/css" href="/static/themes/{{ config_theme }}/styles.css" />
+    {% endif %}
 </HEAD>
 
 <BODY>
@@ -68,7 +72,7 @@
         </form>
         <script type="text/javascript">
             var myID = '{{player.id}}'
-            var myName = '{{player}}'
+            var myName = '{{player.nickname}}'
             $(document).ready(function() {
             $("#query").autocomplete( "{{ basepath }}/instantsearch/", { minChars:3, matchSubset:1, matchContains:1, cacheLength:10, formatItem:formatItem, onItemSelect:selectItem, selectOnly:1 });
             });
@@ -116,8 +120,15 @@
     <div id="PrivatebarUsers"></div>
     <div id="PrivateChatBoxes"></div>
 
-        {% autoescape off %}
+    {% autoescape off %}
     {{ config_hidden_footer }}
 	{% endautoescape %}
+
+    {% if has_mobile %}
+    <div id="mobile-footer">
+        <a href="{% url homepage %}?mobile=0">Desktop</a> |
+        <a href="{% url homepage %}?mobile=1">Mobile</a>
+    </div>
+    {% endif %}
 </BODY>
 </HTML>

@@ -1,10 +1,13 @@
+from django.test import TestCase
 import unittest
 from django.db.models.query import QuerySet
 from django.contrib.auth.models import User
 from wouso.core.game.models import Game
 from wouso.core.scoring.models import Formula, Coin, History
-from wouso.core.scoring import FormulaParsingError
+from wouso.core.scoring import FormulaParsingError, setup_scoring, CORE_POINTS, check_setup
 from wouso.core import scoring
+from wouso.core.tests import WousoTest
+from wouso.core.user.models import Player
 
 class ScoringTestCase(unittest.TestCase):
     def setUp(self):
@@ -85,3 +88,56 @@ class ScoringTestCase(unittest.TestCase):
         # check if specific coin has been updated
         self.assertEqual(history.coin, self.coin)
         self.assertEqual(history.amount, 13)
+
+
+class ScoringHistoryTest(WousoTest):
+    def test_user_coins(self):
+        Coin.add('points')
+        Coin.add('gold')
+
+        player = self._get_player()
+        self.assertIn('points', History.user_coins(player.user))
+
+    def test_user_points(self):
+        coin = Coin.add('points')
+        player = self._get_player()
+
+        scoring.score_simple(player, 'points', 10)
+
+        up = History.user_points(player.user)
+        self.assertTrue(up.has_key('wouso'))
+        self.assertTrue(up['wouso'].has_key(coin))
+        self.assertEqual(up['wouso'][coin], 10)
+
+    def test_accessors(self):
+        player = self._get_player()
+        self.assertEqual(scoring.user_coins(player), scoring.user_coins(player.user))
+
+    def test_sync_methods(self):
+        player = self._get_player()
+        coin = Coin.add('points')
+
+        History.objects.create(user=player.user, coin=coin, amount=10)
+        self.assertEqual(player.points, 0)
+        scoring.sync_user(player)
+        self.assertEqual(player.points, 10)
+
+        History.objects.create(user=player.user, coin=coin, amount=10)
+        self.assertEqual(player.points, 10)
+        scoring.sync_all_user_points()
+        player = Player.objects.get(pk=player.pk)
+        self.assertEqual(player.points, 20)
+
+
+class ScoringSetupTest(TestCase):
+    def test_check_setup(self):
+        self.assertFalse(check_setup())
+        setup_scoring()
+        self.assertTrue(check_setup())
+
+    def test_setup(self):
+        for c in CORE_POINTS:
+            self.assertFalse(Coin.get(c))
+        setup_scoring()
+        for c in CORE_POINTS:
+            self.assertTrue(Coin.get(c))

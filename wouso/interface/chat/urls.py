@@ -1,11 +1,13 @@
 
 from django.conf.urls.defaults import *
 
-urlpatterns = patterns('',
-    (r'^$','wouso.interface.chat.views.index'),
-    (r'^chat_m/$','wouso.interface.chat.views.sendmessage'),
-    (r'^last/$','wouso.interface.chat.views.online_players'),
-    (r'^log/$','wouso.interface.chat.views.log_request'),
-    (r'^privateLog/$','wouso.interface.chat.views.private_log')
+urlpatterns = patterns('wouso.interface.chat.views',
+    (r'^$','index'),
+    url(r'^archive/$','archive', name='archive'),
+    (r'^archive_messages', 'archive_messages'),
+    (r'^chat_m/$','sendmessage'),
+    (r'^last/$','online_players'),
+    (r'^log/$','log_request'),
+    (r'^privateLog/$','private_log')
 )
 

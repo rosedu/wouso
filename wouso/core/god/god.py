@@ -1,6 +1,5 @@
 from wouso.core.magic.models import Artifact, ArtifactGroup, SpellHistory, NoArtifactLevel
 from wouso.core.game import get_games
-from django.contrib.auth.models import Group as DjangoGroup
 
 class DefaultGod:
     """ A basic God implementation and also the base class for other gods.
@@ -14,28 +13,22 @@ class DefaultGod:
         """ Return formulas used by the meta wouso game.
         If inherited, should not override super's result, but extend it.
         """
-        from wouso.core.scoring.models import Formula
-        fs = []
-        fs.append(Formula(id='buy-spell', formula='gold=-{price}',
-            owner=None,
-            description='Gold spent on spells')
-        )
-        fs.append(Formula(id='gold-points-rate', formula='points={gold}*3;gold=-{gold}',
-            owner=None,
-            description='Exchange gold in points')
-        )
-        fs.append(Formula(id='points-gold-rate', formula='points=-{points};gold={points}*0.1',
-            owner=None,
-            description='Exchange points in gold')
-        )
-        fs.append(Formula(id='bonus-gold', formula='gold={gold}', owner=None,
-            description='Give bonus gold to the poor people'))
-        fs.append(Formula(id='bonus-points', formula='points={points}', owner=None,
-            description='Give bonus points'))
-        fs.append(Formula(id='steal-points', formula='points={points}', owner=None,
-            description='Steal points using spells'))
-        fs.append(Formula(id='penalty-points', formula='points=-{points}', owner=None,
-            description='Take back points from user'))
+        fs = [
+            dict(id='buy-spell', formula='gold=-{price}', owner=None,
+                description='Gold spent on spells'),
+            dict(id='gold-points-rate', formula='points={gold}*3;gold=-{gold}', owner=None,
+                description='Exchange gold in points'),
+            dict(id='points-gold-rate', formula='points=-{points};gold={points}*0.1', owner=None,
+                description='Exchange points in gold'),
+            dict(id='bonus-gold', formula='gold={gold}', owner=None,
+                description='Give bonus gold to the poor people'),
+            dict(id='bonus-points', formula='points={points}', owner=None,
+                description='Give bonus points'),
+            dict(id='steal-points', formula='points={points}', owner=None,
+                description='Steal points using spells'),
+            dict(id='penalty-points', formula='points=-{points}', owner=None,
+                description='Take back points from user')
+        ]
         return fs
 
     def get_user_level(self, level_no, player):
@@ -122,28 +115,30 @@ class DefaultGod:
 
     def can_cast(self, spell, source, destination):
         """ Check if destination can receive spell from source
+
+        Return: a tuple of (can_cast, error_message)
         """
         source_play = source.race.can_play if source.race else False
         destin_play = destination.race.can_play if destination.race else False
 
         if source_play != destin_play:
             # This prevents Others from casting spells on actual players.
-            return False
+            return False, 'Different world races'
 
         if destination.has_modifier('immunity'):
-            return False
+            return False, 'Player has immunity'
 
         if destination.has_modifier('curse') and (spell.type != 'n'):
-            return False
+            return False, 'Player is cursed'
 
         if source.has_modifier('curse'):
-            return False
+            return False, 'Player is cursed'
 
         if (spell.name == 'steal') and (destination.points < spell.percents):
-            return False
+            return False, 'Insufficient amount'
 
         if (spell.name == 'steal') and (source == destination):
-            return False
+            return False, 'Cannot steal from self'
 
         if spell.name == 'challenge-affect-scoring':
             existing = destination.spells.filter(spell__name='challenge-affect-scoring')
@@ -151,10 +146,10 @@ class DefaultGod:
                 # check if a spell with the same sign +/- exists
                 for sp in existing:
                     if (sp.spell.percents * spell.percents) > 0:
-                        return False
+                        return False, 'Something wrong'
                 # in order to apply this new spell, cancel existing, sign contrary, spells
                 existing.delete()
-        return True
+        return True, None
 
     def post_cast(self, psdue):
         """ Execute action after a spell is cast. This is used to implement specific spells
