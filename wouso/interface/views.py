@@ -26,15 +26,15 @@ def get_wall(page=u'1'):
     except (EmptyPage, InvalidPage):
         activity = paginator.page(paginator.num_pages)
     return activity
-
 def anonymous_homepage(request):
     return render_to_response('splash.html', context_instance=RequestContext(request))
 	
 #This is used to save data in session after logout
 def logout_view(request):
 	data = {}
+	PREFIX = "_user:"
 	for i in request.session.keys():
-		if "_user:" in i:
+		if PREFIX in i:
 			data[i] = request.session.get(i)
 	logout(request)
 	for i in data:
