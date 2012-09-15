@@ -218,14 +218,14 @@ def ui(request):
     return render_to_response('interface/ui.html', {}, context_instance=RequestContext(request))
     
 def report(request,id):
-	if request.user.id == int(id):
-		return render_to_response('profile/report_form.html',{'error':'You cannot report yourself'})
-	get_object_or_404(User,pk=id)
-	if request.method == "POST":
-		form = UserReportForm(request.POST)
-		if form.is_valid():
-			return HttpResponse("Report:"+request.POST['message']+" on user "+User.objects.get(pk=id).username)
-	else:
-		form = UserReportForm()
-	return render_to_response('profile/report_form.html',{'id':id,'form':form},context_instance=RequestContext(request))
+    if request.user.id == int(id):
+        return render_to_response('profile/report_form.html',{'error':'You cannot report yourself'})
+    get_object_or_404(User,pk=id)
+    if request.method == "POST":
+        form = UserReportForm(request.POST)
+        if form.is_valid():
+            return HttpResponse("Report:"+request.POST['message']+" on user "+User.objects.get(pk=id).username)
+    else:
+        form = UserReportForm()
+    return render_to_response('profile/report_form.html',{'id':id,'form':form},context_instance=RequestContext(request))
 
