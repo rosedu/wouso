@@ -7,11 +7,21 @@
 {% block scripts %}
 
     <script type="text/javascript" src="/static/js/archive.js"></script>
+    <link type="text/css" href="/static/css/jquery-ui-1.8.23.custom.css" rel="stylesheet" />
+    <script type="text/javascript" src="/static/js/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript" src="/static/js/jquery-ui-1.8.23.custom.min.js"></script>
 {% endblock %}
 
 {% block content %}
     <p>Date: <input type="text" id="datepicker">
     <input type="submit" id="archive_day" value="archive"></p>
+
     <div id="ArchiveTextArea"></div>
+
+    <br>
+    <div id="slider" style="width:192px"></div>
+    <div id="minSlider">0</div>
+    <div id="maxSlider">24</div>
+
 
 {% endblock %}

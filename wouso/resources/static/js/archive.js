@@ -1,7 +1,21 @@
 
 $(function() {
-    $( "#datepicker" ).datepicker();
+    $('#datepicker').datepicker();
+    $('#slider').slider({
+        range: true,
+        max:24,
+        values: [0, 24]
+
+    });
+    $("#slider").bind( "slidechange", function(event, ui) {
+        var x = $("#slider").slider("values");
+        $("#minSlider").html(x[0]);
+        $("#maxSlider").html(x[1]);
+    })
+
+
 });
+
 
 $(document).ready(function(){
 
@@ -12,8 +26,11 @@ $(document).ready(function(){
             var args = {type:"POST", url:"/chat/archive_messages/", data:msgdata, complete:printArchive};
             $.ajax(args);
         }
-        else
-            alert("Nu a fost selectat nimic")
+        else{
+            alert($("#slider").slider("values"))
+
+        }
+
     });
 
 
