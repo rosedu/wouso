@@ -13,7 +13,7 @@ from wouso.interface import logger, detect_mobile
 from wouso.interface.apps.pages.models import NewsItem
 from wouso.core.game import get_games
 from wouso.interface.forms import *
-from wouso.core.user.models import Player, PlayerGroup, user_report_form
+from wouso.core.user.models import Player, PlayerGroup, UserReportForm
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, History as TopHistory
 
@@ -220,15 +220,12 @@ def ui(request):
 def report(request,id):
 	if request.user.id == int(id):
 		return render_to_response('profile/report_form.html',{'error':'You cannot report yourself'})
-	try:
-		User.objects.get(pk = id)
-	except Exception as e:
-		return render_to_response("profile/report_form.html",{'error':'User inexistent !!!'})
+	get_object_or_404(User,pk=id)
 	if request.method == "POST":
-		form = user_report_form(request.POST)
+		form = UserReportForm(request.POST)
 		if form.is_valid():
-			return HttpResponse("Report:"+request.POST['message']+" on user "+User.objects.get(pk=id).username)
+			return HttpResponse("Report:"+request.POST['message']+" on user "+User.objects.get(pk=id).usern)
 	else:
-		form = user_report_form()
+		form = UserReportForm()
 	return render_to_response('profile/report_form.html',{'id':id,'form':form},context_instance=RequestContext(request))
 

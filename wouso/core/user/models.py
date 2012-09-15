@@ -247,7 +247,7 @@ class Player(models.Model):
         ret = u"%s %s" % (self.user.first_name, self.user.last_name)
         return ret if ret != u" " else self.user.__unicode__()
 
-class user_report_form(forms.Form):
+class UserReportForm(forms.Form):
 	message = forms.CharField(widget = forms.Textarea)
 
 # Hack for having user and user's profile always in sync
