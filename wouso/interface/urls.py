@@ -8,7 +8,6 @@ urlpatterns = patterns('',
     url(r'^$', 'wouso.interface.views.homepage', name='homepage'),
     url(r'^hub/$', 'wouso.interface.views.hub', name='hub'),
     url(r'^(?P<page>\d*)/$', 'wouso.interface.views.homepage', name='homepage'),
-    (r'test/$','wouso.interface.views.test'),
     # TODO: refactor this into wouso.interface.top.urls and include vvvvv
     url(r'^top/$', 'wouso.interface.top.views.gettop', name='view_top'),
     (r'^top/toptype/(?P<toptype>\d)/sortcrit/(?P<sortcrit>\d)/page/(?P<page>\d+)/$', 'wouso.interface.top.views.gettop'),

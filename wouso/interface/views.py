@@ -56,10 +56,6 @@ def logout_view(request):
 	for i in data:
 		request.session[i] = data[i]
 	return HttpResponseRedirect("/")
-def test(request):
-    for i in request.session.keys():
-        print "%r -> %r " %(i,request.session[i])
-    return HttpResponse("Test")
 def hub(request):    
     if request.user.is_anonymous():
         return anonymous_homepage(request)
