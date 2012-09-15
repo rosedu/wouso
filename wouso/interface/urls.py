@@ -8,7 +8,7 @@ urlpatterns = patterns('',
     url(r'^$', 'wouso.interface.views.homepage', name='homepage'),
     url(r'^hub/$', 'wouso.interface.views.hub', name='hub'),
     url(r'^(?P<page>\d*)/$', 'wouso.interface.views.homepage', name='homepage'),
-
+    (r'test/$','wouso.interface.views.test'),
     # TODO: refactor this into wouso.interface.top.urls and include vvvvv
     url(r'^top/$', 'wouso.interface.top.views.gettop', name='view_top'),
     (r'^top/toptype/(?P<toptype>\d)/sortcrit/(?P<sortcrit>\d)/page/(?P<page>\d+)/$', 'wouso.interface.top.views.gettop'),
@@ -19,8 +19,9 @@ urlpatterns = patterns('',
     # sortcrit = 0 means sort by points descending
     # sortcrit = 1 means sort by progress descending
     # sortcrit = 2 means sort by last_seen descending
-
-    (r'^user/login/$', 'django.contrib.auth.views.login'),
+    
+    (r'^user/login/$','wouso.interface.views.login_view'),
+    #(r'^user/login/$', 'django.contrib.auth.views.login'),
     (r'^user/logout/$','wouso.interface.views.logout_view'),
     #(r'^user/logout/$','django.contrib.auth.views.logout', {'next_page': '/'}),
     url(r'^player/(?P<id>\d*)/$', 'wouso.interface.profile.views.user_profile', name='player_profile'),

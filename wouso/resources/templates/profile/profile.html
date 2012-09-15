@@ -72,7 +72,7 @@
         <a class="button" href="{% url group_set profile.id %}">Groups</a>
         <a class="button" href="{% url staff_toggle profile.id %}">Staff: {% if profile.in_staff_group %}<span class="ok">ON</span>{% else %}<span class="wrong">OFF</span>{% endif %}</a>
         <a class="button" href="{% url artifact_set profile.id %}">Artifacts</a>
-        <a class="button button-min" href="{% url admin:auth_user_change profile.user.id %}">✍</a>z
+        <a class="button button-min" href="{% url admin:auth_user_change profile.user.id %}">✍</a>
         <p class="clearer"></p>
     </div>
     {% endif %}

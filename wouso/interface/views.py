@@ -1,5 +1,5 @@
 import datetime
-from django.contrib.auth import logout
+from django.contrib.auth import logout, login,authenticate
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core import serializers
@@ -29,6 +29,22 @@ def get_wall(page=u'1'):
 def anonymous_homepage(request):
     return render_to_response('splash.html', context_instance=RequestContext(request))
 	
+def login_view(request):
+    user = authenticate(username=request.POST['username'],password=request.POST['password'])
+    if user is not None:
+        if user.is_active:
+            #Save username in session
+            PREFIX = "_user:"
+            MAX_TIME = 48*60*60 #48h in seconds
+            #Remove entries older than 48h
+            for i in request.session.keys():
+                if PREFIX in i and (request.session.get(i) + datetime.timedelta(minutes = 2*24*60)) < datetime.datetime.now():
+                    request.session.__delitem__(i)
+            request.session.__setitem__(PREFIX+user.username ,  datetime.datetime.now())
+            request.session.set_expiry(MAX_TIME)
+    login(request,user)
+    return HttpResponseRedirect("/hub/")
+    
 #This is used to save data in session after logout
 def logout_view(request):
 	data = {}
@@ -40,19 +56,11 @@ def logout_view(request):
 	for i in data:
 		request.session[i] = data[i]
 	return HttpResponseRedirect("/")
-
-def hub(request):
-	#Save username in session
-    PREFIX = "_user:"
-    MAX_TIME = 48*60*60 #48h in seconds
-    if request.user.is_authenticated():
-		#Remove entries older than 48h
-	    for i in request.session.keys():
-			if PREFIX in i and (request.session.get(i) + datetime.timedelta(minutes = 2*24*60)) < datetime.datetime.now():
-				request.session.__delitem__(i)
-	    request.session.__setitem__(PREFIX+request.user.username ,  datetime.datetime.now())
-	    request.session.set_expiry(MAX_TIME)
-    
+def test(request):
+    for i in request.session.keys():
+        print "%r -> %r " %(i,request.session[i])
+    return HttpResponse("Test")
+def hub(request):    
     if request.user.is_anonymous():
         return anonymous_homepage(request)
 
