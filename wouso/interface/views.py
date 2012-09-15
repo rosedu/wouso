@@ -224,7 +224,7 @@ def report(request,id):
 	if request.method == "POST":
 		form = UserReportForm(request.POST)
 		if form.is_valid():
-			return HttpResponse("Report:"+request.POST['message']+" on user "+User.objects.get(pk=id).usern)
+			return HttpResponse("Report:"+request.POST['message']+" on user "+User.objects.get(pk=id).username)
 	else:
 		form = UserReportForm()
 	return render_to_response('profile/report_form.html',{'id':id,'form':form},context_instance=RequestContext(request))
