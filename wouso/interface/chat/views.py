@@ -121,7 +121,6 @@ def special_message(user, room = None, message = None):
         'comand': message,
         'dest_user':unicode(user.nickname)}
     msgs.append(mesaj)
-
     obj = {'user': unicode(user)}
     obj['count'] = 1
     obj['msgs'] = msgs

@@ -32,16 +32,9 @@ class Game(models.Model, App):
         """ Returns a list of game-specific coins (as names)"""
         return []
 
-    @classmethod
-    def get_modifiers(kls):
-        """ Return a list of modifiers - as names (this translates to artifact names)
-        Player has_modifier checks if the user has an artifact with the modifier id.
-        """
-        return []
-
     def get_game_absolute_url(self):
         """ Return a tuple for django template system """
-        return reverse(self.url)
+        return reverse(self.url) if self.url else ''
 
     def __unicode__(self):
         return self.name

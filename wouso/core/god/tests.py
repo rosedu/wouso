@@ -1,12 +1,10 @@
-from django.contrib.auth.models import User, Group
-from django.test import TestCase
-from . import get_god
 import unittest
+from django.contrib.auth.models import User
+from django.test import TestCase
+from wouso.core.magic.models import NoArtifactLevel
 from wouso.core.user.models import PlayerGroup, Race
 from wouso.games.challenge.models import ChallengeGame
-
-
-__author__ = 'alex'
+from . import get_god
 
 
 class GodTestCase(TestCase):
@@ -14,6 +12,40 @@ class GodTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create(username='testgod')
         self.player = self.user.get_profile()
+
+    def test_get_systems_formulas(self):
+        god = get_god()
+
+        sf = god.get_system_formulas()
+        self.assertTrue(sf)
+
+    def test_user_level(self):
+        god = get_god()
+
+        level = god.get_user_level(self.player.level_no, self.player)
+        self.assertIsInstance(level, NoArtifactLevel)
+
+    def test_get_level_limit(self):
+        god = get_god()
+
+        self.assertEqual(god.get_level_for_points(0), 1)
+        self.assertNotEqual(god.get_level_for_points(10000), 1)
+
+    def test_get_player_progress(self):
+        god = get_god()
+
+        progress = god.get_level_progress(self.player)
+        self.assertEqual(progress['next_level'], self.player.level_no + 1)
+
+    def test_get_all_modifiers(self):
+        god = get_god()
+
+        self.assertTrue('dispell' in god.get_all_modifiers())
+
+    def test_get_artifact(self):
+        god = get_god()
+
+        self.assertFalse(god.get_artifact_for_modifier('inexistant-modifier', self.player))
 
     def test_others_are_not_elligible_for_challenge(self):
         god = get_god()

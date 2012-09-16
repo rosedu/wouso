@@ -45,11 +45,11 @@ def artifact_full(artif):
     return artifact(artif) + artif.title
 
 @register.simple_tag
-def spell_due(spell):
-    html = artifact(spell.spell)
+def spell_due(psd):
+    html = artifact(psd)
 
     return '<span class="artifact-container" title="%s until %s">%s<span class="sup">*</span></span>' % \
-                (spell.spell.title, spell.due, html)
+                (psd.spell.title, psd.due, html)
 
 @register.simple_tag
 def spell_unknown(spell=None):

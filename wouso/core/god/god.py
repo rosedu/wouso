@@ -1,6 +1,5 @@
 from wouso.core.magic.models import Artifact, ArtifactGroup, SpellHistory, NoArtifactLevel
 from wouso.core.game import get_games
-from django.contrib.auth.models import Group as DjangoGroup
 
 class DefaultGod:
     """ A basic God implementation and also the base class for other gods.
@@ -14,28 +13,22 @@ class DefaultGod:
         """ Return formulas used by the meta wouso game.
         If inherited, should not override super's result, but extend it.
         """
-        from wouso.core.scoring.models import Formula
-        fs = []
-        fs.append(Formula(id='buy-spell', formula='gold=-{price}',
-            owner=None,
-            description='Gold spent on spells')
-        )
-        fs.append(Formula(id='gold-points-rate', formula='points={gold}*3;gold=-{gold}',
-            owner=None,
-            description='Exchange gold in points')
-        )
-        fs.append(Formula(id='points-gold-rate', formula='points=-{points};gold={points}*0.1',
-            owner=None,
-            description='Exchange points in gold')
-        )
-        fs.append(Formula(id='bonus-gold', formula='gold={gold}', owner=None,
-            description='Give bonus gold to the poor people'))
-        fs.append(Formula(id='bonus-points', formula='points={points}', owner=None,
-            description='Give bonus points'))
-        fs.append(Formula(id='steal-points', formula='points={points}', owner=None,
-            description='Steal points using spells'))
-        fs.append(Formula(id='penalty-points', formula='points=-{points}', owner=None,
-            description='Take back points from user'))
+        fs = [
+            dict(id='buy-spell', formula='gold=-{price}', owner=None,
+                description='Gold spent on spells'),
+            dict(id='gold-points-rate', formula='points={gold}*3;gold=-{gold}', owner=None,
+                description='Exchange gold in points'),
+            dict(id='points-gold-rate', formula='points=-{points};gold={points}*0.1', owner=None,
+                description='Exchange points in gold'),
+            dict(id='bonus-gold', formula='gold={gold}', owner=None,
+                description='Give bonus gold to the poor people'),
+            dict(id='bonus-points', formula='points={points}', owner=None,
+                description='Give bonus points'),
+            dict(id='steal-points', formula='points={points}', owner=None,
+                description='Steal points using spells'),
+            dict(id='penalty-points', formula='points=-{points}', owner=None,
+                description='Take back points from user')
+        ]
         return fs
 
     def get_user_level(self, level_no, player):

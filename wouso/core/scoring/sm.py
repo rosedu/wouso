@@ -45,7 +45,7 @@ def setup_scoring():
                 Formula.add(formula)
     # add wouso formulas
     for formula in God.get_system_formulas():
-        if not Formula.get(formula.id):
+        if not Formula.get(formula):
             Formula.add(formula)
 
 def calculate(formula, **params):
@@ -147,7 +147,7 @@ def score_simple(player, coin, amount, game=None, formula=None,
         game=game, formula=formula, external_id=external_id, percents=percents)
 
     # update user.points asap
-    if coin.name == 'points':
+    if coin.id == 'points':
         player.points += computed_amount
         player.save()
         update_points(player, game)

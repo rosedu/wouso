@@ -128,7 +128,7 @@ class Assesment(models.Model):
 
 class Answer(models.Model):
     assesment = models.ForeignKey(Assesment)
-    question = models.ForeignKey(Question)
+    question = models.ForeignKey(Question, related_name='wsanswers')
 
     text = models.TextField(max_length=2000)
     grade = models.IntegerField(blank=True, null=True)

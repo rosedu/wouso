@@ -35,8 +35,8 @@
 
         <div class="second-info">
         {% trans 'Level' %} {{ player.level_no }}
-        {% coin_amount player.points %}
-        {% coin_amount player.coins.gold 'gold' %}
+        {% coin_amount player %}
+        {% coin_amount player 'gold' %}
         </div>
     </div>
 </div>

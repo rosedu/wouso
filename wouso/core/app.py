@@ -13,8 +13,14 @@ class App:
         """
         from wouso.core.config.models import BoolSetting
 
-        name = kls.__name__
-        return BoolSetting.get('disable-%s' % name).get_value()
+        return BoolSetting.get('disable-%s' % kls.name()).get_value()
+
+    @classmethod
+    def get_modifiers(kls):
+        """ Return a list of modifiers - as names (this translates to artifact names)
+        Player has_modifier checks if the user has an artifact with the modifier id.
+        """
+        return []
 
     @classmethod
     def get_sidebar_widget(kls, request):
