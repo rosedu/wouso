@@ -25,18 +25,13 @@ $(document).ready(function(){
         date = date + "/" + $("#minSlider").html();
         var hours = $("#maxSlider").html() - $("#minSlider").html();
         if(date){
-            msgdata = {'date':date, 'hours':hours};
+            msgdata = {'room':'global', 'date':date, 'hours':hours};
             var args = {type:"POST", url:"/chat/archive_messages/", data:msgdata, complete:printArchive};
             $.ajax(args);
         }
         else{
             alert($("#slider").slider("values"))
-
         }
-
-    });
-    $("#archive_day_private").click(function(){
-        alert($("#to_input").val());
     });
 
     function printArchive(res, status){
@@ -48,6 +43,39 @@ $(document).ready(function(){
                 $("#global_area").append(obj.msgs[i].text + "<br>");
             }
         }
-
     }
+
+    $("#archive_day_private").click(function(){
+        var id = $("#to").val();
+        if(id && id!=myID){
+            var msgdata = {'opcode':'getRoom', 'from':myID, 'to':id};
+            var args = {type:"POST", url:"/chat/chat_m/", data:msgdata, complete:getRoom};
+            $.ajax(args);
+        }
+    });
+
+    function getRoom(res, status){
+        if(status == "success"){
+            var obj = $.parseJSON(res.responseText);
+            var chat_room = obj.name;
+            var date = $("#datepicker_private").val();
+            if(date){
+                msgdata = {'room':chat_room,'date':date};
+                var args = {type:"POST", url:"/chat/archive_messages/", data:msgdata, complete:printArchive_private};
+                $.ajax(args);
+            }
+        }
+    }
+
+    function printArchive_private(res, status){
+        if(status == "success"){
+            $("#private_area").html("");
+            var obj = jQuery.parseJSON(res.responseText);
+            var i;
+            for(i = 0; i < obj.count; i++){
+                $("#private_area").append(obj.msgs[i].text + "<br>");
+            }
+        }
+    }
+
 });

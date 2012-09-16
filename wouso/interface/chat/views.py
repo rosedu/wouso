@@ -86,15 +86,24 @@ def private_log(request):
 @login_required
 def archive_messages(request):
 
-    date = request.POST['date']
-    date = date.split("/", 4)
-    print date
-    hours = request.POST['hours']
+    room_name = request.POST['room']
+    if room_name == 'global':
+        date = request.POST['date']
+        date = date.split("/", 4)
+        hours = request.POST['hours']
 
-    print hours
-    date_time_started = datetime(int(date[2]), int(date[0]), int(date[1]), int(date[3]), 0, 0)
-    date_time_finished = datetime(int(date[2]), int(date[0]), int(date[1]), int(date[3]), 0, 0) + timedelta(hours = int(hours))
-    messages = ChatMessage.objects.filter(destRoom__name="global").filter(messType="normal").filter(timeStamp__gte=date_time_started).filter(timeStamp__lte=date_time_finished)
+        date_time_started = datetime(int(date[2]), int(date[0]), int(date[1]), int(date[3]), 0, 0)
+        date_time_finished = datetime(int(date[2]), int(date[0]), int(date[1]), int(date[3]), 0, 0) + timedelta(hours = int(hours))
+    else:
+        date = request.POST['date']
+        date = date.split("/", 3)
+
+        date_time_started = datetime(int(date[2]), int(date[0]), int(date[1]), 0, 0, 0)
+        date_time_finished = datetime(int(date[2]), int(date[0]), int(date[1]), 0, 0, 0) + timedelta(hours = 24)
+
+
+    messages = ChatMessage.objects.filter(destRoom__name=room_name).filter(messType="normal").filter(timeStamp__gte=date_time_started).filter(timeStamp__lte=date_time_finished)
+
 
     user = get_author(request)
     obj = {'user': unicode(user)}
