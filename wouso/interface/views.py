@@ -42,8 +42,11 @@ def login_view(request):
                     request.session.__delitem__(i)
             request.session.__setitem__(PREFIX+user.username ,  datetime.datetime.now())
             request.session.set_expiry(MAX_TIME)
-    login(request,user)
-    return HttpResponseRedirect("/hub/")
+            login(request,user)
+            return HttpResponseRedirect("/hub/")
+        else:
+            return HttpResponseRedirect("/")
+    return HttpResponseRedirect("/")
     
 #This is used to save data in session after logout
 def logout_view(request):

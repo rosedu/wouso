@@ -17,7 +17,18 @@ def consecutive_seens(player, timestamp):
             return i
 
     return len(activities)
-
+def consecutive_qotd_correct(player):
+    """
+     Return the count of correct qotd in a row
+    """
+    activities = Activity.get_player_activity(player).filter(game = 'QotdGame').order_by('-timestamp')[:12]
+    result = 0
+    for i in activities:
+        if i.message_string == 'has given a correct answer to QotD.':
+            result +=1
+        else:
+            return result
+    return result
 class Achievements(App):
 
     @classmethod
@@ -35,16 +46,18 @@ class Achievements(App):
     def activity_handler(cls, sender, **kwargs):
         action = kwargs.get('action', None)
         player = kwargs.get('user_from', None)
-        if not action:
-            # Ignore signals without an action.
-            return
-
+        game   = kwargs.get('game',None)
+        
+        if game and game.name == 'QotdGame':
+            #Check for 10 consecutive correct qotd 
+            if consecutive_qotd_correct(player) >= 10:
+                if not player.magic.has_modifier('ach-qotd-10'):
+                    cls.earn_achievement(player,'ach-qotd-10')
         if action == 'seen':
             # Check previous 10 seens
             if consecutive_seens(player, datetime.now()) >= 10:
                 if not player.magic.has_modifier('ach-login-10'):
                     cls.earn_achievement(player, 'ach-login-10')
-
     @classmethod
     def get_modifiers(self):
         return ['ach-login-10']
