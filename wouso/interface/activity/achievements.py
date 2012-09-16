@@ -41,7 +41,7 @@ class Achievements(App):
 
         if action == 'seen':
             # Check previous 10 seens
-            if consecutive_seens(player, datetime.now()) >= 1:
+            if consecutive_seens(player, datetime.now()) >= 10:
                 if not player.magic.has_modifier('ach-login-10'):
                     cls.earn_achievement(player, 'ach-login-10')
 
