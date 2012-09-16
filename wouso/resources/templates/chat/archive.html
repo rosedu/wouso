@@ -13,15 +13,31 @@
 {% endblock %}
 
 {% block content %}
-    <p>Date: <input type="text" id="datepicker">
-    <input type="submit" id="archive_day" value="archive"></p>
+</br>
+</br>
 
-    <div id="ArchiveTextArea"></div>
+    <table >
 
-    <br>
-    <div id="slider" style="width:192px"></div>
-    <div id="minSlider">0</div>
-    <div id="maxSlider">24</div>
+        <tr><td colspan="1"><div id="ArchiveTextArea"></div></div></td>
+            <td colspan="1">
+                <table>
+                    <tr><td><div id="slider" style="width:144px"></div></td></tr>
+                    <tr>
+                        <td colspan="1"><div id="minSlider">0</div></td>
+                        <td colspan="1"><div id="maxSlider">24</div></td>
+                    </tr>
+
+                    <tr><td>Date: <input type="text" id="datepicker"><br></td></tr>
+                    <tr><td><input type="submit" id="archive_day" value="archive"></td></tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+
+
+
+
 
 
 {% endblock %}

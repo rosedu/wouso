@@ -21,8 +21,10 @@ $(document).ready(function(){
 
     $("#archive_day").click(function(){
         var date = $("#datepicker").val();
+        date = date + "/" + $("#minSlider").html();
+        var hours = $("#maxSlider").html() - $("#minSlider").html();
         if(date){
-            msgdata = {'date':date};
+            msgdata = {'date':date, 'hours':hours};
             var args = {type:"POST", url:"/chat/archive_messages/", data:msgdata, complete:printArchive};
             $.ajax(args);
         }
