@@ -20,12 +20,11 @@ class QotdUser(Player):
 
     @property
     def has_question(self):
-        #TODO Uncomment when finished
-        #if self.my_question is None:
-        #    return False
-        #qdate = self.my_question.schedule
-        #if not (qdate.day == date.today()):
-        #    return False
+        if self.my_question is None:
+            return False
+        qdate = self.my_question.schedule
+        if not (qdate.day == date.today()):
+            return False
         return True
 
     def set_question(self, question):
