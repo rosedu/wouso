@@ -77,18 +77,7 @@
     overflow: auto;
 }
 
-#ArchiveTextArea {
 
-    display:block;
-    padding: 3px;
-    text-align:left;
-    height:300px;
-    width:500px;
-    background-color: white;
-
-    border: thin solid black;
-    overflow: auto;
-}
 
 #GlobalboxTextBox {
     display:block;
@@ -149,3 +138,15 @@ a.cl_item {
 
 }
 
+.ArchiveTextArea {
+
+    display:block;
+    padding: 3px;
+    text-align:left;
+    height:300px;
+    width:500px;
+    background-color: white;
+
+    border: thin solid black;
+    overflow: auto;
+}

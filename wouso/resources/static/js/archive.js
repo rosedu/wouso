@@ -1,6 +1,7 @@
 
 $(function() {
     $('#datepicker').datepicker();
+    $('#datepicker_private').datepicker();
     $('#slider').slider({
         range: true,
         max:24,
@@ -38,11 +39,11 @@ $(document).ready(function(){
 
     function printArchive(res, status){
         if(status == "success"){
-            $("#ArchiveTextArea").html("");
+            $("#global_area").html("");
             var obj = jQuery.parseJSON(res.responseText);
             var i;
             for(i = 0; i < obj.count; i++){
-                $("#ArchiveTextArea").append(obj.msgs[i].text + "<br>");
+                $("#global_area").append(obj.msgs[i].text + "<br>");
             }
         }
 

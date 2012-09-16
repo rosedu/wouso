@@ -24,7 +24,7 @@
     <div class="tab_container">
         <div id="tab-1" class="tab_content">
             <table >
-                <tr><td colspan="1"><div id="ArchiveTextArea"></div></td>
+                <tr><td colspan="1"><div class="ArchiveTextArea" id="global_area"></div></td>
                     <td colspan="1">
                         <table>
                             <tr><td><div id="slider" style="width:144px"></div></td></tr>
@@ -41,7 +41,17 @@
             </table>
         </div>
         <div id="tab-2" class="tab_content">
-
+            <table>
+                <tr><td colspan="1"><div class="ArchiveTextArea" id="private_area"></div></td>
+                    <td colspan="1">
+                        <table>
+                            <br><br><br>
+                            <tr><td>Date: <input type="text" id="datepicker_private"><br></td></tr>
+                            <tr><td><input type="submit" id="archive_day_private" value="archive"></td></tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 
