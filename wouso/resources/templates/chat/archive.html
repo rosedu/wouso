@@ -8,7 +8,6 @@
 
     <script type="text/javascript" src="/static/js/archive.js"></script>
     <link type="text/css" href="/static/css/jquery-ui-1.8.23.custom.css" rel="stylesheet" />
-    <script type="text/javascript" src="/static/js/jquery-1.8.0.min.js"></script>
     <script type="text/javascript" src="/static/js/jquery-ui-1.8.23.custom.min.js"></script>
     <script type="text/javascript" src="/static/js/tabs.js"></script>
     <script type="text/javascript" src="/static/js/jquery.flot.min.js"></script>
@@ -45,7 +44,16 @@
                 <tr><td colspan="1"><div class="ArchiveTextArea" id="private_area"></div></td>
                     <td colspan="1">
                         <table>
-                            <br><br><br>
+                            <br><br>
+                            <td valign="top">
+                                {% if to %}
+                                <input type="text" id="to_input" class="hidden">
+                                <input type="hidden" id="to" name="to" value="{{ to.id }}" />
+                                <span class="to_user">{% player_simple to %}</span>
+                                {% else %}
+                                <input type="text" id="to_input" class="big" /> <div id="to_container"></div>
+                                {% endif %}
+                            </td>
                             <tr><td>Date: <input type="text" id="datepicker_private"><br></td></tr>
                             <tr><td><input type="submit" id="archive_day_private" value="archive"></td></tr>
                         </table>
@@ -56,6 +64,11 @@
     </div>
 
 
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#to_input").autocomplete("/instantsearch/", { minChars:3, matchSubset:1, matchContains:1, cacheLength:10, formatItem:formatItem, onItemSelect:selectItemMessaging, selectOnly:1 });
+    });
+</script>
 
 
 

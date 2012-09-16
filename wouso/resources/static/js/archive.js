@@ -35,7 +35,9 @@ $(document).ready(function(){
         }
 
     });
-
+    $("#archive_day_private").click(function(){
+        alert($("#to_input").val());
+    });
 
     function printArchive(res, status){
         if(status == "success"){
