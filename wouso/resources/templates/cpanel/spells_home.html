@@ -15,7 +15,7 @@
 	<th>Price</th>
 	<th>Due Days</th>
 	<th>Edit</th>
-
+	<th>Delete</th>
 </tr>
 {% for p in spells %}
 <tr><td> {{ p.name }}</td>
@@ -25,6 +25,7 @@
 	<td> {{ p.price }}</td>
 	<td> {{ p.due_days }}</td>
 	<td><a class="button" href="{% url edit_spell p.id %}">Edit</a></td>
+	<td><a class="button" href="{% url spell_dell p.id %}" onclick="return confirm('Realy?');">Delete</a></td>
 </tr>
 {% endfor %}
 </table>

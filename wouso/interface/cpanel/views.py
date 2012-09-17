@@ -92,6 +92,19 @@ def add_spell(request):
 
 
 @permission_required('config.change_setting')
+def spell_delete(request, id):
+    spell = get_object_or_404(Spell, pk=id)
+
+    spell.delete()
+
+    go_back = request.META.get('HTTP_REFERER', None)
+    if not go_back:
+        go_back = reverse('wouso.interface.cpanel.views.spells')
+
+    return HttpResponseRedirect(go_back)
+
+
+@permission_required('config.change_setting')
 def customization(request):
     if not request.user.is_superuser:
         return HttpResponseRedirect(reverse('dashboard'))
