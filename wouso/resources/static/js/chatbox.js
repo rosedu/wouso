@@ -477,6 +477,10 @@ $(document).ready(function () {
                 }
                 else if(obj.msgs[i].user == myName && obj.msgs[i].mess_type == 'special')
                     continue;
+                else if (obj.msgs[i].mess_type == 'activity') {
+                    $('#GlobalboxTextArea').append("<em>" + obj.msgs[i].time + " ***: " + replace_emoticons(obj.msgs[i].text) + "</em><br />");
+                    AutoScroll();
+                }
                 else if (obj.msgs[i].room == 'global') {
                     $('#GlobalboxTextArea').append(obj.msgs[i].time + obj.msgs[i].user + ": " + replace_emoticons(obj.msgs[i].text) + "<br />");
                     AutoScroll();

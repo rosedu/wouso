@@ -1,7 +1,8 @@
+from datetime import datetime
 import array
 import random
+from wouso.interface.activity.models import Activity
 from wouso.interface.chat.models import ChatUser, ChatMessage
-from datetime import datetime
 
 def add_message(text, sender, toRoom, user_to, messType, comand):
     """ content, author, room, user_to, messType, command """
@@ -39,6 +40,17 @@ def create_message(user, query):
             continue
     return msgs
 
+def new_activity_messages(chat_user):
+    """
+    Return a list of new messages from the activity module, formatted the same as create_message.
+    """
+    query = Activity.get_global_activity().filter(timestamp__gt=chat_user.lastMessageTS)
+    msgs = []
+    for m in query:
+        message = u'<strong>%s</strong> %s' % (m.user_from.nickname, m.message)
+        msgs.append(dict(room='global', text=message, time=m.timestamp.strftime("%H:%M"), mess_type='activity'))
+    return msgs
+
 def serve_message(user):
     """
     Will return all messages that wasn't already delivered.
@@ -46,15 +58,17 @@ def serve_message(user):
     """
     query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS, destRoom__participants=user)
 
-    if not query:
+    messages = create_message(user, query) + new_activity_messages(user)
+
+    if not messages:
         return None
 
     user.lastMessageTS = datetime.now()
     user.save()
 
     obj = {'user': unicode(user)}
-    obj['count'] = query.count()
-    obj['msgs'] = create_message(user, query)
+    obj['count'] = len(messages)
+    obj['msgs'] = messages
 
     return obj
 
