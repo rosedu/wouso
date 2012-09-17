@@ -158,3 +158,4 @@ class MagicManager(object):
         else:
             psamount.save()
         return None
+

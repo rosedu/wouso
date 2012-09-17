@@ -132,8 +132,7 @@ def magic_cast(request, destination=None, spell=None):
                 error = _('Cast failed:') + ' ' + error
 
     return render_to_response('profile/cast.html',
-                              {'destination': destination, 'error': error},
-                              context_instance=RequestContext(request))
+                              {'destination': destination, 'error': error}, context_instance=RequestContext(request))
 
 @login_required
 def mass_magic_view(request):

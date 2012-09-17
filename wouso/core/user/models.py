@@ -265,8 +265,7 @@ class Player(models.Model):
             extension.save()
 
         return extension
-
-  
+ 
     def __unicode__(self):
         ret = u"%s %s" % (self.user.first_name, self.user.last_name)
         return ret if ret != u" " else self.user.__unicode__()
