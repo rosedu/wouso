@@ -1,0 +1,46 @@
+{% extends base_template %}
+{% load artifacts %}
+{% load user %}
+{% load i18n %}
+
+{% block title %}{% trans 'Cast' %}{% endblock %}
+
+{% block content %}
+{% if not player.spells_collection.all.count %}
+<div class="wrong error">{% trans "You don't have any spells to cast. Buy some at the bazaar place." %}
+<a href="{% url bazaar_home %}">{% trans 'Bazaar' %}</a>
+</div>
+{% else %}
+<h2>{% trans 'Cast' %}</h2>
+<form name="cast_form" method="post" action="{% url mass_cast %}">
+{% csrf_token %}
+{% trans 'Cast: ' %}<select name="spell" id="spell-selector" disabled>
+        <option value="{{ spell.spell.id }}">{{ spell.spell.title }} ({{ spell.amount }})</option>
+      </select>
+<span id="more"></span>
+
+<script language="JavaScript" type="text/javascript">
+document.getElementById('more').innerHTML = days_select({{ spell.spell.due_days }});
+
+function days_select(days) {
+    if (days <= 1)
+        return '<input type="hidden" name="days" value="' + days + '" />';
+    html = '{% trans 'for' %} <select name="days">';
+    for (i = 1; i <= days; i++)
+        html += '<option>' + i + '</option>';
+    html += '</select> {% trans 'days' %}';
+    return html;
+}
+</script>
+{% trans ' on following players:' %}
+<ul>
+{% for item in players %}
+    <li> {% player item %} </li>
+{% endfor %}
+</ul>
+<div class="actions">
+<button type="submit" class="default" id="submit">{% trans 'Cast' %}</button>
+</div>
+</form>
+{% endif %}
+{% endblock %}

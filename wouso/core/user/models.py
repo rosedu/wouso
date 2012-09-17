@@ -104,7 +104,31 @@ class Player(models.Model):
     # race
     race = models.ForeignKey(Race, blank=False, default=None, null=True)
 
+    def get_neighbours_from_top(self, count):
+        """ Returns an array of neighbouring players from top: count up intop and count down """
+        base_query = Player.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
+        allUsers = list(base_query.order_by('-points'))
+        try:
+            pos = allUsers.index(self)
+        except:
+            pos = -1;
+            for index,item in enumerate(allUsers):
+                if(item.points <= self.points):
+                    pos = index
+                    break
+            if pos == -1:
+                pos = len(allUsers)-1
 
+        if len(allUsers) <= 2*count+1:
+            return allUsers
+
+        start = max(pos-count, 0)
+        if pos + count >= len(allUsers):
+            start = len(allUsers)-2*count-2
+
+        players = allUsers[start:2*count+1]
+        return players   
+ 
     def user_name(self):
         return self.user.username
 
@@ -242,6 +266,7 @@ class Player(models.Model):
 
         return extension
 
+  
     def __unicode__(self):
         ret = u"%s %s" % (self.user.first_name, self.user.last_name)
         return ret if ret != u" " else self.user.__unicode__()

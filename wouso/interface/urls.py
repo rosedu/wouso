@@ -30,7 +30,8 @@ urlpatterns = patterns('',
     url(r'^player/(?P<id>\d*)/points-summary/$', 'wouso.interface.profile.views.player_points_history', name='player_points_history'),
     url(r'^player/cast/to-(?P<destination>\d+)/$', 'wouso.interface.apps.magic.views.magic_cast', name='magic_cast'),
     url(r'^player/cast/(?P<destination>\d+)/(?P<spell>\d+)/$', 'wouso.interface.apps.magic.views.magic_cast'),
-
+    url(r'^player/cast/mass_view/$', 'wouso.interface.apps.magic.views.mass_magic_view', name='mass_view'),
+    url(r'^player/cast/mass/$','wouso.interface.apps.magic.views.magic_cast_mass', name='mass_cast'),
     url(r'^player2/', include('wouso.interface.profile.urls')),
 
     url(r'^magic/summary/$', 'wouso.interface.profile.views.magic_summary', name='magic_summary'),

@@ -12,16 +12,15 @@
 </div>
 {% else %}
 <h2>{% trans 'Cast' %}</h2>
-<form method="post">
+<form name="cast_form" method="post">
 {% csrf_token %}
 {% trans 'Cast: ' %}<select name="spell" id="spell-selector">
         <option></option>
         {% for s in player.magic.spells_available.all %}<option value="{{ s.spell.id }}">{{ s.spell.title }} ({{ s.amount }})</option>
         {% endfor %}
       </select>
-{% trans 'on' %} {% player destination %}
+<span id="player">{% trans 'on' %} {% player destination %}</span>
 <span id="more"></span>
-!
 <div class="actions">
 <button type="submit" class="default" id="submit" disabled>{% trans 'Cast' %}</button>
 </div>
@@ -37,12 +36,30 @@ function days_select(days) {
     html += '</select> {% trans 'days' %}';
     return html;
 }
+function check_mass(mass) {
+    player_field = document.getElementById('player');
+    days_field = document.getElementById('more');
+    submit_button = document.getElementById('submit');
+    if(mass == false) {
+        player_field.style.visibility="visible";
+        days_field.style.visibility="visible";
+        submit_button.innerHTML="{% trans 'Cast' %}";
+        document.cast_form.action="";
+        return ;
+    }
+    submit_button.innerHTML="{% trans 'Check affected players' %}";
+    days_field.style.visibility="hidden";
+    player_field.style.visibility="hidden";
+    document.cast_form.action="{% url mass_view %}";
+}
 $('#spell-selector').change(function () {
     $.ajax({
         url: '{% url get_spell %}' + '?id=' + this.value,
         dataType: 'json',
         success: function(data) {
             days = data[0]['fields']['due_days'];
+            mass = data[0]['fields']['mass'];
+            check_mass(mass);
             $('#more').html(days_select(days));
             $('#submit').attr('disabled', false);
         },
