@@ -89,6 +89,19 @@ class Spell(Modifier):
     def group(self):
         return 'spells'
 
+    def history_bought(self):
+        return self.spellhistory_set.filter(type='b').count()
+
+    def history_used(self):
+        return self.spellhistory_set.filter(type='u').count()
+
+    def history_cleaned(self):
+        return self.spellhistory_set.filter(type='c').count()
+
+    def history_expired(self):
+        return self.spellhistory_set.filter(type='e').count()
+
+
     def __unicode__(self):
         return u'spell %s' % self.name
 

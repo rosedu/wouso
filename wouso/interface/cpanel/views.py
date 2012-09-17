@@ -12,7 +12,7 @@ from django.conf import settings
 from django.template.defaultfilters import slugify
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player, PlayerGroup, Race
-from wouso.core.magic.models import Artifact, ArtifactGroup
+from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
 from wouso.core.qpool.models import Schedule, Question, Tag, Category
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
@@ -20,7 +20,7 @@ from wouso.core import scoring
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
-from forms import QuestionForm, TagsForm, UserForm
+from forms import QuestionForm, TagsForm, UserForm, SpellForm
 from django.contrib.auth.models import User
 
 
@@ -56,6 +56,39 @@ def dashboard(request):
                                'staff': staff_group,
                                },
                               context_instance=RequestContext(request))
+
+def spells(request):
+    spells = Spell.objects.all()
+    return render_to_response('cpanel/spells_home.html',
+                              {'spells' : spells,
+                              },
+                              context_instance=RequestContext(request))
+
+
+def edit_spell(request, id):
+
+    spell = get_object_or_404(Spell, pk=id)
+    if request.method == "POST":
+        form = SpellForm(data = request.POST, instance = spell)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.spells'))
+    else:
+        form = SpellForm(instance=spell)
+    return render_to_response('cpanel/edit_spell.html', {'form':form}, context_instance=RequestContext(request))
+
+
+@permission_required('config.change_setting')
+def add_spell(request):
+    form = SpellForm()
+    if request.method == "POST":
+        spell = SpellForm(data = request.POST)
+        if spell.is_valid():
+            spell.save()
+            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.spells'))
+        else:
+            form = spell
+    return render_to_response('cpanel/add_spell.html', {'form': form}, context_instance=RequestContext(request))
 
 
 @permission_required('config.change_setting')

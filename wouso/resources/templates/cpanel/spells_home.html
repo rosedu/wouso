@@ -1,0 +1,53 @@
+{% extends 'cpanel/index.html' %}
+{% load user %}
+
+{% block sectiontitle %}Spells{% endblock %}
+
+{% block sectioncontent %}
+
+
+<table>
+<tr>
+	<th>Name</th>
+  <th>Title</th>
+  <th>Type</th>
+	<th>Mass</th>
+	<th>Price</th>
+	<th>Due Days</th>
+	<th>Edit</th>
+
+</tr>
+{% for p in spells %}
+<tr><td> {{ p.name }}</td>
+  <td> {{ p.title}}</td>
+  <td> {{ p.type }}</td>
+	<td> {{ p.mass }}</td>
+	<td> {{ p.price }}</td>
+	<td> {{ p.due_days }}</td>
+	<td><a class="button" href="{% url edit_spell p.id %}">Edit</a></td>
+</tr>
+{% endfor %}
+</table>
+
+<a class="button" href="{% url add_spell %}">Add new spell</a>
+
+<br/>
+<h3>Spell History</h3>
+<table>
+<tr>
+  <th>Name</th>
+  <th>Bought</th>
+  <th>Used</th>
+  <th>Cleaned</th>
+  <th>Expired</th>
+</tr>
+{% for p in spells %}
+<tr><td> {{ p.name }} </td>
+    <td> {{ p.history_bought }}  </td>
+    <td> {{ p.history_used }}  </td>
+    <td> {{ p.history_cleaned }}  </td>
+    <td> {{ p.history_expired }} </td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}
