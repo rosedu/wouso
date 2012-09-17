@@ -49,8 +49,6 @@ class Achievements(App):
         if not action:
             return
         if 'qotd' in action:
-            #Check for 10 consecutive correct qotd 
-            print "------------->\n----------------->\n"+str(consecutive_qotd_correct(player))
             if consecutive_qotd_correct(player) >= 10:
                 if not player.magic.has_modifier('ach-qotd-10'):
                     cls.earn_achievement(player,'ach-qotd-10')
