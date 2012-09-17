@@ -8,18 +8,24 @@ function get_firstname(){
 }
 
 function save_changes(){
-    var msgdata = {'nickname':get_nickname, 'firstname':get_firstname};
-    var args = {
-        type:"POST",
-        url:"/player/set/s/",
-        data:msgdata,
-        success: function(data) {
-            window.location = '/player/' + myID
-        },
-        error: function(data) {
-            alert("eeerror")
-        }};
-    $.ajax(args);
+
+    var msgdata = null;
+    if(get_nickname().length > 2 && get_firstname().length > 2)
+        msgdata = {'nickname':get_nickname, 'firstname':get_firstname};
+    if (msgdata != null){
+        var args = {
+            type:"POST",
+            url:"/player/set/s/",
+            data:msgdata,
+            success: function(data) {
+                window.location = '/player/' + myID
+            },
+            error: function(data) {
+                $("#ajax-message").html("<p class='wrong'>Nickname-ul exista!</p>")
+            }};
+        $.ajax(args);
+    }else
+        $("#ajax-message").html("<p class='wrong'>Numele sau nickname prea scurt.</p>")
 
 }
 
