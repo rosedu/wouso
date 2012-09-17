@@ -175,14 +175,13 @@ def sendmessage(request):
         chat_global = roomexist('global')
         if user.has_modifier('block-communication'):
             return json_response(special_message(user, None, "block-communication"))
-
-            #add_message("", user, chat_global, user, "special", "block-communication")
         elif user.has_modifier('block-global-chat-page') or not user.canAccessChat:
             return json_response(special_message(user, None, "kick"))
-            #add_message("", user, chat_global, user, "special", "kick")
 
         if user not in chat_global.participants.all():
             chat_global.participants.add(user)
+            user.lastMessageTS = datetime.now()
+            user.save()
     elif data['opcode'] == 'getRoom':
         try:
             user_to = Player.objects.get(id=data['to'])
