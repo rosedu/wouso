@@ -24,7 +24,7 @@ def consecutive_qotd_correct(player):
     activities = Activity.get_player_activity(player).filter(action__contains = 'qotd').order_by('-timestamp')[:12]
     result = 0
     for i in activities:
-        if 'correct' in i.message:
+        if 'correct' in i.action:
             result +=1
         else:
             return result
@@ -49,6 +49,7 @@ class Achievements(App):
         if not action:
             return
         if 'qotd' in action:
+            #Check 10 qotd in a row
             if consecutive_qotd_correct(player) >= 10:
                 if not player.magic.has_modifier('ach-qotd-10'):
                     cls.earn_achievement(player,'ach-qotd-10')
@@ -59,7 +60,7 @@ class Achievements(App):
                     cls.earn_achievement(player, 'ach-login-10')
     @classmethod
     def get_modifiers(self):
-        return ['ach-login-10']
+        return ['ach-login-10','ach-qotd-10']
 
 def check_for_achievements(sender, **kwargs):
     Achievements.activity_handler(sender, **kwargs)
