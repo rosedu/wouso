@@ -21,10 +21,10 @@ def consecutive_qotd_correct(player):
     """
      Return the count of correct qotd in a row
     """
-    activities = Activity.get_player_activity(player).filter(game = 'QotdGame').order_by('-timestamp')[:12]
+    activities = Activity.get_player_activity(player).filter(action__contains = 'qotd').order_by('-timestamp')[:12]
     result = 0
     for i in activities:
-        if i.message_string == 'has given a correct answer to QotD.':
+        if 'correct' in i.message:
             result +=1
         else:
             return result
@@ -46,10 +46,11 @@ class Achievements(App):
     def activity_handler(cls, sender, **kwargs):
         action = kwargs.get('action', None)
         player = kwargs.get('user_from', None)
-        game   = kwargs.get('game',None)
-        
-        if game and game.name == 'QotdGame':
+        if not action:
+            return
+        if 'qotd' in action:
             #Check for 10 consecutive correct qotd 
+            print "------------->\n----------------->\n"+str(consecutive_qotd_correct(player))
             if consecutive_qotd_correct(player) >= 10:
                 if not player.magic.has_modifier('ach-qotd-10'):
                     cls.earn_achievement(player,'ach-qotd-10')

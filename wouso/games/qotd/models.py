@@ -20,11 +20,12 @@ class QotdUser(Player):
 
     @property
     def has_question(self):
-        if self.my_question is None:
-            return False
-        qdate = self.my_question.schedule
-        if not (qdate.day == date.today()):
-            return False
+        #TODO Uncomment
+        #if self.my_question is None:
+        #    return False
+        #qdate = self.my_question.schedule
+        #if not (qdate.day == date.today()):
+        #    return False
         return True
 
     def set_question(self, question):
@@ -44,13 +45,16 @@ class QotdUser(Player):
             self.save()
             # send signal
             if correct:
+                action_msg="qotd-correct"
                 signal_msg = ugettext_noop('has given a correct answer to QotD.')
             else:
+                action_msg="qotd-wrong"
                 signal_msg = ugettext_noop('has given a wrong answer to QotD.')
 
             signals.addActivity.send(sender=None, user_from=self,
                                      user_to=self,
                                      message=signal_msg,
+                                     action=action_msg,
                                      game=QotdGame.get_instance())
 
     def reset_answered(self):
