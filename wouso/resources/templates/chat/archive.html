@@ -7,11 +7,71 @@
 {% block scripts %}
 
     <script type="text/javascript" src="/static/js/archive.js"></script>
+    <link type="text/css" href="/static/css/jquery-ui-1.8.23.custom.css" rel="stylesheet" />
+    <script type="text/javascript" src="/static/js/jquery-ui-1.8.23.custom.min.js"></script>
+    <script type="text/javascript" src="/static/js/tabs.js"></script>
+    <script type="text/javascript" src="/static/js/jquery.flot.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
 {% endblock %}
 
 {% block content %}
-    <p>Date: <input type="text" id="datepicker">
-    <input type="submit" id="archive_day" value="archive"></p>
-    <div id="ArchiveTextArea"></div>
+    <br>
+    <ul class="tabs">
+        <li><a href="#tab-1">{% trans 'Global' %}</a></li>
+        <li><a href="#tab-2">{% trans 'Private' %}</a></li>
+    </ul>
+    <div class="tab_container">
+        <div id="tab-1" class="tab_content">
+            <table >
+                <tr><td colspan="1"><div class="ArchiveTextArea" id="global_area"></div></td>
+                    <td colspan="1">
+                        <table>
+                            <tr><td><div id="slider" style="width:144px"></div></td></tr>
+                            <tr>
+                                <td colspan="1"><div id="minSlider">0</div></td>
+                                <td colspan="1"><div id="maxSlider">24</div></td>
+                            </tr>
+
+                            <tr><td>Date: <input type="text" id="datepicker"><br></td></tr>
+                            <tr><td><input type="submit" id="archive_day" value="archive"></td></tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="tab-2" class="tab_content">
+            <table>
+                <tr><td colspan="1"><div class="ArchiveTextArea" id="private_area"></div></td>
+                    <td colspan="1">
+                        <table>
+                            <br><br>
+                            <td valign="top">
+                                {% if to %}
+                                <input type="text" id="to_input" class="hidden">
+                                <input type="hidden" id="to" name="to" value="{{ to.id }}" />
+                                <span class="to_user">{% player_simple to %}</span>
+                                {% else %}
+                                <input type="text" id="to_input" class="big" /> <div id="to_container"></div>
+                                {% endif %}
+                            </td>
+                            <tr><td>Date: <input type="text" id="datepicker_private"><br></td></tr>
+                            <tr><td><input type="submit" id="archive_day_private" value="archive"></td></tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#to_input").autocomplete("/instantsearch/", { minChars:3, matchSubset:1, matchContains:1, cacheLength:10, formatItem:formatItem, onItemSelect:selectItemMessaging, selectOnly:1 });
+    });
+</script>
+
+
+
+
 
 {% endblock %}
