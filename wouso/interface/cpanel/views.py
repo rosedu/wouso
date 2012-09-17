@@ -10,6 +10,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.conf import settings
 from django.template.defaultfilters import slugify
+from django.utils.translation import ugettext_noop
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup
@@ -17,6 +18,7 @@ from wouso.core.qpool.models import Schedule, Question, Tag, Category
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
 from wouso.core import scoring
+from wouso.interface.activity.signals import addActivity
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
@@ -598,9 +600,22 @@ def edit_player(request, user_id):
 		form = UserForm(instance=user)
 		form.fields['password'].widget.attrs['readonly'] = True
 	return render_to_response('cpanel/edit_player.html', {'form':form}, context_instance=RequestContext(request))
-	
+
+
 @permission_required('config.change_setting')
 def races_groups(request):
     return render_to_response('cpanel/races_groups.html', {'races': Race.objects.all()},
         context_instance=RequestContext(request)
     )
+
+
+@staff_required
+def the_bell(request):
+    """
+    Press the bell: add an phony activity
+    """
+    player = request.user.get_profile()
+    message = ugettext_noop('pressed the bell')
+    addActivity.send(sender=None, user_from=player, game=None, message=message)
+
+    return redirect('dashboard')
