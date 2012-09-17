@@ -1,4 +1,5 @@
 import datetime
+from django.contrib.auth import logout, login,authenticate
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core import serializers
@@ -12,7 +13,7 @@ from wouso.interface import logger, detect_mobile
 from wouso.interface.apps.pages.models import NewsItem
 from wouso.core.game import get_games
 from wouso.interface.forms import *
-from wouso.core.user.models import Player, PlayerGroup
+from wouso.core.user.models import Player, PlayerGroup, UserReportForm
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, History as TopHistory
 
@@ -25,15 +26,44 @@ def get_wall(page=u'1'):
     except (EmptyPage, InvalidPage):
         activity = paginator.page(paginator.num_pages)
     return activity
-
 def anonymous_homepage(request):
     return render_to_response('splash.html', context_instance=RequestContext(request))
-
-def hub(request):
+	
+def login_view(request):
+    user = authenticate(username=request.POST['username'],password=request.POST['password'])
+    if user is not None:
+        if user.is_active:
+            #Save username in session
+            PREFIX = "_user:"
+            MAX_TIME = 48*60*60 #48h in seconds
+            #Remove entries older than 48h
+            for i in request.session.keys():
+                if PREFIX in i and (request.session.get(i) + datetime.timedelta(minutes = 2*24*60)) < datetime.datetime.now():
+                    request.session.__delitem__(i)
+            request.session.__setitem__(PREFIX+user.username ,  datetime.datetime.now())
+            request.session.set_expiry(MAX_TIME)
+            login(request,user)
+            return HttpResponseRedirect("/hub/")
+        else:
+            return HttpResponseRedirect("/")
+    return HttpResponseRedirect("/")
+    
+#This is used to save data in session after logout
+def logout_view(request):
+	data = {}
+	PREFIX = "_user:"
+	for i in request.session.keys():
+		if PREFIX in i:
+			data[i] = request.session.get(i)
+	logout(request)
+	for i in data:
+		request.session[i] = data[i]
+	return HttpResponseRedirect("/")
+def hub(request):    
     if request.user.is_anonymous():
         return anonymous_homepage(request)
 
-    # check first time
+	# check first time
     profile = request.user.get_profile()
     activity = Activity.get_player_activity(profile).count()
     if activity < 2:
@@ -193,3 +223,16 @@ def ui(request):
     """
 
     return render_to_response('interface/ui.html', {}, context_instance=RequestContext(request))
+    
+def report(request,id):
+    if request.user.id == int(id):
+        return render_to_response('profile/report_form.html',{'error':'You cannot report yourself'})
+    get_object_or_404(User,pk=id)
+    if request.method == "POST":
+        form = UserReportForm(request.POST)
+        if form.is_valid():
+            return HttpResponse("Report:"+request.POST['message']+" on user "+User.objects.get(pk=id).username)
+    else:
+        form = UserReportForm()
+    return render_to_response('profile/report_form.html',{'id':id,'form':form},context_instance=RequestContext(request))
+

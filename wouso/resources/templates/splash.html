@@ -12,7 +12,7 @@
         <div id="logo"></div>
 
         <div id="side">
-            <form action="{% url django.contrib.auth.views.login %}" method="post">
+            <form action="{% url wouso.interface.views.login_view %}" method="post">
                 <label for="username">{% trans 'username' %}:</label>
                 <input size="10" name="username" id="username" class="big" />
                 <label for="password">{% trans 'password' %}:</label>

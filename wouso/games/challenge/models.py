@@ -314,6 +314,12 @@ class Challenge(models.Model):
         Notice the fact this is the only function where the scoring is affected
         """
         """ Handle artifacts and spells """
+        MAX_SEC = 15
+        #Check for multicount:to few seconds to finish challange
+        if self.user_to.seconds_took <= MAX_SEC or self.user_from.seconds_took <= MAX_SEC:
+			#TODO Do something about multicount
+			print "Multicount %s <--> %s" % (self.user_to.user.user.username,self.user_from.user.user.username)
+			
         for u in (self.user_to, self.user_from):
             # always lose, you mofo
             if u.user.has_modifier('challenge-always-lose'):

@@ -1,4 +1,5 @@
 import logging
+from django import forms
 from django.db import models
 from django.db.models import Sum
 from django.contrib.auth.models import User, Group
@@ -245,6 +246,9 @@ class Player(models.Model):
     def __unicode__(self):
         ret = u"%s %s" % (self.user.first_name, self.user.last_name)
         return ret if ret != u" " else self.user.__unicode__()
+
+class UserReportForm(forms.Form):
+	message = forms.CharField(widget = forms.Textarea)
 
 # Hack for having user and user's profile always in sync
 def user_post_save(sender, instance, **kwargs):
