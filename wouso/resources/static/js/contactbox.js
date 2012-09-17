@@ -15,7 +15,7 @@ jQuery(document).ready(function(){
 function set_mouseover(){
     rel_data = $(this).attr("rel");
     var text = rel_data.split(",");
-    on_userlist_mouseover(text[0], text[1], text[2], text[3], text[4], text[5]);
+    on_userlist_mouseover(text[0], text[1], text[2], text[3], text[4], text[5], text[6]);
 }
 
 function show_contact_box(){
@@ -36,13 +36,12 @@ function getElementTopLeft(id) {
 }
 
 
-function on_userlist_mouseover(name, score, avatar, level, id, x_position) {
+function on_userlist_mouseover(nickname, name, score, avatar, level, id, x_position) {
     selectID_over = null;
     UserName_over = null;
     time_for_chat_appear = setTimeout(
         function(){
-
-            make_buttons_changes(id, name);
+            make_buttons_changes(id, nickname);
             var position;
             if (x_position == 1)
                 if(tempX + 220 > window.innerWidth)
