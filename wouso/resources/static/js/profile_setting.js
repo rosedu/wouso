@@ -7,11 +7,15 @@ function get_firstname(){
     return $("#First_Name").val();
 }
 
+function get_description(){
+    return $("#Description").val()
+}
+
 function save_changes(){
 
     var msgdata = null;
     if(get_nickname().length > 2 && get_firstname().length > 2)
-        msgdata = {'nickname':get_nickname, 'firstname':get_firstname};
+        msgdata = {'nickname':get_nickname, 'firstname':get_firstname, 'description':get_description};
     if (msgdata != null){
         var args = {
             type:"POST",

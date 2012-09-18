@@ -44,6 +44,7 @@ def save_profile(request):
     except:
         user.nickname = data['nickname']
         user.user.first_name = data['firstname']
+        user.description = data['description']
         user.save()
         user.user.save()
     return HttpResponse()

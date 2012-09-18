@@ -103,7 +103,7 @@ class Player(models.Model):
     nickname = models.CharField(max_length=20, null=True, blank=False, default="admin")
     # race
     race = models.ForeignKey(Race, blank=False, default=None, null=True)
-
+    description = models.TextField(max_length=600, blank=True)
 
     def user_name(self):
         return self.user.username
