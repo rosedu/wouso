@@ -35,7 +35,10 @@ class MagicManager(object):
         if spell.type == 's':
             return [ self.player ]
         elif spell.type == 'n':
-            players.remove(self.player)
+            try:
+                players.remove(self.player)
+            except:
+                None
         return players
     
     def has_modifier(self, modifier):
