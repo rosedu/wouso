@@ -22,8 +22,8 @@ def index(request):
     challs = ChallengeGame.get_active(chall_user)
     played = ChallengeGame.get_played(chall_user)[:10]
 
-    #if not chall_user.is_eligible():
-    #    return do_result(request, error='Ne pare rau, nu esti anul I, nu poti provoca. Te invitam pe wouso-next.rosedu.org')
+    if not chall_user.is_eligible():
+        return do_result(request, error='Ne pare rau, nu esti anul I, nu poti provoca. Te invitam pe wouso-next.rosedu.org')
 
     return render_to_response('challenge/index.html',
             {'challenges': challs, 'played': played, 'challuser': chall_user, 'challenge': ChallengeGame},
@@ -89,8 +89,8 @@ def launch(request, to_id):
     if ChallengeGame.disabled():
         return do_result(request, error='Provocarile sunt dezactivate')
 
-    #if (not user_to.is_eligible()) or (not user_from.is_eligible()):
-    #    return do_result(request, error='Ne pare rau, doar studentii de anul I pot provoca/fi provocati')
+    if (not user_to.is_eligible()) or (not user_from.is_eligible()):
+        return do_result(request, error='Ne pare rau, doar studentii de anul I pot provoca/fi provocati')
 
     if not user_from.can_launch():
         return do_result(request, _('You cannot launch another challenge today.'))
