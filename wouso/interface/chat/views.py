@@ -8,7 +8,7 @@ from django.utils import simplejson
 
 from wouso.core.config.models import BoolSetting
 from models import *
-from wouso.interface.chat.utils import  change_text, get_author, serve_message, some_old_message, add_message
+from wouso.interface.chat.utils import  change_text, get_author, serve_message, some_old_message, add_message, create_message
 
 @login_required
 def index(request):
@@ -108,13 +108,7 @@ def archive_messages(request):
     user = get_author(request)
     obj = {'user': unicode(user)}
     obj['count'] = messages.count()
-    msgs = []
-    for i in messages:
-        mesaj = {}
-        mesaj['text'] = str(i)
-        msgs.append(mesaj)
-
-    obj['msgs'] = msgs
+    obj['msgs'] = create_message(user, messages)
     return HttpResponse(simplejson.dumps(obj))
 
 

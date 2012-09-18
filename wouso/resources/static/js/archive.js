@@ -37,7 +37,7 @@ $(document).ready(function(){
             var obj = jQuery.parseJSON(res.responseText);
             var i;
             for(i = 0; i < obj.count; i++){
-                $("#global_area").append(obj.msgs[i].text + "<br>");
+                $('#global_area').append(obj.msgs[i].time + obj.msgs[i].user + ": " + replace_emoticons(obj.msgs[i].text) + "<br>");
             }
         }
     }
@@ -70,7 +70,7 @@ $(document).ready(function(){
             var obj = jQuery.parseJSON(res.responseText);
             var i;
             for(i = 0; i < obj.count; i++){
-                $("#private_area").append(obj.msgs[i].text + "<br>");
+                $('#private_area').append(obj.msgs[i].time + obj.msgs[i].user + ": " + replace_emoticons(obj.msgs[i].text) + "<br>");
             }
         }
     }

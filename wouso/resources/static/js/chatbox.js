@@ -4,6 +4,7 @@ var UserName = null;
 var NewUserTimer = null;
 var SendPingTimer = null;
 var title;
+
 /* Private chat staff */
 var firstFreeChat;
 var max_room;
@@ -25,7 +26,28 @@ else{
     sessionStorage.max_room = max_room;
     sessionStorage.max_boxes = max_boxes;
     sessionStorage.private_users = JSON.stringify(private_users);
+}
 
+/* Emoticons and the replace function. */
+var emoticons = {
+    '>:D':'emoticon_evilgrin.png',
+    ':D':'emoticon_grin.png',
+    '=D':'emoticon_happy.png',
+    ':\\)':'emoticon_smile.png',
+    ':O':'emoticon_surprised.png',
+    ':P':'emoticon_tongue.png',
+    ':\\(':'emoticon_unhappy.png',
+    ';\\)':'emoticon_wink.png',
+    '\\(ball\\)':'sport_soccer.png'
+};
+
+var img_dir = "/static/img/";
+function replace_emoticons(text) {
+    $.each(emoticons, function (character, img) {
+        var re = new RegExp(character, 'g');
+        text = text.replace(re, '<img src="' + img_dir + img + '" />');
+    });
+    return text;
 }
 
 function put_box_name(id, user) {
@@ -601,29 +623,6 @@ $(document).ready(function () {
             was_writing = 1;
         }
     });
-
-    /* Emoticons and the replace function. */
-    /* TODO: More emoticons.*/
-    var emoticons = {
-        '>:D':'emoticon_evilgrin.png',
-        ':D':'emoticon_grin.png',
-        '=D':'emoticon_happy.png',
-        ':\\)':'emoticon_smile.png',
-        ':O':'emoticon_surprised.png',
-        ':P':'emoticon_tongue.png',
-        ':\\(':'emoticon_unhappy.png',
-        ';\\)':'emoticon_wink.png',
-        '\\(ball\\)':'sport_soccer.png'
-    };
-
-    var img_dir = "/static/img/";
-    function replace_emoticons(text) {
-        $.each(emoticons, function (character, img) {
-            var re = new RegExp(character, 'g');
-            text = text.replace(re, '<img src="' + img_dir + img + '" />');
-        });
-        return text;
-    }
 
     $("#ContactboxProfileButton").click(function(){
         window.location = "/player/" + selectID_over + "/";
