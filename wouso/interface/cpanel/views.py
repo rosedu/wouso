@@ -59,8 +59,21 @@ def dashboard(request):
 
 def spells(request):
     spells = Spell.objects.all()
+    spells_bought = 0
+    spells_used = 0
+    spells_expired = 0
+    spells_cleaned = 0
+    for p in spells:
+        spells_bought = spells_bought + p.spellhistory_set.filter(type='b').count()
+        spells_used = spells_used + p.spellhistory_set.filter(type='u').count()
+        spells_expired = spells_expired + p.spellhistory_set.filter(type='e').count()
+        spells_cleaned = spells_cleaned + p.spellhistory_set.filter(type='c').count()
     return render_to_response('cpanel/spells_home.html',
                               {'spells' : spells,
+                               'spells_bought' : spells_bought,
+                               'spells_used' : spells_used,
+                               'spells_expired' : spells_expired,
+                               'spells_cleaned' : spells_cleaned,
                               },
                               context_instance=RequestContext(request))
 
