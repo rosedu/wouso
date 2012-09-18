@@ -132,5 +132,23 @@ def magic_cast(request, destination=None, spell=None):
                 error = _('Cast failed:') + ' ' + error
 
     return render_to_response('profile/cast.html',
-                              {'destination': destination, 'error': error},
-                              context_instance=RequestContext(request))
+                              {'destination': destination, 'error': error}, context_instance=RequestContext(request))
+
+@login_required
+def mass_magic_view(request):
+    if request.method == 'POST':
+        spell = get_object_or_404(Spell, pk=request.POST.get('spell',0))
+        player = request.user.get_profile()
+        spell_amount = player.magic.spell_amount(wanted_spell=spell)[0]
+        if spell.mass == False:
+            return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
+        players = player.get_neighbours_from_top(count=2)
+        return render_to_response('profile/mass_cast.html',
+                { 'players':players, 'spell':spell_amount },
+                context_instance=RequestContext(request))
+
+@login_required
+def magic_cast_mass(request):
+    #TODO
+    return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
+

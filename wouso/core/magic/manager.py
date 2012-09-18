@@ -101,6 +101,10 @@ class MagicManager(object):
             paamount.amount += amount
             paamount.save()
         return paamount
+    
+    def spell_amount(self, wanted_spell):
+        return PlayerSpellAmount.objects.filter(player=self.player,
+                spell=wanted_spell)
 
     def add_spell(self, spell):
         """ Add a spell to self collection """
@@ -122,7 +126,7 @@ class MagicManager(object):
         except PlayerSpellAmount.DoesNotExist:
             return 0
         return psa.amount
-
+    
     def cast_spell(self, spell, source, due):
         """ Cast a spell on this player.
 
@@ -154,3 +158,4 @@ class MagicManager(object):
         else:
             psamount.save()
         return None
+
