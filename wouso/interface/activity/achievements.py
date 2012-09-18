@@ -29,6 +29,10 @@ def consecutive_qotd_correct(player):
         else:
             return result
     return result
+def login_between(time,first,second):
+    if time.hour >= first and time.hour < second:
+        return True
+    return False
 class Achievements(App):
 
     @classmethod
@@ -53,6 +57,14 @@ class Achievements(App):
             if consecutive_qotd_correct(player) >= 10:
                 if not player.magic.has_modifier('ach-qotd-10'):
                     cls.earn_achievement(player,'ach-qotd-10')
+        if action == "login":
+            #Check login between 2-4 am
+            if login_between(kwargs.get('timestamp',datetime.now()),2,4):
+                if not player.magic.has_modifier('ach-night-owl'):
+                    cls.earn_achievement(player,'ach-night-owl')
+            elif login_between(kwargs.get('timestamp',datetime.now()),6,8):
+                if not player.magic.has_modifier('ach-early-bird'):
+                    cls.earn_achievement(player,'ach-early-bird')
         if action == 'seen':
             # Check previous 10 seens
             if consecutive_seens(player, datetime.now()) >= 10:
@@ -60,7 +72,7 @@ class Achievements(App):
                     cls.earn_achievement(player, 'ach-login-10')
     @classmethod
     def get_modifiers(self):
-        return ['ach-login-10','ach-qotd-10']
+        return ['ach-login-10','ach-qotd-10','ach-night-owl','ach-early-bird']
 
 def check_for_achievements(sender, **kwargs):
     Achievements.activity_handler(sender, **kwargs)

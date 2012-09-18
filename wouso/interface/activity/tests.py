@@ -67,4 +67,37 @@ class AchievementTest(WousoTest):
                                      action='qotd-correct',
                                      game=QotdGame.get_instance())
         self.assertTrue(player.magic.has_modifier('ach-qotd-10'))
+    def test_early_bird_not(self):
+        player = self._get_player()
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-early-bird')
+        signals.addActivity.send(sender=None, timestamp = datetime(2012,9,17,5,0,0),user_from=player,
+                                     user_to=player,
+                                     action='login',
+                                     game=None)
+        self.assertTrue(not player.magic.has_modifier('ach-early-bird'))
+    def test_early_bird_set(self):
+        player = self._get_player()
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-early-bird')
+        signals.addActivity.send(sender=None, timestamp = datetime(2012,9,17,6,0,0),user_from=player,
+                                     user_to=player,
+                                     action='login',
+                                     game=None)
+        self.assertTrue(player.magic.has_modifier('ach-early-bird'))
+    def test_night_owl_not(self):
+        player = self._get_player()
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-night-owl')
+        signals.addActivity.send(sender=None, timestamp = datetime(2012,9,17,4,0,0),user_from=player,
+                                     user_to=player,
+                                     action='login',
+                                     game=None)
+        self.assertTrue(not player.magic.has_modifier('ach-night-owl'))
+    def test_night_owl_set(self):
+        player = self._get_player()
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-night-owl')
+        signals.addActivity.send(sender=None, timestamp = datetime(2012,9,17,3,0,0),user_from=player,
+                                     user_to=player,
+                                     action='login',
+                                     game=None)
+        self.assertTrue(player.magic.has_modifier('ach-night-owl'))
+    
 
