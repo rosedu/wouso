@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from wouso.core.qpool.models import Question, Answer, Schedule, Category, Tag
+from wouso.core.magic.models import Spell
 
 class QuestionForm(forms.Form):
     text = forms.CharField(max_length=500, widget=forms.Textarea)
@@ -93,3 +94,8 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = User
         exclude = ['last_login', 'date_joined']
+
+class SpellForm(forms.ModelForm):
+    class Meta:
+        model = Spell
+

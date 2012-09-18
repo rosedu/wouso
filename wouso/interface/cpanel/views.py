@@ -13,7 +13,7 @@ from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_noop
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player, PlayerGroup, Race
-from wouso.core.magic.models import Artifact, ArtifactGroup
+from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
 from wouso.core.qpool.models import Schedule, Question, Tag, Category
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
@@ -22,7 +22,7 @@ from wouso.interface.activity.signals import addActivity
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
-from forms import QuestionForm, TagsForm, UserForm
+from forms import QuestionForm, TagsForm, UserForm, SpellForm
 from django.contrib.auth.models import User
 
 
@@ -58,6 +58,65 @@ def dashboard(request):
                                'staff': staff_group,
                                },
                               context_instance=RequestContext(request))
+
+def spells(request):
+    spells = Spell.objects.all()
+    spells_bought = 0
+    spells_used = 0
+    spells_expired = 0
+    spells_cleaned = 0
+    for p in spells:
+        spells_bought = spells_bought + p.history_bought()
+        spells_used = spells_used + p.history_used()
+        spells_expired = spells_expired + p.history_expired()
+        spells_cleaned = spells_cleaned + p.history_cleaned()
+    return render_to_response('cpanel/spells_home.html',
+                              {'spells' : spells,
+                               'spells_bought' : spells_bought,
+                               'spells_used' : spells_used,
+                               'spells_expired' : spells_expired,
+                               'spells_cleaned' : spells_cleaned,
+                              },
+                              context_instance=RequestContext(request))
+
+
+def edit_spell(request, id):
+
+    spell = get_object_or_404(Spell, pk=id)
+    if request.method == "POST":
+        form = SpellForm(data = request.POST, instance = spell)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.spells'))
+    else:
+        form = SpellForm(instance=spell)
+    return render_to_response('cpanel/edit_spell.html', {'form':form}, context_instance=RequestContext(request))
+
+
+@permission_required('config.change_setting')
+def add_spell(request):
+    form = SpellForm()
+    if request.method == "POST":
+        spell = SpellForm(data = request.POST)
+        if spell.is_valid():
+            spell.save()
+            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.spells'))
+        else:
+            form = spell
+    return render_to_response('cpanel/add_spell.html', {'form': form}, context_instance=RequestContext(request))
+
+
+@permission_required('config.change_setting')
+def spell_delete(request, id):
+    spell = get_object_or_404(Spell, pk=id)
+
+    spell.delete()
+
+    go_back = request.META.get('HTTP_REFERER', None)
+    if not go_back:
+        go_back = reverse('wouso.interface.cpanel.views.spells')
+
+    return HttpResponseRedirect(go_back)
 
 
 @permission_required('config.change_setting')
