@@ -353,7 +353,7 @@ $(document).ready(function () {
     function select_bar(id, name) {
         if (sw == 0) {
             var position = 175 * (max_boxes + 1);
-            html = '<select onchange="on_selectbar_change()" class= "Privatebox" id="selectbar_id" style="right: ' + position + 'px; background: green;">' +
+            html = '<select onchange="on_selectbar_change()" class= "Privatebox" id="selectbar_id" style="right: ' + position + 'px; background: green; position:fixed">' +
                 '<option ></option>' +
                 '</select>';
             $("#PrivatebarUsers").append(html);
