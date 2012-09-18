@@ -95,6 +95,8 @@ def bazaar_buy(request, spell):
     error, message = '',''
     if spell.price > player.coins.get('gold', 0):
         error = _("Insufficient gold amount")
+    elif spell.available == False:
+        error = _("Spell is not available")
     elif spell.level_required > player.level_no:
         error = _("Level {level} is required to buy this spell").format(level=spell.level_required)
     else:
@@ -126,7 +128,7 @@ def magic_cast(request, destination=None, spell=None):
             else:
                 due = datetime.now() + timedelta(days=days)
                 if not spell.mass:
-                    error = destination.magic.cast_spell(spell, source=player, due=due)
+                    error = destination.magic.cast_spell(spell=spell, source=player, due=due)
                 else:
                     players = player.get_neighbours_from_top(2)
                     players = player.magic.filter_players_by_spell(players, spell)

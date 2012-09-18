@@ -61,6 +61,16 @@ class ChatMessage(models.Model):
     def __unicode__(self):
         return self.timeStamp.strftime("%H:%M") + " " + self.author.nickname + ': ' + self.content
 
+    def to_dict(self):
+        mesaj = {'room': self.destRoom.name,
+                 'user': unicode(self.author.nickname),
+                 'text': self.content,
+                 'time': self.timeStamp.strftime("%H:%M "),
+                 'comand': self.comand,
+                 'mess_type': self.messType,
+                 'dest_user': unicode(self.destUser.nickname)}
+        return mesaj
+
 class Chat(App):
 
     @classmethod

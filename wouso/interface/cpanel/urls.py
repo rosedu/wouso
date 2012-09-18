@@ -32,6 +32,11 @@ upat = [
     url(r'^artifact/del/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.artifact_del', name='artifact_del'),
     url(r'^artifact/(?P<group>\w+)/$', 'wouso.interface.cpanel.views.artifact_home', name='artifact_home'),
 
+    url(r'^spells/$','wouso.interface.cpanel.views.spells', name='spells'),
+    url(r'^edit_spell/(?P<id>\d+)$','wouso.interface.cpanel.views.edit_spell',name='edit_spell'),
+    url(r'^add_spell/$', 'wouso.interface.cpanel.views.add_spell',name='add_spell'),
+    url(r'^spells/del/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.spell_delete', name='spell_dell'),
+
     url(r'^group/set/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.groupset', name='group_set'),
     url(r'^staff/toggle/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.stafftoggle', name='staff_toggle'),
 
@@ -40,6 +45,9 @@ upat = [
     url(r'^add_player/$', 'wouso.interface.cpanel.views.add_player', name='add_player'),
 	url(r'^edit_player/(?P<user_id>\d+)/$', 'wouso.interface.cpanel.views.edit_player', name='edit_player'),
     url(r'^races_groups/$', 'wouso.interface.cpanel.views.races_groups', name='races_groups'),
+
+    # misc
+    url(r'^bell/$', 'wouso.interface.cpanel.views.the_bell', name='the_bell'),
 ]
 
 for g in get_cpanel_games():

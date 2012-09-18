@@ -73,6 +73,9 @@
     {%  endfor %}
 </table>
 
+<h3>Misc</h3>
+        <a href="{% url the_bell %}">Press the bell!</a>
+
 {% endblock %}
 
 {% block sidebar %}
@@ -87,6 +90,7 @@
             <li class="qpool_import"></li>
             </ul>
         </li>
+        <li class="spells"><a href="{% url spells %}">Spells</a></li>
         <li class="artifacts"><a href="{% url artifact_home %}">Artifacts</a></li>
         {% if user.is_superuser %}
             <li class="custom"><a href="{% url customization %}">Customization</a></li>
