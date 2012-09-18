@@ -370,7 +370,7 @@ class Challenge(models.Model):
                 external_id=self.id, points=self.user_lost.score, points2=self.user_lost.score)
             # send activty signal
             signal_msg = ugettext_noop('won challenge with {user_lost}: {extra}')
-            action_msg = "chall-won"
+            action_msg = "chall_won"
             signals.addActivity.send(sender=None, user_from=self.user_won.user, \
                                      user_to=self.user_lost.user, \
                                      message=signal_msg, arguments=dict(user_lost=self.user_lost,
