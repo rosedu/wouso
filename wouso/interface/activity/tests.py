@@ -67,6 +67,7 @@ class AchievementTest(WousoTest):
                                      action='qotd-correct',
                                      game=QotdGame.get_instance())
         self.assertTrue(player.magic.has_modifier('ach-qotd-10'))
+        
     def test_early_bird_not(self):
         player = self._get_player()
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-early-bird')
@@ -75,6 +76,7 @@ class AchievementTest(WousoTest):
                                      action='login',
                                      game=None)
         self.assertTrue(not player.magic.has_modifier('ach-early-bird'))
+        
     def test_early_bird_set(self):
         player = self._get_player()
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-early-bird')
@@ -83,6 +85,7 @@ class AchievementTest(WousoTest):
                                      action='login',
                                      game=None)
         self.assertTrue(player.magic.has_modifier('ach-early-bird'))
+        
     def test_night_owl_not(self):
         player = self._get_player()
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-night-owl')
@@ -91,6 +94,7 @@ class AchievementTest(WousoTest):
                                      action='login',
                                      game=None)
         self.assertTrue(not player.magic.has_modifier('ach-night-owl'))
+        
     def test_night_owl_set(self):
         player = self._get_player()
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-night-owl')

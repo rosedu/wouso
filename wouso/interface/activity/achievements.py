@@ -17,6 +17,7 @@ def consecutive_seens(player, timestamp):
             return i
 
     return len(activities)
+    
 def consecutive_qotd_correct(player):
     """
      Return the count of correct qotd in a row
@@ -29,10 +30,12 @@ def consecutive_qotd_correct(player):
         else:
             return result
     return result
+    
 def login_between(time,first,second):
     if time.hour >= first and time.hour < second:
         return True
     return False
+    
 class Achievements(App):
 
     @classmethod
