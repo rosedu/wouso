@@ -121,6 +121,23 @@ class SpellTestCase(WousoTest):
 
         self.assertFalse(PlayerSpellDue.get_expired(datetime.today()))
 
+    def test_cure(self):
+        """
+         Test if cure works on a player
+        """
+        player = self._get_player()
+        player2 = self._get_player(2)
+
+        spell = Spell.objects.create(name='test-spell', available=True, price=10)
+        cure = Spell.objects.create(name='cure', available=True, price=10)
+        obs = PlayerSpellDue.objects.create(player=player, source=player, spell=spell, due=datetime.now() + timedelta(days=1))
+
+        self.assertTrue(player.magic.spells) # There is test-spell cast on myself
+
+        player2.magic.add_spell(cure)
+        player.magic.cast_spell(cure, player2, datetime.now() + timedelta(days=1))
+
+        self.assertFalse(player.magic.spells) # There isn't any spell left
 
 class TemplatetagsTest(WousoTest):
     def test_spell_due(self):
