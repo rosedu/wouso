@@ -172,11 +172,11 @@ class DefaultGod:
                                  game=None)
 
         if psdue.spell.name == 'dispell':
-            for psd in psdue.player.spells:
+            for psd in psdue.player.magic.spells:
                 psd.delete()
             return True
         if psdue.spell.name == 'cure':
-            for psd in psdue.player.spells.filter(spell__type='n'):
+            for psd in psdue.player.magic.spells.filter(spell__type='n'):
                 psd.delete()
             # also delete itself
             psdue.delete()
