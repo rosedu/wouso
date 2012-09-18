@@ -25,7 +25,7 @@ function save_changes(){
             }};
         $.ajax(args);
     }else
-        $("#ajax-message").html("<p class='wrong'>Numele sau nickname prea scurt.</p>")
+        $("#ajax-message").html("<p class='wrong'>Nume sau nickname prea scurt.</p>")
 
 }
 
