@@ -64,10 +64,10 @@ def spells(request):
     spells_expired = 0
     spells_cleaned = 0
     for p in spells:
-        spells_bought = spells_bought + p.spellhistory_set.filter(type='b').count()
-        spells_used = spells_used + p.spellhistory_set.filter(type='u').count()
-        spells_expired = spells_expired + p.spellhistory_set.filter(type='e').count()
-        spells_cleaned = spells_cleaned + p.spellhistory_set.filter(type='c').count()
+        spells_bought = spells_bought + p.history_bought()
+        spells_used = spells_used + p.history_used()
+        spells_expired = spells_expired + p.history_expired()
+        spells_cleaned = spells_cleaned + p.history_cleaned()
     return render_to_response('cpanel/spells_home.html',
                               {'spells' : spells,
                                'spells_bought' : spells_bought,
