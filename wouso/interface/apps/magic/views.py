@@ -127,7 +127,13 @@ def magic_cast(request, destination=None, spell=None):
                 error = _('Invalid number of days')
             else:
                 due = datetime.now() + timedelta(days=days)
-                error = destination.magic.cast_spell(spell, source=player, due=due)
+                if not spell.mass:
+                    error = destination.magic.cast_spell(spell=spell, source=player, due=due)
+                else:
+                    players = player.get_neighbours_from_top(2)
+                    players = player.magic.filter_players_by_spell(players, spell)
+                    error = player.magic.mass_cast(spell=spell, destination=players, due=due)
+
                 if not error:
                     return HttpResponseRedirect(reverse('wouso.interface.profile.views.user_profile', args=(destination.id,)))
 
@@ -136,3 +142,22 @@ def magic_cast(request, destination=None, spell=None):
     return render_to_response('profile/cast.html',
                               {'destination': destination, 'error': error},
                               context_instance=RequestContext(request))
+
+@login_required
+def affected_players(request):
+    try:
+        spell_id = int(request.GET.get('spell_id', None))
+        user_id = int(request.GET.get('user', None))
+    except:
+        raise Http404
+    spell = get_object_or_404(Spell, pk=spell_id)
+    
+    if spell.mass:
+        user = request.user.get_profile()
+        players = user.get_neighbours_from_top(2)
+        players = user.magic.filter_players_by_spell(players, spell)
+    else :
+        user = get_object_or_404(Player, pk=user_id)
+        players = [user]
+    
+    return render_to_response('profile/mass_cast_players_list.html', { 'players':players }, context_instance=RequestContext(request))
