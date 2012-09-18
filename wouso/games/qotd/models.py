@@ -44,13 +44,16 @@ class QotdUser(Player):
             self.save()
             # send signal
             if correct:
+                action_msg = "qotd-correct"
                 signal_msg = ugettext_noop('has given a correct answer to QotD.')
             else:
+                action_msg = "qotd-wrong"
                 signal_msg = ugettext_noop('has given a wrong answer to QotD.')
 
             signals.addActivity.send(sender=None, user_from=self,
                                      user_to=self,
                                      message=signal_msg,
+                                     action=action_msg,
                                      game=QotdGame.get_instance())
 
     def reset_answered(self):
