@@ -45,12 +45,12 @@ $('#spell-selector').change(function () {
 	    days = data[0]['fields']['due_days'];
 	    $('#more').html(days_select(days));
 	    $('#submit').attr('disabled', false);
-        },
-        error: function(data) {
-            $('#more').html('');
-            $('#submit').attr('disabled', true);
-        }
-	});
+	},
+	error: function(data) {
+	    $('#more').html('');
+	    $('#submit').attr('disabled', true);
+	}
+    });
     $.ajax({
 	url: '{% url affected_players %}' + '?spell_id=' + this.value + '&user={{ destination.id }}',
 	dataType: 'html',
