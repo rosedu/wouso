@@ -33,9 +33,9 @@ class MagicManager(object):
 
     def filter_players_by_spell(self, players, spell):
         if spell.type == 's':
-            return [ self.user ]
+            return [ self.player ]
         elif spell.type == 'n':
-            players.remove(self.user)
+            players.remove(self.player)
         return players
     
     def has_modifier(self, modifier):
@@ -130,6 +130,40 @@ class MagicManager(object):
             return 0
         return psa.amount
 
+    def mass_cast(self, spell, destination, due):
+        try:
+            psamount = PlayerSpellAmount.objects.get(player=self.player, spell=spell)
+            assert psamount.amount > 0
+        except (PlayerSpellAmount.DoesNotExist, AssertionError):
+            return 'Spell unavailable'
+
+        for player_dest in destination:
+            # Pre-cast God actions: immunity and curse ar done by this
+            # check
+            can_cast, error = God.can_cast(spell, self.player, player_dest)
+            if not can_cast:
+                continue
+            try:
+                psdue = PlayerSpellDue.objects.create(player=player_dest, source=self.player, spell=spell, due=due)
+            except IntegrityError:
+                #extend the affected time by spell
+                psdue = PlayerSpellDue.objects.get(player=player_dest, spell=spell)
+                if(psdue.due < due):
+                    psdue.delete()
+                    psdue = PlayerSpellDue.objects.create(player=player_dest, source=self.player, spell=spell, due=due)
+                else :
+                    continue
+
+            # Post-cast God action (there are specific modifiers, such as clean-spells
+            # that are implemented in God
+            God.post_cast(psdue)
+        psamount.amount -= 1
+        if not psamount.amount:
+            psamount.delete()
+        else:
+            psamount.save()
+        return None
+    
     def cast_spell(self, spell, source, due):
         """ Cast a spell on this player.
 
@@ -146,7 +180,7 @@ class MagicManager(object):
         can_cast, error = God.can_cast(spell, source, self.player)
         if not can_cast:
             return error
-
+        
         try:
             psdue = PlayerSpellDue.objects.create(player=self.player, source=source, spell=spell, due=due)
         except IntegrityError:

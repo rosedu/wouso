@@ -125,7 +125,13 @@ def magic_cast(request, destination=None, spell=None):
                 error = _('Invalid number of days')
             else:
                 due = datetime.now() + timedelta(days=days)
-                error = destination.magic.cast_spell(spell, source=player, due=due)
+                if not spell.mass:
+                    error = destination.magic.cast_spell(spell, source=player, due=due)
+                else:
+                    players = player.get_neighbours_from_top(2)
+                    players = player.magic.filter_players_by_spell(players, spell)
+                    error = player.magic.mass_cast(spell=spell, destination=players, due=due)
+
                 if not error:
                     return HttpResponseRedirect(reverse('wouso.interface.profile.views.user_profile', args=(destination.id,)))
 
