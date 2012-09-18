@@ -95,6 +95,8 @@ def bazaar_buy(request, spell):
     error, message = '',''
     if spell.price > player.coins.get('gold', 0):
         error = _("Insufficient gold amount")
+    elif spell.available == False:
+        error = _("Spell is not available")
     elif spell.level_required > player.level_no:
         error = _("Level {level} is required to buy this spell").format(level=spell.level_required)
     else:
