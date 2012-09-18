@@ -37,8 +37,8 @@ class MagicManager(object):
         elif spell.type == 'n':
             try:
                 players.remove(self.player)
-            except:
-                None
+            except ValueError:
+                pass
         return players
     
     def has_modifier(self, modifier):
@@ -122,6 +122,19 @@ class MagicManager(object):
         psamount.save()
         return psamount
 
+    def delete_spell(self, spell):
+        try:
+            psamount = PlayerSpellAmount.objects.get(player=self.player, spell=spell)
+            assert psamount.amount > 0
+        except (PlayerSpellAmount.DoesNotExist, AssertionError):
+            return 'Spell unavailable'
+
+        psamount.amount -= 1
+        if not psamount.amount:
+            psamount.delete()
+        else:
+            psamount.save()
+        return None
 
     def spell_stock(self, spell):
         """ Return the count of spells an user has
@@ -133,68 +146,56 @@ class MagicManager(object):
             return 0
         return psa.amount
 
-    def mass_cast(self, spell, destination, due):
+    def _check_spell_available(self, spell):
         try:
             psamount = PlayerSpellAmount.objects.get(player=self.player, spell=spell)
             assert psamount.amount > 0
         except (PlayerSpellAmount.DoesNotExist, AssertionError):
             return 'Spell unavailable'
-
-        for player_dest in destination:
-            # Pre-cast God actions: immunity and curse ar done by this
-            # check
-            can_cast, error = God.can_cast(spell, self.player, player_dest)
-            if not can_cast:
-                continue
-            try:
-                psdue = PlayerSpellDue.objects.create(player=player_dest, source=self.player, spell=spell, due=due)
-            except IntegrityError:
-                #extend the affected time by spell
-                psdue = PlayerSpellDue.objects.get(player=player_dest, spell=spell)
-                if(psdue.due < due):
-                    psdue.delete()
-                    psdue = PlayerSpellDue.objects.create(player=player_dest, source=self.player, spell=spell, due=due)
-                else :
-                    continue
-
-            # Post-cast God action (there are specific modifiers, such as clean-spells
-            # that are implemented in God
-            God.post_cast(psdue)
-        psamount.amount -= 1
-        if not psamount.amount:
-            psamount.delete()
-        else:
-            psamount.save()
         return None
     
+    def basic_cast(self, player_dest, spell, due):
+        # Pre-cast God actions: immunity and curse ar done by this
+        # check
+        
+        can_cast, error = God.can_cast(spell=spell, source=self.player, destination=player_dest)
+        if not can_cast:
+            return error
+        try:
+            psdue = PlayerSpellDue.objects.create(player=player_dest, source=self.player, spell=spell, due=due)
+        except IntegrityError:
+            if not spell.mass:
+                return 'Cannot cast the same spell more than once'
+            #extend the affected time by spell
+            psdue = PlayerSpellDue.objects.get(player=player_dest, spell=spell)
+            if(psdue.due < due):
+                psdue.delete()
+                psdue = PlayerSpellDue.objects.create(player=player_dest, source=self.player, spell=spell, due=due)
+            else:
+                return None
+        
+        # Post-cast God action (there are specific modifiers, such as clean-spells
+        # that are implemented in God
+        God.post_cast(psdue)
+        return None
+
+    def mass_cast(self, spell, destination, due):
+        error = self._check_spell_available(spell=spell)
+        if error:
+            return error
+
+        for player_dest in destination:
+            self.basic_cast(player_dest=player_dest, spell=spell, due=due)
+        self.delete_spell(spell)
+        return None
+
     def cast_spell(self, spell, source, due):
         """ Cast a spell on this player.
 
         Returns: error message if the spell was not cast, or None
         """
-        try:
-            psamount = PlayerSpellAmount.objects.get(player=source, spell=spell)
-            assert psamount.amount > 0
-        except (PlayerSpellAmount.DoesNotExist, AssertionError):
-            return 'Spell unavailable'
-
-        # Pre-cast God actions: immunity and curse ar done by this
-        # check
-        can_cast, error = God.can_cast(spell, source, self.player)
-        if not can_cast:
+        error = source.magic._check_spell_available(spell=spell)
+        if error:
             return error
-        
-        try:
-            psdue = PlayerSpellDue.objects.create(player=self.player, source=source, spell=spell, due=due)
-        except IntegrityError:
-            return 'Cannot cast the same spell more than once'
-
-        # Post-cast God action (there are specific modifiers, such as clean-spells
-        # that are implemented in God
-        God.post_cast(psdue)
-        psamount.amount -= 1
-        if not psamount.amount:
-            psamount.delete()
-        else:
-            psamount.save()
+        source.magic.basic_cast(player_dest=self.player, spell=spell, due=due)
         return None
