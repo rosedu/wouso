@@ -18,7 +18,7 @@ def consecutive_seens(player, timestamp):
 
     return len(activities)
 
-def challenge_count(palyer):
+def challenge_count(player):
     """
      Return the count of challenges played by player.
     """
