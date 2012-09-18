@@ -3,7 +3,7 @@ var selectID = null;
 var UserName = null;
 var NewUserTimer = null;
 var SendPingTimer = null;
-
+var title;
 /* Private chat staff */
 var firstFreeChat;
 var max_room;
@@ -92,7 +92,7 @@ function switch_color(room) {
     if (private_users[room].timer++ % 2 == 0) {
         $('#Privatebar' + room).attr('style', "background: blue");
         $('#PrivatebarMinimize' + room).attr('style', "background: blue");
-        document.title = "{{block.super}} -- Chatbox";
+        document.title = title;
     }
     else {
         $('#Privatebar' + room).attr('style', "background: red");
@@ -109,11 +109,11 @@ function stop_timer_for_swiching(id) {
     private_users[id].timer = null;
     private_users[id].time_set = null;
     sessionStorage.private_users = JSON.stringify(private_users);
-    document.title = "{{block.super}} -- Chatbox"
+    document.title = title;
 }
 
 $(document).ready(function () {
-
+    title = document.title;
     $.ajaxSetup({
         beforeSend:function (xhr, settings) {
             function getCookie(name) {
@@ -149,7 +149,7 @@ $(document).ready(function () {
         var max_value = max_room + 1;
         if (firstFreeChat <  max_value) {
             for (i = from; i < firstFreeChat - 1; i++) {
-                //text_context[i+1]  = $("#PrivateboxTextArea" + (i + 1)).html();
+                stop_timer_for_swiching(i);
                 change_values(i + 1, i);
                 put_box_name(i, private_users[i].user_name);
 
@@ -161,9 +161,12 @@ $(document).ready(function () {
                     $("#Privatebox" + i).hide();
                     $("#PrivateboxMinimize" + i).show();
                 }
+
             }
+
             firstFreeChat--;
             /* Hide and remove old info. */
+            stop_timer_for_swiching(firstFreeChat);
             $("#PrivateboxTextArea" + firstFreeChat).text("");
             $("#Privatebox" + firstFreeChat).hide();
             $("#PrivateboxMinimize" + firstFreeChat).hide();
