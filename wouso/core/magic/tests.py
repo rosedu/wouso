@@ -128,7 +128,7 @@ class SpellTestCase(WousoTest):
         player = self._get_player()
         player2 = self._get_player(2)
 
-        spell = Spell.objects.create(name='test-spell', available=True, price=10)
+        spell = Spell.objects.create(name='test-spell', available=True, price=10, type='n')
         cure = Spell.objects.create(name='cure', available=True, price=10)
         obs = PlayerSpellDue.objects.create(player=player, source=player, spell=spell, due=datetime.now() + timedelta(days=1))
 
