@@ -92,10 +92,12 @@ function switch_color(room) {
     if (private_users[room].timer++ % 2 == 0) {
         $('#Privatebar' + room).attr('style', "background: blue");
         $('#PrivatebarMinimize' + room).attr('style', "background: blue");
+        document.title = "{{block.super}} -- Chatbox";
     }
     else {
         $('#Privatebar' + room).attr('style', "background: red");
         $('#PrivatebarMinimize' + room).attr('style', "background: red");
+        document.title = private_users[room].user_name+ " spune...";
     }
 }
 
@@ -107,10 +109,11 @@ function stop_timer_for_swiching(id) {
     private_users[id].timer = null;
     private_users[id].time_set = null;
     sessionStorage.private_users = JSON.stringify(private_users);
+    document.title = "{{block.super}} -- Chatbox"
 }
 
 $(document).ready(function () {
-    /* csrf crap */
+
     $.ajaxSetup({
         beforeSend:function (xhr, settings) {
             function getCookie(name) {
@@ -349,9 +352,9 @@ $(document).ready(function () {
     function create_chat_box(res) {
         var obj = $.parseJSON(res.responseText);
         var setName;
-        chat_room = obj.name;
+        var chat_room = obj.name;
         /* Put the name on the list, if windows number is passed.*/
-        room = GetRoom(chat_room);
+        var room = GetRoom(chat_room);
         if (UserName_over != null){
             setName = UserName_over;
             selectID_over = null;
