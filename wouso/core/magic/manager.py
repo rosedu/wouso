@@ -31,6 +31,13 @@ class MagicManager(object):
     def spell_amounts(self):
         return self.player.playerspellamount_set
 
+    def filter_players_by_spell(self, players, spell):
+        if spell.type == 's':
+            return [ self.user ]
+        elif spell.type == 'n':
+            players.remove(self.user)
+        return players
+    
     def has_modifier(self, modifier):
         """ Check for an artifact with id = modifier
         or for an active spell cast on me with id = modifier
