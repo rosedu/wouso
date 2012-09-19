@@ -33,7 +33,7 @@ def consecutive_chall_won(player):
     activities = Activity.get_player_activity(player).filter(action__contains='chall').order_by('-timestamp')[:12]
     result = 0
     for i in activities:
-        if 'won' in i.action:
+        if 'won' in i.action and i.user_from == player:
             result = result + 1
         else:
             return result
