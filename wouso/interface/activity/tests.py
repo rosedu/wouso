@@ -6,9 +6,7 @@ from wouso.games.qotd.models import QotdGame
 from achievements import consecutive_seens
 from achievements import consecutive_qotd_correct, unique_users_pm
 from models import Activity
-from Achievements import check_for_achievements
 from wouso.interface.apps.messaging.models import Message,MessagingUser
-from django.dispatch import Signal
 class AchievementTest(WousoTest):
 
     def test_login_10(self):
@@ -112,8 +110,6 @@ class AchievementTest(WousoTest):
         for i in range(10):
             timestamp=datetime.now() + timedelta(minutes = -1)
             a = Message.objects.create(timestamp=timestamp, sender=player,receiver=player,subject = "a",text = "b")
-        for i in Message.objects.all():
-            print "%r" % i.sender
         self.assertEqual(unique_users_pm(player,3),1)
     
     def popularity_test_5_pm_2(self):
@@ -139,4 +135,3 @@ class AchievementTest(WousoTest):
         
         self.assertEqual(unique_users_pm(user_to,30),5)
         self.assertTrue(user_to.magic.has_modifier('ach-popularity'))
-

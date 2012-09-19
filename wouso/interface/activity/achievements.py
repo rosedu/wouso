@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_noop
 import logging
 from wouso.core.app import App
 from models import Activity
-from signals import addActivity
+from signals import addActivity,messageSignal
 from wouso.interface.apps.messaging.models import Message
 def consecutive_seens(player, timestamp):
     """
@@ -91,3 +91,4 @@ def check_for_achievements(sender, **kwargs):
     Achievements.activity_handler(sender, **kwargs)
 
 addActivity.connect(check_for_achievements)
+messageSignal.connect(check_for_achievements)
