@@ -190,9 +190,18 @@ class MagicManager(object):
         if error:
             return error
 
+        errors = []
         for player_dest in destination:
-            self.basic_cast(player_dest=player_dest, spell=spell, due=due)
-        self.decrement_spell(spell)
+            error = self.basic_cast(player_dest=player_dest, spell=spell, due=due)
+            if error:
+                errors.append(error)
+
+        if len(errors) != len(destination):
+            # Only use the spell if there was at least one non-errored destination
+            self.decrement_spell(spell)
+
+        if errors:
+            return ', '.join(errors)
         return None
 
     def cast_spell(self, spell, source, due):
