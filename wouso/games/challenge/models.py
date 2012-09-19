@@ -345,6 +345,16 @@ class Challenge(models.Model):
                                                     extra=self.extraInfo(self.user_from, self.user_to)),\
                                      action=action_msg, \
                                      game=ChallengeGame.get_instance())
+
+            signals.addActivity.send(sender=None, user_from=self.user_from.user, \
+                                             user_to=self.user_to.user, \
+                                     message=signal_msg, \
+                                     arguments=dict(user_to=self.user_to, user_from=self.user_from,
+                                                    extra=self.extraInfo(self.user_from, self.user_to)),\
+                                             action=action_msg, \
+                                      game=ChallengeGame.get_instance(), \
+                                     public=False)
+
         else:
             self.status = 'P'
             self.user_won, self.user_lost = result
@@ -377,6 +387,16 @@ class Challenge(models.Model):
                                                                         extra=self.extraInfo(self.user_won, self.user_lost)), \
                                      action=action_msg, \
                                      game=ChallengeGame.get_instance())
+            signal_msg = ugettext_noop('lost challenge with {user_won}: {extra}')
+            action_msg = "chall-lost"
+            signals.addActivity.send(sender=None, user_from=self.user_lost.user, \
+                                             user_to=self.user_won.user, \
+                                     message=signal_msg, arguments=dict(user_won=self.user_won,
+                                                                        extra=self.extraInfo(self.user_won, self.user_lost)), \
+                                     action=action_msg, \
+                                     game=ChallengeGame.get_instance(), \
+                                     public=False)
+
         self.save()
 
     def _calculate_points(self, responses):

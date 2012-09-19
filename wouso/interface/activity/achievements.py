@@ -22,22 +22,35 @@ def challenge_count(player):
     """
      Return the count of challenges played by player.
     """
-    games_played = Activity.get_private_activity(player).filter(action__contains='chall').count()
+    games_played = Activity.get_player_activity(player).filter(action__contains='chall').count()
 
-    return games_played;
+    return games_played
 
 def consecutive_chall_won(player):
     """
      Return the count of won challenges in a row
     """
-    activities = Activity.get_private_activity(player).filter(action__contains='chall').order_by('-timestamp')[:12]
-    result = 0;
+    activities = Activity.get_player_activity(player).filter(action__contains='chall').order_by('-timestamp')[:12]
+    result = 0
     for i in activities:
-        if i.user_from == player:
-            result += 1
+        message = ugettext_noop('earned {stuff}')
+        addActivity.send(sender=None, user_from=player, game=None, message=message,
+                arguments=dict(stuff=i.action)
+        )
+        if 'won' in i.action:
+            if player == i.user_from:
+                result = result + 1
+            else:
+                return result / 2
+        elif 'lost' in i.action:
+            if player == i.user_to:
+                result = result + 1
+            else:
+                return result / 2
         else:
-            return result
-    return result
+            return result / 2
+
+    return result / 2
 
 class Achievements(App):
 
@@ -62,13 +75,14 @@ class Achievements(App):
         if 'chall' in action:
             # Check if number of challenge games is 30*k
             games_played = challenge_count(player)
-            if games_played > 0 and mod(games_played, 30) == 0:
+            if games_played > 0 and (games_played % 30) == 0:
                 if not player.magic.has_modifier('ach-chall-30'):
                     cls.earn_achievement(player, 'ach-chall-30');
 
+        if action == 'chall-won':
             #Check 10 won challenge games in a row
-            if consecutive_chall_won(player) >= 10:
-                if not player.magic.has_modifier('ach-chall-won-10'):
+            if not player.magic.has_modifier('ach-chall-won-10'):
+                if consecutive_chall_won(player) >= 10:
                     cls.earn_achievement(player, 'ach-chall-won-10');
 
         if action == 'seen':

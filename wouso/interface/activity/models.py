@@ -75,7 +75,7 @@ class Activity(models.Model):
         return cls.filter_activity(query)
 
     @classmethod
-    def get_race_activiy(cls, race, **kwargs):
+    def get_race_activity(cls, race, **kwargs):
         """
         Return all group activity
         """
