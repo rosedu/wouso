@@ -41,7 +41,7 @@ class AchievementTest(WousoTest):
 
     def test_chall_10_won(self):
         player = self._get_player()
-        for i in range(1, 10):
+        for i in range(1, 11):
             timestamp = datetime.now() + timedelta(days=-i)
             a = Activity.objects.create(timestamp=timestamp,
                     user_from=player,user_to=player, action='chall-won',
@@ -97,7 +97,7 @@ class AchievementTest(WousoTest):
 
     def test_chall_30(self):
         player = self._get_player()
-        for i in range(1, 30):
+        for i in range(1, 31):
             timestamp = datetime.now() + timedelta(days=-i)
             a = Activity.objects.create(timestamp=timestamp,
                     user_from=player,user_to=player, action='chall-won',
@@ -108,7 +108,7 @@ class AchievementTest(WousoTest):
     def test_chall_30_draw_lost(self):
         player1 = self._get_player()
         player2 = self._get_player(2)
-        for i in range(1, 30):
+        for i in range(1, 31):
             timestamp = datetime.now() + timedelta(days=-i)
             if (i % 5) == 0:
                 a = Activity.objects.create(timestamp=timestamp,
