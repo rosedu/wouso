@@ -14,24 +14,23 @@
 <p> {% trans 'Average time taken: ' %} {{ average_time }} {% trans 's' %} </p>
 <p> {% trans 'Average score: ' %} {{ average_score }} </p>
 <table>
-	<tr align=center>
-		<td><b>Opponent</b></td>
-		<td><b>Won</b></td>
-		<td><b>Lost</b></td>
-		<td><b>Draw</b></td>
-		<td><b>Refused</b></td>
-		<td><b>Total</b></td>
-	</tr>
+    <tr align=center>
+        <td><b>Opponent</b></td>
+        <td><b>Won</b></td>
+        <td><b>Lost</b></td>
+        <td><b>Draw</b></td>
+        <td><b>Refused</b></td>
+        <td><b>Total</b></td>
+    </tr>
 {% for op in opponents %}
-	<tr align=center>
-		<td><a href="{% url games.challenge.views.challenge_stats %}{{op.0.id}}">{{op.0.nickname}}</a></td>
-		<td>{{op.1}}</td>
-		<td>{{op.2}}</td>
-		<td>{{op.3}}</td>
-		<td>{{op.4}}</td>
-		<td>{{op.5}}</td>
-	</tr>
+    <tr align=center>
+        <td><a href="{% url games.challenge.views.challenge_stats %}{{op.0.id}}">{{op.0.nickname}}</a></td>
+        <td>{{op.1}}</td>
+        <td>{{op.2}}</td>
+        <td>{{op.3}}</td>
+        <td>{{op.4}}</td>
+        <td>{{op.5}}</td>
+    </tr>
 {% endfor %}
 </table>
-<!--TODO challenge! -->
 {% endblock %}
