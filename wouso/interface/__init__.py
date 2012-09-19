@@ -35,5 +35,6 @@ def get_apps():
     """
     from wouso.core.magic.models import Bazaar
     from wouso.interface.top.models import Top
+    from wouso.interface.activity.achievements import Achievements
 
-    return [Top, Bazaar]
+    return [Top, Bazaar, Achievements]

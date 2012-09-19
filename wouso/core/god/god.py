@@ -104,6 +104,10 @@ class DefaultGod:
         for g in get_games():
             ms.extend(g.get_modifiers())
 
+        from wouso.interface import get_apps
+        for a in get_apps():
+            ms.extend(a.get_modifiers())
+
         return ms
 
     def get_artifact_for_modifier(self, modifier, player):
