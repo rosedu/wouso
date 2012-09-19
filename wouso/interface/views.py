@@ -17,6 +17,7 @@ from wouso.core.user.models import Player, PlayerGroup, UserReportForm
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, History as TopHistory
 from wouso.interface.activity import signals
+from django.conf import settings
 
 def get_wall(page=u'1'):
     ''' Returns activity for main wall, paginated.'''
@@ -45,7 +46,7 @@ def login_view(request):
             request.session.set_expiry(MAX_TIME)
             login(request,user)
             signals.addActivity.send(sender=None, user_from=user.get_profile(), action="login", game = None)
-            return HttpResponseRedirect("/hub/")
+            return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
     return HttpResponseRedirect("/")
     
 #This is used to save data in session after logout
@@ -59,6 +60,7 @@ def logout_view(request):
 	for i in data:
 		request.session[i] = data[i]
 	return HttpResponseRedirect("/")
+    
 def hub(request):    
     if request.user.is_anonymous():
         return anonymous_homepage(request)

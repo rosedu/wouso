@@ -4,7 +4,7 @@ import logging
 from wouso.core.app import App
 from models import Activity
 from signals import addActivity
-
+from wouso.interface.apps.messaging.models import Message
 def consecutive_seens(player, timestamp):
     """
      Return the count of consecutive seens for a player, until timestamp
@@ -37,9 +37,7 @@ def login_between(time,first,second):
     return False
     
 def unique_users_pm(player,minutes):
-    activities = Activity.objects.filter(action='message',user_to=player,timestamp__gt=datetime.now()-timedelta(minutes=5))
-    activities = [i.user_from for i in activities]
-    activities = list(set(activities))
+    activities = Message.objects.filter(receiver=player,timestamp__gt=datetime.now()-timedelta(minutes=5)).values('sender').distinct()
     return len(activities)
     
 class Achievements(App):
@@ -70,9 +68,9 @@ class Achievements(App):
         if action == "message":
             #Check the number of unique users who send pm to player in the last m minutes
             if unique_users_pm(kwargs.get('user_to'),30) >=3:
-                if not player.magic.has_modifier('ach-popularity'):
-                    cls.earn_achievement(player,'ach-popularity')
-        if action == "login":
+                if not kwargs.get('user_to').magic.has_modifier('ach-popularity'):
+                    cls.earn_achievement(kwargs.get('user_to'),'ach-popularity')
+        if action in  ("login","seen"):
             #Check login between 2-4 am
             if login_between(kwargs.get('timestamp',datetime.now()),2,4):
                 if not player.magic.has_modifier('ach-night-owl'):

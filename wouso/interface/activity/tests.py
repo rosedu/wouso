@@ -6,7 +6,9 @@ from wouso.games.qotd.models import QotdGame
 from achievements import consecutive_seens
 from achievements import consecutive_qotd_correct, unique_users_pm
 from models import Activity
-
+from Achievements import check_for_achievements
+from wouso.interface.apps.messaging.models import Message,MessagingUser
+from django.dispatch import Signal
 class AchievementTest(WousoTest):
 
     def test_login_10(self):
@@ -103,35 +105,38 @@ class AchievementTest(WousoTest):
                                      action='login',
                                      game=None)
         self.assertTrue(player.magic.has_modifier('ach-night-owl'))
-    
+        
     def popularity_test_5_pm_1(self):
         player = self._get_player()
+        player = player.get_extension(MessagingUser)
         for i in range(10):
             timestamp=datetime.now() + timedelta(minutes = -1)
-            a = Activity.objects.create(timestamp=timestamp, user_from=player,user_to=player, action='message', public=False)
+            a = Message.objects.create(timestamp=timestamp, sender=player,receiver=player,subject = "a",text = "b")
+        for i in Message.objects.all():
+            print "%r" % i.sender
         self.assertEqual(unique_users_pm(player,3),1)
     
     def popularity_test_5_pm_2(self):
         player = self._get_player()
+        player=player.get_extension(MessagingUser)
         timestamp=datetime.now() + timedelta(minutes = -1)
-        a = Activity.objects.create(timestamp=timestamp, user_from=player,user_to=player, action='message', public=False)
-        a = Activity.objects.create(timestamp=timestamp, user_from=None,user_to=player, action='message', public=False)
+        a = Message.objects.create(timestamp=timestamp, sender=player,receiver=player,subject = "a",text = "b")
+        a = Message.objects.create(timestamp=timestamp, sender=self._get_player(2).get_extension(MessagingUser),receiver=player,subject = "a",text = "b")
         self.assertEqual(unique_users_pm(player,3),2)
     
     def popularity_test_5_pm_3(self):
-        #Test for messages recieved from at least 1 user in the last 30 min
-        player = self._get_player()
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-popularity')
-        timestamp = datetime.now() + timedelta(minutes=-1)
-        a = Activity.objects.create(timestamp=timestamp, user_from=player,user_to=player, action='message', public=False)
-        timestamp = datetime.now() + timedelta(minutes=-31)
-        a = Activity.objects.create(timestamp=timestamp, user_from=None,user_to=player, action='message', public=False)
-        activities = Activity.objects.filter(action='message',user_to=player,timestamp__gt=datetime.now()-timedelta(minutes=3))
-        print activities
-        signals.addActivity.send(sender=None, timestamp = timestamp,user_from=player,
-                                     user_to=player,
-                                     action='message',
-                                     game=None)
-        self.assertEqual(unique_users_pm(player,30),1)
-        self.assertTrue(player.magic.has_modifier('ach-popularity'))
+        user_to = self._get_player(100).get_extension(MessagingUser)
+        for i in range(10):
+            player = self._get_player(i).get_extension(MessagingUser)
+            if i <= 3:
+                timestamp = datetime.now() + timedelta(minutes=-1)
+                a = Message.objects.create(timestamp=timestamp, sender=player,receiver=user_to,subject = "a",text = "b")
+            else:
+                timestamp = datetime.now() + timedelta(minutes=-35)
+                a = Message.objects.create(timestamp=timestamp, sender=player,receiver=user_to,subject = "a",text = "b")
+        Message.send(sender=player,receiver=user_to,subject="a",text="b")
+        
+        self.assertEqual(unique_users_pm(user_to,30),5)
+        self.assertTrue(user_to.magic.has_modifier('ach-popularity'))
 

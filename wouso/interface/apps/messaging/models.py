@@ -40,7 +40,7 @@ class Message(models.Model):
         m.save()
         sender.lastMessageTS = datetime.now()
         sender.save()
-        signals.addActivity.send(sender=None, user_from=sender, user_to=receiver, message='', action='message', game=None)
+        signals.messageSignal.send(sender=None, user_from=sender, user_to=receiver, message='', action='message', game=None)
 
     @classmethod
     def get_header_link(kls, request):
