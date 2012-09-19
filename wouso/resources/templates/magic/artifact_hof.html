@@ -28,11 +28,13 @@
         {% endfor %}
     </ol>
 
+    {% if artifacts %}
     <h3>{% trans 'Players' %}</h3>
     <ol>
         {% for p in players %}
         <li>{% player p %} - {{ p.magic.artifact_amounts.count }}</li>
         {% endfor %}
     </ol>
+    {% endif %}
 {% endif %}
 {% endblock %}

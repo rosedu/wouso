@@ -26,6 +26,8 @@
         <a href="{% url wouso.interface.top.views.gettop toptype=1 sortcrit=0 page=1 %}" class="goto">{% trans 'Weekly progress' %}</a>
     <br/>
     <a href="{% url wouso.interface.top.views.pyramid %}" class="goto">{% trans 'Pyramid' %}</a>
+    <br/>
+    <a href="{% url artifact_hof %}" class="goto">{% trans 'Achievements' %}</a>
     {% endif %}
 {% endif %}
 {% endblock %}

@@ -146,7 +146,7 @@ def artifact_hof(request, artifact=None):
     artifact = get_object_or_404(Artifact, pk=artifact) if artifact else None
 
     artifacts = Artifact.objects.all().annotate(used=Count('playerartifactamount')).exclude(used=0).order_by('-used')
-    players = Player.objects.all().annotate(owned=Count('playerartifactamount')).order_by('-owned')[:10]
+    players = Player.objects.all().annotate(owned=Count('playerartifactamount')).exclude(owned=0).order_by('-owned')[:10]
 
     return render_to_response('magic/artifact_hof.html', {'artifacts': artifacts, 'players': players, 'artifact': artifact},
                             context_instance=RequestContext(request))

@@ -23,9 +23,9 @@
     <h4>{% if profile.group %}{% trans 'Group' %}: {% player_group profile.group %}{% endif %}
     {% if profile.race %}{% trans 'Race' %}: {% player_race profile.race %}{% endif %}
     </h4>
-    {% if profile.artifact_amounts.all %}
+    {% if profile.magic.artifact_amounts.all %}
         <ul class="artifacts" id="player-artifacts">
-        {% for a in profile.artifact_amounts.all %}
+        {% for a in profile.magic.artifact_amounts.all %}
             <li>{% artifact a %}</li>
         {% endfor %}
         </ul>
