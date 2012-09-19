@@ -14,19 +14,28 @@
 <h2>{% trans 'Cast' %}</h2>
 <form method="post">
 {% csrf_token %}
-{% trans 'Cast: ' %}<select name="spell" id="spell-selector">
-        <option></option>
-        {% for s in player.magic.spells_available.all %}<option value="{{ s.spell.id }}">{{ s.spell.title }} ({{ s.amount }})</option>
+        {% trans 'Cast: ' %}
+        <select name="spell" id="spell-selector">
+        <option value=""></option>
+        {% for s in player.magic.spells_available.all %}
+            <option value="{{ s.spell.id }}">
+                {{ s.spell.title }} ({{ s.amount }})
+                {% if s.mass %}[{% trans 'mass' %}]{% endif %}
+            </option>
         {% endfor %}
       </select>      
-<span id="more"></span>
-{% trans 'on the following players:' %} 
-<span id="players_list"></span>
-<div class="actions">
-<button type="submit" class="default" id="submit" disabled>{% trans 'Cast' %}</button>
-</div>
+    <span id="more"></span>
+    <span id="target_box">
+    {% trans 'on the following players:' %}
+    <span id="players_list"></span>
+    </span>
+
+    <div class="actions">
+        <button type="submit" class="default" id="submit" disabled>{% trans 'Cast' %}</button>
+    </div>
 </form>
 {% endif %}
+
 <script language="JavaScript" type="text/javascript">
 function days_select(days) {
     if (days <= 1)
@@ -38,29 +47,37 @@ function days_select(days) {
     return html;
 }
 $('#spell-selector').change(function () {
-    $.ajax({
-        url: '{% url get_spell %}' + '?id=' + this.value,
-        dataType: 'json',
-        success: function(data) {
-            days = data[0]['fields']['due_days'];
-            $('#more').html(days_select(days));
-            $('#submit').attr('disabled', false);
-        },
-        error: function(data) {
-            $('#more').html('');
-            $('#submit').attr('disabled', true);
-        }
-    });
-    $.ajax({
-        url: '{% url affected_players %}' + '?spell_id=' + this.value + '&user={{ destination.id }}',
-        dataType: 'html',
-        success: function(data) {
-            $('#players_list').html(data);
-        },
-        error: function(data) {
-            $('#players_list').html('');
-        }
-    });
+    if (!this.value) {
+        $('#target_box').hide();
+        $('#submit').attr('disabled', true);
+    } else {
+        $.ajax({
+            url: '{% url get_spell %}' + '?id=' + this.value,
+            dataType: 'json',
+            success: function(data) {
+                days = data[0]['fields']['due_days'];
+                $('#more').html(days_select(days));
+                $('#submit').attr('disabled', false);
+            },
+            error: function(data) {
+                $('#more').html('');
+                $('#submit').attr('disabled', true);
+            }
+        });
+        $.ajax({
+            url: '{% url affected_players %}' + '?spell_id=' + this.value + '&user={{ destination.id }}',
+            dataType: 'html',
+            success: function(data) {
+                $('#players_list').html(data);
+                $('#target_box').show();
+            },
+            error: function(data) {
+                $('#players_list').html('');
+                $('#target_box').hide();
+            }
+        });
+    }
 });
+$(document).ready(function () {$('#target_box').hide();})
 </script>
 {% endblock %}
