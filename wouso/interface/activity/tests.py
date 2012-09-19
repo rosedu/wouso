@@ -9,6 +9,7 @@ from achievements import consecutive_chall_won, challenge_count
 from models import Activity
 from . import signals
 
+
 class AchievementTest(WousoTest):
 
     def test_login_10(self):
@@ -41,6 +42,8 @@ class AchievementTest(WousoTest):
 
         self.assertTrue(player.magic.has_modifier('ach-login-10'))
 
+
+class QotdAchievementTest(WousoTest):
     def test_10_qotd_3ok(self):
         player = self._get_player()
         for i in range(3):
@@ -70,6 +73,8 @@ class AchievementTest(WousoTest):
                                      game=QotdGame.get_instance())
         self.assertTrue(player.magic.has_modifier('ach-qotd-10'))
 
+
+class ChallengeAchievementTest(WousoTest):
     def test_chall_10_won(self):
         player = self._get_player()
         for i in range(1, 11):
