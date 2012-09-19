@@ -152,9 +152,9 @@ class BazaarInventoryHandler(BazaarHandler):
     def read(self, request):
         player = request.user.get_profile()
 
-        return {'spells_available': player.spells_available,
-                'spells_onme': player.spells,
-                'spells_cast': player.spells_cast
+        return {'spells_available': player.magic.spells_available,
+                'spells_onme': player.magic.spells,
+                'spells_cast': player.magic.spells_cast
         }
 
 class BazaarBuy(BaseHandler):
@@ -283,7 +283,7 @@ class CastHandler(BaseHandler):
 
         try:
             spell = Spell.objects.get(pk=attrs['spell'])
-            assert spell in [s.spell for s in player.spells_available]
+            assert spell in [s.spell for s in player.magic.spells_available]
         except (Spell.DoesNotExist, AssertionError):
             return {'success': False, 'error': 'No such spell available'}
 

@@ -6,7 +6,7 @@
 {% block title %}{% trans 'Cast' %}{% endblock %}
 
 {% block content %}
-{% if not player.spells_collection.all.count %}
+{% if not player.magic.spells_collection.all.count %}
 <div class="wrong error">{% trans "You don't have any spells to cast. Buy some at the bazaar place." %}
 <a href="{% url bazaar_home %}">{% trans 'Bazaar' %}</a>
 </div>
