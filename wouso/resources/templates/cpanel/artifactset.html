@@ -24,8 +24,8 @@ amount:
 <div class="spacer"></div>
 <h4>Existing</h4>
 <ul class="simple">
-{% for a in to.artifact_amounts.all %}
-    <li>{% artifact a %} {{ a.artifact.title }} {{ a.amount }} <a href="{% url admin:user_playerartifactamount_change a.id %}">✍</a></li>
+{% for a in to.magic.artifact_amounts.all %}
+    <li>{% artifact a %} {{ a.artifact.title }} {{ a.amount }} <a href="{% url admin:magic_playerartifactamount_change a.id %}">✍</a></li>
 {% empty %}
     <li class="empty">None</li>
 {% endfor %}
