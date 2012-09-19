@@ -22,12 +22,13 @@ def consecutive_seens(player, timestamp):
 def consecutive_qotd_correct(player):
     """
      Return the count of correct qotd in a row
+     Maximum: 10 (last ten)
     """
-    activities = Activity.get_player_activity(player).filter(action__contains = 'qotd').order_by('-timestamp')[:12]
+    activities = Activity.get_player_activity(player).filter(action__contains = 'qotd').order_by('-timestamp')[:10]
     result = 0
     for i in activities:
         if 'correct' in i.action:
-            result +=1
+            result += 1
         else:
             return result
     return result
@@ -37,19 +38,18 @@ def challenge_count(player):
     """
      Return the count of challenges played by player.
     """
-    games_played = Activity.get_player_activity(player).filter(action__contains='chall').count()
-
-    return games_played
+    return Activity.get_player_activity(player).filter(action__contains='chall').count()
 
 def consecutive_chall_won(player):
     """
      Return the count of won challenges in a row
+     Maximum: 10 (last ten)
     """
-    activities = Activity.get_player_activity(player).filter(action__contains='chall').order_by('-timestamp')[:12]
+    activities = Activity.get_player_activity(player).filter(action__contains='chall').order_by('-timestamp')[:10]
     result = 0
     for i in activities:
         if 'won' in i.action and i.user_from == player:
-            result = result + 1
+            result += 1
         else:
             return result
 
@@ -86,13 +86,13 @@ class Achievements(App):
             games_played = challenge_count(player)
             if games_played > 0 and (games_played % 30) == 0:
                 if not player.magic.has_modifier('ach-chall-30'):
-                    cls.earn_achievement(player, 'ach-chall-30');
+                    cls.earn_achievement(player, 'ach-chall-30')
 
         if action == 'chall-won':
             # Check 10 won challenge games in a row
             if not player.magic.has_modifier('ach-chall-won-10'):
                 if consecutive_chall_won(player) >= 10:
-                    cls.earn_achievement(player, 'ach-chall-won-10');
+                    cls.earn_achievement(player, 'ach-chall-won-10')
 
         if action == 'seen':
             # Check previous 10 seens
