@@ -239,6 +239,20 @@ class Challenge(models.Model):
         partic.start = datetime.now()
         partic.save()
 
+    def set_won_by_player(self, player):
+        if self.user_from.user == player:
+            self.user_from.score = 1
+            self.user_to.score = 0
+        else:
+            self.user_from.score = 1
+            self.user_to.score = 0
+
+        self.user_from.played = True
+        self.user_to.played = True
+
+        # process expired activity
+        self.played()
+
     def set_expired(self):
         if not self.user_from.played:
             self.user_from.score = 0.0
