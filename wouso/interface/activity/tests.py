@@ -4,7 +4,7 @@ from wouso.core.tests import WousoTest
 from wouso.interface.activity import signals
 from wouso.games.qotd.models import QotdGame
 from achievements import consecutive_seens
-from achievements import consecutive_qotd_correct
+from achievements import consecutive_qotd_correct, unique_users_pm
 from models import Activity
 
 class AchievementTest(WousoTest):
@@ -104,4 +104,34 @@ class AchievementTest(WousoTest):
                                      game=None)
         self.assertTrue(player.magic.has_modifier('ach-night-owl'))
     
+    def popularity_test_5_pm_1(self):
+        player = self._get_player()
+        for i in range(10):
+            timestamp=datetime.now() + timedelta(minutes = -1)
+            a = Activity.objects.create(timestamp=timestamp, user_from=player,user_to=player, action='message', public=False)
+        self.assertEqual(unique_users_pm(player,3),1)
+    
+    def popularity_test_5_pm_2(self):
+        player = self._get_player()
+        timestamp=datetime.now() + timedelta(minutes = -1)
+        a = Activity.objects.create(timestamp=timestamp, user_from=player,user_to=player, action='message', public=False)
+        a = Activity.objects.create(timestamp=timestamp, user_from=None,user_to=player, action='message', public=False)
+        self.assertEqual(unique_users_pm(player,3),2)
+    
+    def popularity_test_5_pm_3(self):
+        #Test for messages recieved from at least 1 user in the last 30 min
+        player = self._get_player()
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-popularity')
+        timestamp = datetime.now() + timedelta(minutes=-1)
+        a = Activity.objects.create(timestamp=timestamp, user_from=player,user_to=player, action='message', public=False)
+        timestamp = datetime.now() + timedelta(minutes=-31)
+        a = Activity.objects.create(timestamp=timestamp, user_from=None,user_to=player, action='message', public=False)
+        activities = Activity.objects.filter(action='message',user_to=player,timestamp__gt=datetime.now()-timedelta(minutes=3))
+        print activities
+        signals.addActivity.send(sender=None, timestamp = timestamp,user_from=player,
+                                     user_to=player,
+                                     action='message',
+                                     game=None)
+        self.assertEqual(unique_users_pm(player,30),1)
+        self.assertTrue(player.magic.has_modifier('ach-popularity'))
 

@@ -36,6 +36,12 @@ def login_between(time,first,second):
         return True
     return False
     
+def unique_users_pm(player,minutes):
+    activities = Activity.objects.filter(action='message',user_to=player,timestamp__gt=datetime.now()-timedelta(minutes=5))
+    activities = [i.user_from for i in activities]
+    activities = list(set(activities))
+    return len(activities)
+    
 class Achievements(App):
 
     @classmethod
@@ -60,6 +66,12 @@ class Achievements(App):
             if consecutive_qotd_correct(player) >= 10:
                 if not player.magic.has_modifier('ach-qotd-10'):
                     cls.earn_achievement(player,'ach-qotd-10')
+        
+        if action == "message":
+            #Check the number of unique users who send pm to player in the last m minutes
+            if unique_users_pm(kwargs.get('user_to'),30) >=3:
+                if not player.magic.has_modifier('ach-popularity'):
+                    cls.earn_achievement(player,'ach-popularity')
         if action == "login":
             #Check login between 2-4 am
             if login_between(kwargs.get('timestamp',datetime.now()),2,4):
@@ -75,7 +87,7 @@ class Achievements(App):
                     cls.earn_achievement(player, 'ach-login-10')
     @classmethod
     def get_modifiers(self):
-        return ['ach-login-10','ach-qotd-10','ach-night-owl','ach-early-bird']
+        return ['ach-login-10','ach-qotd-10','ach-night-owl','ach-early-bird','ach-popularity']
 
 def check_for_achievements(sender, **kwargs):
     Achievements.activity_handler(sender, **kwargs)
