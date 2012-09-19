@@ -649,16 +649,16 @@ def add_player(request):
 
 @permission_required('config.change_setting')
 def edit_player(request, user_id):
-	user = get_object_or_404(User, pk=user_id)
-	if request.method == "POST":
-		form = UserForm(data = request.POST, instance = user)
-		if form.is_valid():
-			form.save()
-			return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.players'))
-	else:
-		form = UserForm(instance=user)
-		form.fields['password'].widget.attrs['readonly'] = True
-	return render_to_response('cpanel/edit_player.html', {'form':form}, context_instance=RequestContext(request))
+    user = get_object_or_404(User, pk=user_id)
+    if request.method == "POST":
+        form = UserForm(data = request.POST, instance = user)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.players'))
+    else:
+        form = UserForm(instance=user)
+        form.fields['password'].widget.attrs['readonly'] = True
+    return render_to_response('cpanel/edit_player.html', {'form':form}, context_instance=RequestContext(request))
 
 
 @permission_required('config.change_setting')
