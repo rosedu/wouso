@@ -24,6 +24,12 @@ class MagicManager(object):
         return PlayerSpellAmount.objects.filter(player=self.player)
 
     @property
+    def is_spelled(self):
+        if len(PlayerSpellDue.objects.filter(player=self.player)) > 0:
+            return True
+        return False
+    
+    @property
     def artifact_amounts(self):
         return self.player.playerartifactamount_set
 
@@ -122,7 +128,7 @@ class MagicManager(object):
         psamount.save()
         return psamount
 
-    def delete_spell(self, spell):
+    def decrement_spell(self, spell):
         try:
             psamount = PlayerSpellAmount.objects.get(player=self.player, spell=spell)
             assert psamount.amount > 0
@@ -168,7 +174,7 @@ class MagicManager(object):
                 return 'Cannot cast the same spell more than once'
             #extend the affected time by spell
             psdue = PlayerSpellDue.objects.get(player=player_dest, spell=spell)
-            if(psdue.due < due):
+            if psdue.due < due:
                 psdue.delete()
                 psdue = PlayerSpellDue.objects.create(player=player_dest, source=self.player, spell=spell, due=due)
             else:
@@ -186,7 +192,7 @@ class MagicManager(object):
 
         for player_dest in destination:
             self.basic_cast(player_dest=player_dest, spell=spell, due=due)
-        self.delete_spell(spell)
+        self.decrement_spell(spell)
         return None
 
     def cast_spell(self, spell, source, due):

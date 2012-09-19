@@ -105,7 +105,7 @@ class Player(models.Model):
     race = models.ForeignKey(Race, blank=False, default=None, null=True)
 
     def get_neighbours_from_top(self, count):
-        """ Returns an array of neighbouring players from top: count up intop and count down """
+        """ Returns an array of neighbouring players from top: count up and count down """
         base_query = Player.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
         allUsers = list(base_query.order_by('-points'))
         try:
@@ -118,9 +118,9 @@ class Player(models.Model):
 
         start = max(pos-count, 0)
         if pos + count >= len(allUsers):
-            start = len(allUsers)-2*count-2
+            start = len(allUsers)-2*count-1
 
-        players = allUsers[start:2*count+1]
+        players = allUsers[start:start+2*count+1]
         return players   
  
     def user_name(self):
