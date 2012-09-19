@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core.urlresolvers import reverse
+from django.db.models import Count
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
@@ -10,7 +11,7 @@ from exceptions import ValueError
 from wouso.core.config.models import BoolSetting
 from wouso.core.scoring.sm import InvalidFormula
 from wouso.core.user.models import Player
-from wouso.core.magic.models import Spell, SpellHistory, PlayerSpellDue
+from wouso.core.magic.models import Spell, SpellHistory, PlayerSpellDue, Artifact
 from wouso.core import scoring
 
 # marche
@@ -136,3 +137,16 @@ def magic_cast(request, destination=None, spell=None):
     return render_to_response('profile/cast.html',
                               {'destination': destination, 'error': error},
                               context_instance=RequestContext(request))
+
+@login_required
+def artifact_hof(request, artifact=None):
+    """
+     Hall of Fame for Artifacts (generaly achievements)
+    """
+    artifact = get_object_or_404(Artifact, pk=artifact) if artifact else None
+
+    artifacts = Artifact.objects.all().annotate(used=Count('playerartifactamount')).exclude(used=0).order_by('-used')
+    players = Player.objects.all().annotate(owned=Count('playerartifactamount')).order_by('-owned')[:10]
+
+    return render_to_response('magic/artifact_hof.html', {'artifacts': artifacts, 'players': players, 'artifact': artifact},
+                            context_instance=RequestContext(request))

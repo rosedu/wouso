@@ -1,0 +1,38 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+{% load artifacts %}
+{% load user %}
+
+{% block title %}{% trans 'Hall of Fame' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Hall of Fame' %}{% endblock %}
+
+{% block sectioncontent %}
+
+{% if artifact %}
+    <h3>{{ artifact.title }}</h3>
+
+    <ul>
+        {% for pa in artifact.playerartifactamount_set.all %}
+        <li>{% player pa.player %}</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url artifact_hof %}">{% trans "Back" %}</a>
+{% else %}
+    <h3>{% trans 'Artifacts' %}</h3>
+    <ol>
+        {% for a in artifacts %}
+        <li><a href="{% url artifact_hof a.id %}">{% artifact a %} {{ a.title }}</a> - {{ a.used }}</li>
+        {% empty %}
+        <li>{% trans 'No artifacts given yet' %}</li>
+        {% endfor %}
+    </ol>
+
+    <h3>{% trans 'Players' %}</h3>
+    <ol>
+        {% for p in players %}
+        <li>{% player p %} - {{ p.magic.artifact_amounts.count }}</li>
+        {% endfor %}
+    </ol>
+{% endif %}
+{% endblock %}
