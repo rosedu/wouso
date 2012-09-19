@@ -102,7 +102,7 @@ class Achievements(App):
     @classmethod
     def get_modifiers(self):
         return ['ach-login-10',
-                'ach-qotd-10'
+                'ach-qotd-10',
                 'ach-chall-30',
                 'ach-chall-won-10'
         ]
