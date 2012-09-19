@@ -141,7 +141,7 @@ class DefaultGod:
             return False, 'Cannot steal from self'
 
         if spell.name == 'challenge-affect-scoring':
-            existing = destination.spells.filter(spell__name='challenge-affect-scoring')
+            existing = destination.magic.spells.filter(spell__name='challenge-affect-scoring')
             if existing.count() > 0:
                 # check if a spell with the same sign +/- exists
                 for sp in existing:
