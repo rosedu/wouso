@@ -3,6 +3,7 @@ var selectID = null;
 var UserName = null;
 var NewUserTimer = null;
 var SendPingTimer = null;
+var title;
 
 /* Private chat staff */
 var firstFreeChat;
@@ -25,7 +26,28 @@ else{
     sessionStorage.max_room = max_room;
     sessionStorage.max_boxes = max_boxes;
     sessionStorage.private_users = JSON.stringify(private_users);
+}
 
+/* Emoticons and the replace function. */
+var emoticons = {
+    '>:D':'emoticon_evilgrin.png',
+    ':D':'emoticon_grin.png',
+    '=D':'emoticon_happy.png',
+    ':\\)':'emoticon_smile.png',
+    ':O':'emoticon_surprised.png',
+    ':P':'emoticon_tongue.png',
+    ':\\(':'emoticon_unhappy.png',
+    ';\\)':'emoticon_wink.png',
+    '\\(ball\\)':'sport_soccer.png'
+};
+
+var img_dir = "/static/img/";
+function replace_emoticons(text) {
+    $.each(emoticons, function (character, img) {
+        var re = new RegExp(character, 'g');
+        text = text.replace(re, '<img src="' + img_dir + img + '" />');
+    });
+    return text;
 }
 
 function put_box_name(id, user) {
@@ -92,10 +114,12 @@ function switch_color(room) {
     if (private_users[room].timer++ % 2 == 0) {
         $('#Privatebar' + room).attr('style', "background: blue");
         $('#PrivatebarMinimize' + room).attr('style', "background: blue");
+        document.title = title;
     }
     else {
         $('#Privatebar' + room).attr('style', "background: red");
         $('#PrivatebarMinimize' + room).attr('style', "background: red");
+        document.title = private_users[room].user_name+ " spune...";
     }
 }
 
@@ -107,10 +131,11 @@ function stop_timer_for_swiching(id) {
     private_users[id].timer = null;
     private_users[id].time_set = null;
     sessionStorage.private_users = JSON.stringify(private_users);
+    document.title = title;
 }
 
 $(document).ready(function () {
-    /* csrf crap */
+    title = document.title;
     $.ajaxSetup({
         beforeSend:function (xhr, settings) {
             function getCookie(name) {
@@ -146,7 +171,7 @@ $(document).ready(function () {
         var max_value = max_room + 1;
         if (firstFreeChat <  max_value) {
             for (i = from; i < firstFreeChat - 1; i++) {
-                //text_context[i+1]  = $("#PrivateboxTextArea" + (i + 1)).html();
+                stop_timer_for_swiching(i);
                 change_values(i + 1, i);
                 put_box_name(i, private_users[i].user_name);
 
@@ -158,9 +183,12 @@ $(document).ready(function () {
                     $("#Privatebox" + i).hide();
                     $("#PrivateboxMinimize" + i).show();
                 }
+
             }
+
             firstFreeChat--;
             /* Hide and remove old info. */
+            stop_timer_for_swiching(firstFreeChat);
             $("#PrivateboxTextArea" + firstFreeChat).text("");
             $("#Privatebox" + firstFreeChat).hide();
             $("#PrivateboxMinimize" + firstFreeChat).hide();
@@ -325,7 +353,7 @@ $(document).ready(function () {
     function select_bar(id, name) {
         if (sw == 0) {
             var position = 175 * (max_boxes + 1);
-            html = '<select onchange="on_selectbar_change()" class= "Privatebox" id="selectbar_id" style="right: ' + position + 'px; background: green;">' +
+            html = '<select onchange="on_selectbar_change()" class= "Privatebox" id="selectbar_id" style="right: ' + position + 'px; background: green; position:fixed">' +
                 '<option ></option>' +
                 '</select>';
             $("#PrivatebarUsers").append(html);
@@ -349,9 +377,9 @@ $(document).ready(function () {
     function create_chat_box(res) {
         var obj = $.parseJSON(res.responseText);
         var setName;
-        chat_room = obj.name;
+        var chat_room = obj.name;
         /* Put the name on the list, if windows number is passed.*/
-        room = GetRoom(chat_room);
+        var room = GetRoom(chat_room);
         if (UserName_over != null){
             setName = UserName_over;
             selectID_over = null;
@@ -599,29 +627,6 @@ $(document).ready(function () {
             was_writing = 1;
         }
     });
-
-    /* Emoticons and the replace function. */
-    /* TODO: More emoticons.*/
-    var emoticons = {
-        '>:D':'emoticon_evilgrin.png',
-        ':D':'emoticon_grin.png',
-        '=D':'emoticon_happy.png',
-        ':\\)':'emoticon_smile.png',
-        ':O':'emoticon_surprised.png',
-        ':P':'emoticon_tongue.png',
-        ':\\(':'emoticon_unhappy.png',
-        ';\\)':'emoticon_wink.png',
-        '\\(ball\\)':'sport_soccer.png'
-    };
-
-    var img_dir = "/static/img/";
-    function replace_emoticons(text) {
-        $.each(emoticons, function (character, img) {
-            var re = new RegExp(character, 'g');
-            text = text.replace(re, '<img src="' + img_dir + img + '" />');
-        });
-        return text;
-    }
 
     $("#ContactboxProfileButton").click(function(){
         window.location = "/player/" + selectID_over + "/";

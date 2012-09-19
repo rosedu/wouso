@@ -22,15 +22,12 @@ $(document).ready(function(){
 
     $("#archive_day").click(function(){
         var date = $("#datepicker").val();
-        date = date + "/" + $("#minSlider").html();
-        var hours = $("#maxSlider").html() - $("#minSlider").html();
         if(date){
+            date = date + "/" + $("#minSlider").html();
+            var hours = $("#maxSlider").html() - $("#minSlider").html();
             msgdata = {'room':'global', 'date':date, 'hours':hours};
             var args = {type:"POST", url:"/chat/archive_messages/", data:msgdata, complete:printArchive};
             $.ajax(args);
-        }
-        else{
-            alert($("#slider").slider("values"))
         }
     });
 
@@ -40,7 +37,7 @@ $(document).ready(function(){
             var obj = jQuery.parseJSON(res.responseText);
             var i;
             for(i = 0; i < obj.count; i++){
-                $("#global_area").append(obj.msgs[i].text + "<br>");
+                $('#global_area').append(obj.msgs[i].time + obj.msgs[i].user + ": " + replace_emoticons(obj.msgs[i].text) + "<br>");
             }
         }
     }
@@ -73,7 +70,7 @@ $(document).ready(function(){
             var obj = jQuery.parseJSON(res.responseText);
             var i;
             for(i = 0; i < obj.count; i++){
-                $("#private_area").append(obj.msgs[i].text + "<br>");
+                $('#private_area').append(obj.msgs[i].time + obj.msgs[i].user + ": " + replace_emoticons(obj.msgs[i].text) + "<br>");
             }
         }
     }

@@ -8,7 +8,7 @@ from django.utils import simplejson
 
 from wouso.core.config.models import BoolSetting
 from models import *
-from wouso.interface.chat.utils import  change_text, get_author, serve_message, some_old_message, add_message
+from wouso.interface.chat.utils import  change_text, get_author, serve_message, some_old_message, add_message, create_message
 
 @login_required
 def index(request):
@@ -108,13 +108,7 @@ def archive_messages(request):
     user = get_author(request)
     obj = {'user': unicode(user)}
     obj['count'] = messages.count()
-    msgs = []
-    for i in messages:
-        mesaj = {}
-        mesaj['text'] = str(i)
-        msgs.append(mesaj)
-
-    obj['msgs'] = msgs
+    obj['msgs'] = create_message(user, messages)
     return HttpResponse(simplejson.dumps(obj))
 
 
@@ -175,14 +169,13 @@ def sendmessage(request):
         chat_global = roomexist('global')
         if user.has_modifier('block-communication'):
             return json_response(special_message(user, None, "block-communication"))
-
-            #add_message("", user, chat_global, user, "special", "block-communication")
         elif user.has_modifier('block-global-chat-page') or not user.canAccessChat:
             return json_response(special_message(user, None, "kick"))
-            #add_message("", user, chat_global, user, "special", "kick")
 
         if user not in chat_global.participants.all():
             chat_global.participants.add(user)
+            user.lastMessageTS = datetime.now()
+            user.save()
     elif data['opcode'] == 'getRoom':
         try:
             user_to = Player.objects.get(id=data['to'])

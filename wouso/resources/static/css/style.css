@@ -125,7 +125,7 @@ div#logo {
     float: right;
 }
 #ajax-message {
-    position: fixed; top: 100px; left: 50%;
+    position: absolute; top: 100px; left: 50%;
     z-index: 1000;
     text-align: center;
 }
