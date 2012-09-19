@@ -14,4 +14,7 @@ urlpatterns = patterns('wouso.games.challenge.views',
     url(r'^history/(?P<playerid>\d+)/$', 'history', name='chellenge_history'),
 
     url(r'^randomchallenge/$', 'challenge_random', name='challenge_random'),
+	url(r'^stats/$', 'challenge_stats', name='challenge_stats'),
+	url(r'^stats/(?P<target_id>\d+)/', 'detailed_challenge_stats',
+		name='detailed_challenge_stats'),
 )
