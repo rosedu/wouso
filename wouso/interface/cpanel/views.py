@@ -76,6 +76,7 @@ def spells(request):
                                'spells_used' : spells_used,
                                'spells_expired' : spells_expired,
                                'spells_cleaned' : spells_cleaned,
+                               'module': 'spells',
                               },
                               context_instance=RequestContext(request))
 
@@ -90,7 +91,7 @@ def edit_spell(request, id):
             return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.spells'))
     else:
         form = SpellForm(instance=spell)
-    return render_to_response('cpanel/edit_spell.html', {'form':form}, context_instance=RequestContext(request))
+    return render_to_response('cpanel/edit_spell.html', {'form':form, 'module': 'spells'}, context_instance=RequestContext(request))
 
 
 @permission_required('config.change_setting')
@@ -103,7 +104,7 @@ def add_spell(request):
             return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.spells'))
         else:
             form = spell
-    return render_to_response('cpanel/add_spell.html', {'form': form}, context_instance=RequestContext(request))
+    return render_to_response('cpanel/add_spell.html', {'form': form, 'module': 'spells'}, context_instance=RequestContext(request))
 
 
 @permission_required('config.change_setting')
