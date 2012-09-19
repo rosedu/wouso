@@ -203,5 +203,4 @@ class MagicManager(object):
         error = source.magic._check_spell_available(spell=spell)
         if error:
             return error
-        source.magic.basic_cast(player_dest=self.player, spell=spell, due=due)
-        return None
+        return source.magic.basic_cast(player_dest=self.player, spell=spell, due=due)
