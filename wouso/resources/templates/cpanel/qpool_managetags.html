@@ -18,7 +18,9 @@
         <td>{{ t.question_set.count }}</td>
         <td><a class="button button-min" href="{% url admin:qpool_tag_change t.id %}">✍</a></td>
         <td><a class="button button-min" href="{% url admin:qpool_tag_delete t.id %}">x</a></td>
+        {% if t.category %}
         <td><a href="{% url qpool_home cat=t.category.name tag=t.id %}">filter</a></td>
+        {% endif %}
     </tr>
     {% endfor %}
 </table>
