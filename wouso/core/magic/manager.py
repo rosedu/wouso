@@ -25,7 +25,7 @@ class MagicManager(object):
 
     @property
     def is_spelled(self):
-        if len(PlayerSpellDue.objects.filter(player=self.player)) > 0:
+        if PlayerSpellDue.objects.filter(player=self.player).count() > 0:
             return True
         return False
     

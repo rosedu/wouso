@@ -21,7 +21,7 @@ class PlayerTestCase(unittest.TestCase):
         user.delete()
         artif.delete()
 
-    def testPlayerNeighbours(self):
+    def test_player_neighbours(self):
         v = []
         for i in range(0,7):
             user = User.objects.create(username='test' + repr(i))
