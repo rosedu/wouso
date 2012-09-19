@@ -51,6 +51,12 @@ upat = [
 
     url(r'^lastchalls/$', 'wouso.interface.cpanel.views.lastchalls', name='lastchalls'),
     url(r'^grandchallenge/$', 'wouso.interface.cpanel.views.grandchalls', name='grandchallenge'),
+
+    url(r'^lastchalls/$', 'wouso.interface.cpanel.views.lastchalls', name='lastchalls'),
+    url(r'^grandchallenge/$', 'wouso.interface.cpanel.views.grandchalls', name='grandchalls'),
+    url(r'^grandchallenge/start/$', 'wouso.interface.cpanel.views.grandchalls_start', name='grandchalls_start'),
+    url(r'^grandchallenge/round/$', 'wouso.interface.cpanel.views.grandchalls_round', name='grandchalls_round'),
+    url(r'^grandchallenge_results/$', 'wouso.interface.cpanel.views.grandchalls_results', name='grandchalls_results'),
 ]
 
 for g in get_cpanel_games():

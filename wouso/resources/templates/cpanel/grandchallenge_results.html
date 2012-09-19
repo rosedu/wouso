@@ -1,0 +1,36 @@
+{% extends 'cpanel/index.html' %}
+{% load artifacts %}
+
+{% block sectiontitle %}The GrandChallenge - results{% endblock %}
+
+{% block sectioncontent %}
+<table>
+    <tr><th>Place</th>
+        <th>Participant</th>
+        <th>Won to</th>
+        <th>Lost to</th>
+    </tr>
+    {% for user in clasament %}
+    <tr><td>{{ forloop.counter }}</td>
+        <td><a href="{% url interface.profile.views.user_profile user.id %}">
+            {% if forloop.counter = 1 %}<span class="ok">
+            {% else %}{% if forloop.counter < 5 %}<span class="warn">
+            {% else %}<span class="wrong">
+            {% endif %}{% endif %}
+            {{user}}</span></a></td>
+        <td>{% for chall in gchalls %}
+            {% if chall.won == user %}
+            <a href="{% url interface.profile.views.user_profile user.id %}">{{chall.lost}}</a>
+            {% endif %}
+            {% endfor %}
+        </td>
+        <td>{% for chall in gchalls %}
+            {% if chall.lost == user %}
+            <a href="{% url interface.profile.views.user_profile user.id %}">{{chall.won}}</a>
+            {% endif %}
+            {% endfor %}
+        </td>
+        {% endfor %}
+    </tr>
+</table>
+{% endblock %}

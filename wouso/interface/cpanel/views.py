@@ -24,6 +24,7 @@ from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm, SpellForm
 from django.contrib.auth.models import User
+from wouso.games.grandchallenge.models import GrandChallenge, GrandChallengeGame
 
 @staff_required
 def dashboard(request):
@@ -677,48 +678,82 @@ def the_bell(request):
     addActivity.send(sender=None, user_from=player, game=None, message=message)
 
     return redirect('dashboard')
-
 @login_required
 def lastchalls(request):
-    # TODO: this should not be here, but in a cpanel.py file
-    from wouso.games.challenge.models import Challenge
-
     last30 = Challenge.objects.filter(status__in=['P', 'D']).order_by('-date')[:30]
     return render_to_response('cpanel/lastchalls.html',
-                            {'last30': last30},
-                            context_instance=RequestContext(request))
-
+            {'last30': last30},
+        context_instance=RequestContext(request))
 
 @login_required
-def grandchalls_set_active(request):
+def grandchalls(request):
+    return render_to_response('cpanel/grandchallenge.html',
+            { 'nr': -1},
+        context_instance=RequestContext(request))
+
+@login_required
+def grandchalls_set_active():
     """ Start the game """
-    from wouso.games.grandchallenge.models import GrandChallengeGame
     GrandChallengeGame.set_active()
     return render_to_response('cpanel/grandchallenge.html',
-                            context_instance=RequestContext(request))
+        context_instance=RequestContext(request))
 
 @login_required
 def grandchalls_start(request):
     """ Play the game """
-    from wouso.games.grandchallenge.models import GrandChallengeGame, GrandChallenge
     GrandChallengeGame.start()
     users = sorted(GrandChallengeGame.allUsers, key=lambda u: u.user)
     gchalls = sorted(GrandChallenge.get_challenges(), key=lambda gc: gc.branch)
     GrandChallengeGame.round_number += 1
 
     return render_to_response('cpanel/grandchallenge.html',
-                            {'gchalls': gchalls,
-                            'nr': GrandChallengeGame.round_number - 1,
-                            'users': users},
-                            context_instance=RequestContext(request))
-
+            {'gchalls': gchalls,
+             'nr': GrandChallengeGame.round_number - 1,
+             'users': users,
+             'over': 0},
+        context_instance=RequestContext(request))
 
 @login_required
-def grandchalls(request):
-    from wouso.games.grandchallenge.models import GrandChallenge, GrandChallengeGame
-    gchalls = GrandChallenge.objects.all()
-    #gchalls = Challenge.objects.filter(status__in=['P', 'D']).order_by('-date')[:30]
+def grandchalls_round(request):
+    """ Play a round """
+
+    """ regular round """
+    over = 0
+    if not GrandChallengeGame.is_final():
+        GrandChallenge.joaca(GrandChallengeGame.round_number)
+        if GrandChallengeGame.round_number % 2 == 0:
+            GrandChallenge.play_round(1)
+            GrandChallenge.play_round(0)
+        else:
+            GrandChallenge.play_round(1)
+    else:
+        """ final 2 players
+            they may have to play 2 rounds if the winners finalist lose
+            to the loosers finalist
+        """
+        if GrandChallengeGame.round_number != 10:
+            GrandChallengeGame.final_round()
+            GrandChallenge.joaca(GrandChallengeGame.round_number)
+            GrandChallenge.play_round(1)
+            GrandChallenge.play_round(0)
+            if GrandChallengeGame.is_winner():
+                over = 1
+        else:
+            if not GrandChallengeGame.is_winner():
+                GrandChallengeGame.final_second_round()
+            over = 1
+    GrandChallengeGame.round_number += 1
+    gchalls = sorted(GrandChallenge.get_challenges(), key=lambda gc:gc.branch)
+
     return render_to_response('cpanel/grandchallenge.html',
-                            {'gchalls': gchalls,
-                            'nr': GrandChallengeGame.round_number - 1},
-                            context_instance=RequestContext(request))
+            {'gchalls': gchalls,
+             'nr': GrandChallengeGame.round_number,
+             'over': over},
+        context_instance=RequestContext(request))
+
+@login_required
+def grandchalls_results(request):
+    return render_to_response('cpanel/grandchallenge_results.html',
+            {'gchalls': GrandChallenge.get_challenges(),
+             'clasament': GrandChallenge.clasament()},
+        context_instance=RequestContext(request))
