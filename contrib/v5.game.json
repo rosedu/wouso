@@ -21,7 +21,7 @@
   }
  },
  {
-  "pk": 5,
+  "pk": 1,
   "model": "magic.artifactgroup",
   "fields": {
    "name": "Default"

@@ -37,7 +37,7 @@ class Modifier(models.Model):
 
 class ArtifactGroup(models.Model):
     """ A group of artifacts for a Species. It cannot contain two artifacts of the same name."""
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     
     def __unicode__(self):
         return self.name
