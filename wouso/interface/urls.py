@@ -35,6 +35,7 @@ urlpatterns = patterns('',
 
     url(r'^magic/summary/$', 'wouso.interface.profile.views.magic_summary', name='magic_summary'),
     url(r'^magic/spell/$', 'wouso.interface.profile.views.magic_spell', name='get_spell'),
+    url(r'^magic/affected_players/$', 'wouso.interface.apps.magic.views.affected_players', name='affected_players'),
 
     url(r'^groups/$', 'wouso.interface.profile.views.groups_index', name='groups_index'),
     url(r'^group/(?P<id>\d*)/.*$', 'wouso.interface.profile.views.player_group', name='player_group'),

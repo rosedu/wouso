@@ -105,6 +105,25 @@ class Player(models.Model):
     race = models.ForeignKey(Race, blank=False, default=None, null=True)
     description = models.TextField(max_length=600, blank=True)
 
+    def get_neighbours_from_top(self, count):
+        """ Returns an array of neighbouring players from top: count up and count down """
+        base_query = Player.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
+        allUsers = list(base_query.order_by('-points'))
+        try:
+            pos = allUsers.index(self)
+        except IndexError:
+            return []  
+
+        if len(allUsers) <= 2*count+1:
+            return allUsers
+
+        start = max(pos-count, 0)
+        if pos + count >= len(allUsers):
+            start = len(allUsers)-2*count-1
+
+        players = allUsers[start:start+2*count+1]
+        return players   
+ 
     def user_name(self):
         return self.user.username
 
@@ -241,7 +260,7 @@ class Player(models.Model):
             extension.save()
 
         return extension
-
+ 
     def __unicode__(self):
         ret = u"%s %s" % (self.user.first_name, self.user.last_name)
         return ret if ret != u" " else self.user.__unicode__()
@@ -282,3 +301,4 @@ def user_post_save(sender, instance, **kwargs):
         except: pass # This might fail when formulas are not set-up, i.e. superuser syncdb profile creation
 
 models.signals.post_save.connect(user_post_save, User)
+
