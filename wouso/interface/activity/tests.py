@@ -44,8 +44,8 @@ class AchievementTest(WousoTest):
         for i in range(1, 11):
             timestamp = datetime.now() + timedelta(days=-i)
             a = Activity.objects.create(timestamp=timestamp,
-                    user_from=player,user_to=player, action='chall-won',
-            message_string=str(i), public=True)
+                    user_from=player, user_to=player, action='chall-won',
+                    public=True)
 
         self.assertEqual(consecutive_chall_won(player), 10)
 
@@ -55,12 +55,12 @@ class AchievementTest(WousoTest):
             timestamp = datetime.now() + timedelta(days=-i)
             if i == 5:
                  a = Activity.objects.create(timestamp=timestamp,
-                        user_from=player,user_to=player, action='chall-draw',
-                        message_string=str(i), public=True)
+                        user_from=player, user_to=player, action='chall-draw',
+                        public=True)
             else:
                 a = Activity.objects.create(timestamp=timestamp,
-                        user_from=player,user_to=player, action='chall-won',
-                        message_string=str(i), public=True)
+                        user_from=player, user_to=player, action='chall-won',
+                        public=True)
 
         self.assertEqual(consecutive_chall_won(player), 4)
 
@@ -71,12 +71,12 @@ class AchievementTest(WousoTest):
             timestamp = datetime.now() + timedelta(days=-i)
             if i == 5:
                  a = Activity.objects.create(timestamp=timestamp,
-                        user_from=player2,user_to=player1, action='chall-won',
-                        message_string=str(i), public=True)
+                        user_from=player2, user_to=player1, action='chall-won',
+                        public=True)
             else:
                 a = Activity.objects.create(timestamp=timestamp,
-                        user_from=player1,user_to=player2, action='chall-won',
-                        message_string=str(i), public=True)
+                        user_from=player1, user_to=player2, action='chall-won',
+                        public=True)
 
         self.assertEqual(consecutive_chall_won(player1), 4)
 
@@ -86,9 +86,10 @@ class AchievementTest(WousoTest):
         for i in range(1, 10):
             timestamp = datetime.now() + timedelta(days=-i)
             a = Activity.objects.create(timestamp=timestamp,
-                    user_from=player,user_to=player, action='chall-won',
-                    message_string=str(i), public=True)
+                    user_from=player, user_to=player, action='chall-won',
+                    public=True)
 
+        self.assertFalse(player.magic.has_modifier('ach-chall-won-10'))
         signals.addActivity.send(sender=None, user_from=player,
                                      user_to=player,
                                      action='chall-won',
@@ -100,8 +101,8 @@ class AchievementTest(WousoTest):
         for i in range(1, 31):
             timestamp = datetime.now() + timedelta(days=-i)
             a = Activity.objects.create(timestamp=timestamp,
-                    user_from=player,user_to=player, action='chall-won',
-                    message_string=str(i), public=True)
+                    user_from=player, user_to=player, action='chall-won',
+                    public=True)
 
         self.assertEqual(challenge_count(player), 30)
 
@@ -112,16 +113,16 @@ class AchievementTest(WousoTest):
             timestamp = datetime.now() + timedelta(days=-i)
             if (i % 5) == 0:
                 a = Activity.objects.create(timestamp=timestamp,
-                        user_from=player2,user_to=player1, action='chall-won',
-                        message_string=str(i), public=True)
+                        user_from=player2, user_to=player1, action='chall-won',
+                        public=True)
             elif (i % 7) == 0:
                 a = Activity.objects.create(timestamp=timestamp,
-                        user_from=player1,user_to=player2, action='chall-draw',
-                        message_string=str(i), public=True)
+                        user_from=player1, user_to=player2, action='chall-draw',
+                        public=True)
             else:
                 a = Activity.objects.create(timestamp=timestamp,
-                        user_from=player1,user_to=player2, action='chall-won',
-                        message_string=str(i), public=True)
+                        user_from=player1, user_to=player2, action='chall-won',
+                        public=True)
 
         self.assertEqual(challenge_count(player1), 30)
 
@@ -132,16 +133,15 @@ class AchievementTest(WousoTest):
             timestamp = datetime.now() + timedelta(days=-i)
             if i % 5 == 0:
                 a = Activity.objects.create(timestamp=timestamp,
-                    user_from=player,user_to=player, action='chall-draw',
-                    message_string=str(i), public=True)
+                    user_from=player, user_to=player, action='chall-draw',
+                    public=True)
             else:
                 a = Activity.objects.create(timestamp=timestamp,
-                    user_from=player,user_to=player, action='chall-won',
-                    message_string=str(i), public=True)
+                    user_from=player, user_to=player, action='chall-won',
+                    public=True)
 
         signals.addActivity.send(sender=None, user_from=player,
                                      user_to=player,
                                      action='chall-won',
                                      game=ChallengeGame.get_instance())
         self.assertTrue(player.magic.has_modifier('ach-chall-30'))
-
