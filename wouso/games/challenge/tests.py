@@ -3,7 +3,7 @@ import unittest
 from datetime import datetime,timedelta
 from mock import patch
 
-from django.test.testcases import TestCase
+from django.test import TestCase
 from django.contrib.auth.models import User
 from wouso.core.qpool.models import Question, Answer, Category
 from wouso.games.challenge.models import ChallengeUser, Challenge, ChallengeGame
@@ -145,7 +145,7 @@ class ChallengeApi(TestCase):
         self.user = User.objects.create_user('_test', '', password='test')
         self.client.login(username='_test', password='test')
 
-        self.user2 = User.objects.create_user('test2', '', password='test')
+        self.user2 = User.objects.create_user('_test2', '', password='test')
         self.challuser = self.user.get_profile().get_extension(ChallengeUser)
         self.challuser2 = self.user2.get_profile().get_extension(ChallengeUser)
 

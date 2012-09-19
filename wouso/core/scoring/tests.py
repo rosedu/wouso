@@ -1,5 +1,4 @@
 from django.test import TestCase
-import unittest
 from django.db.models.query import QuerySet
 from django.contrib.auth.models import User
 from wouso.core.game.models import Game
@@ -9,7 +8,7 @@ from wouso.core import scoring
 from wouso.core.tests import WousoTest
 from wouso.core.user.models import Player
 
-class ScoringTestCase(unittest.TestCase):
+class ScoringTestCase(TestCase):
     def setUp(self):
         self.user, new = User.objects.get_or_create(username='33')
         self.game = Game.get_instance()

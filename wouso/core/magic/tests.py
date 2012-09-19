@@ -1,4 +1,3 @@
-import unittest
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 from django.db import IntegrityError
@@ -79,7 +78,7 @@ class ModifierTest(TestCase):
         self.assertTrue('test.jpg' in m.path)
 
 
-class ArtifactTestCase(unittest.TestCase):
+class ArtifactTestCase(TestCase):
 
     def testArtifactCreateUnique(self):
         """ Test if we cannot create two artifacts with the same name in a group

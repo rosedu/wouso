@@ -1,8 +1,8 @@
-import unittest
-from wouso.core.magic.models import Artifact
 from django.contrib.auth.models import User
+from django.test import TestCase
+from wouso.core.magic.models import Artifact
 
-class PlayerTestCase(unittest.TestCase):
+class PlayerTestCase(TestCase):
     def testModifierPercents(self):
         artif = Artifact.objects.create(name='test', group=Artifact.DEFAULT(), percents=50)
         user = User.objects.create(username='-pt-test')

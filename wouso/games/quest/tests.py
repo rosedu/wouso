@@ -1,10 +1,9 @@
-import unittest
+from django.test import TestCase
 from django.contrib.auth.models import User
-from models import *
-from wouso.core.user.models import Player
 from wouso.core import scoring
+from models import *
 
-class QuestTestCase(unittest.TestCase):
+class QuestTestCase(TestCase):
     def setUp(self):
         self.user, new = User.objects.get_or_create(username='_test')
         self.user.save()

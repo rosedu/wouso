@@ -1,6 +1,5 @@
 import json
 import logging
-import unittest
 import django.test
 from django.contrib.auth.models import User
 from models import *

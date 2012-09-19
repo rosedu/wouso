@@ -1,10 +1,9 @@
 from django.test import TestCase
-import unittest
 from django.contrib.auth.models import User
 from models import *
 from wouso.core.qpool import get_questions_with_tags
 
-class QpoolTestCase(unittest.TestCase):
+class QpoolTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create(username='_test')
         self.user.save()
