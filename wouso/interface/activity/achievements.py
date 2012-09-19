@@ -33,24 +33,20 @@ def consecutive_chall_won(player):
     activities = Activity.get_player_activity(player).filter(action__contains='chall').order_by('-timestamp')[:12]
     result = 0
     for i in activities:
-        message = ugettext_noop('earned {stuff}')
-        addActivity.send(sender=None, user_from=player, game=None, message=message,
-                arguments=dict(stuff=i.action)
-        )
         if 'won' in i.action:
             if player == i.user_from:
                 result = result + 1
             else:
-                return result / 2
+                return result
         elif 'lost' in i.action:
             if player == i.user_to:
                 result = result + 1
             else:
-                return result / 2
+                return result
         else:
-            return result / 2
+            return result
 
-    return result / 2
+    return result
 
 class Achievements(App):
 
