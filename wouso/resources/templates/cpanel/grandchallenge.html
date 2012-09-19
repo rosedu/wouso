@@ -1,22 +1,35 @@
 {% extends 'cpanel/index.html' %}
+{% load artifacts %}
 
-{% block sectiontitle %}Last Challenges{% endblock %}
+{% block sectiontitle %}The GrandChallenge{% endblock %}
 
 {% block sectioncontent %}
-<p>
 {% if nr = -1 %}
-    <a class="button" href="{% url grandchalls_start %}">Start</a>
-    {# If necessary, add info to explain the tournament here #}
+<a class="button" href="{% url grandchalls_start %}">Start</a>
+{# If necessary, add info to explain the tournament here #}
 {% else %}
-    <a class="button" href="{% url grandchalls_round %}">Next Round</a>
-</p>
+{% if nr < 9 %} <a class="button" href="{% url grandchalls_round %}"> Next round </a>
+{% else %}{% if nr = 9 %} <a class="button" href="{% url grandchalls_round %}"> Final round </a>
+{% else %}{% if nr = 10 and over = 0%} <a class="button" href="{% url grandchalls_round %}"> Last Final round </a>
+{% else %} <a class="button" href="{% url grandchalls_results %}"> Results </a>
+{% endif %}{% endif %}{% endif %}
 <p>
 <table>
-<tr><th>{% if nr == 0 %} Start List {% else %} Round {{ nr|add:"-1" }}{% endif %}</th>
-    <th>Round {% if nr == 0 %} {{ nr|add:"1" }} {% else %} {{ nr }} {% endif %}</th>
-</tr>
-<tr><td valign=top>
-    {% if nr == 0 %}
+    <tr><th>{% if nr == 0 %} Start List
+        {% else %} {% if nr < 10 %} Round {{ nr|add:"-1" }} results
+        {% else %} {% if nr == 10 %} Final Round results
+        {% else %} Last final Round results
+        {% endif %}{% endif %}{% endif %}</th>
+        {% if over = 0 %}
+        <th>{% if nr < 9 %} Round {% if nr == 0 %} {{ nr|add:"1" }}{% else %} {{ nr }} {% endif %}
+            {% else %} {% if nr == 9 %} Final round
+            {% else %} Last final round
+            {% endif %}{% endif %}
+        </th>
+        {% endif %}
+    </tr>
+    <tr><td valign=top>
+        {% if nr == 0 %}
         <table>
             <tr><th>Participant</th>
             </tr>
@@ -25,7 +38,7 @@
             {# For more info, add here #}
             {% endfor %}
         </table>
-    {% else %}
+        {% else %}
         <table>
             <tr><th>Branch</th>
                 <th>Challenger</th>
@@ -33,10 +46,14 @@
             </tr>
             {% for chall in gchalls %}
             {% if chall.round_number == nr|add:"-1" %}
-            <tr><td>{% if chall.branch = 0 %} + {% else %} - {% endif %}</td>
+            <tr><td>{% if nr < 10 %}
+                {% if chall.branch = 0%} + {% else %} - {% endif %}
+                {% else %} Final
+                {% endif %}
+            </td>
                 <td><a href="{% url interface.profile.views.user_profile user.id %}">
                     {% if chall.branch = 0 %}
-                        {% if chall.won = chall.user_from %}
+                    {% if chall.won = chall.user_from %}
                             <span class="ok">
                         {% else %}
                             <span class="warn">
@@ -51,7 +68,7 @@
                 </td>
                 <td><a href="{% url interface.profile.views.user_profile user.id %}">
                     {% if chall.branch = 0 %}
-                        {% if chall.won = chall.user_to %}
+                    {% if chall.won = chall.user_to %}
                             <span class="ok">
                         {% else %}
                             <span class="warn">
@@ -68,7 +85,36 @@
             {% endif %}
             {% endfor %}
         </table>
-    {% endif %}
-{% endfor %}
+        {% endif %}
+    </td>
+        <td valign=top>
+            {% if over = 0 %}
+            <table>
+                <tr><th>Branch</th>
+                    <th>Challenger</th>
+                    <th>Challenged</th>
+                </tr>
+                {% for chall in gchalls %}
+                {% if chall.round_number = None or chall.round_number > 9 %}
+                <tr><td>{% if chall.branch = 0 %} + {% else %} - {% endif %}</td>
+                    <td><a href="{% url interface.profile.views.user_profile user.id %}">
+                        {% if chall.branch = 0 %}<span class="ok">{{chall.user_from}}</span>
+                        {% else %} <span class="warn">{{chall.user_from}}</span>
+                        {% endif %}
+                    </a></td>
+                    <td><a href="{% url interface.profile.views.user_profile user.id %}">
+                        {% if chall.branch = 0 %}<span class="ok">{{chall.user_to}}</span>
+                        {% else %} <span class="warn">{{chall.user_to}}</span>
+                        {% endif %}
+                    </a></td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </table>
+            {% endif %}
+        </td>
+    </tr>
 </table>
+{% endif %}
+</p>
 {% endblock %}
