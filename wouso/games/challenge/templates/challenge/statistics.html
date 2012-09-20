@@ -24,7 +24,7 @@
     </tr>
 {% for op in opponents %}
     <tr align=center>
-        <td><a href="{% url games.challenge.views.detailed_challenge_stats op.0.id %}">{{op.0.nickname}}</a></td>
+        <td><a href="{% url detailed_challenge_stats op.0.id %}">{{op.0.nickname}}</a></td>
         <td>{{op.1}}</td>
         <td>{{op.2}}</td>
         <td>{{op.3}}</td>
