@@ -244,7 +244,7 @@ def detailed_challenge_stats(request, target_id):
             Q(user_to__user = current_player)).exclude(status=u'L')
 
     chall_total = chall_total.filter(Q(user_from__user=target_user) |
-            Q(user_to__user=target_user))
+            Q(user_to__user=target_user)).order_by('-date')
 
     return render_to_response('challenge/statistics_detail.html',
             {'current_player' : current_player, 'target_player' : target_user,
