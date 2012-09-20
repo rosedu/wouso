@@ -233,8 +233,7 @@ def challenge_random(request):
 
 @login_required
 def detailed_challenge_stats(request, target_id):
-
-    '''Statistics for one pair of users, current_player and target_id'''
+    """Statistics for one pair of users, current_player and target_id"""
     current_player = request.user.get_profile().get_extension(ChallengeUser)
 
     target_user = get_object_or_404(ChallengeUser, user__id=target_id)
@@ -254,8 +253,7 @@ def detailed_challenge_stats(request, target_id):
 
 @login_required
 def challenge_stats(request):
-
-    '''Statistics for one user'''
+    """Statistics for one user"""
     current_player = request.user.get_profile().get_extension(ChallengeUser)
 
     from django.db.models import Avg, Q, Count
