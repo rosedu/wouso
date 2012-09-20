@@ -135,18 +135,21 @@ class AchievementTest(WousoTest):
         
         self.assertEqual(unique_users_pm(user_to,30),5)
         self.assertTrue(user_to.magic.has_modifier('ach-popularity'))
+        
     def bad_start_1(self):
         player = self._get_player()
         a = Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-wrong',message_string=str(i),public=True)
         self.assertTrue(wrong_first_qotd(player))
         a = Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-wrong',message_string=str(i),public=True)
         self.assertTrue(not wrong_first_qotd(player))
+        
     def bad_start_2(self):
         player = self._get_player()
         a = Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-correct',message_string=str(i),public=True)
         self.assertTrue(not wrong_first_qotd(player))
         a = Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-wrong',message_string=str(i),public=True)
         self.assertTrue(not wrong_first_qotd(player))
+        
     def bad_start_3(self):
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-bad-start')
         player = self._get_player()
