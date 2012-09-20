@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.utils.translation import ugettext as _
 from wouso.core.app import App
 from wouso.core.user.models import Player
+from wouso.interface.activity import signals
 
 class MessagingUser(Player):
     '''extension of the user profile, customized for messages'''
@@ -39,6 +40,7 @@ class Message(models.Model):
         m.save()
         sender.lastMessageTS = datetime.now()
         sender.save()
+        signals.messageSignal.send(sender=None, user_from=sender, user_to=receiver, message='', action='message', game=None)
 
     @classmethod
     def get_header_link(kls, request):

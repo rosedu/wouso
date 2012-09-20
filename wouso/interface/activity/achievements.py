@@ -3,7 +3,8 @@ from django.utils.translation import ugettext_noop
 import logging
 from wouso.core.app import App
 from models import Activity
-from signals import addActivity
+from signals import addActivity,messageSignal
+from wouso.interface.apps.messaging.models import Message
 
 def consecutive_seens(player, timestamp):
     """
@@ -34,11 +35,40 @@ def consecutive_qotd_correct(player):
     return result
 
 
+def login_between(time, first, second):
+    if first <= time.hour < second:
+        return True
+    return False
+
+
+def unique_users_pm(player, minutes):
+    """
+     Return the count of distinct source messages
+    """
+    activities = Message.objects.filter(receiver=player,
+                                        timestamp__gt=datetime.now() - timedelta(minutes=minutes)
+                                        ).values('sender').distinct().count()
+    return activities
+
+
+def wrong_first_qotd(player):
+    """
+     Check if the first answer to qotd was a wrong answer.
+    """
+    activities = Activity.get_player_activity(player).filter(action__contains='qotd')
+    if not activities.count() == 1:
+        return False
+    if activities[0].action == 'qotd-wrong':
+        return True
+    return False
+    
+    
 def challenge_count(player):
     """
      Return the count of challenges played by player.
     """
     return Activity.get_player_activity(player).filter(action__contains='chall').count()
+
 
 def consecutive_chall_won(player):
     """
@@ -76,10 +106,16 @@ class Achievements(App):
             return
 
         if 'qotd' in action:
-            #Check 10 qotd in a row
+            # Check 10 qotd in a row
             if consecutive_qotd_correct(player) >= 10:
                 if not player.magic.has_modifier('ach-qotd-10'):
-                    cls.earn_achievement(player,'ach-qotd-10')
+                    cls.earn_achievement(player, 'ach-qotd-10')
+
+            # Check for wrong answer to the first qotd
+            if not player.magic.has_modifier('ach-bad-start') and action == "qotd-wrong":
+                if wrong_first_qotd(player):
+                    cls.earn_achievement(player, 'ach-bad-start')
+
 
         if 'chall' in action:
             # Check if number of challenge games is 30*k
@@ -94,17 +130,36 @@ class Achievements(App):
                 if consecutive_chall_won(player) >= 10:
                     cls.earn_achievement(player, 'ach-chall-won-10')
 
-        if action == 'seen':
+        if action == "message":
+            # Check the number of unique users who send pm to player in the last m minutes
+            if unique_users_pm(kwargs.get('user_to'), 30) >= 3:
+                if not kwargs.get('user_to').magic.has_modifier('ach-popularity'):
+                    cls.earn_achievement(kwargs.get('user_to'), 'ach-popularity')
+
+        if action in ("login", "seen"):
+            # Check login between 2-4 am
+            if login_between(kwargs.get('timestamp',datetime.now()), 2, 4):
+                if not player.magic.has_modifier('ach-night-owl'):
+                    cls.earn_achievement(player, 'ach-night-owl')
+            elif login_between(kwargs.get('timestamp',datetime.now()), 6, 8):
+                if not player.magic.has_modifier('ach-early-bird'):
+                    cls.earn_achievement(player, 'ach-early-bird')
+
             # Check previous 10 seens
             if consecutive_seens(player, datetime.now()) >= 10:
                 if not player.magic.has_modifier('ach-login-10'):
                     cls.earn_achievement(player, 'ach-login-10')
+
     @classmethod
     def get_modifiers(self):
         return ['ach-login-10',
                 'ach-qotd-10',
                 'ach-chall-30',
-                'ach-chall-won-10'
+                'ach-chall-won-10',
+                'ach-night-owl',
+                'ach-early-bird',
+                'ach-popularity',
+                'ach-bad-start',
         ]
 
 
@@ -112,3 +167,4 @@ def check_for_achievements(sender, **kwargs):
     Achievements.activity_handler(sender, **kwargs)
 
 addActivity.connect(check_for_achievements)
+messageSignal.connect(check_for_achievements)

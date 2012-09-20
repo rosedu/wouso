@@ -1,4 +1,7 @@
 import datetime
+import logging
+from django.conf import settings
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core import serializers
@@ -8,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+
 from wouso.interface import logger, detect_mobile
 from wouso.interface.apps.pages.models import NewsItem
 from wouso.core.game import get_games
@@ -15,9 +19,10 @@ from wouso.interface.forms import *
 from wouso.core.user.models import Player, PlayerGroup
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, History as TopHistory
+from wouso.interface.activity import signals
 
 def get_wall(page=u'1'):
-    ''' Returns activity for main wall, paginated.'''
+    """ Returns activity for main wall, paginated."""
     activity_list = Activity.get_global_activity()
     paginator = Paginator(activity_list, 10)
     try:
@@ -29,6 +34,41 @@ def get_wall(page=u'1'):
 def anonymous_homepage(request):
     return render_to_response('splash.html', context_instance=RequestContext(request))
 
+    
+def login_view(request):
+    user = authenticate(username=request.POST['username'], password=request.POST['password'])
+    if user is not None:
+        if user.is_active:
+            #Save username in session
+            PREFIX = "_user:"
+            MAX_TIME = 48*60*60 #48h in seconds
+            #Remove entries older than 48h
+            for i in request.session.keys():
+                if PREFIX in i and (request.session.get(i) + datetime.timedelta(minutes = 2*24*60)) < datetime.datetime.now():
+                    request.session.__delitem__(i)
+            request.session.__setitem__(PREFIX+user.username, datetime.datetime.now())
+            request.session.set_expiry(MAX_TIME)
+            login(request, user)
+            signals.addActivity.send(sender=None, user_from=user.get_profile(), action="login", game = None)
+            return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
+    # Note: if think else it should display the error in the login form TODO
+    return HttpResponseRedirect("/")
+    
+
+def logout_view(request):
+    """
+     This is used to save data in session after logout
+    """
+    data = {}
+    PREFIX = "_user:"
+    for i in request.session.keys():
+        if PREFIX in i:
+            data[i] = request.session.get(i)
+    logout(request)
+    for i in data:
+        request.session[i] = data[i]
+    return HttpResponseRedirect("/")
+    
 def hub(request):
     if request.user.is_anonymous():
         return anonymous_homepage(request)
