@@ -3,12 +3,9 @@
 {% block title %}
     {% trans 'Statistics ' %}{{current_player}} - {{target_player}}
 {% endblock %}
-{% block sectiontitle %}
-{% for opponent, challenges in chl_grp_user.items %} Challenges against {{ opponent }}
-{% endfor %}
+{% block sectiontitle %}{% trans 'Challenges against '%}{{ opponent }}
 {% endblock %}
 {% block sectioncontent %}
-{% for opponent, challenges in chl_grp_user.items %}
 <table>
     <tr align=center>
         <td><b> {% trans 'Date' %} </b> </td>
@@ -18,7 +15,7 @@
         <td><b> {% trans 'Opponent time played' %} </b></td>
         <td><b> {% trans 'Score Opponent' %} </b> </td>
     </tr>
-    {% for c in challenges %}
+    {% for c in chall_total %}
     <tr align=center>
         <td> {{ c.date }} </td>
         <td>    {% if c.status == "D" %} <font color=grey>Draw</font>
@@ -46,5 +43,5 @@
     </tr>
     {% endfor %}
 </table>
-{% endfor %}
+<center><a href="javascript:history.go(-1)">Return</a></center>
 {% endblock %}
