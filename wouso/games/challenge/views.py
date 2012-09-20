@@ -234,6 +234,7 @@ def challenge_random(request):
 @login_required
 def detailed_challenge_stats(request, target_id):
 
+    '''Statistics for one pair of users, current_player and target_id'''
     current_player = request.user.get_profile().get_extension(ChallengeUser)
 
     target_user = get_object_or_404(ChallengeUser, user__id=target_id)
@@ -242,43 +243,20 @@ def detailed_challenge_stats(request, target_id):
     chall_total = Challenge.objects.filter(Q(user_from__user = current_player) |
             Q(user_to__user = current_player)).exclude(status=u'L')
 
-    chall_sent = chall_total.filter(Q(user_from__user=current_player) &
+    chall_total = chall_total.filter(Q(user_from__user=target_user) |
             Q(user_to__user=target_user))
-    chall_rec = chall_total.filter(Q(user_to__user=current_player) &
-            Q(user_from__user=target_user))
-
-    #the dictionary reads as follows:
-    #with the user <key>, current_user has played <value> challenges
-    chl_grp_user = {}
-    for ch in chall_sent:
-        try:
-            chl_grp_user[ch.user_to.user]
-        except KeyError:
-            chl_grp_user[ch.user_to.user] = []
-        chl_grp_user[ch.user_to.user].append(ch)
-
-    for ch in chall_rec:
-        try:
-            chl_grp_user[ch.user_from.user]
-        except KeyError:
-            chl_grp_user[ch.user_from.user] = []
-        chl_grp_user[ch.user_from.user].append(ch)
 
     return render_to_response('challenge/statistics_detail.html',
             {'current_player' : current_player, 'target_player' : target_user,
                 'chall_total' : chall_total,
-                'chall_sent' : chall_sent,
-                'chall_rec' : chall_rec,
-                'chl_grp_user' : chl_grp_user},
+                'opponent' : target_user},
             context_instance=RequestContext(request))
 
 @login_required
 def challenge_stats(request):
 
-    #statistics for one user
-    #loop through every user to get all user statistics
+    '''Statistics for one user'''
     current_player = request.user.get_profile().get_extension(ChallengeUser)
-
 
     from django.db.models import Avg, Q, Count
     chall_total = Challenge.objects.filter(Q(user_from__user=current_player) |
