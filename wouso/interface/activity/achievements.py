@@ -75,8 +75,8 @@ class Achievements(App):
                 if not player.magic.has_modifier('ach-qotd-10'):
                     cls.earn_achievement(player,'ach-qotd-10')
             #Check for wrong answer the first qotd
-            if wrong_first_qotd(player):
-                if not player.magic.has_mofifier('ach-bad-start'):
+            if not player.magic.has_modifier('ach-bad-start') and action == "qotd-wrong":
+                if wrong_first_qotd(player):
                     cls.earn_achievement(player,'ach-bad-start')
         
         if action == "message":
