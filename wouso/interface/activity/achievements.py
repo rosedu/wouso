@@ -74,11 +74,11 @@ class Achievements(App):
             if consecutive_qotd_correct(player) >= 10:
                 if not player.magic.has_modifier('ach-qotd-10'):
                     cls.earn_achievement(player,'ach-qotd-10')
-            if not player.magic.has_mofifier('ach-bad-start') and action == "qord-wrong":
             #Check for wrong answer the first qotd
-                if wrong_first_qotd(player):
+            if wrong_first_qotd(player):
+                if not player.magic.has_mofifier('ach-bad-start'):
                     cls.earn_achievement(player,'ach-bad-start')
-
+        
         if action == "message":
             #Check the number of unique users who send pm to player in the last m minutes
             if unique_users_pm(kwargs.get('user_to'),30) >=3:
