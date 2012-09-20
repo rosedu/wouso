@@ -1,0 +1,36 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+{% block title %}{% trans 'Challenges' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Challenge statistics' %}{% endblock %}
+
+{% block sectioncontent %}
+
+<p> {% trans 'Challenges played: ' %} {{n_chall_played }}</p>
+<p> {% trans 'Challenges won: ' %} {{ n_chall_won }}</p>
+<p> {% trans 'Challenges sent: ' %} {{ n_chall_sent }}</p>
+<p> {% trans 'Challenges received: ' %} {{ n_chall_rec }}</p>
+<p> {% trans 'Challenges refused: ' %} {{ n_chall_ref }}</p>
+<p> {% trans 'Win percentage: ' %} {{ win_percentage }}%</p>
+<p> {% trans 'Average time taken: ' %} {{ average_time }} {% trans 's' %} </p>
+<p> {% trans 'Average score: ' %} {{ average_score }} </p>
+<table>
+    <tr align=center>
+        <td><b>Opponent</b></td>
+        <td><b>Won</b></td>
+        <td><b>Lost</b></td>
+        <td><b>Draw</b></td>
+        <td><b>Refused</b></td>
+        <td><b>Total</b></td>
+    </tr>
+{% for op in opponents %}
+    <tr align=center>
+        <td><a href="{% url detailed_challenge_stats op.0.id %}">{{op.0.nickname}}</a></td>
+        <td>{{op.1}}</td>
+        <td>{{op.2}}</td>
+        <td>{{op.3}}</td>
+        <td>{{op.4}}</td>
+        <td>{{op.5}}</td>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}
