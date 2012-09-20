@@ -306,12 +306,17 @@ $(document).ready(function () {
             if (event.keyCode == 13) {
                 SendMessage(id);
             }
+            if (event.keyCode == 27){
+                switch_windows(id);
+            }
             if (event.keyCode == 9){
                 var next;
                 if(firstFreeChat > max_boxes)
-                    next = id % max_boxes + 1 ;
-                else
+                    next = id % max_boxes + 1;
+                else{
                     next = (id + 1) % firstFreeChat;
+                    if(next == 0) next = 1
+                }
                 $("#PrivateboxTextBox" + next).focus();
                 return false;
             }
