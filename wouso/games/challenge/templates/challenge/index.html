@@ -18,10 +18,11 @@
 </p>
 {% else %}
 <p>{% trans 'To launch a challenge, find the player you want to challenge and click on the <em>Challenge</em> button, next to his profile.' %}</p>
-<a href="{% url challenge_random %}">Challenge random player</a>
-{% endif %}
-{% endif %}
+<a href="{% url challenge_random %}">Challenge random player</a> <br>
 
+{% endif %}
+{% endif %}
+<a href="{% url challenge_stats %}">View Challenge Statistics</a>
 <h3>{% trans 'Active' %}</h3>
 <ul class="answers">
 {% for c in challenges %}
