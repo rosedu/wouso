@@ -4,7 +4,7 @@ from wouso.core.tests import WousoTest
 from wouso.interface.activity import signals
 from wouso.games.qotd.models import QotdGame
 from achievements import consecutive_seens
-from achievements import consecutive_qotd_correct, unique_users_pm
+from achievements import consecutive_qotd_correct, unique_users_pm ,wrong_first_qotd
 from models import Activity
 from wouso.interface.apps.messaging.models import Message,MessagingUser
 class AchievementTest(WousoTest):
@@ -135,3 +135,23 @@ class AchievementTest(WousoTest):
         
         self.assertEqual(unique_users_pm(user_to,30),5)
         self.assertTrue(user_to.magic.has_modifier('ach-popularity'))
+    def bad_start_1(self):
+        player = self._get_player()
+        a = Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-wrong',message_string=str(i),public=True)
+        self.assertTrue(wrong_first_qotd(player))
+        a = Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-wrong',message_string=str(i),public=True)
+        self.assertTrue(not wrong_first_qotd(player))
+    def bad_start_2(self):
+        player = self._get_player()
+        a = Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-correct',message_string=str(i),public=True)
+        self.assertTrue(not wrong_first_qotd(player))
+        a = Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-wrong',message_string=str(i),public=True)
+        self.assertTrue(not wrong_first_qotd(player))
+    def bad_start_3(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-bad-start')
+        player = self._get_player()
+        signals.addActivity.send(sender=None, user_from=player,
+                                     user_to=player,
+                                     action='qotd-wrong',
+                                     game=QotdGame.get_instance())
+        self.assertTrue(user_to.magic.has_modifier('ach-bad-start'))
