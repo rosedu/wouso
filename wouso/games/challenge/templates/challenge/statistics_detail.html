@@ -1,0 +1,47 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+{% block title %}
+    {% trans 'Statistics ' %}{{current_player}} - {{target_player}}
+{% endblock %}
+{% block sectiontitle %}{% trans 'Challenges against '%}{{ opponent }}
+{% endblock %}
+{% block sectioncontent %}
+<table>
+    <tr align=center>
+        <td><b> {% trans 'Date' %} </b> </td>
+        <td><b> {% trans 'Result' %} </b> </td>
+        <td><b> {% trans 'Time played' %} </b> </td>
+        <td><b> {% trans 'Score Self' %} </b> </td>
+        <td><b> {% trans 'Opponent time played' %} </b></td>
+        <td><b> {% trans 'Score Opponent' %} </b> </td>
+    </tr>
+    {% for c in chall_total %}
+    <tr align=center>
+        <td> {{ c.date }} </td>
+        <td>    {% if c.status == "D" %} <font color=grey>Draw</font>
+            {% else %} {% if c.status == "P" %}
+            {% if c.winner == current_player %}<font color=green>Won</font>
+            {% else %} <font color=red>Lost</font> {% endif %}
+            {% else %} {% if c.status == "R" %} Refused
+            {% else %} Pending [{{ c.status }}]{% endif %}
+            {% endif %}
+            {% endif %} </td>
+        <!-- This seems like it's too tightly coupled
+        with the implementation -->
+        {% if c.user_from.user == current_player %}
+        <td>{{c.user_from.seconds_took}}</td>
+        <td>{{c.user_from.score}}</td>
+        <td>{{c.user_to.seconds_took}}</td>
+        <td>{{c.user_to.score}}</td>
+        {% else %}
+        <td>{{c.user_to.seconds_took}}</td>
+        <td>{{c.user_to.score}}</td>
+        <td>{{c.user_from.seconds_took}}</td>
+        <td>{{c.user_from.score}}</td>
+        {% endif %}
+        <!-- fix? -->
+    </tr>
+    {% endfor %}
+</table>
+<center><a href="javascript:history.go(-1)">Return</a></center>
+{% endblock %}
