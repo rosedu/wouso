@@ -721,11 +721,14 @@ def grandchalls_round(request):
     over = 0
     if not GrandChallengeGame.is_final():
         GrandChallenge.joaca(GrandChallengeGame.round_number)
-        if GrandChallengeGame.round_number % 2 == 0:
-            GrandChallenge.play_round(1)
-            GrandChallenge.play_round(0)
-        else:
-            GrandChallenge.play_round(1)
+        if GrandChallenge.all_done():
+
+            if GrandChallengeGame.round_number % 2 == 0:
+                GrandChallenge.play_round(1)
+                GrandChallenge.play_round(0)
+            else:
+                GrandChallenge.play_round(1)
+            GrandChallengeGame.round_number += 1
     else:
         """ final 2 players
             they may have to play 2 rounds if the winners finalist lose
@@ -742,7 +745,8 @@ def grandchalls_round(request):
             if not GrandChallengeGame.is_winner():
                 GrandChallengeGame.final_second_round()
             over = 1
-    GrandChallengeGame.round_number += 1
+
+        GrandChallengeGame.round_number += 1
     gchalls = sorted(GrandChallenge.get_challenges(), key=lambda gc:gc.branch)
 
     return render_to_response('cpanel/grandchallenge.html',

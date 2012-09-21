@@ -1,8 +1,7 @@
-import logging
 from django.db import models
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player
-from wouso.games.challenge.models import Challenge
+from wouso.games.challenge.models import Challenge, ChallengeUser
 from wouso.interface.top.models import TopUser
 from random import randint
 
@@ -10,11 +9,12 @@ from random import randint
 # Create your models here.
 class GrandChallengeUser(Player):
     """ Extension of the user profile for GrandChallenge """
-    lost = models.IntegerField(default="0");
+    lost = 0
 
 class GrandChallenge(models.Model):
     ALL = []
     OUT_PLAY = []
+    CHALLENGES= []
     def __init__(self, user_from, user_to):
         if not GrandChallengeGame.is_final() and not GrandChallengeGame.is_winner():
             self.branch = max(user_from.lost, user_to.lost)
@@ -26,6 +26,11 @@ class GrandChallenge(models.Model):
         self.won, self.lost = None, None
         self.active = True
         self.round_number = None
+        challenge_user_to = user_to.user.get_profile().get_extension(ChallengeUser)
+        challenge_user_from = user_from.user.get_profile().get_extension(ChallengeUser)
+        chall = Challenge.create(challenge_user_from, challenge_user_to)
+        chall.accept()
+        self.__class__.CHALLENGES.append(chall)
 
     @classmethod
     def get_challenges(cls):
@@ -37,6 +42,15 @@ class GrandChallenge(models.Model):
 
         #Din TopUser faci .user => usr = u.user
         #usr.get_profile().get_extenion(..)
+
+    @classmethod
+    def all_done(cls):
+        print "mama"
+        for i in cls.CHALLENGES:
+            if i.status != "P":
+                print "not played"
+                return False
+        return True
 
     def play(self, round_number):
         winner = randint(0, 1) == 0 #trebuie generat de joc
@@ -65,6 +79,7 @@ class GrandChallenge(models.Model):
     @classmethod
     def joaca(cls, round_number):
         for c in GrandChallenge.active():
+
             #numarul rundei...
             c.play(round_number)
             if(c.lost.lost == 2):
@@ -178,3 +193,4 @@ class GrandChallengeGame(Game):
             from views import sidebar_widget
             return sidebar_widget(request)
         return None
+
