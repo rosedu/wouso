@@ -2,7 +2,7 @@
     <h2>{{m.subject}}</h2>
     <p>
         <pre>
-    From: {{ m.sender }}
+    From: {%if msg.sender%}{{msg.sender}}{%else%}System{%endif%}
     To: {{ m.receiver }}
 
     {{m.text}}

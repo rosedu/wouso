@@ -95,7 +95,7 @@ class Achievements(App):
             addActivity.send(sender=None, user_from=player, game=None, message=message,
                 arguments=dict(artifact=result.artifact)
             )
-            Message.send(sender=player,receiver=player,subject="Achievement",text="You have just earned "+modifier)
+            Message.send(sender=None,receiver=player,subject="Achievement",text="You have just earned "+modifier)
         else:
             logging.debug('%s would have earned %s, but there was no artifact' % (player, modifier))
 

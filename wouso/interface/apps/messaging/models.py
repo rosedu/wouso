@@ -32,14 +32,16 @@ class Message(models.Model):
     def send(kls, sender, receiver, subject, text, reply_to=None):
         # TODO: check cand send
         m = kls()
-        sender = sender.get_extension(MessagingUser)
+        if sender:
+            sender = sender.get_extension(MessagingUser)
         receiver = receiver.get_extension(MessagingUser)
         m.sender, m.receiver, m.subject = sender, receiver, subject
         m.text = text
         m.reply_to = reply_to
         m.save()
-        sender.lastMessageTS = datetime.now()
-        sender.save()
+        if sender:
+            sender.lastMessageTS = datetime.now()
+            sender.save()
         signals.messageSignal.send(sender=None, user_from=sender, user_to=receiver, message='', action='message', game=None)
 
     @classmethod
