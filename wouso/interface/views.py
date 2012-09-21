@@ -49,7 +49,7 @@ def login_view(request):
             request.session.__setitem__(PREFIX+user.username, datetime.datetime.now())
             request.session.set_expiry(MAX_TIME)
             login(request, user)
-            signals.addActivity.send(sender=None, user_from=user.get_profile(), action="login", game = None)
+            signals.addActivity.send(sender=None, user_from=user.get_profile(), action="login", game = None, public=False)
             return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
     # Note: if think else it should display the error in the login form TODO
     return HttpResponseRedirect("/")
