@@ -26,14 +26,14 @@
                 <tr><td colspan="1"><div class="ArchiveTextArea" id="global_area"></div></td>
                     <td colspan="1">
                         <table>
-                            <tr><td><div id="slider" style="width:144px"></div></td></tr>
+                            <tr><td><div id="slider" style="width:144px" title="Choose a period of the day."></div></td></tr>
                             <tr>
                                 <td colspan="1"><div id="minSlider">0</div></td>
                                 <td colspan="1"><div id="maxSlider">24</div></td>
                             </tr>
 
-                            <tr><td>Date: <input type="text" id="datepicker" style="width: 100px"><br></td></tr>
-                            <tr><td><input type="submit" id="archive_day" value="archive"></td></tr>
+                            <tr><td>Date: <input type="text" id="datepicker" style="width: 100px" title="Choose day."><br></td></tr>
+                            <tr><td><input type="submit" id="archive_day" value="archive" title="Give me the archive."></td></tr>
                         </table>
                     </td>
                 </tr>
@@ -51,11 +51,11 @@
                                 <input type="hidden" id="to" name="to" value="{{ to.id }}" />
                                 <span class="to_user">{% player_simple to %}</span>
                                 {% else %}
-                                <input type="text" id="to_input" class="big" /> <div id="to_container"></div>
+                                <input type="text" id="to_input" class="big" title="Choose a player."/> <div id="to_container" ></div>
                                 {% endif %}
                             </td>
-                            <tr><td>Date: <input type="text" id="datepicker_private" style="width: 100px"><br></td></tr>
-                            <tr><td><input type="submit" id="archive_day_private" value="archive"></td></tr>
+                            <tr><td>Date: <input type="text" id="datepicker_private" style="width: 100px" title="Choose day."><br></td></tr>
+                            <tr><td><input type="submit" id="archive_day_private" value="archive" title="Give me the archive."></td></tr>
                         </table>
                     </td>
                 </tr>
