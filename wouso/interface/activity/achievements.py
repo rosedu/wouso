@@ -165,6 +165,7 @@ class Achievements(App):
                 'ach-early-bird',
                 'ach-popularity',
                 'ach-bad-start',
+                'ach-chall-def-big',
         ]
 
 
