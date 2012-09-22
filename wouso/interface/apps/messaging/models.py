@@ -25,9 +25,12 @@ class Message(models.Model):
     reply_to = models.ForeignKey('Message', null=True, default=None, blank=True, related_name='thread_parent')
 
     def __unicode__(self):
-        return 'from ' + self.sender.__unicode__() + ' to ' + self.receiver.__unicode__() +\
-        ' @ ' + self.timestamp.strftime("%A, %d %B %Y %I:%M %p")
-
+        if self.sender:
+            return 'from ' + self.sender.__unicode__() + ' to ' + self.receiver.__unicode__() +\
+            ' @ ' + self.timestamp.strftime("%A, %d %B %Y %I:%M %p")
+        else:
+             return 'from ' + "System" + ' to ' + self.receiver.__unicode__() +\
+            ' @ ' + self.timestamp.strftime("%A, %d %B %Y %I:%M %p")
     @classmethod
     def send(kls, sender, receiver, subject, text, reply_to=None):
         # TODO: check cand send

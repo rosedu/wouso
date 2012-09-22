@@ -14,7 +14,7 @@
         {% for msg in messages %}
             <tr {% if msg.read %}class="read"{% else %}class="unread"{% endif %}>
                 {% if box != 'sent' %}
-                <td nowrap>{%if msg.sender%}{{msg.sender}}{%else%}System{%endif%}</td>
+                <td nowrap>{% if msg.sender %}{{msg.sender}}{% else %}{% trans 'System' %}{% endif %}</td>
                 {% endif %}
                 {% if box != 'rec' %}
                 <td nowrap>{{msg.receiver}}</td>
