@@ -219,6 +219,19 @@ class ChallengeAchievementTest(WousoTest):
                                      game=ChallengeGame.get_instance())
         self.assertTrue(player.magic.has_modifier('ach-chall-30'))
 
+    def test_defeated_better_player_activity(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-chall-def-big')
+        player1 = self._get_player()
+        player2 = self._get_player(2)
+        player2.level_no = 4
+        player2.save()
+
+        signals.addActivity.send(sender=None, user_from=player1,
+                                    user_to=player2,
+                                    action='chall-won',
+                                    game=ChallengeGame.get_instance())
+        self.assertTrue(player1.magic.has_modifier('ach-chall-def-big'))
+
 
 class PopularityTest(WousoTest):
     def test_popularity_5_pm_1(self):
