@@ -278,7 +278,7 @@ class PopularityTest(WousoTest):
                                      action='qotd-wrong',
                                      game=QotdGame.get_instance())
         self.assertTrue(player.magic.has_modifier('ach-bad-start'))
-    def test_ach_nitification(self):
+    def test_ach_notification(self):
         player = self._get_player()
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-notfication')
         Achievements.earn_achievement(player,'ach-notfication')
