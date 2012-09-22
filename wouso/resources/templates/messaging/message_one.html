@@ -1,13 +1,14 @@
+{% load i18n %}
 <div>
     <h2>{{m.subject}}</h2>
     <p>
         <pre>
-    From: {{ m.sender }}
+    From: {% if m.sender %}{{m.sender}}{% else %}{% trans 'System' %}{% endif %}
     To: {{ m.receiver }}
 
     {{m.text}}
     </pre>
-    {% if m.sender.id != mess_user.id %}
+    {% if m.sender.id != mess_user.id and m.sender %}
     <a href="{% url reply_to m.sender.id m.id %}" class="button">Reply</a>
     {% endif %}
     <a href="#" onclick="messagingReload(); return false;" class="button">Back</a>

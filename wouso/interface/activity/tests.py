@@ -9,6 +9,7 @@ from achievements import consecutive_qotd_correct
 from achievements import consecutive_chall_won, challenge_count
 from achievements import unique_users_pm , wrong_first_qotd
 from models import Activity
+from achievements import Achievements
 from . import signals
 
 
@@ -277,3 +278,9 @@ class PopularityTest(WousoTest):
                                      action='qotd-wrong',
                                      game=QotdGame.get_instance())
         self.assertTrue(player.magic.has_modifier('ach-bad-start'))
+    def test_ach_notification(self):
+        player = self._get_player()
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-notfication')
+        Achievements.earn_achievement(player,'ach-notfication')
+        self.assertEqual(len(Message.objects.all()),1)
+        
