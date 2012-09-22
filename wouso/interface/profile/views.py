@@ -142,7 +142,7 @@ def player_race(request, race_id):
     race = get_object_or_404(Race, pk=race_id)
 
     top_users = race.player_set.order_by('-points')
-    activity_qs = Activity.get_race_activiy(race)
+    activity_qs = Activity.get_race_activity(race)
     paginator = Paginator(activity_qs, 20)
     activity = paginator.page(1)
 
