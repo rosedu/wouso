@@ -85,6 +85,18 @@ def consecutive_chall_won(player):
 
     return result
 
+def get_chall_score(arguments):
+    if not arguments:
+        return 0
+    text = arguments["extra"]
+    result = 0
+    for i in text:
+        if i.isdigit():
+            result = result*10 + int(i)
+        else:
+            break
+    return result
+
 
 class Achievements(App):
     @classmethod
@@ -126,6 +138,10 @@ class Achievements(App):
                     cls.earn_achievement(player, 'ach-chall-30')
 
         if action == 'chall-won':
+            #Check for flawless victory
+            if get_chall_score(kwargs.get("arguments")) == 500:
+                if not player.magic.has_modifier('ach-flawless-victory'):
+                    cls.earn_achievement(player, 'ach-flawless-victory')
             # Check 10 won challenge games in a row
             if not player.magic.has_modifier('ach-chall-won-10'):
                 if consecutive_chall_won(player) >= 10:
@@ -161,6 +177,7 @@ class Achievements(App):
                 'ach-early-bird',
                 'ach-popularity',
                 'ach-bad-start',
+                'ach_flawless-victory',
         ]
 
 
