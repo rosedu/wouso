@@ -8,6 +8,7 @@ from achievements import consecutive_seens
 from achievements import consecutive_qotd_correct
 from achievements import consecutive_chall_won, challenge_count
 from achievements import unique_users_pm , wrong_first_qotd
+from achievements import get_chall_score
 from models import Activity
 from achievements import Achievements
 from . import signals
@@ -278,9 +279,25 @@ class PopularityTest(WousoTest):
                                      action='qotd-wrong',
                                      game=QotdGame.get_instance())
         self.assertTrue(player.magic.has_modifier('ach-bad-start'))
+        
     def test_ach_notification(self):
         player = self._get_player()
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-notfication')
-        Achievements.earn_achievement(player,'ach-notfication')
-        self.assertEqual(len(Message.objects.all()),1)
+        Achievements.earn_achievement(player, 'ach-notfication')
+        self.assertEqual(len(Message.objects.all()), 1)
         
+    def test_flawless_chall_score(self):
+        self.assertEqual(get_chall_score(eval('{"extra":"0p-100p"}')), 0)
+        self.assertEqual(get_chall_score(eval('{"extra": "333p (in 39 seconds) - 0p (in 4 seconds)", "user_lost": "P 3"}')), 333)
+        self.assertEqual(get_chall_score(eval('{"extra": "200p (in 31 seconds) - 100p (in 18 seconds)", "user_lost": "P 2"}')), 200)
+        
+    def test_flawless_ach(self):
+        player=self._get_player()
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-flawless-victory')
+        signals.addActivity.send(sender=None, user_from=player, \
+                                     user_to=player, \
+                                     message="", arguments=dict(user_lost=player,
+                                                                        extra="500p-100p"), \
+                                     action="chall-won", \
+                                     game=None)
+        self.assertTrue(player.magic.has_modifier('ach-flawless-victory'))
