@@ -57,6 +57,8 @@ class Artifact(Modifier):
         return ArtifactGroup.objects.get_or_create(name='Default')[0]
 
     def __unicode__(self):
+        if self.title:
+            return u"%s" % self.title
         return u"%s [%s]" % (self.name, self.group.name)
 
 
