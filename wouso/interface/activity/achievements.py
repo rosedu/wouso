@@ -91,13 +91,7 @@ def refused_challenges(player):
      Return the count of refused challenges in the last week
     """
     start = datetime.now() + timedelta(days=-7)
-    activities = Activity.get_player_activity(player).filter(action__contains='chall', timestamp__gte=start)
-    result = 0;
-    for i in activities:
-        if 'refused' in i.action and i.user_from.id == player.id:
-            result += 1
-
-    return result
+    return Activity.get_player_activity(player).filter(action__contains='chall-refused', timestamp__gte=start, user_from=player).count()
 
 
 class Achievements(App):
