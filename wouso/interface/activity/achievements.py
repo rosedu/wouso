@@ -86,6 +86,20 @@ def consecutive_chall_won(player):
     return result
 
 
+def refused_challenges(player):
+    """
+     Return the count of refused challenges in the last week
+    """
+    start = datetime.now() + timedelta(days=-7)
+    activities = Activity.get_player_activity(player).filter(action__contains='chall', timestamp__gte=start)
+    result = 0;
+    for i in activities:
+        if 'refused' in i.action and i.user_from.id == player.id:
+            result += 1
+
+    return result
+
+
 class Achievements(App):
     @classmethod
     def earn_achievement(cls, player, modifier):
@@ -123,6 +137,12 @@ class Achievements(App):
             if games_played > 0 and (games_played % 30) == 0:
                 if not player.magic.has_modifier('ach-chall-30'):
                     cls.earn_achievement(player, 'ach-chall-30')
+
+            # Check if the number of refused challenges in the past week is
+            # less than 2
+            if not player.magic.has_modifier('ach-this-is-sparta'):
+                if refused_challenges(player) <= 2:
+                    cls.earn_achievement(player, 'ach-this-is-sparta')
 
         if action == 'chall-won':
             # Check 10 won challenge games in a row
@@ -166,6 +186,7 @@ class Achievements(App):
                 'ach-popularity',
                 'ach-bad-start',
                 'ach-chall-def-big',
+                'ach-this-is-sparta',
         ]
 
 
