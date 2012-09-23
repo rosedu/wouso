@@ -131,6 +131,11 @@ class Achievements(App):
                 if consecutive_chall_won(player) >= 10:
                     cls.earn_achievement(player, 'ach-chall-won-10')
 
+            # Check if player defeated 2 levels or more bigger opponent
+            if not player.magic.has_modifier('ach-chall-def-big'):
+                if (kwargs.get('user_to').level_no - player.level_no) >= 2:
+                    cls.earn_achievement(player, 'ach-chall-def-big')
+
         if action == "message":
             # Check the number of unique users who send pm to player in the last m minutes
             if unique_users_pm(kwargs.get('user_to'), 30) >= 3:
@@ -161,6 +166,7 @@ class Achievements(App):
                 'ach-early-bird',
                 'ach-popularity',
                 'ach-bad-start',
+                'ach-chall-def-big',
         ]
 
 
