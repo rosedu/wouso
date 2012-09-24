@@ -210,10 +210,12 @@ class Challenge(models.Model):
             signal_msg = ugettext_noop('has refused challenge from {chall_from} (expired)')
         else:
             signal_msg = ugettext_noop('has refused challenge from {chall_from}')
+        action_msg = 'chall-refused'
         signals.addActivity.send(sender=None, user_from=self.user_to.user, \
                                      user_to=self.user_from.user, \
                                      message=signal_msg, \
                                      arguments=dict(chall_from=self.user_from), \
+                                     action=action_msg, \
                                      game=ChallengeGame.get_instance())
         self.save()
         # give warranty back to initiator

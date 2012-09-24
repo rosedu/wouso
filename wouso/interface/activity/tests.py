@@ -7,6 +7,7 @@ from wouso.interface.apps.messaging.models import Message, MessagingUser
 from achievements import consecutive_seens
 from achievements import consecutive_qotd_correct
 from achievements import consecutive_chall_won, challenge_count
+from achievements import refused_challenges
 from achievements import unique_users_pm , wrong_first_qotd
 from models import Activity
 from achievements import Achievements
@@ -232,6 +233,37 @@ class ChallengeAchievementTest(WousoTest):
                                     action='chall-won',
                                     game=ChallengeGame.get_instance())
         self.assertTrue(player1.magic.has_modifier('ach-chall-def-big'))
+
+    def test_this_is_sparta_correct(self):
+        player = self._get_player()
+        for i in range(1, 7):
+            timestamp = datetime.now() + timedelta(days=-i)
+            a = Activity.objects.create(timestamp=timestamp,
+                user_from=player, user_to=player, action='chall-refused',
+                public=True)
+
+        self.assertEqual(refused_challenges(player), 6)
+
+    def test_this_is_sparta_activity(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-this-is-sparta')
+        player1 = self._get_player()
+        player2 = self._get_player(2)
+        for i in range(1, 7):
+            timestamp = datetime.now() + timedelta(days=-i)
+            if (i % 4) == 0:
+                a = Activity.objects.create(timestamp=timestamp,
+                user_from=player1, user_to=player2, action='chall-refused',
+                public=True)
+            else:
+                a = Activity.objects.create(timestamp=timestamp,
+                user_from=player1, user_to=player2, action='chall-lost',
+                public=True)
+
+        signals.addActivity.send(sender=None, user_from=player1,
+                                    user_to=player2,
+                                    action='chall-refused',
+                                    game=ChallengeGame.get_instance())
+        self.assertTrue(player1.magic.has_modifier('ach-this-is-sparta'))
 
 
 class PopularityTest(WousoTest):
