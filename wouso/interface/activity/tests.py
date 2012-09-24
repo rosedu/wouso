@@ -9,9 +9,12 @@ from achievements import consecutive_qotd_correct
 from achievements import consecutive_chall_won, challenge_count
 from achievements import refused_challenges
 from achievements import unique_users_pm , wrong_first_qotd
+from achievements import get_chall_score
 from models import Activity
 from achievements import Achievements
 from . import signals
+from wouso.games.challenge.models import Challenge, ChallengeUser
+from wouso.core import scoring
 
 
 class AchievementTest(WousoTest):
@@ -323,9 +326,50 @@ class PopularityTest(WousoTest):
                                      action='qotd-wrong',
                                      game=QotdGame.get_instance())
         self.assertTrue(player.magic.has_modifier('ach-bad-start'))
+
+
+class NotificationsTest(WousoTest):
     def test_ach_notification(self):
         player = self._get_player()
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-notfication')
-        Achievements.earn_achievement(player,'ach-notfication')
-        self.assertEqual(len(Message.objects.all()),1)
+        Achievements.earn_achievement(player, 'ach-notfication')
+        self.assertEqual(len(Message.objects.all()), 1)
+
+
+class FlawlessVictoryTest(WousoTest):
+    def setUp(self):
+        user_from = self._get_player(1)
+        user_to   = self._get_player(2)
+        chall_user1 = user_from.get_extension(ChallengeUser)
+        chall_user2 = user_to.get_extension(ChallengeUser)
+        scoring.setup_scoring()
+        self.chall = Challenge.create(user_from=chall_user1, user_to=chall_user2, ignore_questions=True)
         
+    def test_scorring(self):
+        self.chall.user_from.score = 100
+        self.chall.user_from.save()
+        self.chall.user_to.score = 200
+        self.chall.user_to.save()
+        self.assertEqual(get_chall_score(dict(id=self.chall.id)),200)
+        self.chall.user_from.score = 300
+        self.chall.user_from.save()
+        self.assertEqual(get_chall_score(dict(id=self.chall.id)),300)
+        self.chall.user_to.score = 500
+        self.chall.user_to.save()
+        self.assertEqual(get_chall_score(dict(id=self.chall.id)),500)
+        
+    def test_ach(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-flawless-victory')
+        player=self._get_player()
+        self.chall.user_from.score = 100
+        self.chall.user_from.save()
+        self.chall.user_to.score = 200
+        self.chall.user_to.save()
+        signals.addActivity.send(sender=None, user_from=player, user_to=player, arguments=dict(id=self.chall.id), action="chall-won", game=None)
+        self.assertTrue(not player.magic.has_modifier('ach-flawless-victory'))
+        self.chall.user_from.score = 500
+        self.chall.user_from.save()
+        signals.addActivity.send(sender=None, user_from=player, user_to=player, arguments=dict(id=self.chall.id), action="chall-won", game=None)
+        self.assertTrue(player.magic.has_modifier('ach-flawless-victory'))
+         
+    

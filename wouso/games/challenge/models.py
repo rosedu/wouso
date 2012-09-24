@@ -357,7 +357,7 @@ class Challenge(models.Model):
             signals.addActivity.send(sender=None, user_from=self.user_to.user, \
                                      user_to=self.user_from.user, \
                                      message=signal_msg, \
-                                     arguments=dict(user_to=self.user_to, user_from=self.user_from,
+                                     arguments=dict(user_to=self.user_to, user_from=self.user_from, id=self.id,
                                                     extra=self.extraInfo(self.user_from, self.user_to)),\
                                      action=action_msg, \
                                      game=ChallengeGame.get_instance())
@@ -389,7 +389,7 @@ class Challenge(models.Model):
             action_msg = "chall-won"
             signals.addActivity.send(sender=None, user_from=self.user_won.user, \
                                      user_to=self.user_lost.user, \
-                                     message=signal_msg, arguments=dict(user_lost=self.user_lost,
+                                     message=signal_msg, arguments=dict(user_lost=self.user_lost, id=self.id, 
                                                                         extra=self.extraInfo(self.user_won, self.user_lost)), \
                                      action=action_msg, \
                                      game=ChallengeGame.get_instance())

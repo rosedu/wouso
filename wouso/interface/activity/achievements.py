@@ -1,10 +1,11 @@
+import logging
 from datetime import datetime, timedelta
 from django.utils.translation import ugettext_noop
-import logging
 from wouso.core.app import App
+from wouso.interface.apps.messaging.models import Message
+from wouso.games.challenge.models import Challenge
 from models import Activity
 from signals import addActivity,messageSignal
-from wouso.interface.apps.messaging.models import Message
 
 def consecutive_seens(player, timestamp):
     """
@@ -94,6 +95,16 @@ def refused_challenges(player):
     return Activity.get_player_activity(player).filter(action__contains='chall-refused', timestamp__gte=start, user_from=player).count()
 
 
+def get_chall_score(arguments):
+    if not arguments:
+        return 0
+    if "id" in arguments:
+        chall = Challenge.objects.get(pk=arguments["id"])
+        return max(chall.user_from.score, chall.user_to.score)
+    else:
+        return 0
+        
+
 class Achievements(App):
     @classmethod
     def earn_achievement(cls, player, modifier):
@@ -140,6 +151,10 @@ class Achievements(App):
                     cls.earn_achievement(player, 'ach-this-is-sparta')
 
         if action == 'chall-won':
+            # Check for flawless victory
+            if get_chall_score(kwargs.get("arguments")) == 500:
+                if not player.magic.has_modifier('ach-flawless-victory'):
+                    cls.earn_achievement(player, 'ach-flawless-victory')
             # Check 10 won challenge games in a row
             if not player.magic.has_modifier('ach-chall-won-10'):
                 if consecutive_chall_won(player) >= 10:
@@ -182,6 +197,7 @@ class Achievements(App):
                 'ach-bad-start',
                 'ach-chall-def-big',
                 'ach-this-is-sparta',
+                'ach-flawless-victory',
         ]
 
 
