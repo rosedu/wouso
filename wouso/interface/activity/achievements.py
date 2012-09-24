@@ -5,6 +5,7 @@ from wouso.core.app import App
 from models import Activity
 from signals import addActivity,messageSignal
 from wouso.interface.apps.messaging.models import Message
+from wouso.games.challenge.models import Challenge
 
 def consecutive_seens(player, timestamp):
     """
@@ -88,16 +89,12 @@ def consecutive_chall_won(player):
 def get_chall_score(arguments):
     if not arguments:
         return 0
-    text = arguments["extra"]
-    result = 0
-    for i in text:
-        if i.isdigit():
-            result = result*10 + int(i)
-        else:
-            break
-    return result
-
-
+    if "id" in arguments:
+        chall = Challenge.objects.get(pk=arguments["id"])
+        return max(chall.user_from.score, chall.user_to.score)
+    else:
+        return 0
+        
 class Achievements(App):
     @classmethod
     def earn_achievement(cls, player, modifier):
@@ -177,7 +174,7 @@ class Achievements(App):
                 'ach-early-bird',
                 'ach-popularity',
                 'ach-bad-start',
-                'ach_flawless-victory',
+                'ach-flawless-victory',
         ]
 
 
