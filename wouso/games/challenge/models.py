@@ -1,3 +1,4 @@
+import random
 import logging
 from datetime import datetime, time, timedelta, date
 from random import shuffle
@@ -15,8 +16,9 @@ from wouso.core.game.models import Game
 from wouso.core import scoring
 from wouso.core.god import God
 from wouso.interface.activity import signals
-import random
 from wouso.interface.apps.messaging.models import Message
+
+
 class ChallengeException(Exception):
     pass
 
