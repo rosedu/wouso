@@ -15,7 +15,7 @@ from wouso.core.game.models import Game
 from wouso.core import scoring
 from wouso.core.god import God
 from wouso.interface.activity import signals
-
+import random
 
 class ChallengeException(Exception):
     pass
@@ -380,6 +380,13 @@ class Challenge(models.Model):
                 different_race=diff_race, different_class=diff_class,
                 winner_points=winner_points, loser_points=loser_points,
             )
+            #Check for spell evade
+            if self.user_lost.has_modifier('challenge-evade'):
+                random.seed()
+                if random.random() > 0.33:
+                    #He's lucky,no penalty,return warrany
+                    scoring.score(self.user_lost.user, ChallengeGame, 'chall-warranty-return', external_id=self.id)
+                          
             scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
                 external_id=self.id, points=self.user_lost.score, points2=self.user_lost.score)
             # send activty signal
