@@ -1,3 +1,4 @@
+import random
 import logging
 from datetime import datetime, time, timedelta, date
 from random import shuffle
@@ -15,6 +16,7 @@ from wouso.core.game.models import Game
 from wouso.core import scoring
 from wouso.core.god import God
 from wouso.interface.activity import signals
+from wouso.interface.apps.messaging.models import Message
 
 
 class ChallengeException(Exception):
@@ -382,6 +384,14 @@ class Challenge(models.Model):
                 different_race=diff_race, different_class=diff_class,
                 winner_points=winner_points, loser_points=loser_points,
             )
+            #Check for spell evade
+            if self.user_lost.user.has_modifier('challenge-evade'):
+                random.seed()
+                if random.random() < 0.33:
+                    #He's lucky,no penalty,return warrany
+                    scoring.score(self.user_lost.user, ChallengeGame, 'chall-warranty-return', external_id=self.id)
+                    Message.send(sender=None, receiver=self.user_lost.user, subject="Challenge evaded", text="You have just evaded losing points in a challenge")
+                          
             scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
                 external_id=self.id, points=self.user_lost.score, points2=self.user_lost.score)
             # send activty signal
@@ -557,6 +567,7 @@ class ChallengeGame(Game):
                 'challenge-cannot-challenge', # reject outgoing challenges, negative
                 'challenge-always-lose', # lose regardless the result, negative
                 'challenge-affect-scoring', # affect scoring by positive/negative percent
+                'challenge-evade', #33% chance player does not lose points in a challenge
         ]
 
     @classmethod
