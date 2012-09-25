@@ -23,7 +23,8 @@ upat = [
     url(r'^qpool/qpool_remove_all/(?P<cat>\w+)/$', 'wouso.interface.cpanel.views.qpool_remove_all', name='remove_all'),
     url(r'^qpool/manage_tags/$', 'wouso.interface.cpanel.views.qpool_managetags', name='qpool_manage_tags'),
     url(r'^qpool/newtag/$','wouso.interface.cpanel.views.qpool_add_tag', name='qpool_add_tag'),
-    url(r'^qpool/edit_tag/$', 'wouso.interface.cpanel.views.qpool_edit_tag', name='qpool_edit_tag'),
+    url(r'^qpool/edit_tag/(?P<tag>\d+)/$', 'wouso.interface.cpanel.views.qpool_edit_tag', name='qpool_edit_tag'),
+    url(r'^qpool/del_tag/(?P<tag>\d+)/$', 'wouso.interface.cpanel.views.qpool_delete_tag', name='qpool_del_tag'),
     url(r'^qpool/set_tag/$', 'wouso.interface.cpanel.views.qpool_settag', name='qpool_set_tag'),
 
 

@@ -449,7 +449,7 @@ def qpool_add_tag(request):
         tag = AddTagForm(data = request.POST)
         if tag.is_valid():
             tag.save()
-            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_managetags'))
+            return redirect('qpool_manage_tags')
         else:
             form = tag
     return render_to_response('cpanel/qpool_add_tag.html',
@@ -458,16 +458,25 @@ def qpool_add_tag(request):
 
 
 @permission_required('config.change_setting')
-def qpool_edit_tag(request):
-    tag = get_object_or_404(Tag, pk=id)
+def qpool_edit_tag(request, tag):
+    tag_obj = get_object_or_404(Tag, pk=tag)
     if request.method == "POST":
-        form = AddTagForm(data = request.POST, instance = tag)
+        form = AddTagForm(data = request.POST, instance = tag_obj)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_managetags'))
+            return redirect('qpool_manage_tags')
     else:
-        form = AddTagForm(instance=spell)
-    return render_to_response('cpanel/qpool_edit_tag.html', {'form':form, 'tags': tag}, context_instance=RequestContext(request))
+        form = AddTagForm(instance=tag_obj)
+    return render_to_response('cpanel/qpool_edit_tag.html', {'form':form, 'tags': tag_obj}, context_instance=RequestContext(request))
+
+
+@permission_required('config.change_setting')
+def qpool_delete_tag(request, tag):
+    tag_obj = get_object_or_404(Tag, pk=tag)
+
+    tag_obj.delete()
+
+    return redirect('qpool_manage_tags')
 
 
 @permission_required('config.change_setting')
