@@ -7,6 +7,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from models import QotdUser, QotdGame
 from forms import QotdForm
+
 @login_required
 def index(request):
     if QotdGame.disabled():
