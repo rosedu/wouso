@@ -7,7 +7,6 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from models import QotdUser, QotdGame
 from forms import QotdForm
-
 @login_required
 def index(request):
     if QotdGame.disabled():
@@ -15,7 +14,9 @@ def index(request):
 
     profile = request.user.get_profile()
     qotd_user = profile.get_extension(QotdUser)
-
+    
+    if qotd_user.has_modifier('qotd-blind'):
+        return render_to_response('qotd/index.html', {"error":"You have been blinded,you cannot answer to the Question of the Day"}, context_instance=RequestContext(request))
     if not qotd_user.has_question:
         qotd = QotdGame.get_for_today()
         qotd_user.set_question(qotd)
