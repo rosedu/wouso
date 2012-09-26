@@ -22,7 +22,7 @@ from wouso.interface.activity.signals import addActivity
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
-from forms import QuestionForm, TagsForm, UserForm, SpellForm
+from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm
 from django.contrib.auth.models import User
 
 
@@ -440,6 +440,43 @@ def qpool_managetags(request):
                             {'tags': tags},
                             context_instance=RequestContext(request)
     )
+
+
+@permission_required('config.change_setting')
+def qpool_add_tag(request):
+    form = AddTagForm()
+    if request.method == "POST":
+        tag = AddTagForm(data = request.POST)
+        if tag.is_valid():
+            tag.save()
+            return redirect('qpool_manage_tags')
+        else:
+            form = tag
+    return render_to_response('cpanel/qpool_add_tag.html',
+            {'form': form},
+            context_instance=RequestContext(request))
+
+
+@permission_required('config.change_setting')
+def qpool_edit_tag(request, tag):
+    tag_obj = get_object_or_404(Tag, pk=tag)
+    if request.method == "POST":
+        form = AddTagForm(data = request.POST, instance = tag_obj)
+        if form.is_valid():
+            form.save()
+            return redirect('qpool_manage_tags')
+    else:
+        form = AddTagForm(instance=tag_obj)
+    return render_to_response('cpanel/qpool_edit_tag.html', {'form':form, 'tags': tag_obj}, context_instance=RequestContext(request))
+
+
+@permission_required('config.change_setting')
+def qpool_delete_tag(request, tag):
+    tag_obj = get_object_or_404(Tag, pk=tag)
+
+    tag_obj.delete()
+
+    return redirect('qpool_manage_tags')
 
 
 @permission_required('config.change_setting')
