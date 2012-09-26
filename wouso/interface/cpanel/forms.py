@@ -90,6 +90,10 @@ class TagsForm(forms.Form):
         for tag in tags:
             self.fields['%s' % tag.name] = forms.BooleanField(initial=tag.active, required=True)
 
+class AddTagForm(forms.ModelForm):
+    class Meta:
+        model = Tag
+
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
