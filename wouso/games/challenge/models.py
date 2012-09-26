@@ -373,7 +373,10 @@ class Challenge(models.Model):
             # warranty not affected by percents
             scoring.score(self.user_won.user, ChallengeGame, 'chall-warranty-return',
                           external_id=self.id)
-
+                
+            if self.user_won.user.has_modifier('challenge-affect-scoring-won'):
+                self.user_won.percents += self.user_won.user.modifier_percents('challenge-affect-scoring-won')
+                
             scoring.score(self.user_won.user, ChallengeGame, 'chall-won',
                 external_id=self.id, percents=self.user_won.percents,
                 points=self.user_won.score, points2=self.user_lost.score,
@@ -555,6 +558,7 @@ class ChallengeGame(Game):
                 'challenge-cannot-challenge', # reject outgoing challenges, negative
                 'challenge-always-lose', # lose regardless the result, negative
                 'challenge-affect-scoring', # affect scoring by positive/negative percent
+                'challenge-affect-scoring-won', #affect scoring by positive/negative percent for win challenges
         ]
 
     @classmethod
