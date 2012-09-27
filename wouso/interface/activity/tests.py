@@ -8,6 +8,7 @@ from achievements import consecutive_seens
 from achievements import consecutive_qotd_correct
 from achievements import consecutive_chall_won, challenge_count
 from achievements import unique_users_pm , wrong_first_qotd
+from achievements import check_for_god_mode
 from models import Activity
 from . import signals
 
@@ -277,3 +278,83 @@ class PopularityTest(WousoTest):
                                      action='qotd-wrong',
                                      game=QotdGame.get_instance())
         self.assertTrue(player.magic.has_modifier('ach-bad-start'))
+
+
+class GodModeTest(WousoTest):
+    
+    
+    def test_check_for_god_mode(self):
+        player = self._get_player()
+        timestamp=datetime.now()-timedelta(days=1)
+        for i in range(3):
+            timestamp -= timedelta(days=1)
+            Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-correct')
+        self.assertTrue(check_for_god_mode(player,3,0))
+        
+    def test_check_for_god_mode2(self):
+        """
+        Check for the minimum requirements in chall
+        """
+        player = self._get_player()
+        player2= self._get_player(1)
+        timestamp=datetime.now()-timedelta(days=1)
+        for i in range(3):
+            timestamp -= timedelta(days=1)
+            Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-correct')
+            Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player2, action='chall-won')
+            
+        self.assertTrue(check_for_god_mode(player,3,3))
+        self.assertTrue(not check_for_god_mode(player,3,4))
+        
+    def test_check_for_god_mode3(self):
+        """
+        Check for a chall lost
+        """
+        player = self._get_player()
+        player2= self._get_player(1)
+        timestamp=datetime.now()-timedelta(days=1)
+        for i in range(3):
+            timestamp -= timedelta(days=1)
+            Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-correct')
+            if i == 1:
+                #Challenge lost
+                Activity.objects.create(timestamp=timestamp, user_from=player2, user_to=player, action='chall-won')
+        self.assertTrue(not check_for_god_mode(player,3,1))
+        
+    def test_check_for_god_mode4(self):
+        """
+        Some complex test to check functionality
+        """
+        player = self._get_player()
+        player2 = self._get_player(1)
+        timestamp = datetime.now()-timedelta(days=100)
+        for i in range(4):
+            timestamp += timedelta(days=1)
+            if i == 2:
+                Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-wrong')
+            else:
+                Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-correct')
+        Activity.objects.create(timestamp=timestamp+timedelta(days=1), user_from=player, user_to=player, action='seen')
+        self.assertTrue(not check_for_god_mode(player, 4, 0))
+        for i in range(4):
+            timestamp += timedelta(days=1)
+            Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-correct')
+        Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='seen')
+        
+        self.assertTrue(check_for_god_mode(player, 4, 0))
+        
+    def test_god_mode_ach(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-god-mode-on')
+        player = self._get_player()
+        player2= self._get_player(1)
+        timestamp=datetime.now()-timedelta(days=1)
+        for i in range(5):
+            timestamp -= timedelta(days=1)
+            Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-correct')
+            Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player2, action='chall-won')
+        signals.addActivity.send(sender=None, user_from=player,
+                                     user_to=player,
+                                     action='seen',
+                                     game=None)
+        self.assertTrue(player.magic.has_modifier('ach-god-mode-on'))
+        

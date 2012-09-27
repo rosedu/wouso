@@ -84,6 +84,72 @@ def consecutive_chall_won(player):
             return result
 
     return result
+    
+def check_for_god_mode(player, days, chall_min):
+    """
+    Return true if the player won all challenges and answerd all qotd 'days' days in a row witn a minimum of 'chall_min' challenges
+    """
+    seens = Activity.objects.all().filter(user_from=player, action='seen').order_by('-timestamp')[:2]
+    if len(seens) < 2:
+        timestamp = datetime.min
+        last_timestamp=datetime.now()
+    else:
+        timestamp = seens[1].timestamp-timedelta(days=days-1)
+        timestamp = timestamp.replace(hour=0, minute=0, second=0, microsecond=0)
+        last_timestamp = seens[0].timestamp.replace(hour=0, minute=0, second=0, microsecond=0)
+    
+    #Get the challenges and qotd that could form the achievement
+    chall_won = Activity.objects.all().filter(user_from=player, action='chall-won',timestamp__gte=timestamp).exclude(timestamp__gte=last_timestamp)
+    chall_lost= Activity.objects.all().filter(user_to=player, action='chall-won', timestamp__gte=timestamp).exclude(timestamp__gte=last_timestamp)
+    qotd = Activity.objects.all().filter(user_from=player, action__contains='qotd', timestamp__gte=timestamp).exclude(timestamp__gte=last_timestamp)
+    events = chall_won | chall_lost | qotd
+    
+    if len(events) == 0:
+        return False
+        
+    def comp(activity):
+        """
+        This returns a.timestamp and is used for sorting purposes
+        """
+        return activity.timestamp
+   
+    events = sorted(events, key=comp)
+    chall_won_count = 0
+    chall_lost_count = 0
+    qotd_count = 0
+    first_index = last_index = 0
+    time2 = events[0].timestamp.replace(hour=0, minute=0, second=0, microsecond=0)
+    time1 = time2 - timedelta(days=days)
+    for i in events:
+        print "%r %r" % (i.action,i.timestamp)
+    print "Time1:%r time2:%r" % (time1,time2)
+    while last_index < len(events):
+        
+        time2 += timedelta(days=1)
+        time1 += timedelta(days=1)
+        
+        while first_index < len(events) and events[first_index].timestamp < time2:
+            if events[first_index].action == "qotd-correct":
+                qotd_count += 1
+            elif events[first_index].user_from == player:
+                chall_won_count += 1
+            else:
+                chall_lost_count += 1
+            first_index += 1
+         
+        while last_index < first_index and events[last_index].timestamp < time1:
+            if events[last_index].action == "qotd-correct":
+                qotd_count -= 1
+            elif events[last_index].user_from == player:
+                chall_won_count -= 1
+            else:
+                chall_lost_count -= 1
+            last_index += 1
+        print "qotd_count:%r time2:%r time1:%r" %(qotd_count,time2,time1)
+        if qotd_count == days and chall_won_count >= chall_min and chall_lost_count == 0:
+            return True
+    
+    return False
 
 
 class Achievements(App):
@@ -144,7 +210,9 @@ class Achievements(App):
             elif login_between(kwargs.get('timestamp',datetime.now()), 6, 8):
                 if not player.magic.has_modifier('ach-early-bird'):
                     cls.earn_achievement(player, 'ach-early-bird')
-
+            if check_for_god_mode(player, 5, 5):
+                if not player.magic.has_modifier('ach-god-mode-on'):
+                    cls.earn_achievement(player, 'ach-god-mode-on')
             # Check previous 10 seens
             if consecutive_seens(player, datetime.now()) >= 10:
                 if not player.magic.has_modifier('ach-login-10'):
@@ -160,6 +228,7 @@ class Achievements(App):
                 'ach-early-bird',
                 'ach-popularity',
                 'ach-bad-start',
+                'ach-god-mode-on'
         ]
 
 
