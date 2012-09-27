@@ -94,6 +94,31 @@ def refused_challenges(player):
     return Activity.get_player_activity(player).filter(action__contains='chall-refused', timestamp__gte=start, user_from=player).count()
 
 
+def get_challenge_time(arguments):
+    """
+     Return the number of minutes spent by the winner.
+    """
+    if not arguments:
+        return 0
+
+    text = arguments["extra"]
+
+    tsplit = text.split('(')
+    time_string = tsplit[1].split(')')[0][3:]
+
+    i = 0;
+    result = 0;
+    while time_string[i].isdigit():
+        result = result * 10 + int(time_string[i])
+        i += 1
+    i += 1
+
+    if 'minut' in time_string[i:]:
+        return result
+    else:
+        return 0
+
+
 class Achievements(App):
     @classmethod
     def earn_achievement(cls, player, modifier):
@@ -149,6 +174,11 @@ class Achievements(App):
                 if (kwargs.get('user_to').level_no - player.level_no) >= 2:
                     cls.earn_achievement(player, 'ach-chall-def-big')
 
+            # Check if the player finished the challenge in less than 1 minute
+            if not player.magic.has_modifier('ach-win-fast'):
+                if get_challenge_time(kwargs.get("arguments")) < 1:
+                    cls.earn_achievement(player, 'ach-win-fast')
+
         if action == "message":
             # Check the number of unique users who send pm to player in the last m minutes
             if unique_users_pm(kwargs.get('user_to'), 30) >= 3:
@@ -181,6 +211,7 @@ class Achievements(App):
                 'ach-bad-start',
                 'ach-chall-def-big',
                 'ach-this-is-sparta',
+                'ach-win-fast',
         ]
 
 

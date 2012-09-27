@@ -7,7 +7,7 @@ from wouso.interface.apps.messaging.models import Message, MessagingUser
 from achievements import consecutive_seens
 from achievements import consecutive_qotd_correct
 from achievements import consecutive_chall_won, challenge_count
-from achievements import refused_challenges
+from achievements import refused_challenges, get_challenge_time
 from achievements import unique_users_pm , wrong_first_qotd
 from models import Activity
 from . import signals
@@ -263,6 +263,25 @@ class ChallengeAchievementTest(WousoTest):
                                     action='chall-refused',
                                     game=ChallengeGame.get_instance())
         self.assertTrue(player1.magic.has_modifier('ach-this-is-sparta'))
+
+
+    def test_get_challenge_time(self):
+        self.assertEqual(get_challenge_time(eval('{"extra": "500p (in 45 seconds) - 300p (in 1 minute and 25 seconds)", "user_lost": "player"}')), 0)
+        self.assertEqual(get_challenge_time(eval('{"extra": "500p (in 2 minutes and 45 seconds) - 300p (in 1 minute and 25 seconds)", "user_lost":"player"}')), 2)
+
+
+    def test_win_fast_activity(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-win-fast')
+        player = self._get_player()
+        player2 = self._get_player(2)
+
+        signals.addActivity.send(sender=None, user_from=player,
+                                user_to=player2,
+                                message="",
+                                arguments=dict(extra="500p (in 45 seconds) - 300p (in 1 minute and 25 seconds)",user_lost=player2),
+                                action="chall-won",
+                                game=ChallengeGame.get_instance())
+        self.assertTrue(player.magic.has_modifier('ach-win-fast'))
 
 
 class PopularityTest(WousoTest):
