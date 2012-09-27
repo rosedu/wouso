@@ -16,12 +16,6 @@ def index(request):
     profile = request.user.get_profile()
     qotd_user = profile.get_extension(QotdUser)
 
-    if profile.magic.has_modifier('qotd-blind'):
-        error = 'Esti afectat de vraja Orbire. Nu poti raspunde la intrebarea zilei'
-        return render_to_response('site_index.html',
-              {'error': error},
-              context_instance=RequestContext(request))
-
     if not qotd_user.has_question:
         qotd = QotdGame.get_for_today()
         qotd_user.set_question(qotd)
