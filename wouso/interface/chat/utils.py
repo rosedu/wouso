@@ -51,24 +51,23 @@ def new_activity_messages(chat_user):
         msgs.append(dict(room='global', text=message, time=m.timestamp.strftime("%H:%M"), mess_type='activity'))
     return msgs
 
-def serve_message(user):
+def serve_message(user, timeStamp):
     """
     Will return all messages that wasn't already delivered.
     Used when you write a new message or when you get a KeepAlive.
     """
-    query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS, destRoom__participants=user)
+    query = ChatMessage.objects.filter(timeStamp__gt=timeStamp, destRoom__participants=user)
 
     messages = create_message(user, query) + new_activity_messages(user)
 
     if not messages:
         return None
 
-    user.lastMessageTS = datetime.now()
-    user.save()
 
     obj = {'user': unicode(user)}
     obj['count'] = len(messages)
     obj['msgs'] = messages
+    obj['time'] = str(datetime.now())
 
     return obj
 
