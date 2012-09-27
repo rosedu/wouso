@@ -135,7 +135,9 @@ def sendmessage(request):
     """
     user = get_author(request)
     data = request.REQUEST
-
+    timeStamp = data['time']
+    if timeStamp == 'null':
+        timeStamp = datetime.now()
     if data['opcode'] == 'message':
         room = roomexist(data['room'])
         if user.user.has_perm('chat.super_chat_user'):
@@ -146,7 +148,7 @@ def sendmessage(request):
                         sender = Player.objects.get(nickname=text[1])
                         sender = sender.user.get_profile().get_extension(ChatUser)
                     except:
-                        return json_response(serve_message(user))
+                        return json_response(serve_message(user, timeStamp))
 
                     if text[0] == '/kick':
                         add_message(text[1], user, room, sender, "special", "kick")
@@ -156,7 +158,7 @@ def sendmessage(request):
                     if text[0] == '/ban':
                         sender.canAccessChat = False
                         sender.save()
-                    return json_response(serve_message(user))
+                    return json_response(serve_message(user, timeStamp))
 
 
         try:
@@ -174,8 +176,7 @@ def sendmessage(request):
 
         if user not in chat_global.participants.all():
             chat_global.participants.add(user)
-            user.lastMessageTS = datetime.now()
-            user.save()
+
     elif data['opcode'] == 'getRoom':
         try:
             user_to = Player.objects.get(id=data['to'])
@@ -198,7 +199,7 @@ def sendmessage(request):
         room.participants.add(user)
         room.participants.add(user_to.id)
         return json_response(room.to_dict())
-    return json_response(serve_message(user))
+    return json_response(serve_message(user, timeStamp))
 
 def json_response(object):
      return HttpResponse(simplejson.dumps(object))

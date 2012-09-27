@@ -4,6 +4,7 @@ var UserName = null;
 var NewUserTimer = null;
 var SendPingTimer = null;
 var title;
+var timeStamp = null;
 
 /* Private chat staff */
 var firstFreeChat;
@@ -211,7 +212,7 @@ $(document).ready(function () {
         var input = $(name).val();
         if (input) {
             AddToHist(input);
-            var msgdata = {'opcode':'message', 'msg':input, 'room':private_users[id].room_id};
+            var msgdata = {'opcode':'message', 'msg':input, 'room':private_users[id].room_id, 'time': timeStamp};
             var args = {type:"POST", url:"/chat/chat_m/", data:msgdata, complete:ReceiveMessage};
             $.ajax(args);
             $(name).val("");
@@ -372,7 +373,7 @@ $(document).ready(function () {
 
     $("#GlobalboxChatButton").click(function () {
         var sendID = (selectID_over != null)? selectID_over: selectID;
-        var msgdata = {'opcode':'getRoom', 'from':myID, 'to':sendID};
+        var msgdata = {'opcode':'getRoom', 'from':myID, 'to':sendID, 'time': timeStamp};
         var args = {type:"POST", url:"/chat/chat_m/", data:msgdata, complete:create_chat_box};
         $.ajax(args);
         $("#Contactbox").hide();
@@ -447,7 +448,7 @@ $(document).ready(function () {
 
     /* See if I got new message */
     function SendPing() {
-        var mdata = {'opcode':'keepAlive'};
+        var mdata = {'opcode':'keepAlive', 'time': timeStamp};
         var args = {type:'POST', url:'/chat/chat_m/', data:mdata, complete:ReceiveMessage};
         $.ajax(args);
     }
@@ -498,6 +499,7 @@ $(document).ready(function () {
             if (!obj)
                 return false;
             var i;
+            timeStamp = obj.time;
             for (i = 0; i < obj.count; ++i) {
                 if(obj.msgs[i].mess_type == 'special' && obj.msgs[i].comand == 'block-communication'){
                     clearInterval(NewUserTimer);
@@ -639,7 +641,7 @@ $(document).ready(function () {
 
     $("#ContactboxChatButton").click(function(){
         var sendID = (selectID_over != null)? selectID_over: selectID;
-        var msgdata = {'opcode':'getRoom', 'from':myID, 'to':sendID};
+        var msgdata = {'opcode':'getRoom', 'from':myID, 'to':sendID, 'time': timeStamp};
         var args = {type:"POST", url:"/chat/chat_m/", data:msgdata, complete:create_chat_box};
         $.ajax(args);
         $("#Contactbox").hide();

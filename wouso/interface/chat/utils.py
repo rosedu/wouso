@@ -39,23 +39,21 @@ def create_message(user, query):
             continue
     return msgs
 
-def serve_message(user):
+def serve_message(user, timeStamp):
     """
     Will return all messages that wasn't already delivered.
     Used when you write a new message or when you get a KeepAlive.
     """
-    query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS, destRoom__participants=user)
+    query = ChatMessage.objects.filter(timeStamp__gt=timeStamp, destRoom__participants=user)
 
     if not query:
         return None
 
-    user.lastMessageTS = datetime.now()
-    user.save()
 
     obj = {'user': unicode(user)}
     obj['count'] = query.count()
     obj['msgs'] = create_message(user, query)
-
+    obj['time'] = str(datetime.now())
     return obj
 
 def some_old_message(user, room, position):
