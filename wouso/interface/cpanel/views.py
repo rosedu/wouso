@@ -719,10 +719,10 @@ def grandchalls_round(request):
 
     """ regular round """
     over = 0
+    done = GrandChallenge.all_done()
     if not GrandChallengeGame.is_final():
-        GrandChallenge.joaca(GrandChallengeGame.round_number)
-        if GrandChallenge.all_done():
-
+        if done:
+            GrandChallenge.joaca(GrandChallengeGame.round_number)
             if GrandChallengeGame.round_number % 2 == 0:
                 GrandChallenge.play_round(1)
                 GrandChallenge.play_round(0)
@@ -752,6 +752,7 @@ def grandchalls_round(request):
     return render_to_response('cpanel/grandchallenge.html',
             {'gchalls': gchalls,
              'nr': GrandChallengeGame.round_number,
+             'done': done,
              'over': over},
         context_instance=RequestContext(request))
 

@@ -4,7 +4,7 @@
 {% block sectiontitle %}The GrandChallenge{% endblock %}
 
 {% block sectioncontent %}
-{% if nr = -1 %}
+{% if nr == -1 %}
 <a class="button" href="{% url grandchalls_start %}">Start</a>
 {# If necessary, add info to explain the tournament here #}
 {% else %}
