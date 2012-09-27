@@ -137,7 +137,7 @@ def sendmessage(request):
     data = request.REQUEST
     timeStamp = data['time']
     if timeStamp == 'null':
-        timeStamp = datetime.now()
+        return json_response(serve_message(user, timeStamp))
     if data['opcode'] == 'message':
         room = roomexist(data['room'])
         if user.user.has_perm('chat.super_chat_user'):

@@ -44,11 +44,25 @@ def serve_message(user, timeStamp):
     Will return all messages that wasn't already delivered.
     Used when you write a new message or when you get a KeepAlive.
     """
-    query = ChatMessage.objects.filter(timeStamp__gt=timeStamp, destRoom__participants=user)
+    if timeStamp == 'null':
+        print "xx"
+        timeStamp = datetime.now()
+        query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS, destRoom__participants=user)
+        obj = {'user': unicode(user)}
+        obj['count'] = query.count()
+        obj['msgs'] = create_message(user, query)
+        obj['time'] = str(datetime.now())
+        user.lastMessageTS = datetime.now()
+        user.save()
+        return obj
+    else:
+        query = ChatMessage.objects.filter(timeStamp__gt=timeStamp, destRoom__participants=user)
 
     if not query:
         return None
 
+    user.lastMessageTS = datetime.now()
+    user.save()
 
     obj = {'user': unicode(user)}
     obj['count'] = query.count()
