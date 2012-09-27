@@ -120,9 +120,7 @@ def check_for_god_mode(player, days, chall_min):
     first_index = last_index = 0
     time2 = events[0].timestamp.replace(hour=0, minute=0, second=0, microsecond=0)
     time1 = time2 - timedelta(days=days)
-    for i in events:
-        print "%r %r" % (i.action,i.timestamp)
-    print "Time1:%r time2:%r" % (time1,time2)
+
     while last_index < len(events):
         
         time2 += timedelta(days=1)
@@ -145,7 +143,6 @@ def check_for_god_mode(player, days, chall_min):
             else:
                 chall_lost_count -= 1
             last_index += 1
-        print "qotd_count:%r time2:%r time1:%r" %(qotd_count,time2,time1)
         if qotd_count == days and chall_won_count >= chall_min and chall_lost_count == 0:
             return True
     
