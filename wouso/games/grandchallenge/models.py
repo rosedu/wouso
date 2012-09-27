@@ -9,7 +9,7 @@ from random import randint
 # Create your models here.
 class GrandChallengeUser(Player):
     """ Extension of the user profile for GrandChallenge """
-    lost = 0
+    lost = models.IntegerField(default=0)
 
 class GrandChallenge(models.Model):
     ALL = []
@@ -30,7 +30,8 @@ class GrandChallenge(models.Model):
         challenge_user_from = user_from.user.get_profile().get_extension(ChallengeUser)
         chall = Challenge.create(challenge_user_from, challenge_user_to)
         chall.accept()
-        self.__class__.CHALLENGES.append(chall)
+        self.challenge_id = chall.id
+        self.__class__.CHALLENGES.append(chall.id)
 
     @classmethod
     def get_challenges(cls):
@@ -45,17 +46,17 @@ class GrandChallenge(models.Model):
 
     @classmethod
     def all_done(cls):
-        print "mama"
         for i in cls.CHALLENGES:
-            if i.status != "P":
+            x = Challenge.objects.get(id = i)
+            if x.status != "P":
                 print "not played"
                 return False
         return True
 
     def play(self, round_number):
-        winner = randint(0, 1) == 0 #trebuie generat de joc
+        winner = Challenge.objects.get(id= self.challenge_id).winner #trebuie generat de joc
 
-        if winner:
+        if winner.user == self.user_from.user:
             self.won = self.user_from
             self.lost = self.user_to
             self.user_to.lost += 1
@@ -127,8 +128,8 @@ class GrandChallenge(models.Model):
 
 class GrandChallengeGame(Game):
     """ Each game must extend Game """
-    NUM_USERS = 16
-    round_number = 0;
+    NUM_USERS = 8
+    round_number = 0
     ALL = []
     #Iulian - primii 16
     base_query = TopUser.objects.exclude(user__is_superuser=True)
