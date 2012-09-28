@@ -5,6 +5,7 @@ from wouso.core.app import App
 from models import Activity
 from signals import addActivity,messageSignal
 from wouso.interface.apps.messaging.models import Message
+from wouso.games.challenge.models import Challenge
 
 def consecutive_seens(player, timestamp):
     """
@@ -96,28 +97,16 @@ def refused_challenges(player):
 
 def get_challenge_time(arguments):
     """
-     Return the number of minutes spent by the winner.
+     Return the number of seconds spent by the winner.
     """
     if not arguments:
         return 0
 
-    text = arguments["extra"]
-
-    tsplit = text.split('(')
-    time_string = tsplit[1].split(')')[0][3:]
-
-    i = 0;
-    result = 0;
-    while time_string[i].isdigit():
-        result = result * 10 + int(time_string[i])
-        i += 1
-    i += 1
-
-    if 'minut' in time_string[i:]:
-        return result
+    if "id" in arguments:
+        chall = Challenge.objects.get(pk=arguments["id"])
+        return chall.user_from.seconds_took
     else:
         return 0
-
 
 class Achievements(App):
     @classmethod
@@ -176,7 +165,8 @@ class Achievements(App):
 
             # Check if the player finished the challenge in less than 1 minute
             if not player.magic.has_modifier('ach-win-fast'):
-                if get_challenge_time(kwargs.get("arguments")) < 1:
+                seconds_no = get_challenge_time(kwargs.get("arguments"))
+                if seconds_no > 0 and seconds_no <= 60:
                     cls.earn_achievement(player, 'ach-win-fast')
 
         if action == "message":

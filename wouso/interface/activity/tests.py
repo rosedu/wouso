@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta
 from wouso.core.magic.models import Artifact
 from wouso.core.tests import WousoTest
+from wouso.core import scoring
 from wouso.games.qotd.models import QotdGame
-from wouso.games.challenge.models import ChallengeGame
+from wouso.games.challenge.models import ChallengeGame, ChallengeUser, Challenge
 from wouso.interface.apps.messaging.models import Message, MessagingUser
 from achievements import consecutive_seens
 from achievements import consecutive_qotd_correct
@@ -264,26 +265,6 @@ class ChallengeAchievementTest(WousoTest):
                                     game=ChallengeGame.get_instance())
         self.assertTrue(player1.magic.has_modifier('ach-this-is-sparta'))
 
-
-    def test_get_challenge_time(self):
-        self.assertEqual(get_challenge_time(eval('{"extra": "500p (in 45 seconds) - 300p (in 1 minute and 25 seconds)", "user_lost": "player"}')), 0)
-        self.assertEqual(get_challenge_time(eval('{"extra": "500p (in 2 minutes and 45 seconds) - 300p (in 1 minute and 25 seconds)", "user_lost":"player"}')), 2)
-
-
-    def test_win_fast_activity(self):
-        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-win-fast')
-        player = self._get_player()
-        player2 = self._get_player(2)
-
-        signals.addActivity.send(sender=None, user_from=player,
-                                user_to=player2,
-                                message="",
-                                arguments=dict(extra="500p (in 45 seconds) - 300p (in 1 minute and 25 seconds)",user_lost=player2),
-                                action="chall-won",
-                                game=ChallengeGame.get_instance())
-        self.assertTrue(player.magic.has_modifier('ach-win-fast'))
-
-
 class PopularityTest(WousoTest):
     def test_popularity_5_pm_1(self):
         player = self._get_player()
@@ -341,3 +322,43 @@ class PopularityTest(WousoTest):
                                      action='qotd-wrong',
                                      game=QotdGame.get_instance())
         self.assertTrue(player.magic.has_modifier('ach-bad-start'))
+
+class WinFastTest(WousoTest):
+    def setUp(self):
+        user_from = self._get_player(1)
+        user_to = self._get_player(2)
+        chall_user1 = user_from.get_extension(ChallengeUser)
+        chall_user2 = user_to.get_extension(ChallengeUser)
+        scoring.setup_scoring()
+        self.chall = Challenge.create(user_from=chall_user1, user_to=chall_user2, ignore_questions=True)
+
+    def test_get_time(self):
+        self.chall.user_from.seconds_took = 30
+        self.chall.user_from.score = 500
+        self.chall.user_from.save()
+        self.chall.user_to.seconds_took = 80
+        self.chall.user_to.score = 0
+        self.chall.user_to.save()
+        self.assertEqual(get_challenge_time(dict(id=self.chall.id)), 30)
+
+        self.chall.user_from.seconds_took = 180
+        self.chall.user_from.save()
+        self.chall.user_to.seconds_took = 20
+        self.chall.user_to.save()
+        self.assertEqual(get_challenge_time(dict(id=self.chall.id)), 180)
+
+    def test_ach(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-win-fast')
+        player = self._get_player()
+        self.chall.user_from.seconds_took = 30
+        self.chall.user_from.score = 400
+        self.chall.user_from.save()
+        self.chall.user_to.seconds_took = 80
+        self.chall.user_to.score = 300
+        self.chall.user_to.save()
+        signals.addActivity.send(sender=None, user_from=player,
+                                 user_to=player,
+                                 arguments=dict(id=self.chall.id),
+                                 action="chall-won",
+                                 game = ChallengeGame.get_instance())
+        self.assertTrue(player.magic.has_modifier('ach-win-fast'))
