@@ -171,6 +171,7 @@ class QotdGame(Game):
 
         return {r'^qotd/today/$': QotdHandler}
 
-    def get_modifiers(self):
+    @classmethod
+    def get_modifiers(cls):
         return ['qotd-blind', #player cannot launch QuestionOfTheDay
                 ]
