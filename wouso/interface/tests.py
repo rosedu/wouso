@@ -12,4 +12,5 @@ class TestInterface(TestCase):
         self.test_homepage_anonymous()
 
     def test_jenkins(self):
+        self.assertFalse(True)
         self.assertTrue(False)
