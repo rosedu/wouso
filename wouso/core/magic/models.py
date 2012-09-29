@@ -18,6 +18,7 @@ class Modifier(models.Model):
 
     name = models.CharField(max_length=100)
     title = models.CharField(max_length=100) # Maturator
+    description = models.TextField(max_length=2000, null=True, blank=True) # Extended description
     image = models.ImageField(upload_to=settings.MEDIA_ARTIFACTS_DIR, blank=True, null=True)
 
     percents = models.IntegerField(default=100)
@@ -38,7 +39,7 @@ class Modifier(models.Model):
 class ArtifactGroup(models.Model):
     """ A group of artifacts for a Species. It cannot contain two artifacts of the same name."""
     name = models.CharField(max_length=100, unique=True)
-    
+
     def __unicode__(self):
         return self.name
 
@@ -78,7 +79,6 @@ class NoArtifactLevel(object):
 class Spell(Modifier):
     TYPES = (('o', 'neutral'), ('p', 'positive'), ('n', 'negative'), ('s', 'self'))
 
-    description = models.TextField() # Extended description shown in the magic place
     type = models.CharField(max_length=1, choices=TYPES, default='o')
     due_days = models.IntegerField(default=5) # How many days may the spell be active
     mass = models.BooleanField(default=False) # Apply spell on many players at once
