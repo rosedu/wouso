@@ -149,7 +149,7 @@ INSTALLED_APPS = [
 
 # Authentication settings
 LOGIN_URL = '/user/login/'
-LOGIN_REDIRECT_URL = 'hub'
+LOGIN_REDIRECT_URL = '/hub/'
 
 AUTH_PROFILE_MODULE = 'user.Player'
 
