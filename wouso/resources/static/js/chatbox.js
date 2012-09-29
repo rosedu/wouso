@@ -41,7 +41,7 @@ var emoticons = {
     '\\(ball\\)':'sport_soccer.png'
 };
 
-var img_dir = "/static/img/";
+var img_dir = "/static/img/"; // TODO: fixme, use base_url
 function replace_emoticons(text) {
     $.each(emoticons, function (character, img) {
         var re = new RegExp(character, 'g');

@@ -7,12 +7,12 @@
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <TITLE>{% block title %}{{config_title}}{% endblock %}</TITLE>
-<LINK rel="stylesheet" type="text/css" href="/static/css/style.css" />
-<LINK rel="stylesheet" type="text/css" href="/static/css/jquery.mobile-1.1.1.min.css" />
-<script type="text/javascript" src="/static/js/jquery-1.6.2.min.js"></script>
-<script type="text/javascript" src="/static/js/jquery.mobile-1.1.1.min.js"></script>
-<script type="text/javascript" src="/static/js/jquery.autocomplete.js"></script>
-<script type="text/javascript" src="/static/js/format.item.js"></script>
+<LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/style.css" />
+<LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/jquery.mobile-1.1.1.min.css" />
+<script type="text/javascript" src="{{ basepath }}/static/js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="{{ basepath }}/static/js/jquery.mobile-1.1.1.min.js"></script>
+<script type="text/javascript" src="{{ basepath }}/static/js/jquery.autocomplete.js"></script>
+<script type="text/javascript" src="{{ basepath }}/static/js/format.item.js"></script>
 {% block scripts %}{% endblock %}
 </HEAD>
 
@@ -26,7 +26,7 @@
             {% player_simple player %}
             {% for h in heads %}<a href="{{ h.0.link }}">{{ h.0.text }}</a>{% endfor %}
             {% if user.is_staff %}
-            <a href="{% url dashboard %}">CPanel</a> 
+            <a href="{% url dashboard %}">CPanel</a>
             {% endif %}
             <a href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %} &raquo;</a>
         {% else %}

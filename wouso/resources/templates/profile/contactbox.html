@@ -2,20 +2,20 @@
 <HEAD>
     <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <TITLE>{% block title %}{{config_title}}{% endblock %}</TITLE>
-    <LINK rel="stylesheet" type="text/css" href="/static/css/style.css" />
-    <link  rel="stylesheet" type="text/css" href="/static/css/chatbox.css">
-    <script type="text/javascript" src="/static/js/jquery-1.6.2.min.js"></script>
-    <script type="text/javascript" src="/static/js/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="/static/js/jquery.autocomplete.js"></script>
-    <script type="text/javascript" src="/static/js/format.item.js"></script>
-    <script type="text/javascript" src="/static/js/jquery.timers.js"></script>
-    <script type="text/javascript" src="/static/js/ajaxify.js"></script>
-    <script type="text/javascript" src="/static/js/contactbox.js"></script>
-    <script type="text/javascript" src="/static/js/chatbox.js"></script>
+    <LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/style.css" />
+    <link  rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/chatbox.css">
+    <script type="text/javascript" src="{{ basepath }}/static/js/jquery-1.6.2.min.js"></script>
+    <script type="text/javascript" src="{{ basepath }}/static/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="{{ basepath }}/static/js/jquery.autocomplete.js"></script>
+    <script type="text/javascript" src="{{ basepath }}/static/js/format.item.js"></script>
+    <script type="text/javascript" src="{{ basepath }}/static/js/jquery.timers.js"></script>
+    <script type="text/javascript" src="{{ basepath }}/static/js/ajaxify.js"></script>
+    <script type="text/javascript" src="{{ basepath }}/static/js/contactbox.js"></script>
+    <script type="text/javascript" src="{{ basepath }}/static/js/chatbox.js"></script>
     <script type="text/javascript">
         var url_base = '{{ basepath }}';
     </script>
-    <LINK rel="stylesheet" type="text/css" href="/static/themes/{{ config_theme }}/styles.css" />
+    <LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/themes/{{ config_theme }}/styles.css" />
 
 	<style>
 	#Contactbox {

@@ -5,10 +5,10 @@
 
 {% block title %}{{ profile }}{% endblock %}
 {% block scripts %}
-<script type="text/javascript" src="/static/js/tabs.js"></script>
-<script type="text/javascript" src="/static/js/jquery.flot.min.js"></script>
-<script type="text/javascript" src="/static/js/profile_setting.js"></script>
-<link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
+<script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
+<script type="text/javascript" src="{{ basepath }}/static/js/jquery.flot.min.js"></script>
+<script type="text/javascript" src="{{ basepath }}/static/js/profile_setting.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
 {% endblock %}
 
 {% block content %}

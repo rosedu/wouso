@@ -5,9 +5,9 @@
 
 {% block title %}{{ group }}{% endblock %}
 {% block scripts %}
-    <script type="text/javascript" src="/static/js/tabs.js"></script>
-    <script type="text/javascript" src="/static/js/jquery.flot.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
+    <script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
+    <script type="text/javascript" src="{{ basepath }}/static/js/jquery.flot.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
 {% endblock %}
 
 {% block content %}
@@ -87,7 +87,7 @@
                 {% if group.parent %}
                 <p>{{group.parent}}: <span class="points">{{ top.position_in_parent }}</span></p>
                 {% endif %}
-                
+
                 <h3>{% trans 'Position evolution' %}</h3>
                 <p>{% trans 'Position evolution compared with groups of the same kind.' %}</p>
                 <div id="legend"></div>

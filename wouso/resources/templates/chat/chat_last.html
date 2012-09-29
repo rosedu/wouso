@@ -1,17 +1,6 @@
 {% load user %}
 {% load artifacts %}
 {% load i18n %}
-<!--
-<script type="text/javascript" src="/static/js/contactbox.js"></script>
-
-<ul class="simple">
-{% for u in last %}
-    <li><a href="#" rel="{{u.nickname}},{{u}},{{u.points}},{% player_avatar u%},{{ u.level_no }},{{u.id}},0"
-           class="cl_item cplayer" id="cl_{{u.id}}" onclick="on_userlist_select('{{u.id}}','{{u.user.username}}')" > {{u.user.username}}
-    </a></li>
-{% endfor %}
-</ul>
--->
 
 <ul class="simple">
     {% for u in last %}

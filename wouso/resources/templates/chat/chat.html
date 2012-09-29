@@ -5,11 +5,11 @@
 {% block title %}{{block.super}} -- Chatbox{% endblock %}
 
 {% block scripts %}
-    <script type="text/javascript" src="/static/js/tabs.js"></script>
-    <script type="text/javascript" src="/static/js/jquery.flot.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
+    <script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
+    <script type="text/javascript" src="{{ basepath }}/static/js/jquery.flot.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
     {% if config_disable_private_chat %}
-        <script type="text/javascript" src="/static/js/chatbox.js"></script>
+        <script type="text/javascript" src="{{ basepath }}/static/js/chatbox.js"></script>
     {% endif %}
 {% endblock %}
 
