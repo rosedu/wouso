@@ -3,11 +3,11 @@ import logging
 from datetime import datetime, time, timedelta, date
 from random import shuffle
 import pickle as pk
+import sys
 from django.db import models
 from django.db.models import Q, Max
 from django.utils.translation import ugettext_noop, ugettext as _
 from django.core.urlresolvers import reverse
-import sys
 from wouso.core.user.models import Player
 from wouso.core.magic.manager import InsufficientAmount
 from wouso.core.qpool.models import Question
@@ -359,7 +359,8 @@ class Challenge(models.Model):
             signals.addActivity.send(sender=None, user_from=self.user_to.user, \
                                      user_to=self.user_from.user, \
                                      message=signal_msg, \
-                                     arguments=dict(user_to=self.user_to, user_from=self.user_from, id=self.id,
+                                     arguments=dict(user_to=self.user_to,
+                                                    user_from=self.user_from,
                                                     extra=self.extraInfo(self.user_from, self.user_to)),\
                                      action=action_msg, \
                                      game=ChallengeGame.get_instance())
@@ -399,7 +400,8 @@ class Challenge(models.Model):
             action_msg = "chall-won"
             signals.addActivity.send(sender=None, user_from=self.user_won.user, \
                                      user_to=self.user_lost.user, \
-                                     message=signal_msg, arguments=dict(user_lost=self.user_lost, id=self.id, 
+                                     message=signal_msg,
+                                     arguments=dict(user_lost=self.user_lost, id=self.id,
                                                                         extra=self.extraInfo(self.user_won, self.user_lost)), \
                                      action=action_msg, \
                                      game=ChallengeGame.get_instance())

@@ -4,6 +4,9 @@ from django.utils.translation import ugettext_noop
 from wouso.core.app import App
 from wouso.interface.apps.messaging.models import Message
 from wouso.games.challenge.models import Challenge
+from wouso.interface.apps.messaging.models import Message
+from wouso.games.challenge.models import Challenge
+
 from models import Activity
 from signals import addActivity,messageSignal
 
@@ -104,6 +107,19 @@ def get_chall_score(arguments):
     else:
         return 0
         
+def get_challenge_time(arguments):
+    """
+     Return the number of seconds spent by the winner.
+    """
+    if not arguments:
+        return 0
+
+    if "id" in arguments:
+        chall = Challenge.objects.get(pk=arguments["id"])
+        return chall.user_from.seconds_took
+    else:
+        return 0
+
 
 class Achievements(App):
     @classmethod
@@ -165,6 +181,12 @@ class Achievements(App):
                 if (kwargs.get('user_to').level_no - player.level_no) >= 2:
                     cls.earn_achievement(player, 'ach-chall-def-big')
 
+            # Check if the player finished the challenge in less than 1 minute
+            if not player.magic.has_modifier('ach-win-fast'):
+                seconds_no = get_challenge_time(kwargs.get("arguments"))
+                if seconds_no > 0 and seconds_no <= 60:
+                    cls.earn_achievement(player, 'ach-win-fast')
+
         if action == "message":
             # Check the number of unique users who send pm to player in the last m minutes
             if unique_users_pm(kwargs.get('user_to'), 30) >= 3:
@@ -198,6 +220,7 @@ class Achievements(App):
                 'ach-chall-def-big',
                 'ach-this-is-sparta',
                 'ach-flawless-victory',
+                'ach-win-fast',
         ]
 
 
