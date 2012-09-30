@@ -232,6 +232,13 @@ def qpool_home(request, cat='qotd', page=u'1', tag=None):
 def qpool_new(request, cat=None):
     form = QuestionForm()
     categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
+    if request.method == "POST":
+        question = QuestionForm(data = request.POST)
+        if question.is_valid():
+            question.save()
+            return redirect('qpool_home')
+        else:
+            form = question
 
     return render_to_response('cpanel/qpool_new.html',
             {'form': form,
