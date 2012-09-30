@@ -89,65 +89,25 @@ def check_for_god_mode(player, days, chall_min):
     """
     Return true if the player won all challenges and answerd all qotd 'days' days in a row witn a minimum of 'chall_min' challenges
     """
-    seens = Activity.objects.all().filter(user_from=player, action='seen').order_by('-timestamp')[:2]
-    if len(seens) < 2:
-        timestamp = datetime.min
-        last_timestamp=datetime.now()
-    else:
-        timestamp = seens[1].timestamp-timedelta(days=days-1)
-        timestamp = timestamp.replace(hour=0, minute=0, second=0, microsecond=0)
-        last_timestamp = seens[0].timestamp.replace(hour=0, minute=0, second=0, microsecond=0)
-    
-    #Get the challenges and qotd that could form the achievement
-    chall_won = Activity.objects.all().filter(user_from=player, action='chall-won',timestamp__gte=timestamp).exclude(timestamp__gte=last_timestamp)
-    chall_lost= Activity.objects.all().filter(user_to=player, action='chall-won', timestamp__gte=timestamp).exclude(timestamp__gte=last_timestamp)
-    qotd = Activity.objects.all().filter(user_from=player, action__contains='qotd', timestamp__gte=timestamp).exclude(timestamp__gte=last_timestamp)
-    events = chall_won | chall_lost | qotd
-    
-    if len(events) == 0:
+    qotd_list = Activity.objects.all().filter(user_from=player, action__contains="qotd").order_by('-timestamp')
+    if len(qotd_list) == 0:
         return False
-        
-    def comp(activity):
-        """
-        This returns a.timestamp and is used for sorting purposes
-        """
-        return activity.timestamp
-   
-    events = sorted(events, key=comp)
-    chall_won_count = 0
-    chall_lost_count = 0
-    qotd_count = 0
-    first_index = last_index = 0
-    time2 = events[0].timestamp.replace(hour=0, minute=0, second=0, microsecond=0)
-    time1 = time2 - timedelta(days=days)
-
-    while last_index < len(events):
-        
-        time2 += timedelta(days=1)
-        time1 += timedelta(days=1)
-        
-        while first_index < len(events) and events[first_index].timestamp < time2:
-            if events[first_index].action == "qotd-correct":
-                qotd_count += 1
-            elif events[first_index].user_from == player:
-                chall_won_count += 1
-            else:
-                chall_lost_count += 1
-            first_index += 1
-         
-        while last_index < first_index and events[last_index].timestamp < time1:
-            if events[last_index].action == "qotd-correct":
-                qotd_count -= 1
-            elif events[last_index].user_from == player:
-                chall_won_count -= 1
-            else:
-                chall_lost_count -= 1
-            last_index += 1
-        if qotd_count == days and chall_won_count >= chall_min and chall_lost_count == 0:
-            return True
+    if qotd_list[0].action == 'qotd-wrong':
+        return False#Last qotd was incorrect no point to check any further
+    
+    last_time = qotd_list[0].timestamp.replace(hour=0,minute=0,second=0,microsecond=0) + timedelta(days=1) #The day when the latest qotd was ok
+    first_time = last_time - timedelta(days=days)#The earlyest day to check
+    
+    chall_won = Activity.objects.all().filter(user_from=player, action='chall-won', timestamp__gte=first_time).exclude(timestamp__gte=last_time).count()
+    chall_lost = Activity.objects.all().filter(user_to=player, action='chall-won', timestamp__gte=first_time).exclude(timestamp__gte=last_time).count()
+    qotd_ok = Activity.objects.all().filter(user_from=player, action='qotd-correct', timestamp__gte=first_time).exclude(timestamp__gte=last_time).count()
+    
+    if chall_won >= chall_min and chall_lost == 0 and qotd_ok == days:
+        return True
+    return False
     
     return False
-
+    
 
 class Achievements(App):
     @classmethod
