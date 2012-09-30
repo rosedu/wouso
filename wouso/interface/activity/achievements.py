@@ -167,8 +167,9 @@ class Achievements(App):
             elif login_between(kwargs.get('timestamp',datetime.now()), 6, 8):
                 if not player.magic.has_modifier('ach-early-bird'):
                     cls.earn_achievement(player, 'ach-early-bird')
-            if check_for_god_mode(player, 5, 5):
-                if not player.magic.has_modifier('ach-god-mode-on'):
+            
+            if not player.magic.has_modifier('ach-god-mode-on'):
+                if check_for_god_mode(player, 5, 5):
                     cls.earn_achievement(player, 'ach-god-mode-on')
             # Check previous 10 seens
             if consecutive_seens(player, datetime.now()) >= 10:
