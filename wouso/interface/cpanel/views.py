@@ -230,7 +230,7 @@ def qpool_home(request, cat='qotd', page=u'1', tag=None):
 
 @permission_required('config.change_setting')
 def qpool_new(request, cat=None):
-    qform = QuestionForm()
+    form = QuestionForm()
     categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
     if request.method == "POST":
         question = QuestionForm(data = request.POST)
@@ -238,10 +238,10 @@ def qpool_new(request, cat=None):
             question.save()
             return redirect('qpool_home')
         else:
-            qform = question
+            form = question
 
     return render_to_response('cpanel/qpool_new.html',
-            {'form': qform,
+            {'form': form,
              'module': 'qpool',
              'categs':categs},
             context_instance=RequestContext(request)
