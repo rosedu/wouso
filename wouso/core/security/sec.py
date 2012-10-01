@@ -55,23 +55,11 @@ class Security(App):
     @classmethod
     def activity_handler(cls, sender, **kwargs):
         action = kwargs.get('action', None)
-        if action == 'chall-won':
-            rules = SecurityConfig.objects.filter(applies_on='chall-won')
-            for rule in rules:
-                if rule.enabled:
-                    guilty = SecurityInspector.check(rule, **kwargs)
-                    if guilty:
-                        #Get the player
-                        player = kwargs.get('user_to', None).user.player_related.get()
-                        cls.penalise(player, rule.penalty_value)
-
-        if action == 'login':
-            rules = models.SecurityConfig.objects.filter(applies_on='login')
-            for rule in rules:
-                if rule.enabled:
-                    guilty = SecurityInspector.check(rule, **kwargs)
-                    if guilty:
-                        cls.penalise(player, rule.penalty_value)
+        rules = SecurityConfig.objects.filter(applies_on=action, enabled=True)
+        for rule in rules:
+            guilty, player = SecurityInspector.check(rule, **kwargs)
+            if guilty:
+                cls.penalise(player, rule.penalty_value)
 
 def do_security_check(sender, **kwargs):
     Security.activity_handler(sender, **kwargs)
