@@ -27,7 +27,9 @@ class DefaultGod:
             dict(id='steal-points', formula='points={points}', owner=None,
                 description='Steal points using spells'),
             dict(id='penalty-points', formula='points=-{points}', owner=None,
-                description='Take back points from user')
+                description='Take back points from user'),
+            dict(id='level-gold', formula='gold=10*{level}', owner=None,
+                description='Bonus gold on level upgrade')
         ]
         return fs
 
