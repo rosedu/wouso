@@ -1,10 +1,11 @@
+from django.db.models import Sum
 import sys
 from datetime import datetime, timedelta
 from django.db import models
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from wouso.core.app import App
-from wouso.core.user.models import Player, PlayerGroup
+from wouso.core.user.models import Player, PlayerGroup, Race
 
 class ObjectHistory:
     @property
@@ -67,7 +68,67 @@ class TopUser(ObjectHistory, Player):
         tot = len(hs)
         return [(tot - i, h.points) for (i,h) in enumerate(hs)]
 
-class History(models.Model):
+class NewHistory(models.Model):
+    TYPES = (('u', 'user'), ('r', 'race'), ('g', 'group'))
+
+    object = models.IntegerField(help_text='Object id, user, race, group')
+    object_type = models.CharField(max_length=1, choices=TYPES, default='u')
+    relative_to = models.IntegerField(help_text='Relative to id, race or group')
+    relative_to_type = models.CharField(max_length=1, choices=TYPES, default=None, blank=True, null=True)
+
+    position = models.IntegerField(default=0)
+    points = models.FloatField(default=0)
+    date = models.DateField()
+
+    @classmethod
+    def record(cls, obj, date, relative_to=None):
+        return cls.objects.get_or_create(object=obj.id, object_type=cls._get_type(obj), date=date,
+                                  relative_to=relative_to.id, relative_to_type=cls._get_type(relative_to))[0]
+
+    @classmethod
+    def get_obj_position(cls, obj, relative_to=None):
+        """
+         Return the latest position computed for this object (user, race, group)
+        """
+        history = cls.objects.filter(object=obj.id, object_type=cls._get_type(obj),
+                                     relative_to=relative_to.id, relative_to_type=cls._get_type(relative_to))
+        if not history.count():
+            return 0
+        return history[0].position
+
+    @classmethod
+    def get_children_top(cls, obj, type):
+        date = datetime.today().date()
+        return type.objects.filter(id__in=cls.objects.filter(object_type=cls._get_type(type), date=date, relative_to=obj.id,
+                                                      relative_to_type=cls._get_type(obj)).order_by('position').values_list('object')
+        )
+
+    @classmethod
+    def get_user_position(cls, player, relative_to=None):
+        """
+         Return the latest position computed for this user
+        """
+        return cls.get_obj_position(player, relative_to)
+
+    @classmethod
+    def get_group_position(cls, group, relative_to=None):
+        """
+        Return the latest position of this group
+        """
+        return cls.get_obj_position(group, relative_to)
+
+    @classmethod
+    def _get_type(cls, object):
+        if isinstance(object, Player) or isinstance(object, TopUser) or object in (Player, TopUser):
+            return 'u'
+        if isinstance(object, Race) or object is Race:
+            return 'r'
+        if isinstance(object, PlayerGroup) or object is PlayerGroup:
+            return 'g'
+        return None
+
+
+class History(models.Model): # TODO: deprecate
     user = models.ForeignKey('TopUser', blank=True, null=True)
     group = models.ForeignKey(PlayerGroup, blank=True, null=True)
     relative_to = models.ForeignKey(PlayerGroup, blank=True, null=True, related_name='relativeto')
@@ -128,11 +189,26 @@ class Top(App):
             p.points = p.live_points
             p.save()
 
+        for r in Race.objects.all():
+            for i, g in enumerate(r.children.annotate(lpoints=Sum('players__points')).order_by('-lpoints')):
+                hs = NewHistory.record(g, today, relative_to=r)
+                hs.position, hs.points = i + 1, g.points
+                hs.save()
+
+        # I don't think these are necessary, so I'm disabling them for now
+        return
         # In group ladder
         for pg in PlayerGroup.objects.filter(owner=None):
             for i, u in enumerate(pg.players.all().order_by('-points')):
                 topuser = u.get_extension(TopUser)
                 hs, new = History.objects.get_or_create(user=topuser, date=today, relative_to=pg)
+                hs.position, hs.points = i + 1, u.points
+                hs.save()
+
+        # In race ladder
+        for pr in Race.objects.all():
+            for i, u in enumerate(pr.player_set.all().order_by('-points')):
+                hs = NewHistory.record(u, today, relative_to=pr)
                 hs.position, hs.points = i + 1, u.points
                 hs.save()
 
