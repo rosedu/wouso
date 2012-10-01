@@ -118,20 +118,18 @@ def update_points(player, game):
     if level != player.level_no:
         if level < player.level_no:
             signal_msg = ugettext_noop("downgraded to level {level}")
-        else:
-            amount = 10
-            signal_msg = ugettext_noop("upgraded to level {level}")
-            score(player, None, 'bonus-gold', gold=amount)
-            bonus_msg = ugettext_noop("recieved {amount} gold")
             signals.addActivity.send(sender=None, user_from=player,
-                                user_to=player, message=bonus_msg,
-                                arguments=dict(amount=amount),
+                                user_to=player, message=signal_msg,
+                                arguments=dict(level=level),
+                                game=game)
+        else:
+            amount = calculate('level-gold', level=level)
+            signal_msg = ugettext_noop("upgraded to level {level} and received {amount} gold")
+            score(player, None, 'level-gold', level=level)
+            signals.addActivity.send(sender=None, user_from=player,
+                                user_to=player, message=signal_msg,
+                                arguments=dict(level=level, amount=amount['gold']),
                                 game=None)
-
-        signals.addActivity.send(sender=None, user_from=player,
-                             user_to=player, message=signal_msg,
-                             arguments=dict(level=level),
-                             game=game)
         player.level_no = level
         player.save()
 
