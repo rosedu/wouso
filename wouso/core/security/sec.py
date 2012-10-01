@@ -18,8 +18,11 @@ class SecurityInspector:
         """Parse the chall-won activity message to
         check the time it took for the loser to finish the challenge"""
         suspect = kwargs.get('user_to', None)
+        #suspect is a ChallengeUser in this case, scoring requires Player
+        player = suspect.user.player_related.get()
+
         if suspect == None:
-            return False
+            return False, None
 
         last_chall = Challenge.objects.filter(Q(user_from__user=suspect) |
                 Q(user_to__user=suspect)).order_by('-date')[0]
@@ -29,13 +32,13 @@ class SecurityInspector:
             participant = last_chall.user_to
         #time interval could be made customizable
         if participant.seconds_took < 15:
-            return True
-        return False
+            return True, player
+        return False, None
 
     @classmethod
     def login_multiple_account(cls, **kwargs):
         #TODO test if multiple account suspicion
-        return False
+        return False, None
     #TODO add more rules for security
 
 class Security(App):
