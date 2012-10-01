@@ -100,6 +100,7 @@ class DefaultGod:
               'curse',  # prevent cast of positive spells, or cure and dispell
               'immunity', # prevent cast of any spells, or cure and dispell
               'steal',  # allow users to steal points, one from another
+              'top-disguise', # allow showing another number of points in top
         ]
         for g in get_games():
             ms.extend(g.get_modifiers())
@@ -177,10 +178,12 @@ class DefaultGod:
 
         if psdue.spell.name == 'dispell':
             for psd in psdue.player.magic.spells:
+                self.post_expire(psd)
                 psd.delete()
             return True
         if psdue.spell.name == 'cure':
             for psd in psdue.player.magic.spells.filter(spell__type='n'):
+                self.post_expire(psd)
                 psd.delete()
             # also delete itself
             psdue.delete()
@@ -189,7 +192,20 @@ class DefaultGod:
             psdue.player.steal_points(psdue.source, psdue.spell.percents)
             psdue.delete()
             return True
+
+        if psdue.spell.name == 'top-disguise':
+            psdue.player.points = 1.0 * psdue.player.points * psdue.player.magic.modifier_percents('top-disguise') / 100
+            psdue.player.save()
         return False
+
+    def post_expire(self, psdue):
+        """
+         Execute an action right before a spell expires
+        """
+        from wouso.core import scoring
+        if psdue.spell.name == 'top-disguise':
+            psdue.player.points = scoring.real_points(psdue.player)
+            psdue.player.save()
 
     def user_is_eligible(self, player, game=None):
         if game is not None:

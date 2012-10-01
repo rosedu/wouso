@@ -1,5 +1,6 @@
 from django.db.utils import IntegrityError
 import logging
+from datetime import datetime, timedelta
 
 from wouso.core.god import God
 from wouso.core.magic.models import PlayerSpellDue, PlayerSpellAmount, PlayerArtifactAmount
@@ -204,11 +205,13 @@ class MagicManager(object):
             return ', '.join(errors)
         return None
 
-    def cast_spell(self, spell, source, due):
+    def cast_spell(self, spell, source, due=None):
         """ Cast a spell on this player.
 
         Returns: error message if the spell was not cast, or None
         """
+        if due is None:
+            due = datetime.now() + timedelta(days=spell.due_days)
         error = source.magic._check_spell_available(spell=spell)
         if error:
             return error

@@ -148,6 +148,9 @@ def score_simple(player, coin, amount, game=None, formula=None,
 
     # update user.points asap
     if coin.id == 'points':
+        if player.magic.has_modifier('top-disguise'):
+            computed_amount = 1.0 * computed_amount * player.magic.modifier_percents('top-disguise') / 100
+
         player.points += computed_amount
         player.save()
         update_points(player, game)
@@ -184,13 +187,18 @@ def user_coins(user):
         user = user.user
     return History.user_coins(user)
 
+def real_points(player):
+    coin = Coin.get('points')
+    result = History.objects.filter(user=player.user,coin=coin).aggregate(total=models.Sum('amount'))
+    return result['total'] if result['total'] is not None else 0
+
 def sync_user(player):
     """ Synchronise user points with database
     """
     coin = Coin.get('points')
     result = History.objects.filter(user=player.user,coin=coin).aggregate(total=models.Sum('amount'))
     points = result['total'] if result['total'] is not None else 0
-    if player.points != points:
+    if player.points != points and not player.magic.has_modifier('top-disguise'):
         logging.debug('%s had %d instead of %d points' % (player, player.points, points))
         player.points = points
         player.level_no = God.get_level_for_points(player.points)

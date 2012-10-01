@@ -231,4 +231,7 @@ class Bazaar(App):
         stdout.write(" %d expired spells\n" % spells.count())
         for s in spells:
             SpellHistory.expired(s.player, s.spell)
+
+            from wouso.core.god import God
+            God.post_expire(psdue=s)
             s.delete()
