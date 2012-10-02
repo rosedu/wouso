@@ -11,6 +11,7 @@ from achievements import consecutive_chall_won, challenge_count
 from achievements import refused_challenges, get_challenge_time
 from achievements import unique_users_pm , wrong_first_qotd
 from achievements import get_chall_score
+from achievements import check_for_god_mode
 from models import Activity
 from achievements import Achievements
 from . import signals
@@ -413,3 +414,56 @@ class WinFastTest(WousoTest):
                                  action="chall-won",
                                  game = ChallengeGame.get_instance())
         self.assertTrue(player.magic.has_modifier('ach-win-fast'))
+
+
+class GodModeTest(WousoTest):
+    
+    def test_check_for_god_mode1(self):
+        player=self._get_player()
+        timestamp=datetime.now()
+        for i in range(5):
+            timestamp -= timedelta(days=1)
+            Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-correct')
+        self.assertTrue(check_for_god_mode(player,5,0))
+    
+    def test_check_for_god_mode2(self):
+        player=self._get_player()
+        timestamp=datetime.now()
+        for i in range(5):
+            timestamp -= timedelta(days=1)
+            if i == 3:
+                Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-wrong')
+                continue
+            Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-correct')
+        self.assertFalse(check_for_god_mode(player,5,0))
+        
+    def test_check_for_god_mode3(self):
+        player = self._get_player()
+        player2 = self._get_player(1)
+        timestamp = datetime.now()
+        for i in range(5):
+            timestamp -= timedelta(days=1)
+            Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player2, action='chall-won')
+            Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-correct')
+        self.assertTrue(check_for_god_mode(player,5,5))
+        
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-god-mode-on')
+        signals.addActivity.send(sender=None, user_from=player,
+                                     user_to=player,
+                                     action='seen',
+                                     game=None)
+        self.assertTrue(player.magic.has_modifier('ach-god-mode-on'))
+        
+        
+    
+    def test_check_for_god_mode4(self):
+        player = self._get_player()
+        player2 = self._get_player(1)
+        timestamp = datetime.now()
+        for i in range(5):
+            timestamp -= timedelta(days=1)
+            Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='chall-correct')
+            if i == 3:
+                Activity.objects.create(timestamp=timestamp, user_from=player2, user_to=player, action='chall-won')
+                continue
+        self.assertFalse(check_for_god_mode(player,5,0))

@@ -88,7 +88,28 @@ def consecutive_chall_won(player):
             return result
 
     return result
-
+    
+def check_for_god_mode(player, days, chall_min):
+    """
+    Return true if the player won all challenges and answerd all qotd 'days' days in a row witn a minimum of 'chall_min' challenges
+    """
+    qotd_list = Activity.objects.all().filter(user_from=player, action__contains="qotd").order_by('-timestamp')
+    if len(qotd_list) == 0:
+        return False
+    if qotd_list[0].action == 'qotd-wrong':
+        return False#Last qotd was incorrect no point to check any further
+    
+    last_time = qotd_list[0].timestamp.replace(hour=0,minute=0,second=0,microsecond=0) + timedelta(days=1) #The day when the latest qotd was ok
+    first_time = last_time - timedelta(days=days)#The earlyest day to check
+    
+    chall_won = Activity.objects.all().filter(user_from=player, action='chall-won', timestamp__gte=first_time).exclude(timestamp__gte=last_time).count()
+    chall_lost = Activity.objects.all().filter(user_to=player, action='chall-won', timestamp__gte=first_time).exclude(timestamp__gte=last_time).count()
+    qotd_ok = Activity.objects.all().filter(user_from=player, action='qotd-correct', timestamp__gte=first_time).exclude(timestamp__gte=last_time).count()
+    
+    if chall_won >= chall_min and chall_lost == 0 and qotd_ok == days:
+        return True
+    return False
+    
 
 def refused_challenges(player):
     """
@@ -201,7 +222,10 @@ class Achievements(App):
             elif login_between(kwargs.get('timestamp',datetime.now()), 6, 8):
                 if not player.magic.has_modifier('ach-early-bird'):
                     cls.earn_achievement(player, 'ach-early-bird')
-
+            
+            if not player.magic.has_modifier('ach-god-mode-on'):
+                if check_for_god_mode(player, 5, 5):
+                    cls.earn_achievement(player, 'ach-god-mode-on')
             # Check previous 10 seens
             if consecutive_seens(player, datetime.now()) >= 10:
                 if not player.magic.has_modifier('ach-login-10'):
@@ -221,6 +245,7 @@ class Achievements(App):
                 'ach-this-is-sparta',
                 'ach-flawless-victory',
                 'ach-win-fast',
+                'ach-god-mode-on'
         ]
 
 
