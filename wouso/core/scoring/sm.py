@@ -29,6 +29,7 @@ def check_setup():
     return True
 
 def setup_scoring():
+
     """ Prepare database for Scoring """
     for cc in CORE_POINTS:
         if not Coin.get(cc):
@@ -117,13 +118,18 @@ def update_points(player, game):
     if level != player.level_no:
         if level < player.level_no:
             signal_msg = ugettext_noop("downgraded to level {level}")
+            signals.addActivity.send(sender=None, user_from=player,
+                                user_to=player, message=signal_msg,
+                                arguments=dict(level=level),
+                                game=game)
         else:
-            signal_msg = ugettext_noop("upgraded to level {level}")
-
-        signals.addActivity.send(sender=None, user_from=player,
-                             user_to=player, message=signal_msg,
-                             arguments=dict(level=level),
-                             game=game)
+            amount = calculate('level-gold', level=level)
+            signal_msg = ugettext_noop("upgraded to level {level} and received {amount} gold")
+            score(player, None, 'level-gold', level=level)
+            signals.addActivity.send(sender=None, user_from=player,
+                                user_to=player, message=signal_msg,
+                                arguments=dict(level=level, amount=amount['gold']),
+                                game=None)
         player.level_no = level
         player.save()
 
