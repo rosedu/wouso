@@ -300,7 +300,7 @@ class GodModeTest(WousoTest):
                 Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-wrong')
                 continue
             Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-correct')
-        self.assertTrue(not check_for_god_mode(player,5,0))
+        self.assertFalse(check_for_god_mode(player,5,0))
         
     def test_check_for_god_mode3(self):
         player = self._get_player()
@@ -331,4 +331,4 @@ class GodModeTest(WousoTest):
             if i == 3:
                 Activity.objects.create(timestamp=timestamp, user_from=player2, user_to=player, action='chall-won')
                 continue
-        self.assertTrue(not check_for_god_mode(player,5,0))
+        self.assertFalse(check_for_god_mode(player,5,0))
