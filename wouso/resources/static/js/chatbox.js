@@ -6,6 +6,7 @@ var SendPingTimer = null;
 var title;
 var timeStamp = null;
 
+var url_base = '';
 /* Private chat staff */
 var firstFreeChat;
 var max_room;
@@ -213,7 +214,7 @@ $(document).ready(function () {
         if (input) {
             AddToHist(input);
             var msgdata = {'opcode':'message', 'msg':input, 'room':private_users[id].room_id, 'time': timeStamp};
-            var args = {type:"POST", url:"/chat/chat_m/", data:msgdata, complete:ReceiveMessage};
+            var args = {type:"POST", url:url_base + "/chat/chat_m/", data:msgdata, complete:ReceiveMessage};
             $.ajax(args);
             $(name).val("");
         }
@@ -223,7 +224,7 @@ $(document).ready(function () {
     /* Give old log to the players when they ask. */
     function give_me_old_log(id) {
         var msgdata = {'room':private_users[id].room_id, 'number':private_users[id].log_number};
-        var args = {type:"POST", url:"/chat/privateLog/", data:msgdata, complete:PrintOnTextArea};
+        var args = {type:"POST", url:url_base + "/chat/privateLog/", data:msgdata, complete:PrintOnTextArea};
         $.ajax(args);
         return false;
     }
@@ -374,7 +375,7 @@ $(document).ready(function () {
     $("#GlobalboxChatButton").click(function () {
         var sendID = (selectID_over != null)? selectID_over: selectID;
         var msgdata = {'opcode':'getRoom', 'from':myID, 'to':sendID, 'time': timeStamp};
-        var args = {type:"POST", url:"/chat/chat_m/", data:msgdata, complete:create_chat_box};
+        var args = {type:"POST", url:url_base + "/chat/chat_m/", data:msgdata, complete:create_chat_box};
         $.ajax(args);
         $("#Contactbox").hide();
     });
@@ -449,7 +450,7 @@ $(document).ready(function () {
     /* See if I got new message */
     function SendPing() {
         var mdata = {'opcode':'keepAlive', 'time': timeStamp};
-        var args = {type:'POST', url:'/chat/chat_m/', data:mdata, complete:ReceiveMessage};
+        var args = {type:'POST', url:url_base + '/chat/chat_m/', data:mdata, complete:ReceiveMessage};
         $.ajax(args);
     }
 
@@ -646,7 +647,7 @@ $(document).ready(function () {
     $("#ContactboxChatButton").click(function(){
         var sendID = (selectID_over != null)? selectID_over: selectID;
         var msgdata = {'opcode':'getRoom', 'from':myID, 'to':sendID, 'time': timeStamp};
-        var args = {type:"POST", url:"/chat/chat_m/", data:msgdata, complete:create_chat_box};
+        var args = {type:"POST", url:url_base + "/chat/chat_m/", data:msgdata, complete:create_chat_box};
         $.ajax(args);
         $("#Contactbox").hide();
 
