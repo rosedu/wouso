@@ -1,16 +1,38 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
-"""
-
 from django.test import TestCase
+from django.contrib.auth.models import User
+from wouso.games.challenge.models import Challenge, ChallengeUser
+from wouso.core import scoring
+from models import SecurityConfig
+class SecurityRulesTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(username='_test')
+        self.user.save()
+        self.chall_user = self.user.get_profile().get_extension(ChallengeUser)
+        self.user2 = User.objects.create(username='_test2')
+        self.user2.save()
+        self.chall_user2 = self.user2.get_profile().get_extension(ChallengeUser)
+        scoring.setup_scoring()
 
+    def test_rule_challenge_was_set_up(self):
+        #add the rule to the SecurityConfig
+        config = SecurityConfig(id='chall-was-set-up',
+                        applies_on='chall-won',
+                        description='Test if challenge was failed on purpose',
+                        enabled=True)
+        config.save()
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+        #run a challenge
+        chall = Challenge.create(user_from=self.chall_user,
+                    user_to=self.chall_user2, ignore_questions=True)
+
+        chall.user_from.seconds_took = 10
+        chall.user_from.score = 100
+        chall.user_from.save()
+        chall.user_to.seconds_took = 10
+        chall.user_to.score = 10
+        chall.user_to.save()
+        chall.played()
+
+        #test penalty points
+        self.assertEqual(SecurityConfig.objects.get(pk='chall-was-set-up').penalty_value,
+                scoring.History.user_coins(self.user2.player_related.get())['penalty'])
