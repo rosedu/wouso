@@ -45,7 +45,7 @@ $(document).ready(function(){
     $("#archive_day_private").click(function(){
         var id = $("#to").val();
         if(id && id!=myID){
-            var msgdata = {'opcode':'getRoom', 'from':myID, 'to':id};
+            var msgdata = {'opcode':'getRoom', 'from':myID, 'to':id, 'time': timeStamp};
             var args = {type:"POST", url:"/chat/chat_m/", data:msgdata, complete:getRoom};
             $.ajax(args);
         }

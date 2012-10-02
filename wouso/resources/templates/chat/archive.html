@@ -23,7 +23,13 @@
     <div class="tab_container">
         <div id="tab-1" class="tab_content">
             <table >
-                <tr><td colspan="1"><div class="ArchiveTextArea" id="global_area"></div></td>
+                <tr><td colspan="1">
+                        <div class="ArchiveTextArea" id="global_area">
+                            {% block global_text %}
+                                {% include 'chat/global_archive_default_text.html' %}
+                            {% endblock %}
+                        </div>
+                    </td>
                     <td colspan="1">
                         <table>
                             <tr><td><div id="slider" style="width:144px" title="Choose a period of the day."></div></td></tr>
@@ -41,7 +47,13 @@
         </div>
         <div id="tab-2" class="tab_content">
             <table>
-                <tr><td colspan="1"><div class="ArchiveTextArea" id="private_area"></div></td>
+                <tr><td colspan="1">
+                        <div class="ArchiveTextArea" id="private_area">
+                            {% block private_text %}
+                                {% include 'chat/private_archive_default_text.html' %}
+                            {% endblock %}
+                        </div>
+                    </td>
                     <td colspan="1">
                         <table>
                             <br>
