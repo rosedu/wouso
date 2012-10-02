@@ -106,8 +106,6 @@ def check_for_god_mode(player, days, chall_min):
         return True
     return False
     
-    return False
-    
 
 class Achievements(App):
     @classmethod
