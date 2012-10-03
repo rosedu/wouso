@@ -30,6 +30,10 @@ class DefaultGod:
                 description='Take back points from user'),
             dict(id='level-gold', formula='gold=10*{level}', owner=None,
                 description='Bonus gold on level upgrade')
+            dict(id='general-infraction', formula='penalty=10', owner=None,
+                description='Give penalty points to suspicious users'),
+            dict(id='chall-was-set-up-infraction', formula='penalty=20', owner=None,
+                description='Give penalty points for losing a challenge on purpose')
         ]
         return fs
 
