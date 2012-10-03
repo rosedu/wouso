@@ -1,7 +1,7 @@
 from django.db.models import Q
+from wouso.core.config.models import BoolSetting
 from wouso.core.app import App
-from wouso.core.scoring.models import Coin
-from models import SecurityConfig
+from wouso.core.scoring.models import Coin, Formula
 from wouso.games.challenge.models import Challenge, ChallengeUser
 from wouso.interface.activity import signals
 
@@ -9,9 +9,9 @@ class SecurityInspector:
     #global check function dispatcher
     @classmethod
     def check(cls, rule, **kwargs):
-        #convert - to _ from id
+        #convert - to _ from name of rule
         #Ex: chall-was-set-up -> chall_was_set_up
-        return getattr(cls, rule.id.replace('-', '_'), False)(**kwargs)
+        return getattr(cls, rule.replace('-', '_'), False)(**kwargs)
 
     @classmethod
     def chall_was_set_up(cls, **kwargs):
@@ -45,21 +45,38 @@ class Security(App):
     """Class that parses signals received from user activities
     and assigns penalty points as necessary"""
 
+    SECURITY_RULES = [
+        ('chall-was-set-up', 'Test if the challenge was lost on purpose', 'chall-won'),
+        ('login-multiple-account', 'Test if user is using multiple accounts', 'login')
+    ]
+
+
     @classmethod
-    def penalise(cls, player, amount):
+    def penalise(cls, player, formula):
         coins = Coin.get('penalty')
-        from wouso.core.scoring import score_simple
+        from wouso.core.scoring import score
         if not coins is None:
-            score_simple(player, coins, amount)
+            score(user=player, game=None, formula=formula)
 
     @classmethod
     def activity_handler(cls, sender, **kwargs):
         action = kwargs.get('action', None)
-        rules = SecurityConfig.objects.filter(applies_on=action, enabled=True)
+        rules = filter(lambda x : x[2]==action, cls.SECURITY_RULES)
         for rule in rules:
-            guilty, player = SecurityInspector.check(rule, **kwargs)
-            if guilty:
-                cls.penalise(player, rule.penalty_value)
+            #check if rule is not disabled
+            if not BoolSetting.objects.get(pk__startswith='disable-%s' % rule[0]).get_value():
+                guilty, player = SecurityInspector.check(rule[0], **kwargs)
+                if guilty:
+                    formula = Formula.objects.filter(id='%s-infraction' % rule[0])
+                    if formula == []:
+                        formula = Formula.objects.filter(id='general-infraction')
+                    cls.penalise(player, formula[0])
+
+    @classmethod
+    def get_modifiers(self):
+        return ['chall-was-set-up',
+                'login_multiple_account',
+        ]
 
 def do_security_check(sender, **kwargs):
     Security.activity_handler(sender, **kwargs)
