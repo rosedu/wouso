@@ -3,7 +3,7 @@ from django.db.models.query import QuerySet
 from django.contrib.auth.models import User
 from wouso.core.game.models import Game
 from wouso.core.scoring.models import Formula, Coin, History
-from wouso.core.scoring import FormulaParsingError, setup_scoring, CORE_POINTS, check_setup
+from wouso.core.scoring import FormulaParsingError, setup_scoring, CORE_POINTS, check_setup, update_points
 from wouso.core import scoring
 from wouso.core.tests import WousoTest
 from wouso.core.user.models import Player
@@ -89,11 +89,25 @@ class ScoringTestCase(TestCase):
         self.assertEqual(history.amount, 13)
 
 
+class UpdateScoringTest(WousoTest):
+    def testUpdatePoints(self):
+        Coin.add('points')
+        Coin.add('gold')
+        Formula.objects.create(id='level-gold', formula='gold=10*{level}', owner=None)
+        player = self._get_player()
+        player.points = 420
+        player.level_no = 1
+        player.save()
+        update_points(player, None)
+        coins = History.user_coins(player.user)
+        self.assertIn('gold', coins)
+        self.assertEqual(coins['gold'], 60)
+
+
 class ScoringHistoryTest(WousoTest):
     def test_user_coins(self):
         Coin.add('points')
         Coin.add('gold')
-
         player = self._get_player()
         self.assertIn('points', History.user_coins(player.user))
 
