@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from wouso.games.challenge.models import Challenge, ChallengeUser
 from wouso.core import scoring
-from models import SecurityConfig
+from wouso.core.config.models import BoolSetting
 class SecurityRulesTest(TestCase):
     def setUp(self):
         self.user = User.objects.create(username='_test')
@@ -14,12 +14,6 @@ class SecurityRulesTest(TestCase):
         scoring.setup_scoring()
 
     def test_rule_challenge_was_set_up(self):
-        #add the rule to the SecurityConfig
-        config = SecurityConfig(id='chall-was-set-up',
-                        applies_on='chall-won',
-                        description='Test if challenge was failed on purpose',
-                        enabled=True)
-        config.save()
 
         #run a challenge
         chall = Challenge.create(user_from=self.chall_user,
@@ -34,5 +28,6 @@ class SecurityRulesTest(TestCase):
         chall.played()
 
         #test penalty points
-        self.assertEqual(SecurityConfig.objects.get(pk='chall-was-set-up').penalty_value,
+        #20 is the default formula value for a chall-was-set-up
+        self.assertEqual(20,
                 scoring.History.user_coins(self.user2.player_related.get())['penalty'])
