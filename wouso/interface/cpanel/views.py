@@ -14,7 +14,7 @@ from django.utils.translation import ugettext_noop
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
-from wouso.core.qpool.models import Schedule, Question, Tag, Category
+from wouso.core.qpool.models import Schedule, Question, Tag, Category, Answer
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
 from wouso.core import scoring
@@ -258,7 +258,7 @@ def qpool_edit(request, id=None):
     categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
 
     if request.method == 'POST':
-        form = QuestionForm(request.POST, instance=question)
+        form = QuestionForm(request.POST, instance=question, new_answer=new_answer)
         if form.is_valid():
             newq = form.save()
             if newq.endorsed_by is None:
@@ -340,6 +340,52 @@ def qpool_delete(request, id):
         go_back = reverse('wouso.interface.cpanel.views.qpool_home')
 
     return HttpResponseRedirect(go_back)
+
+
+@permission_required('config.change_setting')
+def qpool_delete_answer(request, question_id, answer_id):
+    answer = get_object_or_404(Answer, pk=answer_id)
+
+    answer.delete()
+
+    return redirect('question_edit', id=question_id)
+
+
+#@permission_required('config.change_setting')
+#def qpool_add_answer(request, question_id):
+#    if id is not None:
+#        question = get_object_or_404(Question, pk=id)
+#    else:
+#        return qpool_new(request)
+#
+#    categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
+#
+#    if request.method == 'POST':
+#        form = QuestionForm(request.POST, instance=question_id, new_answer=True)
+#        if form.is_valid():
+#            newq = form.save()
+#            if newq.endorsed_by is None:
+#                newq.endorsed_by = request.user
+#                newq.save()
+#            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home', args = (newq.category.name,)))
+#        else:
+#            print "nevalid"
+#    else:
+#        show_users = False
+#        if question:
+#            if question.category:
+#                if question.category.name == 'proposed':
+#                    show_users = True
+#
+#        form = QuestionForm(instance=question, users=show_users)
+#
+#    return render_to_response( 'cpanel/new_answer.html',
+#                              {'question': question,
+#                               'form': form,
+#                               #'module': 'qpool',
+#                               'categs': categs},
+#                              context_instance=RequestContext(request))
+
 
 
 @permission_required('config.change_setting')

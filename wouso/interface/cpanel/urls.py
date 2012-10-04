@@ -10,6 +10,7 @@ upat = [
     url(r'^qpool/tag_questions/$', 'wouso.interface.cpanel.views.qpool_tag_questions', name='tag_questions'),
     url(r'^qpool/edit/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.qpool_edit', name='question_edit'),
     url(r'^qpool/del/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.qpool_delete', name='question_del'),
+    url(r'^qpool/del/(?P<question_id>\d+)/(?P<answer_id>\d+)/$', 'wouso.interface.cpanel.views.qpool_delete_answer', name='answer_del'),
     url(r'^qpool/set_active_categories', 'wouso.interface.cpanel.views.qpool_set_active_categories', name='set_active_categories'),
     url(r'^qpool/new/$', 'wouso.interface.cpanel.views.qpool_edit', name='question_new'),
     url(r'^qpool/switch_active/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.question_switch', name='switch_active'),

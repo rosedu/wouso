@@ -21,7 +21,7 @@
         <tr><td><input type="checkbox" name="correct_{{a.id}}" {% if a.correct %}checked{% endif %}/></td>
             <td><textarea name="answer_{{a.id}}" cols="50">{{ a.text }}</textarea>
             {% if question %}
-            <a href="{% url admin:qpool_question_change question.id %}">x</a>
+            <a href="{% url answer_del question.id a.id %}">x</a>
             {% endif %}
             </td>
         </tr>
