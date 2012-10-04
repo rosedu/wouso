@@ -112,7 +112,7 @@ class Player(models.Model):
         try:
             pos = allUsers.index(self)
         except IndexError:
-            return []  
+            return []
 
         if len(allUsers) <= 2*count+1:
             return allUsers
@@ -122,8 +122,8 @@ class Player(models.Model):
             start = len(allUsers)-2*count-1
 
         players = allUsers[start:start+2*count+1]
-        return players   
- 
+        return players
+
     def user_name(self):
         return self.user.username
 
@@ -260,7 +260,7 @@ class Player(models.Model):
             extension.save()
 
         return extension
- 
+
     def __unicode__(self):
         ret = u"%s %s" % (self.user.first_name, self.user.last_name)
         return ret if ret != u" " else self.user.__unicode__()
