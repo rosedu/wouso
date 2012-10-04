@@ -43,9 +43,9 @@ def archive(request):
 
 @login_required
 def log_request(request):
-    Room = roomexist('global')
+    room = roomexist('global')
 
-    all_message = ChatMessage.objects.filter(destRoom=Room).filter(messType='normal')
+    all_message = ChatMessage.objects.filter(destRoom=room).filter(messType='normal')
     all_message = all_message[len(all_message)-50:] if len(all_message) > 50 else all_message
 
     return render_to_response('chat/global_log.html',
@@ -135,9 +135,9 @@ def sendmessage(request):
     """
     user = get_author(request)
     data = request.REQUEST
-    timeStamp = data['time']
-    if timeStamp == 'null':
-        return json_response(serve_message(user, timeStamp))
+    time_stamp = data['time']
+    if time_stamp == 'null':
+        return json_response(serve_message(user, time_stamp))
     if data['opcode'] == 'message':
         room = roomexist(data['room'])
         if user.user.has_perm('chat.super_chat_user'):
@@ -148,7 +148,7 @@ def sendmessage(request):
                         sender = Player.objects.get(nickname=text[1])
                         sender = sender.user.get_profile().get_extension(ChatUser)
                     except:
-                        return json_response(serve_message(user, timeStamp))
+                        return json_response(serve_message(user, time_stamp))
 
                     if text[0] == '/kick':
                         add_message(text[1], user, room, sender, "special", "kick")
@@ -158,7 +158,7 @@ def sendmessage(request):
                     if text[0] == '/ban':
                         sender.canAccessChat = False
                         sender.save()
-                    return json_response(serve_message(user, timeStamp))
+                    return json_response(serve_message(user, time_stamp))
 
 
         try:
@@ -199,7 +199,7 @@ def sendmessage(request):
         room.participants.add(user)
         room.participants.add(user_to.id)
         return json_response(room.to_dict())
-    return json_response(serve_message(user, timeStamp))
+    return json_response(serve_message(user, time_stamp))
 
 def json_response(object):
      return HttpResponse(simplejson.dumps(object))
