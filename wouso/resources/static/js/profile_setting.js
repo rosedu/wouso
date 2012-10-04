@@ -22,7 +22,7 @@ var url_base = '';
             url:url_base + "/player/set/s/",
             data:msgdata,
             success: function(data) {
-                window.location = '/player/' + myID
+                window.location = url_base + '/player/' + myID
             },
             error: function(data) {
                 $("#ajax-message").html("<p class='wrong'>Nickname-ul exista!</p>")

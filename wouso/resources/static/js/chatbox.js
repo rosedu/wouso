@@ -340,20 +340,20 @@ $(document).ready(function () {
 
     /* profile button */
     $("#GlobalboxProfileButton").click(function () {
-        window.location = "/player/" + selectID + "/";
+        window.location = url_base + "/player/" + selectID + "/";
     });
 
     /* write a messaje button */
     $("#GlobalboxMesajeButton").click(function () {
-        window.location = "/m/create/to=" + selectID;
+        window.location = url_base + "/m/create/to=" + selectID;
     });
 
     $("#GlobalboxSpellButton").click(function (){
-        window.location = "/player/cast/to-" + selectID;
+        window.location = url_base + "/player/cast/to-" + selectID;
     });
 
     $("#GlobalboxChallengeButton").click(function (){
-        window.location = "/g/challenge/launch/" + selectID;
+        window.location = url_base + "/g/challenge/launch/" + selectID;
     });
 
     var sw = 0;
@@ -423,7 +423,7 @@ $(document).ready(function () {
 
     /* Update users list */
     function NewUsers() {
-        $.get('/chat/last/', function (data) {
+        $.get(url_base + '/chat/last/', function (data) {
             $('#GlobalboxUserList').html(data);
             if (selectID) {
                 $('#cl_' + selectID).attr('style', 'font-weight: bold;background-color:#ffffff;');
@@ -441,7 +441,7 @@ $(document).ready(function () {
 
     /* Last 50 messages that was write in global chat.*/
     function NewLog() {
-        $.get('/chat/log/', function (data) {
+        $.get(url_base + '/chat/log/', function (data) {
             $('#GlobalboxTextArea').html(replace_emoticons(data));
             $(document).ready(AutoScroll);
         });
@@ -637,11 +637,11 @@ $(document).ready(function () {
     });
 
     $("#ContactboxProfileButton").click(function(){
-        window.location = "/player/" + selectID_over + "/";
+        window.location = url_base + "/player/" + selectID_over + "/";
     });
 
     $("#ContactboxMesajeButton").click(function(){
-        window.location = "/m/create/to=" + selectID_over;
+        window.location = url_base + "/m/create/to=" + selectID_over;
     });
 
     $("#ContactboxChatButton").click(function(){

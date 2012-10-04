@@ -4,15 +4,15 @@ import random
 from wouso.interface.activity.models import Activity
 from wouso.interface.chat.models import ChatUser, ChatMessage
 
-def add_message(text, sender, toRoom, user_to, messType, comand):
+def add_message(text, sender, to_room, user_to, messType, comand):
     """ content, author, room, user_to, messType, command """
 
-    timeStamp = datetime.now()
+    time_stamp = datetime.now()
 
     #TODO: Putem renunta la spam:) este inutil.
     difference_in_seconds = 1
     # sau>>
-    #diff = timeStamp - sender.lastMessageTS
+    #diff = time_stamp - sender.lastMessageTS
     #difference_in_seconds = (diff.microseconds + (diff.seconds + diff.days * 24 * 3600) * 10**6) / 10**6
 
     if sender.has_modifier('block-communication'):
@@ -20,7 +20,7 @@ def add_message(text, sender, toRoom, user_to, messType, comand):
     if difference_in_seconds > 0.5:
         if sender.has_modifier('block-messages'):
             text = change_text(text)
-        msg = ChatMessage(content=text, author=sender, destRoom=toRoom, timeStamp=timeStamp,
+        msg = ChatMessage(content=text, author=sender, destRoom=to_room, time_stamp=time_stamp,
             destUser = user_to, messType=messType, comand=comand)
         msg.save()
     else:
@@ -40,6 +40,7 @@ def create_message(user, query):
             continue
     return msgs
 
+
 def new_activity_messages(chat_user):
     """
     Return a list of new messages from the activity module, formatted the same as create_message.
@@ -51,14 +52,12 @@ def new_activity_messages(chat_user):
         msgs.append(dict(room='global', text=message, time=m.timestamp.strftime("%H:%M"), mess_type='activity'))
     return msgs
 
-def serve_message(user, timeStamp):
+def serve_message(user, time_stamp):
     """
     Will return all messages that wasn't already delivered.
     Used when you write a new message or when you get a KeepAlive.
     """
-    if timeStamp == 'null':
-        print "xx"
-        timeStamp = datetime.now()
+    if time_stamp == 'null':
         query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS, destRoom__participants=user)
         obj = {'user': unicode(user)}
         obj['count'] = query.count()
@@ -68,7 +67,7 @@ def serve_message(user, timeStamp):
         user.save()
         return obj
     else:
-        query = ChatMessage.objects.filter(timeStamp__gt=timeStamp, destRoom__participants=user)
+        query = ChatMessage.objects.filter(timeStamp__gt=time_stamp, destRoom__participants=user)
 
     messages = create_message(user, query) + new_activity_messages(user)
 
