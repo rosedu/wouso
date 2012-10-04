@@ -46,7 +46,7 @@ class Category(models.Model):
 class Question(models.Model):
     """ A question in a qpool has text and a variable number of answers,
     category and tags, proposing and endorsing user.
-    
+
     Dynamic questions also store a validation code, that run against
     the given answer should return True or False if the answer is valid.
     """
