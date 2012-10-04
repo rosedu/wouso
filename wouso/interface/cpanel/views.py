@@ -249,7 +249,7 @@ def qpool_new(request, cat=None):
 
 
 @permission_required('config.change_setting')
-def qpool_edit(request, id=None):
+def qpool_edit(request, id=None, new_ans=False):
     if id is not None:
         question = get_object_or_404(Question, pk=id)
     else:
@@ -258,13 +258,13 @@ def qpool_edit(request, id=None):
     categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
 
     if request.method == 'POST':
-        form = QuestionForm(request.POST, instance=question, new_answer=new_answer)
+        form = QuestionForm(request.POST, instance=question)
         if form.is_valid():
             newq = form.save()
             if newq.endorsed_by is None:
                 newq.endorsed_by = request.user
                 newq.save()
-            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home', args = (newq.category.name,)))
+            return redirect('qpool_home', cat = newq.category.name)
         else:
             print "nevalid"
     else:
@@ -274,13 +274,21 @@ def qpool_edit(request, id=None):
                 if question.category.name == 'proposed':
                     show_users = True
 
+            if new_ans:
+                a = Answer.objects.create(question=question)
+            else:
+                a = None
+        else:
+            a = None
+        a = None
         form = QuestionForm(instance=question, users=show_users)
 
     return render_to_response( 'cpanel/qpool_edit.html',
                               {'question': question,
                                'form': form,
                                'module': 'qpool',
-                               'categs': categs},
+                               'categs': categs,
+                               'new_answer': a},
                               context_instance=RequestContext(request))
 
 
@@ -349,43 +357,6 @@ def qpool_delete_answer(request, question_id, answer_id):
     answer.delete()
 
     return redirect('question_edit', id=question_id)
-
-
-#@permission_required('config.change_setting')
-#def qpool_add_answer(request, question_id):
-#    if id is not None:
-#        question = get_object_or_404(Question, pk=id)
-#    else:
-#        return qpool_new(request)
-#
-#    categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
-#
-#    if request.method == 'POST':
-#        form = QuestionForm(request.POST, instance=question_id, new_answer=True)
-#        if form.is_valid():
-#            newq = form.save()
-#            if newq.endorsed_by is None:
-#                newq.endorsed_by = request.user
-#                newq.save()
-#            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home', args = (newq.category.name,)))
-#        else:
-#            print "nevalid"
-#    else:
-#        show_users = False
-#        if question:
-#            if question.category:
-#                if question.category.name == 'proposed':
-#                    show_users = True
-#
-#        form = QuestionForm(instance=question, users=show_users)
-#
-#    return render_to_response( 'cpanel/new_answer.html',
-#                              {'question': question,
-#                               'form': form,
-#                               #'module': 'qpool',
-#                               'categs': categs},
-#                              context_instance=RequestContext(request))
-
 
 
 @permission_required('config.change_setting')
