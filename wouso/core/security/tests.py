@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from wouso.games.challenge.models import Challenge, ChallengeUser
 from wouso.core import scoring
 from wouso.core.config.models import BoolSetting
+
 class SecurityRulesTest(TestCase):
     def setUp(self):
         self.user = User.objects.create(username='_test')
