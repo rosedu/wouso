@@ -72,12 +72,6 @@ class Security(App):
                         formula = Formula.objects.filter(id='general-infraction')
                     cls.penalise(player, formula[0])
 
-    @classmethod
-    def get_modifiers(self):
-        return ['chall-was-set-up',
-                'login_multiple_account',
-        ]
-
 def do_security_check(sender, **kwargs):
     Security.activity_handler(sender, **kwargs)
 
