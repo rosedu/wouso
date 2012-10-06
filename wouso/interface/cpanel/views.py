@@ -22,7 +22,7 @@ from wouso.interface.activity.signals import addActivity
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
-from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm
+from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, AnswerForm
 from django.contrib.auth.models import User
 
 
@@ -233,7 +233,6 @@ def qpool_new(request, cat=None):
     form = QuestionForm()
     categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
     if request.method == "POST":
-        question = QuestionForm(data=request.POST)
         if question.is_valid():
             newq = question.save()
             return redirect('qpool_home', cat=newq.category.name)
@@ -243,13 +242,33 @@ def qpool_new(request, cat=None):
     return render_to_response('cpanel/qpool_new.html',
             {'form': form,
              'module': 'qpool',
-             'categs':categs},
+             'categs': categs},
             context_instance=RequestContext(request)
     )
 
 
 @permission_required('config.change_setting')
-def qpool_edit(request, id=None, new_ans=False):
+def qpool_add_answer(request, id):
+    form = AnswerForm()
+    question = get_object_or_404(Question, pk=id)
+    if request.method == 'POST':
+        answer = AnswerForm(request.POST, instance=question)
+        if answer.is_valid():
+            answer.save(id=question)
+            redirect('question_edit', id=question.id)
+        else:
+            form = answer
+
+    return render_to_response('cpanel/add_answer.html',
+            {'form': form,
+             'question': question,
+             'module': 'qpool'},
+            context_instance=RequestContext(request)
+    )
+
+
+@permission_required('config.change_setting')
+def qpool_edit(request, id=None):
     if id is not None:
         question = get_object_or_404(Question, pk=id)
     else:
@@ -274,21 +293,13 @@ def qpool_edit(request, id=None, new_ans=False):
                 if question.category.name == 'proposed':
                     show_users = True
 
-            if new_ans:
-                a = Answer.objects.create(question=question)
-            else:
-                a = None
-        else:
-            a = None
-        a = None
         form = QuestionForm(instance=question, users=show_users)
 
     return render_to_response( 'cpanel/qpool_edit.html',
                               {'question': question,
                                'form': form,
                                'module': 'qpool',
-                               'categs': categs,
-                               'new_answer': a},
+                               'categs': categs},
                               context_instance=RequestContext(request))
 
 

@@ -29,27 +29,11 @@
         {% endfor %}
     {% endif %}
 
-    {%if new_answer != None %}
-    <tr><td><input type="checkbox" name="correct_{{new_answer.id}}" {% if new_answer.correct %}checked{% endif %}/></td>
-            <td><textarea name="answer_{{new_anser.id}}" cols="50">{{ new_answer.text }}</textarea>
-            {% if question %}
-            <a href="{% url answer_del question.id new_answer.id %}">x</a>
-            {% endif %}
-            </td>
-    </tr>
-    {% endif %}
-
     <tr><td><div class='action'>
-        <a class="button" href="{% url question_edit question.id %}">Add answer</a>
+        <a class="button" href="{% url add_answer id=question.id %}">Add answer</a>
             </div>
         </td>
     </tr>
-
-    {% if question.category.name != 'proposed' %}
-    <tr><td colspan="2"><label for="active">Active: </label>
-        <input id="active" type="checkbox" name="active" {% if question.active %}checked{% endif %} /></td>
-    </tr>
-    {% endif %}
 
     {% if question.category.name == 'qotd' %}
     <tr><td><label for="schedule">Schedule (dd.mm.yyyy):</label></td>
