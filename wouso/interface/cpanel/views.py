@@ -255,7 +255,7 @@ def qpool_add_answer(request, id):
         answer = AnswerForm(request.POST, instance=question)
         if answer.is_valid():
             answer.save(id=question)
-            redirect('question_edit', id=question.id)
+            return redirect('question_edit', id=question.id)
         else:
             form = answer
 
