@@ -19,7 +19,7 @@ class FormulaParsingError(Exception):
         return unicode(self.formula)
 class InvalidScoreCall(Exception): pass
 
-CORE_POINTS = ('points','gold')
+CORE_POINTS = ('points', 'gold', 'penalty')
 
 def check_setup():
     """ Check if the module has been setup """
