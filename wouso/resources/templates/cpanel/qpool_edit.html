@@ -21,17 +21,17 @@
         <tr><td><input type="checkbox" name="correct_{{a.id}}" {% if a.correct %}checked{% endif %}/></td>
             <td><textarea name="answer_{{a.id}}" cols="50">{{ a.text }}</textarea>
             {% if question %}
-            <a href="{% url admin:qpool_question_change question.id %}">x</a>
+            <a href="{% url answer_del question.id a.id %}">x</a>
             {% endif %}
             </td>
         </tr>
         {% endfor %}
 
-    {% if question.category.name != 'proposed' %}
-    <tr><td colspan="2"><label for="active">Active: </label>
-        <input id="active" type="checkbox" name="active" {% if question.active %}checked{% endif %} /></td>
+    <tr><td><div class='action'>
+        <a class="button" href="{% url add_answer id=question.id %}">Add answer</a>
+            </div>
+        </td>
     </tr>
-    {% endif %}
 
     {% if question.category.name == 'qotd' %}
     <tr><td><label for="schedule">Schedule (dd.mm.yyyy):</label></td>
