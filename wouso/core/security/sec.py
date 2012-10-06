@@ -25,7 +25,10 @@ class SecurityInspector:
             return False, None
 
         last_chall = Challenge.objects.filter(Q(user_from__user=suspect) |
-                Q(user_to__user=suspect)).order_by('-date')[0]
+                Q(user_to__user=suspect)).order_by('-date')
+        if not last_chall.count():
+            return False, None
+        last_chall = last_chall[0]
         if last_chall.user_from.user == suspect:
             participant = last_chall.user_from
         else:
