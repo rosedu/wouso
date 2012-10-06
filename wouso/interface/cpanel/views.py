@@ -233,6 +233,7 @@ def qpool_new(request, cat=None):
     form = QuestionForm()
     categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
     if request.method == "POST":
+        question = QuestionForm(data = request.POST)
         if question.is_valid():
             newq = question.save()
             return redirect('qpool_home', cat=newq.category.name)
