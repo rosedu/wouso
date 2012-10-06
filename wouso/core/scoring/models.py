@@ -65,17 +65,17 @@ class Formula(ScoringModel, models.Model):
     description = models.CharField(max_length=500, default='')
 
     @classmethod
-    def get(kls, id_string, *default_string):
+    def get(kls, id_string, default_string=None):
         """ Performs a get lookup on the Formula table, if no formula exists
         with the first id_string, returns the formula with the default_string
         id.
         """
-        if not len(default_string):
+        if not default_string:
             return super(Formula, kls).get(id_string)
 
         try: formula = Formula.objects.get(id=id_string)
         except kls.DoesNotExist:
-            formula = super(Formula, kls).get(default_string[0])
+            formula = super(Formula, kls).get(default_string)
             return formula
         return formula
 
