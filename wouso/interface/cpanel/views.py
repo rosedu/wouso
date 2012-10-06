@@ -14,7 +14,7 @@ from django.utils.translation import ugettext_noop
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
-from wouso.core.qpool.models import Schedule, Question, Tag, Category
+from wouso.core.qpool.models import Schedule, Question, Tag, Category, Answer
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
 from wouso.core import scoring
@@ -22,7 +22,7 @@ from wouso.interface.activity.signals import addActivity
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
-from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm
+from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, AnswerForm
 from django.contrib.auth.models import User
 
 
@@ -233,7 +233,7 @@ def qpool_new(request, cat=None):
     form = QuestionForm()
     categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
     if request.method == "POST":
-        question = QuestionForm(data=request.POST)
+        question = QuestionForm(data = request.POST)
         if question.is_valid():
             newq = question.save()
             return redirect('qpool_home', cat=newq.category.name)
@@ -243,7 +243,27 @@ def qpool_new(request, cat=None):
     return render_to_response('cpanel/qpool_new.html',
             {'form': form,
              'module': 'qpool',
-             'categs':categs},
+             'categs': categs},
+            context_instance=RequestContext(request)
+    )
+
+
+@permission_required('config.change_setting')
+def qpool_add_answer(request, id):
+    form = AnswerForm()
+    question = get_object_or_404(Question, pk=id)
+    if request.method == 'POST':
+        answer = AnswerForm(request.POST, instance=question)
+        if answer.is_valid():
+            answer.save(id=question)
+            return redirect('question_edit', id=question.id)
+        else:
+            form = answer
+
+    return render_to_response('cpanel/add_answer.html',
+            {'form': form,
+             'question': question,
+             'module': 'qpool'},
             context_instance=RequestContext(request)
     )
 
@@ -264,7 +284,7 @@ def qpool_edit(request, id=None):
             if newq.endorsed_by is None:
                 newq.endorsed_by = request.user
                 newq.save()
-            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home', args = (newq.category.name,)))
+            return redirect('qpool_home', cat = newq.category.name)
         else:
             print "nevalid"
     else:
@@ -340,6 +360,15 @@ def qpool_delete(request, id):
         go_back = reverse('wouso.interface.cpanel.views.qpool_home')
 
     return HttpResponseRedirect(go_back)
+
+
+@permission_required('config.change_setting')
+def qpool_delete_answer(request, question_id, answer_id):
+    answer = get_object_or_404(Answer, pk=answer_id)
+
+    answer.delete()
+
+    return redirect('question_edit', id=question_id)
 
 
 @permission_required('config.change_setting')

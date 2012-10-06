@@ -83,6 +83,22 @@ class QuestionForm(forms.Form):
         self.instance.save()
         return self.instance
 
+
+class AnswerForm(forms.Form):
+    def __init__(self, data=None, instance=None):
+        super(AnswerForm, self).__init__(data)
+
+        self.fields['new_answer_text'] = forms.CharField(max_length=100,
+                                        widget=forms.Textarea, required=False)
+        self.fields['new_answer_correct'] = forms.BooleanField(required=False)
+
+    def save(self, id=None):
+        data = self.cleaned_data
+        a = Answer.objects.create(question=id)
+        a.text = data['new_answer_text']
+        a.correct = data['new_answer_correct']
+        a.save()
+
 class TagsForm(forms.Form):
     def __init__(self, data=None, instance=None, tags=[]):
         super(TagsForm, self).__init__(data)
