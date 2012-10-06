@@ -67,10 +67,8 @@ class Security(App):
             if not BoolSetting.objects.get(pk__startswith='disable-%s' % rule[0]).get_value():
                 guilty, player = SecurityInspector.check(rule[0], **kwargs)
                 if guilty:
-                    formula = Formula.objects.filter(id='%s-infraction' % rule[0])
-                    if formula == []:
-                        formula = Formula.objects.filter(id='general-infraction')
-                    cls.penalise(player, formula[0])
+                    formula = Formula.get('%s-infraction' % rule[0], 'general-infraction')
+                    cls.penalise(player, formula)
 
 def do_security_check(sender, **kwargs):
     Security.activity_handler(sender, **kwargs)
