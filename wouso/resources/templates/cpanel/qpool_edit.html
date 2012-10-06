@@ -16,7 +16,6 @@
 <table>
     <tr><td><label for="text">Text:</label></td>
         <td><textarea id="text" name="text" rows="10" cols="50">{{ question.text}}</textarea>
-    {% if new_answer == None %}
     </tr>
         {% for a in question.answers %}
         <tr><td><input type="checkbox" name="correct_{{a.id}}" {% if a.correct %}checked{% endif %}/></td>
@@ -27,7 +26,6 @@
             </td>
         </tr>
         {% endfor %}
-    {% endif %}
 
     <tr><td><div class='action'>
         <a class="button" href="{% url add_answer id=question.id %}">Add answer</a>
