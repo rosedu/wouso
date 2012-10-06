@@ -19,7 +19,7 @@ def add_message(text, sender, to_room, user_to, messType, comand):
     if difference_in_seconds > 0.5:
         if sender.has_modifier('block-messages'):
             text = change_text(text)
-        msg = ChatMessage(content=text, author=sender, destRoom=to_room, time_stamp=time_stamp,
+        msg = ChatMessage(content=text, author=sender, destRoom=to_room, timeStamp=time_stamp,
             destUser = user_to, messType=messType, comand=comand)
         msg.save()
     else:

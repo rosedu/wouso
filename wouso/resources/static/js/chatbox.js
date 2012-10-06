@@ -3,10 +3,14 @@ var selectID = null;
 var UserName = null;
 var NewUserTimer = null;
 var SendPingTimer = null;
+var TimeOut = null;
 var title;
 var timeStamp = null;
+var keepAlive = 1000;
+var oneMinute = 60000;
 
 var url_base = '';
+
 /* Private chat staff */
 var firstFreeChat;
 var max_room;
@@ -449,6 +453,7 @@ $(document).ready(function () {
 
     /* See if I got new message */
     function SendPing() {
+
         var mdata = {'opcode':'keepAlive', 'time': timeStamp};
         var args = {type:'POST', url:url_base + '/chat/chat_m/', data:mdata, complete:ReceiveMessage};
         $.ajax(args);
@@ -481,9 +486,18 @@ $(document).ready(function () {
     $(document).ready(NewUsers);
     $(document).ready(NewLog);
     $(document).ready(SendPing);
-    SendPingTimer = setInterval(function(){SendPing();}, 1000);
-    NewUserTimer = setInterval(function(){NewUsers();}, 6000);
+    SendPingTimer = setInterval(function(){SendPing();}, keepAlive);
+    NewUserTimer = setInterval(function(){NewUsers();}, 10000);
     InitialChat();
+
+    function SetTimeForKeepAlive(time){
+        clearInterval(SendPingTimer);
+        keepAlive = time;
+        SendPingTimer = setInterval(function(){SendPing();}, keepAlive);
+
+    }
+
+    TimeOut = setTimeout(function(){SetTimeForKeepAlive(5000)}, oneMinute);
 
     /* Give room id or next free chat.*/
     function GetRoom(room) {
@@ -505,19 +519,27 @@ $(document).ready(function () {
                 if(obj.msgs[i].mess_type == 'special' && obj.msgs[i].comand == 'block-communication'){
                     clearInterval(NewUserTimer);
                     clearInterval(SendPingTimer);
-                    if(window.location.pathname == "/chat/")
-                        window.location = "/"
+                    if(window.location.pathname == url_base + "/chat/")
+                        window.location = url_base + "/"
                 }
-                else if(obj.msgs[i].mess_type == 'special' && obj.msgs[i].comand == 'kick' && window.location.pathname == '/chat/'){
-                    window.location = "/";
+                else if(obj.msgs[i].mess_type == 'special' && obj.msgs[i].comand == 'kick' && window.location.pathname == url_base + '/chat/'){
+                    window.location = url_base + "/";
                 }
                 else if(obj.msgs[i].user == myName && obj.msgs[i].mess_type == 'special')
                     continue;
                 else if (obj.msgs[i].room == 'global') {
                     $('#GlobalboxTextArea').append(obj.msgs[i].time + obj.msgs[i].user + ": " + replace_emoticons(obj.msgs[i].text) + "<br />");
                     AutoScroll();
+                    if(window.location.pathname == url_base + '/chat/'){
+                        clearTimeout(TimeOut);
+                        SetTimeForKeepAlive(1000);
+                        TimeOut = setTimeout(function(){SetTimeForKeepAlive(5000)}, oneMinute);
+                    }
                 }
                 else {
+                    clearTimeout(TimeOut);
+                    SetTimeForKeepAlive(1000);
+                    TimeOut = setTimeout(function(){SetTimeForKeepAlive(5000)}, oneMinute);
                     var room = GetRoom(obj.msgs[i].room);
                     if(room == firstFreeChat){
                         firstFreeChat++;
