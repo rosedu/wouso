@@ -16,20 +16,6 @@ class TestWorkshop(TestCase):
 
         self.assertEqual(WorkshopGame.get_semigroup(timestamp=now)[0], group)
 
-    def test_get_workshop_always(self):
-        now = datetime.now()
-        hour = now.hour - now.hour % 2
-        group = Semigroup.objects.create(name='test', day=now.weekday() + 1, hour=hour)
-
-        # Create a tag, question and schedule it now
-        tag = Schedule.objects.create(name='test-tag', start_date=now, end_date=now + timedelta(days=1))
-        question = Question.objects.create()
-        question.tags.add(tag)
-
-        ws = WorkshopGame.get_for_now(timestamp=now)
-
-        self.assertTrue(ws)
-
     def test_start_reviewing(self):
         now = datetime.now()
         hour = now.hour - now.hour % 2

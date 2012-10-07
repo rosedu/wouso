@@ -12,6 +12,8 @@ DAY_CHOICES = (
     (3, 'Wednesday'),
     (4, 'Thursday'),
     (5, 'Friday'),
+    (6, 'Saturday'),
+    (7, 'Sunday'),
 )
 
 ROOM_CHOICES = (
@@ -233,7 +235,7 @@ class WorkshopGame(Game):
         """ Return the current laboratory as a day, hour pair
         """
         timestamp = timestamp if timestamp else datetime.now()
-        day = (timestamp.weekday() + 1) % 7 + 1 # 1 = Monday, etc
+        day = timestamp.weekday() + 1 # 1 = Monday, etc
         hour = timestamp.hour - timestamp.hour % 2 # First lab starts at 8:00 AM
         return day, hour
 
