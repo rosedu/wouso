@@ -6,12 +6,12 @@ from models import DAY_CHOICES
 from models import WorkshopGame, Semigroup, Schedule
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player
-from wouso.games.workshop.models import Workshop, Assesment, Review
+from wouso.games.workshop.models import Workshop, Assessment, Review
 
 class AGForm(forms.ModelForm):
     class Meta:
         model = Semigroup
-        fields = ('name', 'day', 'hour')
+        fields = ('name', 'day', 'hour', 'room')
 
 @staff_required
 def workshop_home(request, **kwargs):
@@ -74,16 +74,17 @@ def edit_spot(request, day, hour):
         return redirect('ws_add_group')
 
     if request.method == 'POST':
+        semigroup = get_object_or_404(Semigroup, pk=request.GET.get('semigroup'))
         try:
             player = Player.objects.get(pk=int(request.POST.get('player')))
         except ValueError, Player.DoesNotExist:
             pass
         else:
-            sg.add_player(player)
+            semigroup.add_player(player)
 
     return render_to_response('workshop/cpanel/editspot.html',
                         {'module': 'workshop',
-                         'semigroup': sg,
+                         'semigroups': sg,
                          },
                         context_instance=RequestContext(request)
     )
@@ -178,13 +179,13 @@ def workshop_reviewers(request, workshop):
     )
 
 @staff_required
-def workshop_grade_assesment(request, assesment):
-    assesment = get_object_or_404(Assesment, pk=assesment)
+def workshop_grade_assessment(request, assessment):
+    assessment = get_object_or_404(Assessment, pk=assessment)
     assistant = request.user.get_profile()
 
     if request.method == 'POST':
         data = request.POST
-        for a in assesment.answer_set.all():
+        for a in assessment.answer_set.all():
             try:
                 grade = int(data.get('grade_%d' % a.id, ''))
             except ValueError:
@@ -210,12 +211,63 @@ def workshop_grade_assesment(request, assesment):
                     r.review_grade = grade
                     r.review_reviewer = assistant
                     r.save()
-        # Grade the entire assesment
-        assesment.update_grade()
+        # Grade the entire assessment
+        assessment.update_grade()
 
-    return render_to_response('workshop/cpanel/workshop_grade_assesment.html',
+    return render_to_response('workshop/cpanel/workshop_grade_assessment.html',
                         {'module': 'workshop',
-                         'assesment': assesment,
+                         'assessment': assessment,
                          },
                          context_instance=RequestContext(request)
     )
+
+
+class WAForm(forms.ModelForm):
+    class Meta:
+        model = Workshop
+        exclude = ('start_at', 'active_until')
+
+
+@staff_required
+def workshop_add(request):
+    error = ''
+    if request.method == 'POST':
+        form = WAForm(request.POST)
+        if form.is_valid():
+            error = WorkshopGame.create_workshop(semigroup=form.cleaned_data['semigroup'],
+                                    date=form.cleaned_data['date'],
+                                    question_count=form.cleaned_data['question_count']
+            )
+            if not error:
+                return redirect('ws_workshops')
+    else:
+        form = WAForm()
+
+    return render_to_response('workshop/cpanel/workshop_add.html',
+                        {'module': 'workshop', 'form': form, 'info': WorkshopGame, 'error': error},
+                        context_instance=RequestContext(request)
+    )
+
+
+@staff_required
+def workshop_edit(request, workshop):
+    workshop = get_object_or_404(Workshop, pk=workshop)
+
+    pass
+
+
+@staff_required
+def workshop_start(request, workshop):
+    workshop = get_object_or_404(Workshop, pk=workshop)
+
+    workshop.start() # set start_at and active_until
+
+    return redirect('ws_workshops')
+
+@staff_required
+def workshop_stop(request, workshop):
+    workshop = get_object_or_404(Workshop, pk=workshop)
+
+    workshop.stop() # set active_until
+
+    return redirect('ws_workshops')

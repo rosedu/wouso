@@ -14,7 +14,7 @@ class TestWorkshop(TestCase):
         self.assertEqual(spot_day, group.day)
         self.assertEqual(spot_hour, group.hour)
 
-        self.assertEqual(WorkshopGame.get_semigroup(timestamp=now), group)
+        self.assertEqual(WorkshopGame.get_semigroup(timestamp=now)[0], group)
 
     def test_get_workshop_always(self):
         now = datetime.now()
@@ -26,7 +26,7 @@ class TestWorkshop(TestCase):
         question = Question.objects.create()
         question.tags.add(tag)
 
-        ws = WorkshopGame.get_for_now(timestamp=now, always=True)
+        ws = WorkshopGame.get_for_now(timestamp=now)
 
         self.assertTrue(ws)
 
@@ -41,8 +41,8 @@ class TestWorkshop(TestCase):
         u1 = User.objects.create(username='u1').get_profile()
         u2 = User.objects.create(username='u2').get_profile()
 
-        a1 = Assesment.objects.create(player=u1, workshop=ws)
-        a2 = Assesment.objects.create(player=u2, workshop=ws)
+        a1 = Assessment.objects.create(player=u1, workshop=ws)
+        a2 = Assessment.objects.create(player=u2, workshop=ws)
 
         WorkshopGame.start_reviewing(ws)
 

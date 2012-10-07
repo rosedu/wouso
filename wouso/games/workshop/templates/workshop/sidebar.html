@@ -5,7 +5,7 @@
 
 {% block content %}
 {% if semigroup_member %}
-   {% trans 'Current semigroup:' %} {{ semigroup }}<br/>
+   {% trans 'Current semigroup:' %} {% for s in semigroups %}{{ s.name }} - {{ s.get_room_display }} {% endfor %}<br/>
         {% if workshop %}
             {% if workshop.is_active %}
                 {% if not assesment.answered %}

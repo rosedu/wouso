@@ -6,9 +6,9 @@
 
 {% block sectioncontent %}
 
-<p>{% trans "Your final grade is:" %} <strong>{{ assesment.grade }}</strong></p>
+<p>{% trans "Your final grade is:" %} <strong>{{ assessment.grade }}</strong></p>
 <ul>
-{% for a in assesment.answer_set.all %}
+{% for a in assessment.answer_set.all %}
     <li>{{ forloop.counter }}. {{ a.question.text }}
         <p> <em>{% trans 'Your answer' %}:</em>
             <tt>{{ a.text }}</tt>
