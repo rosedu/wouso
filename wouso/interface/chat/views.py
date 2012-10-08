@@ -113,7 +113,7 @@ def archive_messages(request):
 
 
 @login_required
-def special_message(user, room = None, message = None):
+def special_message(user, room = None, message = None, time_stamp = None):
 
     msgs = []
     mesaj = {
@@ -127,6 +127,7 @@ def special_message(user, room = None, message = None):
     obj = {'user': unicode(user)}
     obj['count'] = 1
     obj['msgs'] = msgs
+    obj['time'] = str(datetime.now())
     return obj
 
 @login_required
@@ -138,6 +139,7 @@ def sendmessage(request):
     time_stamp = data['time']
     if time_stamp == 'null':
         return json_response(serve_message(user, time_stamp))
+
     if data['opcode'] == 'message':
         room = roomexist(data['room'])
         if user.user.has_perm('chat.super_chat_user'):
@@ -170,9 +172,9 @@ def sendmessage(request):
     elif data['opcode'] == 'keepAlive':
         chat_global = roomexist('global')
         if user.has_modifier('block-communication'):
-            return json_response(special_message(user, None, "block-communication"))
+            return json_response(special_message(user, None, "block-communication", time_stamp))
         elif user.has_modifier('block-global-chat-page') or not user.canAccessChat:
-            return json_response(special_message(user, None, "kick"))
+            return json_response(special_message(user, None, "kick", time_stamp))
 
         if user not in chat_global.participants.all():
             chat_global.participants.add(user)
