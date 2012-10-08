@@ -6,7 +6,7 @@ var SendPingTimer = null;
 var TimeOut = null;
 var title;
 var timeStamp = null;
-var keepAlive = 1000;
+var keepAlive = null;
 var oneMinute = 60000;
 
 var url_base = '';
@@ -21,6 +21,7 @@ if(sessionStorage.firstFreeChat){
     max_room = 1;
     max_boxes = parseInt(sessionStorage.max_boxes);
     private_users = JSON.parse(sessionStorage.private_users);
+    keepAlive = parseInt(sessionStorage.keepAlive);
 }
 else{
     firstFreeChat = 1;
@@ -28,6 +29,8 @@ else{
     max_boxes = 5;
     private_users = [];
     private_users[0] = new Private('global', 0, "", null);
+    keepAlive = 1000;
+    sessionStorage.keepAlive = keepAlive;
     sessionStorage.firstFreeChat = firstFreeChat;
     sessionStorage.max_room = max_room;
     sessionStorage.max_boxes = max_boxes;
@@ -493,6 +496,7 @@ $(document).ready(function () {
     function SetTimeForKeepAlive(time){
         clearInterval(SendPingTimer);
         keepAlive = time;
+        sessionStorage.keepAlive = keepAlive;
         SendPingTimer = setInterval(function(){SendPing();}, keepAlive);
 
     }
