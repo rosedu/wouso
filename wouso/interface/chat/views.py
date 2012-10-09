@@ -15,7 +15,7 @@ def index(request):
     user = request.user.get_profile()
     chat_user = get_author(request)
 
-    if user.has_modifier('block-global-chat-page') or user.has_modifier('block-communication') or not chat_user.canAccessChat:
+    if user.has_modifier('block-global-chat-page') or user.has_modifier('block-communication') or not chat_user.can_access_chat:
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
     if BoolSetting.get('disable-Chat').get_value():
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
@@ -30,7 +30,7 @@ def archive(request):
     user = request.user.get_profile()
     chat_user = get_author(request)
 
-    if user.has_modifier('block-global-chat-page') or user.has_modifier('block-communication') or not chat_user.canAccessChat:
+    if user.has_modifier('block-global-chat-page') or user.has_modifier('block-communication') or not chat_user.can_access_chat:
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
     if BoolSetting.get('disable-Chat').get_value():
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
@@ -45,7 +45,7 @@ def archive(request):
 def log_request(request):
     room = roomexist('global')
 
-    all_message = ChatMessage.objects.filter(destRoom=room).filter(messType='normal')
+    all_message = ChatMessage.objects.filter(dest_room=room).filter(mess_type='normal')
     all_message = all_message[len(all_message)-50:] if len(all_message) > 50 else all_message
 
     return render_to_response('chat/global_log.html',
@@ -102,7 +102,7 @@ def archive_messages(request):
         date_time_finished = datetime(int(date[2]), int(date[0]), int(date[1]), 0, 0, 0) + timedelta(hours = 24)
 
 
-    messages = ChatMessage.objects.filter(destRoom__name=room_name).filter(messType="normal").filter(timeStamp__gte=date_time_started).filter(timeStamp__lte=date_time_finished)
+    messages = ChatMessage.objects.filter(dest_room__name=room_name).filter(mess_type="normal").filter(time_stamp__gte=date_time_started).filter(time_stamp__lte=date_time_finished)
 
 
     user = get_author(request)
@@ -155,17 +155,17 @@ def sendmessage(request):
                     if text[0] == '/kick':
                         add_message(text[1], user, room, sender, "special", "kick")
                     if text[0] == '/unban':
-                        sender.canAccessChat = True
+                        sender.can_access_chat = True
                         sender.save()
                     if text[0] == '/ban':
-                        sender.canAccessChat = False
+                        sender.can_access_chat = False
                         sender.save()
                     return json_response(serve_message(user, time_stamp))
 
 
         try:
             assert room is not None
-            # content, author, room, user_to, messType, command
+            # content, author, room, user_to, mess_type, command
             add_message(data['msg'], user, room, user, "normal", "normal")
         except (ValueError, AssertionError):
             return HttpResponseBadRequest()
@@ -173,7 +173,7 @@ def sendmessage(request):
         chat_global = roomexist('global')
         if user.has_modifier('block-communication'):
             return json_response(special_message(user, None, "block-communication", time_stamp))
-        elif user.has_modifier('block-global-chat-page') or not user.canAccessChat:
+        elif user.has_modifier('block-global-chat-page') or not user.can_access_chat:
             return json_response(special_message(user, None, "kick", time_stamp))
 
         if user not in chat_global.participants.all():

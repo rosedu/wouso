@@ -3,15 +3,15 @@ import random
 from wouso.interface.chat.models import ChatUser, ChatMessage
 from datetime import datetime
 
-def add_message(text, sender, to_room, user_to, messType, comand):
-    """ content, author, room, user_to, messType, command """
+def add_message(text, sender, to_room, user_to, mess_type, comand):
+    """ content, author, room, user_to, mess_type, command """
 
     time_stamp = datetime.now()
 
     #TODO: Putem renunta la spam:) este inutil.
     difference_in_seconds = 1
     # sau>>
-    #diff = time_stamp - sender.lastMessageTS
+    #diff = time_stamp - sender.last_message_ts
     #difference_in_seconds = (diff.microseconds + (diff.seconds + diff.days * 24 * 3600) * 10**6) / 10**6
 
     if sender.has_modifier('block-communication'):
@@ -19,8 +19,8 @@ def add_message(text, sender, to_room, user_to, messType, comand):
     if difference_in_seconds > 0.5:
         if sender.has_modifier('block-messages'):
             text = change_text(text)
-        msg = ChatMessage(content=text, author=sender, destRoom=to_room, timeStamp=time_stamp,
-            destUser = user_to, messType=messType, comand=comand)
+        msg = ChatMessage(content=text, author=sender, dest_room=to_room, time_stamp=time_stamp,
+            dest_user = user_to, mess_type=mess_type, comand=comand)
         msg.save()
     else:
         raise ValueError('Spam')
@@ -33,7 +33,7 @@ def create_message(user, query):
     """
     msgs = []
     for message in query:
-        if (message.destUser == user and message.messType == "special") or message.messType == "normal":
+        if (message.dest_user == user and message.mess_type == "special") or message.mess_type == "normal":
             msgs.append(message.to_dict())
         else:
             continue
@@ -45,21 +45,21 @@ def serve_message(user, time_stamp):
     Used when you write a new message or when you get a KeepAlive.
     """
     if time_stamp == 'null':
-        query = ChatMessage.objects.filter(timeStamp__gt=user.lastMessageTS, destRoom__participants=user)
+        query = ChatMessage.objects.filter(time_stamp__gt=user.last_message_ts, dest_room__participants=user)
         obj = {'user': unicode(user)}
         obj['count'] = query.count()
         obj['msgs'] = create_message(user, query)
         obj['time'] = str(datetime.now())
-        user.lastMessageTS = datetime.now()
+        user.last_message_ts = datetime.now()
         user.save()
         return obj
     else:
-        query = ChatMessage.objects.filter(timeStamp__gt=time_stamp, destRoom__participants=user)
+        query = ChatMessage.objects.filter(time_stamp__gt=time_stamp, dest_room__participants=user)
 
     if not query:
         return None
 
-    user.lastMessageTS = datetime.now()
+    user.last_message_ts = datetime.now()
     user.save()
 
     obj = {'user': unicode(user)}
@@ -74,7 +74,7 @@ def some_old_message(user, room, position):
     Used on private chats, when you want to see some old messages.
     """
     number = int(position)
-    query = ChatMessage.objects.filter(destRoom=room)
+    query = ChatMessage.objects.filter(dest_room=room)
     query = query[len(query)-number-10:] if len(query) > (10 + number) else query
 
     number_query = 10 if len(query) == 0 else len(query) - number
