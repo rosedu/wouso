@@ -46,6 +46,7 @@
 <h3>Information</h3>
     <p>Django version: {{ django_version }}</p>
     <p>WoUSO version: {{ wouso_version }}</p>
+    <p>WoUSOcron last run: {{ last_run }}</p>
 <h4>Staff</h4>
     {% for u in staff.user_set.all %}
     {% player_simple u.get_profile %}
@@ -102,6 +103,7 @@
     <div class="widget-content">
         <ul class="menu">
             <li class="games"><a href="{% url games_home %}">Games</a></li>
+            <li class="formulas"><a href={% url formulas %}>Formulas</a></li>
             <li class="empty"></li>
             {% cpanel_games %}
         </ul>
