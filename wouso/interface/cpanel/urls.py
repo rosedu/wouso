@@ -42,6 +42,11 @@ upat = [
     url(r'^add_spell/$', 'wouso.interface.cpanel.views.add_spell',name='add_spell'),
     url(r'^spells/del/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.spell_delete', name='spell_dell'),
 
+    url(r'^formulas/$','wouso.interface.cpanel.views.formulas',name='formulas'),
+    url(r'^edit_formula/(?P<id>(-|[a-z]|[A-Z])+)/$','wouso.interface.cpanel.views.edit_formula',name='edit_formula'),
+    url(r'^formulas/del/(?P<id>(-|[a-z]|[A-Z])+)/$','wouso.interface.cpanel.views.formula_delete',name='formula_del'),
+    url(r'^add_formula/$','wouso.interface.cpanel.views.add_formula',name='add_formula'),
+
     url(r'^group/set/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.groupset', name='group_set'),
     url(r'^staff/toggle/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.stafftoggle', name='staff_toggle'),
 
