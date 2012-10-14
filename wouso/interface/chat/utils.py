@@ -40,7 +40,6 @@ def create_message(user, query):
             continue
     return msgs
 
-
 def new_activity_messages(chat_user):
     """
     Return a list of new messages from the activity module, formatted the same as create_message.
@@ -81,7 +80,6 @@ def serve_message(user, time_stamp):
     obj['count'] = len(messages)
     obj['msgs'] = messages
     obj['time'] = str(datetime.now())
-
     return obj
 
 def some_old_message(user, room, position):
