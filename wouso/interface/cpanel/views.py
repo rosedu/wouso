@@ -83,9 +83,7 @@ def edit_formula(request, id):
 @permission_required('config.change_setting')
 def formula_delete(request, id):
     formula=get_object_or_404(Formula, pk=id)
-
     formula.delete()
-
     go_back=request.META.get('HTTP_REFERER', None)
     if not go_back:
         go_back=reverse('wouso.interface.cpanel.views.formulas')
