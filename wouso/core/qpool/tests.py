@@ -50,6 +50,40 @@ class QpoolTestCase(TestCase):
         self.assertTrue(self.question not in get_questions_with_tags(['test', 'inexistent'], 'all'))
         self.assertTrue(self.question not in get_questions_with_tags(['coco', 'test'], 'all'))
 
+    def testQuestionCorrectAnswers(self):
+        q = self.question
+
+        self.assertEqual(set(q.correct_answers), set([q.answers[2]]))
+
+    def testQuestionShuffledAnswers(self):
+        q = self.question
+
+        self.assertEqual(set(q.shuffled_answers), set(q.answers))
+
+    def testQuestionWithoutAnswersIsNotValid(self):
+        user = User.objects.all()[0]
+        other_question = Question.objects.create(text='Unde locuiesti',
+            proposed_by=user,
+            endorsed_by=user,
+            active=True)
+
+        other_question.answer_type = 'R'
+        other_question.save()
+
+        self.assertFalse(other_question.is_valid())
+
+        other_question.answer_type = 'C'
+        other_question.save()
+
+        self.assertFalse(other_question.is_valid())
+
+    def testQuestionMultipleTagsNice(self):
+        q = self.question
+        q.tags.create(name="aaa")
+        q.tags.create(name="bbb")
+
+        self.assertEqual(q.tags_nice, "aaa, bbb")
+
 class TagTests(TestCase):
     def test_tag_set_active(self):
         q = Question.objects.create()
