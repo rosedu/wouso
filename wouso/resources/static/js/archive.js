@@ -1,4 +1,6 @@
 
+var url_base = '';
+
 $(function() {
     $('#datepicker').datepicker();
     $('#datepicker_private').datepicker();
@@ -26,7 +28,7 @@ $(document).ready(function(){
             date = date + "/" + $("#minSlider").html();
             var hours = $("#maxSlider").html() - $("#minSlider").html();
             msgdata = {'room':'global', 'date':date, 'hours':hours};
-            var args = {type:"POST", url:"/chat/archive_messages/", data:msgdata, complete:printArchive};
+            var args = {type:"POST", url:url_base + "/chat/archive_messages/", data:msgdata, complete:printArchive};
             $.ajax(args);
         }
     });
@@ -45,8 +47,8 @@ $(document).ready(function(){
     $("#archive_day_private").click(function(){
         var id = $("#to").val();
         if(id && id!=myID){
-            var msgdata = {'opcode':'getRoom', 'from':myID, 'to':id};
-            var args = {type:"POST", url:"/chat/chat_m/", data:msgdata, complete:getRoom};
+            var msgdata = {'opcode':'getRoom', 'from':myID, 'to':id, 'time': timeStamp};
+            var args = {type:"POST", url:url_base + "/chat/chat_m/", data:msgdata, complete:getRoom};
             $.ajax(args);
         }
     });
@@ -58,7 +60,7 @@ $(document).ready(function(){
             var date = $("#datepicker_private").val();
             if(date){
                 msgdata = {'room':chat_room,'date':date};
-                var args = {type:"POST", url:"/chat/archive_messages/", data:msgdata, complete:printArchive_private};
+                var args = {type:"POST", url:url_base + "/chat/archive_messages/", data:msgdata, complete:printArchive_private};
                 $.ajax(args);
             }
         }

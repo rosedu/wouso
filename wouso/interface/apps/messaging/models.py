@@ -9,8 +9,8 @@ from wouso.interface.activity import signals
 class MessagingUser(Player):
     '''extension of the user profile, customized for messages'''
 
-    canSendMessage = models.BooleanField(null=False, blank=False, default=True)
-    lastMessageTS = models.DateTimeField(null=True, blank=False, default=datetime.now)
+    can_send_message = models.BooleanField(null=False, blank=False, default=True)
+    last_message_ts = models.DateTimeField(null=True, blank=False, default=datetime.now)
 
 
 class Message(models.Model):
@@ -43,9 +43,10 @@ class Message(models.Model):
         m.reply_to = reply_to
         m.save()
         if sender:
-            sender.lastMessageTS = datetime.now()
+            sender.last_message_ts = datetime.now()
             sender.save()
         signals.messageSignal.send(sender=None, user_from=sender, user_to=receiver, message='', action='message', game=None)
+
 
     @classmethod
     def get_header_link(kls, request):
