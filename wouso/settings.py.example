@@ -171,6 +171,8 @@ OAUTH_AUTH_VIEW = 'wouso.interface.api.views.oauth_auth_view'
 
 C2DM_AUTH_TOKEN = '' # Change this to a ClientLogin token from Google
 
+API_ENABLED = True
+
 # Conditional installed apps
 import imp
 try:
