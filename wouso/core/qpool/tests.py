@@ -66,6 +66,13 @@ class QpoolTestCase(TestCase):
             proposed_by=user,
             endorsed_by=user,
             active=True)
+
+        other_question.answer_type = 'R'
+        other_question.save()
+
+        self.assertFalse(other_question.is_valid())
+
+        other_question.answer_type = 'C'
         other_question.save()
 
         self.assertFalse(other_question.is_valid())
