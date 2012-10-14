@@ -77,7 +77,9 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
                     q['endorsed_by'] = endorsed_by
                 if proposed_by is not None:
                     q['proposed_by'] = proposed_by
-                if nr_correct == 1:
+                if len(answers) == 0:
+                    q['answer_type'] = 'F'
+                elif nr_correct == 1:
                     q['answer_type'] = 'R'
                 else:
                     q['answer_type'] = 'C'
@@ -135,7 +137,9 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
             q['endorsed_by'] = endorsed_by
         if proposed_by is not None:
             q['proposed_by'] = proposed_by
-        if nr_correct == 1:
+	if len(answers) == 0:
+	    q['answer_type'] = 'F'
+        elif nr_correct == 1:
             q['answer_type'] = 'R'
         else:
             q['answer_type'] = 'C'
