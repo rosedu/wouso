@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from wouso.core.app import App
 from wouso.core.user.models import Player, PlayerGroup, Race
+from wouso.games.challenge.models import ChallengeUser
 
 class ObjectHistory:
     @property
@@ -42,6 +43,25 @@ class TopUser(ObjectHistory, Player):
         except Exception as e:
             return 0
         return - (yesterday.position - daybefore.position)
+
+    @property
+    def played_challenges(self):
+        return self.user.get_profile().get_extension(ChallengeUser).get_all_challenges().count()
+    
+    @property
+    def won_challenges(self):
+        return self.user.get_profile().get_extension(ChallengeUser).get_won_challenges().count()
+
+    @property
+    def lost_challenges(self):
+        return self.user.get_profile().get_extension(ChallengeUser).get_lost_challenges().count()
+    
+    @property
+    def won_perc_challenges(self):
+        n = self.played_challenges
+        if n == 0:
+            return 0
+        return self.won_challenges / n * 100
 
     @property
     def weeklyprogress(self):
