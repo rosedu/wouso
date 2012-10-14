@@ -83,7 +83,7 @@ def user_profile(request, id, page=u'1'):
         if hasattr(g, 'user_model'):
             model = getattr(g, 'user_model')
             setattr(profile, model.__name__.lower(), profile.get_extension(model))
-    #Fix to show message in from report user form
+    #Fix to show succes message from report user form
     if 'report_msg' in request.session:
         message = request.session['report_msg']
         del request.session['report_msg']
