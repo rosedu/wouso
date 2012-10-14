@@ -6,11 +6,11 @@
 
 {% block sectioncontent %}
 <p>Workshop available until: {{ workshop.active_until }}</p>
-<p>Assesment started: {{ assesment.time_start }}</p>
+<p>Assessment started: {{ assessment.time_start }}</p>
 
 <form action="" method="post">
     <table>
-        {% for q in workshop.questions.all %}
+        {% for q in assessment.questions.all %}
             <tr>
                 <td>{{ forloop.counter }}.</td>
                 <td>{{ q }}</td>

@@ -3,6 +3,9 @@
 {% load user %}
 
 {% block tabcontent %}
+
+{% for semigroup in semigroups %}
+<h3>{{ semigroup.get_room_display }}</h3>
     Semigroup: {{ semigroup }},
     Spot: {% if semigroup.day %}day={{ semigroup.day }}, hour={{ semigroup.hour }}<a href="{% url ws_edit_group semigroup.pk %}">✍</a>.
           {% else %}Any time where there isn't any other one.{% endif %}
@@ -22,9 +25,10 @@
     </ul>
     <p>Total: {{ semigroup.players.count }}.</p>
 
-    <form action="" method="post">
-        {% player_input 'player' %}
+    <form action="?semigroup={{semigroup.id}}" method="post">
+        {% player_input 'player' semigroup.id %}
         {% csrf_token %}
         <button type="submit">Add</button>
     </form>
+{% endfor %}
 {% endblock %}

@@ -5,19 +5,23 @@
 {% block sectiontitle %}Workshop #{{ workshop.id }}{% endblock %}
 
 {% block tabcontent %}
-<p>Assesments and reviewers:</p>
+<p>Assessments and reviewers:</p>
 
 <table>
     <tr>
         <th colspan="2">Student</th>
         <th>Grade</th>
+        <th>Review</th>
+        <th>Final</th>
     </tr>
-    {% for as in workshop.assesment_set.all %}
+    {% for as in workshop.assessment_set.all %}
     <tr>
         <td colspan="2">{{ as.player }}</td>
         <td><strong>{{ as.grade }}</strong></td>
+        <td>{{ as.reviewer_grade }}</td>
+        <td>{{ as.final_grade }}</td>
         <td>{% if workshop.is_gradable %}
-            <a href="{% url ws_grade_assesment as.id %}">Grade</a>
+            <a href="{% url ws_grade_assessment as.id %}">Grade</a>
             {% endif %}
         </td>
     </tr>

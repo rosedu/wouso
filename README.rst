@@ -16,6 +16,7 @@ Installing
 
 2. Install dependencies::
 
+    (on Ubuntu) sudo apt-get install python-dev libldap2-dev libsasl2-dev
     pip install -r requirements-pip       # optional, the same command with: requirements-extra
 
 3. Install `django-piston` (by hand, because of a weird bug_)::

@@ -3,15 +3,15 @@
 {% load user %}
 {% load i18n %}
 
-{% block sectiontitle %}Workshop #{{ assesment.workshop.id }}{% endblock %}
+{% block sectiontitle %}Workshop #{{ assessment.workshop.id }}{% endblock %}
 
 {% block tabcontent %}
-<p>Grading assesment #{{ assesment.id }}, of player: {% player_simple assesment.player %} for workshop {{ assesment.workshop }}:</p>
-<p>Final grade: {{ assesment.grade }}.</p>
+<p>Grading assessment #{{ assessment.id }}, of player: {% player_simple assessment.player %} for workshop {{ assessment.workshop }}:</p>
+<p>Final grade: {{ assessment.grade }}.</p>
 
 <form method="post" action="">
     <ul>
-        {% for a in assesment.answer_set.all %}
+        {% for a in assessment.answer_set.all %}
         <li>{{ forloop.counter }}. {{ a.question.text }}
             <p> <em>{% trans 'Answer' %}:</em>
                 <tt>{{ a.text }}</tt>
@@ -53,5 +53,5 @@
     <!--<button type="submit" name="submit" value="save_go_next">Save and see next</button>-->
 </form>
 
-<a class="button" href="{% url ws_reviewers_map assesment.workshop.id %}">Back to review</a>
+<a class="button" href="{% url ws_reviewers_map assessment.workshop.id %}">Back to review</a>
 {% endblock %}

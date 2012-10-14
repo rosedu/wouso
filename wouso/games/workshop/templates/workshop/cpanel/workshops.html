@@ -26,6 +26,8 @@ the current scheduled question set.</p>
         <tr>
             <th>Id</th>
             <th>Date</th>
+            <th>Start</th>
+            <th>End</th>
             <th>Semigroup</th>
             <th>Assesments</th>
             <th>Status</th>
@@ -36,16 +38,24 @@ the current scheduled question set.</p>
                 {{ w.id }}
             </td>
             <td>{{ w.date }}</td>
+            <td>{{ w.start_at|date:"H:i" }}</td>
+            <td>{{ w.active_until|date:"M. d, Y, H:i:s" }}</td>
             <td>{{ w.semigroup }}</td>
             <td align="right">{{ w.assesment_set.count }}</td>
-            <td>{% if w.is_active %}Active until {{ w.active_until|date:"H:i" }}
-                {% else %}Inactive, expired {{ w.active_until|date:"M. d, Y, H:i:s" }}
+            <td>{% if w.is_active %}Active
+                {% else %}Inactive
                 {% endif %}
                 <br/>
                 {{ w.get_status_display }}
             </td>
             <td>
                 <a href="{% url admin:workshop_workshop_change w.id %}">✍</a>
+                {% if not w.start_at %}
+                <a class="button" href="{% url ws_start w.id %}">Start</a>
+                {% endif %}
+                {% if w.is_started and w.is_active %}
+                <a class="button" href="{% url ws_stop w.id %}">Stop</a>
+                {% endif %}
                 {% if w.is_started and not w.is_active %}
                 <a href="{% url ws_mark_for_review w.id %}">Mark for review</a><br/>
                 {% endif %}
@@ -59,5 +69,8 @@ the current scheduled question set.</p>
         </tr>
         {% endfor %}
     </table>
+
+    <br/>
+    <a class="button" href="{% url ws_add_workshop %}"><strong>Add workshop</strong></a>
 
 {% endblock %}

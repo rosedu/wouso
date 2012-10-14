@@ -98,8 +98,9 @@ def spell_stock(player, spell):
     return 'x%d' % stock if stock > 0 else '-'
 
 @register.simple_tag
-def player_input(name):
+def player_input(name, id=None):
+    id = id if id else name
 
-    return '<input type="hidden" name="{name}" id="ac_input_{name}_value" />' \
-           '<input type="text" id="ac_input_{name}" class="ac_input big" />' \
-           '<script>setAutocomplete("#ac_input_{name}");</script>'.format(name=name)
+    return '<input type="hidden" name="{name}" id="ac_input_{id}_value" />' \
+           '<input type="text" id="ac_input_{id}" class="ac_input big" />' \
+           '<script>setAutocomplete("#ac_input_{id}");</script>'.format(name=name, id=id)
