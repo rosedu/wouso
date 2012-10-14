@@ -43,14 +43,20 @@ class SecurityInspector:
         #TODO test if multiple account suspicion
         return False, None
     #TODO add more rules for security
-
+    
+    @classmethod
+    def reported_user(cls, **kwargs):
+        return True, kwargs.get(user_to)
+        
+        
 class Security(App):
     """Class that parses signals received from user activities
     and assigns penalty points as necessary"""
 
     SECURITY_RULES = [
         ('chall-was-set-up', 'Test if the challenge was lost on purpose', 'chall-won'),
-        ('login-multiple-account', 'Test if user is using multiple accounts', 'login')
+        ('login-multiple-account', 'Test if user is using multiple accounts', 'login'),
+        ('reported-user', 'Function called for a reported user', 'report'),
     ]
 
 

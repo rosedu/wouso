@@ -30,7 +30,7 @@
             {{ user.get_profile }}
             <a id="head-home" href="{% url homepage %}">Game</a>&nbsp;
             <a id="head-cpanel" href="{% url dashboard %}">CPanel</a>&nbsp;
-            <a id="head-logout" href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %} &raquo;</a>
+            <a id="head-logout" href="{% url wouso.interface.views.logout_view %}">{% trans "Logout" %} &raquo;</a>
         </div>
     </div>
     <br/>

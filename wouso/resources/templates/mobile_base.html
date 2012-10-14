@@ -30,7 +30,7 @@
             {% endif %}
             <a href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %} &raquo;</a>
         {% else %}
-        {% trans 'Anonimous' %}, <a href="{% url django.contrib.auth.views.login %}">{% trans "Login" %} &raquo;</a>
+        {% trans 'Anonimous' %}, <a href="{% url wouso.interface.views.login_view %}">{% trans "Login" %} &raquo;</a>
         {% endif %}
     </div>
 

@@ -332,6 +332,7 @@ class Challenge(models.Model):
         Notice the fact this is the only function where the scoring is affected
         """
         """ Handle artifacts and spells """
+        
         for u in (self.user_to, self.user_from):
             # always lose, you mofo
             if u.user.has_modifier('challenge-always-lose'):
