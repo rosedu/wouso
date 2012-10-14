@@ -49,6 +49,8 @@ def dashboard(request):
 
     # wousocron last_run
     last_run = Setting.get('wousocron_lastrun').get_value()
+    if last_run == "":
+        last_run="wousocron was never runned"
 
     return render_to_response('cpanel/index.html',
                               {'nr_future_questions' : nr_future_questions,
