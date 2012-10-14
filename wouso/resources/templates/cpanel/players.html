@@ -8,8 +8,7 @@
 <table>
 <tr>
     <th>Name</th>
-    <th></th>
-    <th></th>
+    <th>Points</th>
     <th>series</th>
     <th>A#</th>
     <th>Qotd#</th>
@@ -23,7 +22,6 @@
     <td>{{ p.activity_count }}</td>
     <td>{{ p.qotd_count }}</td>
     <td>{{ p.chall_count }}</td>
-    <td></td>
     <td><a class="button" href="{% url edit_player p.user_id %}">Edit</a></td>
 </tr>
 {% endfor %}
