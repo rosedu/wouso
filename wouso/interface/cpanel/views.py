@@ -89,7 +89,6 @@ def formula_delete(request, id):
     go_back=request.META.get('HTTP_REFERER', None)
     if not go_back:
         go_back=reverse('wouso.interface.cpanel.views.formulas')
-
     return HttpResponseRedirect(go_back)
 
 @permission_required('config.change_setting')
