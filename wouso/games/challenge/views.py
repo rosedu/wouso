@@ -23,7 +23,7 @@ def index(request):
     played = ChallengeGame.get_played(chall_user)[:10]
 
     if not chall_user.is_eligible():
-        return do_result(request, error='Ne pare rau, nu esti anul I, nu poti provoca. Te invitam pe wouso-next.rosedu.org')
+        return do_result(request, error='Your race can\'t play. Go home')
 
     return render_to_response('challenge/index.html',
             {'challenges': challs, 'played': played, 'challuser': chall_user, 'challenge': ChallengeGame},
