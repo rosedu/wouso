@@ -55,7 +55,7 @@ class Security(App):
 
     SECURITY_RULES = [
         ('chall-was-set-up', 'Test if the challenge was lost on purpose', 'chall-won'),
-        ('login-multiple-account', 'Test if user is using multiple accounts', 'login'),
+        ('login-multiple-account', 'Test if user is using multiple accounts', 'multiple-login'),
         ('reported-user', 'Function called for a reported user', 'report'),
     ]
 
