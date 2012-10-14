@@ -43,12 +43,10 @@ class Message(models.Model):
         m.reply_to = reply_to
         m.save()
         if sender:
-            sender.lastMessageTS = datetime.now()
+            sender.last_message_ts = datetime.now()
             sender.save()
         signals.messageSignal.send(sender=None, user_from=sender, user_to=receiver, message='', action='message', game=None)
 
-        sender.last_message_ts = datetime.now()
-        sender.save()
 
     @classmethod
     def get_header_link(kls, request):

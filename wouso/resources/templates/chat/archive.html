@@ -18,7 +18,9 @@
     <br>
     <ul class="tabs">
         <li><a href="#tab-1">{% trans 'Global' %}</a></li>
-        <li><a href="#tab-2">{% trans 'Private' %}</a></li>
+        {% if not config_disable_private_chat and not config_disable_chat  %}
+            <li><a href="#tab-2">{% trans 'Private' %}</a></li>
+        {% endif %}
     </ul>
     <div class="tab_container">
         <div id="tab-1" class="tab_content">
@@ -45,6 +47,7 @@
                 </tr>
             </table>
         </div>
+        {% if not config_disable_private_chat and not config_disable_chat  %}
         <div id="tab-2" class="tab_content">
             <table>
                 <tr><td colspan="1">
@@ -73,6 +76,7 @@
                 </tr>
             </table>
         </div>
+        {%endif%}
     </div>
 
 

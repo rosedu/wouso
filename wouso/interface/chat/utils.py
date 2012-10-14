@@ -44,7 +44,7 @@ def new_activity_messages(chat_user):
     """
     Return a list of new messages from the activity module, formatted the same as create_message.
     """
-    query = Activity.get_global_activity().filter(timestamp__gt=chat_user.lastMessageTS)
+    query = Activity.get_global_activity().filter(timestamp__gt=chat_user.last_message_ts)
     msgs = []
     for m in query:
         message = u'<strong>%s</strong> %s' % (m.user_from.nickname, m.message)
