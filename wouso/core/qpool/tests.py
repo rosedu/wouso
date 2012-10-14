@@ -53,12 +53,12 @@ class QpoolTestCase(TestCase):
     def testQuestionCorrectAnswers(self):
         q = self.question
 
-        self.assertTrue(set(q.correct_answers) == set([q.answers[2]]))
+        self.assertEqual(set(q.correct_answers), set([q.answers[2]]))
 
     def testQuestionShuffledAnswers(self):
         q = self.question
 
-        self.assertTrue(set(q.shuffled_answers) == set(q.answers))
+        self.assertEqual(set(q.shuffled_answers), set(q.answers))
 
     def testQuestionWithoutAnswersIsNotValid(self):
         user = User.objects.all()[0]
