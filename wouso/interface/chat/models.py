@@ -15,9 +15,9 @@ class ChatUser(Player):
     class Meta:
         permissions = (("super_chat_user", "Super chat User."),)
 
-    canCreateRoom = models.BooleanField(null=False, blank=False, default=True)
-    lastMessageTS = models.DateTimeField(null=True, blank=False, default=datetime.now)
-    canAccessChat = models.BooleanField(null=False, blank=False, default=True)
+    can_create_room = models.BooleanField(null=False, blank=False, default=True)
+    last_message_ts = models.DateTimeField(null=True, blank=False, default=datetime.now)
+    can_access_chat = models.BooleanField(null=False, blank=False, default=True)
 
 
 class ChatRoom(models.Model):
@@ -49,26 +49,26 @@ class ChatRoom(models.Model):
 class ChatMessage(models.Model):
     """ chat message """
 
-    messType = models.CharField(max_length=500, null=False, blank=False, default=None)
+    mess_type = models.CharField(max_length=500, null=False, blank=False, default=None)
     comand = models.CharField(max_length=500, null=False, blank=False, default=None)
-    destUser = models.ForeignKey(ChatUser, null=True, blank=False, default=None, related_name="dest_user_for_special")
+    dest_user = models.ForeignKey(ChatUser, null=True, blank=False, default=None, related_name="dest_user_for_special")
     content = models.CharField(max_length=500, null=False, blank=False, default=None)
     author = models.ForeignKey(ChatUser, null=True, blank=False, default=None, related_name="author_of_message")
-    destRoom = models.ForeignKey(ChatRoom, null=True, blank=False, default=None)
-    timeStamp = models.DateTimeField(null=True, blank=False, default=None)
+    dest_room = models.ForeignKey(ChatRoom, null=True, blank=False, default=None)
+    time_stamp = models.DateTimeField(null=True, blank=False, default=None)
 
 
     def __unicode__(self):
-        return self.timeStamp.strftime("%H:%M") + " " + self.author.nickname + ': ' + self.content
+        return self.time_stamp.strftime("%H:%M") + " " + self.author.nickname + ': ' + self.content
 
     def to_dict(self):
-        mesaj = {'room': self.destRoom.name,
+        mesaj = {'room': self.dest_room.name,
                  'user': unicode(self.author.nickname),
                  'text': self.content,
-                 'time': self.timeStamp.strftime("%H:%M "),
+                 'time': self.time_stamp.strftime("%H:%M "),
                  'comand': self.comand,
-                 'mess_type': self.messType,
-                 'dest_user': unicode(self.destUser.nickname)}
+                 'mess_type': self.mess_type,
+                 'dest_user': unicode(self.dest_user.nickname)}
         return mesaj
 
 class Chat(App):

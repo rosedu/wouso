@@ -10,8 +10,8 @@ function get_firstname(){
 function get_description(){
     return $("#Description").val()
 }
-
-function save_changes(){
+var url_base = '';
+    function save_changes(){
 
     var msgdata = null;
     if(get_nickname().length > 2 && get_firstname().length > 2)
@@ -19,10 +19,10 @@ function save_changes(){
     if (msgdata != null){
         var args = {
             type:"POST",
-            url:"/player/set/s/",
+            url:url_base + "/player/set/s/",
             data:msgdata,
             success: function(data) {
-                window.location = '/player/' + myID
+                window.location = url_base + '/player/' + myID
             },
             error: function(data) {
                 $("#ajax-message").html("<p class='wrong'>Nickname-ul exista!</p>")
