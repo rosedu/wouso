@@ -1,0 +1,58 @@
+{% extends base_template %}
+{% load artifacts %}
+{% load i18n %}
+{% load user %}
+
+{% block title %}{% trans 'Top' %}{% endblock %}
+
+{% block sidebar %}
+    {% include 'top/sidebar_series.html' %}
+    {% include 'top/sidebar_groups.html' %}
+    {% include 'top/sidebar.html' %}
+{% endblock %}
+
+{% block content %}
+<h2>{% trans 'Challenge Top' %}</h2>
+
+{% if top.disabled %}
+    {% trans 'Top has been disabled.' %}
+{% else %}
+<table id="clasament">
+<tr>
+<th>&nbsp;</th>
+<th width = "100%" align=left>{% trans 'Player' %}</th>
+<th> <a href="{% url challenge_top %}0/1/">{% trans 'Won' %}</a> </th>
+<th nowrap> <a href="{% url challenge_top %}1/1/">{% trans 'Won %' %}</a> </th>
+<th> <a href="{% url challenge_top %}2/1/">{% trans 'Lost' %}</a> </th>
+<th nowrap> {% trans 'Last seen' %} </th>
+</tr>
+
+{% for user in allUsers.object_list %}
+<tr>
+<td>{% artifact user.level %}</td>
+<td><a href="{% url player_profile user.id %}" rel="{{u.nickname}},{{user.user.first_name}},{{user.points}},{% player_avatar user%},{{ user.level_no }},{{user.id}},1" class="cplayer">{{ user }}</a>
+{% for artf in user.artifacts.all %}
+<div class = "artifacts">
+{% artifact artf %}
+</div>
+{% endfor %}
+</td>
+<td> {{ user.won_challenges }} </td>
+<td> {{ user.won_perc_challenges }}%</td> 
+<td> {{ user.lost_challenges }} </td>
+<td nowrap> {% if user.last_seen %}{{ user.last_seen }}{% else %}{% trans 'Never' %}{% endif %} </td>
+</tr>
+{% endfor %}
+</table>
+
+        {% if allUsers.has_previous %}
+        <a href="{% url challenge_top_arg sortcritno=sortcritno pageno=allUsers.previous_page_number %}"> Previous </a>
+        {% endif %}
+
+        {% if allUsers.has_next %}
+        <a href="{% url challenge_top_arg sortcritno=sortcritno pageno=allUsers.next_page_number %}"> Next </a>
+        {% endif %}
+
+
+{% endif %}
+{% endblock %}
