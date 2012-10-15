@@ -17,6 +17,7 @@ from wouso.core import scoring
 from wouso.core.god import God
 from wouso.interface.activity import signals
 from wouso.interface.apps.messaging.models import Message
+from django.db.models import Avg, Q, Count
 
 
 class ChallengeException(Exception):
@@ -29,7 +30,7 @@ class ChallengeUser(Player):
 
     def is_eligible(self):
         return God.user_is_eligible(self, ChallengeGame)
-
+    
     def can_launch(self):
         """ Check if 1 challenge per day restriction apply
         """
@@ -94,6 +95,17 @@ class ChallengeUser(Player):
             raise ChallengeException('Player cannot launch against this opponent')
 
         return Challenge.create(user_from=self, user_to=destination)
+    
+    def get_all_challenges(self):
+        chall_total = Challenge.objects.exclude(status=u'L').filter(Q(user_from__user=self) | Q(user_to__user=self))
+        return chall_total
+
+    def get_won_challenges(self):
+        return self.get_all_challenges().filter(winner=self)
+
+    def get_lost_challenges(self):
+        return self.get_all_challenges().exclude(winner=self)
+
 
 class Participant(models.Model):
     user = models.ForeignKey(ChallengeUser)
