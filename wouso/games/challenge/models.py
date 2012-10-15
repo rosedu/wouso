@@ -17,7 +17,7 @@ from wouso.core import scoring
 from wouso.core.god import God
 from wouso.interface.activity import signals
 from wouso.interface.apps.messaging.models import Message
-from django.db.models import Avg,Q, Count
+from django.db.models import Avg, Q, Count
 
 
 class ChallengeException(Exception):
