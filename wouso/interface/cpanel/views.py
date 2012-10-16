@@ -61,7 +61,7 @@ def dashboard(request):
                               context_instance=RequestContext(request))
 
 def formulas(request):
-    formulas = list(Formula.objects.all())
+    formulas = Formula.objects.all()
     return render_to_response('cpanel/formulas_home.html',
                               {'formulas': formulas
                               },
@@ -82,23 +82,23 @@ def edit_formula(request, id):
 
 @permission_required('config.change_setting')
 def formula_delete(request, id):
-    formula=get_object_or_404(Formula, pk=id)
+    formula = get_object_or_404(Formula, pk=id)
     formula.delete()
-    go_back=request.META.get('HTTP_REFERER', None)
+    go_back = request.META.get('HTTP_REFERER', None)
     if not go_back:
-        go_back=reverse('wouso.interface.cpanel.views.formulas')
+        go_back = reverse('wouso.interface.cpanel.views.formulas')
     return HttpResponseRedirect(go_back)
 
 @permission_required('config.change_setting')
 def add_formula(request):
-    form=FormulaForm()
+    form = FormulaForm()
     if request.method == "POST":
         formula=FormulaForm(data = request.POST)
         if formula.is_valid():
             formula.save()
             return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.formulas'))
         else:
-            form=formula
+            form = formula
     return render_to_response('cpanel/add_formula.html', 
                               {'form': form}, 
                               context_instance=RequestContext(request))
