@@ -98,7 +98,7 @@ def user_profile(request, id, page=u'1'):
                                'scoring': history,
                                'profile_actions': profile_actions,
                                'profile_superuser_actions': profile_superuser_actions,
-                               'message':message,},
+                               'message': message, },
                               context_instance=RequestContext(request))
 
 @login_required
