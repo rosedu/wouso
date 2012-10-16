@@ -39,7 +39,7 @@ TIME_ZONE = 'Europe/Bucharest'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
 
-LANGUAGES = (
+LANGUAGES = (LOG_ROOT = os.path.normpath(os.path.dirname(__file__) + "/logs")
     ('en', 'English'),
     ('ro', 'Romanian'),
 )
@@ -53,6 +53,9 @@ USE_I18N = True
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale
 USE_L10N = True
+
+#Abosute path to the directort that holds .log files
+LOG_ROOT = os.path.normpath(os.path.dirname(__file__) + "/logs")
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
