@@ -71,7 +71,7 @@ function messagingOut() {
             messagingUpdate(res[0], res[1]);
         },
         error: function(data) {
-            $('#to_input').css("color","red")
+            $('#to_input').css("color", "red")
         }
     });
 }
