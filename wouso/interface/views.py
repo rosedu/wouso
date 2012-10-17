@@ -249,14 +249,8 @@ def report(request,id):
             user_from=request.user
             user_to = User.objects.get(pk=id)
             
-            if os.path.isdir(settings.LOG_ROOT):
-                if not os.path.isfile(settings.LOG_ROOT + "/Report.log"):
-                    ReportFile = file(settings.LOG_ROOT + "/Report.log","w")
-                    ReportFile.close()
-            else:
+            if not os.path.isdir(settings.LOG_ROOT):
                 os.mkdir(settings.LOG_ROOT)
-                ReportFile = file(settings.LOG_ROOT + "/Report.log","w")
-                ReportFile.close()
             
             with open(settings.LOG_ROOT + "/Report.log", "a") as ReportFile:
                 ReportFile.write("From: " + user_from.username + " on: " + user_to.username + "\n" + request.POST['message'] + "\n\n")
