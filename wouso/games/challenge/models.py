@@ -1,12 +1,13 @@
+import random
 import logging
 from datetime import datetime, time, timedelta, date
 from random import shuffle
 import pickle as pk
+import sys
 from django.db import models
-from django.db.models import Q, Max
+from django.db.models import Q
 from django.utils.translation import ugettext_noop, ugettext as _
 from django.core.urlresolvers import reverse
-import sys
 from wouso.core.user.models import Player
 from wouso.core.magic.manager import InsufficientAmount
 from wouso.core.qpool.models import Question
@@ -15,6 +16,7 @@ from wouso.core.game.models import Game
 from wouso.core import scoring
 from wouso.core.god import God
 from wouso.interface.activity import signals
+from wouso.interface.apps.messaging.models import Message
 
 
 class ChallengeException(Exception):
@@ -27,7 +29,7 @@ class ChallengeUser(Player):
 
     def is_eligible(self):
         return God.user_is_eligible(self, ChallengeGame)
-
+    
     def can_launch(self):
         """ Check if 1 challenge per day restriction apply
         """
@@ -92,6 +94,17 @@ class ChallengeUser(Player):
             raise ChallengeException('Player cannot launch against this opponent')
 
         return Challenge.create(user_from=self, user_to=destination)
+    
+    def get_all_challenges(self):
+        chall_total = Challenge.objects.exclude(status=u'L').filter(Q(user_from__user=self) | Q(user_to__user=self))
+        return chall_total
+
+    def get_won_challenges(self):
+        return self.get_all_challenges().filter(winner=self)
+
+    def get_lost_challenges(self):
+        return self.get_all_challenges().exclude(winner=self)
+
 
 class Participant(models.Model):
     user = models.ForeignKey(ChallengeUser)
@@ -210,10 +223,12 @@ class Challenge(models.Model):
             signal_msg = ugettext_noop('has refused challenge from {chall_from} (expired)')
         else:
             signal_msg = ugettext_noop('has refused challenge from {chall_from}')
+        action_msg = 'chall-refused'
         signals.addActivity.send(sender=None, user_from=self.user_to.user, \
                                      user_to=self.user_from.user, \
                                      message=signal_msg, \
                                      arguments=dict(chall_from=self.user_from), \
+                                     action=action_msg, \
                                      game=ChallengeGame.get_instance())
         self.save()
         # give warranty back to initiator
@@ -355,7 +370,8 @@ class Challenge(models.Model):
             signals.addActivity.send(sender=None, user_from=self.user_to.user, \
                                      user_to=self.user_from.user, \
                                      message=signal_msg, \
-                                     arguments=dict(user_to=self.user_to, user_from=self.user_from,
+                                     arguments=dict(user_to=self.user_to,
+                                                    user_from=self.user_from,
                                                     extra=self.extraInfo(self.user_from, self.user_to)),\
                                      action=action_msg, \
                                      game=ChallengeGame.get_instance())
@@ -383,6 +399,14 @@ class Challenge(models.Model):
                 different_race=diff_race, different_class=diff_class,
                 winner_points=winner_points, loser_points=loser_points,
             )
+            #Check for spell evade
+            if self.user_lost.user.has_modifier('challenge-evade'):
+                random.seed()
+                if random.random() < 0.33:
+                    #He's lucky,no penalty,return warrany
+                    scoring.score(self.user_lost.user, ChallengeGame, 'chall-warranty-return', external_id=self.id)
+                    Message.send(sender=None, receiver=self.user_lost.user, subject="Challenge evaded", text="You have just evaded losing points in a challenge")
+                          
             scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
                 external_id=self.id, points=self.user_lost.score, points2=self.user_lost.score)
             # send activty signal
@@ -390,7 +414,8 @@ class Challenge(models.Model):
             action_msg = "chall-won"
             signals.addActivity.send(sender=None, user_from=self.user_won.user, \
                                      user_to=self.user_lost.user, \
-                                     message=signal_msg, arguments=dict(user_lost=self.user_lost,
+                                     message=signal_msg,
+                                     arguments=dict(user_lost=self.user_lost, id=self.id,
                                                                         extra=self.extraInfo(self.user_won, self.user_lost)), \
                                      action=action_msg, \
                                      game=ChallengeGame.get_instance())
@@ -558,7 +583,7 @@ class ChallengeGame(Game):
                 'challenge-cannot-challenge', # reject outgoing challenges, negative
                 'challenge-always-lose', # lose regardless the result, negative
                 'challenge-affect-scoring', # affect scoring by positive/negative percent
-                'challenge-affect-scoring-won', #affect scoring by positive/negative percent for win challenges
+
         ]
 
     @classmethod

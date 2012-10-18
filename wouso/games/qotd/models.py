@@ -170,3 +170,8 @@ class QotdGame(Game):
                     return {'success': True, 'correct': answer.correct, 'has_answered': qotduser.has_answered}
 
         return {r'^qotd/today/$': QotdHandler}
+
+    @classmethod
+    def get_modifiers(cls):
+        return ['qotd-blind', #player cannot launch QuestionOfTheDay
+                ]

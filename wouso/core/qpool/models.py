@@ -46,7 +46,7 @@ class Category(models.Model):
 class Question(models.Model):
     """ A question in a qpool has text and a variable number of answers,
     category and tags, proposing and endorsing user.
-    
+
     Dynamic questions also store a validation code, that run against
     the given answer should return True or False if the answer is valid.
     """
@@ -58,9 +58,10 @@ class Question(models.Model):
     category = models.ForeignKey(Category, null=True)
     tags = models.ManyToManyField(Tag, blank=True)
 
-    answer_type = models.CharField(max_length=1, choices=(("R", "single choice"), ("C", "multiple choice")), default="R")
+    answer_type = models.CharField(max_length=1, choices=(("R", "single choice"), ("C", "multiple choice"),
+                                                          ("F", "free text")), default="R")
     # a dynamic question would have its code run before returning it to the caller
-    type = models.CharField(max_length=1, choices=(("S", "static"), ("D", "dynamic"), ("F", "free text")), default="S")
+    type = models.CharField(max_length=1, choices=(("S", "static"), ("D", "dynamic")), default="S")
     code = models.TextField(blank=True, validators=[validate_dynq_code],
                             help_text="Use %text for initial text, %user for the user that sees the question.")
 
@@ -106,7 +107,7 @@ class Question(models.Model):
     def is_valid(self):
         """ At least one answer is required for questions other than free text.
         Also check for one correct answer """
-        if self.type == 'F':
+        if self.answer_type == 'F':
             return bool(self.text)
 
         if not self.answers.count():

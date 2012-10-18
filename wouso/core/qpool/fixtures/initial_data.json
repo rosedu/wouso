@@ -39,7 +39,7 @@
   "model": "qpool.tag",
   "fields": {
    "active": false,
-   "category": null,
+   "category": 4,
    "name": "qotd"
   }
  },
@@ -48,7 +48,7 @@
   "model": "qpool.tag",
   "fields": {
    "active": false,
-   "category": null,
+   "category": 4,
    "name": "challenge"
   }
  },
@@ -57,7 +57,7 @@
   "model": "qpool.tag",
   "fields": {
    "active": false,
-   "category": null,
+   "category": 4,
    "name": "quest"
   }
  }

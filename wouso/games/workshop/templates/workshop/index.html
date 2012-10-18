@@ -5,9 +5,13 @@
 {% block sectiontitle %}{% trans 'Workshop' %}{% endblock %}
 
 {% block sectioncontent %}
+<p>
+    {% trans 'Your semigroup:'%} {{ semigroup }} {{ semigroup.info }}
+</p>
+
 <h4>{% trans 'Current workshop' %}</h4>
 <p>{% if not workshop %}{% trans 'No current workshop' %}{% else %}
-    {% if assesment.answered %}
+    {% if assessment.answered %}
         {% trans 'Already answered' %}
     {% else %}
         {% if workshop.is_active %}
@@ -22,7 +26,7 @@
 
 <h4>{% trans 'Past workshops' %}</h4>
 <ul>
-    {% for a in user.get_profile.assesments.all %}
+    {% for a in user.get_profile.assessments.all %}
         <li>{{ a.workshop }}
             {% if not a.workshop.is_active %}
                 <a href="{% url workshop_review a.workshop.id %}">{% trans 'Your reviews' %}</a>{% endif %}

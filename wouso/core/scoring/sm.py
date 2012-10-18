@@ -19,7 +19,7 @@ class FormulaParsingError(Exception):
         return unicode(self.formula)
 class InvalidScoreCall(Exception): pass
 
-CORE_POINTS = ('points','gold')
+CORE_POINTS = ('points', 'gold', 'penalty')
 
 def check_setup():
     """ Check if the module has been setup """
@@ -29,6 +29,7 @@ def check_setup():
     return True
 
 def setup_scoring():
+
     """ Prepare database for Scoring """
     for cc in CORE_POINTS:
         if not Coin.get(cc):
@@ -117,13 +118,18 @@ def update_points(player, game):
     if level != player.level_no:
         if level < player.level_no:
             signal_msg = ugettext_noop("downgraded to level {level}")
+            signals.addActivity.send(sender=None, user_from=player,
+                                user_to=player, message=signal_msg,
+                                arguments=dict(level=level),
+                                game=game)
         else:
-            signal_msg = ugettext_noop("upgraded to level {level}")
-
-        signals.addActivity.send(sender=None, user_from=player,
-                             user_to=player, message=signal_msg,
-                             arguments=dict(level=level),
-                             game=game)
+            amount = calculate('level-gold', level=level)
+            signal_msg = ugettext_noop("upgraded to level {level} and received {amount} gold")
+            score(player, None, 'level-gold', level=level)
+            signals.addActivity.send(sender=None, user_from=player,
+                                user_to=player, message=signal_msg,
+                                arguments=dict(level=level, amount=amount['gold']),
+                                game=None)
         player.level_no = level
         player.save()
 
@@ -148,6 +154,9 @@ def score_simple(player, coin, amount, game=None, formula=None,
 
     # update user.points asap
     if coin.id == 'points':
+        if player.magic.has_modifier('top-disguise'):
+            computed_amount = 1.0 * computed_amount * player.magic.modifier_percents('top-disguise') / 100
+
         player.points += computed_amount
         player.save()
         update_points(player, game)
@@ -184,13 +193,18 @@ def user_coins(user):
         user = user.user
     return History.user_coins(user)
 
+def real_points(player):
+    coin = Coin.get('points')
+    result = History.objects.filter(user=player.user,coin=coin).aggregate(total=models.Sum('amount'))
+    return result['total'] if result['total'] is not None else 0
+
 def sync_user(player):
     """ Synchronise user points with database
     """
     coin = Coin.get('points')
     result = History.objects.filter(user=player.user,coin=coin).aggregate(total=models.Sum('amount'))
     points = result['total'] if result['total'] is not None else 0
-    if player.points != points:
+    if player.points != points and not player.magic.has_modifier('top-disguise'):
         logging.debug('%s had %d instead of %d points' % (player, player.points, points))
         player.points = points
         player.level_no = God.get_level_for_points(player.points)

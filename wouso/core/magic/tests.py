@@ -155,6 +155,46 @@ class SpellTestCase(WousoTest):
 
         self.assertFalse(player.magic.spells) # There isn't any spell left
 
+    def test_disguise_simple(self):
+        """
+         Test if top-disguise spell works
+        """
+        player = self._get_player()
+        Coin.add('points')
+        scoring.score_simple(player, 'points', 10)
+
+        self.assertEqual(player.points, 10)
+
+        disguise = Spell.objects.create(name='top-disguise', available=True, price=10, percents=50, type='s')
+        player.magic.add_spell(disguise)
+        player.magic.cast_spell(disguise, player, datetime.now() + timedelta(days=1))
+
+        self.assertTrue(player.magic.has_modifier('top-disguise'))
+
+        self.assertEqual(player.points, 15)
+
+    def test_disguise_expire_on_dispell(self):
+        player = self._get_player()
+        Coin.add('points')
+        scoring.score_simple(player, 'points', 10)
+
+        disguise = Spell.objects.create(name='top-disguise', available=True, price=10, percents=50, type='s')
+        player.magic.add_spell(disguise)
+        player.magic.cast_spell(disguise, player, datetime.now() + timedelta(days=1))
+
+        self.assertEqual(player.points, 15)
+
+        dispell = Spell.objects.create(name='dispell', available=True, price=10)
+        player.magic.add_spell(dispell)
+        player.magic.cast_spell(dispell, player)
+
+        self.assertFalse(player.magic.has_modifier('top-disguise'))
+
+        player = Player.objects.get(pk=player.pk)
+
+        self.assertEqual(player.points, 10)
+
+
 class TemplatetagsTest(WousoTest):
     def test_spell_due(self):
         player = self._get_player()

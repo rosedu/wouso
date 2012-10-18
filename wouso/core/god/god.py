@@ -27,7 +27,13 @@ class DefaultGod:
             dict(id='steal-points', formula='points={points}', owner=None,
                 description='Steal points using spells'),
             dict(id='penalty-points', formula='points=-{points}', owner=None,
-                description='Take back points from user')
+                description='Take back points from user'),
+            dict(id='level-gold', formula='gold=10*{level}', owner=None,
+                description='Bonus gold on level upgrade'),
+            dict(id='general-infraction', formula='penalty=10', owner=None,
+                description='Give penalty points to suspicious users'),
+            dict(id='chall-was-set-up-infraction', formula='penalty=20', owner=None,
+                description='Give penalty points for losing a challenge on purpose')
         ]
         return fs
 
@@ -100,6 +106,7 @@ class DefaultGod:
               'curse',  # prevent cast of positive spells, or cure and dispell
               'immunity', # prevent cast of any spells, or cure and dispell
               'steal',  # allow users to steal points, one from another
+              'top-disguise', # allow showing another number of points in top
         ]
         for g in get_games():
             ms.extend(g.get_modifiers())
@@ -174,10 +181,12 @@ class DefaultGod:
 
         if psdue.spell.name == 'dispell':
             for psd in psdue.player.magic.spells:
+                self.post_expire(psd)
                 psd.delete()
             return True
         if psdue.spell.name == 'cure':
             for psd in psdue.player.magic.spells.filter(spell__type='n'):
+                self.post_expire(psd)
                 psd.delete()
             # also delete itself
             psdue.delete()
@@ -186,7 +195,20 @@ class DefaultGod:
             psdue.player.steal_points(psdue.source, psdue.spell.percents)
             psdue.delete()
             return True
+
+        if psdue.spell.name == 'top-disguise':
+            psdue.player.points = 1.0 * psdue.player.points * psdue.player.magic.modifier_percents('top-disguise') / 100
+            psdue.player.save()
         return False
+
+    def post_expire(self, psdue):
+        """
+         Execute an action right before a spell expires
+        """
+        from wouso.core import scoring
+        if psdue.spell.name == 'top-disguise':
+            psdue.player.points = scoring.real_points(psdue.player)
+            psdue.player.save()
 
     def user_is_eligible(self, player, game=None):
         if game is not None:
@@ -220,18 +242,4 @@ class DefaultGod:
                 return False
 
         return True
-        
 
-def spell_cleanup(spell,destination,spell_name):
-    """
-    This function eliminates same type spells with contrary sign +/-
-    """
-    existing = destination.magic.spells.filter(spell__name=spell_name)
-    if existing.count() > 0:
-    # check if a spell with the same sign +/- exists
-        for sp in existing:
-            if (sp.spell.percents * spell.percents) > 0:
-                return False
-    # in order to apply this new spell, cancel existing, sign contrary, spells
-    existing.delete()
-    return True

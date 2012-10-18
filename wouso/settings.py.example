@@ -130,6 +130,7 @@ INSTALLED_APPS = [
     'wouso.core.scoring',
     'wouso.core.qpool',
     'wouso.core.magic',
+    'wouso.core.security',
 
     'wouso.games.qotd',
     'wouso.games.challenge',
@@ -170,6 +171,8 @@ OAUTH_AUTH_VIEW = 'wouso.interface.api.views.oauth_auth_view'
 
 C2DM_AUTH_TOKEN = '' # Change this to a ClientLogin token from Google
 
+API_ENABLED = True
+
 # Conditional installed apps
 import imp
 try:
@@ -179,7 +182,7 @@ except ImportError:
 else:
     INSTALLED_APPS += ['django_nose']
     TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-    NOSE_ARGS = ['--cover-package=wouso']
+    NOSE_ARGS = ['--cover-package=wouso', '--with-xunit']
 
 try:
     imp.find_module('piston')

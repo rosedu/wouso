@@ -1,15 +1,22 @@
 from datetime import datetime, timedelta
 from wouso.core.magic.models import Artifact
 from wouso.core.tests import WousoTest
+from wouso.core import scoring
 from wouso.games.qotd.models import QotdGame
-from wouso.games.challenge.models import ChallengeGame
+from wouso.games.challenge.models import ChallengeGame, ChallengeUser, Challenge
 from wouso.interface.apps.messaging.models import Message, MessagingUser
 from achievements import consecutive_seens
 from achievements import consecutive_qotd_correct
 from achievements import consecutive_chall_won, challenge_count
+from achievements import refused_challenges, get_challenge_time
 from achievements import unique_users_pm , wrong_first_qotd
+from achievements import get_chall_score
+from achievements import check_for_god_mode
 from models import Activity
+from achievements import Achievements
 from . import signals
+from wouso.games.challenge.models import Challenge, ChallengeUser
+from wouso.core import scoring
 
 
 class AchievementTest(WousoTest):
@@ -219,6 +226,49 @@ class ChallengeAchievementTest(WousoTest):
                                      game=ChallengeGame.get_instance())
         self.assertTrue(player.magic.has_modifier('ach-chall-30'))
 
+    def test_defeated_better_player_activity(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-chall-def-big')
+        player1 = self._get_player()
+        player2 = self._get_player(2)
+        player2.level_no = 4
+        player2.save()
+
+        signals.addActivity.send(sender=None, user_from=player1,
+                                    user_to=player2,
+                                    action='chall-won',
+                                    game=ChallengeGame.get_instance())
+        self.assertTrue(player1.magic.has_modifier('ach-chall-def-big'))
+
+    def test_this_is_sparta_correct(self):
+        player = self._get_player()
+        for i in range(1, 7):
+            timestamp = datetime.now() + timedelta(days=-i)
+            a = Activity.objects.create(timestamp=timestamp,
+                user_from=player, user_to=player, action='chall-refused',
+                public=True)
+
+        self.assertEqual(refused_challenges(player), 6)
+
+    def test_this_is_sparta_activity(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-this-is-sparta')
+        player1 = self._get_player()
+        player2 = self._get_player(2)
+        for i in range(1, 7):
+            timestamp = datetime.now() + timedelta(days=-i)
+            if (i % 4) == 0:
+                a = Activity.objects.create(timestamp=timestamp,
+                user_from=player1, user_to=player2, action='chall-refused',
+                public=True)
+            else:
+                a = Activity.objects.create(timestamp=timestamp,
+                user_from=player1, user_to=player2, action='chall-lost',
+                public=True)
+
+        signals.addActivity.send(sender=None, user_from=player1,
+                                    user_to=player2,
+                                    action='chall-refused',
+                                    game=ChallengeGame.get_instance())
+        self.assertTrue(player1.magic.has_modifier('ach-this-is-sparta'))
 
 class PopularityTest(WousoTest):
     def test_popularity_5_pm_1(self):
@@ -277,3 +327,143 @@ class PopularityTest(WousoTest):
                                      action='qotd-wrong',
                                      game=QotdGame.get_instance())
         self.assertTrue(player.magic.has_modifier('ach-bad-start'))
+
+
+class NotificationsTest(WousoTest):
+    def test_ach_notification(self):
+        player = self._get_player()
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-notfication')
+        Achievements.earn_achievement(player, 'ach-notfication')
+        self.assertEqual(len(Message.objects.all()), 1)
+
+
+class FlawlessVictoryTest(WousoTest):
+    def setUp(self):
+        user_from = self._get_player(1)
+        user_to   = self._get_player(2)
+        chall_user1 = user_from.get_extension(ChallengeUser)
+        chall_user2 = user_to.get_extension(ChallengeUser)
+        scoring.setup_scoring()
+        self.chall = Challenge.create(user_from=chall_user1, user_to=chall_user2, ignore_questions=True)
+
+      
+    def test_scorring(self):
+        self.chall.user_from.score = 100
+        self.chall.user_from.save()
+        self.chall.user_to.score = 200
+        self.chall.user_to.save()
+        self.assertEqual(get_chall_score(dict(id=self.chall.id)),200)
+        self.chall.user_from.score = 300
+        self.chall.user_from.save()
+        self.assertEqual(get_chall_score(dict(id=self.chall.id)),300)
+        self.chall.user_to.score = 500
+        self.chall.user_to.save()
+        self.assertEqual(get_chall_score(dict(id=self.chall.id)),500)
+        
+    def test_ach(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-flawless-victory')
+        player=self._get_player()
+        self.chall.user_from.score = 100
+        self.chall.user_from.save()
+        self.chall.user_to.score = 200
+        self.chall.user_to.save()
+        signals.addActivity.send(sender=None, user_from=player, user_to=player, arguments=dict(id=self.chall.id), action="chall-won", game=None)
+        self.assertTrue(not player.magic.has_modifier('ach-flawless-victory'))
+        self.chall.user_from.score = 500
+        self.chall.user_from.save()
+        signals.addActivity.send(sender=None, user_from=player, user_to=player, arguments=dict(id=self.chall.id), action="chall-won", game=None)
+        self.assertTrue(player.magic.has_modifier('ach-flawless-victory'))
+         
+    
+class WinFastTest(WousoTest):
+    def setUp(self):
+        user_from = self._get_player(1)
+        user_to = self._get_player(2)
+        chall_user1 = user_from.get_extension(ChallengeUser)
+        chall_user2 = user_to.get_extension(ChallengeUser)
+        scoring.setup_scoring()
+        self.chall = Challenge.create(user_from=chall_user1, user_to=chall_user2, ignore_questions=True)
+
+    def test_get_time(self):
+        self.chall.user_from.seconds_took = 30
+        self.chall.user_from.score = 500
+        self.chall.user_from.save()
+        self.chall.user_to.seconds_took = 80
+        self.chall.user_to.score = 0
+        self.chall.user_to.save()
+        self.assertEqual(get_challenge_time(dict(id=self.chall.id)), 30)
+
+        self.chall.user_from.seconds_took = 180
+        self.chall.user_from.save()
+        self.chall.user_to.seconds_took = 20
+        self.chall.user_to.save()
+        self.assertEqual(get_challenge_time(dict(id=self.chall.id)), 180)
+
+    def test_ach(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-win-fast')
+        player = self._get_player()
+        self.chall.user_from.seconds_took = 30
+        self.chall.user_from.score = 400
+        self.chall.user_from.save()
+        self.chall.user_to.seconds_took = 80
+        self.chall.user_to.score = 300
+        self.chall.user_to.save()
+        signals.addActivity.send(sender=None, user_from=player,
+                                 user_to=player,
+                                 arguments=dict(id=self.chall.id),
+                                 action="chall-won",
+                                 game = ChallengeGame.get_instance())
+        self.assertTrue(player.magic.has_modifier('ach-win-fast'))
+
+
+class GodModeTest(WousoTest):
+    
+    def test_check_for_god_mode1(self):
+        player=self._get_player()
+        timestamp=datetime.now()
+        for i in range(5):
+            timestamp -= timedelta(days=1)
+            Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-correct')
+        self.assertTrue(check_for_god_mode(player,5,0))
+    
+    def test_check_for_god_mode2(self):
+        player=self._get_player()
+        timestamp=datetime.now()
+        for i in range(5):
+            timestamp -= timedelta(days=1)
+            if i == 3:
+                Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-wrong')
+                continue
+            Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-correct')
+        self.assertFalse(check_for_god_mode(player,5,0))
+        
+    def test_check_for_god_mode3(self):
+        player = self._get_player()
+        player2 = self._get_player(1)
+        timestamp = datetime.now()
+        for i in range(5):
+            timestamp -= timedelta(days=1)
+            Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player2, action='chall-won')
+            Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-correct')
+        self.assertTrue(check_for_god_mode(player,5,5))
+        
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-god-mode-on')
+        signals.addActivity.send(sender=None, user_from=player,
+                                     user_to=player,
+                                     action='seen',
+                                     game=None)
+        self.assertTrue(player.magic.has_modifier('ach-god-mode-on'))
+        
+        
+    
+    def test_check_for_god_mode4(self):
+        player = self._get_player()
+        player2 = self._get_player(1)
+        timestamp = datetime.now()
+        for i in range(5):
+            timestamp -= timedelta(days=1)
+            Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='chall-correct')
+            if i == 3:
+                Activity.objects.create(timestamp=timestamp, user_from=player2, user_to=player, action='chall-won')
+                continue
+        self.assertFalse(check_for_god_mode(player,5,0))

@@ -3,7 +3,9 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from piston import forms
 from piston.models import Consumer
+from wouso.core.decorators import api_enabled_required
 
+@api_enabled_required
 def request_token_ready(request, token):
     """
     It shows an easy-to-copy verifier, needed by consumer in order
@@ -21,6 +23,7 @@ def request_token_ready(request, token):
         context_instance = ctx
     )
 
+@api_enabled_required
 def oauth_auth_view(request, token, callback, params):
     """ This shows the: "Do you want to authorize X on Y?" message
 

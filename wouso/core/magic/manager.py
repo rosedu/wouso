@@ -1,5 +1,6 @@
 from django.db.utils import IntegrityError
 import logging
+from datetime import datetime, timedelta
 
 from wouso.core.god import God
 from wouso.core.magic.models import PlayerSpellDue, PlayerSpellAmount, PlayerArtifactAmount
@@ -28,7 +29,7 @@ class MagicManager(object):
         if PlayerSpellDue.objects.filter(player=self.player).count() > 0:
             return True
         return False
-    
+
     @property
     def artifact_amounts(self):
         return self.player.playerartifactamount_set
@@ -46,7 +47,7 @@ class MagicManager(object):
             except ValueError:
                 pass
         return players
-    
+
     def has_modifier(self, modifier):
         """ Check for an artifact with id = modifier
         or for an active spell cast on me with id = modifier
@@ -159,11 +160,11 @@ class MagicManager(object):
         except (PlayerSpellAmount.DoesNotExist, AssertionError):
             return 'Spell unavailable'
         return None
-    
+
     def basic_cast(self, player_dest, spell, due):
         # Pre-cast God actions: immunity and curse ar done by this
         # check
-        
+
         can_cast, error = God.can_cast(spell=spell, source=self.player, destination=player_dest)
         if not can_cast:
             return error
@@ -179,7 +180,7 @@ class MagicManager(object):
                 psdue = PlayerSpellDue.objects.create(player=player_dest, source=self.player, spell=spell, due=due)
             else:
                 return None
-        
+
         # Post-cast God action (there are specific modifiers, such as clean-spells
         # that are implemented in God
         God.post_cast(psdue)
@@ -204,11 +205,13 @@ class MagicManager(object):
             return ', '.join(errors)
         return None
 
-    def cast_spell(self, spell, source, due):
+    def cast_spell(self, spell, source, due=None):
         """ Cast a spell on this player.
 
         Returns: error message if the spell was not cast, or None
         """
+        if due is None:
+            due = datetime.now() + timedelta(days=spell.due_days)
         error = source.magic._check_spell_available(spell=spell)
         if error:
             return error

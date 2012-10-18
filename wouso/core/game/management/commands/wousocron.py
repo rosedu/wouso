@@ -14,8 +14,9 @@ class Command(BaseCommand):
         apps = get_apps()
 
         for a in apps:
-            self.stdout.write('%s ...\n' % a.name())
-            a.management_task(stdout=self.stdout)
+            if a.management_task:
+                self.stdout.write('%s ...\n' % a.name())
+                a.management_task(stdout=self.stdout)
 
         # Now handle games
         for g in get_games():

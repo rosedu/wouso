@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
 from django.http import Http404, HttpResponseRedirect, HttpResponse
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 
 from wouso.interface import logger, detect_mobile
@@ -34,7 +34,7 @@ def get_wall(page=u'1'):
 def anonymous_homepage(request):
     return render_to_response('splash.html', context_instance=RequestContext(request))
 
-    
+
 def login_view(request):
     user = authenticate(username=request.POST['username'], password=request.POST['password'])
     if user is not None:
@@ -49,11 +49,11 @@ def login_view(request):
             request.session.__setitem__(PREFIX+user.username, datetime.datetime.now())
             request.session.set_expiry(MAX_TIME)
             login(request, user)
-            signals.addActivity.send(sender=None, user_from=user.get_profile(), action="login", game = None)
-            return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
+            signals.addActivity.send(sender=None, user_from=user.get_profile(), action="login", game = None, public=False)
+            return redirect(settings.LOGIN_REDIRECT_URL)
     # Note: if think else it should display the error in the login form TODO
     return HttpResponseRedirect("/")
-    
+
 
 def logout_view(request):
     """
@@ -68,7 +68,7 @@ def logout_view(request):
     for i in data:
         request.session[i] = data[i]
     return HttpResponseRedirect("/")
-    
+
 def hub(request):
     if request.user.is_anonymous():
         return anonymous_homepage(request)

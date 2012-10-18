@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from wouso.core.qpool.models import Question, Answer, Schedule, Category, Tag
 from wouso.core.magic.models import Spell
+from wouso.core.scoring.models import Formula
 
 class QuestionForm(forms.Form):
     text = forms.CharField(max_length=500, widget=forms.Textarea)
@@ -83,12 +84,32 @@ class QuestionForm(forms.Form):
         self.instance.save()
         return self.instance
 
+
+class AnswerForm(forms.Form):
+    def __init__(self, data=None, instance=None):
+        super(AnswerForm, self).__init__(data)
+
+        self.fields['new_answer_text'] = forms.CharField(max_length=100,
+                                        widget=forms.Textarea, required=False)
+        self.fields['new_answer_correct'] = forms.BooleanField(required=False)
+
+    def save(self, id=None):
+        data = self.cleaned_data
+        a = Answer.objects.create(question=id)
+        a.text = data['new_answer_text']
+        a.correct = data['new_answer_correct']
+        a.save()
+
 class TagsForm(forms.Form):
     def __init__(self, data=None, instance=None, tags=[]):
         super(TagsForm, self).__init__(data)
 
         for tag in tags:
             self.fields['%s' % tag.name] = forms.BooleanField(initial=tag.active, required=True)
+
+class AddTagForm(forms.ModelForm):
+    class Meta:
+        model = Tag
 
 class UserForm(forms.ModelForm):
     class Meta:
@@ -98,4 +119,8 @@ class UserForm(forms.ModelForm):
 class SpellForm(forms.ModelForm):
     class Meta:
         model = Spell
+
+class FormulaForm(forms.ModelForm):
+    class Meta:
+        model = Formula
 

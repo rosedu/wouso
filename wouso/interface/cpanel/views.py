@@ -11,26 +11,28 @@ from django.template import RequestContext
 from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_noop
+from django.contrib.auth.models import User
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
-from wouso.core.qpool.models import Schedule, Question, Tag, Category
+from wouso.core.qpool.models import Schedule, Question, Tag, Category, Answer
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
 from wouso.core import scoring
+from wouso.core.scoring.models import Formula
 from wouso.interface.activity.signals import addActivity
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
-from forms import QuestionForm, TagsForm, UserForm, SpellForm
-from django.contrib.auth.models import User
-
+from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, AnswerForm
+from forms import FormulaForm
 
 @staff_required
 def dashboard(request):
     from wouso.games.quest.models import Quest, QuestGame
     from django import get_version
     from wouso.settings import WOUSO_VERSION
+    from wouso.core.config.models import Setting
 
     future_questions = Schedule.objects.filter(day__gte=datetime.datetime.now())
     nr_future_questions = len(future_questions)
@@ -46,6 +48,11 @@ def dashboard(request):
     # admins
     staff_group, new = auth.Group.objects.get_or_create(name='Staff')
 
+    # wousocron last_run
+    last_run = Setting.get('wousocron_lastrun').get_value()
+    if last_run == "":
+        last_run="wousocron was never runned"
+
     return render_to_response('cpanel/index.html',
                               {'nr_future_questions' : nr_future_questions,
                                'nr_questions' : nr_questions,
@@ -56,7 +63,51 @@ def dashboard(request):
                                'django_version': get_version(),
                                'wouso_version': WOUSO_VERSION,
                                'staff': staff_group,
+                               'last_run': last_run,
                                },
+                              context_instance=RequestContext(request))
+
+def formulas(request):
+    formulas = Formula.objects.all()
+    return render_to_response('cpanel/formulas_home.html',
+                              {'formulas': formulas
+                              },
+                              context_instance=RequestContext(request))
+
+def edit_formula(request, id):
+    formula = get_object_or_404(Formula, pk=id)
+    if request.method == "POST":
+        form = FormulaForm(data=request.POST, instance=formula)
+        if form.is_valid():
+            form.save()
+            return redirect('formulas')
+    else:
+        form = FormulaForm(instance=formula)
+    return render_to_response('cpanel/edit_formula.html', 
+                              {'form': form}, 
+                              context_instance = RequestContext(request))
+
+@permission_required('config.change_setting')
+def formula_delete(request, id):
+    formula = get_object_or_404(Formula, pk=id)
+    formula.delete()
+    go_back = request.META.get('HTTP_REFERER', None)
+    if not go_back:
+        go_back = reverse('wouso.interface.cpanel.views.formulas')
+    return HttpResponseRedirect(go_back)
+
+@permission_required('config.change_setting')
+def add_formula(request):
+    form = FormulaForm()
+    if request.method == "POST":
+        formula=FormulaForm(data = request.POST)
+        if formula.is_valid():
+            formula.save()
+            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.formulas'))
+        else:
+            form = formula
+    return render_to_response('cpanel/add_formula.html', 
+                              {'form': form}, 
                               context_instance=RequestContext(request))
 
 def spells(request):
@@ -232,11 +283,38 @@ def qpool_home(request, cat='qotd', page=u'1', tag=None):
 def qpool_new(request, cat=None):
     form = QuestionForm()
     categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
+    if request.method == "POST":
+        question = QuestionForm(data = request.POST)
+        if question.is_valid():
+            newq = question.save()
+            return redirect('qpool_home', cat=newq.category.name)
+        else:
+            form = question
 
     return render_to_response('cpanel/qpool_new.html',
             {'form': form,
              'module': 'qpool',
-             'categs':categs},
+             'categs': categs},
+            context_instance=RequestContext(request)
+    )
+
+
+@permission_required('config.change_setting')
+def qpool_add_answer(request, id):
+    form = AnswerForm()
+    question = get_object_or_404(Question, pk=id)
+    if request.method == 'POST':
+        answer = AnswerForm(request.POST, instance=question)
+        if answer.is_valid():
+            answer.save(id=question)
+            return redirect('question_edit', id=question.id)
+        else:
+            form = answer
+
+    return render_to_response('cpanel/add_answer.html',
+            {'form': form,
+             'question': question,
+             'module': 'qpool'},
             context_instance=RequestContext(request)
     )
 
@@ -257,7 +335,7 @@ def qpool_edit(request, id=None):
             if newq.endorsed_by is None:
                 newq.endorsed_by = request.user
                 newq.save()
-            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.qpool_home', args = (newq.category.name,)))
+            return redirect('qpool_home', cat = newq.category.name)
         else:
             print "nevalid"
     else:
@@ -333,6 +411,15 @@ def qpool_delete(request, id):
         go_back = reverse('wouso.interface.cpanel.views.qpool_home')
 
     return HttpResponseRedirect(go_back)
+
+
+@permission_required('config.change_setting')
+def qpool_delete_answer(request, question_id, answer_id):
+    answer = get_object_or_404(Answer, pk=answer_id)
+
+    answer.delete()
+
+    return redirect('question_edit', id=question_id)
 
 
 @permission_required('config.change_setting')
@@ -440,6 +527,43 @@ def qpool_managetags(request):
                             {'tags': tags},
                             context_instance=RequestContext(request)
     )
+
+
+@permission_required('config.change_setting')
+def qpool_add_tag(request):
+    form = AddTagForm()
+    if request.method == "POST":
+        tag = AddTagForm(data = request.POST)
+        if tag.is_valid():
+            tag.save()
+            return redirect('qpool_manage_tags')
+        else:
+            form = tag
+    return render_to_response('cpanel/qpool_add_tag.html',
+            {'form': form},
+            context_instance=RequestContext(request))
+
+
+@permission_required('config.change_setting')
+def qpool_edit_tag(request, tag):
+    tag_obj = get_object_or_404(Tag, pk=tag)
+    if request.method == "POST":
+        form = AddTagForm(data = request.POST, instance = tag_obj)
+        if form.is_valid():
+            form.save()
+            return redirect('qpool_manage_tags')
+    else:
+        form = AddTagForm(instance=tag_obj)
+    return render_to_response('cpanel/qpool_edit_tag.html', {'form':form, 'tags': tag_obj}, context_instance=RequestContext(request))
+
+
+@permission_required('config.change_setting')
+def qpool_delete_tag(request, tag):
+    tag_obj = get_object_or_404(Tag, pk=tag)
+
+    tag_obj.delete()
+
+    return redirect('qpool_manage_tags')
 
 
 @permission_required('config.change_setting')

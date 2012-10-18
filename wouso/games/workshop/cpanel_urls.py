@@ -12,9 +12,13 @@ urlpatterns = patterns('wouso.games.workshop.cpanel',
     url(r'^schedule/edit/(?P<schedule>\d+)/$', 'schedule_change', name='ws_schedule_change'),
 
     url(r'^workshops/$', 'workshops', name='ws_workshops'),
+    url(r'^workshops/add/$', 'workshop_add', name='ws_add_workshop'),
+    url(r'^workshops/edit/(?P<workshop>\d+)/$', 'workshop_edit', name='ws_edit_workshop'),
+    url(r'^workshops/start/(?P<workshop>\d+)/$', 'workshop_start', name='ws_start'),
+    url(r'^workshops/stop/(?P<workshop>\d+)/$', 'workshop_stop', name='ws_stop'),
     url(r'^workshops/rev/(?P<workshop>\d+)/$', 'workshop_mark4review', name='ws_mark_for_review'),
     url(r'^workshops/grd/(?P<workshop>\d+)/$', 'workshop_mark4grading', name='ws_mark_for_grading'),
     url(r'^workshops/map/(?P<workshop>\d+)/$', 'workshop_reviewers', name='ws_reviewers_map'),
 
-    url(r'^grade/assesment/(?P<assesment>\d+)/$', 'workshop_grade_assesment', name='ws_grade_assesment'),
+    url(r'^grade/assessment/(?P<assessment>\d+)/$', 'workshop_grade_assessment', name='ws_grade_assessment'),
 )

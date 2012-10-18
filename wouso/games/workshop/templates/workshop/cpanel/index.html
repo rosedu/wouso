@@ -2,7 +2,7 @@
 {% load workshop %}
 
 {% block scripts %}
-<link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
+<link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
 {% endblock %}
 
 {% block sectiontitle %}Workshop{% endblock %}
@@ -26,7 +26,7 @@
             {% if info %}
         <p>
         Current spot: {{ info.get_spot }}<br/>
-        Current group: {{ info.get_semigroup }}<br/>
+        Current group: {{ info.get_semigroup|join:", " }}<br/>
         Current qpool: {{ info.get_question_pool.count }}<br/>
         </p>{% endif %}
         {% endblock %}
@@ -47,7 +47,7 @@
                 {% for d in days %}
                     <td>
                         {% get_schedule d.0 h %}
-                        <a href="{% url ws_edit_spot d.0 h %}">✍</a>
+                        <a href="{% url ws_edit_spot d.0 h %}">[✍]</a>
                     </td>
                 {% endfor %}
             </tr>
@@ -57,6 +57,8 @@
 
         <a class="button" href="{% url ws_add_group %}">Add semigroup</a>
         <a class="button" href="{% url ws_edit_spot 0 0 %}">Default (testing)</a>
+        <br/>
+        <a class="button" href="{% url ws_add_workshop %}"><strong>Add workshop</strong></a>
         {% endblock %}
     </div>
 </div>

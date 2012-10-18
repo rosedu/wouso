@@ -1,8 +1,8 @@
 {% extends base_template %}
 {% load i18n %}
 {% block scripts %}
-    <script type="text/javascript" src="/static/js/tabs.js"></script>
-    <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
+    <script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
 {% endblock %}
 
 {% block title %}{% trans 'Messaging' %}{% endblock %}
@@ -31,7 +31,7 @@
             </tr>
             {% for msg in messages_rec %}
                 <tr>
-                    <td>{{msg.sender}}</td>
+                    <td>{% if msg.sender %}{{msg.sender}}{% else %}{% trans 'System' %}{% endif %}</td>
                     <td>{{msg.receiver}}</td>
                     <td>{{msg.subject}}</td>
                 </tr>
@@ -49,7 +49,7 @@
             </tr>
             {% for msg in messages_sent %}
                 <tr>
-                    <td>{{msg.sender}}</td>
+                    <td>{% if msg.sender %}{{msg.sender}}{% else %}{% trans 'System' %}{% endif %}</td>
                     <td>{{msg.receiver}}</td>
                     <td>{{msg.subject}}</td>
                 </tr>
@@ -67,7 +67,7 @@
             </tr>
             {% for msg in messages_all %}
                 <tr>
-                    <td>{{msg.sender}}</td>
+                    <td>{% if msg.sender %}{{msg.sender}}{% else %}{% trans 'System' %}{% endif %}</td>
                     <td>{{msg.receiver}}</td>
                     <td>{{msg.subject}}</td>
                 </tr>

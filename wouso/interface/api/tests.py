@@ -3,6 +3,23 @@ from django.contrib.auth.models import User
 from django.test.testcases import TestCase
 from wouso.core.magic.models import Spell, ArtifactGroup
 from wouso.core.scoring.models import Formula, Coin
+import settings
+
+class DisableAPI(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(username='test')
+        self.user.set_password('test')
+        self.client.login(username='test', password='test')
+
+    def test_enabled(self):
+        settings.API_ENABLED = True
+        response = self.client.get('/request_token')
+        self.assertTrue(response.status_code, 200)
+
+    def test_disabled(self):
+        settings.API_ENABLED = False
+        response = self.client.get('/request_token')
+        self.assertTrue(response.status_code, 404)
 
 class BazaarApi(TestCase):
     def setUp(self):

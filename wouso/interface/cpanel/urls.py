@@ -8,8 +8,10 @@ upat = [
     url(r'^qpool/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
     url(r'^qpool/(?P<page>\d+)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
     url(r'^qpool/tag_questions/$', 'wouso.interface.cpanel.views.qpool_tag_questions', name='tag_questions'),
+    url(r'^qpool/edit/(?P<id>\d+)/add_answer', 'wouso.interface.cpanel.views.qpool_add_answer', name='add_answer'),
     url(r'^qpool/edit/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.qpool_edit', name='question_edit'),
     url(r'^qpool/del/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.qpool_delete', name='question_del'),
+    url(r'^qpool/del/(?P<question_id>\d+)/(?P<answer_id>\d+)/$', 'wouso.interface.cpanel.views.qpool_delete_answer', name='answer_del'),
     url(r'^qpool/set_active_categories', 'wouso.interface.cpanel.views.qpool_set_active_categories', name='set_active_categories'),
     url(r'^qpool/new/$', 'wouso.interface.cpanel.views.qpool_edit', name='question_new'),
     url(r'^qpool/switch_active/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.question_switch', name='switch_active'),
@@ -22,6 +24,9 @@ upat = [
     url(r'^qpool/cat/(?P<cat>\w+)/tag=(?P<tag>\d+)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
     url(r'^qpool/qpool_remove_all/(?P<cat>\w+)/$', 'wouso.interface.cpanel.views.qpool_remove_all', name='remove_all'),
     url(r'^qpool/manage_tags/$', 'wouso.interface.cpanel.views.qpool_managetags', name='qpool_manage_tags'),
+    url(r'^qpool/newtag/$','wouso.interface.cpanel.views.qpool_add_tag', name='qpool_add_tag'),
+    url(r'^qpool/edit_tag/(?P<tag>\d+)/$', 'wouso.interface.cpanel.views.qpool_edit_tag', name='qpool_edit_tag'),
+    url(r'^qpool/del_tag/(?P<tag>\d+)/$', 'wouso.interface.cpanel.views.qpool_delete_tag', name='qpool_del_tag'),
     url(r'^qpool/set_tag/$', 'wouso.interface.cpanel.views.qpool_settag', name='qpool_set_tag'),
 
 
@@ -36,6 +41,11 @@ upat = [
     url(r'^edit_spell/(?P<id>\d+)$','wouso.interface.cpanel.views.edit_spell',name='edit_spell'),
     url(r'^add_spell/$', 'wouso.interface.cpanel.views.add_spell',name='add_spell'),
     url(r'^spells/del/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.spell_delete', name='spell_dell'),
+
+    url(r'^formulas/$','wouso.interface.cpanel.views.formulas',name='formulas'),
+    url(r'^edit_formula/(?P<id>(-|[a-z]|[A-Z])+)/$','wouso.interface.cpanel.views.edit_formula',name='edit_formula'),
+    url(r'^formulas/del/(?P<id>(-|[a-z]|[A-Z])+)/$','wouso.interface.cpanel.views.formula_delete',name='formula_del'),
+    url(r'^add_formula/$','wouso.interface.cpanel.views.add_formula',name='add_formula'),
 
     url(r'^group/set/(?P<id>\d*)/$', 'wouso.interface.cpanel.views.groupset', name='group_set'),
     url(r'^staff/toggle/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.stafftoggle', name='staff_toggle'),

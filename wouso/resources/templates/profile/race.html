@@ -5,9 +5,9 @@
 
 {% block title %}{{ race }}{% endblock %}
 {% block scripts %}
-    <script type="text/javascript" src="/static/js/tabs.js"></script>
-    <script type="text/javascript" src="/static/js/jquery.flot.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
+    <script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
+    <script type="text/javascript" src="{{ basepath }}/static/js/jquery.flot.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
 {% endblock %}
 
 {% block content %}
@@ -41,8 +41,8 @@
         <div id="tab-1" class="tab_content">
         <div class="subgroups">
         {% if race.children %}
-        <h4>{% trans 'Top subraces' %}</h4>
-        <ol class="top">{% for g in race.children %}
+        <h4>{% trans 'Top groups' %}</h4>
+        <ol class="top">{% for g in children %}
             <li>{% player_group g %} <span class="points">{{ g.live_points }}</span></li>
             {% endfor %}
         </ol>

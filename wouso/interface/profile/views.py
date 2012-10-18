@@ -4,15 +4,13 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core import serializers
 from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
-from django.core.urlresolvers import reverse
-from django.db.models import Q
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.scoring.models import History
 from wouso.core.magic.models import Spell, PlayerSpellDue
 from wouso.interface.activity.models import Activity
-from wouso.interface.top.models import TopUser, GroupHistory
+from wouso.interface.top.models import TopUser, GroupHistory, NewHistory
 from wouso.core.game import get_games
 
 
@@ -33,13 +31,13 @@ def set_profile(request):
 
 @login_required
 def save_profile(request):
-
+    # TODO: clean this mess
     user = request.user.get_profile()
     data = request.REQUEST
 
     try:
         Player.objects.exclude(nickname = user.nickname).get(nickname = data['nickname'])
-        print "exista!"
+        #print "exista!"
         return HttpResponseBadRequest()
     except:
         user.nickname = data['nickname']
@@ -57,6 +55,7 @@ def user_profile(request, id, page=u'1'):
     except Player.DoesNotExist:
         raise Http404
 
+    # TODO: parca exista o functie in core pentru gravatar
     avatar = "http://www.gravatar.com/avatar/%s.jpg?d=monsterid"\
         % md5(profile.user.email).hexdigest()
     activity_list = Activity.get_player_activity(profile)
@@ -112,7 +111,7 @@ def player_group(request, id, page=u'1'):
     top_users = group.players.all().order_by('-points')
     subgroups = group.children
     if group.parent:
-        sistergroups = group.parent.children.all().order_by('-points')
+        sistergroups = NewHistory.get_children_top(group.parent, PlayerGroup)
     else:
         sistergroups = None
     history = GroupHistory(group)
@@ -142,12 +141,15 @@ def player_race(request, race_id):
     race = get_object_or_404(Race, pk=race_id)
 
     top_users = race.player_set.order_by('-points')
-    activity_qs = Activity.get_race_activiy(race)
+    activity_qs = Activity.get_race_activity(race)
     paginator = Paginator(activity_qs, 20)
     activity = paginator.page(1)
 
+    groups = NewHistory.get_children_top(race, PlayerGroup)
+
     return render_to_response('profile/race.html',
                             {'race': race,
+                             'children': groups,
                              'top_users': top_users,
                              'activity': activity},
                             context_instance=RequestContext(request)

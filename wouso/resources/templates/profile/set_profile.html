@@ -5,27 +5,32 @@
 
 {% block title %}{{ profile }}{% endblock %}
 {% block scripts %}
-<script type="text/javascript" src="/static/js/tabs.js"></script>
-<script type="text/javascript" src="/static/js/jquery.flot.min.js"></script>
-<script type="text/javascript" src="/static/js/profile_setting.js"></script>
-<link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
+<script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
+<script type="text/javascript" src="{{ basepath }}/static/js/jquery.flot.min.js"></script>
+<script type="text/javascript" src="{{ basepath }}/static/js/profile_setting.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
 {% endblock %}
 
 {% block content %}
     </br>
     </br>
-    <table>
+    <table align="right">
         <tr>
             <td>Nick-Name:</td>
-            <td><input type="text" id="Nick_Name" value="{{profile.nickname}}" maxlength="20" size="20"></td>
+            <td align="left"><input type="text" id="Nick_Name" value="{{profile.nickname}}" maxlength="20" size="20"></td>
         </tr>
         <tr>
-            <td>First-Name:</td>
-            <td><input type="text" id="First_Name" value="{{profile.user.first_name}}" maxlength="25" size="20"></td>
+            <td width="100px">First-Name:</td>
+            <td align="left"><input type="text" id="First_Name" value="{{profile.user.first_name}}" maxlength="25" size="20"></td>
+        </tr>
+        <tr>
+            <td><br></td>
         </tr>
         <tr>
             <td>Description:</td>
-            <td><textarea id="Description" style="width: 500px; height: 200px ">{{profile.description}}</textarea></td>
+        </tr>
+        <tr>
+            <td colspan="2"><textarea id="Description" style="width: 690px; height: 200px; display:block; resize:none">{{profile.description}}</textarea></td>
         </tr>
         <tr>
             <td><input type="submit" class="default" value="Save" onclick="save_changes()"></td>

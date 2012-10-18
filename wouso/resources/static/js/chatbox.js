@@ -3,7 +3,13 @@ var selectID = null;
 var UserName = null;
 var NewUserTimer = null;
 var SendPingTimer = null;
+var TimeOut = null;
 var title;
+var timeStamp = null;
+var keepAlive = null;
+var oneMinute = 60000;
+
+var url_base = '';
 
 /* Private chat staff */
 var firstFreeChat;
@@ -15,6 +21,7 @@ if(sessionStorage.firstFreeChat){
     max_room = 1;
     max_boxes = parseInt(sessionStorage.max_boxes);
     private_users = JSON.parse(sessionStorage.private_users);
+    keepAlive = parseInt(sessionStorage.keepAlive);
 }
 else{
     firstFreeChat = 1;
@@ -22,6 +29,8 @@ else{
     max_boxes = 5;
     private_users = [];
     private_users[0] = new Private('global', 0, "", null);
+    keepAlive = 1000;
+    sessionStorage.keepAlive = keepAlive;
     sessionStorage.firstFreeChat = firstFreeChat;
     sessionStorage.max_room = max_room;
     sessionStorage.max_boxes = max_boxes;
@@ -41,7 +50,7 @@ var emoticons = {
     '\\(ball\\)':'sport_soccer.png'
 };
 
-var img_dir = "/static/img/";
+var img_dir = "/static/img/"; // TODO: fixme, use base_url
 function replace_emoticons(text) {
     $.each(emoticons, function (character, img) {
         var re = new RegExp(character, 'g');
@@ -211,8 +220,8 @@ $(document).ready(function () {
         var input = $(name).val();
         if (input) {
             AddToHist(input);
-            var msgdata = {'opcode':'message', 'msg':input, 'room':private_users[id].room_id};
-            var args = {type:"POST", url:"/chat/chat_m/", data:msgdata, complete:ReceiveMessage};
+            var msgdata = {'opcode':'message', 'msg':input, 'room':private_users[id].room_id, 'time': timeStamp};
+            var args = {type:"POST", url:url_base + "/chat/chat_m/", data:msgdata, complete:ReceiveMessage};
             $.ajax(args);
             $(name).val("");
         }
@@ -222,7 +231,7 @@ $(document).ready(function () {
     /* Give old log to the players when they ask. */
     function give_me_old_log(id) {
         var msgdata = {'room':private_users[id].room_id, 'number':private_users[id].log_number};
-        var args = {type:"POST", url:"/chat/privateLog/", data:msgdata, complete:PrintOnTextArea};
+        var args = {type:"POST", url:url_base + "/chat/privateLog/", data:msgdata, complete:PrintOnTextArea};
         $.ajax(args);
         return false;
     }
@@ -306,12 +315,17 @@ $(document).ready(function () {
             if (event.keyCode == 13) {
                 SendMessage(id);
             }
+            if (event.keyCode == 27){
+                switch_windows(id);
+            }
             if (event.keyCode == 9){
                 var next;
                 if(firstFreeChat > max_boxes)
-                    next = id % max_boxes + 1 ;
-                else
+                    next = id % max_boxes + 1;
+                else{
                     next = (id + 1) % firstFreeChat;
+                    if(next == 0) next = 1
+                }
                 $("#PrivateboxTextBox" + next).focus();
                 return false;
             }
@@ -333,20 +347,20 @@ $(document).ready(function () {
 
     /* profile button */
     $("#GlobalboxProfileButton").click(function () {
-        window.location = "/player/" + selectID + "/";
+        window.location = url_base + "/player/" + selectID + "/";
     });
 
     /* write a messaje button */
     $("#GlobalboxMesajeButton").click(function () {
-        window.location = "/m/create/to=" + selectID;
+        window.location = url_base + "/m/create/to=" + selectID;
     });
 
     $("#GlobalboxSpellButton").click(function (){
-        window.location = "/player/cast/to-" + selectID;
+        window.location = url_base + "/player/cast/to-" + selectID;
     });
 
     $("#GlobalboxChallengeButton").click(function (){
-        window.location = "/g/challenge/launch/" + selectID;
+        window.location = url_base + "/g/challenge/launch/" + selectID;
     });
 
     var sw = 0;
@@ -367,8 +381,8 @@ $(document).ready(function () {
 
     $("#GlobalboxChatButton").click(function () {
         var sendID = (selectID_over != null)? selectID_over: selectID;
-        var msgdata = {'opcode':'getRoom', 'from':myID, 'to':sendID};
-        var args = {type:"POST", url:"/chat/chat_m/", data:msgdata, complete:create_chat_box};
+        var msgdata = {'opcode':'getRoom', 'from':myID, 'to':sendID, 'time': timeStamp};
+        var args = {type:"POST", url:url_base + "/chat/chat_m/", data:msgdata, complete:create_chat_box};
         $.ajax(args);
         $("#Contactbox").hide();
     });
@@ -416,7 +430,7 @@ $(document).ready(function () {
 
     /* Update users list */
     function NewUsers() {
-        $.get('/chat/last/', function (data) {
+        $.get(url_base + '/chat/last/', function (data) {
             $('#GlobalboxUserList').html(data);
             if (selectID) {
                 $('#cl_' + selectID).attr('style', 'font-weight: bold;background-color:#ffffff;');
@@ -434,7 +448,7 @@ $(document).ready(function () {
 
     /* Last 50 messages that was write in global chat.*/
     function NewLog() {
-        $.get('/chat/log/', function (data) {
+        $.get(url_base + '/chat/log/', function (data) {
             $('#GlobalboxTextArea').html(replace_emoticons(data));
             $(document).ready(AutoScroll);
         });
@@ -442,8 +456,9 @@ $(document).ready(function () {
 
     /* See if I got new message */
     function SendPing() {
-        var mdata = {'opcode':'keepAlive'};
-        var args = {type:'POST', url:'/chat/chat_m/', data:mdata, complete:ReceiveMessage};
+
+        var mdata = {'opcode':'keepAlive', 'time': timeStamp};
+        var args = {type:'POST', url:url_base + '/chat/chat_m/', data:mdata, complete:ReceiveMessage};
         $.ajax(args);
     }
 
@@ -474,9 +489,19 @@ $(document).ready(function () {
     $(document).ready(NewUsers);
     $(document).ready(NewLog);
     $(document).ready(SendPing);
-    SendPingTimer = setInterval(function(){SendPing();}, 1000);
-    NewUserTimer = setInterval(function(){NewUsers();}, 6000);
+    SendPingTimer = setInterval(function(){SendPing();}, keepAlive);
+    NewUserTimer = setInterval(function(){NewUsers();}, 10000);
     InitialChat();
+
+    function SetTimeForKeepAlive(time){
+        clearInterval(SendPingTimer);
+        keepAlive = time;
+        sessionStorage.keepAlive = keepAlive;
+        SendPingTimer = setInterval(function(){SendPing();}, keepAlive);
+
+    }
+
+    TimeOut = setTimeout(function(){SetTimeForKeepAlive(5000)}, oneMinute);
 
     /* Give room id or next free chat.*/
     function GetRoom(room) {
@@ -493,15 +518,16 @@ $(document).ready(function () {
             if (!obj)
                 return false;
             var i;
+            timeStamp = obj.time;
             for (i = 0; i < obj.count; ++i) {
                 if(obj.msgs[i].mess_type == 'special' && obj.msgs[i].comand == 'block-communication'){
                     clearInterval(NewUserTimer);
                     clearInterval(SendPingTimer);
-                    if(window.location.pathname == "/chat/")
-                        window.location = "/"
+                    if(window.location.pathname == url_base + "/chat/")
+                        window.location = url_base + "/"
                 }
-                else if(obj.msgs[i].mess_type == 'special' && obj.msgs[i].comand == 'kick' && window.location.pathname == '/chat/'){
-                    window.location = "/";
+                else if(obj.msgs[i].mess_type == 'special' && obj.msgs[i].comand == 'kick' && window.location.pathname == url_base + '/chat/'){
+                    window.location = url_base + "/";
                 }
                 else if(obj.msgs[i].user == myName && obj.msgs[i].mess_type == 'special')
                     continue;
@@ -512,8 +538,16 @@ $(document).ready(function () {
                 else if (obj.msgs[i].room == 'global') {
                     $('#GlobalboxTextArea').append(obj.msgs[i].time + obj.msgs[i].user + ": " + replace_emoticons(obj.msgs[i].text) + "<br />");
                     AutoScroll();
+                    if(window.location.pathname == url_base + '/chat/'){
+                        clearTimeout(TimeOut);
+                        SetTimeForKeepAlive(1000);
+                        TimeOut = setTimeout(function(){SetTimeForKeepAlive(5000)}, oneMinute);
+                    }
                 }
                 else {
+                    clearTimeout(TimeOut);
+                    SetTimeForKeepAlive(1000);
+                    TimeOut = setTimeout(function(){SetTimeForKeepAlive(5000)}, oneMinute);
                     var room = GetRoom(obj.msgs[i].room);
                     if(room == firstFreeChat){
                         firstFreeChat++;
@@ -629,17 +663,17 @@ $(document).ready(function () {
     });
 
     $("#ContactboxProfileButton").click(function(){
-        window.location = "/player/" + selectID_over + "/";
+        window.location = url_base + "/player/" + selectID_over + "/";
     });
 
     $("#ContactboxMesajeButton").click(function(){
-        window.location = "/m/create/to=" + selectID_over;
+        window.location = url_base + "/m/create/to=" + selectID_over;
     });
 
     $("#ContactboxChatButton").click(function(){
         var sendID = (selectID_over != null)? selectID_over: selectID;
-        var msgdata = {'opcode':'getRoom', 'from':myID, 'to':sendID};
-        var args = {type:"POST", url:"/chat/chat_m/", data:msgdata, complete:create_chat_box};
+        var msgdata = {'opcode':'getRoom', 'from':myID, 'to':sendID, 'time': timeStamp};
+        var args = {type:"POST", url:url_base + "/chat/chat_m/", data:msgdata, complete:create_chat_box};
         $.ajax(args);
         $("#Contactbox").hide();
 
