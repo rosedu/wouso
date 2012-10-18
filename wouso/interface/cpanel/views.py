@@ -11,6 +11,7 @@ from django.template import RequestContext
 from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_noop
+from django.contrib.auth.models import User
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
@@ -18,13 +19,13 @@ from wouso.core.qpool.models import Schedule, Question, Tag, Category, Answer
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
 from wouso.core import scoring
+from wouso.core.scoring.models import Formula
 from wouso.interface.activity.signals import addActivity
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, AnswerForm
-from django.contrib.auth.models import User
-
+from forms import FormulaForm
 
 @staff_required
 def dashboard(request):
@@ -57,6 +58,49 @@ def dashboard(request):
                                'wouso_version': WOUSO_VERSION,
                                'staff': staff_group,
                                },
+                              context_instance=RequestContext(request))
+
+def formulas(request):
+    formulas = Formula.objects.all()
+    return render_to_response('cpanel/formulas_home.html',
+                              {'formulas': formulas
+                              },
+                              context_instance=RequestContext(request))
+
+def edit_formula(request, id):
+    formula = get_object_or_404(Formula, pk=id)
+    if request.method == "POST":
+        form = FormulaForm(data=request.POST, instance=formula)
+        if form.is_valid():
+            form.save()
+            return redirect('formulas')
+    else:
+        form = FormulaForm(instance=formula)
+    return render_to_response('cpanel/edit_formula.html', 
+                              {'form': form}, 
+                              context_instance = RequestContext(request))
+
+@permission_required('config.change_setting')
+def formula_delete(request, id):
+    formula = get_object_or_404(Formula, pk=id)
+    formula.delete()
+    go_back = request.META.get('HTTP_REFERER', None)
+    if not go_back:
+        go_back = reverse('wouso.interface.cpanel.views.formulas')
+    return HttpResponseRedirect(go_back)
+
+@permission_required('config.change_setting')
+def add_formula(request):
+    form = FormulaForm()
+    if request.method == "POST":
+        formula=FormulaForm(data = request.POST)
+        if formula.is_valid():
+            formula.save()
+            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.formulas'))
+        else:
+            form = formula
+    return render_to_response('cpanel/add_formula.html', 
+                              {'form': form}, 
                               context_instance=RequestContext(request))
 
 def spells(request):

@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from wouso.core.qpool.models import Question, Answer, Schedule, Category, Tag
 from wouso.core.magic.models import Spell
+from wouso.core.scoring.models import Formula
 
 class QuestionForm(forms.Form):
     text = forms.CharField(max_length=500, widget=forms.Textarea)
@@ -118,4 +119,8 @@ class UserForm(forms.ModelForm):
 class SpellForm(forms.ModelForm):
     class Meta:
         model = Spell
+
+class FormulaForm(forms.ModelForm):
+    class Meta:
+        model = Formula
 
