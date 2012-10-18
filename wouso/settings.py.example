@@ -39,7 +39,7 @@ TIME_ZONE = 'Europe/Bucharest'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
 
-LANGUAGES = (LOG_ROOT = os.path.normpath(os.path.dirname(__file__) + "/logs")
+LANGUAGES = (
     ('en', 'English'),
     ('ro', 'Romanian'),
 )
