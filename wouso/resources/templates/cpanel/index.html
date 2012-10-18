@@ -46,6 +46,7 @@
 <h3>Information</h3>
     <p>Django version: {{ django_version }}</p>
     <p>WoUSO version: {{ wouso_version }}</p>
+    <p>WoUSOcron last run: {{ last_run }}</p>
 <h4>Staff</h4>
     {% for u in staff.user_set.all %}
     {% player_simple u.get_profile %}

@@ -32,6 +32,7 @@ def dashboard(request):
     from wouso.games.quest.models import Quest, QuestGame
     from django import get_version
     from wouso.settings import WOUSO_VERSION
+    from wouso.core.config.models import Setting
 
     future_questions = Schedule.objects.filter(day__gte=datetime.datetime.now())
     nr_future_questions = len(future_questions)
@@ -47,6 +48,11 @@ def dashboard(request):
     # admins
     staff_group, new = auth.Group.objects.get_or_create(name='Staff')
 
+    # wousocron last_run
+    last_run = Setting.get('wousocron_lastrun').get_value()
+    if last_run == "":
+        last_run="wousocron was never runned"
+
     return render_to_response('cpanel/index.html',
                               {'nr_future_questions' : nr_future_questions,
                                'nr_questions' : nr_questions,
@@ -57,6 +63,7 @@ def dashboard(request):
                                'django_version': get_version(),
                                'wouso_version': WOUSO_VERSION,
                                'staff': staff_group,
+                               'last_run': last_run,
                                },
                               context_instance=RequestContext(request))
 
