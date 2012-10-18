@@ -2,7 +2,6 @@ from django.db.models import Q
 from wouso.core.config.models import BoolSetting
 from wouso.core.app import App
 from wouso.core.scoring.models import Coin, Formula
-from wouso.games.challenge.models import Challenge, ChallengeUser
 from wouso.interface.activity import signals
 
 class SecurityInspector:
@@ -15,13 +14,16 @@ class SecurityInspector:
 
     @classmethod
     def chall_was_set_up(cls, **kwargs):
-        """Parse the chall-won activity message to
-        check the time it took for the loser to finish the challenge"""
+        """
+        Parse the chall-won activity message to
+        check the time it took for the loser to finish the challenge
+        """
+        from wouso.games.challenge.models import Challenge
         suspect = kwargs.get('user_to', None)
         #suspect is a ChallengeUser in this case, scoring requires Player
         player = suspect.user.player_related.get()
 
-        if suspect == None:
+        if suspect is None:
             return False, None
 
         last_chall = Challenge.objects.filter(Q(user_from__user=suspect) |

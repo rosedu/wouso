@@ -4,8 +4,6 @@ from django.utils.translation import ugettext_noop
 from wouso.core.app import App
 from wouso.interface.apps.messaging.models import Message
 from wouso.games.challenge.models import Challenge
-from wouso.interface.apps.messaging.models import Message
-from wouso.games.challenge.models import Challenge
 
 from models import Activity
 from signals import addActivity,messageSignal

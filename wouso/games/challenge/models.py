@@ -5,7 +5,7 @@ from random import shuffle
 import pickle as pk
 import sys
 from django.db import models
-from django.db.models import Q, Max
+from django.db.models import Q
 from django.utils.translation import ugettext_noop, ugettext as _
 from django.core.urlresolvers import reverse
 from wouso.core.user.models import Player
@@ -17,7 +17,6 @@ from wouso.core import scoring
 from wouso.core.god import God
 from wouso.interface.activity import signals
 from wouso.interface.apps.messaging.models import Message
-from django.db.models import Avg, Q, Count
 
 
 class ChallengeException(Exception):
