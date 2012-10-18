@@ -583,7 +583,8 @@ class ChallengeGame(Game):
                 'challenge-cannot-challenge', # reject outgoing challenges, negative
                 'challenge-always-lose', # lose regardless the result, negative
                 'challenge-affect-scoring', # affect scoring by positive/negative percent
-
+                'challenge-affect-scoring-won', #affect scoring by positive/negative percent for win challenges
+                'challenge-evade', #33% chance player does not lose points in a challenge
         ]
 
     @classmethod
