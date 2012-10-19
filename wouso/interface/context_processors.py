@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse, NoReverseMatch
 import logging
 from wouso.core.game import get_games
 from wouso.core.config.models import Setting
@@ -15,6 +16,10 @@ from . import set_theme
 def header_footer(request):
     """ Generate header and footer bar contents.
     """
+    try:
+        reverse('homepage')
+    except NoReverseMatch:
+        return {}
     #TODO ordering, using config
 
     header = []
