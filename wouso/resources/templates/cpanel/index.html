@@ -8,25 +8,6 @@
     <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <TITLE>{% block title %}WoUSO Control Panel{% endblock %}</TITLE>
     <LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/style.css" />
-    <style type="text/css">
-        @import url("{{ basepath }}/static/css/autocomplete.css");
-        {% block css %}li.{{module}} {font-weight: bold}
-        #container, .first-line, #topbar {
-            width: 95%;
-        }
-        #content {
-            width: auto;
-            float: none;
-            margin-left: 250px;
-        }
-        .tab_container {
-            clear: none !important;
-        }
-        .subgroups {
-            margin-left: 10px;
-        }
-        {% endblock %}
-    </style>
     <link  rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/chatbox.css">
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery-ui.min.js"></script>
@@ -41,6 +22,28 @@
     <script type="text/javascript">
         var url_base = '{{ basepath }}';
     </script>
+    {% if config_theme %}
+    <LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/themes/{{ config_theme }}/styles.css" />
+    {% endif %}
+    <style type="text/css">
+        @import url("{{ basepath }}/static/css/autocomplete.css");
+        {% block css %}li.{{module}} {font-weight: bold}
+        #container, .first-line, #topbar {
+            width: 95%;
+        }
+        #content-cp {
+            width: auto;
+            float: none;
+            margin-left: 250px;
+        }
+        .tab_container {
+            clear: none !important;
+        }
+        .subgroups {
+            margin-left: 10px;
+        }
+        {% endblock %}
+    </style>
     {% block scripts %}{% endblock %}
 </HEAD>
 
@@ -51,7 +54,7 @@
 
 <div id="container">
     {% block header %}
-    <div id="header">
+    <div id="header-cp">
         <div id="topbar">
             <div class="first-line">
                 {{ user.get_profile }}
@@ -119,7 +122,7 @@
             {% endblock %}
     </div>
 
-    <div id="content">
+    <div id="content-cp">
         <div id="ajax-message">{%  if message %}<p class="ok">{{ message }}</p>{% endif %}{% if error %}<p class="wrong">{{ error }}</p>{% endif %}</div>
         {% block content %}
             <h2>{% block sectiontitle %}Dashboard{% endblock %}</h2>
