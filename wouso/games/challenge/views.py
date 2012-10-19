@@ -104,6 +104,11 @@ def launch(request, to_id):
         except ChallengeException as e:
             # Some error occurred during question fetch. Clean up, and display error
             return do_result(request, e.message)
+        #Checking if user_to is stored in session
+        PREFIX = "_user:"
+        action_msg = "multiple-login"
+        if (PREFIX + user_to.user.username) in request.session:
+            signals.addActivity.send(sender=None, user_to=user_to, user_from=user_from, action=action_msg, game=None)
         return do_result(request, message=_('Successfully challenged'))
     else:
         return do_result(request, _('This user cannot be challenged.'))
