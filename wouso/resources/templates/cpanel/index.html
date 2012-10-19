@@ -41,11 +41,7 @@
     <script type="text/javascript">
         var url_base = '{{ basepath }}';
     </script>
-
     {% block scripts %}{% endblock %}
-    {% if config_theme %}
-    <LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/themes/{{ config_theme }}/styles.css" />
-    {% endif %}
 </HEAD>
 
 <body>
