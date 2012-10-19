@@ -22,8 +22,10 @@ urlpatterns = patterns('',
     # sortcrit = 1 means sort by progress descending
     # sortcrit = 2 means sort by last_seen descending
 
-    (r'^user/login/$', 'django.contrib.auth.views.login'),
-    (r'^user/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}),
+    (r'^user/login/$','wouso.interface.views.login_view'),
+    #(r'^user/login/$', 'django.contrib.auth.views.login'),
+    (r'^user/logout/$','wouso.interface.views.logout_view'),
+    #(r'^user/logout/$','django.contrib.auth.views.logout', {'next_page': '/'}),
 
     url(r'^player/(?P<id>\d*)/$', 'wouso.interface.profile.views.user_profile', name='player_profile'),
     url(r'^player/set/$', 'wouso.interface.profile.views.set_profile', name='set_profile'),
@@ -47,6 +49,9 @@ urlpatterns = patterns('',
     (r'^instantsearch/$', 'wouso.interface.views.instantsearch'),
     (r'^searchone/$', 'wouso.interface.views.searchone'),
     url(r'^s/(.+)/$', 'wouso.interface.apps.pages.views.staticpage', name='static_page'),
+    
+    #Report
+    (r'^report/(?P<id>\d*)/$','wouso.interface.views.report'),
 
     # Chat
     (r'^chat/', include('wouso.interface.chat.urls')),

@@ -83,6 +83,12 @@ def user_profile(request, id, page=u'1'):
         if hasattr(g, 'user_model'):
             model = getattr(g, 'user_model')
             setattr(profile, model.__name__.lower(), profile.get_extension(model))
+    #Fix to show message in from report user form
+    if 'report_msg' in request.session:
+        message = request.session['report_msg']
+        del request.session['report_msg']
+    else:
+        message=''
 
     return render_to_response('profile/profile.html',
                               {'profile': profile,
@@ -91,7 +97,8 @@ def user_profile(request, id, page=u'1'):
                                'top': top_user,
                                'scoring': history,
                                'profile_actions': profile_actions,
-                               'profile_superuser_actions': profile_superuser_actions,},
+                               'profile_superuser_actions': profile_superuser_actions,
+                               'message':message,},
                               context_instance=RequestContext(request))
 
 @login_required
