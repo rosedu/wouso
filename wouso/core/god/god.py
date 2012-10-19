@@ -152,14 +152,11 @@ class DefaultGod:
             return False, 'Cannot steal from self'
 
         if spell.name == 'challenge-affect-scoring':
-            existing = destination.magic.spells.filter(spell__name='challenge-affect-scoring')
-            if existing.count() > 0:
-                # check if a spell with the same sign +/- exists
-                for sp in existing:
-                    if (sp.spell.percents * spell.percents) > 0:
-                        return False, 'Something wrong'
-                # in order to apply this new spell, cancel existing, sign contrary, spells
-                existing.delete()
+           if spell_cleanup(spell, destination, spell.name) == False:
+               return False, 'Something wrong'
+        if spell.name == 'challenge-affect-scoring-won':
+            if spell_cleanup(spell, destination, spell.name) == False:
+                return False, 'Something wrong'
         return True, None
 
     def post_cast(self, psdue):
@@ -245,3 +242,18 @@ class DefaultGod:
                 return False
 
         return True
+        
+
+def spell_cleanup(spell,destination,spell_name):
+    """
+    This function eliminates same type spells with contrary sign +/-
+    """
+    existing = destination.magic.spells.filter(spell__name=spell_name)
+    if existing.count() > 0:
+    # check if a spell with the same sign +/- exists
+        for sp in existing:
+            if (sp.spell.percents * spell.percents) > 0:
+                return False
+    # in order to apply this new spell, cancel existing, sign contrary, spells
+    existing.delete()
+    return True
