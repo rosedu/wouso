@@ -41,7 +41,7 @@ def index(request):
         form = QotdForm(qotd, request.POST)
         if form.is_valid():
             choice = int(form.cleaned_data['answers'])
-            QotdGame.answered(qotd_user, qotd, choice, settings.QOTD_BONUS_PROB)
+            QotdGame.answered(qotd_user, qotd, choice)
             extra = request.GET.urlencode()
             if extra:
                 extra = '?' + extra

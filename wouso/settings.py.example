@@ -238,4 +238,4 @@ else:
 QOTD_BONUS_PROB = 30
 
 # the number of points given for when the player gets a bonus
-QOTD_BONUS_POINTS = 7
+QOTD_BONUS_POINTS = 2
