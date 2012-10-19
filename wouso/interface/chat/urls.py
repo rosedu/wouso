@@ -2,7 +2,7 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('wouso.interface.chat.views',
-    (r'^$','index'),
+    url(r'^$', 'index', name='chat_home'),
     url(r'^archive/$','archive', name='archive'),
     (r'^archive_messages', 'archive_messages'),
     (r'^chat_m/$','sendmessage'),

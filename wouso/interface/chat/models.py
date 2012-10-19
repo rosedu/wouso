@@ -75,12 +75,7 @@ class Chat(App):
 
     @classmethod
     def get_header_link(kls, request):
-        if BoolSetting.get('disable-Chat').get_value():
-            return {}
-        url = reverse('wouso.interface.chat.views.index')
-        count = 0
-
-        return dict(link=url, text=_('Chat'), count=count)
+        return ''
 
 
 # admin interface
