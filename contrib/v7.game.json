@@ -1,209 +1,209 @@
 [{"pk": 1,
 "model": "magic.artifactgroup",
-"fields": {"name": "Default"}}
+"fields": {"name": "Default"}},
 
 {"pk": "points",
 "model": "scoring.coin",
 "fields": {"owner": null,
 "integer": false,
-"name": "points"}}
+"name": "points"}},
 
 {"pk": "gold",
 "model": "scoring.coin",
 "fields": {"owner": null,
 "integer": true,
-"name": "gold"}}
+"name": "gold"}},
 
 {"pk": "penalty",
 "model": "scoring.coin",
 "fields": {"owner": null,
 "integer": false,
-"name": "penalty"}}
+"name": "penalty"}},
 
 {"pk": "qotd-ok",
 "model": "scoring.formula",
 "fields": {"owner": "QotdGame",
 "formula": "points=4 + (1 if {hour} < 12 else -1)",
-"description": "Points earned on a correct answer in the morning"}}
+"description": "Points earned on a correct answer in the morning"}},
 
 {"pk": "quest-ok",
 "model": "scoring.formula",
 "fields": {"owner": "QuestGame",
 "formula": "points={level}",
-"description": "Points earned when finishing a level. Arguments: level."}}
+"description": "Points earned when finishing a level. Arguments: level."}},
 
 {"pk": "quest-finish-ok",
 "model": "scoring.formula",
 "fields": {"owner": "QuestGame",
 "formula": "points=10",
-"description": "Bonus points earned when finishing the entire quest. No arguments."}}
+"description": "Bonus points earned when finishing the entire quest. No arguments."}},
 
 {"pk": "finalquest-ok",
 "model": "scoring.formula",
 "fields": {"owner": "QuestGame",
 "formula": "points={level}+{level_users}",
 "description": "Bonus points earned when finishing the final quest. Arguments: level,
-level_users"}}
+level_users"}},
 
 {"pk": "specialquest-passed",
 "model": "scoring.formula",
 "fields": {"owner": "SpecialQuestGame",
 "formula": "gold={value}",
-"description": "Points earned when finishing a task. Arguments: value."}}
+"description": "Points earned when finishing a task. Arguments: value."}},
 
 {"pk": "chall-won",
 "model": "scoring.formula",
 "fields": {"owner": "ChallengeGame",
 "formula": "points=6+{different_race}+{different_class}",
 "description": "Points earned when winning a challenge. Arguments: different_race (int 0,1),
-different_class (int 0,1)"}}
+different_class (int 0,1)"}},
 
 {"pk": "chall-lost",
 "model": "scoring.formula",
 "fields": {"owner": "ChallengeGame",
 "formula": "points=2",
-"description": "Points earned when losing a challenge"}}
+"description": "Points earned when losing a challenge"}},
 
 {"pk": "chall-draw",
 "model": "scoring.formula",
 "fields": {"owner": "ChallengeGame",
 "formula": "points=4",
-"description": "Points earned when drawing a challenge"}}
+"description": "Points earned when drawing a challenge"}},
 
 {"pk": "chall-warranty",
 "model": "scoring.formula",
 "fields": {"owner": "ChallengeGame",
 "formula": "points=-3",
-"description": "Points taken as a warranty for challenge"}}
+"description": "Points taken as a warranty for challenge"}},
 
 {"pk": "chall-warranty-return",
 "model": "scoring.formula",
 "fields": {"owner": "ChallengeGame",
 "formula": "points=3",
-"description": "Points given back as a warranty taken for challenge"}}
+"description": "Points given back as a warranty taken for challenge"}},
 
 {"pk": "chall-timer",
 "model": "scoring.formula",
 "fields": {"owner": "ChallengeGame",
 "formula": "tlimit=300 - 5 * ({level} - 1)",
-"description": "Seconds left for a user in challenge"}}
+"description": "Seconds left for a user in challenge"}},
 
 {"pk": "buy-spell",
 "model": "scoring.formula",
 "fields": {"owner": null,
 "formula": "gold=-{price}",
-"description": "Gold spent on spells"}}
+"description": "Gold spent on spells"}},
 
 {"pk": "gold-points-rate",
 "model": "scoring.formula",
 "fields": {"owner": null,
 "formula": "points={gold}*3;gold=-{gold}",
-"description": "Exchange gold in points"}}
+"description": "Exchange gold in points"}},
 
 {"pk": "points-gold-rate",
 "model": "scoring.formula",
 "fields": {"owner": null,
 "formula": "points=-{points};gold={points}*0.1",
-"description": "Exchange points in gold"}}
+"description": "Exchange points in gold"}},
 
 {"pk": "bonus-gold",
 "model": "scoring.formula",
 "fields": {"owner": null,
 "formula": "gold={gold}",
-"description": "Give bonus gold to the poor people"}}
+"description": "Give bonus gold to the poor people"}},
 
 {"pk": "bonus-points",
 "model": "scoring.formula",
 "fields": {"owner": null,
 "formula": "points={points}",
-"description": "Give bonus points"}}
+"description": "Give bonus points"}},
 
 {"pk": "steal-points",
 "model": "scoring.formula",
 "fields": {"owner": null,
 "formula": "points={points}",
-"description": "Steal points using spells"}}
+"description": "Steal points using spells"}},
 
 {"pk": "penalty-points",
 "model": "scoring.formula",
 "fields": {"owner": null,
 "formula": "points=-{points}",
-"description": "Take back points from user"}}
+"description": "Take back points from user"}},
 
 {"pk": "level-gold",
 "model": "scoring.formula",
 "fields": {"owner": null,
 "formula": "gold=10*{level}",
-"description": "Bonus gold on level upgrade"}}
+"description": "Bonus gold on level upgrade"}},
 
 {"pk": "general-infraction",
 "model": "scoring.formula",
 "fields": {"owner": null,
 "formula": "penalty=10",
-"description": "Give penalty points to suspicious users"}}
+"description": "Give penalty points to suspicious users"}},
 
 {"pk": "chall-was-set-up-infraction",
 "model": "scoring.formula",
 "fields": {"owner": null,
 "formula": "penalty=20",
-"description": "Give penalty points for losing a challenge on purpose"}}
+"description": "Give penalty points for losing a challenge on purpose"}},
 
 {"pk": "default_group",
 "model": "config.setting",
-"fields": {"value": ""}}
+"fields": {"value": ""}},
 
 {"pk": "default_race",
 "model": "config.setting",
-"fields": {"value": "1"}}
+"fields": {"value": "1"}},
 
 {"pk": "test",
 "model": "config.setting",
-"fields": {"value": "test"}}
+"fields": {"value": "test"}},
 
 {"pk": "title",
 "model": "config.setting",
-"fields": {"value": "World of USO v4 - piranha"}}
+"fields": {"value": "World of USO v4 - piranha"}},
 
 {"pk": "intro",
 "model": "config.setting",
 "fields": {"value": "World of USO e un joc simplu realizat pentru studen\u021bii cursului de USO (Utilizarea Sistemelor de Operare) din Facultatea de Automatic\u0103 \u0219i Calculatoare a Universit\u0103\u021bii Politehnica Bucure\u0219ti.\r\n\r\nWorld of USO are 3 p\u0103r\u021bi: Question of the Day,
-Challenge \u0219i The Quest"}}
+Challenge \u0219i The Quest"}},
 
 {"pk": "disable-Chat",
 "model": "config.setting",
-"fields": {"value": ""}}
+"fields": {"value": ""}},
 
 {"pk": "disable-Qproposal",
 "model": "config.setting",
-"fields": {"value": ""}}
+"fields": {"value": ""}},
 
 {"pk": "theme",
 "model": "config.setting",
-"fields": {"value": ""}}
+"fields": {"value": ""}},
 
 {"pk": "disable-QotdGame",
 "model": "config.setting",
-"fields": {"value": ""}}
+"fields": {"value": ""}},
 
 {"pk": "disable-SpecialQuestGame",
 "model": "config.setting",
-"fields": {"value": ""}}
+"fields": {"value": ""}},
 
 {"pk": "disable-Top",
 "model": "config.setting",
-"fields": {"value": ""}}
+"fields": {"value": ""}},
 
 {"pk": "disable-chall-was-set-up-SecurityRule",
 "model": "config.setting",
-"fields": {"value": ""}}
+"fields": {"value": ""}},
 
 {"pk": "disable-login-multiple-account-SecurityRule",
 "model": "config.setting",
-"fields": {"value": ""}}
+"fields": {"value": ""}},
 
 {"pk": "disable-reported-user-SecutiryRule",
 "model": "config.setting",
-"fields": {"value": ""}}
+"fields": {"value": ""}},
 
 {"pk": 1,
 "model": "pages.staticpage",
@@ -211,31 +211,31 @@ Challenge \u0219i The Quest"}}
 "hidden": false,
 "title": "Contact us",
 "slug": "contact",
-"name": "Contact"}}
+"name": "Contact"}},
 
 {"pk": 1,
 "model": "user.race",
 "fields": {"can_play": false,
 "name": "Others",
-"title": ""}}
+"title": ""}},
 
 {"pk": 2,
 "model": "user.race",
 "fields": {"can_play": true,
 "name": "CC",
-"title": "Nifes"}}
+"title": "Nifes"}},
 
 {"pk": 3,
 "model": "user.race",
 "fields": {"can_play": true,
 "name": "CA",
-"title": "Oxynia"}}
+"title": "Oxynia"}},
 
 {"pk": 4,
 "model": "user.race",
 "fields": {"can_play": true,
 "name": "CB",
-"title": "Zota"}}
+"title": "Zota"}},
 
 {"pk": 1,
 "model": "user.playergroup",
@@ -244,7 +244,7 @@ Challenge \u0219i The Quest"}}
 "title": "Ghilda Minerilor",
 "players": [],
 "points": 0.0,
-"owner": null}}
+"owner": null}},
 
 {"pk": 2,
 "model": "user.playergroup",
@@ -253,7 +253,7 @@ Challenge \u0219i The Quest"}}
 "title": "Ghilda Artizanilor",
 "players": [],
 "points": 0.0,
-"owner": null}}
+"owner": null}},
 
 {"pk": 3,
 "model": "user.playergroup",
@@ -262,7 +262,7 @@ Challenge \u0219i The Quest"}}
 "title": "Ghilda Constructorilor",
 "players": [],
 "points": 0.0,
-"owner": null}}
+"owner": null}},
 
 {"pk": 4,
 "model": "user.playergroup",
@@ -271,7 +271,7 @@ Challenge \u0219i The Quest"}}
 "title": "Ghilda Mestesugarilor",
 "players": [],
 "points": 0.0,
-"owner": null}}
+"owner": null}},
 
 {"pk": 5,
 "model": "user.playergroup",
@@ -280,7 +280,7 @@ Challenge \u0219i The Quest"}}
 "title": "Ghilda Inventatorilor",
 "players": [],
 "points": 0.0,
-"owner": null}}
+"owner": null}},
 
 {"pk": 6,
 "model": "user.playergroup",
@@ -289,7 +289,7 @@ Challenge \u0219i The Quest"}}
 "title": "Academia Ashurbanipal",
 "players": [],
 "points": 0.0,
-"owner": null}}
+"owner": null}},
 
 {"pk": 7,
 "model": "user.playergroup",
@@ -298,7 +298,7 @@ Challenge \u0219i The Quest"}}
 "title": "Academia Burnell",
 "players": [],
 "points": 0.0,
-"owner": null}}
+"owner": null}},
 
 {"pk": 8,
 "model": "user.playergroup",
@@ -307,7 +307,7 @@ Challenge \u0219i The Quest"}}
 "title": "Academia Cekhov",
 "players": [],
 "points": 0.0,
-"owner": null}}
+"owner": null}},
 
 {"pk": 9,
 "model": "user.playergroup",
@@ -316,7 +316,7 @@ Challenge \u0219i The Quest"}}
 "title": "Academia Dawkins",
 "players": [],
 "points": 0.0,
-"owner": null}}
+"owner": null}},
 
 {"pk": 10,
 "model": "user.playergroup",
@@ -325,7 +325,7 @@ Challenge \u0219i The Quest"}}
 "title": "Academia Euclid",
 "players": [],
 "points": 0.0,
-"owner": null}}
+"owner": null}},
 
 {"pk": 11,
 "model": "user.playergroup",
@@ -334,7 +334,7 @@ Challenge \u0219i The Quest"}}
 "title": "Casa Shamal",
 "players": [],
 "points": 0.0,
-"owner": null}}
+"owner": null}},
 
 {"pk": 12,
 "model": "user.playergroup",
@@ -343,7 +343,7 @@ Challenge \u0219i The Quest"}}
 "title": "Casa Borras",
 "players": [],
 "points": 0.0,
-"owner": null}}
+"owner": null}},
 
 {"pk": 13,
 "model": "user.playergroup",
@@ -352,7 +352,7 @@ Challenge \u0219i The Quest"}}
 "title": "Casa Leste",
 "players": [],
 "points": 0.0,
-"owner": null}}
+"owner": null}},
 
 {"pk": 14,
 "model": "user.playergroup",
@@ -361,7 +361,7 @@ Challenge \u0219i The Quest"}}
 "title": "Casa Mistral",
 "players": [],
 "points": 0.0,
-"owner": null}}
+"owner": null}},
 
 {"pk": 15,
 "model": "user.playergroup",
