@@ -55,6 +55,7 @@
         {% endif %}
 
         {% autoescape off %}{{ profile_actions }}{% endautoescape %}
+        <a class="button" href="{% url wouso.interface.views.report profile.id%}">Report</a>
     </div>
 
     <div class="second">{% trans 'Last seen' %}:
