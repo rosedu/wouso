@@ -34,15 +34,7 @@ def consecutive_chall_won(player):
     result = 0
     for i in activities:
         if 'won' in i.action:
-            if player == i.user_from:
-                result = result + 1
-            else:
-                return result
-        elif 'lost' in i.action:
-            if player == i.user_to:
-                result = result + 1
-            else:
-                return result
+            result = result + 1
         else:
             return result
 
