@@ -10,6 +10,8 @@ from wouso.interface.chat.models import Chat
 from wouso.interface import get_static_pages, detect_mobile, mobile_browser
 from wouso.settings import FORCE_SCRIPT_NAME
 
+from . import set_theme
+
 def header_footer(request):
     """ Generate header and footer bar contents.
     """
@@ -118,6 +120,9 @@ def context(request):
         theme = request.GET['theme']
         if theme in get_themes():
             settings['config_theme'] = theme
+            set_theme(theme)
+    else:
+        set_theme(None)
 
     # shorthand user.get_profile
     settings['player'] = request.user.get_profile() if request.user.is_authenticated() else None

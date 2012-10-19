@@ -1,7 +1,7 @@
 import os.path
 from django.conf import settings
 from django.template.loader import BaseLoader, TemplateDoesNotExist
-from wouso.core.config.models import Setting
+from . import get_theme
 
 class Loader(BaseLoader):
     """ Theme template loader: the selected theme can override
@@ -13,7 +13,7 @@ class Loader(BaseLoader):
         """ Note (AE): I'm unhappy with this approach, since a Setting.get
         call is done for every request. THIS must be cached somehow
         """
-        theme = Setting.get('theme').value
+        theme = get_theme()
         return os.path.join(settings.THEMES_ROOT, theme, 'templates')
 
     def load_template_source(self, template_name, template_dirs=None):

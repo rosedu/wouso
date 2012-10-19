@@ -38,3 +38,24 @@ def get_apps():
     from wouso.interface.activity.achievements import Achievements
 
     return [Top, Bazaar, Achievements]
+
+_theme = None
+def get_theme():
+    """
+     Return the current theme
+    """
+    global _theme
+
+    if _theme is None:
+        from wouso.core.config.models import Setting
+        return Setting.get('theme').value
+
+    return _theme
+
+def set_theme(value):
+    """
+     Set the current theme, temporary. Give it a None parameter to use the one in db settings.
+    """
+    global _theme
+
+    _theme = value
