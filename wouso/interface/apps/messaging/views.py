@@ -23,6 +23,8 @@ def home(request, quiet=None, box=None, page=u'0'):
         messages = Message.objects.filter(sender=msg_user)
     elif box == 'all':
         messages = Message.objects.filter(Q(receiver=msg_user) | Q(sender=msg_user))
+    else:
+        messages = Message.objects.none()
 
     messages = messages.order_by('-timestamp')
 
