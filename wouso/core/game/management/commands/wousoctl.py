@@ -44,7 +44,7 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
-        save_load_labels = ['magic', 'scoring.coin', 'scoring.formula', 'config', 'pages', 'user.race', 'user.playergroup']
+        save_load_labels = ['magic', 'scoring.coin', 'scoring.formula', 'config', 'pages']
         reset_labels = ['magic', 'scoring', 'config', 'pages']
         if options['check_setup']:
             ok = True
