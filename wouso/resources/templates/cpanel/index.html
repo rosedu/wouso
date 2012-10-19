@@ -1,135 +1,187 @@
-{% extends 'interface/section_base.html' %}
+<!DOCTYPE html>
 {%  load artifacts %}
 {%  load cpanel %}
 {%  load user %}
 {%  load i18n %}
-
-{% block title %}CPanel{% endblock %}
-
-{% block css %}li.{{module}} {font-weight: bold}
-#container, .first-line, #topbar {
-        width: 95%;
-}
-#content {
-        width: auto;
-        float: none;
-        margin-left: 250px;
-}
-.tab_container {
-        clear: none !important;
-}
-.subgroups {
-        margin-left: 10px;
-}
-{% endblock %}
-
-{% block header %}
-<div id="header">
-    <div id="topbar">
-        <div class="first-line">
-            {{ user.get_profile }}
-            <a id="head-home" href="{% url homepage %}">Game</a>&nbsp;
-            <a id="head-cpanel" href="{% url dashboard %}">CPanel</a>&nbsp;
-            <a id="head-logout" href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %} &raquo;</a>
-        </div>
-    </div>
-    <br/>
-</div>
-{% endblock %}
-{% block search %}{% endblock %}
-
-{% block sectiontitle %}Dashboard{% endblock %}
-
-{% block sectioncontent %}
-
-<div class="subgroups">
-<h3>Information</h3>
-    <p>Django version: {{ django_version }}</p>
-    <p>WoUSO version: {{ wouso_version }}</p>
-    <p>WoUSOcron last run: {{ last_run }}</p>
-<h4>Staff</h4>
-    {% for u in staff.user_set.all %}
-    {% player_simple u.get_profile %}
-    {% endfor %}
-</div>
-
-<h3>QPool</h3>
-<p>Qotd: {{nr_future_questions}} future available questions. </p>
-<p> {{nr_questions}} total questions. </p>
-
-<h3>Quest</h3>
-<p>{% if  active_quest %}One active quest: {{ active_quest }}{% else %}No quest active{% endif %}. Total: {{ total_quests }}</p>
-
-<div class="spacer"></div>
-<h3>Artifacts</h3>
-<table>
-    <tr>
-    {%  for g in artifact_groups %}
-    <td valign="top">
-        <h4>{{ g }}</h4>
-        {% for a in g.artifact_set.all %}
-            {% artifact a %} {{ a.name }}<br/>
-        {% endfor %}
-    </td>
-    {%  endfor %}
-</table>
-
-<h3>Misc</h3>
-        <a href="{% url the_bell %}">Press the bell!</a>
-
-{% endblock %}
-
-{% block sidebar %}
-<div class="widget-top"></div>
-<div class="widget-middle">
-<h2>CPanel</h2>
-    <div class="widget-content">
-        <ul class="menu">
-        <li class="home"><a href="{% url dashboard %}">Dashboard</a></li>
-        <li class="qpool"><a href="{% url qpool_home %}">Question Pool</a>
-            <ul class="submenu">
-            <li class="qpool_import"></li>
-            </ul>
-        </li>
-        <li class="spells"><a href="{% url spells %}">Spells</a></li>
-        <li class="artifacts"><a href="{% url artifact_home %}">Artifacts</a></li>
-        {% if user.is_superuser %}
-            <li class="custom"><a href="{% url customization %}">Customization</a></li>
-            <li><a href="{% url all_players %}">Players</a></li>
-            <li><a href="{% url races_groups %}">Races & groups</a></li>
-            {% endif %}
-        </ul>
-    </div>
-    <div class="widget-content">
-        <ul class="menu">
-            <li class="games"><a href="{% url games_home %}">Games</a></li>
-            <li class="formulas"><a href={% url formulas %}>Formulas</a></li>
-            <li class="empty"></li>
-            {% cpanel_games %}
-        </ul>
-    </div>
-    <div class="widget-content">
-        <ul class="menu">
-            Shortcuts
-
-            <li class="static"><a href="{% url admin:pages_staticpage_changelist %}" target="blank">Static Pages</a></li>
-            <li class="static"><a href="{% url admin:pages_newsitem_changelist %}" target="blank">News</a></li>
-            {% if user.is_staff or user.is_superuser %}
-            <li><a href="{% url admin:activity_activity_changelist %}">Activity Monitor</a></li>
-            <li><a href="{% url admin:index %}"><em>Django Admin »</em></a></li>
-            {% endif %}
-        </ul>
-    </div>
-    <br/>
-    <div class="widget-content">
-        {% block extra_sidebar %}
+<html>
+<HEAD>
+    <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <TITLE>{% block title %}WoUSO Control Panel{% endblock %}</TITLE>
+    <LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/style.css" />
+    <style type="text/css">
+        @import url("{{ basepath }}/static/css/autocomplete.css");
+        {% block css %}li.{{module}} {font-weight: bold}
+        #container, .first-line, #topbar {
+            width: 95%;
+        }
+        #content {
+            width: auto;
+            float: none;
+            margin-left: 250px;
+        }
+        .tab_container {
+            clear: none !important;
+        }
+        .subgroups {
+            margin-left: 10px;
+        }
         {% endblock %}
-        <div class="clearer spacer"></div>
-    </div>
-</div>
-<div class="widget-bottom"></div>
+    </style>
+    <link  rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/chatbox.css">
+    <script type="text/javascript" src="{{ basepath }}/static/js/jquery-1.6.2.min.js"></script>
+    <script type="text/javascript" src="{{ basepath }}/static/js/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="{{ basepath }}/static/js/jquery.autocomplete.js"></script>
+    <script type="text/javascript" src="{{ basepath }}/static/js/format.item.js"></script>
+    <script type="text/javascript" src="{{ basepath }}/static/js/jquery.timers.js"></script>
+    <script type="text/javascript" src="{{ basepath }}/static/js/ajaxify.js"></script>
+    <script type="text/javascript" src="{{ basepath }}/static/js/contactbox.js"></script>
+    {% if not config_disable_private_chat and not config_disable_chat  %}
+    <script type="text/javascript" src="{{ basepath }}/static/js/chatbox.js"></script>
+    {% endif %}
+    <script type="text/javascript">
+        var url_base = '{{ basepath }}';
+    </script>
+
+    {% block scripts %}{% endblock %}
+    {% if config_theme %}
+    <LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/themes/{{ config_theme }}/styles.css" />
+    {% endif %}
+</HEAD>
+
+<body>
+{% block contactbox %}
+{% include 'interface/contactbox.html' %}
 {% endblock %}
 
-{% block footer %}
-&copy; 2012 ROSEdu
-{% endblock %}
+<div id="container">
+    {% block header %}
+    <div id="header">
+        <div id="topbar">
+            <div class="first-line">
+                {{ user.get_profile }}
+                <a id="head-home" href="{% url homepage %}">Game</a>&nbsp;
+                <a id="head-cpanel" href="{% url dashboard %}">CPanel</a>&nbsp;
+                <a id="head-logout" href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %} &raquo;</a>
+            </div>
+        </div>
+        <br/>
+    </div>
+    {% endblock %}
+
+    <div class="spacer-search"></div>
+
+    <div id="sidebar">
+        {% block sidebar %}
+            <div class="widget-top"></div>
+            <div class="widget-middle">
+                <h2>CPanel</h2>
+                <div class="widget-content">
+                    <ul class="menu">
+                        <li class="home"><a href="{% url dashboard %}">Dashboard</a></li>
+                        <li class="qpool"><a href="{% url qpool_home %}">Question Pool</a>
+                            <ul class="submenu">
+                                <li class="qpool_import"></li>
+                            </ul>
+                        </li>
+                        <li class="spells"><a href="{% url spells %}">Spells</a></li>
+                        <li class="artifacts"><a href="{% url artifact_home %}">Artifacts</a></li>
+                        {% if user.is_superuser %}
+                        <li class="custom"><a href="{% url customization %}">Customization</a></li>
+                        <li><a href="{% url all_players %}">Players</a></li>
+                        <li><a href="{% url races_groups %}">Races & groups</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="widget-content">
+                    <ul class="menu">
+                        <li class="games"><a href="{% url games_home %}">Games</a></li>
+                        <li class="formulas"><a href={% url formulas %}>Formulas</a></li>
+                        <li class="empty"></li>
+                        {% cpanel_games %}
+                    </ul>
+                </div>
+                <div class="widget-content">
+                    <ul class="menu">
+                        Shortcuts
+
+                        <li class="static"><a href="{% url admin:pages_staticpage_changelist %}" target="blank">Static Pages</a></li>
+                        <li class="static"><a href="{% url admin:pages_newsitem_changelist %}" target="blank">News</a></li>
+                        {% if user.is_staff or user.is_superuser %}
+                        <li><a href="{% url admin:activity_activity_changelist %}">Activity Monitor</a></li>
+                        <li><a href="{% url admin:index %}"><em>Django Admin »</em></a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <br/>
+                <div class="widget-content">
+                    {% block extra_sidebar %}
+                    {% endblock %}
+                    <div class="clearer spacer"></div>
+                </div>
+            </div>
+            <div class="widget-bottom"></div>
+            {% endblock %}
+    </div>
+
+    <div id="content">
+        <div id="ajax-message">{%  if message %}<p class="ok">{{ message }}</p>{% endif %}{% if error %}<p class="wrong">{{ error }}</p>{% endif %}</div>
+        {% block content %}
+            <h2>{% block sectiontitle %}Dashboard{% endblock %}</h2>
+
+            {% block sectioncontent %}
+
+            <div class="subgroups">
+                <h3>Information</h3>
+                <p>Django version: {{ django_version }}</p>
+                <p>WoUSO version: {{ wouso_version }}</p>
+                <p>WoUSOcron last run: {{ last_run }}</p>
+                <h4>Staff</h4>
+                {% for u in staff.user_set.all %}
+                {% player_simple u.get_profile %}
+                {% endfor %}
+            </div>
+
+            <h3>QPool</h3>
+            <p>Qotd: {{nr_future_questions}} future available questions. </p>
+            <p> {{nr_questions}} total questions. </p>
+
+            <h3>Quest</h3>
+            <p>{% if  active_quest %}One active quest: {{ active_quest }}{% else %}No quest active{% endif %}. Total: {{ total_quests }}</p>
+
+            <div class="spacer"></div>
+            <h3>Artifacts</h3>
+            <table>
+                <tr>
+                    {%  for g in artifact_groups %}
+                    <td valign="top">
+                        <h4>{{ g }}</h4>
+                        {% for a in g.artifact_set.all %}
+                        {% artifact a %} {{ a.name }}<br/>
+                        {% endfor %}
+                    </td>
+                    {%  endfor %}
+            </table>
+
+            <h3>Misc</h3>
+            <a href="{% url the_bell %}">Press the bell!</a>
+
+            {% endblock %}
+        {% endblock %}
+    </div>
+
+
+    <div id="footer">
+        {% block footer %}
+        &copy; 2012 ROSEdu
+        {% endblock %}
+    </div>
+
+    <div id="PrivatebarUsers"></div>
+    <div id="PrivateChatBoxes"></div>
+
+    {% autoescape off %}
+    {{ config_hidden_footer }}
+    {% endautoescape %}
+</div>
+</body>
+</html>
