@@ -1,5 +1,6 @@
 {% extends 'cpanel/index.html' %}
 {% load user %}
+{% load artifacts %}
 
 {% block sectiontitle %}Spells{% endblock %}
 
@@ -8,6 +9,7 @@
 
 <table>
 <tr>
+    <th></th>
 	<th>Name</th>
   <th>Title</th>
   <th>Type</th>
@@ -18,7 +20,9 @@
 	<th>Delete</th>
 </tr>
 {% for p in spells %}
-<tr><td> {{ p.name }}</td>
+<tr>
+    <td>{% artifact p %}</td>
+    <td> {{ p.name }}</td>
   <td> {{ p.title}}</td>
   <td> {{ p.type }}</td>
 	<td> {{ p.mass }}</td>
