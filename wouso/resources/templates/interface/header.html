@@ -23,9 +23,14 @@
         {% if not config_disable_chat %}
         <a id="head-chat" href="{% url chat_home %}">Chat</a>
         {% endif %}
+<<<<<<< HEAD
         <a id="head-logout" href="{% url wouso.interface.views.logout_view %}" onclick="remove_storage()">{% trans "Logout" %} &raquo;</a>
+=======
+
+        <a id="head-logout" href="{% url logout_view %}" onclick="remove_storage()">{% trans "Logout" %} &raquo;</a>
+>>>>>>> e482b0fb20c62c155c7c48fc7d92cdd43da36a8d
     {% else %}
-    {% trans 'Anonimous' %}, <a href="{% url wouso.interface.views.login_view %}">{% trans "Login" %} &raquo;</a>
+    {% trans 'Anonimous' %}, <a href="{% url login_view %}">{% trans "Login" %} &raquo;</a>
     {% endif %}
     </div>
 </div>

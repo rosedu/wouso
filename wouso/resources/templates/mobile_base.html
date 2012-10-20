@@ -28,9 +28,9 @@
             {% if user.is_staff %}
             <a href="{% url dashboard %}">CPanel</a>
             {% endif %}
-            <a href="{% url django.contrib.auth.views.logout %}">{% trans "Logout" %} &raquo;</a>
+            <a href="{% url logout_view %}">{% trans "Logout" %} &raquo;</a>
         {% else %}
-        {% trans 'Anonimous' %}, <a href="{% url wouso.interface.views.login_view %}">{% trans "Login" %} &raquo;</a>
+        {% trans 'Anonimous' %}, <a href="{% url login_view %}">{% trans "Login" %} &raquo;</a>
         {% endif %}
     </div>
 

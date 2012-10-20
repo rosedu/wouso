@@ -34,13 +34,16 @@
         #content-cp {
             width: auto;
             float: none;
-            margin-left: 250px;
+            margin-left: 240px;
         }
         .tab_container {
             clear: none !important;
         }
         .subgroups {
             margin-left: 10px;
+        }
+        div.section-content, div.section {
+            width: auto;
         }
         {% endblock %}
     </style>
@@ -52,6 +55,7 @@
 {% include 'interface/contactbox.html' %}
 {% endblock %}
 
+<<<<<<< HEAD
 {% block header %}
 <div id="header">
     <div id="topbar">
@@ -60,8 +64,19 @@
             <a id="head-home" href="{% url homepage %}">Game</a>&nbsp;
             <a id="head-cpanel" href="{% url dashboard %}">CPanel</a>&nbsp;
             <a id="head-logout" href="{% url wouso.interface.views.logout_view %}">{% trans "Logout" %} &raquo;</a>
+=======
+<div id="container">
+    {% block header %}
+    <div id="header-cp">
+        <div id="topbar">
+            <div class="first-line">
+                {{ user.get_profile }}
+                <a id="head-home" href="{% url homepage %}">Game</a>&nbsp;
+                <a id="head-cpanel" href="{% url dashboard %}">CPanel</a>&nbsp;
+                <a id="head-logout" href="{% url logout_view %}">{% trans "Logout" %} &raquo;</a>
+            </div>
+>>>>>>> e482b0fb20c62c155c7c48fc7d92cdd43da36a8d
         </div>
-        <br/>
     </div>
     {% endblock %}
 
@@ -122,12 +137,14 @@
 
     <div id="content-cp">
         <div id="ajax-message">{%  if message %}<p class="ok">{{ message }}</p>{% endif %}{% if error %}<p class="wrong">{{ error }}</p>{% endif %}</div>
+        <div class="section">
         {% block content %}
             <h2>{% block sectiontitle %}Dashboard{% endblock %}</h2>
 
+            <div class="section-content">
             {% block sectioncontent %}
 
-            <div class="subgroups">
+            <div class="subgroups sg-large">
                 <h3>Information</h3>
                 <p>Django version: {{ django_version }}</p>
                 <p>WoUSO version: {{ wouso_version }}</p>
@@ -163,14 +180,18 @@
             <a href="{% url the_bell %}">Press the bell!</a>
 
             {% endblock %}
+            </div><!-- section content -->
         {% endblock %}
+        </div>
     </div>
 
 
     <div id="footer">
+        <div id="footer-content">
         {% block footer %}
         &copy; 2012 ROSEdu
         {% endblock %}
+        </div>
     </div>
 
     <div id="PrivatebarUsers"></div>

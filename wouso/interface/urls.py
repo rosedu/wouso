@@ -11,8 +11,8 @@ urlpatterns = patterns('',
 
     # TODO: refactor this into wouso.interface.top.urls and include vvvvv
     url(r'^top/$', 'wouso.interface.top.views.gettop', name='view_top'),
-    (r'^top/toptype/(?P<toptype>\d)/sortcrit/(?P<sortcrit>\d)/page/(?P<page>\d+)/$', 'wouso.interface.top.views.gettop'),
-    (r'^top/pyramid/$', 'wouso.interface.top.views.pyramid'),
+    url(r'^top/toptype/(?P<toptype>\d)/sortcrit/(?P<sortcrit>\d)/page/(?P<page>\d+)/$', 'wouso.interface.top.views.gettop', name='view_top'),
+    url(r'^top/pyramid/$', 'wouso.interface.top.views.pyramid', name='pyramid'),
     url(r'top/challenge/$', 'wouso.interface.top.views.challenge_top', name='challenge_top'),
     url(r'^top/challenge/(?P<sortcritno>\d+)/(?P<pageno>\d+)/$', 'wouso.interface.top.views.challenge_top', name='challenge_top_arg'),
     url(r'^top/classes/$', 'wouso.interface.top.views.topclasses', name='top_classes'),
@@ -22,8 +22,8 @@ urlpatterns = patterns('',
     # sortcrit = 1 means sort by progress descending
     # sortcrit = 2 means sort by last_seen descending
 
-    (r'^user/login/$','wouso.interface.views.login_view'),
-    (r'^user/logout/$','wouso.interface.views.logout_view'),
+    url(r'^user/login/$','wouso.interface.views.login_view', name='login_view'),
+    url(r'^user/logout/$','wouso.interface.views.logout_view', name='logout_view'),
 
     url(r'^player/(?P<id>\d*)/$', 'wouso.interface.profile.views.user_profile', name='player_profile'),
     url(r'^player/set/$', 'wouso.interface.profile.views.set_profile', name='set_profile'),
