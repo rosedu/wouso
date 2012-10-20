@@ -23,8 +23,6 @@
         {% if not config_disable_chat %}
         <a id="head-chat" href="{% url chat_home %}">Chat</a>
         {% endif %}
-
-        <a id="head-logout" href="{% url django.contrib.auth.views.logout_view %}" onclick="remove_storage()">{% trans "Logout" %} &raquo;</a>
         <a id="head-logout" href="{% url wouso.interface.views.logout_view %}" onclick="remove_storage()">{% trans "Logout" %} &raquo;</a>
     {% else %}
     {% trans 'Anonimous' %}, <a href="{% url wouso.interface.views.login_view %}">{% trans "Login" %} &raquo;</a>
