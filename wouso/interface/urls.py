@@ -11,8 +11,8 @@ urlpatterns = patterns('',
 
     # TODO: refactor this into wouso.interface.top.urls and include vvvvv
     url(r'^top/$', 'wouso.interface.top.views.gettop', name='view_top'),
-    (r'^top/toptype/(?P<toptype>\d)/sortcrit/(?P<sortcrit>\d)/page/(?P<page>\d+)/$', 'wouso.interface.top.views.gettop'),
-    (r'^top/pyramid/$', 'wouso.interface.top.views.pyramid'),
+    url(r'^top/toptype/(?P<toptype>\d)/sortcrit/(?P<sortcrit>\d)/page/(?P<page>\d+)/$', 'wouso.interface.top.views.gettop', name='view_top'),
+    url(r'^top/pyramid/$', 'wouso.interface.top.views.pyramid', name='pyramid'),
     url(r'top/challenge/$', 'wouso.interface.top.views.challenge_top', name='challenge_top'),
     url(r'^top/challenge/(?P<sortcritno>\d+)/(?P<pageno>\d+)/$', 'wouso.interface.top.views.challenge_top', name='challenge_top_arg'),
     url(r'^top/classes/$', 'wouso.interface.top.views.topclasses', name='top_classes'),
