@@ -380,8 +380,8 @@ class Challenge(models.Model):
             self.status = 'P'
             self.user_won, self.user_lost = result
             self.winner = self.user_won.user
-            diff_race = self.user_won.user.series != self.user_lost.user.series
-            diff_class = self.user_won.user.proximate_group != self.user_lost.user.proximate_group
+            diff_race = self.user_won.user.race != self.user_lost.user.race
+            diff_class = self.user_won.user.group != self.user_lost.user.group
             diff_race = 1 if diff_race else 0
             diff_class = 1 if diff_class else 0
             winner_points = self.user_won.user.points

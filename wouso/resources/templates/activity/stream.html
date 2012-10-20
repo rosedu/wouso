@@ -11,7 +11,7 @@
             <a class="player-avatar" href="{% url player_profile ac.user_from.id %}">
                 <img class="avatar medium player-avatar-image" src="{% player_avatar ac.user_from %}&d=http://wouso.eftimie.ro/static/themes/blackout/library/images/avatar.jpg" />
 
-                <div class="player-avatar-race player-avatar-race-{{ ac.user_from.series.name|lower}}"></div>
+                <div class="player-avatar-race player-avatar-race-{{ ac.user_from.race.name|lower}}"></div>
             </a>
 
             <div class="activity-message">
@@ -29,7 +29,7 @@
                     <a class="player-avatar-small" href="{% url player_profile ac.user_to.id %}">
                         <img class="avatar small player-avatar-image" src="{%  player_avatar ac.user_to %}&d=http://wouso.eftimie.ro/static/themes/blackout/library/images/avatar.jpg" />
 
-                        <div class="player-avatar-race player-avatar-race-{{ ac.user_to.series.name|lower }}"></div>
+                        <div class="player-avatar-race player-avatar-race-{{ ac.user_to.race.name|lower }}"></div>
                     </a>
 
                     <div><strong>{% player_simple ac.user_to %}</strong></div>

@@ -43,7 +43,7 @@ class DefaultGod:
         If there is a group for player series, use it.
         """
         try:
-            group = ArtifactGroup.objects.get(name=player.series.name)
+            group = ArtifactGroup.objects.get(name=player.race.name)
         except (ArtifactGroup.DoesNotExist, AttributeError):
             group = Artifact.DEFAULT()
 
