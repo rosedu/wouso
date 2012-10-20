@@ -22,8 +22,8 @@ urlpatterns = patterns('',
     # sortcrit = 1 means sort by progress descending
     # sortcrit = 2 means sort by last_seen descending
 
-    (r'^user/login/$','wouso.interface.views.login_view'),
-    (r'^user/logout/$','wouso.interface.views.logout_view'),
+    url(r'^user/login/$','wouso.interface.views.login_view', name='login_view'),
+    url(r'^user/logout/$','wouso.interface.views.logout_view', name='logout_view'),
 
     url(r'^player/(?P<id>\d*)/$', 'wouso.interface.profile.views.user_profile', name='player_profile'),
     url(r'^player/set/$', 'wouso.interface.profile.views.set_profile', name='set_profile'),
