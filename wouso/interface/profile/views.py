@@ -152,12 +152,21 @@ def player_race(request, race_id):
     paginator = Paginator(activity_qs, 20)
     activity = paginator.page(1)
 
+    # get top position
+    races = list(Race.objects.filter(can_play=True))
+    races.sort(key=lambda a: a.points, reverse=True)
+    if race in races:
+        top_rank = races.index(race) + 1
+    else:
+        top_rank = '-'
+
     groups = NewHistory.get_children_top(race, PlayerGroup)
 
     return render_to_response('profile/race.html',
                             {'race': race,
                              'children': groups,
                              'top_users': top_users,
+                             'top_rank': top_rank,
                              'activity': activity},
                             context_instance=RequestContext(request)
     )
