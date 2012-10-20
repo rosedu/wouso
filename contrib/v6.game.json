@@ -1,775 +1,370 @@
-[
- {
-  "pk": 1,
-  "model": "magic.artifactgroup",
-  "fields": {
-   "name": "Default"
-  }
- },
- {
-  "pk": 1,
-  "model": "magic.artifact",
-  "fields": {
-   "group": 1,
-   "description": "Autentificat zilnic, 10 zile la r\u00e2nd.",
-   "title": "Consecvent",
-   "image": "",
-   "percents": 100,
-   "name": "ach-login-10"
-  }
- },
- {
-  "pk": 2,
-  "model": "magic.artifact",
-  "fields": {
-   "group": 1,
-   "description": "Autentificat diminea\u021ba devreme.",
-   "title": "Early bird",
-   "image": "",
-   "percents": 100,
-   "name": "ach-early-bird"
-  }
- },
- {
-  "pk": 3,
-  "model": "magic.artifact",
-  "fields": {
-   "group": 1,
-   "description": "Autentificat noaptea t\u00e2rziu.",
-   "title": "Nightly owl",
-   "image": "",
-   "percents": 100,
-   "name": "ach-night-owl"
-  }
- },
- {
-  "pk": 4,
-  "model": "magic.artifact",
-  "fields": {
-   "group": 1,
-   "description": "A primit mesaje de la 3 persoane diferite \u00een mai pu\u021bin de 30 de minute.",
-   "title": "Popularitate",
-   "image": "",
-   "percents": 100,
-   "name": "ach-popularity"
-  }
- },
- {
-  "pk": 5,
-  "model": "magic.artifact",
-  "fields": {
-   "group": 1,
-   "description": "R\u0103spuns corect la \u00eentrebarea zilei, 10 zile la r\u00e2nd.",
-   "title": "Corectitudine",
-   "image": "",
-   "percents": 100,
-   "name": "ach-qotd-10"
-  }
- },
- {
-  "pk": 6,
-  "model": "magic.artifact",
-  "fields": {
-   "group": 1,
-   "description": "Primul r\u0103spuns la \u00eentrebarea zilei - gre\u0219it.",
-   "title": "Bad start",
-   "image": "",
-   "percents": 100,
-   "name": "ach-bad-start"
-  }
- },
- {
-  "pk": 1,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 5,
-   "available": true,
-   "description": "Schimb\u0103 punctajul afi\u0219at, modific\u00e2ndu-l cu -25%.",
-   "title": "Degizare -25",
-   "level_required": 0,
-   "image": "",
-   "mass": false,
-   "percents": -25,
-   "type": "s",
-   "price": 10.0,
-   "name": "top-disguise"
-  }
- },
- {
-  "pk": 2,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 5,
-   "available": true,
-   "description": "Schimb\u0103 punctajul afi\u0219at, modific\u00e2ndu-l cu +25%.",
-   "title": "Degizare +25",
-   "level_required": 0,
-   "image": "",
-   "mass": false,
-   "percents": 25,
-   "type": "s",
-   "price": 10.0,
-   "name": "top-disguise"
-  }
- },
- {
-  "pk": 3,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 5,
-   "available": true,
-   "description": "Schimb\u0103 punctajul afi\u0219at, modific\u00e2ndu-l cu -10%.",
-   "title": "Degizare -10",
-   "level_required": 0,
-   "image": "",
-   "mass": false,
-   "percents": -10,
-   "type": "o",
-   "price": 8.0,
-   "name": "top-disguise"
-  }
- },
- {
-  "pk": 4,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 5,
-   "available": true,
-   "description": "Schimb\u0103 punctajul afi\u0219at, modific\u00e2ndu-l cu 10%.",
-   "title": "Degizare -10",
-   "level_required": 0,
-   "image": "",
-   "mass": false,
-   "percents": 10,
-   "type": "o",
-   "price": 8.0,
-   "name": "top-disguise"
-  }
- },
- {
-  "pk": 5,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 5,
-   "available": true,
-   "description": "Blocheaz\u0103 posibilitatea de a provoca pentru juc\u0103torul pe care e aplicat\u0103.",
-   "title": "Paralizare",
-   "level_required": 0,
-   "image": "",
-   "mass": false,
-   "percents": 100,
-   "type": "n",
-   "price": 15.0,
-   "name": "challenge-cannot-challenge"
-  }
- },
- {
-  "pk": 6,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 5,
-   "available": true,
-   "description": "Blocheaz\u0103 posibilitatea de a provoca pentru juc\u0103torul pe care e aplicat\u0103 \u0219i +/- 2 juc\u0103tori de aceea\u0219i ras\u0103 din apropierea lui.",
-   "title": "Paralizare (mas\u0103)",
-   "level_required": 0,
-   "image": "",
-   "mass": true,
-   "percents": 100,
-   "type": "n",
-   "price": 30.0,
-   "name": "challenge-cannot-challenge"
-  }
- },
- {
-  "pk": 7,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 5,
-   "available": true,
-   "description": "Prime\u0219ti mai pu\u021bin cu 50% puncte din provoc\u0103rile c\u00e2\u0219tigate.",
-   "title": "Sl\u0103biciune",
-   "level_required": 0,
-   "image": "",
-   "mass": false,
-   "percents": -50,
-   "type": "n",
-   "price": 20.0,
-   "name": "challenge-affect-scoring-won"
-  }
- },
- {
-  "pk": 8,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 5,
-   "available": true,
-   "description": "Prime\u0219ti mai pu\u021bin cu 50% puncte din provoc\u0103rile c\u00e2\u0219tigate. Se aplic\u0103 pe destina\u021bie \u0219i +/-2 vecini de aceea\u0219i ras\u0103 din top.",
-   "title": "Sl\u0103biciune (mas\u0103)",
-   "level_required": 0,
-   "image": "",
-   "mass": true,
-   "percents": -50,
-   "type": "n",
-   "price": 40.0,
-   "name": "challenge-affect-scoring-won"
-  }
- },
- {
-  "pk": 9,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 5,
-   "available": true,
-   "description": "Prime\u0219ti mai mult cu 50% puncte din provoc\u0103rile c\u00e2\u0219tigate.",
-   "title": "\u0218arj\u0103",
-   "level_required": 0,
-   "image": "",
-   "mass": false,
-   "percents": 50,
-   "type": "p",
-   "price": 25.0,
-   "name": "challenge-affect-scoring-won"
-  }
- },
- {
-  "pk": 10,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 5,
-   "available": true,
-   "description": "Prime\u0219ti mai mult cu 50% puncte din provoc\u0103rile c\u00e2\u0219tigate. Se aplic\u0103 \u0219i asupra +/-2 vecini de aceea\u0219i ras\u0103 din top.",
-   "title": "\u0218arj\u0103 (mas\u0103)",
-   "level_required": 0,
-   "image": "",
-   "mass": true,
-   "percents": 50,
-   "type": "p",
-   "price": 50.0,
-   "name": "challenge-affect-scoring-won"
-  }
- },
- {
-  "pk": 11,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 5,
-   "available": true,
-   "description": "Prime\u0219te cu 100% mai mult pentru provoc\u0103rile c\u00e2\u0219tigate \u0219i cu 100% mai pu\u021bin pentru cele pierdute.",
-   "title": "Frenezie",
-   "level_required": 0,
-   "image": "",
-   "mass": false,
-   "percents": 100,
-   "type": "o",
-   "price": 20.0,
-   "name": "challenge-affect-scoring"
-  }
- },
- {
-  "pk": 12,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 5,
-   "available": true,
-   "description": "Prime\u0219te cu 100% mai mult pentru provoc\u0103rile c\u00e2\u0219tigate \u0219i cu 100% mai pu\u021bin pentru cele pierdute. Se aplic\u0103 asupra +/- 2 vecini \u00een top, indiferent de ras\u0103.",
-   "title": "Frenezie (mas\u0103)",
-   "level_required": 0,
-   "image": "",
-   "mass": true,
-   "percents": 100,
-   "type": "o",
-   "price": 20.0,
-   "name": "challenge-affect-scoring"
-  }
- },
- {
-  "pk": 13,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 0,
-   "available": true,
-   "description": "Elimin\u0103 vr\u0103jile negative.",
-   "title": "Purificare",
-   "level_required": 0,
-   "image": "",
-   "mass": false,
-   "percents": 100,
-   "type": "p",
-   "price": 25.0,
-   "name": "cure"
-  }
- },
- {
-  "pk": 14,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 5,
-   "available": true,
-   "description": "Cur\u0103\u021b\u0103 toate vr\u0103jile active pe un juc\u0103tor.",
-   "title": "Anulare",
-   "level_required": 0,
-   "image": "",
-   "mass": false,
-   "percents": 100,
-   "type": "o",
-   "price": 20.0,
-   "name": "dispell"
-  }
- },
- {
-  "pk": 15,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 5,
-   "available": true,
-   "description": "Nu poate lansa Question of the Day",
-   "title": "Orbire",
-   "level_required": 0,
-   "image": "",
-   "mass": false,
-   "percents": 100,
-   "type": "n",
-   "price": 10.0,
-   "name": "qotd-blind"
-  }
- },
- {
-  "pk": 16,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 5,
-   "available": true,
-   "description": "Nu poate lansa Question of the Day, aplicat\u0103 \u0219i pe +/-2 vecini de aceea\u0219i ras\u0103 \u00een top.",
-   "title": "Orbire (mas\u0103)",
-   "level_required": 0,
-   "image": "",
-   "mass": true,
-   "percents": 100,
-   "type": "n",
-   "price": 20.0,
-   "name": "qotd-blind"
-  }
- },
- {
-  "pk": 17,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 5,
-   "available": true,
-   "description": "Ofer\u0103 33% \u0219anse de a nu pierde puncte \u00een urma provoc\u0103rilor.",
-   "title": "Eludare",
-   "level_required": 0,
-   "image": "",
-   "mass": false,
-   "percents": 100,
-   "type": "o",
-   "price": 25.0,
-   "name": "challenge-evade"
-  }
- },
- {
-  "pk": 18,
-  "model": "magic.spell",
-  "fields": {
-   "due_days": 5,
-   "available": true,
-   "description": "Ofer\u0103 33% \u0219anse de a nu pierde puncte \u00een urma provoc\u0103rilor.",
-   "title": "Eludare (mas\u0103)",
-   "level_required": 0,
-   "image": "",
-   "mass": true,
-   "percents": 100,
-   "type": "o",
-   "price": 50.0,
-   "name": "challenge-evade"
-  }
- },
- {
-  "pk": "points",
-  "model": "scoring.coin",
-  "fields": {
-   "owner": null,
-   "integer": true,
-   "name": "points"
-  }
- },
- {
-  "pk": "gold",
-  "model": "scoring.coin",
-  "fields": {
-   "owner": null,
-   "integer": true,
-   "name": "gold"
-  }
- },
- {
-  "pk": "qotd-ok",
-  "model": "scoring.formula",
-  "fields": {
-   "owner": "QotdGame",
-   "formula": "points=3",
-   "description": "Points earned on a correct answer"
-  }
- },
- {
-  "pk": "chall-won",
-  "model": "scoring.formula",
-  "fields": {
-   "owner": "ChallengeGame",
-   "formula": "points=6",
-   "description": "Points earned when winning a challenge"
-  }
- },
- {
-  "pk": "chall-lost",
-  "model": "scoring.formula",
-  "fields": {
-   "owner": "ChallengeGame",
-   "formula": "points=2",
-   "description": "Points earned when losing a challenge"
-  }
- },
- {
-  "pk": "chall-draw",
-  "model": "scoring.formula",
-  "fields": {
-   "owner": "ChallengeGame",
-   "formula": "points=4",
-   "description": "Points earned when drawing a challenge"
-  }
- },
- {
-  "pk": "chall-warranty",
-  "model": "scoring.formula",
-  "fields": {
-   "owner": "ChallengeGame",
-   "formula": "points=-3",
-   "description": "Points taken as a warranty for challenge"
-  }
- },
- {
-  "pk": "chall-warranty-return",
-  "model": "scoring.formula",
-  "fields": {
-   "owner": "ChallengeGame",
-   "formula": "points=3",
-   "description": "Points given back as a warranty taken for challenge"
-  }
- },
- {
-  "pk": "chall-timer",
-  "model": "scoring.formula",
-  "fields": {
-   "owner": "ChallengeGame",
-   "formula": "tlimit=300 - 5 * ({level} - 1)",
-   "description": "Seconds left for a user in challenge"
-  }
- },
- {
-  "pk": "quest-ok",
-  "model": "scoring.formula",
-  "fields": {
-   "owner": "QuestGame",
-   "formula": "points={level}",
-   "description": "Points earned when finishing a level. Arguments: level."
-  }
- },
- {
-  "pk": "quest-finish-ok",
-  "model": "scoring.formula",
-  "fields": {
-   "owner": "QuestGame",
-   "formula": "points=10",
-   "description": "Bonus points earned when finishing the entire quest. No arguments."
-  }
- },
- {
-  "pk": "finalquest-ok",
-  "model": "scoring.formula",
-  "fields": {
-   "owner": "QuestGame",
-   "formula": "points={level}+{level_users}",
-   "description": "Bonus points earned when finishing the final quest. Arguments: level, level_users"
-  }
- },
- {
-  "pk": "specialquest-passed",
-  "model": "scoring.formula",
-  "fields": {
-   "owner": "SpecialQuestGame",
-   "formula": "gold={value}",
-   "description": "Points earned when finishing a task. Arguments: value."
-  }
- },
- {
-  "pk": "buy-spell",
-  "model": "scoring.formula",
-  "fields": {
-   "owner": null,
-   "formula": "gold=-{price}",
-   "description": "Gold spent on spells"
-  }
- },
- {
-  "pk": "gold-points-rate",
-  "model": "scoring.formula",
-  "fields": {
-   "owner": null,
-   "formula": "points={gold}*9;gold=-{gold}",
-   "description": "Exchange gold in points"
-  }
- },
- {
-  "pk": "points-gold-rate",
-  "model": "scoring.formula",
-  "fields": {
-   "owner": null,
-   "formula": "points=-{points};gold={points}*0.1",
-   "description": "Exchange points in gold"
-  }
- },
- {
-  "pk": "bonus-gold",
-  "model": "scoring.formula",
-  "fields": {
-   "owner": null,
-   "formula": "gold={gold}",
-   "description": "Give bonus gold to the poor people"
-  }
- },
- {
-  "pk": "bonus-points",
-  "model": "scoring.formula",
-  "fields": {
-   "owner": null,
-   "formula": "points={points}",
-   "description": "Give bonus points"
-  }
- },
- {
-  "pk": "steal-points",
-  "model": "scoring.formula",
-  "fields": {
-   "owner": null,
-   "formula": "points={points}",
-   "description": "Steal points using spells"
-  }
- },
- {
-  "pk": "penalty-points",
-  "model": "scoring.formula",
-  "fields": {
-   "owner": null,
-   "formula": "points=-{points}",
-   "description": "Take back points from user"
-  }
- },
- {
-  "pk": "default_group",
-  "model": "config.setting",
-  "fields": {
-   "value": "1"
-  }
- },
- {
-  "pk": "default_race",
-  "model": "config.setting",
-  "fields": {
-   "value": "1"
-  }
- },
- {
-  "pk": "test",
-  "model": "config.setting",
-  "fields": {
-   "value": "test"
-  }
- },
- {
-  "pk": "title",
-  "model": "config.setting",
-  "fields": {
-   "value": "World of USO v6"
-  }
- },
- {
-  "pk": "intro",
-  "model": "config.setting",
-  "fields": {
-   "value": "World of USO e un joc simplu realizat pentru studen\u021bii cursului de USO (Utilizarea Sistemelor de Operare) din Facultatea de Automatic\u0103 \u0219i Calculatoare a Universit\u0103\u021bii Politehnica Bucure\u0219ti.\r\n\r\nWorld of USO are 3 p\u0103r\u021bi: Question of the Day, Challenge \u0219i The Ques"
-  }
- },
- {
-  "pk": "theme",
-  "model": "config.setting",
-  "fields": {
-   "value": "default"
-  }
- },
- {
-  "pk": "disable-Chat",
-  "model": "config.setting",
-  "fields": {
-   "value": ""
-  }
- },
- {
-  "pk": "disable-Qproposal",
-  "model": "config.setting",
-  "fields": {
-   "value": "True"
-  }
- },
- {
-  "pk": "disable-QotdGame",
-  "model": "config.setting",
-  "fields": {
-   "value": ""
-  }
- },
- {
-  "pk": "disable-SpecialQuestGame",
-  "model": "config.setting",
-  "fields": {
-   "value": ""
-  }
- },
- {
-  "pk": "disable-Top",
-  "model": "config.setting",
-  "fields": {
-   "value": ""
-  }
- },
- {
-  "pk": "extrainfo",
-  "model": "config.setting",
-  "fields": {
-   "value": "Folosi\u021bi contul de pe <b>cs.curs.pub.ro</b> pentru a v\u0103 autentifica. Dac\u0103 ave\u021bi probleme, contacta\u021bi-ne la <b>wouso@rosedu.org</b>"
-  }
- },
- {
-  "pk": "hidden_footer",
-  "model": "config.setting",
-  "fields": {
-   "value": ""
-  }
- },
- {
-  "pk": "logo",
-  "model": "config.setting",
-  "fields": {
-   "value": ""
-  }
- },
- {
-  "pk": "disable-Magic",
-  "model": "config.setting",
-  "fields": {
-   "value": ""
-  }
- },
- {
-  "pk": "disable-Bazaar-Exchange",
-  "model": "config.setting",
-  "fields": {
-   "value": "True"
-  }
- },
- {
-  "pk": "disable_login",
-  "model": "config.setting",
-  "fields": {
-   "value": ""
-  }
- },
- {
-  "pk": "enable_header_autoreload",
-  "model": "config.setting",
-  "fields": {
-   "value": ""
-  }
- },
- {
-  "pk": "default_series",
-  "model": "config.setting",
-  "fields": {
-   "value": "1"
-  }
- },
- {
-  "pk": "disable_header_autoreload",
-  "model": "config.setting",
-  "fields": {
-   "value": "True"
-  }
- },
- {
-  "pk": "disable-ChallengeGame",
-  "model": "config.setting",
-  "fields": {
-   "value": ""
-  }
- },
- {
-  "pk": "disable-QuestGame",
-  "model": "config.setting",
-  "fields": {
-   "value": ""
-  }
- },
- {
-  "pk": "disable-WorkshopGame",
-  "model": "config.setting",
-  "fields": {
-   "value": ""
-  }
- },
- {
-  "pk": "wousocron_lastrun",
-  "model": "config.setting",
-  "fields": {
-   "value": "2012-10-01 15:14:26.561335"
-  }
- },
- {
-  "pk": "disable-Private-Chat",
-  "model": "config.setting",
-  "fields": {
-   "value": ""
-  }
- },
- {
-  "pk": 0,
-  "model": "pages.staticpage",
-  "fields": {
-   "html_contents": "The story starts here.",
-   "hidden": false,
-   "title": "Povestea",
-   "slug": "poveste",
-   "name": "Povestea"
-  }
- },
- {
-  "pk": 1,
-  "model": "pages.staticpage",
-  "fields": {
-   "html_contents": "You can find us on one of the following:\r\n\r\n<ul>\r\n<li><a href=\"http://lists.rosedu.org/cgi-bin/mailman/listinfo/rosedu-general\">rosedu-general mailing list</a></li>\r\n<li>#rosedu IRC channel on Freenode</li>\r\n<li><a href=\"http://github.com/rosedu/wouso\">Github</a> page</li>\r\n</ul>",
-   "hidden": false,
-   "title": "Contact us",
-   "slug": "contact",
-   "name": "Contact"
-  }
- },
- {
-  "pk": 2,
-  "model": "pages.staticpage",
-  "fields": {
-   "html_contents": "<h3>Development</h3>\r\n\r\n<div class=\"spacer-small\">\r\n\t<!-- -->\r\n</div><!-- .spacer-small -->\r\n\r\n<div class=\"spacer\">\r\n\t<!-- -->\r\n</div><!-- .spacer -->\r\n\r\n<h3>Design</h3>\r\n\r\n<div class=\"spacer-small\">\r\n\t<!-- -->\r\n</div><!-- .spacer-small -->\r\n\r\n<a href=\"http://swarm.cs.pub.ro/~cdogaru/\" target=\"_blank\" title=\"C\u0103t\u0103lin Dogaru\"><img class=\"avatar\" height=\"80\" src=\"http://www.gravatar.com/avatar/b01691dcb932148802ef78c12bfcd7b8.jpg\" width=\"80\" /></a>\r\n\r\n<div class=\"clear spacer-small\">\r\n\t<!-- -->\r\n</div><!-- .clear .spacer-small -->\r\n\r\n<p>\u0219i <a href=\"#\" title=\"Dorian Dogaru\">Dorian Dogaru</a>.</p>\r\n\r\n<div class=\"spacer\">\r\n\t<!-- -->\r\n</div><!-- .spacer -->\r\n\r\n<h3>Poveste \u0219i con\u021binut</h3>\r\n\r\n<p><a href=\"http://swarm.cs.pub.ro/~razvan/blog/\" title=\"R\u0103zvan Deaconescu\">R\u0103zvan Deaconescu</a> \u0219i echipa <a href=\"#\">wouso-content</a>.</p>",
-   "hidden": false,
-   "title": "Credits",
-   "slug": "credits",
-   "name": "Credits"
-  }
- }
-]
+[{"pk": 1,
+"model": "magic.artifactgroup",
+"fields": {"name": "Default"}},
+
+{"pk": "points",
+"model": "scoring.coin",
+"fields": {"owner": null,
+"integer": false,
+"name": "points"}},
+
+{"pk": "gold",
+"model": "scoring.coin",
+"fields": {"owner": null,
+"integer": true,
+"name": "gold"}},
+
+{"pk": "penalty",
+"model": "scoring.coin",
+"fields": {"owner": null,
+"integer": false,
+"name": "penalty"}},
+
+{"pk": "qotd-ok",
+"model": "scoring.formula",
+"fields": {"owner": "QotdGame",
+"formula": "points=40 + (10 if {hour} < 12 else -10)",
+"description": "Points earned on a correct answer. Arguments: hour of the day."}},
+
+{"pk": "quest-ok",
+"model": "scoring.formula",
+"fields": {"owner": "QuestGame",
+"formula": "points={level}*10",
+"description": "Points earned when finishing a level. Arguments: level."}},
+
+{"pk": "quest-finish-ok",
+"model": "scoring.formula",
+"fields": {"owner": "QuestGame",
+"formula": "points=0",
+"description": "Bonus points earned when finishing the entire quest. No arguments."}},
+
+{"pk": "finalquest-ok",
+"model": "scoring.formula",
+"fields": {"owner": "QuestGame",
+"formula": "points=100",
+"description": "Bonus points earned when finishing the final quest. Arguments: level, level_users"}},
+
+{"pk": "specialquest-passed",
+"model": "scoring.formula",
+"fields": {"owner": "SpecialQuestGame",
+"formula": "gold={value}",
+"description": "Points earned when finishing a task. Arguments: value."}},
+
+{"pk": "chall-won",
+"model": "scoring.formula",
+"fields": {"owner": "ChallengeGame",
+"formula": "points=60+{different_race}*10+{different_class}*10",
+"description": "Points earned when winning a challenge. Arguments: different_race (int 0,1), different_class (int 0,1)"}},
+
+{"pk": "chall-lost",
+"model": "scoring.formula",
+"fields": {"owner": "ChallengeGame",
+"formula": "points=0",
+"description": "Points earned when losing a challenge"}},
+
+{"pk": "chall-draw",
+"model": "scoring.formula",
+"fields": {"owner": "ChallengeGame",
+"formula": "points=30",
+"description": "Points earned when drawing a challenge"}},
+
+{"pk": "chall-warranty",
+"model": "scoring.formula",
+"fields": {"owner": "ChallengeGame",
+"formula": "points=-30",
+"description": "Points taken as a warranty for challenge"}},
+
+{"pk": "chall-warranty-return",
+"model": "scoring.formula",
+"fields": {"owner": "ChallengeGame",
+"formula": "points=30",
+"description": "Points given back as a warranty taken for challenge"}},
+
+{"pk": "chall-timer",
+"model": "scoring.formula",
+"fields": {"owner": "ChallengeGame",
+"formula": "tlimit=300 - 5 * ({level} - 1)",
+"description": "Seconds left for a user in challenge"}},
+
+{"pk": "buy-spell",
+"model": "scoring.formula",
+"fields": {"owner": null,
+"formula": "gold=-{price}",
+"description": "Gold spent on spells"}},
+
+{"pk": "gold-points-rate",
+"model": "scoring.formula",
+"fields": {"owner": null,
+"formula": "points={gold}*3;gold=-{gold}",
+"description": "Exchange gold in points"}},
+
+{"pk": "points-gold-rate",
+"model": "scoring.formula",
+"fields": {"owner": null,
+"formula": "points=-{points};gold={points}*0.1",
+"description": "Exchange points in gold"}},
+
+{"pk": "bonus-gold",
+"model": "scoring.formula",
+"fields": {"owner": null,
+"formula": "gold={gold}",
+"description": "Give bonus gold to the poor people"}},
+
+{"pk": "bonus-points",
+"model": "scoring.formula",
+"fields": {"owner": null,
+"formula": "points={points}",
+"description": "Give bonus points"}},
+
+{"pk": "steal-points",
+"model": "scoring.formula",
+"fields": {"owner": null,
+"formula": "points={points}",
+"description": "Steal points using spells"}},
+
+{"pk": "penalty-points",
+"model": "scoring.formula",
+"fields": {"owner": null,
+"formula": "points=-{points}",
+"description": "Take back points from user"}},
+
+{"pk": "level-gold",
+"model": "scoring.formula",
+"fields": {"owner": null,
+"formula": "gold=10*{level}",
+"description": "Bonus gold on level upgrade"}},
+
+{"pk": "general-infraction",
+"model": "scoring.formula",
+"fields": {"owner": null,
+"formula": "penalty=10",
+"description": "Give penalty points to suspicious users"}},
+
+{"pk": "chall-was-set-up-infraction",
+"model": "scoring.formula",
+"fields": {"owner": null,
+"formula": "penalty=20",
+"description": "Give penalty points for losing a challenge on purpose"}},
+
+{"pk": "default_group",
+"model": "config.setting",
+"fields": {"value": ""}},
+
+{"pk": "default_race",
+"model": "config.setting",
+"fields": {"value": "1"}},
+
+{"pk": "test",
+"model": "config.setting",
+"fields": {"value": "test"}},
+
+{"pk": "title",
+"model": "config.setting",
+"fields": {"value": "World of USO v4 - piranha"}},
+
+{"pk": "intro",
+"model": "config.setting",
+"fields": {"value": "World of USO e un joc simplu realizat pentru studen\u021bii cursului de USO (Utilizarea Sistemelor de Operare) din Facultatea de Automatic\u0103 \u0219i Calculatoare a Universit\u0103\u021bii Politehnica Bucure\u0219ti.\r\n\r\nWorld of USO are 3 p\u0103r\u021bi: Question of the Day, Challenge \u0219i The Quest"}},
+
+{"pk": "disable-Chat",
+"model": "config.setting",
+"fields": {"value": ""}},
+
+{"pk": "disable-Qproposal",
+"model": "config.setting",
+"fields": {"value": ""}},
+
+{"pk": "theme",
+"model": "config.setting",
+"fields": {"value": ""}},
+
+{"pk": "disable-QotdGame",
+"model": "config.setting",
+"fields": {"value": ""}},
+
+{"pk": "disable-SpecialQuestGame",
+"model": "config.setting",
+"fields": {"value": ""}},
+
+{"pk": "disable-Top",
+"model": "config.setting",
+"fields": {"value": ""}},
+
+{"pk": "disable-chall-was-set-up-SecurityRule",
+"model": "config.setting",
+"fields": {"value": ""}},
+
+{"pk": "disable-login-multiple-account-SecurityRule",
+"model": "config.setting",
+"fields": {"value": ""}},
+
+{"pk": "disable-reported-user-SecutiryRule",
+"model": "config.setting",
+"fields": {"value": ""}},
+
+{"pk": 1,
+"model": "pages.staticpage",
+"fields": {"html_contents": "You can find us on one of the following:\r\n\r\n<ul>\r\n<li><a href=\"http://lists.rosedu.org/cgi-bin/mailman/listinfo/rosedu-general\">rosedu-general mailing list</a></li>\r\n<li>#rosedu IRC channel on Freenode</li>\r\n<li><a href=\"http://projects.rosedu.org/projects/wousodjango\">Redmine project</a> and git repo</li>\r\n</ul>",
+"hidden": false,
+"title": "Contact us",
+"slug": "contact",
+"name": "Contact"}},
+
+{"pk": 1,
+"model": "user.race",
+"fields": {"can_play": false,
+"name": "Others",
+"title": ""}},
+
+{"pk": 2,
+"model": "user.race",
+"fields": {"can_play": true,
+"name": "CC",
+"title": "Nifes"}},
+
+{"pk": 3,
+"model": "user.race",
+"fields": {"can_play": true,
+"name": "CA",
+"title": "Oxynia"}},
+
+{"pk": 4,
+"model": "user.race",
+"fields": {"can_play": true,
+"name": "CB",
+"title": "Zota"}},
+
+{"pk": 1,
+"model": "user.playergroup",
+"fields": {"name": "311CC",
+"parent": 2,
+"title": "Ghilda Minerilor",
+"players": [],
+"points": 0.0,
+"owner": null}},
+
+{"pk": 2,
+"model": "user.playergroup",
+"fields": {"name": "312CC",
+"parent": 2,
+"title": "Ghilda Artizanilor",
+"players": [],
+"points": 0.0,
+"owner": null}},
+
+{"pk": 3,
+"model": "user.playergroup",
+"fields": {"name": "313CC",
+"parent": 2,
+"title": "Ghilda Constructorilor",
+"players": [],
+"points": 0.0,
+"owner": null}},
+
+{"pk": 4,
+"model": "user.playergroup",
+"fields": {"name": "314CC",
+"parent": 2,
+"title": "Ghilda Mestesugarilor",
+"players": [],
+"points": 0.0,
+"owner": null}},
+
+{"pk": 5,
+"model": "user.playergroup",
+"fields": {"name": "315CC",
+"parent": 2,
+"title": "Ghilda Inventatorilor",
+"players": [],
+"points": 0.0,
+"owner": null}},
+
+{"pk": 6,
+"model": "user.playergroup",
+"fields": {"name": "311CA",
+"parent": 3,
+"title": "Academia Ashurbanipal",
+"players": [],
+"points": 0.0,
+"owner": null}},
+
+{"pk": 7,
+"model": "user.playergroup",
+"fields": {"name": "312CA",
+"parent": 3,
+"title": "Academia Burnell",
+"players": [],
+"points": 0.0,
+"owner": null}},
+
+{"pk": 8,
+"model": "user.playergroup",
+"fields": {"name": "313CA",
+"parent": 3,
+"title": "Academia Cekhov",
+"players": [],
+"points": 0.0,
+"owner": null}},
+
+{"pk": 9,
+"model": "user.playergroup",
+"fields": {"name": "314CA",
+"parent": 3,
+"title": "Academia Dawkins",
+"players": [],
+"points": 0.0,
+"owner": null}},
+
+{"pk": 10,
+"model": "user.playergroup",
+"fields": {"name": "315CA",
+"parent": 3,
+"title": "Academia Euclid",
+"players": [],
+"points": 0.0,
+"owner": null}},
+
+{"pk": 11,
+"model": "user.playergroup",
+"fields": {"name": "311CB",
+"parent": 4,
+"title": "Casa Shamal",
+"players": [],
+"points": 0.0,
+"owner": null}},
+
+{"pk": 12,
+"model": "user.playergroup",
+"fields": {"name": "312CB",
+"parent": 4,
+"title": "Casa Borras",
+"players": [],
+"points": 0.0,
+"owner": null}},
+
+{"pk": 13,
+"model": "user.playergroup",
+"fields": {"name": "313CB",
+"parent": 4,
+"title": "Casa Leste",
+"players": [],
+"points": 0.0,
+"owner": null}},
+
+{"pk": 14,
+"model": "user.playergroup",
+"fields": {"name": "314CB",
+"parent": 4,
+"title": "Casa Mistral",
+"players": [],
+"points": 0.0,
+"owner": null}},
+
+{"pk": 15,
+"model": "user.playergroup",
+"fields": {"name": "315CB",
+"parent": 4,
+"title": "Casa Etesian",
+"players": [],
+"points": 0.0,
+"owner": null}}]
