@@ -302,6 +302,9 @@ span.button-list {
     margin-left: 40px;
     min-height: 350px;
 }
+.sg-large {
+    width: 240px;
+}
 .w50 {
     width: 50px;
     margin-right: 2px;

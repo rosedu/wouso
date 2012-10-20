@@ -34,13 +34,16 @@
         #content-cp {
             width: auto;
             float: none;
-            margin-left: 250px;
+            margin-left: 240px;
         }
         .tab_container {
             clear: none !important;
         }
         .subgroups {
             margin-left: 10px;
+        }
+        div.section-content, div.section {
+            width: auto;
         }
         {% endblock %}
     </style>
@@ -123,12 +126,14 @@
 
     <div id="content-cp">
         <div id="ajax-message">{%  if message %}<p class="ok">{{ message }}</p>{% endif %}{% if error %}<p class="wrong">{{ error }}</p>{% endif %}</div>
+        <div class="section">
         {% block content %}
             <h2>{% block sectiontitle %}Dashboard{% endblock %}</h2>
 
+            <div class="section-content">
             {% block sectioncontent %}
 
-            <div class="subgroups">
+            <div class="subgroups sg-large">
                 <h3>Information</h3>
                 <p>Django version: {{ django_version }}</p>
                 <p>WoUSO version: {{ wouso_version }}</p>
@@ -164,14 +169,18 @@
             <a href="{% url the_bell %}">Press the bell!</a>
 
             {% endblock %}
+            </div><!-- section content -->
         {% endblock %}
+        </div>
     </div>
 
 
     <div id="footer">
+        <div id="footer-content">
         {% block footer %}
         &copy; 2012 ROSEdu
         {% endblock %}
+        </div>
     </div>
 
     <div id="PrivatebarUsers"></div>
