@@ -2,6 +2,131 @@
 "model": "magic.artifactgroup",
 "fields": {"name": "Default"}},
 
+{"pk": 2,
+"model": "magic.artifactgroup",
+"fields": {
+"name": "CA"}},
+
+{"pk": 3,
+"model": "magic.artifactgroup",
+"fields": {
+"name": "CB"}},
+
+{"pk": 4,
+"model": "magic.artifactgroup",
+"fields": {
+"name": "CC"}},
+
+{"pk": 1,
+"model": "magic.artifact",
+"fields": {
+"image": "",
+"percents": 100,
+"group": 2,
+"name": "level-1",
+"title": "Level 1"
+}},
+
+{"pk": 3,
+"model": "magic.artifact",
+"fields": {
+"image": "",
+"percents": 100,
+"group": 3,
+"name": "level-1",
+"title": "Level 1"}},
+
+{"pk": 4,
+"model": "magic.artifact",
+"fields": {
+"image": "",
+"percents": 100,
+"group": 4,
+"name": "level-1",
+"title": "Level 1"}},
+
+{"pk": 5,
+"model": "magic.artifact",
+"fields": {
+"image": "",
+"percents": 100,
+"group": 2,
+"name": "level-2",
+"title": "Level 2"}},
+
+{"pk": 6,
+"model": "magic.artifact",
+"fields": {
+"image": "",
+"percents": 100,
+"group": 3,
+"name": "level-2",
+"title": "Level 2"}},
+
+{"pk": 7,
+"model": "magic.artifact",
+"fields": {
+"image": "",
+"percents": 100,
+"group": 4,
+"name": "level-2",
+"title": "Level 2"
+}},
+
+{"pk": 8,
+"model": "magic.artifact",
+"fields": {
+"image": "",
+"percents": 100,
+"group": 2,
+"name": "level-3",
+"title": "Level 3"}},
+
+{"pk": 9,
+"model": "magic.artifact",
+"fields": {
+"image": "",
+"percents": 100,
+"group": 3,
+"name": "level-3",
+"title": "Level 3"}},
+
+{"pk": 10,
+"model": "magic.artifact",
+"fields": {
+"image": "",
+"percents": 100,
+"group": 4,
+"name": "level-3",
+"title": "Level 3"}},
+
+{"pk": 11,
+"model": "magic.artifact",
+"fields": {
+"image": "",
+"percents": 100,
+"group": 2,
+"name": "level-4",
+"title": "Level 4"}},
+
+{"pk": 12,
+"model": "magic.artifact",
+"fields": {
+"image": "",
+"percents": 100,
+"group": 3,
+"name": "level-4",
+"title": "Level 4"}},
+
+{"pk": 13,
+"model": "magic.artifact",
+"fields": {
+"image": "",
+"percents": 100,
+"group": 4,
+"name": "level-4",
+"title": "Level 4"}},
+
 {"pk": "points",
 "model": "scoring.coin",
 "fields": {"owner": null,
