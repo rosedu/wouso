@@ -14,6 +14,8 @@ class DefaultGod:
         If inherited, should not override super's result, but extend it.
         """
         fs = [
+            dict(id='start-points', formula='points=420', owner=None,
+                description='Points received at the start of the game'),
             dict(id='buy-spell', formula='gold=-{price}', owner=None,
                 description='Gold spent on spells'),
             dict(id='gold-points-rate', formula='points={gold}*3;gold=-{gold}', owner=None,
