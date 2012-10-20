@@ -237,5 +237,3 @@ else:
 # the probability of getting bonus points for correctly answered qotd
 QOTD_BONUS_PROB = 30
 
-# the number of points given for when the player gets a bonus
-QOTD_BONUS_POINTS = 2

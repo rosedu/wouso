@@ -113,8 +113,8 @@ class QotdGame(Game):
             now = datetime.now()
 	    
             pr = randint(0,99)
-	    scoring.score(user, QotdGame, 'qotd-ok', hour=now.hour);
-            if (pr < settings.QOTD_BONUS_PROB):
+                scoring.score(user, QotdGame, 'qotd-ok', hour=now.hour);
+            if pr < settings.QOTD_BONUS_PROB:
                 scoring.score(user, QotdGame, 'qotd-ok-bonus', hour=now.hour)
 
     @classmethod
@@ -128,7 +128,7 @@ class QotdGame(Game):
             description='Points earned on a correct answer in the morning')
         )
         fs.append(dict(id="qotd-ok-bonus",
-            formula='points='+str(settings.QOTD_BONUS_POINTS),
+            formula='points=2',
             owner=qotd_game.game,
             description='Points earned in case of bonus')
         )

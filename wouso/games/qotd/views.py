@@ -8,7 +8,6 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from models import QotdUser, QotdGame
 from forms import QotdForm
-from django.conf import settings
 
 @login_required
 def index(request):
