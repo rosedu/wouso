@@ -280,6 +280,162 @@
   }
  },
  {
+  "pk": 22,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-login-10"
+  }
+ },
+ {
+  "pk": 23,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-qotd-10"
+  }
+ },
+ {
+  "pk": 24,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-chall-30"
+  }
+ },
+ {
+  "pk": 25,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-chall-won-10"
+  }
+ },
+ {
+  "pk": 26,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-night-owl"
+  }
+ },
+ {
+  "pk": 27,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-early-bird"
+  }
+ },
+ {
+  "pk": 28,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-popularity"
+  }
+ },
+ {
+  "pk": 29,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-bad-start"
+  }
+ },
+ {
+  "pk": 30,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-chall-def-big"
+  }
+ },
+ {
+  "pk": 31,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-this-is-sparta"
+  }
+ },
+ {
+  "pk": 32,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-flawless-victory"
+  }
+ },
+ {
+  "pk": 33,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-win-fast"
+  }
+ },
+ {
+  "pk": 34,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-god-mode-on"
+  }
+ },
+ {
   "pk": 1,
   "model": "magic.spell",
   "fields": {
