@@ -551,7 +551,7 @@ class ChallengeGame(Game):
         """ Returns a list of formulas used by qotd """
         fs = []
         chall_game = kls.get_instance()
-        fs.append(dict(id='chall-won', formula='points=60+{different_race}+{different_class}',
+        fs.append(dict(id='chall-won', formula='points=6+{different_race}+{different_class}',
             owner=chall_game.game,
             description='Points earned when winning a challenge. Arguments: different_race (int 0,1), different_class (int 0,1)')
         )
