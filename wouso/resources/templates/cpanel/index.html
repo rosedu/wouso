@@ -142,6 +142,10 @@
                 {% for u in staff.user_set.all %}
                 {% player_simple u.get_profile %}
                 {% endfor %}
+		<h4>Online Users</h4>
+		{% for u in online_users %}
+		{% player u%}
+		{% endfor %}
             </div>
 
             <h3>QPool</h3>
