@@ -87,7 +87,7 @@ def topclasses(request):
     return render_to_response('top/classes.html', {'classes':classes, 'top':Top},
                               context_instance=RequestContext(request))
 
-def challenge_top(request, sortcritno = '0', pageno = 1):
+def challenge_top(request, sortcritno='0', pageno=1):
     #sortcrit = 0 descending order of wins
     #sortcrit = 1 descending order of % wins
     #sortcrit = 2 descending order of losses

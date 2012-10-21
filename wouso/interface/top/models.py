@@ -47,7 +47,7 @@ class TopUser(ObjectHistory, Player):
     @property
     def played_challenges(self):
         return self.user.get_profile().get_extension(ChallengeUser).get_all_challenges().count()
-    
+
     @property
     def won_challenges(self):
         return self.user.get_profile().get_extension(ChallengeUser).get_won_challenges().count()
@@ -55,7 +55,7 @@ class TopUser(ObjectHistory, Player):
     @property
     def lost_challenges(self):
         return self.user.get_profile().get_extension(ChallengeUser).get_lost_challenges().count()
-    
+
     @property
     def won_perc_challenges(self):
         n = self.played_challenges

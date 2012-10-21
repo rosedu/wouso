@@ -94,7 +94,7 @@ class ChallengeUser(Player):
             raise ChallengeException('Player cannot launch against this opponent')
 
         return Challenge.create(user_from=self, user_to=destination)
-    
+
     def get_all_challenges(self):
         chall_total = Challenge.objects.exclude(status=u'L').filter(Q(user_from__user=self) | Q(user_to__user=self))
         return chall_total
