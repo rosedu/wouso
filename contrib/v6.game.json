@@ -280,6 +280,227 @@
   }
  },
  {
+  "pk": 1,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "po\u021bi s\u0103 schimbi punctajul afi\u0219at, alter\u00e2ndu-ul cu o valoarea cuprins\u0103 \u00een spa\u021biul -25% din punctaj",
+   "title": "Disguise",
+   "level_required": 2,
+   "image": "",
+   "mass": true,
+   "percents": -25,
+   "type": "s",
+   "price": 10.0,
+   "name": "top-disguise"
+  }
+ },
+ {
+  "pk": 2,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "po\u021bi s\u0103 schimbi punctajul afi\u0219at, alter\u00e2ndu-ul cu o valoarea cuprins\u0103 \u00een spa\u021biul -15% din punctaj",
+   "title": "Disguise",
+   "level_required": 2,
+   "image": "",
+   "mass": true,
+   "percents": -15,
+   "type": "s",
+   "price": 10.0,
+   "name": "top-disguise"
+  }
+ },
+ {
+  "pk": 3,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "po\u021bi s\u0103 schimbi punctajul afi\u0219at, alter\u00e2ndu-ul cu o valoarea cuprins\u0103 \u00een spa\u021biul 15% din punctaj",
+   "title": "Disguise",
+   "level_required": 2,
+   "image": "",
+   "mass": true,
+   "percents": 15,
+   "type": "s",
+   "price": 10.0,
+   "name": "top-disguise"
+  }
+ },
+ {
+  "pk": 4,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "po\u021bi s\u0103 schimbi punctajul afi\u0219at, alter\u00e2ndu-ul cu o valoarea cuprins\u0103 \u00een spa\u021biul 25% din punctaj",
+   "title": "Disguise",
+   "level_required": 2,
+   "image": "",
+   "mass": true,
+   "percents": 25,
+   "type": "s",
+   "price": 10.0,
+   "name": "top-disguise"
+  }
+ },
+ {
+  "pk": 5,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "nu po\u021bi lansa provoc\u0103ri (dar po\u021bi primi)",
+   "title": "Paralyze",
+   "level_required": 2,
+   "image": "",
+   "mass": true,
+   "percents": 100,
+   "type": "n",
+   "price": 15.0,
+   "name": "challenge-cannot-challenge"
+  }
+ },
+ {
+  "pk": 6,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "c\u00e2\u0219tigi mai pu\u021bin cu -50% din provoc\u0103rile c\u00e2\u0219tigate",
+   "title": "Weakness",
+   "level_required": 2,
+   "image": "",
+   "mass": true,
+   "percents": -50,
+   "type": "n",
+   "price": 20.0,
+   "name": "challenge-affect-scoring"
+  }
+ },
+ {
+  "pk": 7,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "c\u00e2\u0219tigi mai pu\u021bin cu +50% din provoc\u0103rile c\u00e2\u0219tigate",
+   "title": "Charge",
+   "level_required": 2,
+   "image": "",
+   "mass": true,
+   "percents": 50,
+   "type": "p",
+   "price": 25.0,
+   "name": "challenge-affect-scoring"
+  }
+ },
+ {
+  "pk": 8,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "c\u00e2\u0219tigi cu +100% din provoc\u0103rile c\u00e2\u0219tigate \u0219i pierzi cu +100% mai mult din provoc\u0103rile pierdute",
+   "title": "Frenzy",
+   "level_required": 2,
+   "image": "",
+   "mass": true,
+   "percents": 100,
+   "type": "o",
+   "price": 20.0,
+   "name": "challenge-affect-scoring"
+  }
+ },
+ {
+  "pk": 9,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "elimin\u0103 vr\u0103ijle negative",
+   "title": "Cure",
+   "level_required": 2,
+   "image": "",
+   "mass": true,
+   "percents": 100,
+   "type": "p",
+   "price": 25.0,
+   "name": "cure"
+  }
+ },
+ {
+  "pk": 10,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "elimin\u0103 toate vr\u0103jile",
+   "title": "Dispell",
+   "level_required": 2,
+   "image": "",
+   "mass": true,
+   "percents": 100,
+   "type": "o",
+   "price": 20.0,
+   "name": "dispell"
+  }
+ },
+ {
+  "pk": 11,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "33% din c\u00e2\u0219tiguri sunt transferate \u00een mod egal urm\u0103torilor 3 juc\u0103tori din aceea\u0219i ras\u0103",
+   "title": "Pact",
+   "level_required": 2,
+   "image": "",
+   "mass": true,
+   "percents": 33,
+   "type": "o",
+   "price": 20.0,
+   "name": "challenge-pact"
+  }
+ },
+ {
+  "pk": 12,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "nu po\u021bi lansa question of the day",
+   "title": "Blind",
+   "level_required": 2,
+   "image": "",
+   "mass": true,
+   "percents": 100,
+   "type": "n",
+   "price": 10.0,
+   "name": "qotd-blind"
+  }
+ },
+ {
+  "pk": 13,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "ai 33% \u0219ans\u0103 s\u0103 nu \u021bi se ia puncte \u00een urma pierderii unei provoc\u0103ri",
+   "title": "Evade",
+   "level_required": 2,
+   "image": "",
+   "mass": true,
+   "percents": 33,
+   "type": "p",
+   "price": 25.0,
+   "name": "challenge-evade"
+  }
+ },
+ {
   "pk": "points",
   "model": "scoring.coin",
   "fields": {
