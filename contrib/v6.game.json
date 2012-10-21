@@ -729,7 +729,7 @@
   "pk": "default_group",
   "model": "config.setting",
   "fields": {
-   "value": ""
+   "value": "1"
   }
  },
  {
@@ -764,7 +764,7 @@
   "pk": "disable-Chat",
   "model": "config.setting",
   "fields": {
-   "value": ""
+   "value": "True"
   }
  },
  {
@@ -778,7 +778,7 @@
   "pk": "theme",
   "model": "config.setting",
   "fields": {
-   "value": ""
+   "value": "default"
   }
  },
  {
@@ -825,6 +825,62 @@
  },
  {
   "pk": "wousocron_lastrun",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "extrainfo",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "hidden_footer",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "logo",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "disable-Magic",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "disable-Private-Chat",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "disable-Bazaar-Exchange",
+  "model": "config.setting",
+  "fields": {
+   "value": "True"
+  }
+ },
+ {
+  "pk": "disable_login",
+  "model": "config.setting",
+  "fields": {
+   "value": ""
+  }
+ },
+ {
+  "pk": "enable_header_autoreload",
   "model": "config.setting",
   "fields": {
    "value": ""
@@ -1055,6 +1111,186 @@
    "players": [],
    "points": 0.0,
    "owner": null
+  }
+ },
+ {
+  "pk": 16,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 17,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 18,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 19,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 20,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 21,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 22,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 23,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 24,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 25,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 26,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 27,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 28,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 29,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 30,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
   }
  }
 ]
