@@ -112,8 +112,9 @@ class QotdGame(Game):
         if correct:
             now = datetime.now()
 	    
-            pr = randint(0,99)
-                scoring.score(user, QotdGame, 'qotd-ok', hour=now.hour);
+            pr = randint(0, 99)
+            
+            scoring.score(user, QotdGame, 'qotd-ok', hour=now.hour);
             if pr < settings.QOTD_BONUS_PROB:
                 scoring.score(user, QotdGame, 'qotd-ok-bonus', hour=now.hour)
 
