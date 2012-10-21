@@ -1,4 +1,3 @@
-import logging
 from django import forms
 from django.db import models
 from django.db.models import Sum
@@ -8,7 +7,7 @@ from wouso.core.game.models import Game
 from wouso.core.magic.manager import MagicManager
 from wouso.interface.activity import signals
 from wouso.core.god import God
-from wouso.core.magic.models import  Spell, PlayerArtifactAmount, PlayerSpellAmount, PlayerSpellDue
+from wouso.core.magic.models import  Spell
 
 from .. import deprecated
 
@@ -267,7 +266,7 @@ class Player(models.Model):
         return ret if ret != u" " else self.user.__unicode__()
 
 class UserReportForm(forms.Form):
-	message = forms.CharField(widget = forms.Textarea)
+    message = forms.CharField(widget = forms.Textarea)
 
 
 # Hack for having user and user's profile always in sync
@@ -300,8 +299,7 @@ def user_post_save(sender, instance, **kwargs):
                                  game=None)
         # give 15 bonus points
         from wouso.core.scoring import score
-        from wouso.settings import STARTING_POINTS
-    
+
         try:
             score(profile, None, 'start-points')
         except: pass # This might fail when formulas are not set-up, i.e. superuser syncdb profile creation
