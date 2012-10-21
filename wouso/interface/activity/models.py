@@ -10,8 +10,8 @@ from wouso.interface.activity.signals import addActivity
 
 class Activity(models.Model):
     timestamp = models.DateTimeField(default=datetime.now, blank=True)
-    user_from = models.ForeignKey(Player, related_name='user_from', blank=True, null=True)
-    user_to = models.ForeignKey(Player, related_name='user_to', blank=True, null=True)
+    user_from = models.ForeignKey(Player, related_name='activity_from', blank=True, null=True)
+    user_to = models.ForeignKey(Player, related_name='activity_to', blank=True, null=True)
     message_string = models.CharField(max_length=140, blank=True, null=True)
     arguments = models.CharField(max_length=600)
     game = models.ForeignKey(Game, blank=True, null=True, help_text='Game triggering the activity, none for system activity')

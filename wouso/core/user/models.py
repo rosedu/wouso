@@ -2,10 +2,8 @@ from django import forms
 from django.db import models
 from django.db.models import Sum
 from django.contrib.auth.models import User, Group
-from django.utils.translation import ugettext_noop
 from wouso.core.game.models import Game
 from wouso.core.magic.manager import MagicManager
-from wouso.interface.activity import signals
 from wouso.core.god import God
 from wouso.core.magic.models import  Spell
 
@@ -289,20 +287,8 @@ def user_post_save(sender, instance, **kwargs):
         else:
             profile.race = default_race
             profile.save()
-        # kick some activity
-        profile.nickname = profile.user_name()
-        signal_msg = ugettext_noop('has joined the game.')
-
-        signals.addActivity.send(sender=None, user_from=profile,
-                                 user_to=profile,
-                                 message=signal_msg,
-                                 game=None)
-        # give 15 bonus points
-        from wouso.core.scoring import score
-
-        try:
-            score(profile, None, 'start-points')
-        except: pass # This might fail when formulas are not set-up, i.e. superuser syncdb profile creation
+        profile.nickname = profile.user.username
+        profile.save()
 
 models.signals.post_save.connect(user_post_save, User)
 

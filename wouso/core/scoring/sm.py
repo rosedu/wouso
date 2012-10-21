@@ -21,12 +21,14 @@ class InvalidScoreCall(Exception): pass
 
 CORE_POINTS = ('points', 'gold', 'penalty')
 
+
 def check_setup():
     """ Check if the module has been setup """
 
     if Coin.get('points') is None:
         return False
     return True
+
 
 def setup_scoring():
 
@@ -48,6 +50,7 @@ def setup_scoring():
     for formula in God.get_system_formulas():
         if not Formula.get(formula):
             Formula.add(formula)
+
 
 def calculate(formula, **params):
     """ Calculate formula and return a dictionary of coin and amounts """
@@ -79,6 +82,7 @@ def calculate(formula, **params):
 
     return ret
 
+
 def score(user, game, formula, external_id=None, percents=100, **params):
     """ Give amount of coin specified by the formula to the player.
      The amount can be affected by percents/100.
@@ -104,6 +108,7 @@ def timer(user, game, formula, default=300, **params):
         return values['tlimit']
     return default
 
+
 def unset(user, game, formula, external_id=None, **params):
     """ Remove all history records by the external_id, formula and game given to the user """
     for history in History.objects.filter(user=user, game=game.get_instance(), formula=formula, external_id=external_id):
@@ -112,6 +117,7 @@ def unset(user, game, formula, external_id=None, **params):
         history.delete()
     user.save()
     update_points(user, game)
+
 
 def update_points(player, game):
     level = God.get_level_for_points(player.points)
@@ -132,6 +138,7 @@ def update_points(player, game):
                                 game=None)
         player.level_no = level
         player.save()
+
 
 def score_simple(player, coin, amount, game=None, formula=None,
     external_id=None, percents=100):
@@ -164,6 +171,7 @@ def score_simple(player, coin, amount, game=None, formula=None,
     logging.debug("Scored %s with %f %s" % (user, computed_amount, coin))
     return hs
 
+
 def history_for(user, game, external_id=None, formula=None, coin=None):
     """ Return all history entries for given (user, game) pair.
     """
@@ -187,16 +195,19 @@ def history_for(user, game, external_id=None, formula=None, coin=None):
     except History.DoesNotExist:
         return None
 
+
 def user_coins(user):
     """ Returns a dictionary with user coins """
     if not isinstance(user, User):
         user = user.user
     return History.user_coins(user)
 
+
 def real_points(player):
     coin = Coin.get('points')
     result = History.objects.filter(user=player.user,coin=coin).aggregate(total=models.Sum('amount'))
     return result['total'] if result['total'] is not None else 0
+
 
 def sync_user(player):
     """ Synchronise user points with database
@@ -210,7 +221,31 @@ def sync_user(player):
         player.level_no = God.get_level_for_points(player.points)
         player.save()
 
+
 def sync_all_user_points():
     """ Synchronise points amounts for all players """
     for player in Player.objects.all():
         sync_user(player)
+
+
+def first_login_check(sender, **kwargs):
+    """ Callback function for addActivity signal """
+    action = kwargs.get('action', None)
+    player = kwargs['user_from']
+    if action == 'login':
+        if player.activity_from.count() == 0:
+            # kick some activity
+            signal_msg = ugettext_noop('has joined the game.')
+
+            signals.addActivity.send(sender=None, user_from=player,
+                user_to=player,
+                message=signal_msg,
+                game=None)
+
+            # give some bonus points
+            try:
+                score(player, None, 'start-points')
+            except InvalidFormula:
+                logging.error('Formula start points is missing')
+
+signals.addActivity.connect(first_login_check)
