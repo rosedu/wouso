@@ -2,9 +2,11 @@ from random import shuffle
 from datetime import datetime, time, timedelta
 from django.db import models
 from django.template.loader import render_to_string
+from django.utils.translation import ugettext as _
 from wouso.core.game.models import Game
 from wouso.core.qpool.models import Tag, Question, Category
 from wouso.core.user.models import PlayerGroup, Player
+from wouso.interface.apps.messaging.models import Message
 
 DAY_CHOICES = (
     (1, 'Monday'),
@@ -331,6 +333,11 @@ class WorkshopGame(Game):
 
         workshop.status = 1 # reviewing
         workshop.save()
+
+        # send message to every player
+        for player in participating_players:
+            Message.send(None, player, _("Workshop to review!"),
+                    _("Hello, the reviewing stage for the latest workshop has begun."))
 
     @classmethod
     def get_player_info(cls, player, workshop):
