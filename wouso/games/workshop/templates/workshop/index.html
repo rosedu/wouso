@@ -9,20 +9,25 @@
     {% trans 'Your semigroup:'%} {{ semigroup }} {{ semigroup.info }}
 </p>
 
-<h4>{% trans 'Current workshop' %}</h4>
-<p>{% if not workshop %}{% trans 'No current workshop' %}{% else %}
+{% if not workshop %}
+    {% trans 'No current workshop' %}
+{% else %}
+<h4>{% trans 'Current workshop' %} #{{ workshop.id }}</h4>
+<p>
     {% if assessment.answered %}
-        {% trans 'Already answered' %}
+        {% trans 'Already answered' %}.
     {% else %}
-        {% if workshop.is_active %}
+        <a href="{% url workshop_play %}">{% trans 'Play now!' %}</a>
+    {% endif %}
+
+    {% if workshop.is_active %}
             {% trans 'Expires:' %} {{ workshop.active_until }}.
-            <a href="{% url workshop_play %}">Play!</a>
         {% else %}
             {% trans 'Expired:' %} {{ workshop.active_until }}.
             {% trans "You now must review other's answers." %}
-        {% endif %}
     {% endif %}
-{% endif %}</p>
+</p>
+{% endif %}
 
 <h4>{% trans 'Past workshops' %}</h4>
 <ul>
@@ -34,4 +39,11 @@
         </li>
     {% endfor %}
 </ul>
+
+{% if perms.config.change_setting %}
+<h3>Staff only</h3>
+<p>
+    <a class="button" href="{% url ws_workshops %}">Go to CPanel</a>
+</p>
+{% endif %}
 {% endblock %}

@@ -6,29 +6,35 @@
 
 {% block sectioncontent %}
 
-<ul>
+<ul class="spaced">
     {% for as in assessments %}
-    <li>{{ forloop.counter }}. {% trans 'Anonymous' %}
+    <li>{{ forloop.counter }}. {% trans 'Anonymous' %} {% trans 'assesment' %} #{{as.id}}
 
-        <ul>
+        <ul class="spaced">
         {% for a in as.answer_set.all %}
             <li>{{ forloop.counter }}. {{ a.question.text }}
                 <p> <em>{% trans 'Answer' %}:</em>
                     <tt>{{ a.text }}</tt> <em>Grade:</em> <strong>{{ a.grade }}</strong>
-                    <ul>
+                    <ul class="spaced">
                     {% for r in a.review_set.all %}
                         <li>
                             {% if r.reviewer == user.get_profile %}
                                 {{ r.reviewer }}
                             {% else %}
-                                {% trans 'Anonymous' %}{{ forloop.counter }}
+                                {% if r.reviewer.in_staff_group %}
+                                    {% trans 'Assistant' %}
+                                {% else %}
+                                    {% trans 'Anonymous' %}{{ forloop.counter }}
+                                {% endif %}
                             {% endif %}:
                             <tt>{{ r.feedback }}</tt>
-                            <br/>
-                            <em>grade:</em> <strong>{{ r.answer_grade }}</strong>,
-                            <em>review grade:</em> <strong>{{ r.review_grade }}</strong>
-                            {% if r.reviewer == user.get_profile and r.workshop.is_reviewable %}
-                                <a class="button" href="{% url workshop_edit_review r.id %}">{% trans 'Change' %}</a>
+                            {% if not r.reviewer.in_staff_group %}
+                                <br/>
+                                <em>grade:</em> <strong>{{ r.answer_grade }}</strong>,
+                                <em>review grade:</em> <strong>{{ r.review_grade }}</strong>
+                                {% if r.reviewer == user.get_profile and r.workshop.is_reviewable %}
+                                    <a class="button" href="{% url workshop_edit_review r.id %}">{% trans 'Change' %}</a>
+                                {% endif %}
                             {% endif %}
                         </li>
                     {% endfor %}

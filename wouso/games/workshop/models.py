@@ -178,13 +178,20 @@ class Assessment(models.Model):
         """
         grade = Answer.objects.filter(assessment=self).aggregate(grade=models.Sum('grade'))['grade']
         self.grade = grade
-        reviewer_grade = self.player.review_set.filter(answer__assessment=self).aggregate(grade=models.Sum('review_grade'))['grade']
+        reviewer_grade = self.player.review_set.filter(answer__assessment__workshop=self.workshop).aggregate(grade=models.Sum('review_grade'))['grade']
         self.reviewer_grade = reviewer_grade
         try:
             self.final_grade = (self.grade + self.reviewer_grade)/2
         except TypeError: # one of the grades is None
             self.final_grade = None
         self.save()
+
+    @property
+    def reviews(self):
+        """
+         Return the assessments that this player gave reviews in the same workshop as this assessment
+        """
+        return self.player.assessments_review.filter(workshop=self.workshop)
 
     @classmethod
     def get_for_player_and_workshop(cls, player, workshop):

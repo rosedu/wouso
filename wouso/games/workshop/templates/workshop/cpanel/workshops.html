@@ -45,7 +45,7 @@ the current scheduled question set.</p>
                 <a href="{% url ws_edit_spot w.semigroup.day w.semigroup.hour %}">✍</a><br/>
                 online: {{ w.semigroup.online_players.count }} <br/> total: {{ w.semigroup.players.count }}
             </td>
-            <td align="right">{{ w.assesment_set.count }}</td>
+            <td align="right">{{ w.assessment_set.count }}</td>
             <td>{% if w.is_active %}Active
                 {% else %}Inactive
                 {% endif %}

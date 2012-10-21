@@ -8,7 +8,8 @@ from models import WorkshopGame, Semigroup, Assessment, Workshop, Answer, Review
 @login_required
 def index(request, extra_context=None):
     player = request.user.get_profile()
-    assessment = WorkshopGame.get_for_player_now(player)
+    workshop = WorkshopGame.get_for_player_now(player)
+    assessment = workshop.get_or_create_assessment(player) if workshop else None
 
     if not extra_context:
         extra_context = {}
@@ -50,7 +51,7 @@ def play(request):
             answers[q.id] = request.POST.get('answer_%d' % q.id)
 
         assessment.set_answered(answers)
-        return redirect('workshop_index_view')
+        return redirect('workshop_results', workshop=workshop.id)
 
     return render_to_response('workshop/play.html',
                 {'assessment': assessment,
