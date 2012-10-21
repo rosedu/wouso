@@ -1,6 +1,7 @@
 {% extends 'workshop/cpanel/index.html' %}
 {% load workshop %}
 {% load i18n %}
+{% load user %}
 
 {% block sectiontitle %}Workshop{% endblock %}
 
@@ -40,7 +41,10 @@ the current scheduled question set.</p>
             <td>{{ w.date }}</td>
             <td>{{ w.start_at|date:"H:i" }}</td>
             <td>{{ w.active_until|date:"M. d, Y, H:i:s" }}</td>
-            <td>{{ w.semigroup }}</td>
+            <td>{% player_group w.semigroup %}
+                <a href="{% url ws_edit_spot w.semigroup.day w.semigroup.hour %}">✍</a><br/>
+                online: {{ w.semigroup.online_players.count }} <br/> total: {{ w.semigroup.players.count }}
+            </td>
             <td align="right">{{ w.assesment_set.count }}</td>
             <td>{% if w.is_active %}Active
                 {% else %}Inactive

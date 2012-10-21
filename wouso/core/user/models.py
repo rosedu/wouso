@@ -1,4 +1,5 @@
 # coding=utf-8
+from datetime import datetime, timedelta
 from django import forms
 from django.db import models
 from django.db.models import Sum
@@ -76,6 +77,13 @@ class PlayerGroup(models.Model):
             return list(self.parent.children.exclude(id=self.id))
         else:
             return []
+
+    @property
+    def online_players(self):
+        oldest = datetime.now() - timedelta(minutes = 10)
+
+        res = self.players.filter(last_seen__gte=oldest)
+        return res
 
     def __unicode__(self):
         return self.name if self.title == '' else self.title
