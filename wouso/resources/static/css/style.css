@@ -578,3 +578,7 @@ div.group-cc {
 .selected {
     background-color: #f2f2f2;
 }
+
+table.border td {
+    border: 1px solid silver;
+}

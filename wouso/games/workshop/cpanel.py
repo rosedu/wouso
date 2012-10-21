@@ -15,9 +15,11 @@ class AGForm(forms.ModelForm):
 
 @staff_required
 def workshop_home(request, **kwargs):
+
     return render_to_response('workshop/cpanel/index.html',
                         {'module': 'workshop',
                          'days': DAY_CHOICES,
+                         'semigroups': Semigroup.objects.all(),
                          'hours': range(8, 22, 2),
                          'info': WorkshopGame},
                         context_instance=RequestContext(request)
@@ -105,7 +107,8 @@ def schedule(request):
 
     return render_to_response('workshop/cpanel/schedule.html',
                         {'module': 'workshop',
-                         'schedules': schedules},
+                         'schedules': schedules,
+                         'page': 'schedule'},
                         context_instance=RequestContext(request)
     )
 
@@ -132,7 +135,8 @@ def schedule_change(request, schedule=None):
     return render_to_response('workshop/cpanel/schedule_change.html',
                         {'module': 'workshop',
                          'form': form,
-                         'instance': schedule},
+                         'instance': schedule,
+                         'page': 'schedule'},
                         context_instance=RequestContext(request)
     )
 
@@ -142,6 +146,7 @@ def workshops(request):
     return render_to_response('workshop/cpanel/workshops.html',
                         {'module': 'workshop',
                          'workshops': workshops,
+                         'page': 'workshops',
                          },
                         context_instance=RequestContext(request)
     )
@@ -174,6 +179,7 @@ def workshop_reviewers(request, workshop):
     return render_to_response('workshop/cpanel/workshop_map.html',
                         {'module': 'workshop',
                          'workshop': workshop,
+                         'page': 'workshops',
                          },
                         context_instance=RequestContext(request)
     )
@@ -217,6 +223,7 @@ def workshop_grade_assessment(request, assessment):
     return render_to_response('workshop/cpanel/workshop_grade_assessment.html',
                         {'module': 'workshop',
                          'assessment': assessment,
+                         'page': 'workshops',
                          },
                          context_instance=RequestContext(request)
     )
@@ -244,7 +251,8 @@ def workshop_add(request):
         form = WAForm()
 
     return render_to_response('workshop/cpanel/workshop_add.html',
-                        {'module': 'workshop', 'form': form, 'info': WorkshopGame, 'error': error},
+                        {'module': 'workshop', 'form': form, 'info': WorkshopGame, 'error': error,
+                         'page': 'workshops'},
                         context_instance=RequestContext(request)
     )
 
@@ -253,7 +261,23 @@ def workshop_add(request):
 def workshop_edit(request, workshop):
     workshop = get_object_or_404(Workshop, pk=workshop)
 
-    pass
+    class WForm(forms.ModelForm):
+        class Meta:
+            model = Workshop
+
+    if request.method == 'POST':
+        form = WForm(request.POST, instance=workshop)
+        if form.is_valid():
+            form.save()
+            return redirect('ws_workshops')
+    else:
+        form = WForm(instance=workshop)
+
+    return render_to_response('workshop/cpanel/workshop_edit.html',
+                        {'module': 'workshop', 'form': form, 'info': WorkshopGame,
+                         'page': 'workshops'},
+                        context_instance=RequestContext(request)
+    )
 
 
 @staff_required

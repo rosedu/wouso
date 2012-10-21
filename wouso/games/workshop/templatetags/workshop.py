@@ -1,6 +1,5 @@
 # coding=utf-8
 from django import template
-from django.core.urlresolvers import reverse
 from django.db.models import Sum
 from wouso.games.workshop.models import Semigroup, Review
 
@@ -11,8 +10,7 @@ def semigroup(sg):
     if not sg:
         return ''
 
-    return u"%s [%d] %s <a href='%s'>✍</a>" % (sg.name, sg.players.count(),
-                                               sg.room, reverse('ws_edit_group', kwargs=dict(semigroup=sg.id)))
+    return u"<b>%s</b> [%d] %s" % (sg.name, sg.players.count(), sg.room)
 
 
 @register.simple_tag

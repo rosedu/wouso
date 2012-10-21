@@ -13,9 +13,9 @@
 </div>
 
 <ul class="tabs">
-    <li ><a href="{% url workshop_home %}">Timetable</a></li>
-    <li ><a href="{% url ws_schedule %}">Schedule</a></li>
-    <li ><a href="{% url ws_workshops %}">Workshops</a></li>
+    <li {% if not page %}class="active"{% endif %}><a href="{% url workshop_home %}">Timetable</a></li>
+    <li {% if page == 'schedule' %}class="active"{% endif %}><a href="{% url ws_schedule %}">Schedule</a></li>
+    <li {% if page == 'workshops' %}class="active"{% endif %}><a href="{% url ws_workshops %}">Workshops</a></li>
 </ul>
 
 <div class="tab_container">
@@ -29,12 +29,20 @@
         Current group: {{ info.get_semigroup|join:", " }}<br/>
         Current qpool: {{ info.get_question_pool.count }}<br/>
         </p>{% endif %}
+        {% if semigroups %}
+            <strong>Semigroups:</strong>
+            <ul>
+                {% for s in semigroups %}
+                <li>{{ s }} <a href="{% url ws_edit_group s.id %}">✍</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         {% endblock %}
         </div>
 
         &nbsp;
         {% block tabcontent %}
-        <table>
+        <table class="border">
             <tr>
                 <th>Hour/Day</th>
                 {% for d in days %}
