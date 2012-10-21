@@ -1,3 +1,4 @@
+# coding=utf-8
 from django import forms
 from django.db import models
 from django.db.models import Sum
@@ -217,8 +218,18 @@ class Player(models.Model):
         """
         try:
             return self.playergroup_set.filter(owner=None).get()
-        except PlayerGroup.DoesNotExist:
+        except (PlayerGroup.DoesNotExist, PlayerGroup.MultipleObjectsReturned):
             return None
+
+    def set_group(self, group):
+        """
+         Set the core group, which is unique
+        """
+        for g in self.playergroup_set.filter(owner=None):
+            g.players.remove(self)
+
+        group.players.add(self)
+        return group
 
     @property
     @deprecated('There is race waiting to be used')
