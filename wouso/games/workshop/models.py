@@ -19,6 +19,7 @@ DAY_CHOICES = (
 ROOM_CHOICES = (
     ('eg306', 'EG306'),
     ('eg106', 'EG106'),
+    ('ef108', 'EF108'),
 )
 
 class Schedule(Tag):
