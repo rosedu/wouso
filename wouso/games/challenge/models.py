@@ -29,7 +29,7 @@ class ChallengeUser(Player):
 
     def is_eligible(self):
         return God.user_is_eligible(self, ChallengeGame)
-    
+
     def can_launch(self):
         """ Check if 1 challenge per day restriction apply
         """
