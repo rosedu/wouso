@@ -46,8 +46,7 @@ urlpatterns = patterns('',
     (r'^searchone/$', 'wouso.interface.views.searchone'),
     url(r'^s/(.+)/$', 'wouso.interface.apps.pages.views.staticpage', name='static_page'),
 
-    # Chat
-    (r'^chat/', include('wouso.interface.chat.urls')),
+
 
     # Messaging
     (r'^m/', include('wouso.interface.apps.messaging.urls')),
@@ -104,3 +103,16 @@ else:
     urlpatterns += patterns('',
         url(r'^qunit/', include('django_qunit.urls'))
 	)
+
+try:
+    import imp
+    imp.find_module('django_socketio')
+
+except ImportError:
+    pass
+else:
+    urlpatterns += patterns('',
+        url('', include('django_socketio.urls')),
+        # Chat
+        url(r'^chat/', include('wouso.interface.chat.urls')),
+    )

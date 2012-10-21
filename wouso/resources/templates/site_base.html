@@ -27,6 +27,8 @@
     {% if user.is_authenticated %}
         <script type="text/javascript" src="{{ basepath }}/static/js/contactbox.js"></script>
         {% if not config_disable_private_chat and not config_disable_chat  %}
+            {% load socketio_tags %}
+            {% socketio %}
             <script type="text/javascript" src="{{ basepath }}/static/js/chatbox.js"></script>
         {% endif %}
     {% endif %}

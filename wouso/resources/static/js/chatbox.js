@@ -16,6 +16,71 @@ var firstFreeChat;
 var max_room;
 var max_boxes;
 var private_users;
+
+$(function(){
+    var socket;
+    var name, started = false;
+
+    var connected = function() {
+        socket.subscribe("global" + 1);
+        socket.send({room:'global', action: 'start'});
+
+    };
+
+    $('#GlobalboxSendButton').click(function() {
+        var value = $('#GlobalboxTextBox').val();
+        if (value) {
+            var data = {'action':'message', 'msg':value, 'room':'global'};
+            socket.send(data);
+        }
+        $('#GlobalboxTextBox').val('').focus();
+        return false;
+    });
+
+    function addMessage(data){
+
+        $("#GlobalboxTextArea").append("<em>" +data.name + " ***: " + replace_emoticons(data.msg) + "</em><br />");
+        //$('#GlobalboxTextArea').append("<em>" + obj.msgs[i].time + " ***: " + replace_emoticons(obj.msgs[i].text) + "</em><br />");
+
+    }
+    /*
+    var addMessage = function(data) {
+        var d = new Date();
+        var win = $(window), doc = $(window.document);
+        var bottom = win.scrollTop() + win.height() == doc.height();
+        data.time = $.map([d.getHours(), d.getMinutes(), d.getSeconds()],
+            function(s) {
+                s = String(s);
+                return (s.length == 1 ? '0' : '') + s;
+            }).join(':');
+        addItem('#messages', data);
+        if (bottom) {
+            window.scrollBy(0, 10000);
+        }
+    };
+    */
+
+    var messaged = function(data) {
+        switch (data.action) {
+
+            case 'message':
+                addMessage(data);
+                break;
+        }
+    };
+
+    var start = function() {
+        socket = new io.Socket();
+        socket.connect();
+
+        socket.on('connect', connected);
+        socket.on('message', messaged);
+
+    };
+
+
+    start();
+});
 if(sessionStorage.firstFreeChat){
     firstFreeChat = parseInt(sessionStorage.firstFreeChat);
     max_room = 1;
@@ -488,8 +553,8 @@ $(document).ready(function () {
     $(document).ready(AutoScroll);
     $(document).ready(NewUsers);
     $(document).ready(NewLog);
-    $(document).ready(SendPing);
-    SendPingTimer = setInterval(function(){SendPing();}, keepAlive);
+    //$(document).ready(SendPing);
+    //SendPingTimer = setInterval(function(){SendPing();}, keepAlive);
     NewUserTimer = setInterval(function(){NewUsers();}, 10000);
     InitialChat();
 
@@ -642,9 +707,9 @@ $(document).ready(function () {
         }
     }
 
-    $('#GlobalboxSendButton').click(function(){
-        SendMessage(0);
-    });
+    //$('#GlobalboxSendButton').click(function(){
+    //    SendMessage(0);
+    //});
 
     /* Global chat key events. */
     $("#GlobalboxTextBox").keyup(function (event) {
