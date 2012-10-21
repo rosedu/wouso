@@ -232,20 +232,22 @@ def first_login_check(sender, **kwargs):
     """ Callback function for addActivity signal """
     action = kwargs.get('action', None)
     player = kwargs['user_from']
-    if action == 'login':
-        if player.activity_from.count() == 0:
-            # kick some activity
-            signal_msg = ugettext_noop('has joined the game.')
+    if action != 'login':
+        return
 
-            signals.addActivity.send(sender=None, user_from=player,
-                user_to=player,
-                message=signal_msg,
-                game=None)
+    if player.activity_from.count() == 0:
+        # kick some activity
+        signal_msg = ugettext_noop('has joined the game.')
 
-            # give some bonus points
-            try:
-                score(player, None, 'start-points')
-            except InvalidFormula:
-                logging.error('Formula start points is missing')
+        signals.addActivity.send(sender=None, user_from=player,
+            user_to=player,
+            message=signal_msg,
+            game=None)
+
+        # give some bonus points
+        try:
+            score(player, None, 'start-points')
+        except InvalidFormula:
+            logging.error('Formula start points is missing')
 
 signals.addActivity.connect(first_login_check)
