@@ -367,6 +367,8 @@ class WorkshopGame(Game):
 
     @classmethod
     def get_sidebar_widget(cls, request):
+        if request.user.is_anonymous():
+            return ''
         player = request.user.get_profile()
         semigroups = cls.get_semigroup()
         workshop = cls.get_for_player_now(player)
