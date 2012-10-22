@@ -431,9 +431,9 @@
    "available": true,
    "description": "po\u021bi s\u0103 schimbi punctajul afi\u0219at, alter\u00e2ndu-ul cu o valoarea cuprins\u0103 \u00een spa\u021biul -25% din punctaj",
    "title": "Disguise",
-   "level_required": 2,
+   "level_required": 1,
    "image": "",
-   "mass": true,
+   "mass": false,
    "percents": -25,
    "type": "s",
    "price": 10.0,
@@ -448,9 +448,9 @@
    "available": true,
    "description": "po\u021bi s\u0103 schimbi punctajul afi\u0219at, alter\u00e2ndu-ul cu o valoarea cuprins\u0103 \u00een spa\u021biul -15% din punctaj",
    "title": "Disguise",
-   "level_required": 2,
+   "level_required": 1,
    "image": "",
-   "mass": true,
+   "mass": false,
    "percents": -15,
    "type": "s",
    "price": 10.0,
@@ -465,9 +465,9 @@
    "available": true,
    "description": "po\u021bi s\u0103 schimbi punctajul afi\u0219at, alter\u00e2ndu-ul cu o valoarea cuprins\u0103 \u00een spa\u021biul 15% din punctaj",
    "title": "Disguise",
-   "level_required": 2,
+   "level_required": 1,
    "image": "",
-   "mass": true,
+   "mass": false,
    "percents": 15,
    "type": "s",
    "price": 10.0,
@@ -482,9 +482,9 @@
    "available": true,
    "description": "po\u021bi s\u0103 schimbi punctajul afi\u0219at, alter\u00e2ndu-ul cu o valoarea cuprins\u0103 \u00een spa\u021biul 25% din punctaj",
    "title": "Disguise",
-   "level_required": 2,
+   "level_required": 1,
    "image": "",
-   "mass": true,
+   "mass": false,
    "percents": 25,
    "type": "s",
    "price": 10.0,
@@ -499,9 +499,9 @@
    "available": true,
    "description": "nu po\u021bi lansa provoc\u0103ri (dar po\u021bi primi)",
    "title": "Paralyze",
-   "level_required": 2,
+   "level_required": 1,
    "image": "",
-   "mass": true,
+   "mass": false,
    "percents": 100,
    "type": "n",
    "price": 15.0,
@@ -516,9 +516,9 @@
    "available": true,
    "description": "c\u00e2\u0219tigi mai pu\u021bin cu -50% din provoc\u0103rile c\u00e2\u0219tigate",
    "title": "Weakness",
-   "level_required": 2,
+   "level_required": 1,
    "image": "",
-   "mass": true,
+   "mass": false,
    "percents": -50,
    "type": "n",
    "price": 20.0,
@@ -533,9 +533,9 @@
    "available": true,
    "description": "c\u00e2\u0219tigi mai pu\u021bin cu +50% din provoc\u0103rile c\u00e2\u0219tigate",
    "title": "Charge",
-   "level_required": 2,
+   "level_required": 1,
    "image": "",
-   "mass": true,
+   "mass": false,
    "percents": 50,
    "type": "p",
    "price": 25.0,
@@ -550,9 +550,9 @@
    "available": true,
    "description": "c\u00e2\u0219tigi cu +100% din provoc\u0103rile c\u00e2\u0219tigate \u0219i pierzi cu +100% mai mult din provoc\u0103rile pierdute",
    "title": "Frenzy",
-   "level_required": 2,
+   "level_required": 1,
    "image": "",
-   "mass": true,
+   "mass": false,
    "percents": 100,
    "type": "o",
    "price": 20.0,
@@ -567,9 +567,9 @@
    "available": true,
    "description": "elimin\u0103 vr\u0103ijle negative",
    "title": "Cure",
-   "level_required": 2,
+   "level_required": 1,
    "image": "",
-   "mass": true,
+   "mass": false,
    "percents": 100,
    "type": "p",
    "price": 25.0,
@@ -584,9 +584,9 @@
    "available": true,
    "description": "elimin\u0103 toate vr\u0103jile",
    "title": "Dispell",
-   "level_required": 2,
+   "level_required": 1,
    "image": "",
-   "mass": true,
+   "mass": false,
    "percents": 100,
    "type": "o",
    "price": 20.0,
@@ -601,9 +601,9 @@
    "available": true,
    "description": "33% din c\u00e2\u0219tiguri sunt transferate \u00een mod egal urm\u0103torilor 3 juc\u0103tori din aceea\u0219i ras\u0103",
    "title": "Pact",
-   "level_required": 2,
+   "level_required": 1,
    "image": "",
-   "mass": true,
+   "mass": false,
    "percents": 33,
    "type": "o",
    "price": 20.0,
@@ -618,9 +618,9 @@
    "available": true,
    "description": "nu po\u021bi lansa question of the day",
    "title": "Blind",
-   "level_required": 2,
+   "level_required": 1,
    "image": "",
-   "mass": true,
+   "mass": false,
    "percents": 100,
    "type": "n",
    "price": 10.0,
@@ -635,6 +635,125 @@
    "available": true,
    "description": "ai 33% \u0219ans\u0103 s\u0103 nu \u021bi se ia puncte \u00een urma pierderii unei provoc\u0103ri",
    "title": "Evade",
+   "level_required": 1,
+   "image": "",
+   "mass": false,
+   "percents": 33,
+   "type": "p",
+   "price": 25.0,
+   "name": "challenge-evade"
+  }
+ },
+ {
+  "pk": 14,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "nu po\u021bi lansa provoc\u0103ri (dar po\u021bi primi)",
+   "title": "Paralyze(Mass)",
+   "level_required": 2,
+   "image": "",
+   "mass": true,
+   "percents": 100,
+   "type": "n",
+   "price": 15.0,
+   "name": "challenge-cannot-challenge"
+  }
+ },
+ {
+  "pk": 15,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "c\u00e2\u0219tigi mai pu\u021bin cu -50% din provoc\u0103rile c\u00e2\u0219tigate",
+   "title": "Weakness(Mass)",
+   "level_required": 2,
+   "image": "",
+   "mass": true,
+   "percents": -50,
+   "type": "n",
+   "price": 20.0,
+   "name": "challenge-affect-scoring"
+  }
+ },
+ {
+  "pk": 16,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "c\u00e2\u0219tigi mai pu\u021bin cu +50% din provoc\u0103rile c\u00e2\u0219tigate",
+   "title": "Charge(Mass)",
+   "level_required": 2,
+   "image": "",
+   "mass": true,
+   "percents": 50,
+   "type": "p",
+   "price": 25.0,
+   "name": "challenge-affect-scoring"
+  }
+ },
+ {
+  "pk": 17,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "c\u00e2\u0219tigi cu +100% din provoc\u0103rile c\u00e2\u0219tigate \u0219i pierzi cu +100% mai mult din provoc\u0103rile pierdute",
+   "title": "Frenzy(Mass)",
+   "level_required": 2,
+   "image": "",
+   "mass": true,
+   "percents": 100,
+   "type": "o",
+   "price": 20.0,
+   "name": "challenge-affect-scoring"
+  }
+ },
+ {
+  "pk": 18,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "33% din c\u00e2\u0219tiguri sunt transferate \u00een mod egal urm\u0103torilor 3 juc\u0103tori din aceea\u0219i ras\u0103",
+   "title": "Pact(Mass)",
+   "level_required": 2,
+   "image": "",
+   "mass": true,
+   "percents": 33,
+   "type": "o",
+   "price": 10.0,
+   "name": "challenge-pact"
+  }
+ },
+ {
+  "pk": 19,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "",
+   "title": "Blind(Mass)",
+   "level_required": 2,
+   "image": "",
+   "mass": true,
+   "percents": 100,
+   "type": "n",
+   "price": 10.0,
+   "name": "qotd-blind"
+  }
+ },
+ {
+  "pk": 20,
+  "model": "magic.spell",
+  "fields": {
+   "due_days": 5,
+   "available": true,
+   "description": "ai 33% \u0219ans\u0103 s\u0103 nu \u021bi se ia puncte \u00een urma pierderii unei provoc\u0103ri",
+   "title": "Evade(Mass)",
    "level_required": 2,
    "image": "",
    "mass": true,
@@ -672,12 +791,12 @@
   }
  },
  {
-  "pk": "specialquest-passed",
+  "pk": "qotd-ok",
   "model": "scoring.formula",
   "fields": {
-   "owner": "SpecialQuestGame",
-   "formula": "gold={value}",
-   "description": "Points earned when finishing a task. Arguments: value."
+   "owner": "QotdGame",
+   "formula": "points=40 + (10 if {hour} < 12 else -10)",
+   "description": "Points earned on a correct answer. Arguments: hour of the day."
   }
  },
  {
@@ -708,12 +827,12 @@
   }
  },
  {
-  "pk": "qotd-ok",
+  "pk": "specialquest-passed",
   "model": "scoring.formula",
   "fields": {
-   "owner": "QotdGame",
-   "formula": "points=40 + (10 if {hour} < 12 else -10)",
-   "description": "Points earned on a correct answer. Arguments: hour of the day."
+   "owner": "SpecialQuestGame",
+   "formula": "gold={value}",
+   "description": "Points earned when finishing a task. Arguments: value."
   }
  },
  {
@@ -1262,6 +1381,1338 @@
    "players": [],
    "points": 0.0,
    "owner": null
+  }
+ },
+ {
+  "pk": 16,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 17,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 18,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 19,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 20,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 21,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 22,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 23,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 24,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 25,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 26,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 27,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 28,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 29,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 30,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 31,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 32,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 33,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 34,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 35,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 36,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 37,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 38,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 39,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 40,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 41,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 42,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 43,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 44,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 45,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 46,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 47,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 48,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 49,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 50,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 51,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 52,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 53,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 54,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 55,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 56,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 57,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 58,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 59,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 60,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 61,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 62,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 63,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 64,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 65,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 66,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 67,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 68,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 69,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 70,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 71,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 72,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 73,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 74,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 75,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 76,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 77,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 78,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 79,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 80,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 81,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 82,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 83,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 84,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 85,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 86,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 87,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 88,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 89,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 90,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 91,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 92,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 93,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 94,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 95,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 96,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 97,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 98,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 99,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 100,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 101,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 102,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 103,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 104,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 105,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 106,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 107,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 108,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 109,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 110,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 111,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 112,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 113,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 114,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 115,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 116,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 117,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 118,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 119,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 120,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 121,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 122,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 123,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 124,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 125,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
+  }
+ },
+ {
+  "pk": 126,
+  "model": "user.playergroup",
+  "fields": {
+   "name": "default",
+   "parent": null,
+   "title": "",
+   "players": [],
+   "points": 0.0,
+   "owner": "WorkshopGame"
   }
  }
 ]

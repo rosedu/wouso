@@ -225,7 +225,7 @@ class Achievements(App):
                 if check_for_god_mode(player, 5, 5):
                     cls.earn_achievement(player, 'ach-god-mode-on')
             # Check previous 10 seens
-            if consecutive_seens(player, datetime.now()) >= 10:
+            if consecutive_seens(player, datetime.now()) >= 14:
                 if not player.magic.has_modifier('ach-login-10'):
                     cls.earn_achievement(player, 'ach-login-10')
 
