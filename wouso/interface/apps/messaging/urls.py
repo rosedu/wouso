@@ -4,8 +4,8 @@ from django.conf.urls.defaults import *
 urlpatterns = patterns('wouso.interface.apps.messaging.views',
     url(r'^$', 'home', name='messaging'),
     url(r'^create$', 'create', name='create'),
-    url(r'^create/to=(?P<to>\d*)$', 'create', name='create_to'),
-    url(r'^create/to=(?P<to>\d*)/reply_to=(?P<reply_to>\d*)$', 'create', name='reply_to'),
+    url(r'^create/to=(?P<to>\d+)$', 'create', name='create_to'),
+    url(r'^create/to=(?P<to>\d+)/reply_to=(?P<reply_to>\d*)$', 'create', name='reply_to'),
 
     (r'^view/(?P<mid>\d*)/$', 'message'),
 
