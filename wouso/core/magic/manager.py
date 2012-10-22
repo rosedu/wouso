@@ -187,6 +187,9 @@ class MagicManager(object):
         return None
 
     def mass_cast(self, spell, destination, due):
+        """
+         Cast a spell from this player to destination (list of players)
+        """
         error = self._check_spell_available(spell=spell)
         if error:
             return error
@@ -215,4 +218,7 @@ class MagicManager(object):
         error = source.magic._check_spell_available(spell=spell)
         if error:
             return error
-        return source.magic.basic_cast(player_dest=self.player, spell=spell, due=due)
+        error = source.magic.basic_cast(player_dest=self.player, spell=spell, due=due)
+        if error is None:
+            source.magic.decrement_spell(spell)
+        return error
