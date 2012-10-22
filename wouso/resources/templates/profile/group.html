@@ -18,9 +18,7 @@
     </div>
 
     <h2>{{ group }} {% if group.title != '' %}<small>[{{ group.name }}]</small>{% endif %}</h2>
-    <h3>{% if group.gclass == 0 %}{% trans 'Group' %}{% else %}
-        {% if group.gclass == 1 %}{% trans 'Series' %}{% endif %}
-        {% endif %}
+    <h3>{% trans 'Group' %}
         {% if group.parent %}{% trans 'part of' %} {% player_race group.parent %}{% endif %}
     </h3>
     <h4>{{ group.players.count }} {% trans 'members' %}</h4>
