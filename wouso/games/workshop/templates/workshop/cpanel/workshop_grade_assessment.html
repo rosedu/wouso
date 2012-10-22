@@ -6,20 +6,21 @@
 {% block sectiontitle %}Workshop #{{ assessment.workshop.id }}{% endblock %}
 
 {% block tabcontent %}
-<p>Grading assessment #{{ assessment.id }}, of player: {% player_simple assessment.player %} for workshop {{ assessment.workshop }}:</p>
+<h4>Grade assessment #{{ assessment.id }}</h4>
+<p> of player: {% player_simple assessment.player %} for workshop {{ assessment.workshop }}:</p>
 <p>Final grade: {{ assessment.grade }}.</p>
 
 <form method="post" action="">
-    <ul>
+    <ul class="spaced">
         {% for a in assessment.answer_set.all %}
         <li>{{ forloop.counter }}. {{ a.question.text }}
             <p> <em>{% trans 'Answer' %}:</em>
                 <tt>{{ a.text }}</tt>
-            <ul>
+            <ul class="spaced">
                 {% for r in a.review_set.all %}
                     {% if r.reviewer != user.get_profile %}
                     <li>
-                        {{ r.reviewer }}
+                        <strong>{{ r.reviewer }}:</strong>
                         <tt>{{ r.feedback }}</tt>
                         <br/>
                         <em>grade:</em> <strong>{{ r.answer_grade }}</strong>,
@@ -35,14 +36,25 @@
                 {% endfor %}
             </ul>
 
-            Grade: <select name="grade_{{ a.id }}">
-                <option></option>
-                <option {% if a.grade == 0 %}selected{% endif %}>0</option>
-                <option {% if a.grade == 1 %}selected{% endif %}>1</option>
-                <option {% if a.grade == 2 %}selected{% endif %}>2</option>
-            </select><br/>
-                Feedback: <br/>
-                <textarea name="feedback_{{ a.id }}" rows="4" cols="60">{% get_answer_feedback a user.get_profile %}</textarea><br/>
+            <table>
+                <tr>
+                    <td>
+                        <span class="red">
+                        Answer Grade:</span>
+                        <select name="grade_{{ a.id }}">
+                            <option></option>
+                            <option {% if a.grade == 0 %}selected{% endif %}>0</option>
+                            <option {% if a.grade == 1 %}selected{% endif %}>1</option>
+                            <option {% if a.grade == 2 %}selected{% endif %}>2</option>
+                        </select>
+                    </td>
+                    <td>
+                        <span class="red">
+                        Feedback: <br/></span>
+                        <textarea name="feedback_{{ a.id }}" rows="4" cols="60">{% get_answer_feedback a user.get_profile %}</textarea><br/>
+                    </td>
+                </tr>
+            </table>
             </p>
         </li>
         {% endfor %}

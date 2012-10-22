@@ -396,7 +396,7 @@ div.second {
 .ok {
     color: green;
 }
-.wrong {
+.wrong, .red {
     color: red;
 }
 #poweredby a{

@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template.context import RequestContext
 from django.utils.translation import ugettext as _
-from models import WorkshopGame, Semigroup, Workshop, Answer, Review
+from models import WorkshopGame, Semigroup, Workshop, Review
 
 @login_required
 def index(request, extra_context=None):
@@ -15,7 +15,8 @@ def index(request, extra_context=None):
         extra_context = {}
 
     extra_context.update({'workshopgame': WorkshopGame, 'workshop': WorkshopGame.get_for_player_now(player),
-                          'assessment': assessment, 'semigroup': Semigroup.get_by_player(player)})
+                          'assessment': assessment, 'semigroup': Semigroup.get_by_player(player),
+                          'history': player.assessments.all().order_by('-workshop__active_until')})
 
     return render_to_response('workshop/index.html',
                 extra_context,
@@ -72,12 +73,16 @@ def review(request, workshop):
     assessments = player.assessments_review.filter(workshop=workshop)
 
     if request.method == 'POST':
-        answer = get_object_or_404(Answer, pk=request.GET.get('a'))
-        review = Review.objects.get_or_create(reviewer=player, answer=answer)[0]
+        for ass in assessments:
+            for answer in ass.answer_set.all():
+                feedback = request.POST.get('feedback_%d' % answer.id, None)
+                answer_grade = request.POST.get('grade_%d' % answer.id, None)
 
-        review.feedback = request.POST['feedback_%d' % answer.id]
-        review.answer_grade = request.POST['grade_%d' % answer.id]
-        review.save()
+                if feedback is not None or answer_grade is not None:
+                    review = Review.objects.get_or_create(reviewer=player, answer=answer)[0]
+                    review.feedback = feedback
+                    review.answer_grade = answer_grade
+                    review.save()
 
     return render_to_response('workshop/review.html',
                 {'assessment': assessment,

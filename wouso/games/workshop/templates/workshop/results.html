@@ -32,12 +32,14 @@
             {% for r in a.review_set.all %}
                 <li>
                     {% if r.reviewer.in_staff_group %}
-                    <strong>{% trans 'Assistant' %}</strong>
+                    <span class="red">
+                    <strong>{% trans 'Assistant' %}</strong>:
                         <tt>{{ r.feedback }}</tt>
                         <br/>
                         <em>grade:</em> <strong>{{ a.grade }}</strong>
+                    </span>
                     {% else %}
-                    {% trans 'Anonymous' %}{{ forloop.counter }}
+                    {% trans 'Anonymous' %}{{ forloop.counter }}:
                     <tt>{{ r.feedback }}</tt>
                     <br/>
                     <em>grade:</em> <strong>{{ r.answer_grade }}</strong>,

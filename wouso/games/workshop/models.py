@@ -110,6 +110,13 @@ class Workshop(models.Model):
 
         return self.start_at <= timestamp <= self.active_until
 
+    def is_passed(self, timestamp=None):
+        timestamp = timestamp if timestamp else datetime.now()
+        if not self.active_until:
+            return False
+
+        return timestamp > self.active_until
+
     def is_reviewable(self):
         return self.status == 1
 

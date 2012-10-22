@@ -31,7 +31,7 @@
 
 <h4>{% trans 'Past workshops' %}</h4>
 <ul>
-    {% for a in user.get_profile.assessments.all %}
+    {% for a in history %}
         <li>{{ a.workshop }}
             {% if not a.workshop.is_active %}
                 <a href="{% url workshop_review a.workshop.id %}">{% trans 'Your reviews' %}</a>{% endif %}

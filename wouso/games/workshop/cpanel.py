@@ -148,7 +148,7 @@ def schedule_change(request, schedule=None):
 
 @staff_required
 def workshops(request):
-    workshops = Workshop.objects.all().order_by('-date')
+    workshops = Workshop.objects.all().order_by('-active_until')
     return render_to_response('workshop/cpanel/workshops.html',
                         {'module': 'workshop',
                          'workshops': workshops,
@@ -208,10 +208,9 @@ def workshop_grade_assessment(request, assessment):
 
             # Update review
             feedback = data.get('feedback_%d' % a.id, '')
-            if feedback:
-                review = Review.objects.get_or_create(answer=a, reviewer=assistant)[0]
-                review.feedback = feedback
-                review.save()
+            review = Review.objects.get_or_create(answer=a, reviewer=assistant)[0]
+            review.feedback = feedback
+            review.save()
 
             # Update other reviews' grades
             for r in a.review_set.all():
