@@ -20,8 +20,8 @@
         {% trans 'No workshop for you.' %}
         {% endif %}
 {% else %}
-        {% trans 'Not a member of current semigroup' %}.
+        {% trans 'Not in the current group' %}.
 {% endif %}
         <br/>
-        <a href="{% url workshop_index_view %}">{% trans 'Info' %}</a>
+        <a class="goto" href="{% url workshop_index_view %}">{% trans 'Info' %}</a>
 {% endblock %}

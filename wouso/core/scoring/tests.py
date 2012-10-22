@@ -7,6 +7,7 @@ from wouso.core.scoring import FormulaParsingError, setup_scoring, CORE_POINTS, 
 from wouso.core import scoring
 from wouso.core.tests import WousoTest
 from wouso.core.user.models import Player
+from wouso.interface.activity import signals
 
 class ScoringTestCase(TestCase):
     def setUp(self):
@@ -68,7 +69,7 @@ class ScoringTestCase(TestCase):
         try:
             ret = scoring.calculate(formula2)
             # no error? wtf
-            self.assertFalse(true)
+            self.assertFalse(True)
         except Exception as e:
             self.assertTrue(isinstance(e, FormulaParsingError))
 
@@ -154,3 +155,19 @@ class ScoringSetupTest(TestCase):
         setup_scoring()
         for c in CORE_POINTS:
             self.assertTrue(Coin.get(c))
+
+class ScoringFirstLogin(WousoTest):
+    def test_first_login_points(self):
+        f = Formula.add('start-points', formula='points=10')
+        Coin.add('points')
+        player = self._get_player()
+
+        self.assertEqual(player.points, 0)
+
+        # this won't work, since the activity is sent in our custom view
+        #self.client.login(username=player.user.username, password='test')
+        # using this instead
+        signals.addActivity.send(sender=None, user_from=player, action="login", game = None, public=False)
+
+        player = Player.objects.get(pk=player.pk)
+        self.assertEqual(player.points, 10)

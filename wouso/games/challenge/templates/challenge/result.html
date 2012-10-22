@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load user %}
 {% block title %}{% trans 'Challenge #' %}{{ challenge.id }}{% endblock %}
-{% block sectiontitle %}{% trans 'Challenge #' %}{{ challenge.id }}{% endblock %}
+{% block sectiontitle %}{% trans 'Challenge #' %}{{ challenge.id }} - {% trans 'Results' %}{% endblock %}
 
 
 
@@ -34,8 +34,9 @@
         {% endifequal %}
     </div>
 </div>
+
 <div id="timer" class="timer timer-big">
-    Finished
+    {% trans 'Finished' %}
 </div>
 
 <form id="challenge_form">
@@ -45,7 +46,10 @@
         <div class="question">
         {% autoescape off %}
         {{ field.label }}
-        [ You checked {{ answer.0}} from {{answer.1}} correct answers]
+            <br/>
+        <p>
+            [ You checked {{ answer.0}} from {{answer.1}} correct answers]
+        </p>
         {% endautoescape %}
         <ul class="answers">
         {% for choice in field.field.choices %}

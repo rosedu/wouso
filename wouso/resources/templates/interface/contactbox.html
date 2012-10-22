@@ -1,27 +1,33 @@
 {# Contact box - populated by js #}
 {% load user %}
 
-        <div id="Contactbox" onmouseover="show_contact_box()" onmouseout="on_userlist_mouseout()">
+<div id="Contactbox" onmouseover="show_contact_box()" onmouseout="on_userlist_mouseout()">
+    <div class="widget-top"></div>
+    <div class="widget-middle">
+        <div class="widget-content">
             <table>
                 <tr>
                     <td><div id="ContactboxName">{{ contactbox }}</div></td>
                     <td><div id="ContactboxAvatar" style="padding: 5px">
                         {% if contactbox %}
                         <img src="{% player_avatar contactbox %}" class="avatar" width="60" />
-                    {% endif %}
+                        {% endif %}
                     </div></td>
 
                 </tr>
                 <tr>
-                    <td colspan= "2"><hr></td>
+                    <td colspan= "2" class="separator"><hr/></td>
                 </tr>
                 <tr>
                     <td colspan = "2" style="text-align: right;">
-                        <input type="button" class="contactaction" id="ContactboxProfileButton" value="P" title="View profile"/>
-                        <input type="button" class="contactaction" id="ContactboxMesajeButton"  value="M" title="Send a message"/>
+                        <a href="#" class="button button-min contactaction" id="ContactboxProfileButton" title="View profile">P</a>
+                        <a href="#" class="button button-min contactaction" id="ContactboxMesajeButton"  title="Send a message"m>M</a>
                         {% if not config_disable_private_chat and not config_disable_chat  %}
-                            <input type="button" class="contactaction" id="ContactboxChatButton"    value="C" title="Make a private conversation"/><td>
+                        <input type="button" class="contactaction" id="ContactboxChatButton"    value="C" title="Make a private conversation"/><td>
                         {% endif %}
                 </tr>
             </table>
+        </div>
+    </div>
+    <div class="widget-bottom"></div>
 </div>

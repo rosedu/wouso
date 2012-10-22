@@ -1,13 +1,29 @@
 {% extends 'interface/section_base.html' %}
 {% load i18n %}
+{% load workshop %}
 
 {% block title %}{% trans 'Workshop' %}{% endblock %}
-{% block sectiontitle %}{% trans 'Results for workshop' %} #{{ workshop.pk }}{% endblock %}
+{% block sectiontitle %}{% trans 'Results for workshop' %} #{{ workshop.pk }} (ass #{{assessment.pk}}){% endblock %}
 
 {% block sectioncontent %}
 
-<p>{% trans "Your final grade is:" %} <strong>{{ assessment.grade }}</strong></p>
-<ul>
+<div class="subgroups">
+    {% trans "Your Reviews" %}
+    <ul class="simple">
+        {% for r in assessment.reviews %}
+        <li>{{ r }} {% get_ass_reviewer_grade r user.get_profile %} [{{ r.grade }}] - {% get_ass_review_grade r user.get_profile %}</li>
+        {% empty %}
+        <li>{% trans 'none' %}.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url workshop_review assessment.workshop.id %}">all</a>
+</div>
+
+<p>{% trans "Assessment grade:" %} {{ assessment.grade }}</p>
+<p>{% trans "Reviewer grade:" %} {{ assessment.reviewer_grade }}</p>
+<p>{% trans "Your final grade is:" %} <strong>{{ assessment.final_grade }}</strong></p>
+
+<ul class="spaced">
 {% for a in assessment.answer_set.all %}
     <li>{{ forloop.counter }}. {{ a.question.text }}
         <p> <em>{% trans 'Your answer' %}:</em>
@@ -16,12 +32,14 @@
             {% for r in a.review_set.all %}
                 <li>
                     {% if r.reviewer.in_staff_group %}
-                    <strong>{% trans 'Assistant' %}</strong>
+                    <span class="red">
+                    <strong>{% trans 'Assistant' %}</strong>:
                         <tt>{{ r.feedback }}</tt>
                         <br/>
                         <em>grade:</em> <strong>{{ a.grade }}</strong>
+                    </span>
                     {% else %}
-                    {% trans 'Anonymous' %}{{ forloop.counter }}
+                    {% trans 'Anonymous' %}{{ forloop.counter }}:
                     <tt>{{ r.feedback }}</tt>
                     <br/>
                     <em>grade:</em> <strong>{{ r.answer_grade }}</strong>,

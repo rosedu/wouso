@@ -9,7 +9,7 @@
 {% if top.disabled %}
     {% trans 'Top has been disabled' %}
 {% else %}
-    {% if not is_top %}
+    {% if False %}
         <ol class="top">
         {% for u in topusers %}
             <li><a  href="{% url player_profile u.id %}"
@@ -22,14 +22,12 @@
 
     <a href="{% url wouso.interface.top.views.gettop %}" class="goto">{% trans 'Current top' %}</a>
     <br/>
-    {% if is_top %}
-        <a href="{% url wouso.interface.top.views.gettop toptype=1 sortcrit=0 page=1 %}" class="goto">{% trans 'Weekly progress' %}</a>
-    <br/>
-    <a href="{% url wouso.interface.top.views.pyramid %}" class="goto">{% trans 'Pyramid' %}</a>
-    <br/>
-    <a href="{% url wouso.interface.top.views.challenge_top %}" class="goto">{% trans 'Challange top' %}</a>
+    <a href="{% url wouso.interface.top.views.challenge_top %}" class="goto">{% trans 'Challenge top' %}</a>
     <br/>
     <a href="{% url artifact_hof %}" class="goto">{% trans 'Achievements' %}</a>
-    {% endif %}
+    <br/>
+    <a href="{% url wouso.interface.top.views.pyramid %}" class="goto">{% trans 'Pyramid' %}</a>
+
+
 {% endif %}
 {% endblock %}

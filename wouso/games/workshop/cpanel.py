@@ -13,11 +13,19 @@ class AGForm(forms.ModelForm):
         model = Semigroup
         fields = ('name', 'day', 'hour', 'room')
 
+class WAForm(forms.ModelForm):
+    class Meta:
+        model = Workshop
+        exclude = ('start_at', 'active_until')
+
+
 @staff_required
 def workshop_home(request, **kwargs):
+
     return render_to_response('workshop/cpanel/index.html',
                         {'module': 'workshop',
                          'days': DAY_CHOICES,
+                         'semigroups': Semigroup.objects.all(),
                          'hours': range(8, 22, 2),
                          'info': WorkshopGame},
                         context_instance=RequestContext(request)
@@ -57,34 +65,34 @@ def edit_group(request, semigroup):
         form = AGForm(instance=semigroup)
 
     return render_to_response('workshop/cpanel/editgroup.html',
-            {'module': 'workshop',
-             'form': form,
-             'instance': semigroup,
-             },
-        context_instance=RequestContext(request)
+                        {'module': 'workshop',
+                         'form': form,
+                         'instance': semigroup,
+                         },
+                        context_instance=RequestContext(request)
     )
 
 
 @staff_required
 def edit_spot(request, day, hour):
     day, hour = int(day), int(hour)
-    sg = Semigroup.get_by_day_and_hour(day, hour)
+    sgs = Semigroup.get_by_day_and_hour(day, hour)
 
-    if not sg:
+    if not sgs:
         return redirect('ws_add_group')
 
     if request.method == 'POST':
         semigroup = get_object_or_404(Semigroup, pk=request.GET.get('semigroup'))
         try:
             player = Player.objects.get(pk=int(request.POST.get('player')))
-        except ValueError, Player.DoesNotExist:
+        except (ValueError, Player.DoesNotExist):
             pass
         else:
             semigroup.add_player(player)
 
     return render_to_response('workshop/cpanel/editspot.html',
                         {'module': 'workshop',
-                         'semigroups': sg,
+                         'semigroups': sgs,
                          },
                         context_instance=RequestContext(request)
     )
@@ -105,7 +113,8 @@ def schedule(request):
 
     return render_to_response('workshop/cpanel/schedule.html',
                         {'module': 'workshop',
-                         'schedules': schedules},
+                         'schedules': schedules,
+                         'page': 'schedule'},
                         context_instance=RequestContext(request)
     )
 
@@ -132,16 +141,18 @@ def schedule_change(request, schedule=None):
     return render_to_response('workshop/cpanel/schedule_change.html',
                         {'module': 'workshop',
                          'form': form,
-                         'instance': schedule},
+                         'instance': schedule,
+                         'page': 'schedule'},
                         context_instance=RequestContext(request)
     )
 
 @staff_required
 def workshops(request):
-    workshops = Workshop.objects.all().order_by('-date')
+    workshops = Workshop.objects.all().order_by('-active_until')
     return render_to_response('workshop/cpanel/workshops.html',
                         {'module': 'workshop',
                          'workshops': workshops,
+                         'page': 'workshops',
                          },
                         context_instance=RequestContext(request)
     )
@@ -174,6 +185,7 @@ def workshop_reviewers(request, workshop):
     return render_to_response('workshop/cpanel/workshop_map.html',
                         {'module': 'workshop',
                          'workshop': workshop,
+                         'page': 'workshops',
                          },
                         context_instance=RequestContext(request)
     )
@@ -196,10 +208,9 @@ def workshop_grade_assessment(request, assessment):
 
             # Update review
             feedback = data.get('feedback_%d' % a.id, '')
-            if feedback:
-                review = Review.objects.get_or_create(answer=a, reviewer=assistant)[0]
-                review.feedback = feedback
-                review.save()
+            review = Review.objects.get_or_create(answer=a, reviewer=assistant)[0]
+            review.feedback = feedback
+            review.save()
 
             # Update other reviews' grades
             for r in a.review_set.all():
@@ -217,15 +228,10 @@ def workshop_grade_assessment(request, assessment):
     return render_to_response('workshop/cpanel/workshop_grade_assessment.html',
                         {'module': 'workshop',
                          'assessment': assessment,
+                         'page': 'workshops',
                          },
                          context_instance=RequestContext(request)
     )
-
-
-class WAForm(forms.ModelForm):
-    class Meta:
-        model = Workshop
-        exclude = ('start_at', 'active_until')
 
 
 @staff_required
@@ -244,7 +250,8 @@ def workshop_add(request):
         form = WAForm()
 
     return render_to_response('workshop/cpanel/workshop_add.html',
-                        {'module': 'workshop', 'form': form, 'info': WorkshopGame, 'error': error},
+                        {'module': 'workshop', 'form': form, 'info': WorkshopGame, 'error': error,
+                         'page': 'workshops'},
                         context_instance=RequestContext(request)
     )
 
@@ -253,21 +260,46 @@ def workshop_add(request):
 def workshop_edit(request, workshop):
     workshop = get_object_or_404(Workshop, pk=workshop)
 
-    pass
+    class WForm(forms.ModelForm):
+        class Meta:
+            model = Workshop
+
+    if request.method == 'POST':
+        form = WForm(request.POST, instance=workshop)
+        if form.is_valid():
+            form.save()
+            return redirect('ws_workshops')
+    else:
+        form = WForm(instance=workshop)
+
+    return render_to_response('workshop/cpanel/workshop_edit.html',
+                        {'module': 'workshop', 'form': form, 'info': WorkshopGame,
+                         'page': 'workshops'},
+                        context_instance=RequestContext(request)
+    )
 
 
 @staff_required
 def workshop_start(request, workshop):
     workshop = get_object_or_404(Workshop, pk=workshop)
-
     workshop.start() # set start_at and active_until
-
     return redirect('ws_workshops')
+
 
 @staff_required
 def workshop_stop(request, workshop):
     workshop = get_object_or_404(Workshop, pk=workshop)
-
     workshop.stop() # set active_until
-
     return redirect('ws_workshops')
+
+
+@staff_required
+def workshop_assessments(request, workshop, assessment=None):
+    workshop = get_object_or_404(Workshop, pk=workshop)
+    if assessment:
+        assessment = get_object_or_404(Assessment, pk=assessment)
+
+    return render_to_response('workshop/cpanel/workshop_assessments.html',
+                        {'module': 'workshop', 'page': 'workshops', 'workshop': workshop, 'assessment': assessment},
+                        context_instance=RequestContext(request)
+    )

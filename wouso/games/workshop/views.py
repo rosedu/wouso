@@ -3,18 +3,20 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template.context import RequestContext
 from django.utils.translation import ugettext as _
-from models import WorkshopGame, Semigroup, Assessment, Workshop, Answer, Review
+from models import WorkshopGame, Semigroup, Workshop, Review
 
 @login_required
 def index(request, extra_context=None):
     player = request.user.get_profile()
-    assessment = WorkshopGame.get_for_player_now(player)
+    workshop = WorkshopGame.get_for_player_now(player)
+    assessment = workshop.get_or_create_assessment(player) if workshop else None
 
     if not extra_context:
         extra_context = {}
 
     extra_context.update({'workshopgame': WorkshopGame, 'workshop': WorkshopGame.get_for_player_now(player),
-                          'assessment': assessment, 'semigroup': Semigroup.get_by_player(player)})
+                          'assessment': assessment, 'semigroup': Semigroup.get_by_player(player),
+                          'history': player.assessments.all().order_by('-workshop__active_until')})
 
     return render_to_response('workshop/index.html',
                 extra_context,
@@ -35,7 +37,7 @@ def play(request):
     workshop = WorkshopGame.get_for_player_now(player=player)
 
     if not workshop:
-        return do_error(request, _('No workshop for your semigroup'))
+        return do_error(request, _('No workshop for you'))
 
     if not workshop.is_active():
         return do_error(request, _('Workshop is not active'))
@@ -50,7 +52,7 @@ def play(request):
             answers[q.id] = request.POST.get('answer_%d' % q.id)
 
         assessment.set_answered(answers)
-        return redirect('workshop_index_view')
+        return redirect('workshop_results', workshop=workshop.id)
 
     return render_to_response('workshop/play.html',
                 {'assessment': assessment,
@@ -63,7 +65,7 @@ def review(request, workshop):
     player = request.user.get_profile()
     workshop = get_object_or_404(Workshop, pk=workshop)
 
-    assessment = Assessment.get_for_player_and_workshop(player, workshop)
+    assessment = workshop.get_assessment(player)
 
     if not assessment:
         return do_error(request, _('Cannot review an workshop you did not participate to.'))
@@ -71,12 +73,16 @@ def review(request, workshop):
     assessments = player.assessments_review.filter(workshop=workshop)
 
     if request.method == 'POST':
-        answer = get_object_or_404(Answer, pk=request.GET.get('a'))
-        review = Review.objects.get_or_create(reviewer=player, answer=answer)[0]
+        for ass in assessments:
+            for answer in ass.answer_set.all():
+                feedback = request.POST.get('feedback_%d' % answer.id, None)
+                answer_grade = request.POST.get('grade_%d' % answer.id, None)
 
-        review.feedback = request.POST['feedback_%d' % answer.id]
-        review.answer_grade = request.POST['grade_%d' % answer.id]
-        review.save()
+                if feedback is not None or answer_grade is not None:
+                    review = Review.objects.get_or_create(reviewer=player, answer=answer)[0]
+                    review.feedback = feedback
+                    review.answer_grade = answer_grade
+                    review.save()
 
     return render_to_response('workshop/review.html',
                 {'assessment': assessment,
@@ -120,7 +126,7 @@ def results(request, workshop):
     player = request.user.get_profile()
     workshop = get_object_or_404(Workshop, pk=workshop)
 
-    assessment = Assessment.get_for_player_and_workshop(player, workshop)
+    assessment = workshop.get_assessment(player)
 
     if not assessment:
         return do_error(request, _('Cannot view results for an workshop you did not participate to.'))

@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core import serializers
 from django.core.urlresolvers import reverse
@@ -38,6 +39,17 @@ def anonymous_homepage(request):
 
 
 def login_view(request):
+    # TODO: rethink and rewrite
+    if request.method != 'POST':
+        form = AuthenticationForm(request)
+        return render_to_response('registration/login.html', {'form': form},
+            context_instance=RequestContext(request))
+    else:
+        form = AuthenticationForm(data=request.POST)
+        if not form.is_valid():
+            return render_to_response('registration/login.html', {'form': form},
+                context_instance=RequestContext(request))
+
     user = authenticate(username=request.POST['username'], password=request.POST['password'])
     if user is not None:
         if user.is_active:

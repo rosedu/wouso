@@ -1,0 +1,15 @@
+{% extends 'workshop/cpanel/index.html' %}
+
+{% block tabcontent %}
+<p>
+    Tip: to restart a workshop, clear <b>start at</b>, save, then choose <b>Start</b>.
+</p>
+<form action="" method="post">
+    <table>
+        {{ form.as_table }}
+    </table>
+    <button type="submit">Save</button> <a href="{% url ws_workshops %}">back</a>
+    {% csrf_token %}
+</form>
+
+{% endblock %}

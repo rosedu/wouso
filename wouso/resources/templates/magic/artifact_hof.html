@@ -19,12 +19,12 @@
 
     <a href="{% url artifact_hof %}">{% trans "Back" %}</a>
 {% else %}
-    <h3>{% trans 'Artifacts' %}</h3>
+    <h3>{% trans 'Achievements' %}</h3>
     <ol>
         {% for a in artifacts %}
         <li><a href="{% url artifact_hof a.id %}">{% artifact a %} {{ a.title }}</a> - {{ a.used }}</li>
         {% empty %}
-        <li>{% trans 'No artifacts given yet' %}</li>
+        <li>{% trans 'No achievements received yet. Stay tuned!' %}</li>
         {% endfor %}
     </ol>
 

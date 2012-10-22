@@ -33,7 +33,7 @@ def artifact(artifact):
     else:
         html = '<div class="artifact artifact-%s artifact-%s artifact-%s" title="%s"></div>' % (group, type, path, title)
 
-    if amount is not None:
+    if amount is not None and amount > 1:
         return '<span class="artifact-container">%s<span class="sup">%d</span></span>' % (html, amount)
     else:
         return html

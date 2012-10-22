@@ -1,7 +1,8 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.test import TestCase
 from models import *
+from wouso.core.tests import WousoTest
 
 class TestWorkshop(TestCase):
 
@@ -14,7 +15,7 @@ class TestWorkshop(TestCase):
         self.assertEqual(spot_day, group.day)
         self.assertEqual(spot_hour, group.hour)
 
-        self.assertEqual(WorkshopGame.get_semigroup(timestamp=now)[0], group)
+        self.assertEqual(WorkshopGame.get_semigroups(timestamp=now)[0], group)
 
     def test_start_reviewing(self):
         now = datetime.now()
@@ -49,3 +50,64 @@ class TestWorkshop(TestCase):
 
         self.assertEqual(i1['reviews'].count(), 0)
         self.assertEqual(i2['reviews'].count(), 0)
+
+class TestAssessment(WousoTest):
+    def test_grading(self):
+        p1 = self._get_player(1)
+        p2 = self._get_player(2)
+        semig = Semigroup.objects.create(day=datetime.today().day, hour=datetime.today().hour - datetime.today().hour % 2)
+        semig.players.add(p1, p2)
+
+        q = Question.objects.create()
+        s = Schedule.objects.create()
+        q.tags.add(s)
+
+        self.assertTrue(s.is_active())
+
+        w = Workshop.objects.create(semigroup=semig)
+        self.assertTrue(w.is_ready())
+
+        w.start()
+
+        a1 = w.get_or_create_assessment(p1)
+        a2 = w.get_or_create_assessment(p2)
+
+        self.assertFalse(a1.answered)
+        self.assertFalse(a2.answered)
+
+        a1.set_answered()
+        a2.set_answered()
+
+        w.stop()
+
+        self.assertTrue(a1.answered)
+        self.assertTrue(a2.answered)
+
+        WorkshopGame.start_reviewing(w)
+
+        self.assertIn(p2, a1.reviewers.all())
+        self.assertIn(p1, a2.reviewers.all())
+
+        ans1 = Answer.objects.get(question=q, assessment=a1)
+        ans2 = Answer.objects.get(question=q, assessment=a2)
+
+        r21 = Review.objects.create(answer=ans1, reviewer=p2, answer_grade=3)
+        self.assertEqual(a1.reviews_grade, 3)
+
+        r12 = Review.objects.create(answer=ans2, reviewer=p1, answer_grade=7)
+        self.assertEqual(a2.reviews_grade, 7)
+
+        ar = Review.objects.create(answer=ans2, reviewer=p2, answer_grade=8)
+        self.assertEqual(a2.reviews_grade, 7) # ignores reviews from non-reviewers
+        ar.delete()
+
+        ans1.grade = 10
+        ans1.save()
+        r12.review_grade = 100
+        r12.save()
+
+        a1.update_grade()
+        self.assertEqual(a1.grade, 10)
+        self.assertEqual(a1.reviewer_grade, 100)
+        self.assertEqual(a1.final_grade, 55)
+        self.assertEqual(a1.reviews_grade, 3)

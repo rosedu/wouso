@@ -6,53 +6,96 @@
 
 {% block sectioncontent %}
 
-<ul>
+<form action="" method="post">
     {% for as in assessments %}
-    <li>{{ forloop.counter }}. {% trans 'Anonymous' %}
+    <h4>{% trans 'Anonymous' %} {% trans 'assesment' %} {{ forloop.counter }}</h4>
 
-        <ul>
+        <ul class="spaced">
         {% for a in as.answer_set.all %}
             <li>{{ forloop.counter }}. {{ a.question.text }}
-                <p> <em>{% trans 'Answer' %}:</em>
-                    <tt>{{ a.text }}</tt> <em>Grade:</em> <strong>{{ a.grade }}</strong>
-                    <ul>
+                <p>
+                    <em>{% trans 'Answer' %}:</em>
+                    <tt>{{ a.text }}</tt>
+
+                    <span class="points red">
+                        <em>{% trans 'Assistant grade:' %}</em> <strong>{{ a.grade }}</strong>
+                    </span>
+
+                    <ul class="spaced">
                     {% for r in a.review_set.all %}
                         <li>
+                        {% if r.reviewer == user.get_profile and r.workshop.is_reviewable %}
+                            <table>
+                                <tr>
+                                    <td>{% trans 'Grade' %}:
+                                        <select name="grade_{{ a.id }}">
+                                            <option {% if r.answer_grade == 0 %}selected{% endif %}>0</option>
+                                            <option {% if r.answer_grade == 1 %}selected{% endif %}>1</option>
+                                            <option {% if r.answer_grade == 2 %}selected{% endif %}>2</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        {% trans 'Feedback:' %}
+                                        <br/>
+                                        <textarea name="feedback_{{ a.id }}" rows="4" cols="60">{{ r.feedback }}</textarea><br/>
+                                    </td>
+                                </tr>
+                            </table>
+                        {% else %}
                             {% if r.reviewer == user.get_profile %}
                                 {{ r.reviewer }}
                             {% else %}
-                                {% trans 'Anonymous' %}{{ forloop.counter }}
+                                {% if r.reviewer.in_staff_group %}
+                                    {% trans 'Assistant' %}
+                                {% else %}
+                                    {% trans 'Anonymous' %}{{ forloop.counter }}
+                                {% endif %}
                             {% endif %}:
                             <tt>{{ r.feedback }}</tt>
-                            <br/>
-                            <em>grade:</em> <strong>{{ r.answer_grade }}</strong>,
-                            <em>review grade:</em> <strong>{{ r.review_grade }}</strong>
-                            {% if r.reviewer == user.get_profile and r.workshop.is_reviewable %}
-                                <a class="button" href="{% url workshop_edit_review r.id %}">{% trans 'Change' %}</a>
+                            {% if not r.reviewer.in_staff_group %}
+                                <br/>
+                                <em>{% trans 'grade:' %}</em> <strong>{{ r.answer_grade }}</strong>,
+                                <em class="red">{% trans 'review grade:' %} <strong>{{ r.review_grade }}</strong></em>
+                                {% if r.reviewer == user.get_profile and r.workshop.is_reviewable %}
+                                    <a class="button" href="{% url workshop_edit_review r.id %}">{% trans 'Change' %}</a>
+                                {% endif %}
                             {% endif %}
+                        {% endif %}
                         </li>
                     {% endfor %}
                     </ul>
-                    {% if user.get_profile not in  a.reviewers %}
-                        <form action="?a={{ a.id }}" method="post">
-                            Grade: <select name="grade_{{ a.id }}">
-                                <option>0</option>
-                                <option>1</option>
-                                <option>2</option>
-                            </select><br/>
-                            Feedback: <br/>
-                            <textarea name="feedback_{{ a.id }}" rows="4" cols="60"></textarea><br/>
-                            {% csrf_token %}
-                            <button type="submit">Save</button>
-                        </form>
+                    {% if user.get_profile not in a.reviewers %}
+                        <table>
+                            <tr>
+                                <td>{% trans 'Grade' %}:
+                                    <select name="grade_{{ a.id }}">
+                                        <option>0</option>
+                                        <option>1</option>
+                                        <option>2</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    {% trans 'Feedback:' %}
+                                    <br/>
+                                    <textarea name="feedback_{{ a.id }}" rows="4" cols="60"></textarea><br/>
+                                </td>
+                            </tr>
+                        </table>
                     {% endif %}
                 </p>
             </li>
         {% endfor %}
         </ul>
-    </li>
     {% endfor %}
-</ul>
 
-<a class="button" href="{% url workshop_index_view %}">Index</a>
+    {% csrf_token %}
+    <button type="submit">{% trans 'Review!' %}</button>
+</form>
+
+        <div class="spacer clear">
+            <!-- -->
+        </div>
+
+<a class="button" href="{% url workshop_index_view %}">&laquo; {% trans 'Index' %}</a>
+
 {% endblock %}

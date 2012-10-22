@@ -1,0 +1,34 @@
+{% extends 'workshop/cpanel/index.html' %}
+{% load workshop %}
+{% load i18n %}
+
+{% block sectiontitle %}Workshop #{{ workshop.id }} - Assessments{% endblock %}
+
+{% block tabcontent %}
+{% if assessment %}
+        <h3>Assessment #{{ assesment.id }}</h3>
+        <h4>{{ assessment.player }}, {{ assessment.workshop.semigroup }}, {{ assessment.player.group.name }}</h4>
+        <ol>
+            {% for a in assessment.answer_set.all %}
+            <li>{{ a.question }}
+                <br/>
+                {{ a }}
+            </li>
+            {% endfor %}
+        </ol>
+<a class="button" href="{% url ws_view_assessments workshop.id %}">All assessments</a>
+{% else %}
+        <h3>Workshop #{{workshop.id}}</h3>
+        <h4>{{ workshop.semigroup }}, {{workshop.date}}</h4>
+<ul class="spaced">
+    {% for ass in workshop.assessment_set.all %}
+    <li>#{{ ass.id }} - {{ ass.player }} [{% if ass.answered %}answered{% endif %}]
+        <a href="{% url ws_view_assessment workshop.id ass.id %}">view</a>
+    </li>
+    {% endfor %}
+</ul>
+
+<p>Total: {{ workshop.assessment_set.all.count }}</p>
+<a class="button" href="{% url ws_workshops %}">Workshops</a>
+{% endif %}
+{% endblock %}

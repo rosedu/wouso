@@ -1,14 +1,13 @@
-import logging
+# coding=utf-8
+from datetime import datetime, timedelta
 from django import forms
 from django.db import models
 from django.db.models import Sum
 from django.contrib.auth.models import User, Group
-from django.utils.translation import ugettext_noop
 from wouso.core.game.models import Game
 from wouso.core.magic.manager import MagicManager
-from wouso.interface.activity import signals
 from wouso.core.god import God
-from wouso.core.magic.models import  Spell, PlayerArtifactAmount, PlayerSpellAmount, PlayerSpellDue
+from wouso.core.magic.models import  Spell
 
 from .. import deprecated
 
@@ -78,6 +77,13 @@ class PlayerGroup(models.Model):
             return list(self.parent.children.exclude(id=self.id))
         else:
             return []
+
+    @property
+    def online_players(self):
+        oldest = datetime.now() - timedelta(minutes = 10)
+
+        res = self.players.filter(last_seen__gte=oldest)
+        return res
 
     def __unicode__(self):
         return self.name if self.title == '' else self.title
@@ -220,8 +226,18 @@ class Player(models.Model):
         """
         try:
             return self.playergroup_set.filter(owner=None).get()
-        except PlayerGroup.DoesNotExist:
+        except (PlayerGroup.DoesNotExist, PlayerGroup.MultipleObjectsReturned):
             return None
+
+    def set_group(self, group):
+        """
+         Set the core group, which is unique
+        """
+        for g in self.playergroup_set.filter(owner=None):
+            g.players.remove(self)
+
+        group.players.add(self)
+        return group
 
     @property
     @deprecated('There is race waiting to be used')
@@ -267,7 +283,7 @@ class Player(models.Model):
         return ret if ret != u" " else self.user.__unicode__()
 
 class UserReportForm(forms.Form):
-	message = forms.CharField(widget = forms.Textarea)
+    message = forms.CharField(widget = forms.Textarea)
 
 
 # Hack for having user and user's profile always in sync
@@ -290,21 +306,8 @@ def user_post_save(sender, instance, **kwargs):
         else:
             profile.race = default_race
             profile.save()
-        # kick some activity
-        profile.nickname = profile.user_name()
-        signal_msg = ugettext_noop('has joined the game.')
-
-        signals.addActivity.send(sender=None, user_from=profile,
-                                 user_to=profile,
-                                 message=signal_msg,
-                                 game=None)
-        # give 15 bonus points
-        from wouso.core.scoring import score
-        from wouso.settings import STARTING_POINTS
-    
-        try:
-            score(profile, None, 'start-points')
-        except: pass # This might fail when formulas are not set-up, i.e. superuser syncdb profile creation
+        profile.nickname = profile.user.username
+        profile.save()
 
 models.signals.post_save.connect(user_post_save, User)
 

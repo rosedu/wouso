@@ -5,8 +5,10 @@
 {% block sectiontitle %}{% trans 'Workshop' %} #{{ workshop.pk }}{% endblock %}
 
 {% block sectioncontent %}
-<p>Workshop available until: {{ workshop.active_until }}</p>
-<p>Assessment started: {{ assessment.time_start }}</p>
+    <div class="second">
+        <p>{% trans 'Workshop available until' %}: {{ workshop.active_until }}</p>
+        <p>{% trans 'Assessment started' %}: {{ assessment.time_start }}</p>
+    </div>
 
 <form action="" method="post">
     <table>
@@ -17,11 +19,11 @@
             </tr>
             <tr>
                 <td></td>
-                <td><textarea name="answer_{{ q.id }}" rows="5" cols="80"></textarea></td>
+                <td><textarea name="answer_{{ q.id }}" rows="8" cols="80"></textarea></td>
             </tr>
         {% endfor %}
     </table>
     {% csrf_token %}
-    <button type="submit">{% trans 'Send' %}</button>
+    <button type="submit" onclick="return confirm('{% trans 'Are you sure do you want to submit?' %}');">{% trans 'Send' %}</button>
 </form>
 {% endblock %}

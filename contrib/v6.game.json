@@ -33,7 +33,7 @@
   "fields": {
    "group": 2,
    "description": null,
-   "title": "Level-1",
+   "title": "Student",
    "image": "",
    "percents": 100,
    "name": "level-1"
@@ -45,7 +45,7 @@
   "fields": {
    "group": 3,
    "description": null,
-   "title": "Level-1",
+   "title": "Sailor",
    "image": "",
    "percents": 100,
    "name": "level-1"
@@ -57,7 +57,7 @@
   "fields": {
    "group": 4,
    "description": null,
-   "title": "Level-1",
+   "title": "Journeyman",
    "image": "",
    "percents": 100,
    "name": "level-1"
@@ -69,7 +69,7 @@
   "fields": {
    "group": 2,
    "description": null,
-   "title": "Level-2",
+   "title": "Apprentice",
    "image": "",
    "percents": 100,
    "name": "level-2"
@@ -81,7 +81,7 @@
   "fields": {
    "group": 3,
    "description": null,
-   "title": "Level-2",
+   "title": "Navigator",
    "image": "",
    "percents": 100,
    "name": "level-2"
@@ -93,7 +93,7 @@
   "fields": {
    "group": 4,
    "description": null,
-   "title": "Level-2",
+   "title": "Carpenter",
    "image": "",
    "percents": 100,
    "name": "level-2"
@@ -105,7 +105,7 @@
   "fields": {
    "group": 2,
    "description": null,
-   "title": "Level-3",
+   "title": "Disciple",
    "image": "",
    "percents": 100,
    "name": "level-3"
@@ -117,7 +117,7 @@
   "fields": {
    "group": 3,
    "description": null,
-   "title": "Level-3",
+   "title": "Helmsman",
    "image": "",
    "percents": 100,
    "name": "level-3"
@@ -129,7 +129,7 @@
   "fields": {
    "group": 4,
    "description": null,
-   "title": "Level-3",
+   "title": "Glazier",
    "image": "",
    "percents": 100,
    "name": "level-3"
@@ -141,7 +141,7 @@
   "fields": {
    "group": 2,
    "description": null,
-   "title": "Level-4",
+   "title": "Scholar",
    "image": "",
    "percents": 100,
    "name": "level-4"
@@ -153,7 +153,7 @@
   "fields": {
    "group": 3,
    "description": null,
-   "title": "Level-4",
+   "title": "Corsair",
    "image": "",
    "percents": 100,
    "name": "level-4"
@@ -165,7 +165,7 @@
   "fields": {
    "group": 4,
    "description": null,
-   "title": "Level-4",
+   "title": "Armorer",
    "image": "",
    "percents": 100,
    "name": "level-4"
@@ -177,7 +177,7 @@
   "fields": {
    "group": 2,
    "description": null,
-   "title": "Level-5",
+   "title": "Researcher",
    "image": "",
    "percents": 100,
    "name": "level-5"
@@ -189,7 +189,7 @@
   "fields": {
    "group": 3,
    "description": null,
-   "title": "Level-5",
+   "title": "Captain",
    "image": "",
    "percents": 100,
    "name": "level-5"
@@ -201,7 +201,7 @@
   "fields": {
    "group": 4,
    "description": null,
-   "title": "Level-5",
+   "title": "Jeweler",
    "image": "",
    "percents": 100,
    "name": "level-5"
@@ -213,7 +213,7 @@
   "fields": {
    "group": 2,
    "description": null,
-   "title": "Level-6",
+   "title": "Master",
    "image": "",
    "percents": 100,
    "name": "level-6"
@@ -225,7 +225,7 @@
   "fields": {
    "group": 3,
    "description": null,
-   "title": "Level-6",
+   "title": "Explorer",
    "image": "",
    "percents": 100,
    "name": "level-6"
@@ -237,7 +237,7 @@
   "fields": {
    "group": 4,
    "description": null,
-   "title": "Level-6",
+   "title": "Designer",
    "image": "",
    "percents": 100,
    "name": "level-6"
@@ -249,7 +249,7 @@
   "fields": {
    "group": 2,
    "description": null,
-   "title": "Level-7",
+   "title": "Eminent",
    "image": "",
    "percents": 100,
    "name": "level-7"
@@ -261,7 +261,7 @@
   "fields": {
    "group": 3,
    "description": null,
-   "title": "Level-7",
+   "title": "Admiral",
    "image": "",
    "percents": 100,
    "name": "level-7"
@@ -273,10 +273,154 @@
   "fields": {
    "group": 4,
    "description": null,
-   "title": "Level-7",
+   "title": "Architect",
    "image": "",
    "percents": 100,
    "name": "level-7"
+  }
+ },
+ {
+  "pk": 22,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-login-10"
+  }
+ },
+ {
+  "pk": 23,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-qotd-10"
+  }
+ },
+ {
+  "pk": 24,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-chall-30"
+  }
+ },
+ {
+  "pk": 25,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-chall-won-10"
+  }
+ },
+ {
+  "pk": 26,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-night-owl"
+  }
+ },
+ {
+  "pk": 27,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-early-bird"
+  }
+ },
+ {
+  "pk": 28,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-popularity"
+  }
+ },
+ {
+  "pk": 30,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-chall-def-big"
+  }
+ },
+ {
+  "pk": 31,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-this-is-sparta"
+  }
+ },
+ {
+  "pk": 32,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-flawless-victory"
+  }
+ },
+ {
+  "pk": 33,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-win-fast"
+  }
+ },
+ {
+  "pk": 34,
+  "model": "magic.artifact",
+  "fields": {
+   "group": 1,
+   "description": null,
+   "title": "",
+   "image": "",
+   "percents": 100,
+   "name": "ach-god-mode-on"
   }
  },
  {
@@ -505,7 +649,7 @@
   "model": "scoring.coin",
   "fields": {
    "owner": null,
-   "integer": false,
+   "integer": true,
    "name": "points"
   }
  },
@@ -528,12 +672,12 @@
   }
  },
  {
-  "pk": "qotd-ok",
+  "pk": "specialquest-passed",
   "model": "scoring.formula",
   "fields": {
-   "owner": "QotdGame",
-   "formula": "points=40 + (10 if {hour} < 12 else -10)",
-   "description": "Points earned on a correct answer. Arguments: hour of the day."
+   "owner": "SpecialQuestGame",
+   "formula": "gold={value}",
+   "description": "Points earned when finishing a task. Arguments: value."
   }
  },
  {
@@ -564,12 +708,12 @@
   }
  },
  {
-  "pk": "specialquest-passed",
+  "pk": "qotd-ok",
   "model": "scoring.formula",
   "fields": {
-   "owner": "SpecialQuestGame",
-   "formula": "gold={value}",
-   "description": "Points earned when finishing a task. Arguments: value."
+   "owner": "QotdGame",
+   "formula": "points=40 + (10 if {hour} < 12 else -10)",
+   "description": "Points earned on a correct answer. Arguments: hour of the day."
   }
  },
  {
@@ -729,7 +873,7 @@
   "pk": "default_group",
   "model": "config.setting",
   "fields": {
-   "value": "1"
+   "value": ""
   }
  },
  {
@@ -750,14 +894,14 @@
   "pk": "title",
   "model": "config.setting",
   "fields": {
-   "value": "World of USO v4 - piranha"
+   "value": "World of USO v6 - Et pluribus unum"
   }
  },
  {
   "pk": "intro",
   "model": "config.setting",
   "fields": {
-   "value": "World of USO e un joc simplu realizat pentru studen\u021bii cursului de USO (Utilizarea Sistemelor de Operare) din Facultatea de Automatic\u0103 \u0219i Calculatoare a Universit\u0103\u021bii Politehnica Bucure\u0219ti.\r\n\r\nWorld of USO are 3 p\u0103r\u021bi: Question of the Day, Challenge \u0219i The Quest"
+   "value": "World of USO e un joc simplu realizat pentru studen\u021bii cursului de USO (Utilizarea Sistemelor de Operare) din Facultatea de Automatic\u0103 \u0219i Calculatoare a Universit\u0103\u021bii Politehnica Bucure\u0219ti.\r\n\r\nPrintre jocurile din interiorul WoUSO se num\u0103r\u0103: <strong>Question of the day</strong>, <strong>Challenge</strong>, <strong>Weekly Quest</strong>."
   }
  },
  {
@@ -771,14 +915,14 @@
   "pk": "disable-Qproposal",
   "model": "config.setting",
   "fields": {
-   "value": ""
+   "value": "True"
   }
  },
  {
   "pk": "theme",
   "model": "config.setting",
   "fields": {
-   "value": "default"
+   "value": "blackout"
   }
  },
  {
@@ -862,7 +1006,7 @@
   "pk": "disable-Private-Chat",
   "model": "config.setting",
   "fields": {
-   "value": ""
+   "value": "True"
   }
  },
  {
@@ -884,6 +1028,13 @@
   "model": "config.setting",
   "fields": {
    "value": ""
+  }
+ },
+ {
+  "pk": "disable-Contactbox",
+  "model": "config.setting",
+  "fields": {
+   "value": "True"
   }
  },
  {
@@ -1111,186 +1262,6 @@
    "players": [],
    "points": 0.0,
    "owner": null
-  }
- },
- {
-  "pk": 16,
-  "model": "user.playergroup",
-  "fields": {
-   "name": "default",
-   "parent": null,
-   "title": "",
-   "players": [],
-   "points": 0.0,
-   "owner": "WorkshopGame"
-  }
- },
- {
-  "pk": 17,
-  "model": "user.playergroup",
-  "fields": {
-   "name": "default",
-   "parent": null,
-   "title": "",
-   "players": [],
-   "points": 0.0,
-   "owner": "WorkshopGame"
-  }
- },
- {
-  "pk": 18,
-  "model": "user.playergroup",
-  "fields": {
-   "name": "default",
-   "parent": null,
-   "title": "",
-   "players": [],
-   "points": 0.0,
-   "owner": "WorkshopGame"
-  }
- },
- {
-  "pk": 19,
-  "model": "user.playergroup",
-  "fields": {
-   "name": "default",
-   "parent": null,
-   "title": "",
-   "players": [],
-   "points": 0.0,
-   "owner": "WorkshopGame"
-  }
- },
- {
-  "pk": 20,
-  "model": "user.playergroup",
-  "fields": {
-   "name": "default",
-   "parent": null,
-   "title": "",
-   "players": [],
-   "points": 0.0,
-   "owner": "WorkshopGame"
-  }
- },
- {
-  "pk": 21,
-  "model": "user.playergroup",
-  "fields": {
-   "name": "default",
-   "parent": null,
-   "title": "",
-   "players": [],
-   "points": 0.0,
-   "owner": "WorkshopGame"
-  }
- },
- {
-  "pk": 22,
-  "model": "user.playergroup",
-  "fields": {
-   "name": "default",
-   "parent": null,
-   "title": "",
-   "players": [],
-   "points": 0.0,
-   "owner": "WorkshopGame"
-  }
- },
- {
-  "pk": 23,
-  "model": "user.playergroup",
-  "fields": {
-   "name": "default",
-   "parent": null,
-   "title": "",
-   "players": [],
-   "points": 0.0,
-   "owner": "WorkshopGame"
-  }
- },
- {
-  "pk": 24,
-  "model": "user.playergroup",
-  "fields": {
-   "name": "default",
-   "parent": null,
-   "title": "",
-   "players": [],
-   "points": 0.0,
-   "owner": "WorkshopGame"
-  }
- },
- {
-  "pk": 25,
-  "model": "user.playergroup",
-  "fields": {
-   "name": "default",
-   "parent": null,
-   "title": "",
-   "players": [],
-   "points": 0.0,
-   "owner": "WorkshopGame"
-  }
- },
- {
-  "pk": 26,
-  "model": "user.playergroup",
-  "fields": {
-   "name": "default",
-   "parent": null,
-   "title": "",
-   "players": [],
-   "points": 0.0,
-   "owner": "WorkshopGame"
-  }
- },
- {
-  "pk": 27,
-  "model": "user.playergroup",
-  "fields": {
-   "name": "default",
-   "parent": null,
-   "title": "",
-   "players": [],
-   "points": 0.0,
-   "owner": "WorkshopGame"
-  }
- },
- {
-  "pk": 28,
-  "model": "user.playergroup",
-  "fields": {
-   "name": "default",
-   "parent": null,
-   "title": "",
-   "players": [],
-   "points": 0.0,
-   "owner": "WorkshopGame"
-  }
- },
- {
-  "pk": 29,
-  "model": "user.playergroup",
-  "fields": {
-   "name": "default",
-   "parent": null,
-   "title": "",
-   "players": [],
-   "points": 0.0,
-   "owner": "WorkshopGame"
-  }
- },
- {
-  "pk": 30,
-  "model": "user.playergroup",
-  "fields": {
-   "name": "default",
-   "parent": null,
-   "title": "",
-   "players": [],
-   "points": 0.0,
-   "owner": "WorkshopGame"
   }
  }
 ]

@@ -1,14 +1,12 @@
 {% extends 'workshop/cpanel/index.html' %}
 {% load workshop %}
 {% load i18n %}
+{% load user %}
 
 {% block sectiontitle %}Workshop{% endblock %}
 
 {% block information %}
 <p>Workshops are sets of assessments per semigroup.</p>
-
-<p>The decision to create a workshops is taken by the system, according to the timetable and
-the current scheduled question set.</p>
 
 <p>Here you can change the workshop status, and also review, grade and give feedback to students.</p>
 
@@ -38,10 +36,18 @@ the current scheduled question set.</p>
                 {{ w.id }}
             </td>
             <td>{{ w.date }}</td>
-            <td>{{ w.start_at|date:"H:i" }}</td>
-            <td>{{ w.active_until|date:"M. d, Y, H:i:s" }}</td>
-            <td>{{ w.semigroup }}</td>
-            <td align="right">{{ w.assesment_set.count }}</td>
+            <td>{{ w.start_at|date:"H:i:s" }}</td>
+            <td>{{ w.active_until|date:"H:i:s" }}</td>
+            <td align="right">{% player_group w.semigroup %} - {{ w.semigroup.room }}
+                <br/>
+                <a href="{% url ws_edit_spot w.semigroup.day w.semigroup.hour %}">✍edit</a><br/>
+                online: {{ w.semigroup.online_players.count }} <br/> total: {{ w.semigroup.players.count }}
+            </td>
+            <td align="right">
+                total: {{ w.assessment_set.count }}
+                <br/>
+                <a href="{% url ws_view_assessments w.id %}">view</a>
+            </td>
             <td>{% if w.is_active %}Active
                 {% else %}Inactive
                 {% endif %}
@@ -49,20 +55,20 @@ the current scheduled question set.</p>
                 {{ w.get_status_display }}
             </td>
             <td>
-                <a href="{% url admin:workshop_workshop_change w.id %}">✍</a>
+                <a href="{% url ws_edit_workshop w.id %}">✍edit</a>
                 {% if not w.start_at %}
                 <a class="button" href="{% url ws_start w.id %}">Start</a>
                 {% endif %}
                 {% if w.is_started and w.is_active %}
                 <a class="button" href="{% url ws_stop w.id %}">Stop</a>
                 {% endif %}
-                {% if w.is_started and not w.is_active %}
-                <a href="{% url ws_mark_for_review w.id %}">Mark for review</a><br/>
+                {% if w.is_started and w.is_passed %}
+                <a class="button" href="{% url ws_mark_for_review w.id %}">Mark for review</a><br/>
                 {% endif %}
                 {% if w.is_reviewable %}
-                <a href="{% url ws_mark_for_grading w.id %}">Mark for grading</a><br/>
+                <a class="button" href="{% url ws_mark_for_grading w.id %}">Mark for grading</a><br/>
                 {% endif %}
-                {% if not w.is_started %}
+                {% if not w.is_started %}</td><td>
                     <a href="{% url ws_reviewers_map w.id %}">{% if w.is_gradable %}Grades{% else %}Reviewers map{% endif %}</a>
                 {% endif %}
             </td>

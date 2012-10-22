@@ -87,19 +87,19 @@ def topclasses(request):
     return render_to_response('top/classes.html', {'classes':classes, 'top':Top},
                               context_instance=RequestContext(request))
 
-def challenge_top(request, sortcritno = '0', pageno = 1):
+def challenge_top(request, sortcritno='0', pageno=1):
     #sortcrit = 0 descending order of wins
     #sortcrit = 1 descending order of % wins
     #sortcrit = 2 descending order of losses
     base_query = TopUser.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
-    
+
     if sortcritno == '0':
         allUsers = sorted(base_query, key=lambda x: x.won_challenges)
     elif sortcritno == '1':
         allUsers = sorted(base_query, key=lambda x: x.won_perc_challenges)
     else :
         allUsers = sorted(base_query, key=lambda x: x.lost_challenges)
-    
+
     allUsers.reverse()
     paginator = Paginator(allUsers, PERPAGE)
     try:
@@ -111,11 +111,11 @@ def challenge_top(request, sortcritno = '0', pageno = 1):
     topgroups = PlayerGroup.objects.exclude(parent=None).order_by('-points')[:TOPGROUPS_NO]
 
     return render_to_response('top/challenge_top.html', {
-                    'allUsers': users, 
+                    'allUsers': users,
                     'sortcritno': sortcritno,
-                    'topgroups': topgroups, 
-                    'topseries': topseries, 
-                    'is_top': True, 
+                    'topgroups': topgroups,
+                    'topseries': topseries,
+                    'is_top': True,
                     'top': Top
                     }, context_instance=RequestContext(request))
 
