@@ -661,21 +661,4 @@ $(document).ready(function () {
             was_writing = 1;
         }
     });
-
-    $("#ContactboxProfileButton").click(function(){
-        window.location = url_base + "/player/" + selectID_over + "/";
-    });
-
-    $("#ContactboxMesajeButton").click(function(){
-        window.location = url_base + "/m/create/to=" + selectID_over;
-    });
-
-    $("#ContactboxChatButton").click(function(){
-        var sendID = (selectID_over != null)? selectID_over: selectID;
-        var msgdata = {'opcode':'getRoom', 'from':myID, 'to':sendID, 'time': timeStamp};
-        var args = {type:"POST", url:url_base + "/chat/chat_m/", data:msgdata, complete:create_chat_box};
-        $.ajax(args);
-        $("#Contactbox").hide();
-
-    });
 });

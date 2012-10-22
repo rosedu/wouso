@@ -4,13 +4,29 @@ var selectID_over;
 var UserName_over;
 
 
-jQuery(document).ready(function(){
+$(document).ready(function(){
     $(document).mousemove(function(e){
         tempX = e.pageX-15;
         tempY = e.pageY-15;
     });
     $(".cplayer").mouseover(set_mouseover);
     $(".cplayer").mouseout(set_mouseout);
+
+    $("#ContactboxProfileButton").click(function(){
+        window.location = url_base + "/player/" + selectID_over + "/";
+    });
+
+    $("#ContactboxMesajeButton").click(function(){
+        window.location = url_base + "/m/create/to=" + selectID_over;
+    });
+
+    $("#ContactboxChatButton").click(function(){
+        var sendID = (selectID_over != null)? selectID_over: selectID;
+        var msgdata = {'opcode':'getRoom', 'from':myID, 'to':sendID, 'time': timeStamp};
+        var args = {type:"POST", url:url_base + "/chat/chat_m/", data:msgdata, complete:create_chat_box};
+        $.ajax(args);
+        $("#Contactbox").hide();
+    });
 });
 
 function set_mouseout(){
@@ -79,7 +95,7 @@ function on_userlist_mouseover(nickname, name, score, avatar, level, id, x_posit
             else
                 html = "<b>" + name[0] + "</b></br><b>" + name[1] + "</b>";
 
-            html +="<div style='text-align:right'>Points " + score + "</br>Level "  + level + "</div>";
+            html +="<div style='text-align:right'><span class='player-points'>" + score + "</span></br>Level "  + level + "</div>";
             $("#ContactboxName").html(html);
 
             var avatar_img = "<img class='avatar' src=" + avatar + " style='width:60px; height:60px'/>";

@@ -117,27 +117,6 @@ a.cl_item {
     padding: 3px;
 }
 
-#Contactbox{
-    width: 220px;
-    height: 145px;
-    position: absolute;
-    display: none;
-
-	border: 1px solid #aaa;
-	background-color: #ffffff;
-}
-.caction{
-    width:  27px;
-    height: 25px;
-}
-
-#ContactboxName{
-    padding: 3px;
-    text-align: left;
-    width: 100px;
-
-}
-
 .ArchiveTextArea {
 
     display:block;
