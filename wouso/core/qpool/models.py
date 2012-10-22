@@ -134,6 +134,11 @@ class Question(models.Model):
         """ Day as a string """
         return str(self.day) if self.day else '-'
 
+    def set_active(self, active=True):
+        self.active = active
+        self.save()
+        return self.active
+
     def __unicode__(self):
         return unicode(self.text)
 

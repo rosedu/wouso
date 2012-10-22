@@ -97,6 +97,10 @@
                 <option value="{{ t.id }}">{{ t }}</option>
                 {% endfor %}
             </optgroup>
+            <optgroup label="-- Actions --" id="actions">
+                <option value="active"  >Set active</option>
+                <option value="inactive">Set inactive</option>
+            </optgroup>
         </select>
 
         <table>
@@ -194,6 +198,9 @@
                 if(selected.parent()[0].id == "tag"){
                     // Tag was selected
                     destination = '{% url qpool_set_tag %}?qs=' + get_selection() + '&tag=' + selected.val();
+                }
+                if(selected.parent()[0].id == "actions"){
+                    destination = '{% url qpool_actions %}?qs=' + get_selection() + '&action=' + selected.val();
                 }
                 if (destination != '')
                     window.location.replace(destination);

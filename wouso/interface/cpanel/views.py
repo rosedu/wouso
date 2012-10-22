@@ -1,6 +1,6 @@
 import datetime
 from django.contrib.auth import models as auth
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import  permission_required
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django import forms
 from django.http import  HttpResponseRedirect, HttpResponse
@@ -580,6 +580,24 @@ def qpool_settag(request):
 
     return redirect(redir)
 
+@permission_required('config.change_setting')
+def qpool_actions(request):
+    action = request.GET.get('action', None)
+    qs = request.GET.get('qs', '').split(',')
+    qs.remove('')
+    qs = map(int, qs)
+    queryset = Question.objects.filter(id__in=qs)
+
+    if action == 'active':
+        for q in queryset:
+            q.set_active()
+    elif action == 'inactive':
+        for q in queryset:
+            q.set_active(False)
+
+    redir = request.META.get('HTTP_REFERER', reverse('qpool_home'))
+
+    return redirect(redir)
 
 @permission_required('config.change_setting')
 def qpool_export(request, cat):
