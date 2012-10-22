@@ -35,19 +35,48 @@ def message(request, socket, context, message):
 
     """
     user = get_author(request)
-    data = message
-    #time_stamp = data['time']
-    #if time_stamp == 'null':
-    #    return json_response(serve_message(user, time_stamp))
+    room = roomexist(message['room'])
 
-    room = roomexist(data['room'])
-    if message["action"] == "message":
-        message["msg"] = strip_tags(message["msg"])
-        message["name"] = unicode(user)
+
+    if user.user.has_perm('chat.super_chat_user'):
+        print "xx"
+        if message['msg'][0] == '/' and message['room'] == 'global':
+            text = message['msg'].split(" ")
+            if len(text) > 1:
+                try:
+                    sender = Player.objects.get(nickname=text[1])
+                    sender = sender.user.get_profile().get_extension(ChatUser)
+                except:
+                    return json_response(serve_message(user, time_stamp))
+
+                if text[0] == '/kick':
+                    add_message(text[1], user, room, sender, "special", "kick")
+                if text[0] == '/unban':
+                    sender.can_access_chat = True
+                    sender.save()
+                if text[0] == '/ban':
+                    sender.can_access_chat = False
+                    sender.save()
+                message['text'] = strip_tags(text[1])
+                message['user'] = unicode(user.nickname)
+                message['time'] = str(datetime.now().strftime('%H:%M'))
+                message['command'] = 'special'
+                message['mess_type'] = 'kick'
+                message['dest_user'] = unicode(sender.nickname)
+
+
+    if message['action'] == 'message':
+        add_message(message['msg'], user, room, user, 'normal', 'normal')
+        message['text'] = strip_tags(message['msg'])
+        message['user'] = unicode(user.nickname)
+        message['time'] = str(datetime.now().strftime('%H:%M'))
+        message['command'] = 'normal'
+        message['mess_type'] = 'normal'
+        message['dest_user'] = unicode(user.nickname)
+        #'mess_type': self.mess_type,
+        #'dest_user': unicode(self.dest_user.nickname)}
         socket.send_and_broadcast_channel(message)
 
-
-    print data
 
 
 def json_response(object):

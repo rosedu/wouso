@@ -17,14 +17,18 @@ var max_room;
 var max_boxes;
 var private_users;
 
+/* Scrolling down function */
+function AutoScroll() {
+    $('#GlobalboxTextArea').scrollTop($('#GlobalboxTextArea')[0].scrollHeight);
+}
+
 $(function(){
+
     var socket;
-    var name, started = false;
 
     var connected = function() {
-        socket.subscribe("global" + 1);
+        socket.subscribe("global");
         socket.send({room:'global', action: 'start'});
-
     };
 
     $('#GlobalboxSendButton').click(function() {
@@ -38,10 +42,8 @@ $(function(){
     });
 
     function addMessage(data){
-
-        $("#GlobalboxTextArea").append("<em>" +data.name + " ***: " + replace_emoticons(data.msg) + "</em><br />");
-        //$('#GlobalboxTextArea').append("<em>" + obj.msgs[i].time + " ***: " + replace_emoticons(obj.msgs[i].text) + "</em><br />");
-
+        $("#GlobalboxTextArea").append("<em>" + data.time + " " + data.user + ": " + replace_emoticons(data.text) + "</em><br />");
+        AutoScroll();
     }
     /*
     var addMessage = function(data) {
@@ -488,10 +490,7 @@ $(document).ready(function () {
         sessionStorage.firstFreeChat = firstFreeChat;
     }
 
-    /* Scrolling down function */
-    function AutoScroll() {
-        $('#GlobalboxTextArea').scrollTop($('#GlobalboxTextArea')[0].scrollHeight);
-    }
+
 
     /* Update users list */
     function NewUsers() {
@@ -558,15 +557,15 @@ $(document).ready(function () {
     NewUserTimer = setInterval(function(){NewUsers();}, 10000);
     InitialChat();
 
-    function SetTimeForKeepAlive(time){
+    /*function SetTimeForKeepAlive(time){
         clearInterval(SendPingTimer);
         keepAlive = time;
         sessionStorage.keepAlive = keepAlive;
         SendPingTimer = setInterval(function(){SendPing();}, keepAlive);
 
-    }
+    }*/
 
-    TimeOut = setTimeout(function(){SetTimeForKeepAlive(5000)}, oneMinute);
+    //TimeOut = setTimeout(function(){SetTimeForKeepAlive(5000)}, oneMinute);
 
     /* Give room id or next free chat.*/
     function GetRoom(room) {
@@ -605,14 +604,14 @@ $(document).ready(function () {
                     AutoScroll();
                     if(window.location.pathname == url_base + '/chat/'){
                         clearTimeout(TimeOut);
-                        SetTimeForKeepAlive(1000);
-                        TimeOut = setTimeout(function(){SetTimeForKeepAlive(5000)}, oneMinute);
+                        //SetTimeForKeepAlive(1000);
+                        //TimeOut = setTimeout(function(){SetTimeForKeepAlive(5000)}, oneMinute);
                     }
                 }
                 else {
                     clearTimeout(TimeOut);
-                    SetTimeForKeepAlive(1000);
-                    TimeOut = setTimeout(function(){SetTimeForKeepAlive(5000)}, oneMinute);
+                    //SetTimeForKeepAlive(1000);
+                    //TimeOut = setTimeout(function(){SetTimeForKeepAlive(5000)}, oneMinute);
                     var room = GetRoom(obj.msgs[i].room);
                     if(room == firstFreeChat){
                         firstFreeChat++;
