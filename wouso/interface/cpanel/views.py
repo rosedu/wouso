@@ -715,7 +715,7 @@ def groupset(request, id):
 
     class GSelect(SelectMultiple):
         def render_option(self, selected_choices, option_value, option_label):
-            group = PlayerGroup.objects.get(pk=option_value)
+            group = Race.objects.get(pk=option_value)
             option_label = u'%s [%s]' % (group, group.name)
             return super(GSelect, self).render_option(selected_choices, option_value, option_label)
 
@@ -723,9 +723,8 @@ def groupset(request, id):
         class Meta:
             model = Player
             fields = ('race',)
-            widgets = {'groups': GSelect()}
 
-        group = forms.ChoiceField(choices=[(0, '')] + [(p.id, p) for p in PlayerGroup.objects.all()],
+        group = forms.ChoiceField(choices=[(0, '')] + [(p.id, "%s [%s]" % (p, p.name)) for p in PlayerGroup.objects.filter(owner=None)],
                                 initial=profile.group.id if profile.group else '')
 
     if request.method == 'POST':
