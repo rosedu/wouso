@@ -92,9 +92,10 @@ urlpatterns = patterns('',
 
 # API only when we have piston
 try:
+    assert settings.API_ENABLED
     import imp
     imp.find_module('piston')
-except ImportError:
+except (ImportError, AssertionError):
     urlpatterns += patterns('wouso.interface.views', url(r'^api/', 'no_api'))
 else:
     urlpatterns += patterns('', url(r'^api/', include('wouso.interface.api.urls')))
