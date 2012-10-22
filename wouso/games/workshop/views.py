@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template.context import RequestContext
 from django.utils.translation import ugettext as _
-from models import WorkshopGame, Semigroup, Assessment, Workshop, Answer, Review
+from models import WorkshopGame, Semigroup, Workshop, Answer, Review
 
 @login_required
 def index(request, extra_context=None):
@@ -64,7 +64,7 @@ def review(request, workshop):
     player = request.user.get_profile()
     workshop = get_object_or_404(Workshop, pk=workshop)
 
-    assessment = Assessment.get_for_player_and_workshop(player, workshop)
+    assessment = workshop.get_assessment(player)
 
     if not assessment:
         return do_error(request, _('Cannot review an workshop you did not participate to.'))
@@ -121,7 +121,7 @@ def results(request, workshop):
     player = request.user.get_profile()
     workshop = get_object_or_404(Workshop, pk=workshop)
 
-    assessment = Assessment.get_for_player_and_workshop(player, workshop)
+    assessment = workshop.get_assessment(player)
 
     if not assessment:
         return do_error(request, _('Cannot view results for an workshop you did not participate to.'))

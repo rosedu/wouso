@@ -24,6 +24,10 @@ ROOM_CHOICES = (
     ('ef108', 'EF108'),
 )
 
+ROOM_DEFAULT = 'eg306'
+
+WORKSHOP_TIME_MINUTES = 15
+
 class Schedule(Tag):
     """ Schedule qpool tags per date intervals.
     """
@@ -47,7 +51,7 @@ class Semigroup(PlayerGroup):
         unique_together = ('day', 'hour', 'room')
     day = models.IntegerField(choices=DAY_CHOICES)
     hour = models.IntegerField(choices=zip(range(8, 22, 2), range(8, 22, 2)))
-    room = models.CharField(max_length=5, default='eg306', choices=ROOM_CHOICES, blank=True)
+    room = models.CharField(max_length=5, default=ROOM_DEFAULT, choices=ROOM_CHOICES, blank=True)
 
     @property
     def info(self):
@@ -71,7 +75,7 @@ class Semigroup(PlayerGroup):
     @classmethod
     def get_by_day_and_hour(cls, day, hour):
         """
-         Returns a list of groups in that timespan
+         Returns a list of groups in that time span
         """
         qs = cls.objects.filter(day=day, hour=hour)
         if qs.count():
@@ -101,10 +105,10 @@ class Workshop(models.Model):
 
     def is_active(self, timestamp=None):
         timestamp = timestamp if timestamp else datetime.now()
-        if not self.active_until:
+        if not self.start_at or not self.active_until:
             return False
 
-        return self.active_until >= timestamp
+        return self.start_at <= timestamp <= self.active_until
 
     def is_reviewable(self):
         return self.status == 1
@@ -115,6 +119,15 @@ class Workshop(models.Model):
     def set_gradable(self):
         self.status = 2
         self.save()
+
+    def get_assessment(self, player):
+        """
+        Return existing assesment for player
+        """
+        try:
+            return Assessment.objects.get(player=player, workshop=self)
+        except Assessment.DoesNotExist:
+            return None
 
     def get_or_create_assessment(self, player):
         """ Return existing or new assessment for player
@@ -128,18 +141,20 @@ class Workshop(models.Model):
         return assessment
 
     def start(self, timestamp=None):
+        """ Start a workshop if it's ready.
+        """
         timestamp = timestamp if timestamp else datetime.now()
 
         if self.is_ready():
             self.start_at = timestamp
-            self.active_until = timestamp + timedelta(minutes=15)
+            self.active_until = timestamp + timedelta(minutes=WORKSHOP_TIME_MINUTES)
             self.save()
             return True
 
         return False
 
     def stop(self):
-        if self.active_until > datetime.now():
+        if self.is_active():
             self.active_until = datetime.now() - timedelta(seconds=1)
             self.save()
             return True
@@ -147,6 +162,7 @@ class Workshop(models.Model):
 
     def __unicode__(self):
         return u"#%d - on %s" % (self.pk, self.date)
+
 
 class Assessment(models.Model):
     workshop = models.ForeignKey(Workshop)
@@ -158,13 +174,24 @@ class Assessment(models.Model):
     time_end = models.DateTimeField(blank=True, null=True)
 
     reviewers = models.ManyToManyField(Player, blank=True, related_name='assessments_review')
-    grade = models.IntegerField(blank=True, null=True)
-    reviewer_grade = models.IntegerField(blank=True, null=True)
-    final_grade = models.IntegerField(blank=True, null=True)
+    grade = models.IntegerField(blank=True, null=True, help_text='Grade given by assistant')
+    reviewer_grade = models.IntegerField(blank=True, null=True, help_text='Grade given to player, as a reviewer to other assesments')
+    final_grade = models.IntegerField(blank=True, null=True, help_text='Mean value, grade+reviewer_grade')
 
-    def set_answered(self, answers):
+    @property
+    def reviews_grade(self):
+        """
+        Return the grade given to this Assessment from reviews
+        """
+        reviews_count = self.reviewers.count()
+        sum = Review.objects.filter(answer__assessment=self, reviewer__in=self.reviewers.all()).aggregate(sum=models.Sum('answer_grade'))['sum']
+        return int(sum/reviews_count) if reviews_count else 0
+
+    def set_answered(self, answers=None):
         """ Set given answer dictionary.
         """
+        answers = answers if answers else {}
+
         for q in self.questions.all():
             a = Answer.objects.get_or_create(assessment=self, question=q)[0]
             a.text = answers.get(q.id, '')
@@ -192,13 +219,6 @@ class Assessment(models.Model):
          Return the assessments that this player gave reviews in the same workshop as this assessment
         """
         return self.player.assessments_review.filter(workshop=self.workshop)
-
-    @classmethod
-    def get_for_player_and_workshop(cls, player, workshop):
-        try:
-            return cls.objects.get(player=player, workshop=workshop)
-        except cls.DoesNotExist:
-            return None
 
     __unicode__ = lambda self: u"#%d" % self.id
 
@@ -372,7 +392,7 @@ class WorkshopGame(Game):
         player = request.user.get_profile()
         semigroups = cls.get_semigroup()
         workshop = cls.get_for_player_now(player)
-        assessment = Assessment.get_for_player_and_workshop(player, workshop)
+        assessment = workshop.get_assessment(player)
         sm = False
         for sg in semigroups:
             if player in sg.players.all():
