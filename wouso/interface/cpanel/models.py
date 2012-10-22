@@ -17,7 +17,7 @@ class Customization(ConfigGroup):
         logo = Setting.get('logo')
 
         default_group = ChoicesSetting.get('default_group')
-        default_group.choices = [(unicode(g), str(g.id)) for g in PlayerGroup.objects.all()]
+        default_group.choices = [('', '')] + [(unicode(g), str(g.id)) for g in PlayerGroup.objects.all()]
 
         default_race = ChoicesSetting.get('default_race')
         default_race.choices = [(unicode(g), str(g.id)) for g in Race.objects.all()]
