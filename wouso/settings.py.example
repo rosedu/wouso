@@ -71,6 +71,8 @@ MEDIA_URL = ''
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/media/'
 
+STATIC_URL = '/media/'
+
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'l*a)xet2kz8!@p(p@op41ce&#1u7i_+^i1d*fr53wak9)tyg!k'
 
