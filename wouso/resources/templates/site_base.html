@@ -26,7 +26,9 @@
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery.timers.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/ajaxify.js"></script>
     {% if user.is_authenticated %}
+        {% if not config_disable_contactbox %}
         <script type="text/javascript" src="{{ basepath }}/static/js/contactbox.js"></script>
+        {% endif %}
         {% if not config_disable_private_chat and not config_disable_chat  %}
             <script type="text/javascript" src="{{ basepath }}/static/js/chatbox.js"></script>
         {% endif %}
