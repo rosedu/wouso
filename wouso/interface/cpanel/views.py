@@ -53,6 +53,10 @@ def dashboard(request):
     if last_run == "":
         last_run="wousocron was never run"
 
+    #online members
+    oldest = datetime.datetime.now() - datetime.timedelta(minutes = 10)
+    online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
+
     return render_to_response('cpanel/index.html',
                               {'nr_future_questions' : nr_future_questions,
                                'nr_questions' : nr_questions,
@@ -64,6 +68,7 @@ def dashboard(request):
                                'wouso_version': WOUSO_VERSION,
                                'staff': staff_group,
                                'last_run': last_run,
+                               'online_users': online_last10,
                                },
                               context_instance=RequestContext(request))
 

@@ -22,15 +22,15 @@ from wouso.core import scoring
 class AchievementTest(WousoTest):
     def test_login_10(self):
         player = self._get_player()
-        for i in range(10):
+        for i in range(14):
             timestamp = datetime.now() + timedelta(days=-i)
             a = Activity.objects.create(timestamp=timestamp, user_from=player, action='seen', public=False)
 
-        self.assertEqual(consecutive_seens(player, datetime.now()), 10)
+        self.assertEqual(consecutive_seens(player, datetime.now()), 14)
 
     def test_login_10_wrong(self):
         player = self._get_player()
-        for i in range(10):
+        for i in range(14):
             timestamp = datetime.now() + timedelta(days=-i)
             if i == 5:
                 continue
@@ -41,7 +41,7 @@ class AchievementTest(WousoTest):
     def test_login_10_activity(self):
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-login-10')
         player = self._get_player()
-        for i in range(1, 10):
+        for i in range(1, 14):
             timestamp = datetime.now() + timedelta(days=-i)
             a = Activity.objects.create(timestamp=timestamp, user_from=player, action='seen', public=False)
 
