@@ -28,7 +28,7 @@ $(function(){
 
     var connected = function() {
         socket.subscribe("global");
-        socket.send({room:'global', action: 'start'});
+        socket.send({room:'global', action: 'start', 'msg':"Connect to global chat."});
     };
 
     $('#GlobalboxSendButton').click(function() {
@@ -42,7 +42,10 @@ $(function(){
     });
 
     function addMessage(data){
-        $("#GlobalboxTextArea").append("<em>" + data.time + " " + data.user + ": " + replace_emoticons(data.text) + "</em><br />");
+        if(data.mess_type == 'normal')
+            $("#GlobalboxTextArea").append("<em>" + data.time + " " + data.user + ": " + replace_emoticons(data.text) + "</em><br />");
+        else if(data.mess_type == 'special' && data.command == 'kick' && data.dest_user == myName && window.location.pathname == url_base + '/chat/')
+            window.location = url_base + "/";
         AutoScroll();
     }
     /*
@@ -83,6 +86,7 @@ $(function(){
 
     start();
 });
+
 if(sessionStorage.firstFreeChat){
     firstFreeChat = parseInt(sessionStorage.firstFreeChat);
     max_room = 1;

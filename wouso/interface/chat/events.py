@@ -10,36 +10,11 @@ def message(request, socket, context, message):
     """
     Event handler for a room receiving a message. First validates a
     joining user's name and sends them the list of users.
-
-    if data['opcode'] == 'message':
-        room = roomexist(data['room'])
-        if user.user.has_perm('chat.super_chat_user'):
-            if data['msg'][0] == '/' and data['room'] == 'global':
-                text = data['msg'].split(" ")
-                if len(text) > 1:
-                    try:
-                        sender = Player.objects.get(nickname=text[1])
-                        sender = sender.user.get_profile().get_extension(ChatUser)
-                    except:
-                        return json_response(serve_message(user, time_stamp))
-
-                    if text[0] == '/kick':
-                        add_message(text[1], user, room, sender, "special", "kick")
-                    if text[0] == '/unban':
-                        sender.can_access_chat = True
-                        sender.save()
-                    if text[0] == '/ban':
-                        sender.can_access_chat = False
-                        sender.save()
-                    return json_response(serve_message(user, time_stamp))
-
     """
+
     user = get_author(request)
     room = roomexist(message['room'])
-
-
     if user.user.has_perm('chat.super_chat_user'):
-        print "xx"
         if message['msg'][0] == '/' and message['room'] == 'global':
             text = message['msg'].split(" ")
             if len(text) > 1:
@@ -47,22 +22,26 @@ def message(request, socket, context, message):
                     sender = Player.objects.get(nickname=text[1])
                     sender = sender.user.get_profile().get_extension(ChatUser)
                 except:
-                    return json_response(serve_message(user, time_stamp))
+                    return False
 
                 if text[0] == '/kick':
                     add_message(text[1], user, room, sender, "special", "kick")
-                if text[0] == '/unban':
+                elif text[0] == '/unban':
                     sender.can_access_chat = True
                     sender.save()
-                if text[0] == '/ban':
+                elif text[0] == '/ban':
                     sender.can_access_chat = False
                     sender.save()
+                else:
+                    return False
                 message['text'] = strip_tags(text[1])
                 message['user'] = unicode(user.nickname)
                 message['time'] = str(datetime.now().strftime('%H:%M'))
-                message['command'] = 'special'
-                message['mess_type'] = 'kick'
+                message['command'] = 'kick'
+                message['mess_type'] = 'special'
                 message['dest_user'] = unicode(sender.nickname)
+                socket.send_and_broadcast_channel(message)
+                return False
 
 
     if message['action'] == 'message':
@@ -73,8 +52,6 @@ def message(request, socket, context, message):
         message['command'] = 'normal'
         message['mess_type'] = 'normal'
         message['dest_user'] = unicode(user.nickname)
-        #'mess_type': self.mess_type,
-        #'dest_user': unicode(self.dest_user.nickname)}
         socket.send_and_broadcast_channel(message)
 
 
