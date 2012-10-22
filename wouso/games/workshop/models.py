@@ -374,19 +374,20 @@ class WorkshopGame(Game):
     def start_reviewing(cls, workshop):
         """ Set the reviewers for all assessments in this workshop
         """
-        participating_players = [a.player for a in workshop.assessment_set.all()]
+        le_assessments = list(workshop.assessment_set.all())
+        shuffle(le_assessments)
 
-        shuffle(participating_players)
+        participating_players = [a.player for a in le_assessments]
 
         pp_rotated = [participating_players[-1]] + participating_players[:-1]
-        for i,a in enumerate(participating_players):
+        for i,a in enumerate(le_assessments):
             a.reviewers.clear()
             a.reviewers.add(pp_rotated[i])
 
         # If there are more than two players, do this again
         if len(participating_players) > 2:
             pp_rotated = participating_players[-2:] + participating_players[:-2]
-            for i,a in enumerate(participating_players):
+            for i,a in enumerate(le_assessments):
                 a.reviewers.add(pp_rotated[i])
 
         workshop.status = 1 # reviewing
