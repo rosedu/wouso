@@ -1,23 +1,25 @@
-{% extends base_template %}
+{% extends 'interface/section_base.html' %}
 {% load i18n %}
 {% load artifacts %}
 {% load user %}
+
 {% block title %}{% trans 'Magic' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Magic' %}{% endblock %}
+
 {% block scripts %}
     <script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
 {% endblock %}
 
-{% block content %}
-    <h2>{% trans 'Magic' %}</h2>
+{% block sectioncontent %}
 
-<ul class="tabs">
+    <ul class="tabs">
         <li><a href="#spells" id="spells-click" class="no-redir">{% trans 'Bazaar' %}</a></li>
         {% if not exchange_disabled %}
         <li><a href="#exchange" id="exchange-click" class="no-redir">{% trans 'Exchange' %}</a></li>
         {% endif %}
         <li><a href="#summary" id="summary-click" class="no-redir">{% trans 'Summary' %}{% if unseen_count > 0 %}<sup class="unread-count">{{ unseen_count }}</sup>{% endif %}</a></li>
-</ul>
+    </ul>
 
 <div class="tab_container">
     <div id="spells" class="tab_content">
@@ -87,12 +89,12 @@
     <div id="summary" class="tab_content">
     <br/>
     <h3>{% trans 'Available' %}</h3>
-    {% if theowner.spell_amounts.all %}
+    {% if theowner.magic.spell_amounts.all %}
         <table>
         <tr><th>{% trans 'Spell' %}</th>
             <th>{% trans 'Amount' %}</th>
         </tr>
-        {% for s in theowner.spell_amounts.all %}
+        {% for s in theowner.magic.spell_amounts.all %}
         <tr><td>{% artifact s.spell %} {{ s.spell.title }}</td>
             <td align="right">{% spell_stock theowner s.spell %}</td>
         </tr>
@@ -102,14 +104,14 @@
         {% trans 'None.' %}
     {% endif %}
 
-    {% if theowner.spells.all %}
+    {% if theowner.magic.spells.all %}
     <h3>{% trans 'Active on me' %}</h3>
     <table>
         <tr><th>{% trans 'Spell' %}</th>
             <th>{% trans 'Source' %}</th>
             <th>{% trans 'Until' %}</th>
         </tr>
-        {% for s in theowner.spells.all %}
+        {% for s in theowner.magic.spells.all %}
         <tr>
             <td>{% artifact s.spell %} {{ s.spell.title }}</td>
             <td>{% player_simple s.source %}</td>
@@ -119,14 +121,14 @@
     </table>
     {% endif %}
 
-    {% if theowner.spells_cast.all %}
+    {% if theowner.magic.spells_cast.all %}
     <h3>{% trans 'Cast by me' %}</h3>
     <table>
         <tr><th>{% trans 'Spell' %}</th>
             <th>{% trans 'Target' %}</th>
             <th>{% trans 'Until' %}</th>
         </tr>
-        {% for s in theowner.spells_cast.all %}
+        {% for s in theowner.magic.spells_cast.all %}
         <tr>
             <td>{% artifact s.spell %} {{ s.spell.title }}</td>
             <td>{% player_simple s.player %}</td>

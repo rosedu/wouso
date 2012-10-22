@@ -118,7 +118,7 @@ class Player(models.Model):
         allUsers = list(base_query.order_by('-points'))
         try:
             pos = allUsers.index(self)
-        except IndexError:
+        except ValueError:
             return []
 
         if len(allUsers) <= 2*count+1:
