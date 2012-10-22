@@ -1,5 +1,6 @@
 from md5 import md5
 from django import template
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from wouso.core.user.models import Player
@@ -32,7 +33,7 @@ def player_simple(user):
     rel_data_simple = u"%s,%s,%s,%s,%s,%s,1" % (user.nickname, user.user.first_name, user.points, player_avatar(user), user.level_no, user.id)
 
     if hasattr(user, 'level'):
-        return u'<a href="%s" title="%s [%d]" rel="%s" class="cplayer">%s</a>' % (link, user.level.title if user.level else '', user.level_no, rel_data_simple, user)
+        return u'<a href="%s" rel="%s" class="cplayer">%s</a>' % (link, rel_data_simple, user)
     else:
         return u'<a href="%s" rel="%s" class="cplayer">%s</a>' % (link, rel_data_simple, user)
 
@@ -71,7 +72,7 @@ def player_avatar(player_obj):
     if not player_obj:
         return ''
 
-    avatar = "http://www.gravatar.com/avatar/%s.jpg?d=monsterid" % md5(player_obj.user.email).hexdigest()
+    avatar = "http://www.gravatar.com/avatar/%s.jpg?d=%s" % (md5(player_obj.user.email).hexdigest(), settings.AVATAR_DEFAULT)
 
     return avatar
 
