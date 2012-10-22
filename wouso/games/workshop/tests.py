@@ -15,7 +15,7 @@ class TestWorkshop(TestCase):
         self.assertEqual(spot_day, group.day)
         self.assertEqual(spot_hour, group.hour)
 
-        self.assertEqual(WorkshopGame.get_semigroup(timestamp=now)[0], group)
+        self.assertEqual(WorkshopGame.get_semigroups(timestamp=now)[0], group)
 
     def test_start_reviewing(self):
         now = datetime.now()

@@ -26,7 +26,7 @@
             {% if info %}
         <p>
         Current spot: {{ info.get_spot }}<br/>
-        Current group: {{ info.get_semigroup|join:", " }}<br/>
+        Current group: {{ info.get_semigroups|join:", " }}<br/>
         Current qpool: {{ info.get_question_pool.count }}<br/>
         </p>{% endif %}
         {% if semigroups %}

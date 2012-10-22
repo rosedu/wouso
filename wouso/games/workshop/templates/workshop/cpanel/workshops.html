@@ -39,13 +39,18 @@ the current scheduled question set.</p>
                 {{ w.id }}
             </td>
             <td>{{ w.date }}</td>
-            <td>{{ w.start_at|date:"H:i" }}</td>
-            <td>{{ w.active_until|date:"M. d, Y, H:i:s" }}</td>
-            <td>{% player_group w.semigroup %}
-                <a href="{% url ws_edit_spot w.semigroup.day w.semigroup.hour %}">✍</a><br/>
+            <td>{{ w.start_at|date:"H:i:s" }}</td>
+            <td>{{ w.active_until|date:"H:i:s" }}</td>
+            <td align="right">{% player_group w.semigroup %} - {{ w.semigroup.room }}
+                <br/>
+                <a href="{% url ws_edit_spot w.semigroup.day w.semigroup.hour %}">✍edit</a><br/>
                 online: {{ w.semigroup.online_players.count }} <br/> total: {{ w.semigroup.players.count }}
             </td>
-            <td align="right">{{ w.assessment_set.count }}</td>
+            <td align="right">
+                total: {{ w.assessment_set.count }}
+                <br/>
+                <a href="{% url ws_view_assessments w.id %}">view</a>
+            </td>
             <td>{% if w.is_active %}Active
                 {% else %}Inactive
                 {% endif %}

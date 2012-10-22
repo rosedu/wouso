@@ -13,6 +13,12 @@ class AGForm(forms.ModelForm):
         model = Semigroup
         fields = ('name', 'day', 'hour', 'room')
 
+class WAForm(forms.ModelForm):
+    class Meta:
+        model = Workshop
+        exclude = ('start_at', 'active_until')
+
+
 @staff_required
 def workshop_home(request, **kwargs):
 
@@ -59,34 +65,34 @@ def edit_group(request, semigroup):
         form = AGForm(instance=semigroup)
 
     return render_to_response('workshop/cpanel/editgroup.html',
-            {'module': 'workshop',
-             'form': form,
-             'instance': semigroup,
-             },
-        context_instance=RequestContext(request)
+                        {'module': 'workshop',
+                         'form': form,
+                         'instance': semigroup,
+                         },
+                        context_instance=RequestContext(request)
     )
 
 
 @staff_required
 def edit_spot(request, day, hour):
     day, hour = int(day), int(hour)
-    sg = Semigroup.get_by_day_and_hour(day, hour)
+    sgs = Semigroup.get_by_day_and_hour(day, hour)
 
-    if not sg:
+    if not sgs:
         return redirect('ws_add_group')
 
     if request.method == 'POST':
         semigroup = get_object_or_404(Semigroup, pk=request.GET.get('semigroup'))
         try:
             player = Player.objects.get(pk=int(request.POST.get('player')))
-        except ValueError, Player.DoesNotExist:
+        except (ValueError, Player.DoesNotExist):
             pass
         else:
             semigroup.add_player(player)
 
     return render_to_response('workshop/cpanel/editspot.html',
                         {'module': 'workshop',
-                         'semigroups': sg,
+                         'semigroups': sgs,
                          },
                         context_instance=RequestContext(request)
     )
@@ -229,12 +235,6 @@ def workshop_grade_assessment(request, assessment):
     )
 
 
-class WAForm(forms.ModelForm):
-    class Meta:
-        model = Workshop
-        exclude = ('start_at', 'active_until')
-
-
 @staff_required
 def workshop_add(request):
     error = ''
@@ -283,15 +283,24 @@ def workshop_edit(request, workshop):
 @staff_required
 def workshop_start(request, workshop):
     workshop = get_object_or_404(Workshop, pk=workshop)
-
     workshop.start() # set start_at and active_until
-
     return redirect('ws_workshops')
+
 
 @staff_required
 def workshop_stop(request, workshop):
     workshop = get_object_or_404(Workshop, pk=workshop)
-
     workshop.stop() # set active_until
-
     return redirect('ws_workshops')
+
+
+@staff_required
+def workshop_assessments(request, workshop, assessment=None):
+    workshop = get_object_or_404(Workshop, pk=workshop)
+    if assessment:
+        assessment = get_object_or_404(Assessment, pk=assessment)
+
+    return render_to_response('workshop/cpanel/workshop_assessments.html',
+                        {'module': 'workshop', 'page': 'workshops', 'workshop': workshop, 'assessment': assessment},
+                        context_instance=RequestContext(request)
+    )

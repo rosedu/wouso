@@ -36,7 +36,7 @@ def play(request):
     workshop = WorkshopGame.get_for_player_now(player=player)
 
     if not workshop:
-        return do_error(request, _('No workshop for your semigroup'))
+        return do_error(request, _('No workshop for you'))
 
     if not workshop.is_active():
         return do_error(request, _('Workshop is not active'))

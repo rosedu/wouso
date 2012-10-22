@@ -26,7 +26,7 @@ ROOM_CHOICES = (
 
 ROOM_DEFAULT = 'eg306'
 
-WORKSHOP_TIME_MINUTES = 15
+WORKSHOP_TIME_MINUTES = 10
 
 class Schedule(Tag):
     """ Schedule qpool tags per date intervals.
@@ -229,11 +229,29 @@ class Answer(models.Model):
     text = models.TextField(max_length=2000)
     grade = models.IntegerField(blank=True, null=True)
 
+    def set_grade(self, grade):
+        """
+         Only an assistant can set the grade.
+        """
+        self.grade = grade
+        self.save()
+
+    def add_review(self, reviewer, feedback, grade=None):
+        """
+         Add a text review to this answer. Called by assistant or regular player
+        """
+        review = Review.objects.get_or_create(answer=self, reviewer=reviewer)[0]
+        review.feedback = feedback
+        review.answer_grade = grade
+        review.save()
+        return review
+
     @property
     def reviewers(self):
         return Player.objects.filter(id__in=Review.objects.filter(answer=self).values('reviewer'))
 
     __unicode__ = lambda self: self.text
+
 
 class Review(models.Model):
     answer = models.ForeignKey(Answer)
@@ -246,8 +264,17 @@ class Review(models.Model):
     review_grade = models.IntegerField(blank=True, null=True)
 
     # Properties and methods
+    def set_grade(self, assistant, grade):
+        """ Only an assistant can grade a review
+        """
+        self.review_grade = grade
+        self.review_reviewer = assistant
+        self.save()
+
     workshop = property(lambda self: self.answer.assessment.workshop)
+
     __unicode__ = lambda self: u"%s by %s" % (self.feedback, self.reviewer)
+
 
 class WorkshopGame(Game):
     class Meta:
@@ -270,15 +297,15 @@ class WorkshopGame(Game):
         return day, hour
 
     @classmethod
-    def get_semigroup(cls, timestamp=None):
-        """ Return the semigroup list having a laboratory right now.
+    def get_semigroups(cls, timestamp=None):
+        """ Return the semigroups list having a laboratory right now.
         """
         day, hour = cls.get_spot(timestamp)
         return Semigroup.get_by_day_and_hour(day, hour)
 
     @classmethod
     def get_question_pool(cls, timestamp=None):
-        """ Return the questionpool active right now
+        """ Return the question pool active right now
         """
         tags = Schedule.get_current_tags(timestamp=timestamp)
         questions = Question.objects.filter(tags__in=tags).distinct()
@@ -293,7 +320,7 @@ class WorkshopGame(Game):
         day = timestamp.date() if timestamp else datetime.today()
 
         # current semigroup(s)
-        semigroups = cls.get_semigroup(timestamp=timestamp)
+        semigroups = cls.get_semigroups(timestamp=timestamp)
 
         result = []
         for s in semigroups:
@@ -303,6 +330,9 @@ class WorkshopGame(Game):
 
     @classmethod
     def get_for_player_now(cls, player, timestamp=None):
+        """
+         Return existing workshop for a player, now.
+        """
         timestamp = timestamp if timestamp else datetime.now()
         ws = Workshop.objects.filter(start_at__lte=timestamp, active_until__gte=timestamp)
         for w in ws:
@@ -313,6 +343,9 @@ class WorkshopGame(Game):
 
     @classmethod
     def get_workshop(cls, semigroup, date):
+        """
+         Return existing workshop for a semigroup and a date.
+        """
         try:
             return Workshop.objects.get(semigroup=semigroup, date=date)
         except Workshop.DoesNotExist:
@@ -328,23 +361,14 @@ class WorkshopGame(Game):
         questions = cls.get_question_pool(date)
 
         if not questions or questions.count() < question_count:
-            return "No questions for this date"
+            return _("No questions for this date")
 
         if cls.get_workshop(semigroup, date):
-            return "Workshop already exists for group at date"
+            return _("Workshop already exists for group at date")
 
         Workshop.objects.create(semigroup=semigroup, date=date, question_count=question_count)
 
         return False
-
-    @classmethod
-    def get_or_create_workshop(cls, semigroup, date, questions):
-        workshop, is_new = Workshop.objects.get_or_create(semigroup=semigroup, date=date)
-        if is_new:
-            workshop.active_until = datetime.now() + timedelta(minutes=15)
-            workshop.save()
-
-        return workshop
 
     @classmethod
     def start_reviewing(cls, workshop):
@@ -352,11 +376,18 @@ class WorkshopGame(Game):
         """
         participating_players = [a.player for a in workshop.assessment_set.all()]
 
-        # TODO: magic, now only rotate
+        shuffle(participating_players)
+
         pp_rotated = [participating_players[-1]] + participating_players[:-1]
-        for i,a in enumerate(workshop.assessment_set.all()):
+        for i,a in enumerate(participating_players):
             a.reviewers.clear()
             a.reviewers.add(pp_rotated[i])
+
+        # If there are more than two players, do this again
+        if len(participating_players) > 2:
+            pp_rotated = participating_players[-2:] + participating_players[:-2]
+            for i,a in enumerate(participating_players):
+                a.reviewers.add(pp_rotated[i])
 
         workshop.status = 1 # reviewing
         workshop.save()
@@ -390,9 +421,12 @@ class WorkshopGame(Game):
         if request.user.is_anonymous():
             return ''
         player = request.user.get_profile()
-        semigroups = cls.get_semigroup()
+        semigroups = cls.get_semigroups()
         workshop = cls.get_for_player_now(player)
-        assessment = workshop.get_assessment(player)
+        if workshop:
+            assessment = workshop.get_assessment(player)
+        else:
+            assessment = None
         sm = False
         for sg in semigroups:
             if player in sg.players.all():
