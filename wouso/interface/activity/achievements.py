@@ -178,12 +178,6 @@ class Achievements(App):
                 if not player.magic.has_modifier('ach-qotd-10'):
                     cls.earn_achievement(player, 'ach-qotd-10')
 
-            # Check for wrong answer to the first qotd
-            if not player.magic.has_modifier('ach-bad-start') and action == "qotd-wrong":
-                if wrong_first_qotd(player):
-                    cls.earn_achievement(player, 'ach-bad-start')
-
-
         if 'chall' in action:
             # Check if number of challenge games is >= 100
             games_played = challenge_count(player)
@@ -252,7 +246,6 @@ class Achievements(App):
                 'ach-night-owl',
                 'ach-early-bird',
                 'ach-popularity',
-                'ach-bad-start',
                 'ach-chall-def-big',
                 'ach-this-is-sparta',
                 'ach-flawless-victory',
