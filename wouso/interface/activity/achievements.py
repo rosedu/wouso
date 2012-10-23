@@ -21,7 +21,6 @@ def consecutive_seens(player, timestamp):
 
     return len(activities)
 
-
 def consecutive_qotd_correct(player):
     """
      Return the count of correct qotd in a row
@@ -36,12 +35,15 @@ def consecutive_qotd_correct(player):
             return result
     return result
 
-
 def login_between(time, first, second):
     if first <= time.hour < second:
         return True
     return False
 
+def login_between_count(player, first, second):
+    activities = Activity.objects.filter(action__contains='seen', user_to=player)
+    activities = filter(lambda x : first <= x.timestamp.hour < second, activities)
+    return len(activities)
 
 def unique_users_pm(player, minutes):
     """
@@ -51,7 +53,6 @@ def unique_users_pm(player, minutes):
                                         timestamp__gt=datetime.now() - timedelta(minutes=minutes)
                                         ).values('sender').distinct().count()
     return activities
-
 
 def wrong_first_qotd(player):
     """
@@ -63,7 +64,6 @@ def wrong_first_qotd(player):
     if activities[0].action == 'qotd-wrong':
         return True
     return False
-    
     
 def challenge_count(player, days=None):
     """
@@ -228,10 +228,10 @@ class Achievements(App):
 
         if action in ("login", "seen"):
             # Check login between 2-4 am
-            if login_between(kwargs.get('timestamp',datetime.now()), 2, 4):
+            if login_between_count(player, 3, 5) > 2:
                 if not player.magic.has_modifier('ach-night-owl'):
                     cls.earn_achievement(player, 'ach-night-owl')
-            elif login_between(kwargs.get('timestamp',datetime.now()), 6, 8):
+            if login_between_count(player, 6, 8) > 2:
                 if not player.magic.has_modifier('ach-early-bird'):
                     cls.earn_achievement(player, 'ach-early-bird')
             
