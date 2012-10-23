@@ -25,7 +25,7 @@ def workshop_home(request, **kwargs):
     return render_to_response('workshop/cpanel/index.html',
                         {'module': 'workshop',
                          'days': DAY_CHOICES,
-                         'semigroups': Semigroup.objects.all(),
+                         'semigroups': Semigroup.objects.all().order_by('name'),
                          'hours': range(8, 22, 2),
                          'info': WorkshopGame},
                         context_instance=RequestContext(request)
