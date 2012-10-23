@@ -1,11 +1,11 @@
 # Create your views here.
-from wouso.core.user.models import Player, Race
+from wouso.core.user.models import  Race
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import Http404
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from wouso.core.user.models import PlayerGroup
-from wouso.interface.top.models import History, TopUser, Top
+from wouso.interface.top.models import  TopUser, Top
 
 PERPAGE = 20
 TOPGROUPS_NO = 5
@@ -61,7 +61,7 @@ def gettop(request, toptype=0, sortcrit=0, page=1):
 
 def pyramid(request):
     s = []
-    for r in Race.objects.exclude(can_play=False):
+    for r in Race.objects.exclude(can_play=False).order_by('name'):
         columns = []
         players = []
         i, j = 1, 0

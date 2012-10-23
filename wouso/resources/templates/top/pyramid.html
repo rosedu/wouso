@@ -17,7 +17,7 @@
 <table border="0" cellspacing="0" cellpadding="0">
     {% for s in series %}
     <tr>
-    <th colspan="6" class="head-{{ s.name }}">{{ s }}</th>
+    <th colspan="6" class="head-{{ s.name }}" width="200">{{ s }} <span class="points">{{ s.player_set.count }}</span></th>
     </tr>
 
     <tr>
