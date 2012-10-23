@@ -65,5 +65,9 @@ class MessageApp(App):
         return Message.objects.filter(receiver=msg_user).filter(read=False).count()
 
 #admin
+class MessageAdmin(admin.ModelAdmin):
+    list_filter = ('sender', 'receiver')
+    list_display = ('__unicode__', 'subject', 'text')
+
 admin.site.register(MessagingUser)
-admin.site.register(Message)
+admin.site.register(Message, MessageAdmin)
