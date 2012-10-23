@@ -24,7 +24,7 @@
     <tr>
     <td>{% player_group s %}</td>
     <td>{% player_group s.parent %}</td>
-    <td>{% coin_amount s.live_points %}</td>
+    <td>{% coin_amount s.live_points|floatformat:0 %}</td>
     </tr>
     {% endfor %}
 </table>
