@@ -26,7 +26,7 @@
         {% for u in c %}
         <a class="player-avatar" href="{% url player_profile u.id %}" title="{{ u }} - {{ u.group }}">
 			<img class="avatar" width="32" src="{% player_avatar u %}" />
-			<div class="player-avatar-race player-avatar-race-{{ u.race.name }}"></div>
+			<div class="player-avatar-race player-avatar-race-{{ u.race.name|lower }}"></div>
 		</a><br/>
         {% endfor %}
     </td>
