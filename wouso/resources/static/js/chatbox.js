@@ -76,7 +76,7 @@ function remove_last() {
 }
 
 function Private(room_id, log_number, text_context, users_name){
-    this.room_id =room_id;
+    this.room_id = room_id;
     this.log_number = log_number;
     this.text_context = text_context;
     this.user_name = users_name;

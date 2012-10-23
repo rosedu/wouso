@@ -784,11 +784,11 @@ msgstr "Cantitate de aur insuficientă"
 
 #: interface/apps/magic/views.py:100
 msgid "Spell is not available"
-msgstr ""
+msgstr "Magia nu este disponibilă"
 
 #: interface/apps/magic/views.py:102
 msgid "Level {level} is required to buy this spell"
-msgstr ""
+msgstr "Nivelul {level} este necesar pentru a cumpăra acest spell"
 
 #: interface/apps/magic/views.py:108
 msgid "Successfully aquired"
@@ -1000,7 +1000,7 @@ msgstr "Cumpără"
 #: resources/templates/magic/bazaar.html:50
 #, python-format
 msgid "Level %(level)s required"
-msgstr ""
+msgstr "Nivel %(level)s necesar"
 
 #: resources/templates/magic/bazaar.html:59
 msgid "Nothing"
@@ -1237,8 +1237,8 @@ msgid "Cast a spell on this player"
 msgstr "Fă o vrajă acestui jucător"
 
 #: resources/templates/profile/profile.html:54
-msgid "Set your profile"
-msgstr ""
+msgid "Setup your profile"
+msgstr "Setează profilul tău"
 
 #: resources/templates/profile/profile.html:60
 #: resources/templates/top/maintop.html:26
@@ -1323,7 +1323,7 @@ msgstr "Topul a fost dezactivat"
 
 #: resources/templates/top/sidebar.html:23
 msgid "Current top"
-msgstr ""
+msgstr "Top curent"
 
 #: resources/templates/top/sidebar.html:26
 #, fuzzy
