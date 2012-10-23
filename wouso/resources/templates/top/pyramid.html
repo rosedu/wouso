@@ -24,7 +24,10 @@
     {% for c in s.columns %}
     <td valign="center">
         {% for u in c %}
-        <a href="{% url player_profile u.id %}"><img class="avatar" width="32" src="{% player_avatar u %}" /></a><br/>
+        <a class="player-avatar" href="{% url player_profile u.id %}" title="{{ u }} - {{ u.group }}">
+			<img class="avatar" width="32" src="{% player_avatar u %}" />
+			<div class="player-avatar-race player-avatar-race-{{ u.race.name }}"></div>
+		</a><br/>
         {% endfor %}
     </td>
     {% endfor %}
