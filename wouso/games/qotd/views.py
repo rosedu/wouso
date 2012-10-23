@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from models import QotdUser, QotdGame
@@ -18,6 +18,7 @@ def index(request):
     
     if qotd_user.has_modifier('qotd-blind'):
         return render_to_response('qotd/index.html', {"error":_("You have been blinded,you cannot answer to the Question of the Day")}, context_instance=RequestContext(request))
+
     if not qotd_user.has_question:
         qotd = QotdGame.get_for_today()
         qotd_user.set_question(qotd)
@@ -53,13 +54,16 @@ def index(request):
 @login_required
 def done(request):
     if QotdGame.disabled():
-            return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
+        return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
     # Do not show results until done
     if not request.user.get_profile().get_extension(QotdUser).has_answered:
         return HttpResponseRedirect(reverse("games.qotd.views.index"))
 
     user = request.user.get_profile().get_extension(QotdUser)
     qotd = user.my_question
+
+    if not qotd:
+        return redirect("homepage")
 
     choice = user.last_answer
     ans = [a for a in qotd.answers if a.id == choice]
