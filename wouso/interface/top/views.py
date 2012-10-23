@@ -47,7 +47,7 @@ def gettop(request, toptype=0, sortcrit=0, page=1):
 
     topseries = list(Race.objects.exclude(can_play=False))
     topseries.sort(key=lambda a: a.points, reverse=True)
-    topgroups = PlayerGroup.objects.exclude(parent=None).order_by('-points')[:5]
+    topgroups = PlayerGroup.objects.exclude(parent=None).exclude(parent__can_play=False).order_by('-points')[:5]
 
     return render_to_response('top/maintop.html',
                            {'allUsers':      users,
