@@ -53,37 +53,65 @@ class AchievementTest(WousoTest):
     def test_early_bird_not(self):
         player = self._get_player()
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-early-bird')
-        signals.addActivity.send(sender=None, timestamp = datetime(2012,9,17,5,0,0),user_from=player,
+        for i in range(1,2):
+            Activity.objects.create(timestamp=datetime(2012,9,17,6,0,0),
+                    user_from=player, user_to=player, action='seen', public=False)
+
+        for i in range(1,4):
+            Activity.objects.create(timestamp=datetime(2012,9,17,5,0,0),
+                    user_from=player, user_to=player, action='seen', public=False)
+
+        signals.addActivity.send(sender=None, timestamp=datetime(2012,9,17,5,0,0),
+            user_from=player,
             user_to=player,
-            action='login',
+            action='seen',
             game=None)
-        self.assertTrue(not player.magic.has_modifier('ach-early-bird'))
+        self.assertFalse(player.magic.has_modifier('ach-early-bird'))
 
     def test_early_bird_set(self):
         player = self._get_player()
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-early-bird')
-        signals.addActivity.send(sender=None, timestamp = datetime(2012,9,17,6,0,0),user_from=player,
+        for i in range(1,4):
+            Activity.objects.create(timestamp=datetime(2012,9,17,6,0,0),
+                    user_from=player, user_to=player, action='seen', public=False)
+
+        signals.addActivity.send(sender=None, timestamp=datetime(2012,9,17,6,0,0),
+            user_from=player,
             user_to=player,
-            action='login',
+            action='seen',
             game=None)
         self.assertTrue(player.magic.has_modifier('ach-early-bird'))
 
     def test_night_owl_not(self):
         player = self._get_player()
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-night-owl')
-        signals.addActivity.send(sender=None, timestamp = datetime(2012,9,17,4,0,0),user_from=player,
-            user_to=player,
-            action='login',
-            game=None)
-        self.assertTrue(not player.magic.has_modifier('ach-night-owl'))
+        for i in range(1,3):
+            Activity.objects.create(timestamp=datetime(2012,9,17,6,0,0),
+                    user_from=player, user_to=player, action='seen', public=False)
+
+        for i in range(1,4):
+            Activity.objects.create(timestamp=datetime(2012,9,17,5,0,0),
+                    user_from=player, user_to=player, action='seen', public=False)
+
+        signals.addActivity.send(sender=None, timestamp=datetime(2012,9,17,4,0,0),
+                user_from=player,
+                user_to=player,
+                action='seen',
+                game=None)
+        self.assertFalse(player.magic.has_modifier('ach-night-owl'))
 
     def test_night_owl_set(self):
         player = self._get_player()
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-night-owl')
-        signals.addActivity.send(sender=None, timestamp = datetime(2012,9,17,3,0,0),user_from=player,
-            user_to=player,
-            action='login',
-            game=None)
+        for i in range(1,4):
+            Activity.objects.create(timestamp=datetime(2012,9,17,4,0,0),
+                    user_from=player, user_to=player, action='seen', public=False)
+
+        signals.addActivity.send(sender=None, timestamp=datetime(2012,9,17,4,0,0),
+                user_from=player,
+                user_to=player,
+                action='seen',
+                game=None)
         self.assertTrue(player.magic.has_modifier('ach-night-owl'))
 
 
