@@ -44,18 +44,22 @@
         {% block tabcontent %}
         <table class="border">
             <tr>
-                <th>Hour/Day</th>
+                <th><em>Hour/Day</em></th>
                 {% for d in days %}
-                    <th>{{ d.1 }}</th>
+                    <th><em>{{ d.1 }}</em></th>
                 {% endfor %}
             </tr>
             {% for h in hours %}
             <tr>
-                <td ALIGN="RIGHT">{{ h }}:00</td>
+                <td ALIGN="RIGHT"><em>{{ h }}:00</em></td>
                 {% for d in days %}
-                    <td>
+                    <td width="115">
                         {% get_schedule d.0 h %}
-                        <a href="{% url ws_edit_spot d.0 h %}">[✍]</a>
+                        <br/>
+                        <br/>
+                        <span class="points">
+                            <a href="{% url ws_edit_spot d.0 h %}">✍spot</a>
+                        </span>
                     </td>
                 {% endfor %}
             </tr>
@@ -64,7 +68,7 @@
 
 
         <a class="button" href="{% url ws_add_group %}">Add semigroup</a>
-        <a class="button" href="{% url ws_edit_spot 0 0 %}">Default (testing)</a>
+        <a class="button" href="{% url ws_edit_spot 0 0 %}">Edit default spot</a>
         <br/>
         <a class="button" href="{% url ws_add_workshop %}"><strong>Add workshop</strong></a>
         {% endblock %}

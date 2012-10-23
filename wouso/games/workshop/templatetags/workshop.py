@@ -1,7 +1,7 @@
 # coding=utf-8
 from django import template
 from django.db.models import Sum
-from wouso.games.workshop.models import Semigroup, Review
+from wouso.games.workshop.models import Semigroup, Review, ROOM_DEFAULT
 
 register = template.Library()
 
@@ -10,12 +10,14 @@ def semigroup(sg):
     if not sg:
         return ''
 
-    return u"<b>%s</b> [%d] %s" % (sg.name, sg.players.count(), sg.room)
+    if sg.room == ROOM_DEFAULT:
+        return u"<b>%s</b> <span class='points'>%d</span>" % (sg.name, sg.players.count())
+    return u"<b>%s</b> %s <span class='poitns'>%d</span>" % (sg.name, sg.room, sg.players.count())
 
 
 @register.simple_tag
 def get_schedule(day, hour):
-   return ', '.join([semigroup(s) for s in Semigroup.get_by_day_and_hour(day, hour)])
+   return '<br/> '.join([semigroup(s) for s in Semigroup.get_by_day_and_hour(day, hour)])
 
 
 @register.simple_tag

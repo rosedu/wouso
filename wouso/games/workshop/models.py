@@ -14,8 +14,8 @@ DAY_CHOICES = (
     (3, 'Wednesday'),
     (4, 'Thursday'),
     (5, 'Friday'),
-    (6, 'Saturday'),
-    (7, 'Sunday'),
+#    (6, 'Saturday'),
+#    (7, 'Sunday'),
 )
 
 ROOM_CHOICES = (
@@ -27,6 +27,8 @@ ROOM_CHOICES = (
 ROOM_DEFAULT = 'eg306'
 
 WORKSHOP_TIME_MINUTES = 10
+
+MIN_HOUR, MAX_HOUR = 8, 20
 
 class Schedule(Tag):
     """ Schedule qpool tags per date intervals.
@@ -50,7 +52,7 @@ class Semigroup(PlayerGroup):
     class Meta:
         unique_together = ('day', 'hour', 'room')
     day = models.IntegerField(choices=DAY_CHOICES)
-    hour = models.IntegerField(choices=zip(range(8, 22, 2), range(8, 22, 2)))
+    hour = models.IntegerField(choices=zip(range(MIN_HOUR, MAX_HOUR, 2), range(MIN_HOUR, MAX_HOUR, 2)))
     room = models.CharField(max_length=5, default=ROOM_DEFAULT, choices=ROOM_CHOICES, blank=True)
 
     @property
