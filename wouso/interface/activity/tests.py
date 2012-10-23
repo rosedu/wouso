@@ -253,6 +253,10 @@ class ChallengeAchievementTest(WousoTest):
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-this-is-sparta')
         player1 = self._get_player()
         player2 = self._get_player(2)
+        first_seen = datetime.now() + timedelta(days=-10)#10 days since first login
+        Activity.objects.create(timestamp=first_seen,
+                user_from=player1, user_to=player1, action='seen',
+                public=False)
         for i in range(1, 7):
             timestamp = datetime.now() + timedelta(days=-i)
             if (i % 4) == 0:
@@ -275,6 +279,10 @@ class ChallengeAchievementTest(WousoTest):
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-this-is-sparta')
         player1 = self._get_player()
         player2 = self._get_player(2)
+        first_seen = datetime.now() + timedelta(days=-10)#10 days since first login
+        Activity.objects.create(timestamp=first_seen,
+                user_from=player1, user_to=player1, action='seen',
+                public=False)
         for i in range(1, 3):
             timestamp = datetime.now() + timedelta(days=-i)
             a = Activity.objects.create(timestamp=timestamp,
@@ -288,10 +296,35 @@ class ChallengeAchievementTest(WousoTest):
         #False due to not enough challenges played
         self.assertFalse(player1.magic.has_modifier('ach-this-is-sparta'))
 
+    def test_this_is_sparta_activity_not_enough_time(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-this-is-sparta')
+        player1 = self._get_player()
+        player2 = self._get_player(2)
+        first_seen = datetime.now() + timedelta(days=-6)#only 6 days have passed
+        Activity.objects.create(timestamp=first_seen,
+                user_from=player1, user_to=player1, action='seen',
+                public=False)
+        for i in range(1, 5):
+            timestamp = datetime.now() + timedelta(days=-i)
+            a = Activity.objects.create(timestamp=timestamp,
+                user_from=player1, user_to=player2, action='chall-lost',
+                public=True)
+        #send signal to enable achievement validation
+        signals.addActivity.send(sender=None, user_from=player1,
+                                    user_to=player2,
+                                    action='chall-won',
+                                    game=ChallengeGame.get_instance())
+        #achievement condition earned
+        self.assertFalse(player1.magic.has_modifier('ach-this-is-sparta'))
+
     def test_this_is_sparta_activity_passed(self):
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-this-is-sparta')
         player1 = self._get_player()
         player2 = self._get_player(2)
+        first_seen = datetime.now() + timedelta(days=-7)#barely enough time
+        Activity.objects.create(timestamp=first_seen,
+                user_from=player1, user_to=player1, action='seen',
+                public=False)
         for i in range(1, 5):
             timestamp = datetime.now() + timedelta(days=-i)
             a = Activity.objects.create(timestamp=timestamp,
