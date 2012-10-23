@@ -260,6 +260,10 @@ p.clearer {
     margin: 6px;
     text-align: right;
 }
+.actions-left {
+    text-align: left;
+    padding-left: 10px;
+}
 
 .actions a, a.button, span.button, button {
     display: inline-block;
