@@ -12,7 +12,7 @@ def semigroup(sg):
 
     if sg.room == ROOM_DEFAULT:
         return u"<b>%s</b> <span class='points'>%d</span>" % (sg.name, sg.players.count())
-    return u"<b>%s</b> %s <span class='poitns'>%d</span>" % (sg.name, sg.room, sg.players.count())
+    return u"<b>%s</b> %s <span class='points'>%d</span>" % (sg.name, sg.room, sg.players.count())
 
 
 @register.simple_tag
