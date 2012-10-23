@@ -365,7 +365,7 @@ msgstr "Niciun quest activ."
 #: games/specialquest/cpanel.py:119
 #: games/specialquest/cpanel.py:135
 msgid "completed special quest {task_name}"
-msgstr ""
+msgstr "a terminat questul special {task_name}"
 
 #: games/specialquest/models.py:138
 #: games/specialquest/views.py:142
@@ -571,7 +571,7 @@ msgstr "Deadline depășit"
 
 #: games/specialquest/templates/specialquest/task.html:25
 msgid "Teams that completed this task"
-msgstr ""
+msgstr "Echipe care au terminat task-ul"
 
 #: games/specialquest/templates/specialquest/task.html:30
 msgid "Nobody."
@@ -592,7 +592,7 @@ msgstr "Nu faci parte din semigrupa curentă."
 
 #: games/workshop/views.py:42
 msgid "Workshop is not active"
-msgstr ""
+msgstr "Workshop-ul nu este activ"
 
 #: games/workshop/views.py:46
 #, fuzzy
@@ -628,11 +628,11 @@ msgstr "Workshop"
 
 #: games/workshop/templates/workshop/index.html:8
 msgid "Current workshop"
-msgstr ""
+msgstr "Workshop actual"
 
 #: games/workshop/templates/workshop/index.html:11
 msgid "Already answered"
-msgstr ""
+msgstr "Răspuns deja dat"
 
 #: games/workshop/templates/workshop/index.html:14
 msgid "Expires:"
@@ -649,7 +649,7 @@ msgstr "Trebuie să dai un răspuns"
 
 #: games/workshop/templates/workshop/index.html:23
 msgid "Past workshops"
-msgstr ""
+msgstr "Workshop-uri anterioare"
 
 #: games/workshop/templates/workshop/index.html:28
 msgid "Your reviews"
@@ -670,7 +670,7 @@ msgstr "Resultate pentru workshop"
 
 #: games/workshop/templates/workshop/results.html:9
 msgid "Your final grade is:"
-msgstr ""
+msgstr "Nota ta finală e:"
 
 #: games/workshop/templates/workshop/results.html:13
 msgid "Your answer"
@@ -721,7 +721,7 @@ msgstr "Ai răspuns greșit azi"
 
 #: games/workshop/templates/workshop/sidebar.html:17
 msgid "Workshop not active"
-msgstr ""
+msgstr "Workshop-ul nu este activ"
 
 #: games/workshop/templates/workshop/sidebar.html:20
 msgid "No workshop for you."
@@ -754,7 +754,7 @@ msgstr "Schimbul este dezactivat"
 
 #: interface/apps/magic/views.py:60
 msgid "Invalid amounts"
-msgstr "Cantități nevalide"
+msgstr "Cantități necorespunzătoare"
 
 #: interface/apps/magic/views.py:66
 #: interface/apps/magic/views.py:72
@@ -801,7 +801,7 @@ msgstr "Număr de zile nevalid"
 #: interface/apps/magic/views.py:141
 #, fuzzy
 msgid "Cast failed:"
-msgstr "Vrajă eșuată."
+msgstr "Vrajă eșuată:"
 
 #: interface/apps/messaging/models.py:48
 #: interface/apps/messaging/views.py:89
@@ -968,7 +968,7 @@ msgstr "Artefacte"
 
 #: resources/templates/magic/artifact_hof.html:27
 msgid "No artifacts given yet"
-msgstr ""
+msgstr "Artefacte indisponibile"
 
 #: resources/templates/magic/artifact_hof.html:32
 msgid "Players"
@@ -1122,7 +1122,7 @@ msgstr "Nu ai nicio vrajă pe care să o folosești. Poți cumpăra vrăji la ba
 
 #: resources/templates/profile/cast.html:17
 msgid "Cast: "
-msgstr "Invocă:"
+msgstr "Invocă: "
 
 #: resources/templates/profile/cast.html:23
 msgid "mass"
