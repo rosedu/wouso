@@ -28,6 +28,7 @@
         Current spot: {{ info.get_spot }}<br/>
         Current group: {{ info.get_semigroups|join:", " }}<br/>
         Current qpool: {{ info.get_question_pool.count }}<br/>
+        Default room: {{ info.default_room }}<br/>
         </p>{% endif %}
         {% if semigroups %}
             <strong>Semigroups:</strong>
@@ -53,7 +54,7 @@
             <tr>
                 <td ALIGN="RIGHT"><em>{{ h }}:00</em></td>
                 {% for d in days %}
-                    <td width="115">
+                    <td width="115" {% if d.0 == info.get_spot.0 %}{% if h == info.get_spot.1 %}class="red"{% endif %}{% endif %}>
                         {% get_schedule d.0 h %}
                         <br/>
                         <br/>

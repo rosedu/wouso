@@ -297,6 +297,10 @@ class WorkshopGame(Game):
         super(WorkshopGame, self).__init__(*args, **kwargs)
 
     @classmethod
+    def default_room(cls):
+        return ROOM_DEFAULT
+
+    @classmethod
     def get_spot(cls, timestamp=None):
         """ Return the current laboratory as a day, hour pair
         """
