@@ -249,7 +249,7 @@ class ChallengeAchievementTest(WousoTest):
 
         self.assertEqual(refused_challenges(player), 6)
 
-    def test_this_is_sparta_activity(self):
+    def test_this_is_sparta_activity_not_given(self):
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-this-is-sparta')
         player1 = self._get_player()
         player2 = self._get_player(2)
@@ -263,11 +263,46 @@ class ChallengeAchievementTest(WousoTest):
                 a = Activity.objects.create(timestamp=timestamp,
                 user_from=player1, user_to=player2, action='chall-lost',
                 public=True)
-
+        #send signal to enable achievement validation
         signals.addActivity.send(sender=None, user_from=player1,
                                     user_to=player2,
                                     action='chall-refused',
                                     game=ChallengeGame.get_instance())
+        #False due to refused challenge
+        self.assertFalse(player1.magic.has_modifier('ach-this-is-sparta'))
+
+    def test_this_is_sparta_activity_not_enough_challenges(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-this-is-sparta')
+        player1 = self._get_player()
+        player2 = self._get_player(2)
+        for i in range(1, 3):
+            timestamp = datetime.now() + timedelta(days=-i)
+            a = Activity.objects.create(timestamp=timestamp,
+                user_from=player1, user_to=player2, action='chall-lost',
+                public=True)
+        #send signal to enable achievement validation
+        signals.addActivity.send(sender=None, user_from=player1,
+                                    user_to=player2,
+                                    action='chall-won',
+                                    game=ChallengeGame.get_instance())
+        #False due to not enough challenges played
+        self.assertFalse(player1.magic.has_modifier('ach-this-is-sparta'))
+
+    def test_this_is_sparta_activity_passed(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-this-is-sparta')
+        player1 = self._get_player()
+        player2 = self._get_player(2)
+        for i in range(1, 5):
+            timestamp = datetime.now() + timedelta(days=-i)
+            a = Activity.objects.create(timestamp=timestamp,
+                user_from=player1, user_to=player2, action='chall-lost',
+                public=True)
+        #send signal to enable achievement validation
+        signals.addActivity.send(sender=None, user_from=player1,
+                                    user_to=player2,
+                                    action='chall-won',
+                                    game=ChallengeGame.get_instance())
+        #achievement condition earned
         self.assertTrue(player1.magic.has_modifier('ach-this-is-sparta'))
 
 class PopularityTest(WousoTest):
