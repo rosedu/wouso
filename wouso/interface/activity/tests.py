@@ -235,7 +235,7 @@ class ChallengeAchievementTest(WousoTest):
         self.assertEqual(challenge_count(player1), 100)
 
     def test_chall_100_activity(self):
-        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-chall-100')
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-chall-30')
         player = self._get_player()
         for i in range(1, 100):
             timestamp = datetime.now() + timedelta(days=-i)
@@ -252,7 +252,7 @@ class ChallengeAchievementTest(WousoTest):
                                      user_to=player,
                                      action='chall-won',
                                      game=ChallengeGame.get_instance())
-        self.assertTrue(player.magic.has_modifier('ach-chall-100'))
+        self.assertTrue(player.magic.has_modifier('ach-chall-30'))
 
     def test_defeated_better_player_activity(self):
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-chall-def-big')

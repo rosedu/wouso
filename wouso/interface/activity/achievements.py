@@ -188,8 +188,8 @@ class Achievements(App):
             # Check if number of challenge games is >= 100
             games_played = challenge_count(player)
             if games_played >= 100:
-                if not player.magic.has_modifier('ach-chall-100'):
-                    cls.earn_achievement(player, 'ach-chall-100')
+                if not player.magic.has_modifier('ach-chall-30'):
+                    cls.earn_achievement(player, 'ach-chall-30')
 
             # Check if the number of refused challenges in the past week is 0
             # also check for minimum number of challenges played = 5
