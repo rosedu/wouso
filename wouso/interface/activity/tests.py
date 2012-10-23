@@ -399,31 +399,6 @@ class PopularityTest(WousoTest):
         self.assertEqual(unique_users_pm(user_to,30),5)
         self.assertTrue(user_to.magic.has_modifier('ach-popularity'))
         
-    def test_bad_start_1(self):
-        player = self._get_player()
-        timestamp = datetime.now()
-        a = Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-wrong')
-        self.assertTrue(wrong_first_qotd(player))
-        a = Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-wrong')
-        self.assertTrue(not wrong_first_qotd(player))
-        
-    def test_bad_start_2(self):
-        player = self._get_player()
-        timestamp = datetime.now()
-        a = Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-correct')
-        self.assertTrue(not wrong_first_qotd(player))
-        a = Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-wrong')
-        self.assertTrue(not wrong_first_qotd(player))
-        
-    def test_bad_start_3(self):
-        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-bad-start')
-        player = self._get_player()
-        signals.addActivity.send(sender=None, user_from=player,
-                                     user_to=player,
-                                     action='qotd-wrong',
-                                     game=QotdGame.get_instance())
-        self.assertTrue(player.magic.has_modifier('ach-bad-start'))
-
 
 class NotificationsTest(WousoTest):
     def test_ach_notification(self):
