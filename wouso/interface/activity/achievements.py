@@ -216,7 +216,7 @@ class Achievements(App):
 
         if action == "message":
             # Check the number of unique users who send pm to player in the last m minutes
-            if unique_users_pm(kwargs.get('user_to'), 30) >= 3:
+            if unique_users_pm(kwargs.get('user_to'), 15) >= 5:
                 if not kwargs.get('user_to').magic.has_modifier('ach-popularity'):
                     cls.earn_achievement(kwargs.get('user_to'), 'ach-popularity')
 
