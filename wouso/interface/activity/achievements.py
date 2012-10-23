@@ -72,13 +72,19 @@ def challenge_count(player, days=None):
     """
     if not days:
         return Activity.get_player_activity(player).filter(action__contains='chall').count()
-    else:
-        start = datetime.now() - timedelta(days=days)
-        return Activity.get_player_activity(player).filter(
-                action__contains='chall', timestamp__gte=start).count()
+    start = datetime.now() - timedelta(days=days)
+    return Activity.get_player_activity(player).filter(
+            action__contains='chall', timestamp__gte=start).count()
 
-
-
+def first_seen(player):
+    """
+    Return the number of days passed between the current time and the first time
+    the player logged in
+    """
+    first_seen = Activity.objects.filter(action='seen', user_to=player).order_by('timestamp')[:1]
+    if first_seen.count() > 0:
+        return (datetime.now() - first_seen[0].timestamp).days
+    return -1 #user has not logged in ever
 
 def consecutive_chall_won(player):
     """
@@ -94,7 +100,7 @@ def consecutive_chall_won(player):
             return result
 
     return result
-    
+
 def check_for_god_mode(player, days, chall_min):
     """
     Return true if the player won all challenges and answerd all qotd 'days' days in a row witn a minimum of 'chall_min' challenges
@@ -115,7 +121,6 @@ def check_for_god_mode(player, days, chall_min):
     if chall_won >= chall_min and chall_lost == 0 and qotd_ok == days:
         return True
     return False
-    
 
 def refused_challenges(player):
     """
@@ -190,7 +195,8 @@ class Achievements(App):
             # also check for minimum number of challenges played = 5
             if not player.magic.has_modifier('ach-this-is-sparta'):
                 if refused_challenges(player) == 0 and \
-                        challenge_count(player, days=7) >= 5:
+                        challenge_count(player, days=7) >= 5 and \
+                        first_seen(player) >= 7:
                     cls.earn_achievement(player, 'ach-this-is-sparta')
 
         if action == 'chall-won':
