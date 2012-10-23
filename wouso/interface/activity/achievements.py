@@ -65,11 +65,19 @@ def wrong_first_qotd(player):
     return False
     
     
-def challenge_count(player):
+def challenge_count(player, days=None):
     """
-     Return the count of challenges played by player.
+     Return the count of challenges played by player in the last x _days_.
+     All challenges if days == None
     """
-    return Activity.get_player_activity(player).filter(action__contains='chall').count()
+    if not days:
+        return Activity.get_player_activity(player).filter(action__contains='chall').count()
+    else:
+        start = datetime.now() - timedelta(days=days)
+        return Activity.get_player_activity(player).filter(
+                action__contains='chall', timestamp__gte=start).count()
+
+
 
 
 def consecutive_chall_won(player):
@@ -115,7 +123,6 @@ def refused_challenges(player):
     """
     start = datetime.now() + timedelta(days=-7)
     return Activity.get_player_activity(player).filter(action__contains='chall-refused', timestamp__gte=start, user_from=player).count()
-
 
 def get_chall_score(arguments):
     if not arguments:
@@ -179,10 +186,11 @@ class Achievements(App):
                 if not player.magic.has_modifier('ach-chall-30'):
                     cls.earn_achievement(player, 'ach-chall-30')
 
-            # Check if the number of refused challenges in the past week is
-            # less than 2
+            # Check if the number of refused challenges in the past week is 0
+            # also check for minimum number of challenges played = 5
             if not player.magic.has_modifier('ach-this-is-sparta'):
-                if refused_challenges(player) <= 2:
+                if refused_challenges(player) == 0 and \
+                        challenge_count(player, days=7) >= 5:
                     cls.earn_achievement(player, 'ach-this-is-sparta')
 
         if action == 'chall-won':
