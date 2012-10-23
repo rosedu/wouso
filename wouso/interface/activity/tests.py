@@ -186,10 +186,10 @@ class ChallengeAchievementTest(WousoTest):
 
         self.assertEqual(challenge_count(player), 30)
 
-    def test_chall_30_draw_lost(self):
+    def test_chall_100_draw_lost(self):
         player1 = self._get_player()
         player2 = self._get_player(2)
-        for i in range(1, 31):
+        for i in range(1, 101):
             timestamp = datetime.now() + timedelta(days=-i)
             if (i % 5) == 0:
                 a = Activity.objects.create(timestamp=timestamp,
@@ -204,12 +204,12 @@ class ChallengeAchievementTest(WousoTest):
                         user_from=player1, user_to=player2, action='chall-won',
                         public=True)
 
-        self.assertEqual(challenge_count(player1), 30)
+        self.assertEqual(challenge_count(player1), 100)
 
-    def test_chall_30_activity(self):
-        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-chall-30')
+    def test_chall_100_activity(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-chall-100')
         player = self._get_player()
-        for i in range(1, 30):
+        for i in range(1, 100):
             timestamp = datetime.now() + timedelta(days=-i)
             if i % 5 == 0:
                 a = Activity.objects.create(timestamp=timestamp,
@@ -224,7 +224,7 @@ class ChallengeAchievementTest(WousoTest):
                                      user_to=player,
                                      action='chall-won',
                                      game=ChallengeGame.get_instance())
-        self.assertTrue(player.magic.has_modifier('ach-chall-30'))
+        self.assertTrue(player.magic.has_modifier('ach-chall-100'))
 
     def test_defeated_better_player_activity(self):
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-chall-def-big')
