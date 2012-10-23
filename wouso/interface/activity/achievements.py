@@ -27,7 +27,7 @@ def consecutive_qotd_correct(player):
      Return the count of correct qotd in a row
      Maximum: 10 (last ten)
     """
-    activities = Activity.get_player_activity(player).filter(action__contains = 'qotd').order_by('-timestamp')[:10]
+    activities = Activity.get_player_activity(player).filter(action__contains='qotd').order_by('-timestamp')[:10]
     result = 0
     for i in activities:
         if 'correct' in i.action:
