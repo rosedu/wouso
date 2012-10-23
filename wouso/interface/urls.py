@@ -51,8 +51,6 @@ urlpatterns = patterns('',
     #Report
     (r'^report/(?P<id>\d*)/$','wouso.interface.views.report'),
 
-
-
     # Messaging
     (r'^m/', include('wouso.interface.apps.messaging.urls')),
 
