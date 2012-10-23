@@ -102,7 +102,6 @@ AUTHENTICATION_BACKENDS = (
 )
 
 ROOT_URLCONF = 'wouso.interface.urls'
-STATIC_URL = "/resources/static/"
 
 TEMPLATE_DIRS = (
     os.path.normpath(os.path.dirname(__file__) + "/resources/templates/"),
@@ -148,7 +147,6 @@ INSTALLED_APPS = [
     'wouso.interface.cpanel',
     'wouso.interface.top',
     'wouso.interface.activity',
-    'wouso.interface.chat',
     'wouso.interface.apps.pages',
     'wouso.interface.apps.statistics',
     'wouso.interface.apps.messaging',
@@ -203,22 +201,6 @@ else:
 
 AVATAR_DEFAULT = 'monsterid'
 
-try:
-    imp.find_module('django_socketio')
-except ImportError:
-    pass
-else:
-    INSTALLED_APPS += [
-        'django.contrib.contenttypes',
-        'django.contrib.sessions',
-        'django.contrib.staticfiles',
-        'django_socketio'
-        ]
-
-# please don't remove this yet
-if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
-    from localsettings import *
-
 
 BASE_PATH = os.path.dirname(__file__)
 
@@ -236,3 +218,20 @@ else:
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
     from localsettings import *
 
+
+try:
+    imp.find_module('django_socketio')
+except ImportError:
+    pass
+else:
+    INSTALLED_APPS += [
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.staticfiles',
+        'django_socketio',
+        'wouso.interface.chat',
+        ]
+
+# please don't remove this yet
+if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
+    from localsettings import *

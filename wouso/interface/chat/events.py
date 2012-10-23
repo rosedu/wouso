@@ -1,8 +1,8 @@
 
+from datetime import datetime
 from django.utils.html import strip_tags
 from django_socketio import events
 from wouso.interface.chat.utils import  change_text, get_author, serve_message, some_old_message, add_message, create_message
-from datetime import datetime, timedelta
 from models import *
 
 @events.on_message(channel="global")
@@ -13,7 +13,7 @@ def message(request, socket, context, message):
     """
 
     user = get_author(request)
-    room = roomexist(message['room'])
+    room = get_room_or_none(message['room'])
     if user.user.has_perm('chat.super_chat_user'):
         if message['msg'][0] == '/' and message['room'] == 'global':
             text = message['msg'].split(" ")
@@ -55,7 +55,7 @@ def message(request, socket, context, message):
         socket.send_and_broadcast_channel(message)
 
 
-def roomexist(room_name):
+def get_room_or_none(room_name):
     try:
         return ChatRoom.objects.get(name = room_name)
     except ChatRoom.DoesNotExist:
