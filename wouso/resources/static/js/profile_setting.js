@@ -1,4 +1,4 @@
-var url_base = ''
+var url_base = '';
 
 function get_nickname(){
     return $("#Nick_Name").val();

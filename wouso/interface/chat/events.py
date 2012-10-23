@@ -55,10 +55,6 @@ def message(request, socket, context, message):
         socket.send_and_broadcast_channel(message)
 
 
-
-def json_response(object):
-    return HttpResponse(simplejson.dumps(object))
-
 def roomexist(room_name):
     try:
         return ChatRoom.objects.get(name = room_name)
