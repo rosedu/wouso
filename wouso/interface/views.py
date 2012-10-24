@@ -23,6 +23,8 @@ from wouso.core.user.models import Player, PlayerGroup, UserReportForm
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, History as TopHistory
 from wouso.interface.activity import signals
+from wouso.core.logs.models import Report, AddReport
+
 
 def get_wall(page=u'1'):
     """ Returns activity for main wall, paginated."""
@@ -254,8 +256,13 @@ def ui(request):
 def report(request,id):
 
     if request.user.id == int(id):
+<<<<<<< HEAD
         return homepage(request, error='You cannot challenge yourself')
 
+=======
+        return homepage(request, error='You cannot report yourself')
+        
+>>>>>>> Redesigned reports to use database and cpanel view
     get_object_or_404(User,pk=id)
 
     if request.method == "POST":
@@ -263,6 +270,7 @@ def report(request,id):
         if form.is_valid():
             user_from=request.user
             user_to = User.objects.get(pk=id)
+<<<<<<< HEAD
 
             if not os.path.isdir(settings.LOG_ROOT):
                 os.mkdir(settings.LOG_ROOT)
@@ -272,11 +280,15 @@ def report(request,id):
 
 
 
+=======
+            
+>>>>>>> Redesigned reports to use database and cpanel view
             signals.addActivity.send(sender=None,
                                     user_from=user_from.get_profile().get_extension(Player),
                                     user_to=user_to.get_profile().get_extension(Player),
                                     action="report",
                                     game=None)
+            AddReport(user_from=user_from, user_to=user_to, text=request.POST['message'])
             request.session["report_msg"] = "The report was successfully submitted"
             return redirect('player_profile', id=id)
     else:
