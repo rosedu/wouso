@@ -18,11 +18,23 @@
     </ul>
 
     <h4>Students</h4>
-    <ul>
-        {% for p in semigroup.players.all %}
-            <li>{{ p }} <a href="{% url ws_kick_off p.id %}">x</a></li>
-        {% endfor %}
-    </ul>
+        <table>
+            <tr>
+                <th>#</th>
+                <th>Player</th>
+                <th>Group</th>
+                <th>Race</th>
+            </tr>
+            {% for p in semigroup.players.all %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ p.user.last_name }} {{ p.user.first_name }} ({{ p.user.username}})</td>
+                <td>{{ p.group }} <a target="blank" href="{% url group_set p.id %}">[{{ p.group.name }}]</a></td>
+                <td>{{ p.race }}</td>
+                <td><a href="{% url ws_kick_off p.id %}">remove</a></td>
+            </tr>
+            {% endfor %}
+        </table>
     <p>Total: {{ semigroup.players.count }}.</p>
 
     <form action="?semigroup={{semigroup.id}}" method="post">
