@@ -54,9 +54,12 @@ def play(request):
         assessment.set_answered(answers)
         return redirect('workshop_results', workshop=workshop.id)
 
+    seconds_left = assessment.time_left()
+
     return render_to_response('workshop/play.html',
                 {'assessment': assessment,
-                 'workshop': workshop},
+                 'workshop': workshop,
+                 'seconds_left': seconds_left},
                 context_instance=RequestContext(request)
     )
 

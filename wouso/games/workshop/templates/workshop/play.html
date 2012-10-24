@@ -1,8 +1,13 @@
 {% extends 'interface/section_base.html' %}
 {% load i18n %}
 
-{% block title %}{% trans 'Workshop' %}{% endblock %}
+{% block title %}{% trans 'Workshop' %} - {{ user.get_profile }}{% endblock %}
 {% block sectiontitle %}{% trans 'Workshop' %} #{{ workshop.pk }}{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+<script type="text/javascript" src="{{ basepath }}/static/js/timer.js"></script>
+{% endblock %}
 
 {% block sectioncontent %}
     <div class="second">
@@ -10,7 +15,21 @@
         <p>{% trans 'Assessment started' %}: {{ assessment.time_start }}</p>
     </div>
 
-<form action="" method="post">
+
+    <div>
+        <p>Dati răspunsuri detaliate și argumentate. Câteva fraze per întrebare.</p>
+    </div>
+
+    <div id="timer" class="timer timer-big">
+        {{ seconds_left }} seconds
+    </div>
+    <script id="timer_script" language="javascript">
+        var seconds = {{ seconds_left }};
+        $(document).ready(function () { update('timer');});
+    </script>
+
+
+<form action="" method="post" id="challenge_form">
     <table>
         {% for q in assessment.questions.all %}
             <tr>

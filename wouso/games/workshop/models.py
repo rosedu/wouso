@@ -27,6 +27,7 @@ ROOM_CHOICES = (
 ROOM_DEFAULT = 'eg306'
 
 WORKSHOP_TIME_MINUTES = 10
+WORKSHOP_GRACE_PERIOD = 1 # 1 minute
 
 MIN_HOUR, MAX_HOUR = 8, 20
 
@@ -107,6 +108,7 @@ class Workshop(models.Model):
 
     def is_active(self, timestamp=None):
         timestamp = timestamp if timestamp else datetime.now()
+        timestamp -= timedelta(minutes=WORKSHOP_GRACE_PERIOD)
         if not self.start_at or not self.active_until:
             return False
 
@@ -221,6 +223,20 @@ class Assessment(models.Model):
         except TypeError: # one of the grades is None
             self.final_grade = None
         self.save()
+
+    def time_left(self):
+        """
+         Return time left in seconds or 0 if passed
+        """
+        if not self.workshop.is_started():
+            return -1
+
+        if not self.workshop.active_until:
+            return -2
+
+        now = datetime.now()
+
+        return (self.workshop.active_until - now).seconds
 
     @property
     def reviews(self):
@@ -347,6 +363,7 @@ class WorkshopGame(Game):
          Return existing workshop for a player, now.
         """
         timestamp = timestamp if timestamp else datetime.now()
+        timestamp -= timedelta(minutes=WORKSHOP_GRACE_PERIOD)
         ws = Workshop.objects.filter(start_at__lte=timestamp, active_until__gte=timestamp)
         for w in ws:
             if player in w.semigroup.players.all():
