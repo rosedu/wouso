@@ -429,7 +429,7 @@
   "fields": {
    "due_days": 5,
    "available": true,
-   "description": "po\u021bi s\u0103 schimbi punctajul afi\u0219at, alter\u00e2ndu-ul cu o valoarea cuprins\u0103 \u00een spa\u021biul -25% din punctaj",
+   "description": "po\u021bi s\u0103 schimbi punctajul afi\u0219at, alter\u00e2ndu-l cu o valoare cuprins\u0103 \u00een spa\u021biul -25% din punctaj",
    "title": "Disguise -25%",
    "level_required": 1,
    "image": "",
@@ -446,7 +446,7 @@
   "fields": {
    "due_days": 5,
    "available": true,
-   "description": "po\u021bi s\u0103 schimbi punctajul afi\u0219at, alter\u00e2ndu-ul cu o valoarea cuprins\u0103 \u00een spa\u021biul -15% din punctaj",
+   "description": "po\u021bi s\u0103 schimbi punctajul afi\u0219at, alter\u00e2ndu-l cu o valoare cuprins\u0103 \u00een spa\u021biul -15% din punctaj",
    "title": "Disguise -15%",
    "level_required": 1,
    "image": "",
@@ -463,7 +463,7 @@
   "fields": {
    "due_days": 5,
    "available": true,
-   "description": "po\u021bi s\u0103 schimbi punctajul afi\u0219at, alter\u00e2ndu-ul cu o valoarea cuprins\u0103 \u00een spa\u021biul 15% din punctaj",
+   "description": "po\u021bi s\u0103 schimbi punctajul afi\u0219at, alter\u00e2ndu-l cu o valoare cuprins\u0103 \u00een spa\u021biul 15% din punctaj",
    "title": "Disguise 15%",
    "level_required": 1,
    "image": "",
@@ -480,7 +480,7 @@
   "fields": {
    "due_days": 5,
    "available": true,
-   "description": "po\u021bi s\u0103 schimbi punctajul afi\u0219at, alter\u00e2ndu-ul cu o valoarea cuprins\u0103 \u00een spa\u021biul 25% din punctaj",
+   "description": "po\u021bi s\u0103 schimbi punctajul afi\u0219at, alter\u00e2ndu-l cu o valoare cuprins\u0103 \u00een spa\u021biul 25% din punctaj",
    "title": "Disguise 25%",
    "level_required": 1,
    "image": "",
@@ -531,7 +531,7 @@
   "fields": {
    "due_days": 5,
    "available": true,
-   "description": "c\u00e2\u0219tigi mai pu\u021bin cu +50% din provoc\u0103rile c\u00e2\u0219tigate",
+   "description": "c\u00e2\u0219tigi mai mult cu +50% din provoc\u0103rile c\u00e2\u0219tigate",
    "title": "Charge",
    "level_required": 1,
    "image": "",
@@ -667,7 +667,7 @@
   "fields": {
    "due_days": 5,
    "available": true,
-   "description": "c\u00e2\u0219tigi mai pu\u021bin cu +50% din provoc\u0103rile c\u00e2\u0219tigate",
+   "description": "c\u00e2\u0219tigi mai mult cu +50% din provoc\u0103rile c\u00e2\u0219tigate",
    "title": "Charge(Mass)",
    "level_required": 2,
    "image": "",
@@ -701,7 +701,7 @@
   "fields": {
    "due_days": 5,
    "available": true,
-   "description": "",
+   "description": "nu po\u021bi lansa question of the day",
    "title": "Blind(Mass)",
    "level_required": 2,
    "image": "",
