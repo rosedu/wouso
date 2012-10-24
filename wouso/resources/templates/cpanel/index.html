@@ -52,16 +52,6 @@
 {% include 'interface/contactbox.html' %}
 {% endblock %}
 
-<div id="container">
-    {% block header %}
-    <div id="header-cp">
-        <div id="topbar">
-            <div class="first-line">
-                {{ user.get_profile }}
-                <a id="head-home" href="{% url homepage %}">Game</a>&nbsp;
-                <a id="head-cpanel" href="{% url dashboard %}">CPanel</a>&nbsp;
-                <a id="head-logout" href="{% url django.contrib.auth.views.logout_view %}">{% trans "Logout" %} &raquo;</a>
-            </div>
 {% block header %}
 <div id="header">
     <div id="topbar">
@@ -96,6 +86,7 @@
                         <li class="custom"><a href="{% url customization %}">Customization</a></li>
                         <li><a href="{% url all_players %}">Players</a></li>
                         <li><a href="{% url races_groups %}">Races & groups</a></li>
+                        <li><a href="{% url reports %}">Reports</a></li>
                         {% endif %}
                     </ul>
                 </div>

@@ -22,6 +22,8 @@ from wouso.core.user.models import Player, PlayerGroup, UserReportForm
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, History as TopHistory
 from wouso.interface.activity import signals
+from wouso.core.logs.models import Report, AddReport
+
 
 def get_wall(page=u'1'):
     """ Returns activity for main wall, paginated."""
@@ -239,7 +241,7 @@ def ui(request):
 def report(request,id):
     
     if request.user.id == int(id):
-        return homepage(request, error='You cannot challenge yourself')
+        return homepage(request, error='You cannot report yourself')
         
     get_object_or_404(User,pk=id)
     
@@ -249,19 +251,12 @@ def report(request,id):
             user_from=request.user
             user_to = User.objects.get(pk=id)
             
-            if not os.path.isdir(settings.LOG_ROOT):
-                os.mkdir(settings.LOG_ROOT)
-            
-            with open(settings.LOG_ROOT + "/Report.log", "a") as ReportFile:
-                ReportFile.write("From: " + user_from.username + " on: " + user_to.username + "\n" + request.POST['message'] + "\n\n")
-                
-                
-                    
             signals.addActivity.send(sender=None,
                                     user_from=user_from.get_profile().get_extension(Player),
                                     user_to=user_to.get_profile().get_extension(Player),
                                     action="report",
                                     game=None)
+            AddReport(user_from=user_from, user_to=user_to, text=request.POST['message'])
             request.session["report_msg"] = "The report was successfully submitted"
             return redirect('player_profile', id=id)
     else:
