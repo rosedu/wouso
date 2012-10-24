@@ -5,7 +5,7 @@ from wouso.interface.apps.pages.models import StaticPage, NewsItem
 
 def staticpage(request, slug):
     """ Perform regular search by either first or last name """
-    staticpage = StaticPage.objects.get(slug=slug)
+    staticpage = get_object_or_404(StaticPage, slug=slug)
 
     try:
         template = 'pages/%s.html' % slug
