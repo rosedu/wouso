@@ -108,11 +108,11 @@ class Workshop(models.Model):
 
     def is_active(self, timestamp=None):
         timestamp = timestamp if timestamp else datetime.now()
-        timestamp -= timedelta(minutes=WORKSHOP_GRACE_PERIOD)
+        timestamp2 = timestamp - timedelta(minutes=WORKSHOP_GRACE_PERIOD)
         if not self.start_at or not self.active_until:
             return False
 
-        return self.start_at <= timestamp <= self.active_until
+        return self.start_at <= timestamp and timestamp2 <= self.active_until
 
     def is_passed(self, timestamp=None):
         timestamp = timestamp if timestamp else datetime.now()
