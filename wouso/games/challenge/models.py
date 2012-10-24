@@ -1,5 +1,4 @@
 import random
-import logging
 from datetime import datetime, time, timedelta, date
 from random import shuffle
 import pickle as pk
@@ -474,6 +473,7 @@ class Challenge(models.Model):
 
         if exp:
             results = {}
+            results['results'] = {}
             results['points'] = '0.0 (expired)'
         return results
 

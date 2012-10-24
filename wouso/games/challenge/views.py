@@ -1,15 +1,12 @@
-from datetime import datetime
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from wouso.core.user.models import Player
 from wouso.games.challenge.models import ChallengeException
-from wouso.interface import render_string
 from models import ChallengeUser, ChallengeGame, Challenge, Participant
 from forms import ChallengeForm
 
@@ -64,9 +61,11 @@ def challenge(request, id):
         form = ChallengeForm(chall, request.POST)
         results = chall.set_played(chall_user, form.get_response())
         form.check_self_boxes()
-        results['results'] = form.get_results_in_order(results['results'])
-        questions_and_answers = zip(form.visible_fields(), results['results'])
-
+        if results.get('results', False):
+            results['results'] = form.get_results_in_order(results['results'])
+            questions_and_answers = zip(form.visible_fields(), results['results'])
+        else:
+            questions_and_answers = None
         return render_to_response('challenge/result.html',
             {'challenge': chall, 'challenge_user': chall_user, 'points': results['points'], 'form' : form,  'questions_and_answers' : questions_and_answers},
             context_instance=RequestContext(request))
@@ -243,7 +242,8 @@ def detailed_challenge_stats(request, target_id):
 
     target_user = get_object_or_404(ChallengeUser, user__id=target_id)
 
-    from django.db.models import Q, Count
+    from django.db.models import Q
+
     chall_total = Challenge.objects.filter(Q(user_from__user = current_player) |
             Q(user_to__user = current_player)).exclude(status=u'L')
 
@@ -261,7 +261,8 @@ def challenge_stats(request):
     """Statistics for one user"""
     current_player = request.user.get_profile().get_extension(ChallengeUser)
 
-    from django.db.models import Avg, Q, Count
+    from django.db.models import Avg, Q
+
     chall_total = Challenge.objects.filter(Q(user_from__user=current_player) |
             Q(user_to__user=current_player)).exclude(status=u'L')
     chall_sent = chall_total.filter(user_from__user=current_player)
