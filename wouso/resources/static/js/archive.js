@@ -1,6 +1,29 @@
 
 var url_base = '';
 
+/* Emoticons and the replace function. */
+var emoticons = {
+    '>:D':'emoticon_evilgrin.png',
+    ':D':'emoticon_grin.png',
+    '=D':'emoticon_happy.png',
+    ':\\)':'emoticon_smile.png',
+    ':O':'emoticon_surprised.png',
+    ':P':'emoticon_tongue.png',
+    ':\\(':'emoticon_unhappy.png',
+    ';\\)':'emoticon_wink.png',
+    '\\(ball\\)':'sport_soccer.png'
+};
+
+var img_dir = url_base + "/static/img/";
+function replace_emoticons(text) {
+    $.each(emoticons, function (character, img) {
+        var re = new RegExp(character, 'g');
+        text = text.replace(re, '<img src="' + img_dir + img + '" />');
+    });
+    return text;
+}
+
+
 $(function() {
     $('#datepicker').datepicker();
     $('#datepicker_private').datepicker();
@@ -21,6 +44,30 @@ $(function() {
 
 
 $(document).ready(function(){
+
+    $.ajaxSetup({
+        beforeSend:function (xhr, settings) {
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                // Only send the token to relative URLs i.e. locally.
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            }
+        }
+    });
 
     $("#archive_day").click(function(){
         var date = $("#datepicker").val();
