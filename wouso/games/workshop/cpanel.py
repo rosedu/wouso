@@ -18,6 +18,10 @@ class WAForm(forms.ModelForm):
         model = Workshop
         exclude = ('start_at', 'active_until')
 
+    def __init__(self, data=None, **kwargs):
+        super(WAForm, self).__init__(data=data, **kwargs)
+        self.fields['semigroup'].queryset = Semigroup.objects.all().order_by('name')
+
 
 @staff_required
 def workshop_home(request, **kwargs):
