@@ -16,6 +16,77 @@ var firstFreeChat;
 var max_room;
 var max_boxes;
 var private_users;
+
+/* Scrolling down function */
+function AutoScroll() {
+    $('#GlobalboxTextArea').scrollTop($('#GlobalboxTextArea')[0].scrollHeight);
+}
+
+$(function(){
+
+    var socket;
+
+    var connected = function() {
+        socket.subscribe("global");
+        socket.send({room:'global', action: 'start', 'msg':"Connect to global chat."});
+    };
+
+    $('#GlobalboxSendButton').click(function() {
+        var value = $('#GlobalboxTextBox').val();
+        if (value) {
+            var data = {'action':'message', 'msg':value, 'room':'global'};
+            socket.send(data);
+        }
+        $('#GlobalboxTextBox').val('').focus();
+        return false;
+    });
+
+    function addMessage(data){
+        if(data.mess_type == 'normal')
+            $("#GlobalboxTextArea").append("<em>" + data.time + " " + data.user + ": " + replace_emoticons(data.text) + "</em><br />");
+        else if(data.mess_type == 'special' && data.command == 'kick' && data.dest_user == myName && window.location.pathname == url_base + '/chat/')
+            window.location = url_base + "/";
+        AutoScroll();
+    }
+    /*
+    var addMessage = function(data) {
+        var d = new Date();
+        var win = $(window), doc = $(window.document);
+        var bottom = win.scrollTop() + win.height() == doc.height();
+        data.time = $.map([d.getHours(), d.getMinutes(), d.getSeconds()],
+            function(s) {
+                s = String(s);
+                return (s.length == 1 ? '0' : '') + s;
+            }).join(':');
+        addItem('#messages', data);
+        if (bottom) {
+            window.scrollBy(0, 10000);
+        }
+    };
+    */
+
+    var messaged = function(data) {
+        switch (data.action) {
+
+            case 'message':
+                addMessage(data);
+                break;
+        }
+    };
+
+    var start = function() {
+        socket = new io.Socket();
+        socket.connect();
+
+        socket.on('connect', connected);
+        socket.on('message', messaged);
+
+    };
+
+
+    start();
+});
+
 if(sessionStorage.firstFreeChat){
     firstFreeChat = parseInt(sessionStorage.firstFreeChat);
     max_room = 1;
@@ -50,7 +121,7 @@ var emoticons = {
     '\\(ball\\)':'sport_soccer.png'
 };
 
-var img_dir = "/static/img/"; // TODO: fixme, use base_url
+var img_dir = url_base + "/static/img/";
 function replace_emoticons(text) {
     $.each(emoticons, function (character, img) {
         var re = new RegExp(character, 'g');
@@ -423,10 +494,7 @@ $(document).ready(function () {
         sessionStorage.firstFreeChat = firstFreeChat;
     }
 
-    /* Scrolling down function */
-    function AutoScroll() {
-        $('#GlobalboxTextArea').scrollTop($('#GlobalboxTextArea')[0].scrollHeight);
-    }
+
 
     /* Update users list */
     function NewUsers() {
@@ -488,20 +556,20 @@ $(document).ready(function () {
     $(document).ready(AutoScroll);
     $(document).ready(NewUsers);
     $(document).ready(NewLog);
-    $(document).ready(SendPing);
-    SendPingTimer = setInterval(function(){SendPing();}, keepAlive);
+    //$(document).ready(SendPing);
+    //SendPingTimer = setInterval(function(){SendPing();}, keepAlive);
     NewUserTimer = setInterval(function(){NewUsers();}, 10000);
     InitialChat();
 
-    function SetTimeForKeepAlive(time){
+    /*function SetTimeForKeepAlive(time){
         clearInterval(SendPingTimer);
         keepAlive = time;
         sessionStorage.keepAlive = keepAlive;
         SendPingTimer = setInterval(function(){SendPing();}, keepAlive);
 
-    }
+    }*/
 
-    TimeOut = setTimeout(function(){SetTimeForKeepAlive(5000)}, oneMinute);
+    //TimeOut = setTimeout(function(){SetTimeForKeepAlive(5000)}, oneMinute);
 
     /* Give room id or next free chat.*/
     function GetRoom(room) {
@@ -540,14 +608,14 @@ $(document).ready(function () {
                     AutoScroll();
                     if(window.location.pathname == url_base + '/chat/'){
                         clearTimeout(TimeOut);
-                        SetTimeForKeepAlive(1000);
-                        TimeOut = setTimeout(function(){SetTimeForKeepAlive(5000)}, oneMinute);
+                        //SetTimeForKeepAlive(1000);
+                        //TimeOut = setTimeout(function(){SetTimeForKeepAlive(5000)}, oneMinute);
                     }
                 }
                 else {
                     clearTimeout(TimeOut);
-                    SetTimeForKeepAlive(1000);
-                    TimeOut = setTimeout(function(){SetTimeForKeepAlive(5000)}, oneMinute);
+                    //SetTimeForKeepAlive(1000);
+                    //TimeOut = setTimeout(function(){SetTimeForKeepAlive(5000)}, oneMinute);
                     var room = GetRoom(obj.msgs[i].room);
                     if(room == firstFreeChat){
                         firstFreeChat++;
@@ -642,9 +710,9 @@ $(document).ready(function () {
         }
     }
 
-    $('#GlobalboxSendButton').click(function(){
-        SendMessage(0);
-    });
+    //$('#GlobalboxSendButton').click(function(){
+    //    SendMessage(0);
+    //});
 
     /* Global chat key events. */
     $("#GlobalboxTextBox").keyup(function (event) {
