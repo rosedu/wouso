@@ -38,7 +38,7 @@
         {% endfor %}
         </td>
         <td> {{ user.won_challenges }} </td>
-        <td> {{ user.won_perc_challenges }}%</td>
+        <td> {{ user.won_perc_challenges|floatformat:"-2" }}%</td>
         <td> {{ user.lost_challenges }} </td>
         <td nowrap> {% if user.last_seen %}{{ user.last_seen }}{% else %}{% trans 'Never' %}{% endif %} </td>
     </tr>
