@@ -61,7 +61,7 @@ class TopUser(ObjectHistory, Player):
         n = self.played_challenges
         if n == 0:
             return 0
-        return self.won_challenges / n * 100
+        return self.won_challenges / n * 100.0
 
     @property
     def weeklyprogress(self):
