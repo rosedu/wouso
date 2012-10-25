@@ -346,6 +346,8 @@ class WorkshopGame(Game):
         """
          Return existing workshop for a player, now.
         """
+        if player.in_staff_group():
+            return None
         timestamp = timestamp if timestamp else datetime.now()
         ws = Workshop.objects.filter(start_at__lte=timestamp, active_until__gte=timestamp)
         for w in ws:
@@ -390,7 +392,7 @@ class WorkshopGame(Game):
         le_assessments = list(workshop.assessment_set.all())
         shuffle(le_assessments)
 
-        participating_players = [a.player for a in le_assessments]
+        participating_players = [a.player for a in le_assessments if not a.player.in_staff_group()]
 
         pp_rotated = [participating_players[-1]] + participating_players[:-1]
         for i,a in enumerate(le_assessments):
