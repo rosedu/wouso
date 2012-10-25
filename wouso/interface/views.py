@@ -80,7 +80,7 @@ def logout_view(request):
     logout(request)
     for i in data:
         request.session[i] = data[i]
-    return HttpResponseRedirect("/")
+    return redirect('homepage')
 
 def hub(request):
     if request.user.is_anonymous():
