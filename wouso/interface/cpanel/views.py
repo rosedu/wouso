@@ -72,6 +72,7 @@ def dashboard(request):
                                },
                               context_instance=RequestContext(request))
 
+@permission_required('config.change_setting')
 def formulas(request):
     formulas = Formula.objects.all()
     return render_to_response('cpanel/formulas_home.html',
@@ -79,6 +80,7 @@ def formulas(request):
                               },
                               context_instance=RequestContext(request))
 
+@permission_required('config.change_setting')
 def edit_formula(request, id):
     formula = get_object_or_404(Formula, pk=id)
     if request.method == "POST":
@@ -115,6 +117,7 @@ def add_formula(request):
                               {'form': form}, 
                               context_instance=RequestContext(request))
 
+@permission_required('config.change_setting')
 def spells(request):
     spells = Spell.objects.all()
     spells_bought = 0
@@ -137,8 +140,8 @@ def spells(request):
                               context_instance=RequestContext(request))
 
 
+@permission_required('config.change_setting')
 def edit_spell(request, id):
-
     spell = get_object_or_404(Spell, pk=id)
     if request.method == "POST":
         form = SpellForm(data = request.POST, instance = spell)
