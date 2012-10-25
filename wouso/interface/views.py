@@ -181,6 +181,9 @@ def instantsearch(request):
                                   {'searchresults': searchresults},
                                   context_instance=RequestContext(request))
 
+    else:
+        return HttpResponse('')
+
 
 def searchone(request):
     """ Get one user, based on his/her name """
