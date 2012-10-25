@@ -141,6 +141,10 @@ class DefaultGod:
         if destination.has_modifier('immunity'):
             return False, 'Player has immunity'
 
+        if (spell.name == 'top-disguise') and (destination.has_modifier('top-disguise')):
+                return False, 'Player already has this spell casted on him'
+
+
         if destination.has_modifier('curse') and (spell.type != 'n'):
             return False, 'Player is cursed'
 
