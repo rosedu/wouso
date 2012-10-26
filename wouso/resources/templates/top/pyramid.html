@@ -14,7 +14,7 @@
 {% if top.disabled %}
     {% trans 'Top has been disabled.' %}
 {% else %}
-<table border="0" cellspacing="0" cellpadding="0">
+<table border="0" cellspacing="0" cellpadding="0" class="pyramid">
     {% for s in series %}
     <tr>
     <th colspan="6" class="head-{{ s.name }}" width="200">{{ s }} <span class="points">{{ s.player_set.count }}</span></th>
@@ -25,9 +25,10 @@
     <td valign="center">
         {% for u in c %}
         <a class="player-avatar" href="{% url player_profile u.id %}" title="{{ u }} - {{ u.group }}">
-			<img class="avatar" width="32" src="{% player_avatar u %}" />
-			<div class="player-avatar-race player-avatar-race-{{ u.race.name|lower }}"></div>
-		</a><br/>
+            <img class="avatar" width="32" src="{% player_avatar u %}" />
+            <div class="player-avatar-race player-avatar-race-{{ u.race.name|lower }}"></div>
+        </a>
+        <div class="clear"><!-- --></div>
         {% endfor %}
     </td>
     {% endfor %}
