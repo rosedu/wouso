@@ -1,7 +1,6 @@
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
-from django.core import signals
 from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
@@ -108,7 +107,8 @@ def launch(request, to_id):
         PREFIX = "_user:"
         action_msg = "multiple-login"
         if (PREFIX + user_to.user.username) in request.session:
-            signals.addActivity.send(sender=None, user_to=user_to, user_from=user_from, action=action_msg, game=None)
+            from wouso.interface.activity.signals import addActivity
+            addActivity.send(sender=None, user_to=user_to, user_from=user_from, action=action_msg, game=None)
         return do_result(request, message=_('Successfully challenged'))
     else:
         return do_result(request, _('This user cannot be challenged.'))
