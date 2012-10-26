@@ -41,6 +41,9 @@ class LDAPBackend:
             return None
         except ldap.UNWILLING_TO_PERFORM:
             return None
+        except UnicodeEncodeError:
+            logging.error('Unicode password crashed ldap')
+            return None
 
         # create or get user here:
         data = result[0][1]
