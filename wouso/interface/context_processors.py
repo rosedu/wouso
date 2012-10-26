@@ -1,5 +1,6 @@
-from django.core.urlresolvers import reverse, NoReverseMatch
 import logging
+from django.core.urlresolvers import reverse, NoReverseMatch
+from django.conf import settings
 from wouso.core.game import get_games
 from wouso.core.config.models import Setting
 from wouso.core.magic.models import Bazaar
@@ -114,33 +115,37 @@ def context(request):
     """ Make all configuration settings available as config_name
     and also define some game context
     """
-    settings = {}
-    settings['basepath'] = FORCE_SCRIPT_NAME
+    settings_dict = {}
+    settings_dict['basepath'] = FORCE_SCRIPT_NAME
     for s in Setting.objects.all():
-        settings['config_' + s.name.replace('-','_').lower()] = s.get_value()
+        settings_dict['config_' + s.name.replace('-','_').lower()] = s.get_value()
+    # Special config
+    if not settings.CHAT_ENABLED:
+        settings_dict['config_disable_chat'] = True
+        settings_dict['config_disable_private_chat'] = True
 
     # override theme using GET args
     if request.GET.get('theme', None) is not None:
         from wouso.utils import get_themes
         theme = request.GET['theme']
         if theme in get_themes():
-            settings['config_theme'] = theme
+            settings_dict['config_theme'] = theme
             set_theme(theme)
     else:
         set_theme(None)
 
     # shorthand user.get_profile
-    settings['player'] = request.user.get_profile() if request.user.is_authenticated() else None
+    settings_dict['player'] = request.user.get_profile() if request.user.is_authenticated() else None
 
     # do not use minidetector for now
     mobile = detect_mobile(request)
     if mobile:
-        settings['base_template'] = 'mobile_base.html'
+        settings_dict['base_template'] = 'mobile_base.html'
     else:
-        settings['base_template'] = 'site_base.html'
-    settings['has_mobile'] = mobile_browser(request)
+        settings_dict['base_template'] = 'site_base.html'
+    settings_dict['has_mobile'] = mobile_browser(request)
 
     if request.GET.get('ajax', False):
-        settings['base_template'] = 'interface/ajax_message.html'
+        settings_dict['base_template'] = 'interface/ajax_message.html'
 
-    return settings
+    return settings_dict

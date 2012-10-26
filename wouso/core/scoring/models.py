@@ -19,18 +19,18 @@ class ScoringModel:
         else:
             c = kls.objects.create(id=id, **data)
         return c
-    
+
     @classmethod
     def get(kls, id):
         if isinstance(id, kls):
             return id
         if isinstance(id, dict):
             id = id.get('id', '')
-        try: 
+        try:
             return kls.objects.get(id=id)
         except kls.DoesNotExist:
             return None
-    
+
     def __str__(self):
         return u'%s' % self.id
 
@@ -46,16 +46,20 @@ class Coin(ScoringModel, models.Model):
     name = models.CharField(max_length=100)
     # If the coin values are forced integers, else using float.
     integer = models.BooleanField(default=False, blank=True)
-    
+
     def is_core(self):
         """ A coin is a core coin, if it doesn't have an owner """
         return self.owner is None
 
+    def format_value(self, amount):
+        if self.integer:
+            return int(round(amount))
+        return amount
 
 class Formula(ScoringModel, models.Model):
     """ Define the way coin amounts are given to the user, based
     on keyword arguments formulas.
-    
+
     A formula is owned by a game, or by the system (set owner to None)
     """
     id = models.CharField(max_length=100, primary_key=True)
@@ -103,7 +107,7 @@ class History(models.Model):
         for coin in allcoins:
             hs = History.objects.filter(user=user, coin=coin).aggregate(total=models.Sum('amount'))
             if hs['total'] is not None:
-                coins[coin.id] = hs['total'] if not coin.integer else int(round(hs['total']))
+                coins[coin.id] = coin.format_value(hs['total'])
             else:
                 if coin.is_core():
                     coins[coin.id] = 0

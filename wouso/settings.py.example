@@ -222,7 +222,7 @@ if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
 try:
     imp.find_module('django_socketio')
 except ImportError:
-    pass
+    CHAT_ENABLED = False
 else:
     INSTALLED_APPS += [
         'django.contrib.contenttypes',
@@ -231,6 +231,7 @@ else:
         'django_socketio',
         'wouso.interface.chat',
         ]
+    CHAT_ENABLED = True
 
 # please don't remove this yet
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
