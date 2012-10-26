@@ -90,8 +90,8 @@ def edit_formula(request, id):
             return redirect('formulas')
     else:
         form = FormulaForm(instance=formula)
-    return render_to_response('cpanel/edit_formula.html', 
-                              {'form': form}, 
+    return render_to_response('cpanel/edit_formula.html',
+                              {'form': form},
                               context_instance = RequestContext(request))
 
 @permission_required('config.change_setting')
@@ -113,8 +113,8 @@ def add_formula(request):
             return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.formulas'))
         else:
             form = formula
-    return render_to_response('cpanel/add_formula.html', 
-                              {'form': form}, 
+    return render_to_response('cpanel/add_formula.html',
+                              {'form': form},
                               context_instance=RequestContext(request))
 
 @permission_required('config.change_setting')
@@ -727,7 +727,7 @@ def groupset(request, id):
             model = Player
             fields = ('race',)
 
-        group = forms.ChoiceField(choices=[(0, '')] + [(p.id, "%s [%s]" % (p, p.name)) for p in PlayerGroup.objects.filter(owner=None)],
+        group = forms.ChoiceField(choices=[(0, '')] + [(p.id, u"%s [%s]" % (p, p.name)) for p in PlayerGroup.objects.filter(owner=None)],
                                 initial=profile.group.id if profile.group else '')
 
     if request.method == 'POST':
