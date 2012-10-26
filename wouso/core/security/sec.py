@@ -21,20 +21,21 @@ class SecurityInspector:
         from wouso.games.challenge.models import Challenge
         suspect = kwargs.get('user_to', None)
         #suspect is a ChallengeUser in this case, scoring requires Player
-        player = suspect.user.player_related.get()
-
         if suspect is None:
             return False, None
+        player = suspect.user.player_related.get()
 
-        last_chall = Challenge.objects.filter(Q(user_from__user=suspect) |
-                Q(user_to__user=suspect)).order_by('-date')
-        if not last_chall.count():
+        signal_args = kwargs.get('arguments', None)
+        if signal_args == None:
             return False, None
-        last_chall = last_chall[0]
-        if last_chall.user_from.user == suspect:
-            participant = last_chall.user_from
+        chall_pk = signal_args.get('id', None)
+        if chall_pk == None:
+            return False, None
+        challenge = Challenge.objects.get(pk=chall_pk)
+        if challenge.user_from.user == suspect:
+            participant = challenge.user_from
         else:
-            participant = last_chall.user_to
+            participant = challenge.user_to
         #time interval could be made customizable
         if participant.seconds_took < 15:
             return True, player
