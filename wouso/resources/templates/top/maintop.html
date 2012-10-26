@@ -31,7 +31,7 @@
     <td>
         <a href="{% url player_profile user.id %}" class="player-avatar-small">
             <img class="avatar small player-avatar-image" src="{% player_avatar user%}&s=24" />
-            <div class="player-avatar-race player-avatar-race-{{ user.race.name }}"></div>
+            <div class="player-avatar-race player-avatar-race-{{ user.race.name|lower }}"></div>
         </a>
     </td>
     <td width="100%">
