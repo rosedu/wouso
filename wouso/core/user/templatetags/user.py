@@ -89,6 +89,8 @@ def coin_amount(amount, coin=None):
     if isinstance(amount, Player):
         amount = amount.coins.get(coin.name, 0)
 
+    amount = coin.format_value(amount)
+
     return '<div class="coin-amount coin-%s" title="%s">%s</div>' % (coin.name, coin.name, amount)
 
 @register.simple_tag
