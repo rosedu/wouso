@@ -43,7 +43,7 @@ def gettop(request, toptype=0, sortcrit=0, page=1):
     try:
         users = paginator.page(page)
     except (EmptyPage, InvalidPage):
-        page = 0
+        page = 1
         users = paginator.page(page)
 
     topseries = list(Race.objects.exclude(can_play=False))
@@ -57,7 +57,7 @@ def gettop(request, toptype=0, sortcrit=0, page=1):
                             'topgroups':      topgroups,
                             'topseries':      topseries,
                             'is_top': True,
-                            'page_start': paginator.page_range[0],
+                            'page_start': (page - 1) * PERPAGE,
                             'top': Top},
                            context_instance=RequestContext(request))
 

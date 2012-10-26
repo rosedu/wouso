@@ -27,7 +27,7 @@
 
     {% for user in allUsers.object_list %}
     <tr>
-    <td>{{ forloop.counter|add:page_start|add:-1 }}</td>
+    <td>{{ forloop.counter|add:page_start }}</td>
     <td>
         <a href="{% url player_profile user.id %}" class="player-avatar-small">
             <img class="avatar small player-avatar-image" src="{% player_avatar user%}&s=24" />
