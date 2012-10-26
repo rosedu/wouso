@@ -23,7 +23,7 @@
     {% for s in classes %}
     <tr>
     <td>{% player_group s %}</td>
-    <td>{% player_group s.parent %}</td>
+    <td>{% player_race s.parent %}</td>
     <td>{% coin_amount s.live_points %}</td>
     </tr>
     {% endfor %}
