@@ -1,8 +1,9 @@
 from datetime import date, datetime, time
+from django.conf import settings
 from django.db import models
 from django.http import Http404
 from django.utils.translation import ugettext_noop
-from random import shuffle
+from random import randint, shuffle
 from wouso.interface.activity import signals
 from wouso.core.user.models import Player
 from wouso.core.game.models import Game
@@ -110,7 +111,12 @@ class QotdGame(Game):
 
         if correct:
             now = datetime.now()
-            scoring.score(user, QotdGame, 'qotd-ok', hour=now.hour)
+	    
+            pr = randint(0, 99)
+            
+            scoring.score(user, QotdGame, 'qotd-ok', hour=now.hour);
+            if pr < settings.QOTD_BONUS_PROB:
+                scoring.score(user, QotdGame, 'qotd-ok-bonus', hour=now.hour)
 
     @classmethod
     def get_formulas(kls):
@@ -121,6 +127,11 @@ class QotdGame(Game):
             formula='points=4 + (1 if {hour} < 12 else -1)',
             owner=qotd_game.game,
             description='Points earned on a correct answer in the morning')
+        )
+        fs.append(dict(id="qotd-ok-bonus",
+            formula='points=2',
+            owner=qotd_game.game,
+            description='Points earned in case of bonus')
         )
         return fs
 
