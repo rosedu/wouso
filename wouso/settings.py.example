@@ -214,7 +214,6 @@ except ImportError:
 else:
 	INSTALLED_APPS += ['django_qunit']
 
-<<<<<<< HEAD
 # please don't remove this yet
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
     from localsettings import *
