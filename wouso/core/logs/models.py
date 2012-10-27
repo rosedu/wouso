@@ -1,6 +1,7 @@
+from datetime import datetime
 from django.db import models
 from wouso.core.user.models import Player
-from datetime import datetime
+
 
 
 class Report(models.Model):
