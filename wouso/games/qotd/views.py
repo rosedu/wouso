@@ -8,6 +8,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from models import QotdUser, QotdGame
 from forms import QotdForm
+from django.conf import settings
 
 @login_required
 def index(request):
@@ -40,7 +41,7 @@ def index(request):
         form = QotdForm(qotd, request.POST)
         if form.is_valid():
             choice = int(form.cleaned_data['answers'])
-            QotdGame.answered(qotd_user, qotd, choice)
+            QotdGame.answered(qotd_user, qotd, choice, settings.QOTD_BONUS_PROB)
             extra = request.GET.urlencode()
             if extra:
                 extra = '?' + extra

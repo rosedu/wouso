@@ -2,12 +2,13 @@ from datetime import date, datetime, time
 from django.db import models
 from django.http import Http404
 from django.utils.translation import ugettext_noop
-from random import shuffle
+from random import randint, shuffle
 from wouso.interface.activity import signals
 from wouso.core.user.models import Player
 from wouso.core.game.models import Game
 from wouso.core import scoring
 from wouso.core.qpool.models import Schedule, Answer, Question
+from django.conf import settings
 
 # Qotd uses questions from qpool
 
@@ -98,7 +99,7 @@ class QotdGame(Game):
         return sched[0].question
 
     @staticmethod
-    def answered(user, question, choice):
+    def answered(user, question, choice, bonus_prob):
         correct = False
         for i, a in enumerate(question.answers):
             if a.id == choice:
@@ -110,7 +111,12 @@ class QotdGame(Game):
 
         if correct:
             now = datetime.now()
-            scoring.score(user, QotdGame, 'qotd-ok', hour=now.hour)
+	    
+	    pr = randint(0,99)
+	    if (pr < bonus_prob):
+		scoring.score(user, QotdGame, 'qotd-ok-bonus', hour=now.hour)
+	    else:
+            	scoring.score(user, QotdGame, 'qotd-ok', hour=now.hour)
 
     @classmethod
     def get_formulas(kls):
@@ -121,6 +127,11 @@ class QotdGame(Game):
             formula='points=4 + (1 if {hour} < 12 else -1)',
             owner=qotd_game.game,
             description='Points earned on a correct answer in the morning')
+        )
+	fs.append(dict(id="qotd-ok-bonus",
+	    formula='points='+str(settings.QOTD_BONUS_POINTS),
+	    owner=qotd_game.game,
+	    description='Points earned in case of bonus')
         )
         return fs
 

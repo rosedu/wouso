@@ -214,6 +214,7 @@ except ImportError:
 else:
 	INSTALLED_APPS += ['django_qunit']
 
+<<<<<<< HEAD
 # please don't remove this yet
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
     from localsettings import *
@@ -233,6 +234,8 @@ else:
         ]
     CHAT_ENABLED = True
 
-# please don't remove this yet
-if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
-    from localsettings import *
+# the probability of getting bonus points for correctly answered qotd
+QOTD_BONUS_PROB = 30
+
+# the number of points given for when the player gets a bonus
+QOTD_BONUS_POINTS = 7
