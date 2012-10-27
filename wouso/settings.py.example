@@ -233,6 +233,6 @@ else:
         ]
     CHAT_ENABLED = True
 
-# please don't remove this yet
-if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
-    from localsettings import *
+# the probability of getting bonus points for correctly answered qotd
+# must be a number between 0 and 100
+QOTD_BONUS_PROB = 30
