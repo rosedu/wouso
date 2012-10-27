@@ -5,7 +5,7 @@
 {% block content %}
 	{% if not error %}
 		<div style = "height: 10px"></div>
-		<form name="input" action="{% url wouso.interface.views.report id%}" method="POST">{% csrf_token %}
+		<form name="input" action="{% url report_player id%}" method="POST">{% csrf_token %}
 		Why do you wish to report this player ?<br/>
 		<div style = "height: 10px"></div>
 		<div style = "#id_message {width:40px;height:50px;}">

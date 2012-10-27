@@ -19,19 +19,19 @@ class Report(models.Model):
     text      = models.CharField(max_length=250)
     extra     = models.CharField(max_length=250) 
     
-    def SetDibs(self,user_dibs):
+    def set_dibs(self,user_dibs):
         self.dibs = user_dibs.get_extension(Player)
         self.save()
     
-    def SetStatus(self, status = "R"):
+    def set_status(self, status = "R"):
         self.status = status
         self.save()
     
-    def SetExtra(self, text = ""):
+    def set_extra(self, text = ""):
         self.extra = text
         self.save()
     def __unicode__(self):
         return self.user_from.__unicode__() + " on " + self.user_to.__unicode__() + ":" + self.text[:20] 
-def AddReport(user_from, user_to, text):
+def add_report(user_from, user_to, text):
     report = Report(user_from=user_from.get_profile().get_extension(Player), user_to=user_to.get_profile().get_extension(Player), text=text, timestamp=datetime.now())
     report.save()

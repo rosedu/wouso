@@ -19,12 +19,10 @@ from wouso.interface import logger, detect_mobile
 from wouso.interface.apps.pages.models import NewsItem
 from wouso.core.game import get_games
 from wouso.interface.forms import *
-from wouso.core.user.models import Player, PlayerGroup, UserReportForm
+from wouso.core.user.models import Player, PlayerGroup
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, History as TopHistory
 from wouso.interface.activity import signals
-from wouso.core.logs.models import Report, AddReport
-
 
 def get_wall(page=u'1'):
     """ Returns activity for main wall, paginated."""
@@ -251,18 +249,13 @@ def ui(request):
     """
 
     return render_to_response('interface/ui.html', {}, context_instance=RequestContext(request))
+<<<<<<< HEAD
 
 @login_required
 def report(request,id):
 
     if request.user.id == int(id):
-<<<<<<< HEAD
-        return homepage(request, error='You cannot challenge yourself')
-
-=======
         return homepage(request, error='You cannot report yourself')
-        
->>>>>>> Redesigned reports to use database and cpanel view
     get_object_or_404(User,pk=id)
 
     if request.method == "POST":
@@ -270,19 +263,6 @@ def report(request,id):
         if form.is_valid():
             user_from=request.user
             user_to = User.objects.get(pk=id)
-<<<<<<< HEAD
-
-            if not os.path.isdir(settings.LOG_ROOT):
-                os.mkdir(settings.LOG_ROOT)
-
-            with open(settings.LOG_ROOT + "/Report.log", "a") as ReportFile:
-                ReportFile.write("From: " + user_from.username + " on: " + user_to.username + "\n" + request.POST['message'] + "\n\n")
-
-
-
-=======
-            
->>>>>>> Redesigned reports to use database and cpanel view
             signals.addActivity.send(sender=None,
                                     user_from=user_from.get_profile().get_extension(Player),
                                     user_to=user_to.get_profile().get_extension(Player),
