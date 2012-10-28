@@ -4,11 +4,12 @@
 {% block sectiontitle %}Edit Report{% endblock %}
 
 {% block sectioncontent %}
-    <form name="edit_report" action="{% url wouso.interface.cpanel.views.edit_report id%}" method="POST">{% csrf_token %}
+   
     <b>User who reported: </b>{{ report.user_from }}<br/><br/>
     <b>User who was reported: </b>{{ report.user_to }}<br/><br/>
     <b>Text of the report: </b>{{ report.text }}<br/><br/>
     <b>Timestamp: </b>{{ report.timestamp }}<br/><br/>
+    <form name="edit_report" action="{% url wouso.interface.cpanel.views.edit_report id%}" method="POST">{% csrf_token %}
     <b>{{ form.as_p }}</b>
     <input type="submit" value="Submit" /> <a href = "{% url wouso.interface.cpanel.views.reports %}"><input type = "button" value ="Cancel"/></a>
     </form>
