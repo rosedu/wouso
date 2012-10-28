@@ -206,7 +206,14 @@ class Achievements(App):
             # Check if player defeated 2 levels or more bigger opponent
             if not player.magic.has_modifier('ach-chall-def-big'):
                 if (kwargs.get('user_to').level_no - player.level_no) >= 2:
-                    cls.earn_achievement(player, 'ach-chall-def-big')
+                    Activity.objects.create(timestamp=datetime.now(),
+                            user_from=player, user_to=player,
+                            action='defeat-better-player')
+                    victories = Activity.objects.filter(user_to=player,
+                            action='defeat-better-player')
+                    if victories.count() >= 5:
+                        cls.earn_achievement(player, 'ach-chall-def-big')
+                        victories.delete()
 
             # Check if the player finished the challenge in less than 1 minute
             if not player.magic.has_modifier('ach-win-fast'):
