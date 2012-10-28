@@ -7,7 +7,7 @@ from wouso.core.user.models import Player
 class Report(models.Model):
     STATUS = (
         ("R", "Reported"),
-        ("I", "Investigatting"),
+        ("I", "Investigating"),
         ("S", "Resolved"),
         ("E", "Invalid"),
     )
