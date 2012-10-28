@@ -129,6 +129,21 @@ def refused_challenges(player):
     start = datetime.now() + timedelta(days=-7)
     return Activity.get_player_activity(player).filter(action__contains='chall-refused', timestamp__gte=start, user_from=player).count()
 
+<<<<<<< HEAD
+=======
+def challenges_played_today(player):
+    """
+     Return the count of challenges played today
+    """
+    today = datetime.now().date()
+    activities = Activity.get_player_activity(player).filter(action__contains='chall', timestamp__gte=today)
+    result = 0;
+    for a in activities:
+        if not 'refused' in a.action:
+            result += 1
+    return result
+
+>>>>>>> Added Maverick achievement
 def get_chall_score(arguments):
     if not arguments:
         return 0
@@ -221,6 +236,11 @@ class Achievements(App):
                 if seconds_no > 0 and seconds_no <= 60:
                     cls.earn_achievement(player, 'ach-win-fast')
 
+            # Check if player played 10 challenges in a day"
+            if not player.magic.has_modifier('ach-chall-10-a-day'):
+                if challenges_played_today(player) >= 10:
+                    cls.earn_achievement(player, 'ach-chall-10-a-day')
+
         if action == "message":
             # Check the number of unique users who send pm to player in the last m minutes
             if unique_users_pm(kwargs.get('user_to'), 15) >= 5:
@@ -235,7 +255,7 @@ class Achievements(App):
             if login_between_count(player, 6, 8) > 2:
                 if not player.magic.has_modifier('ach-early-bird'):
                     cls.earn_achievement(player, 'ach-early-bird')
-            
+
             if not player.magic.has_modifier('ach-god-mode-on'):
                 if check_for_god_mode(player, 5, 5):
                     cls.earn_achievement(player, 'ach-god-mode-on')
@@ -250,6 +270,7 @@ class Achievements(App):
                 'ach-qotd-10',
                 'ach-chall-100',
                 'ach-chall-won-10',
+                'ach-chall-10-a-day',
                 'ach-night-owl',
                 'ach-early-bird',
                 'ach-popularity',
