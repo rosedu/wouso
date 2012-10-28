@@ -10,7 +10,7 @@ from achievements import consecutive_qotd_correct
 from achievements import consecutive_chall_won, challenge_count
 from achievements import refused_challenges, get_challenge_time
 from achievements import unique_users_pm , wrong_first_qotd
-from achievements import get_chall_score
+from achievements import get_chall_score, challenges_played_today
 from achievements import check_for_god_mode
 from models import Activity
 from achievements import Achievements
@@ -269,6 +269,40 @@ class ChallengeAchievementTest(WousoTest):
                                     action='chall-refused',
                                     game=ChallengeGame.get_instance())
         self.assertTrue(player1.magic.has_modifier('ach-this-is-sparta'))
+
+    def test_challenges_played_today(self):
+        player = self._get_player()
+        for i in range(1, 10):
+            timestamp = datetime.now()
+            if (i % 4) == 0:
+                Activity.objects.create(timestamp=timestamp,
+                        user_from=player, user_to=player,
+                        action="chall-lost", public=True)
+            else:
+                Activity.objects.create(timestamp=timestamp,
+                        user_from=player, user_to=player,
+                        action="chall-won", public=True)
+        self.assertEqual(challenges_played_today(player), 9)
+
+    def test_challenges_played_today_activity(self):
+        player = self._get_player()
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-chall-10-a-day')
+        for i in range(1, 10):
+            timestamp = datetime.now()
+            if (i % 4) == 0:
+                Activity.objects.create(timestamp=timestamp,
+                        user_from=player, user_to=player,
+                        action="chall-lost", public=True)
+            else:
+                Activity.objects.create(timestamp=timestamp,
+                        user_from=player, user_to=player,
+                        action="chall-won", public=True)
+
+        signals.addActivity.send(sender=None, user_from=player,
+                                    user_to=player,
+                                    action='chall-won',
+                                    game=ChallengeGame.get_instance())
+        self.assertTrue(player.magic.has_modifier('ach-chall-10-a-day'))
 
 class PopularityTest(WousoTest):
     def test_popularity_5_pm_1(self):
