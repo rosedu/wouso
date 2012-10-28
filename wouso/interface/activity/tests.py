@@ -261,6 +261,13 @@ class ChallengeAchievementTest(WousoTest):
         player2.level_no = 4
         player2.save()
 
+        for i in range(1,5):
+            signals.addActivity.send(sender=None, user_from=player1,
+                                        user_to=player2,
+                                        action='chall-won',
+                                        game=ChallengeGame.get_instance())
+            self.assertFalse(player1.magic.has_modifier('ach-chall-def-big'))
+
         signals.addActivity.send(sender=None, user_from=player1,
                                     user_to=player2,
                                     action='chall-won',
