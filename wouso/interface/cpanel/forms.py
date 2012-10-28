@@ -129,4 +129,8 @@ class EditReportForm(forms.ModelForm):
     class Meta:
         model = Report
         exclude = ['user_to', 'user_from', 'text', 'timestamp' ] 
-
+    def __init__(self, *args, **kwargs):
+        super(EditReportForm, self).__init__(*args, **kwargs)
+        self.fields['dibs'].label = "Dibs"
+        self.fields['status'].label = "Status"
+        self.fields['extra'].label = "Observations"
