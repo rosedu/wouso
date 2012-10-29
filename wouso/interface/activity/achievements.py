@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_noop
 from wouso.core.app import App
 from wouso.interface.apps.messaging.models import Message
 from wouso.games.challenge.models import Challenge
-
+from wouso.core.magic.models import PlayerSpellDue
 from models import Activity
 from signals import addActivity,messageSignal
 
@@ -129,6 +129,24 @@ def refused_challenges(player):
     start = datetime.now() + timedelta(days=-7)
     return Activity.get_player_activity(player).filter(action__contains='chall-refused', timestamp__gte=start, user_from=player).count()
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 0816de879fa7bda12618a381db1ff37cac24e63d
+def challenges_played_today(player):
+    """
+     Return the count of challenges played today
+    """
+    today = datetime.now().date()
+    activities = Activity.get_player_activity(player).filter(action__contains='chall', timestamp__gte=today)
+    result = 0;
+    for a in activities:
+        if not 'refused' in a.action:
+            result += 1
+    return result
+
+>>>>>>> Added Maverick achievement
 def get_chall_score(arguments):
     if not arguments:
         return 0
@@ -137,7 +155,7 @@ def get_chall_score(arguments):
         return max(chall.user_from.score, chall.user_to.score)
     else:
         return 0
-        
+
 def get_challenge_time(arguments):
     """
      Return the number of seconds spent by the winner.
@@ -151,6 +169,12 @@ def get_challenge_time(arguments):
     else:
         return 0
 
+def spell_count(player):
+    """
+     Return the number of spells casted on player simultaneously
+    """
+    today = datetime.now().date()
+    return PlayerSpellDue.objects.filter(player=player, due__gte=today).count()
 
 class Achievements(App):
     @classmethod
@@ -221,6 +245,11 @@ class Achievements(App):
                 if seconds_no > 0 and seconds_no <= 60:
                     cls.earn_achievement(player, 'ach-win-fast')
 
+            # Check if player played 10 challenges in a day"
+            if not player.magic.has_modifier('ach-chall-10-a-day'):
+                if challenges_played_today(player) >= 10:
+                    cls.earn_achievement(player, 'ach-chall-10-a-day')
+
         if action == "message":
             # Check the number of unique users who send pm to player in the last m minutes
             if unique_users_pm(kwargs.get('user_to'), 15) >= 5:
@@ -235,7 +264,7 @@ class Achievements(App):
             if login_between_count(player, 6, 8) > 2:
                 if not player.magic.has_modifier('ach-early-bird'):
                     cls.earn_achievement(player, 'ach-early-bird')
-            
+
             if not player.magic.has_modifier('ach-god-mode-on'):
                 if check_for_god_mode(player, 5, 5):
                     cls.earn_achievement(player, 'ach-god-mode-on')
@@ -244,12 +273,19 @@ class Achievements(App):
                 if not player.magic.has_modifier('ach-login-10'):
                     cls.earn_achievement(player, 'ach-login-10')
 
+        if action == "cast":
+            # Check if player is affected by 5 or more spells
+            if not player.magic.has_modifier('ach-spell-5'):
+                if spell_count(player) >= 5:
+                    cls.earn_achievement(player, 'ach-spell-5')
+
     @classmethod
     def get_modifiers(self):
         return ['ach-login-10',
                 'ach-qotd-10',
                 'ach-chall-100',
                 'ach-chall-won-10',
+                'ach-chall-10-a-day',
                 'ach-night-owl',
                 'ach-early-bird',
                 'ach-popularity',
@@ -257,7 +293,8 @@ class Achievements(App):
                 'ach-this-is-sparta',
                 'ach-flawless-victory',
                 'ach-win-fast',
-                'ach-god-mode-on'
+                'ach-god-mode-on',
+                'ach-spell-5',
         ]
 
 

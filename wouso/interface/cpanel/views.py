@@ -53,9 +53,12 @@ def dashboard(request):
     if last_run == "":
         last_run="wousocron was never run"
 
-    #online members
+    # online members
     oldest = datetime.datetime.now() - datetime.timedelta(minutes = 10)
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
+
+    # number of players which can play
+    cp_number = Player.objects.filter(race__can_play=True).count()
 
     return render_to_response('cpanel/index.html',
                               {'nr_future_questions' : nr_future_questions,
@@ -69,6 +72,7 @@ def dashboard(request):
                                'staff': staff_group,
                                'last_run': last_run,
                                'online_users': online_last10,
+                               'cp_number': cp_number,
                                },
                               context_instance=RequestContext(request))
 
