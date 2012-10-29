@@ -23,6 +23,8 @@ from wouso.core.user.models import Player, PlayerGroup
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, History as TopHistory
 from wouso.interface.activity import signals
+from wouso.core.logs.models import Report, AddReport
+
 
 def get_wall(page=u'1'):
     """ Returns activity for main wall, paginated."""
