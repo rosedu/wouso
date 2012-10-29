@@ -133,7 +133,7 @@ def update_points(player, game):
         if level < player.level_no:
             amount = calculate('level-gold', level=player.level_no)
             signal_msg = ugettext_noop("downgraded to level {level} and lost {amount} gold")
-            rollback(player, game, 'level-gold', level=player.level_no)
+            rollback(player, game, 'level-gold', external_id=player.level_no, level=player.level_no)
             signals.addActivity.send(sender=None, user_from=player,
                                 user_to=player, message=signal_msg,
                                 arguments=dict(level=level),
@@ -143,7 +143,7 @@ def update_points(player, game):
             amount = calculate('level-gold', level=level)
             signal_msg = ugettext_noop("upgraded to level {level} and received {amount} gold")
 
-            score(player, None, 'level-gold', level=level)
+            score(player, None, 'level-gold', external_id=level, level=level)
             signals.addActivity.send(sender=None, user_from=player,
                     user_to=player, message=signal_msg,
                                 arguments=dict(level=level, amount=amount['gold']),
