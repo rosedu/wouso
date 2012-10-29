@@ -249,7 +249,6 @@ def ui(request):
     """
 
     return render_to_response('interface/ui.html', {}, context_instance=RequestContext(request))
-<<<<<<< HEAD
 
 @login_required
 def report(request,id):

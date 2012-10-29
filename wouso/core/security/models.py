@@ -18,7 +18,7 @@ class Report(models.Model):
     timestamp = models.DateTimeField()
     status    = models.CharField(max_length=1, choices=STATUS, default='R')
     text      = models.CharField(max_length=250)
-    extra     = models.CharField(max_length=250) 
+    extra     = models.CharField(max_length=250, null=True, blank=True) 
     
     def set_dibs(self,user_dibs):
         self.dibs = user_dibs.get_extension(Player)
