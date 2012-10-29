@@ -43,6 +43,10 @@
 
         &nbsp;
         {% block tabcontent %}
+            <div class="spacer-small">
+            {% autoescape off %}{{ config_ws_cpanel_extra }}{% endautoescape %}
+            </div>
+            <div class="spacer-small"><!-- --></div>
         <table class="border">
             <tr>
                 <th><em>Hour/Day</em></th>
