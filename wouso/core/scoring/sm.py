@@ -138,7 +138,7 @@ def update_points(player, game):
             signals.addActivity.send(sender=None, user_from=player,
                                 user_to=player, message=signal_msg,
                                 arguments=dict(level=level, amount=amount),
-                                game=game)
+                                game=None)
         else:
 
             amount = calculate('level-gold', level=level)
