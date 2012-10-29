@@ -129,11 +129,6 @@ def refused_challenges(player):
     start = datetime.now() + timedelta(days=-7)
     return Activity.get_player_activity(player).filter(action__contains='chall-refused', timestamp__gte=start, user_from=player).count()
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 0816de879fa7bda12618a381db1ff37cac24e63d
 def challenges_played_today(player):
     """
      Return the count of challenges played today
@@ -146,7 +141,6 @@ def challenges_played_today(player):
             result += 1
     return result
 
->>>>>>> Added Maverick achievement
 def get_chall_score(arguments):
     if not arguments:
         return 0
