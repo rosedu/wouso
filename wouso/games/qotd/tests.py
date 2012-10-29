@@ -55,7 +55,7 @@ class QotdTestCase(django.test.TestCase):
         QotdGame.answered(self.qotd_user, q, correct)
         # History changed
         h2 = scoring.history_for(self.qotd_user, QotdGame)
-        self.assertEqual(len(h1) + 1, len(h2))
+        self.assertGreater(len(h2), len(h1))
 
         coins = scoring.user_coins(self.qotd_user)
         self.assertGreater(coins['points'], 0)
