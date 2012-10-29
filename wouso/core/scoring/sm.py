@@ -118,22 +118,34 @@ def unset(user, game, formula, external_id=None, **params):
     user.save()
     update_points(user, game)
 
+def rollback(user, game, formula, external_id=None, **params):
+    if game != None:
+        game = game.get_instance()
+    for history in History.objects.filter(user=user, game=game, formula=formula, external_id=external_id):
+        if history.coin.name == 'points':
+            user.points -= history.amount
+        history.delete()
+    user.save()
 
 def update_points(player, game):
     level = God.get_level_for_points(player.points)
     if level != player.level_no:
         if level < player.level_no:
-            signal_msg = ugettext_noop("downgraded to level {level}")
+            amount = calculate('level-gold', level=player.level_no)
+            signal_msg = ugettext_noop("downgraded to level {level} and lost {amount} gold")
+            rollback(player, game, 'level-gold', external_id=player.level_no, level=player.level_no)
             signals.addActivity.send(sender=None, user_from=player,
                                 user_to=player, message=signal_msg,
                                 arguments=dict(level=level),
                                 game=game)
         else:
+
             amount = calculate('level-gold', level=level)
             signal_msg = ugettext_noop("upgraded to level {level} and received {amount} gold")
-            score(player, None, 'level-gold', level=level)
+
+            score(player, None, 'level-gold', external_id=level, level=level)
             signals.addActivity.send(sender=None, user_from=player,
-                                user_to=player, message=signal_msg,
+                    user_to=player, message=signal_msg,
                                 arguments=dict(level=level, amount=amount['gold']),
                                 game=None)
         player.level_no = level
