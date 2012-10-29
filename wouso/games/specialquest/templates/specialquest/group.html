@@ -13,7 +13,7 @@
         {% for m in sqgroup.members %}
             <tr>
                 <td width="60%" nowrap>{% player m %}</td>
-                <td>{% player_group m.proximate_group %}</td>
+                <td>{% player_group m.user.player_related.get.group %}</td>
                 <td>{% coin_amount m.coins.gold 'gold' %}</td>
             </tr>
         {% endfor %}
@@ -27,8 +27,13 @@
         {% endfor %}
         </ul>
 
-    <div class="spacer"></div>
+    <div class="spacer"><!-- --></div>
     {% if not sqgroup.active %}
     <p>{% blocktrans %}If you want to invite more players to this group, click on Invite on their profile{% endblocktrans %}</p>
+    {% endif %}
+
+    <div class="spacer"><!-- --></div>
+    {% if perms.specialquest.change_specialquestuser %}
+    <a class="button" url="{% url specialquest_manage sqgroup.head.id %}">Manage head</a>
     {% endif %}
 {% endblock %}
