@@ -24,12 +24,7 @@
         <a id="head-chat" href="{% url chat_home %}">Chat</a>
         {% endif %}
 
-<<<<<<< HEAD
         <a id="head-logout" href="{% url logout_view %}" onclick="remove_storage()">{% trans "Logout" %} &raquo;</a>
-=======
-        <a id="head-logout" href="{% url wouso.interface.views.logout_view %}" onclick="remove_storage()">{% trans "Logout" %} &raquo;</a>
-        <a id="head-logout" href="{% url wouso.interface.views.logout_view %}" onclick="remove_storage()">{% trans "Logout" %} &raquo;</a>
->>>>>>> 10cc47e
     {% else %}
     {% trans 'Anonimous' %}, <a href="{% url login_view %}">{% trans "Login" %} &raquo;</a>
     {% endif %}

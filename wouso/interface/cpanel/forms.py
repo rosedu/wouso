@@ -3,11 +3,7 @@ from django.contrib.auth.models import User
 from wouso.core.qpool.models import Question, Answer, Schedule, Category, Tag
 from wouso.core.magic.models import Spell
 from wouso.core.scoring.models import Formula
-<<<<<<< HEAD
 from wouso.core.security.models import Report
-=======
-from wouso.core.logs.models import Report
->>>>>>> 10cc47e
 
 class QuestionForm(forms.Form):
     text = forms.CharField(max_length=500, widget=forms.Textarea)
