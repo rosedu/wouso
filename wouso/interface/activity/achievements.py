@@ -21,13 +21,12 @@ def consecutive_seens(player, timestamp):
 
     return len(activities)
 
-
 def consecutive_qotd_correct(player):
     """
      Return the count of correct qotd in a row
      Maximum: 10 (last ten)
     """
-    activities = Activity.get_player_activity(player).filter(action__contains = 'qotd').order_by('-timestamp')[:10]
+    activities = Activity.get_player_activity(player).filter(action__contains='qotd').order_by('-timestamp')[:10]
     result = 0
     for i in activities:
         if 'correct' in i.action:
@@ -36,12 +35,15 @@ def consecutive_qotd_correct(player):
             return result
     return result
 
-
 def login_between(time, first, second):
     if first <= time.hour < second:
         return True
     return False
 
+def login_between_count(player, first, second):
+    activities = Activity.objects.filter(action__contains='seen', user_to=player)
+    activities = filter(lambda x : first <= x.timestamp.hour < second, activities)
+    return len(activities)
 
 def unique_users_pm(player, minutes):
     """
@@ -51,7 +53,6 @@ def unique_users_pm(player, minutes):
                                         timestamp__gt=datetime.now() - timedelta(minutes=minutes)
                                         ).values('sender').distinct().count()
     return activities
-
 
 def wrong_first_qotd(player):
     """
@@ -64,13 +65,26 @@ def wrong_first_qotd(player):
         return True
     return False
     
-    
-def challenge_count(player):
+def challenge_count(player, days=None):
     """
-     Return the count of challenges played by player.
+     Return the count of challenges played by player in the last x _days_.
+     All challenges if days == None
     """
-    return Activity.get_player_activity(player).filter(action__contains='chall').count()
+    if not days:
+        return Activity.get_player_activity(player).filter(action__contains='chall').count()
+    start = datetime.now() - timedelta(days=days)
+    return Activity.get_player_activity(player).filter(
+            action__contains='chall', timestamp__gte=start).count()
 
+def first_seen(player):
+    """
+    Return the number of days passed between the current time and the first time
+    the player logged in
+    """
+    first_seen = Activity.objects.filter(action='seen', user_to=player).order_by('timestamp')[:1]
+    if first_seen.count() > 0:
+        return (datetime.now() - first_seen[0].timestamp).days
+    return -1 #user has not logged in ever
 
 def consecutive_chall_won(player):
     """
@@ -86,7 +100,7 @@ def consecutive_chall_won(player):
             return result
 
     return result
-    
+
 def check_for_god_mode(player, days, chall_min):
     """
     Return true if the player won all challenges and answerd all qotd 'days' days in a row witn a minimum of 'chall_min' challenges
@@ -107,7 +121,6 @@ def check_for_god_mode(player, days, chall_min):
     if chall_won >= chall_min and chall_lost == 0 and qotd_ok == days:
         return True
     return False
-    
 
 def refused_challenges(player):
     """
@@ -115,7 +128,6 @@ def refused_challenges(player):
     """
     start = datetime.now() + timedelta(days=-7)
     return Activity.get_player_activity(player).filter(action__contains='chall-refused', timestamp__gte=start, user_from=player).count()
-
 
 def get_chall_score(arguments):
     if not arguments:
@@ -166,23 +178,19 @@ class Achievements(App):
                 if not player.magic.has_modifier('ach-qotd-10'):
                     cls.earn_achievement(player, 'ach-qotd-10')
 
-            # Check for wrong answer to the first qotd
-            if not player.magic.has_modifier('ach-bad-start') and action == "qotd-wrong":
-                if wrong_first_qotd(player):
-                    cls.earn_achievement(player, 'ach-bad-start')
-
-
         if 'chall' in action:
-            # Check if number of challenge games is 30*k
+            # Check if number of challenge games is >= 100
             games_played = challenge_count(player)
-            if games_played > 0 and (games_played % 30) == 0:
+            if games_played >= 100:
                 if not player.magic.has_modifier('ach-chall-30'):
                     cls.earn_achievement(player, 'ach-chall-30')
 
-            # Check if the number of refused challenges in the past week is
-            # less than 2
+            # Check if the number of refused challenges in the past week is 0
+            # also check for minimum number of challenges played = 5
             if not player.magic.has_modifier('ach-this-is-sparta'):
-                if refused_challenges(player) <= 2:
+                if refused_challenges(player) == 0 and \
+                        challenge_count(player, days=7) >= 5 and \
+                        first_seen(player) >= 7:
                     cls.earn_achievement(player, 'ach-this-is-sparta')
 
         if action == 'chall-won':
@@ -198,7 +206,14 @@ class Achievements(App):
             # Check if player defeated 2 levels or more bigger opponent
             if not player.magic.has_modifier('ach-chall-def-big'):
                 if (kwargs.get('user_to').level_no - player.level_no) >= 2:
-                    cls.earn_achievement(player, 'ach-chall-def-big')
+                    Activity.objects.create(timestamp=datetime.now(),
+                            user_from=player, user_to=player,
+                            action='defeat-better-player')
+                    victories = Activity.objects.filter(user_to=player,
+                            action='defeat-better-player')
+                    if victories.count() >= 5:
+                        cls.earn_achievement(player, 'ach-chall-def-big')
+                        victories.delete()
 
             # Check if the player finished the challenge in less than 1 minute
             if not player.magic.has_modifier('ach-win-fast'):
@@ -208,16 +223,16 @@ class Achievements(App):
 
         if action == "message":
             # Check the number of unique users who send pm to player in the last m minutes
-            if unique_users_pm(kwargs.get('user_to'), 30) >= 3:
+            if unique_users_pm(kwargs.get('user_to'), 15) >= 5:
                 if not kwargs.get('user_to').magic.has_modifier('ach-popularity'):
                     cls.earn_achievement(kwargs.get('user_to'), 'ach-popularity')
 
         if action in ("login", "seen"):
             # Check login between 2-4 am
-            if login_between(kwargs.get('timestamp',datetime.now()), 2, 4):
+            if login_between_count(player, 3, 5) > 2:
                 if not player.magic.has_modifier('ach-night-owl'):
                     cls.earn_achievement(player, 'ach-night-owl')
-            elif login_between(kwargs.get('timestamp',datetime.now()), 6, 8):
+            if login_between_count(player, 6, 8) > 2:
                 if not player.magic.has_modifier('ach-early-bird'):
                     cls.earn_achievement(player, 'ach-early-bird')
             
@@ -233,12 +248,11 @@ class Achievements(App):
     def get_modifiers(self):
         return ['ach-login-10',
                 'ach-qotd-10',
-                'ach-chall-30',
+                'ach-chall-100',
                 'ach-chall-won-10',
                 'ach-night-owl',
                 'ach-early-bird',
                 'ach-popularity',
-                'ach-bad-start',
                 'ach-chall-def-big',
                 'ach-this-is-sparta',
                 'ach-flawless-victory',

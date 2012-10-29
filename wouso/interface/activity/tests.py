@@ -53,37 +53,65 @@ class AchievementTest(WousoTest):
     def test_early_bird_not(self):
         player = self._get_player()
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-early-bird')
-        signals.addActivity.send(sender=None, timestamp = datetime(2012,9,17,5,0,0),user_from=player,
+        for i in range(1,2):
+            Activity.objects.create(timestamp=datetime(2012,9,17,6,0,0),
+                    user_from=player, user_to=player, action='seen', public=False)
+
+        for i in range(1,4):
+            Activity.objects.create(timestamp=datetime(2012,9,17,5,0,0),
+                    user_from=player, user_to=player, action='seen', public=False)
+
+        signals.addActivity.send(sender=None, timestamp=datetime(2012,9,17,5,0,0),
+            user_from=player,
             user_to=player,
-            action='login',
+            action='seen',
             game=None)
-        self.assertTrue(not player.magic.has_modifier('ach-early-bird'))
+        self.assertFalse(player.magic.has_modifier('ach-early-bird'))
 
     def test_early_bird_set(self):
         player = self._get_player()
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-early-bird')
-        signals.addActivity.send(sender=None, timestamp = datetime(2012,9,17,6,0,0),user_from=player,
+        for i in range(1,4):
+            Activity.objects.create(timestamp=datetime(2012,9,17,6,0,0),
+                    user_from=player, user_to=player, action='seen', public=False)
+
+        signals.addActivity.send(sender=None, timestamp=datetime(2012,9,17,6,0,0),
+            user_from=player,
             user_to=player,
-            action='login',
+            action='seen',
             game=None)
         self.assertTrue(player.magic.has_modifier('ach-early-bird'))
 
     def test_night_owl_not(self):
         player = self._get_player()
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-night-owl')
-        signals.addActivity.send(sender=None, timestamp = datetime(2012,9,17,4,0,0),user_from=player,
-            user_to=player,
-            action='login',
-            game=None)
-        self.assertTrue(not player.magic.has_modifier('ach-night-owl'))
+        for i in range(1,3):
+            Activity.objects.create(timestamp=datetime(2012,9,17,6,0,0),
+                    user_from=player, user_to=player, action='seen', public=False)
+
+        for i in range(1,4):
+            Activity.objects.create(timestamp=datetime(2012,9,17,5,0,0),
+                    user_from=player, user_to=player, action='seen', public=False)
+
+        signals.addActivity.send(sender=None, timestamp=datetime(2012,9,17,4,0,0),
+                user_from=player,
+                user_to=player,
+                action='seen',
+                game=None)
+        self.assertFalse(player.magic.has_modifier('ach-night-owl'))
 
     def test_night_owl_set(self):
         player = self._get_player()
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-night-owl')
-        signals.addActivity.send(sender=None, timestamp = datetime(2012,9,17,3,0,0),user_from=player,
-            user_to=player,
-            action='login',
-            game=None)
+        for i in range(1,4):
+            Activity.objects.create(timestamp=datetime(2012,9,17,4,0,0),
+                    user_from=player, user_to=player, action='seen', public=False)
+
+        signals.addActivity.send(sender=None, timestamp=datetime(2012,9,17,4,0,0),
+                user_from=player,
+                user_to=player,
+                action='seen',
+                game=None)
         self.assertTrue(player.magic.has_modifier('ach-night-owl'))
 
 
@@ -186,10 +214,10 @@ class ChallengeAchievementTest(WousoTest):
 
         self.assertEqual(challenge_count(player), 30)
 
-    def test_chall_30_draw_lost(self):
+    def test_chall_100_draw_lost(self):
         player1 = self._get_player()
         player2 = self._get_player(2)
-        for i in range(1, 31):
+        for i in range(1, 101):
             timestamp = datetime.now() + timedelta(days=-i)
             if (i % 5) == 0:
                 a = Activity.objects.create(timestamp=timestamp,
@@ -204,12 +232,12 @@ class ChallengeAchievementTest(WousoTest):
                         user_from=player1, user_to=player2, action='chall-won',
                         public=True)
 
-        self.assertEqual(challenge_count(player1), 30)
+        self.assertEqual(challenge_count(player1), 100)
 
-    def test_chall_30_activity(self):
+    def test_chall_100_activity(self):
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-chall-30')
         player = self._get_player()
-        for i in range(1, 30):
+        for i in range(1, 100):
             timestamp = datetime.now() + timedelta(days=-i)
             if i % 5 == 0:
                 a = Activity.objects.create(timestamp=timestamp,
@@ -233,6 +261,13 @@ class ChallengeAchievementTest(WousoTest):
         player2.level_no = 4
         player2.save()
 
+        for i in range(1,5):
+            signals.addActivity.send(sender=None, user_from=player1,
+                                        user_to=player2,
+                                        action='chall-won',
+                                        game=ChallengeGame.get_instance())
+            self.assertFalse(player1.magic.has_modifier('ach-chall-def-big'))
+
         signals.addActivity.send(sender=None, user_from=player1,
                                     user_to=player2,
                                     action='chall-won',
@@ -249,10 +284,14 @@ class ChallengeAchievementTest(WousoTest):
 
         self.assertEqual(refused_challenges(player), 6)
 
-    def test_this_is_sparta_activity(self):
+    def test_this_is_sparta_activity_not_given(self):
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-this-is-sparta')
         player1 = self._get_player()
         player2 = self._get_player(2)
+        first_seen = datetime.now() + timedelta(days=-10)#10 days since first login
+        Activity.objects.create(timestamp=first_seen,
+                user_from=player1, user_to=player1, action='seen',
+                public=False)
         for i in range(1, 7):
             timestamp = datetime.now() + timedelta(days=-i)
             if (i % 4) == 0:
@@ -263,11 +302,75 @@ class ChallengeAchievementTest(WousoTest):
                 a = Activity.objects.create(timestamp=timestamp,
                 user_from=player1, user_to=player2, action='chall-lost',
                 public=True)
-
+        #send signal to enable achievement validation
         signals.addActivity.send(sender=None, user_from=player1,
                                     user_to=player2,
                                     action='chall-refused',
                                     game=ChallengeGame.get_instance())
+        #False due to refused challenge
+        self.assertFalse(player1.magic.has_modifier('ach-this-is-sparta'))
+
+    def test_this_is_sparta_activity_not_enough_challenges(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-this-is-sparta')
+        player1 = self._get_player()
+        player2 = self._get_player(2)
+        first_seen = datetime.now() + timedelta(days=-10)#10 days since first login
+        Activity.objects.create(timestamp=first_seen,
+                user_from=player1, user_to=player1, action='seen',
+                public=False)
+        for i in range(1, 3):
+            timestamp = datetime.now() + timedelta(days=-i)
+            a = Activity.objects.create(timestamp=timestamp,
+                user_from=player1, user_to=player2, action='chall-lost',
+                public=True)
+        #send signal to enable achievement validation
+        signals.addActivity.send(sender=None, user_from=player1,
+                                    user_to=player2,
+                                    action='chall-won',
+                                    game=ChallengeGame.get_instance())
+        #False due to not enough challenges played
+        self.assertFalse(player1.magic.has_modifier('ach-this-is-sparta'))
+
+    def test_this_is_sparta_activity_not_enough_time(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-this-is-sparta')
+        player1 = self._get_player()
+        player2 = self._get_player(2)
+        first_seen = datetime.now() + timedelta(days=-6)#only 6 days have passed
+        Activity.objects.create(timestamp=first_seen,
+                user_from=player1, user_to=player1, action='seen',
+                public=False)
+        for i in range(1, 5):
+            timestamp = datetime.now() + timedelta(days=-i)
+            a = Activity.objects.create(timestamp=timestamp,
+                user_from=player1, user_to=player2, action='chall-lost',
+                public=True)
+        #send signal to enable achievement validation
+        signals.addActivity.send(sender=None, user_from=player1,
+                                    user_to=player2,
+                                    action='chall-won',
+                                    game=ChallengeGame.get_instance())
+        #achievement condition earned
+        self.assertFalse(player1.magic.has_modifier('ach-this-is-sparta'))
+
+    def test_this_is_sparta_activity_passed(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-this-is-sparta')
+        player1 = self._get_player()
+        player2 = self._get_player(2)
+        first_seen = datetime.now() + timedelta(days=-7)#barely enough time
+        Activity.objects.create(timestamp=first_seen,
+                user_from=player1, user_to=player1, action='seen',
+                public=False)
+        for i in range(1, 5):
+            timestamp = datetime.now() + timedelta(days=-i)
+            a = Activity.objects.create(timestamp=timestamp,
+                user_from=player1, user_to=player2, action='chall-lost',
+                public=True)
+        #send signal to enable achievement validation
+        signals.addActivity.send(sender=None, user_from=player1,
+                                    user_to=player2,
+                                    action='chall-won',
+                                    game=ChallengeGame.get_instance())
+        #achievement condition earned
         self.assertTrue(player1.magic.has_modifier('ach-this-is-sparta'))
 
 class PopularityTest(WousoTest):
@@ -303,31 +406,6 @@ class PopularityTest(WousoTest):
         self.assertEqual(unique_users_pm(user_to,30),5)
         self.assertTrue(user_to.magic.has_modifier('ach-popularity'))
         
-    def test_bad_start_1(self):
-        player = self._get_player()
-        timestamp = datetime.now()
-        a = Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-wrong')
-        self.assertTrue(wrong_first_qotd(player))
-        a = Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-wrong')
-        self.assertTrue(not wrong_first_qotd(player))
-        
-    def test_bad_start_2(self):
-        player = self._get_player()
-        timestamp = datetime.now()
-        a = Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-correct')
-        self.assertTrue(not wrong_first_qotd(player))
-        a = Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-wrong')
-        self.assertTrue(not wrong_first_qotd(player))
-        
-    def test_bad_start_3(self):
-        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-bad-start')
-        player = self._get_player()
-        signals.addActivity.send(sender=None, user_from=player,
-                                     user_to=player,
-                                     action='qotd-wrong',
-                                     game=QotdGame.get_instance())
-        self.assertTrue(player.magic.has_modifier('ach-bad-start'))
-
 
 class NotificationsTest(WousoTest):
     def test_ach_notification(self):

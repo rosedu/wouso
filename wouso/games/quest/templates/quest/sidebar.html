@@ -14,7 +14,7 @@
         {% trans 'You have finished the quest.' %}
         {% else %}
         <div class="progress-bar">
-            <div class="progress" style="width: {{ quest_progress|floatformat }}%"></div>
+            <div class="progress" style="width: {{ quest_progress|floatformat:0 }}%"></div>
         </div>
         <a href="{% url quest_index_view %}">{% trans 'Play quest!' %}</a>
         {% endif %}

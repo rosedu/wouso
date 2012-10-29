@@ -252,26 +252,26 @@ def ui(request):
 
 @login_required
 def report(request,id):
-    
+
     if request.user.id == int(id):
         return homepage(request, error='You cannot challenge yourself')
-        
+
     get_object_or_404(User,pk=id)
-    
+
     if request.method == "POST":
         form = UserReportForm(request.POST)
         if form.is_valid():
             user_from=request.user
             user_to = User.objects.get(pk=id)
-            
+
             if not os.path.isdir(settings.LOG_ROOT):
                 os.mkdir(settings.LOG_ROOT)
-            
+
             with open(settings.LOG_ROOT + "/Report.log", "a") as ReportFile:
                 ReportFile.write("From: " + user_from.username + " on: " + user_to.username + "\n" + request.POST['message'] + "\n\n")
-                
-                
-                    
+
+
+
             signals.addActivity.send(sender=None,
                                     user_from=user_from.get_profile().get_extension(Player),
                                     user_to=user_to.get_profile().get_extension(Player),
