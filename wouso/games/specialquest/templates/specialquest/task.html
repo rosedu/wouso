@@ -13,16 +13,21 @@
 {% block sectioncontent %}
 
 {% if task.is_active or task.is_archived %}
-    <span class="points">{% trans 'Reward' %}: {% coin_amount task.value 'gold' %}</span>
+    <div class="second">
+        <span class="points">{% trans 'Reward' %}: {% coin_amount task.value 'gold' %}</span>
 
-    {% if days_left >= 0 %}
-      <p>{% trans 'Days left including today' %}: {{days_left}}</p>
-    {%else%}
-      <p class="wrong">{% trans 'Deadline passed' %}</p>
-    {%endif%}
+        {% if days_left >= 0 %}
+          <p style="float:left">{% trans 'Days left including today' %}: {{days_left}}</p>
+        {%else%}
+          <p class="wrong">{% trans 'Deadline passed' %}</p>
+        {%endif%}
+    </div>
+
+    <div class="clear spacer-small"><!-- --></div>
     <p class="task-text">{% autoescape off %}{{task.text}}{% endautoescape %}</p>
 
-    <h3>{% trans 'Teams that completed this task' %}</h3>
+    <div class="clear spacer"><!-- --></div>
+    <h4>{% trans 'Teams that completed this task' %}</h4>
         <ul>
             {% for info in task.completed_teams %}
                 <li>{{ info.team }} - {{ info.date }}</li>

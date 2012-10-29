@@ -8,7 +8,7 @@
 
 {% block sectioncontent %}
     <p>{% trans 'Owner' %}: {% player sqgroup.head %}, {% trans 'created:' %} {{ sqgroup.created }}</p>
-    <p>{% trans 'Members' %}: {{ sqgroup.members.count }}</p>
+    <p>{% trans 'Members' %}: {{ sqgroup.players.count }}</p>
     <table>
         {% for m in sqgroup.members %}
             <tr>

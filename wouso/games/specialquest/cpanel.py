@@ -1,6 +1,6 @@
 # views for wouso cpanel
 from django.contrib.auth.decorators import permission_required
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
@@ -138,3 +138,13 @@ def manage_player_unset(request, player_id, task_id):
         Activity.delete(SpecialQuestGame.get_instance(), player, player, signal_msg, arguments)
 
     return HttpResponseRedirect(reverse('specialquest_manage', args=(player.id,)))
+
+
+@permission_required('specialquest.change_specialquestuser')
+def group_active_toggle(request, group):
+    group = get_object_or_404(SpecialQuestGroup, id=group)
+
+    group.active = not group.active
+    group.save()
+
+    return redirect('specialquest_cpanel_groups')
