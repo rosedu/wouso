@@ -58,9 +58,7 @@ def dashboard(request):
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
 
     # number of players which can play
-    players = list(Player.objects.all())
-    cp_players = [p for p in players if p.race and p.race.can_play]
-    cp_number = len(cp_players)
+    cp_number = Player.objects.filter(race__can_play=True).count()
 
     return render_to_response('cpanel/index.html',
                               {'nr_future_questions' : nr_future_questions,
