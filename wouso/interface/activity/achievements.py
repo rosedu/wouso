@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_noop
 from wouso.core.app import App
 from wouso.interface.apps.messaging.models import Message
 from wouso.games.challenge.models import Challenge
-
+from wouso.core.magic.models import PlayerSpellDue
 from models import Activity
 from signals import addActivity,messageSignal
 
@@ -136,7 +136,7 @@ def get_chall_score(arguments):
         return max(chall.user_from.score, chall.user_to.score)
     else:
         return 0
-        
+
 def get_challenge_time(arguments):
     """
      Return the number of seconds spent by the winner.
@@ -150,6 +150,12 @@ def get_challenge_time(arguments):
     else:
         return 0
 
+def spell_count(player):
+    """
+     Return the number of spells casted on player simultaneously
+    """
+    today = datetime.now().date()
+    return PlayerSpellDue.objects.filter(player=player, due__gte=today).count()
 
 class Achievements(App):
     @classmethod
@@ -245,6 +251,12 @@ class Achievements(App):
                 if not player.magic.has_modifier('ach-login-10'):
                     cls.earn_achievement(player, 'ach-login-10')
 
+        if action == "cast":
+            # Check if player is affected by 5 or more spells
+            if not player.magic.has_modifier('ach-spell-5'):
+                if spell_count(player) >= 5:
+                    cls.earn_achievement(player, 'ach-spell-5')
+
     @classmethod
     def get_modifiers(self):
         return ['ach-login-10',
@@ -260,7 +272,8 @@ class Achievements(App):
                 'ach-this-is-sparta',
                 'ach-flawless-victory',
                 'ach-win-fast',
-                'ach-god-mode-on'
+                'ach-god-mode-on',
+                'ach-spell-5',
         ]
 
 

@@ -179,10 +179,12 @@ class DefaultGod:
             signal_msg = 'a facut o vraja asupra sa.'
         else:
             signal_msg = 'a facut o vraja asupra {to}.'
+        action_msg = 'cast'
         signals.addActivity.send(sender=None, user_from=psdue.source,
                                  user_to=psdue.player,
                                  message=signal_msg,
                                  arguments=dict(to=psdue.player),
+                                 action=action_msg,
                                  game=None)
 
         if psdue.spell.name == 'dispell':
