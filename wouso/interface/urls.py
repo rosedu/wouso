@@ -49,7 +49,7 @@ urlpatterns = patterns('',
     url(r'^s/(.+)/$', 'wouso.interface.apps.pages.views.staticpage', name='static_page'),
     
     #Report
-    url(r'^report/(?P<id>\d*)/$','wouso.interface.logs.views.report', name='report_player'),
+    url(r'^report/(?P<id>\d*)/$','wouso.core.security.views.report', name='report_player'),
 
     # Messaging
     (r'^m/', include('wouso.interface.apps.messaging.urls')),

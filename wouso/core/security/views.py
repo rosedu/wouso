@@ -4,7 +4,7 @@ from django.template import RequestContext
 from django.contrib.auth.models import User
 
 from wouso.core.user.models import Player, UserReportForm
-from wouso.core.logs.models import Report, add_report
+from wouso.core.security.models import Report, add_report
 from wouso.interface.activity import signals
 
 @login_required

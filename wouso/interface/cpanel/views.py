@@ -26,7 +26,7 @@ from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, AnswerForm, EditReportForm
 from forms import FormulaForm
-from wouso.core.logs.models import Report
+from wouso.core.security.models import Report
 
 
 @staff_required

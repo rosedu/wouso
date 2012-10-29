@@ -150,7 +150,6 @@ INSTALLED_APPS = [
     'wouso.interface.apps.pages',
     'wouso.interface.apps.statistics',
     'wouso.interface.apps.messaging',
-    'wouso.interface.logs',
 ]
 
 # Authentication settings
