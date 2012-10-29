@@ -130,7 +130,10 @@ def refused_challenges(player):
     return Activity.get_player_activity(player).filter(action__contains='chall-refused', timestamp__gte=start, user_from=player).count()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 0816de879fa7bda12618a381db1ff37cac24e63d
 def challenges_played_today(player):
     """
      Return the count of challenges played today
