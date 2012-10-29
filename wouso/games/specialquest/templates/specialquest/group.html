@@ -34,6 +34,6 @@
 
     <div class="spacer"><!-- --></div>
     {% if perms.specialquest.change_specialquestuser %}
-    <a class="button" url="{% url specialquest_manage sqgroup.head.id %}">Manage head</a>
+    <a class="button" href="{% url specialquest_manage sqgroup.head.id %}">Manage head</a>
     {% endif %}
 {% endblock %}
