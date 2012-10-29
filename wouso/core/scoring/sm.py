@@ -121,6 +121,7 @@ def unset(user, game, formula, external_id=None, **params):
 def rollback(user, game, formula, external_id=None, **params):
     if game != None:
         game = game.get_instance()
+	formula = Formula.get(formula)
     for history in History.objects.filter(user=user, game=game, formula=formula, external_id=external_id):
         if history.coin.name == 'points':
             user.points -= history.amount
