@@ -96,13 +96,19 @@ class UpdateScoringTest(WousoTest):
         Coin.add('gold')
         Formula.objects.create(id='level-gold', formula='gold=10*{level}', owner=None)
         player = self._get_player()
-        player.points = 420
+        player.points = 82
         player.level_no = 1
         player.save()
         update_points(player, None)
         coins = History.user_coins(player.user)
         self.assertIn('gold', coins)
-        self.assertEqual(coins['gold'], 60)
+        self.assertEqual(coins['gold'], 20)
+        player.points = 10
+        player.save()
+        update_points(player, None)
+        coins = History.user_coins(player.user)
+        self.assertIn('gold', coins)
+        self.assertEqual(coins['gold'], 0)
 
 
 class ScoringHistoryTest(WousoTest):

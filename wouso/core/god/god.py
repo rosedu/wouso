@@ -22,8 +22,6 @@ class DefaultGod:
                 description='Exchange gold in points'),
             dict(id='points-gold-rate', formula='points=-{points};gold={points}*0.1', owner=None,
                 description='Exchange points in gold'),
-            dict(id='level-gold-back', formula='gold=-10*{level}', owner=None,
-                description='Take points back at level downgrade'),
             dict(id='bonus-gold', formula='gold={gold}', owner=None,
                 description='Give bonus gold to the poor people'),
             dict(id='bonus-points', formula='points={points}', owner=None,
