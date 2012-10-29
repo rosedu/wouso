@@ -8,7 +8,6 @@ from wouso.core.scoring.models import Coin, Formula, History
 from wouso.core.god import God
 from wouso.core.game import get_games, Game
 from wouso.interface.activity import signals
-from wouso.interface.activity.models import Activity
 
 class NotSetupError(Exception): pass
 class InvalidFormula(Exception): pass
@@ -124,7 +123,9 @@ def update_points(player, game):
     level = God.get_level_for_points(player.points)
     if level != player.level_no:
         if level < player.level_no:
-            signal_msg = ugettext_noop("downgraded to level {level}")
+            amount = -calculate('level-gold-back', level=level)
+            signal_msg = ugettext_noop("downgraded to level {level} and lost {amount} gold")
+            score(player, None, 'level-gold-back', level=level)
             signals.addActivity.send(sender=None, user_from=player,
                                 user_to=player, message=signal_msg,
                                 arguments=dict(level=level),
@@ -134,13 +135,11 @@ def update_points(player, game):
             amount = calculate('level-gold', level=level)
             signal_msg = ugettext_noop("upgraded to level {level} and received {amount} gold")
 
-            upgraded = Activity.get_player_activity(player).filter(message=signal_msg).count()
-            if upgraded == 0:
-                score(player, None, 'level-gold', level=level)
-                signals.addActivity.send(sender=None, user_from=player,
-                                    user_to=player, message=signal_msg,
-                                    arguments=dict(level=level, amount=amount['gold']),
-                                    game=None)
+            score(player, None, 'level-gold', level=level)
+            signals.addActivity.send(sender=None, user_from=player,
+                                user_to=player, message=signal_msg,
+                                arguments=dict(level=level, amount=amount['gold']),
+                                game=None)
         player.level_no = level
         player.save()
 
