@@ -23,7 +23,7 @@ from wouso.core.user.models import Player, PlayerGroup
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, History as TopHistory
 from wouso.interface.activity import signals
-from wouso.core.logs.models import Report, AddReport
+from wouso.core.security.models import Report, add_report
 
 
 def get_wall(page=u'1'):
@@ -269,7 +269,7 @@ def report(request,id):
                                     user_to=user_to.get_profile().get_extension(Player),
                                     action="report",
                                     game=None)
-            AddReport(user_from=user_from, user_to=user_to, text=request.POST['message'])
+            add_report(user_from=user_from, user_to=user_to, text=request.POST['message'])
             request.session["report_msg"] = "The report was successfully submitted"
             return redirect('player_profile', id=id)
     else:
