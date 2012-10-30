@@ -3,7 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from models import QuestGame, QuestUser, Quest
+from django.db.models import Sum
+from wouso.core.user.models import Player
+from wouso.core.scoring.models import History
+from models import QuestGame, QuestUser, Quest, QuestResult
 from forms import QuestForm
 
 @login_required
@@ -65,8 +68,15 @@ def history(request):
     """
     quests = Quest.objects.all().order_by('-end')
 
+    def quest_points(user):
+        return int(History.objects.filter(game=QuestGame.get_instance(), user=user).aggregate(points=Sum('amount'))['points'])
+
+    users = list(Player.objects.filter(id__in=QuestResult.objects.values_list('user')))
+    users.sort(lambda b, a: quest_points(a) - quest_points(b))
+    gods = users[:10]
+
     return render_to_response('quest/history.html',
-                    {'history': quests},
+                    {'history': quests, 'gods': gods},
                     context_instance=RequestContext(request)
     )
 

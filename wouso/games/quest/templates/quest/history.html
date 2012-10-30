@@ -6,6 +6,14 @@
 {% block sectiontitle %}{% trans 'Quest History' %}{% endblock %}
 
 {% block sectioncontent %}
+        <div class="subgroups">
+            <h3>{% trans 'Overall Gods' %}</h3>
+            <ul class="simple">
+                {% for p in gods %}
+                <li>{% player p %}</li>
+                {% endfor %}
+            </ul>
+        </div>
     {% for quest in history %}
         <h3>{{ quest.title }}</h3>
         <p>
