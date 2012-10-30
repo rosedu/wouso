@@ -171,4 +171,7 @@ def group_drop_player(request, group, player):
         return redirect('specialquest_group', group_id=group.id)
 
     group.players.remove(player.user.player_related.get())
+    player.group = None
+    player.save()
+
     return redirect('specialquest_group', group_id=group.id)
