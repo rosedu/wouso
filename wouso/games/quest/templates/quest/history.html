@@ -1,0 +1,52 @@
+{% extends 'interface/section_base.html' %}
+
+{% load i18n %}
+{% load user %}
+{% block title %}{% trans 'Quest History' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Quest History' %}{% endblock %}
+
+{% block sectioncontent %}
+    {% for quest in history %}
+        <h3>{{ quest.title }}</h3>
+        <p>
+            {% blocktrans with quest.start as start and quest.end as end and quest.questions.count as count and quest.players_count as players %}
+            Available from {{start}} to {{end}}.
+            Had {{count}} questions and {{ players }} players attempted it.
+            {% endblocktrans %}
+        </p>
+
+        <div class="spacer-small"><!-- --></div>
+
+        <table>
+            <tr>
+                <th>#</th>
+                <th>{% trans 'Player' %}</th>
+                <th>{% trans 'Level' %}</th>
+                <th>{% trans 'Group' %}</th>
+            </tr>
+            {% for r in quest.top_results %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    {% player r.user %}
+                </td>
+                <td>
+                    {{ r.level }}
+                </td>
+                <td>
+                    {% player_group r.user.group %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2">{% trans 'No one' %}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <div class="spacer">
+            <!-- -->
+        </div>
+    {% empty %}
+        <p>{% trans 'No quests given yet' %}</p>
+    {% endfor %}
+{% endblock %}

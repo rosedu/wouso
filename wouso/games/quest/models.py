@@ -1,5 +1,4 @@
 import os
-import hashlib
 import logging
 import datetime
 import subprocess
@@ -10,7 +9,6 @@ from wouso.core.game.models import Game
 from wouso.core import scoring
 from wouso.core.scoring.models import Formula
 from wouso.core.qpool.models import Question
-from wouso.core.qpool import get_questions_with_tags
 from wouso.interface.activity import signals
 from wouso import settings
 
@@ -197,6 +195,15 @@ class Quest(models.Model):
             self.order += i + ','
         self.order = self.order[:-1]
         self.save()
+
+    def players_count(self):
+        return self.questresult_set.values('user').distinct().count()
+
+    def top_results(self):
+        """
+         Return the first 10 players who finished this quest
+        """
+        return self.questresult_set.order_by('id')[:10]
 
     def __unicode__(self):
         return "%s - %s %s" % (self.start, self.end, self.title)

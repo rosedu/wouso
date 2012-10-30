@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from models import QuestGame, QuestUser
+from models import QuestGame, QuestUser, Quest
 from forms import QuestForm
 
 @login_required
@@ -58,3 +58,15 @@ def sidebar_widget(request):
             {'quest': quest, 'quser': quest_user,
              'quest_progress': quest_progress,
              })
+
+def history(request):
+    """
+    Return passed quests info
+    """
+    quests = Quest.objects.all().order_by('-end')
+
+    return render_to_response('quest/history.html',
+                    {'history': quests},
+                    context_instance=RequestContext(request)
+    )
+
