@@ -11,6 +11,7 @@
 {% if artifact %}
     <h3>{{ artifact.title }}</h3>
 
+    <p>{% autoescape off %}{{ artifact.description }}{% endautoescape %}</p>
     <ul>
         {% for pa in artifact.playerartifactamount_set.all %}
         <li>{% player pa.player %}</li>
