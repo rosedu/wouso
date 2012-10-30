@@ -24,8 +24,10 @@ from wouso.interface.activity.signals import addActivity
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
-from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, AnswerForm
+from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, AnswerForm, EditReportForm
 from forms import FormulaForm
+from wouso.core.security.models import Report
+
 
 @staff_required
 def dashboard(request):
@@ -832,3 +834,24 @@ def the_bell(request):
     addActivity.send(sender=None, user_from=player, game=None, message=message)
 
     return redirect('dashboard')
+
+@staff_required
+def reports(request, page=0):
+    """
+    This page shows the reports
+    """
+    
+    return render_to_response('cpanel/reports.html',{'reports': Report.objects.all().order_by('-timestamp')})
+
+@staff_required
+def edit_report(request, id):
+    report = get_object_or_404(Report, pk=id)
+    
+    if request.method == "POST":
+        form = EditReportForm(data = request.POST, instance=report)
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.reports'))
+    else:
+        reportForm = EditReportForm(instance = report)
+        return render_to_response('cpanel/edit_report.html',{'report': report, 'form': reportForm, 'id': id}, context_instance=RequestContext(request))
