@@ -71,7 +71,7 @@ def history(request):
     def quest_points(user):
         return int(History.objects.filter(game=QuestGame.get_instance(), user=user).aggregate(points=Sum('amount'))['points'])
 
-    users = list(Player.objects.filter(id__in=QuestResult.objects.values_list('user')))
+    users = list(Player.objects.exclude(race__can_play=False).filter(id__in=QuestResult.objects.values_list('user')))
     users.sort(lambda b, a: quest_points(a) - quest_points(b))
     gods = users[:10]
 
