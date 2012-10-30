@@ -46,12 +46,15 @@
                                 {{ r.reviewer }}
                             {% else %}
                                 {% if r.reviewer.in_staff_group %}
-                                    {% trans 'Assistant' %}
+                                    <span class="red">{% trans 'Assistant' %}:
+                                    <tt>{{ r.feedback }}</tt>
+                                    </span>
                                 {% else %}
-                                    {% trans 'Anonymous' %}{{ forloop.counter }}
+                                    {% trans 'Anonymous' %}{{ forloop.counter }}:
+                                    <tt>{{ r.feedback }}</tt>
                                 {% endif %}
-                            {% endif %}:
-                            <tt>{{ r.feedback }}</tt>
+                            {% endif %}
+
                             {% if not r.reviewer.in_staff_group %}
                                 <br/>
                                 <em>{% trans 'grade:' %}</em> <strong>{{ r.answer_grade }}</strong>,
@@ -89,7 +92,9 @@
     {% endfor %}
 
     {% csrf_token %}
+    {% if r.workshop.is_reviewable %}
     <button type="submit">{% trans 'Review!' %}</button>
+    {% endif %}
 </form>
 
         <div class="spacer clear">

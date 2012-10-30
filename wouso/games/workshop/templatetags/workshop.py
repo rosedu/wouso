@@ -58,3 +58,9 @@ def get_answer_feedback(answer, player):
     if not qs.count():
         return ''
     return qs.get().feedback
+
+@register.simple_tag
+def get_final_grade(workshop, player):
+    assessment = workshop.get_assessment(player)
+
+    return assessment.final_grade if assessment else None

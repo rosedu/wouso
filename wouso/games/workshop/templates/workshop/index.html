@@ -1,5 +1,6 @@
 {% extends 'interface/section_base.html' %}
 {% load i18n %}
+{% load workshop %}
 
 {% block title %}{% trans 'Workshop' %}{% endblock %}
 {% block sectiontitle %}{% trans 'Workshop' %}{% endblock %}
@@ -30,15 +31,27 @@
 {% endif %}
 
 <h4>{% trans 'Past workshops' %}</h4>
-<ul>
+<table>
+    <tr>
+        <th>Workshop</th>
+        <th>Reviews</th>
+        <th>Result</th>
+    </tr>
     {% for a in history %}
-        <li>{{ a.workshop }}
+        <tr>
+            <td>{{ a.workshop }}</td>
+            <td>
             {% if not a.workshop.is_active %}
-                <a href="{% url workshop_review a.workshop.id %}">{% trans 'Your reviews' %}</a>{% endif %}
-            <a href="{% url workshop_results a.workshop.id %}">{% trans 'Results' %}</a>
-        </li>
+                <a href="{% url workshop_review a.workshop.id %}">{% trans 'Your reviews' %}</a>
+            {% endif %}
+            </td>
+            <td>
+                {% get_final_grade a.workshop user.get_profile %}
+            <a href="{% url workshop_results a.workshop.id %}">{% trans 'Info' %}</a>
+            </td>
+        </tr>
     {% endfor %}
-</ul>
+</table>
 
 {% if perms.config.change_setting %}
 <h3>Staff only</h3>
