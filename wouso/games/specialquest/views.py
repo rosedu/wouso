@@ -1,12 +1,11 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import  HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
-from datetime import date, timedelta
-from wouso.interface import render_string
+from datetime import date
 from wouso.core.user.models import Player
 from models import SpecialQuestUser, SpecialQuestTask, SpecialQuestGame, SpecialQuestGroup, Invitation
 
@@ -41,6 +40,10 @@ def setup_accept(request, group_id):
 
     if group.active:
         error = _('Group is already active, you cannot accept the invitation')
+        return index(request, error)
+
+    if user.group is not None:
+        error = _('You are already in a group, cannot accept the invitation')
         return index(request, error)
 
     user.group = group
