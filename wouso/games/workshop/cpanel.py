@@ -157,6 +157,7 @@ def workshops(request):
                         {'module': 'workshop',
                          'workshops': workshops,
                          'page': 'workshops',
+                         'info': WorkshopGame,
                          },
                         context_instance=RequestContext(request)
     )
