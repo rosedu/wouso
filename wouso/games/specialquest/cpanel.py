@@ -5,10 +5,9 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.utils.translation import ugettext_noop, ugettext as _
+from django.utils.translation import ugettext_noop
 from wouso.core.user.models import Player
 from wouso.core import scoring
-from wouso.core.qpool import get_questions_with_category
 from wouso.interface.activity import signals
 from models import SpecialQuestTask, SpecialQuestUser, SpecialQuestGame, SpecialQuestGroup
 from forms import TaskForm
@@ -146,5 +145,18 @@ def group_active_toggle(request, group):
 
     group.active = not group.active
     group.save()
+
+    return redirect('specialquest_cpanel_groups')
+
+
+@permission_required('specialquest.change_specialquestuser')
+def group_delete(request, group):
+    group = get_object_or_404(SpecialQuestGroup, id=group)
+
+    for p in group.members:
+        p.group = None
+        p.save()
+
+    group.delete()
 
     return redirect('specialquest_cpanel_groups')

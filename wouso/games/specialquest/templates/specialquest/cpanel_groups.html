@@ -33,6 +33,7 @@
                 <td class="actions" nowrap>
                     <a href="{% url specialquest_group t.id %}">View members</a>
                     <a href="{% url admin:specialquest_specialquestgroup_change t.id %}" title="edit">✍</a>
+                    <a href="{% url specialquest_cpanel_group_delete t.id %}" onclick="return confirm('realy?');" title="delete">x</a>
                 </td>
             </tr>
         {% empty %}
