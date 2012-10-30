@@ -15,6 +15,11 @@
                 <td width="60%" nowrap>{% player m %}</td>
                 <td>{% player_group m.user.player_related.get.group %}</td>
                 <td>{% coin_amount m.coins.gold 'gold' %}</td>
+                {% if perms.specialquest.change_specialquestuser %}
+                <td><a href="{% url specialquest_cpanel_drop sqgroup.id m.id %}"
+                       onclick="return confirm('really drop user?');">drop</a>
+                </td>
+                {% endif %}
             </tr>
         {% endfor %}
     </table>

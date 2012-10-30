@@ -160,3 +160,15 @@ def group_delete(request, group):
     group.delete()
 
     return redirect('specialquest_cpanel_groups')
+
+
+@permission_required('specialquest.change_specialquestuser')
+def group_drop_player(request, group, player):
+    group = get_object_or_404(SpecialQuestGroup, id=group)
+    player = get_object_or_404(SpecialQuestUser, id=player)
+
+    if group.head == player or player not in group.members:
+        return redirect('specialquest_group', group_id=group.id)
+
+    group.players.remove(player.user.player_related.get())
+    return redirect('specialquest_group', group_id=group.id)
