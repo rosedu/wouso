@@ -10,30 +10,43 @@
 <table>
     <tr>
         <th colspan="2">Student</th>
-        <th>Grade</th>
-        <th>Review</th>
-        <th>Final</th>
+        <th>Ass Grade</th>
+        <th>Review Grade</th>
+        <th>Reviewer Grade</th>
+        <th>Final (Ass + Reviewer/2)</th>
     </tr>
-    {% for as in workshop.assessment_set.all %}
+    {% for ass in workshop.assessment_set.all %}
     <tr>
-        <td colspan="2">{{ as.player }}</td>
-        <td><strong>{{ as.grade }}</strong></td>
-        <td>{{ as.reviewer_grade }}</td>
-        <td>{{ as.final_grade }}</td>
-        <td>{% if workshop.is_gradable %}
-            <a href="{% url ws_grade_assessment as.id %}">Grade</a>
+        <td colspan="2">{{ ass.player }}</td>
+        <td>{{ ass.grade }}</td>
+        <td><em>{{ ass.reviews_grade }}</em></td>
+        <td>{{ ass.reviewer_grade }}</td>
+        <td><strong>{{ ass.final_grade }}</strong></td>
+        <td>
+            {% if workshop.is_gradable %}
+            <a href="{% url ws_grade_assessment ass.id %}">Grade</a>
             {% endif %}
+
+            <a href="{% url ws_view_assessment workshop.id ass.id %}">view</a>
         </td>
     </tr>
-        {% for r in as.reviewers.all %}
+        {% for r in ass.reviewers.all %}
         <tr>
-            <td></td>
+            <td>{{ forloop.counter }}.</td>
             <td>{{ r }}</td>
-            <td>{% get_reviewer_grade workshop r %}</td>
+            <td></td>
+            <td>{% get_ass_reviewer_grade ass r %}</td>
+            <td><em>{% get_ass_review_grade ass r %}</em></td>
         </tr>
         {% endfor %}
     {% endfor %}
 </table>
 
     <a class="button" href="{% url ws_workshops %}">Workshops</a>
+    {% if workshop.is_reviewable %}
+    <a class="button" onclick="return confirm('are you sure?');" href="{% url ws_mark_for_grading workshop.id %}">Mark for grading</a><br/>
+    {% endif %}
+    {% if workshop.is_gradable %}
+    <a class="button" href="{% url ws_update_grades workshop.id %}">Update grades</a>
+    {% endif %}
 {% endblock %}

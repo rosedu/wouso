@@ -196,6 +196,8 @@ class Assessment(models.Model):
         """
         reviews_count = self.reviewers.count()
         sum = Review.objects.filter(answer__assessment=self, reviewer__in=self.reviewers.all()).aggregate(sum=models.Sum('answer_grade'))['sum']
+        if sum is None:
+            return None
         return int(sum/reviews_count) if reviews_count else 0
 
     def set_answered(self, answers=None):

@@ -25,14 +25,13 @@ def get_reviewer_grade(workshop, player):
     """ Render sum of grades from reviewer
     """
     qs = Review.objects.filter(answer__assessment__workshop=workshop, reviewer=player)
-    if not qs.count():
-        return None
-    else:
-        return qs.aggregate(grade=Sum('answer_grade'))['grade']
+
+    return qs.aggregate(grade=Sum('answer_grade'))['grade']
 
 @register.simple_tag
 def get_ass_reviewer_grade(assessment, player):
     """ Render sum of grades from player reviewer, for a specific assessment
+    So player reviewed assessment and gave it this results.
     """
     qs = Review.objects.filter(answer__assessment=assessment, reviewer=player)
 
@@ -42,6 +41,8 @@ def get_ass_reviewer_grade(assessment, player):
 @register.simple_tag
 def get_ass_review_grade(assessment, player):
     """ Render sum of review grades for a specific assessment and player
+
+    So player reviewed assessment, and received from the assistant this grade.
     """
     qs = Review.objects.filter(answer__assessment=assessment, reviewer=player)
 

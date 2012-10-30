@@ -180,6 +180,16 @@ def workshop_mark4grading(request, workshop):
 
     return redirect('ws_workshops')
 
+
+@staff_required
+def workshop_update_grades(request, workshop):
+    workshop = get_object_or_404(Workshop, pk=workshop)
+
+    for ass in workshop.assessment_set.all():
+        ass.update_grade()
+
+    return redirect('ws_reviewers_map', workshop=workshop.id)
+
 @staff_required
 def workshop_reviewers(request, workshop):
     workshop = get_object_or_404(Workshop, pk=workshop)
