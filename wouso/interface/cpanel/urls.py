@@ -59,6 +59,8 @@ upat = [
 
     # misc
     url(r'^bell/$', 'wouso.interface.cpanel.views.the_bell', name='the_bell'),
+    url(r'^reports/$', 'wouso.interface.cpanel.views.reports', name='reports'),
+    url(r'^reports/edit/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.edit_report', name='edit_report'),
 ]
 
 for g in get_cpanel_games():

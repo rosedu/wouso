@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from wouso.core.qpool.models import Question, Answer, Schedule, Category, Tag
 from wouso.core.magic.models import Spell
 from wouso.core.scoring.models import Formula
+from wouso.core.security.models import Report
 
 class QuestionForm(forms.Form):
     text = forms.CharField(max_length=500, widget=forms.Textarea)
@@ -123,4 +124,13 @@ class SpellForm(forms.ModelForm):
 class FormulaForm(forms.ModelForm):
     class Meta:
         model = Formula
-
+        
+class EditReportForm(forms.ModelForm):
+    class Meta:
+        model = Report
+        exclude = ['user_to', 'user_from', 'text', 'timestamp' ] 
+    def __init__(self, *args, **kwargs):
+        super(EditReportForm, self).__init__(*args, **kwargs)
+        self.fields['dibs'].label = "Dibs"
+        self.fields['status'].label = "Status"
+        self.fields['extra'].label = "Observations"
