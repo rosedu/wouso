@@ -176,6 +176,7 @@ class Achievements(App):
         result = player.magic.give_modifier(modifier)
         if result is not None:
             message = ugettext_noop('earned {artifact}')
+            action_msg = 'earned-ach',
             addActivity.send(sender=None, user_from=player, game=None, message=message,
                 arguments=dict(artifact=result.artifact)
             )

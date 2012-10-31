@@ -116,11 +116,14 @@ def manage_player_set(request, player_id, task_id):
                 member.done_tasks.add(task)
                 scoring.score(member, SpecialQuestGame, 'specialquest-passed',external_id=task.id, value=task.value)
 
-                signal_msg = ugettext_noop('completed special quest {task_name}')
+                signal_msg = ugettext_noop('completed special quest {task_name} and earned {value} gold')
+                action_msg = 'specialq-ok-gold'
                 signals.addActivity.send(sender=None, user_from=member, \
                                          user_to=member, \
-                                         message=signal_msg, arguments=dict(task_name=task.name), \
-                                         game=SpecialQuestGame.get_instance())
+                                         message=signal_msg,
+                                         arguments=dict(task_name=task.name, value=task.value), \
+                                         game=SpecialQuestGame.get_instance(),
+                                         action = action_msg)
 
     return HttpResponseRedirect(reverse('specialquest_manage', args=(player.id,)))
 

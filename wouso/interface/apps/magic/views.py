@@ -2,17 +2,19 @@ from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core.urlresolvers import reverse
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from django.utils.translation import ugettext as _, ugettext
+from django.utils.translation import ugettext as _, ugettext, ugettext_noop
 from exceptions import ValueError
 from wouso.core.config.models import BoolSetting
 from wouso.core.scoring.sm import InvalidFormula
 from wouso.core.user.models import Player
 from wouso.core.magic.models import Spell, SpellHistory, PlayerSpellDue, Artifact
 from wouso.core import scoring
+from wouso.interface.activity.models import Activity
+from wouso.interface.activity import signals
 
 # marche
 def bazaar(request, message='', error=''):
@@ -33,7 +35,12 @@ def bazaar(request, message='', error=''):
 
     # TODO: think of smth better
     cast_spells.update(seen=True)
+
+    # get all significant magic activity
+    activity = Activity.objects.filter(Q(action='spell-buy') | Q(action='earned-ach') | Q(action__contains='gold') | Q(action='cast'))
+
     return render_to_response('magic/bazaar.html', {'spells': spells,
+                              'activity': activity,
                               'rate': rate, 'rate_text': rate_text,
                               'cast': cast_spells,
                               'unseen_count': unseen_count,
@@ -104,6 +111,15 @@ def bazaar_buy(request, spell):
         player.add_spell(spell)
         scoring.score(player, None, 'buy-spell', external_id=spell.id,
                       price=spell.price)
+        signal_msg = ugettext_noop('a cumparat vraja {spell}')
+        action_msg = 'spell-buy'
+        signals.addActivity.send(sender=None, user_from=player,
+                        user_to=player,
+                        message=signal_msg,
+                        arguments=dict(spell=spell.name),
+                        game=None,
+                        action=action_msg,
+                        public=False)
         SpellHistory.bought(player, spell)
         message = _("Successfully aquired")
 
