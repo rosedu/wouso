@@ -92,7 +92,7 @@
     {% endfor %}
 
     {% csrf_token %}
-    {% if r.workshop.is_reviewable %}
+    {% if workshop.is_reviewable %}
     <button type="submit">{% trans 'Review!' %}</button>
     {% endif %}
 </form>
