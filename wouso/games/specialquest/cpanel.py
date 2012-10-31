@@ -123,7 +123,7 @@ def manage_player_set(request, player_id, task_id):
                                          message=signal_msg,
                                          arguments=dict(task_name=task.name, value=task.value), \
                                          game=SpecialQuestGame.get_instance(),
-                                         action = action_msg)
+                                         action=action_msg)
 
     return HttpResponseRedirect(reverse('specialquest_manage', args=(player.id,)))
 
