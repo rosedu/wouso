@@ -1,7 +1,10 @@
-from datetime import datetime
+import json
 import array
 import random
+from datetime import datetime
+from django_socketio import broadcast_channel, NoSocket
 from wouso.interface.activity.models import Activity
+from wouso.interface.activity.signals import addedActivity
 from wouso.interface.chat.models import ChatUser, ChatMessage
 
 def add_message(text, sender, to_room, user_to, mess_type, comand):
@@ -129,3 +132,21 @@ def change_text(text):
 
 def get_author(request):
     return request.user.get_profile().get_extension(ChatUser)
+
+
+def broadcast_activity_handler(sender, **kwargs):
+    """ Callback function for addedActivity signal
+    It receives the activity newly added and sends it to global chat
+    """
+    a = kwargs.get('activity', None)
+    if not a or not a.public:
+        return
+
+    message = u'<strong>%s</strong> %s' % (a.user_from.nickname, a.message)
+    msg = dict(room='global', text=message, time=a.timestamp.strftime("%H:%M"), mess_type='activity', action='message')
+    try:
+        broadcast_channel(msg, 'global')
+    except NoSocket:
+        pass # fail silently
+
+addedActivity.connect(broadcast_activity_handler)
