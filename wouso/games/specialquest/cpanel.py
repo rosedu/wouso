@@ -11,6 +11,7 @@ from wouso.core import scoring
 from wouso.interface.activity import signals
 from models import SpecialQuestTask, SpecialQuestUser, SpecialQuestGame, SpecialQuestGroup
 from forms import TaskForm
+from wouso.interface.activity.signals import addActivity
 
 @permission_required('specialquest.change_specialquestuser')
 def home(request):
@@ -78,6 +79,12 @@ def manage_player(request, player_id):
             if amount > 0:
                 scoring.score(player, None, 'bonus-gold', external_id=request.user.get_profile().id, gold=amount)
                 message = 'Successfully given bonus'
+                if request.POST.get('comment', None):
+                    signal_msg = ugettext_noop('received {gold} gold bonus for {comment}')
+                    signals.addActivity.send(sender=None, user_from=player, user_to=player, message=signal_msg,
+                                        arguments=dict(gold=amount, comment=request.POST['comment']),
+                                        game=SpecialQuestGame.get_instance()
+                    )
             else:
                 error = 'Invalid amount'
         elif request.POST.get('points', False):
