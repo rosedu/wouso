@@ -37,7 +37,7 @@ def bazaar(request, message='', error=''):
     cast_spells.update(seen=True)
 
     # get all significant magic activity
-    activity_list = Activity.objects.filter(Q(action='spell-buy') | Q(action='earned-ach') | Q(action__contains='gold') | Q(action='cast'))
+    activity_list = Activity.objects.filter(Q(action='spell-buy') | Q(action='earned-ach') | Q(action__contains='gold') | Q(action='cast')).order_by('-timestamp')
 
     paginator = Paginator(activity_list, 40)
     try:
