@@ -105,7 +105,9 @@ class Spell(Modifier):
 
 
     def __unicode__(self):
-        return u'spell %s' % self.name
+        if self.title:
+            return self.title
+        return self.name
 
 
 class SpellHistory(models.Model):

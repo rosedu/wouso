@@ -2,17 +2,19 @@ from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core.urlresolvers import reverse
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from django.utils.translation import ugettext as _, ugettext
+from django.utils.translation import ugettext as _, ugettext, ugettext_noop
 from exceptions import ValueError
 from wouso.core.config.models import BoolSetting
 from wouso.core.scoring.sm import InvalidFormula
 from wouso.core.user.models import Player
 from wouso.core.magic.models import Spell, SpellHistory, PlayerSpellDue, Artifact
 from wouso.core import scoring
+from wouso.interface.activity.models import Activity
+from wouso.interface.activity import signals
 
 # marche
 def bazaar(request, message='', error=''):
@@ -33,7 +35,18 @@ def bazaar(request, message='', error=''):
 
     # TODO: think of smth better
     cast_spells.update(seen=True)
+
+    # get all significant magic activity
+    activity_list = Activity.objects.filter(Q(action='spell-buy') | Q(action='earned-ach') | Q(action__contains='gold') | Q(action='cast'))
+
+    paginator = Paginator(activity_list, 40)
+    try:
+        activity = paginator.page(0)
+    except (EmptyPage, InvalidPage):
+        activity = paginator.page(paginator.num_pages)
+
     return render_to_response('magic/bazaar.html', {'spells': spells,
+                              'activity': activity,
                               'rate': rate, 'rate_text': rate_text,
                               'cast': cast_spells,
                               'unseen_count': unseen_count,
@@ -104,6 +117,14 @@ def bazaar_buy(request, spell):
         player.add_spell(spell)
         scoring.score(player, None, 'buy-spell', external_id=spell.id,
                       price=spell.price)
+        signal_msg = ugettext_noop('bought a spell')
+        action_msg = 'spell-buy'
+        signals.addActivity.send(sender=None, user_from=player,
+                        user_to=player,
+                        message=signal_msg,
+                        game=None,
+                        action=action_msg,
+                        public=False)
         SpellHistory.bought(player, spell)
         message = _("Successfully aquired")
 
@@ -153,7 +174,7 @@ def affected_players(request):
     except:
         raise Http404
     spell = get_object_or_404(Spell, pk=spell_id)
-    
+
     if spell.mass:
         user = request.user.get_profile()
         players = user.get_neighbours_from_top(2)
@@ -161,7 +182,7 @@ def affected_players(request):
     else :
         user = get_object_or_404(Player, pk=user_id)
         players = [user]
-    
+
     return render_to_response('profile/mass_cast_players_list.html', { 'players':players }, context_instance=RequestContext(request))
 
 

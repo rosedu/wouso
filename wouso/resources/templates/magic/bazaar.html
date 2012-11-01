@@ -19,6 +19,7 @@
         <li><a href="#exchange" id="exchange-click" class="no-redir">{% trans 'Exchange' %}</a></li>
         {% endif %}
         <li><a href="#summary" id="summary-click" class="no-redir">{% trans 'Summary' %}{% if unseen_count > 0 %}<sup class="unread-count">{{ unseen_count }}</sup>{% endif %}</a></li>
+        <li><a href="#activity" id="activity-click" class="no-redir">{% trans 'Activity' %}</a></li>
     </ul>
 
 <div class="tab_container">
@@ -85,6 +86,13 @@
     </form>
     </div>
     {% endif %}
+
+    <div id="activity" class="tab_content">
+    <br/>
+        <div id="wall">
+               {% include 'activity/stream.html' %}
+       </div>
+    </div>
 
     <div id="summary" class="tab_content">
     <br/>
