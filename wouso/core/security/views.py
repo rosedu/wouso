@@ -25,6 +25,7 @@ def report(request,id):
                                     user_from=user_from.get_profile().get_extension(Player),
                                     user_to=user_to.get_profile().get_extension(Player),
                                     action="report",
+                                    public=False,
                                     game=None)
             add_report(user_from=user_from, user_to=user_to, text=request.POST['message'])
             request.session["report_msg"] = "The report was successfully submitted"
