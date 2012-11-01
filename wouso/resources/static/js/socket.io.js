@@ -146,7 +146,7 @@ if (typeof window != 'undefined'){
 				messages = io.util.isArray(messages) ? messages : [messages];
 		for (var i = 0, l = messages.length; i < l; i++){
 			message = messages[i] === null || messages[i] === undefined ? '' : stringify(messages[i]);
-			ret += frame + message.length + frame + message;
+			ret += frame + unescape(encodeURIComponent(message)).length + frame + message;
 		}
 		return ret;
 	};

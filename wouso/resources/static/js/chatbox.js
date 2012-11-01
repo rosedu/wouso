@@ -33,6 +33,7 @@ $(function(){
 
     $('#GlobalboxSendButton').click(function() {
         var value = $('#GlobalboxTextBox').val();
+
         if (value) {
             var data = {'action':'message', 'msg':value, 'room':'global'};
             socket.send(data);
