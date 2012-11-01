@@ -17,7 +17,7 @@ class AGForm(forms.ModelForm):
 class WAForm(forms.ModelForm):
     class Meta:
         model = Workshop
-        exclude = ('start_at', 'active_until')
+        exclude = ('start_at', 'active_until', 'status')
 
     def __init__(self, data=None, **kwargs):
         super(WAForm, self).__init__(data=data, **kwargs)
@@ -279,6 +279,7 @@ def workshop_edit(request, workshop):
     class WForm(forms.ModelForm):
         class Meta:
             model = Workshop
+            exclude = ('status',)
 
     if request.method == 'POST':
         form = WForm(request.POST, instance=workshop)

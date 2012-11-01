@@ -79,7 +79,9 @@
                 {% if w.is_reviewable %}
                 <a class="button" onclick="return confirm('are you sure?');" href="{% url ws_mark_for_grading w.id %}">Mark for grading</a><br/>
                 {% endif %}
-                {% if not w.is_started %}</td><td>
+            </td>
+            <td>
+                {% if not w.is_started %}
                     <a href="{% url ws_reviewers_map w.id %}">{% if w.is_gradable %}Grades{% else %}Reviewers map{% endif %}</a>
                 {% endif %}
             </td>
