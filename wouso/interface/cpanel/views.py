@@ -842,7 +842,10 @@ def reports(request, page=0):
     This page shows the reports
     """
 
-    return render_to_response('cpanel/reports.html',{'reports': Report.objects.all().order_by('-timestamp')})
+    return render_to_response('cpanel/reports.html',
+                    {'reports': Report.objects.all().order_by('-timestamp')},
+                    context_instance=RequestContext(request)
+    )
 
 @staff_required
 def edit_report(request, id):
@@ -855,7 +858,9 @@ def edit_report(request, id):
         return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.reports'))
     else:
         reportForm = EditReportForm(instance = report)
-        return render_to_response('cpanel/edit_report.html',{'report': report, 'form': reportForm, 'id': id}, context_instance=RequestContext(request))
+        return render_to_response('cpanel/edit_report.html',
+                        {'report': report, 'form': reportForm, 'id': id},
+                        context_instance=RequestContext(request))
 
 
 @staff_required
