@@ -1,13 +1,15 @@
-{% extends base_template %}
+{% extends 'interface/section_base.html' %}
 {% load user %}
 {% load artifacts %}
 {% load i18n %}
-{% block title %}{{block.super}} -- Chatbox{% endblock %}
+{% block title %}{{block.super}} -- {% trans 'Chat' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Chat' %}{% endblock %}
 
 {% block scripts %}
     <script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery.flot.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
+    <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/chatbox.css" />
     {% if config_disable_private_chat %}
         {% load socketio_tags %}
         {% socketio %}
@@ -16,11 +18,12 @@
 {% endblock %}
 
 {% csrf_token %}
-{% block content %}
-    <br>
+{% block sectioncontent %}
+    {% if False %}
     <ul class="tabs">
         <li><a href="#tab-1">{% trans 'Global' %}</a></li>
     </ul>
+    {% endif %}
     <div class="tab_container">
         <div id="tab-1" class="tab_content">
 
@@ -42,17 +45,13 @@
                         <td>
                     </tr>
                     <tr>
-                        <td colspan = "1"><input type="button" id="GlobalboxSendButton" value="Send"/>
+                        <td colspan = "1"><button type="submit" id="GlobalboxSendButton">{% trans 'Send' %}</button>
                         <td colspan = "1"><a class="button button-min" href="{% url archive %}" title="{% trans 'Send a message' %}">Archive</a>
-
-
                     </tr>
                 </table>
 
             </div>
         </div>
     </div>
-
-
 {% endblock %}
 

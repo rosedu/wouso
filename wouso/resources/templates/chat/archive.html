@@ -1,11 +1,11 @@
-{% extends base_template %}
+{% extends 'interface/section_base.html' %}
 {% load user %}
 {% load artifacts %}
 {% load i18n %}
 {% block title %}{{block.super}} -- Archivebox{% endblock %}
+{% block sectiontitle %}{% trans 'Archive' %}{% endblock %}
 
 {% block scripts %}
-
     <script type="text/javascript" src="{{ basepath }}/static/js/archive.js"></script>
     <link type="text/css" href="{{ basepath }}/static/css/jquery-ui-1.8.23.custom.css" rel="stylesheet" />
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery-ui-1.8.23.custom.min.js"></script>
@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
 {% endblock %}
 
-{% block content %}
+{% block sectioncontent %}
     <br>
     <ul class="tabs">
         <li><a href="#tab-1">{% trans 'Global' %}</a></li>
