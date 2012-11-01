@@ -6,7 +6,7 @@ from django.utils.translation import ugettext as _
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player
 from wouso.interface import logger
-from wouso.interface.activity.signals import addActivity
+from wouso.interface.activity.signals import addActivity, addedActivity
 
 class Activity(models.Model):
     timestamp = models.DateTimeField(default=datetime.now, blank=True)
@@ -119,5 +119,8 @@ def save_activity_handler(sender, **kwargs):
     a.game = kwargs['game']
     a.public = kwargs.get('public', True)
     a.save()
+    # Notify others
+    addedActivity.send(sender=None, activity=a)
+
 
 addActivity.connect(save_activity_handler)
