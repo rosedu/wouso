@@ -41,6 +41,9 @@
             <th>Interval</th>
             <th>Status</th>
             <th>Assesments</th>
+            <th></th>
+            <th></th>
+            <th>Integrity</th>
         </tr>
         {% for w in workshops%}
         <tr>
@@ -80,6 +83,7 @@
                     <a href="{% url ws_reviewers_map w.id %}">{% if w.is_gradable %}Grades{% else %}Reviewers map{% endif %}</a>
                 {% endif %}
             </td>
+            <td>{{ w.integrity }}</td>
         </tr>
         {% endfor %}
     </table>

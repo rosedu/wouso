@@ -171,6 +171,10 @@ class Workshop(models.Model):
             return True
         return False
 
+    @property
+    def integrity(self):
+        return reduce(lambda b, a: b and a.integrity, self.assessment_set.all(), True)
+
     def __unicode__(self):
         return u"#%d - on %s" % (self.pk, self.date)
 
