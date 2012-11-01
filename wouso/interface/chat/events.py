@@ -2,8 +2,9 @@
 from datetime import datetime
 from django.utils.html import strip_tags
 from django_socketio import events
-from wouso.interface.chat.utils import get_author, add_message
+from wouso.interface.chat.utils import get_author, add_message, make_message, get_author_by_message
 from models import *
+
 
 @events.on_message(channel="global")
 def message(request, socket, context, message):
@@ -11,7 +12,14 @@ def message(request, socket, context, message):
     Event handler for a room receiving a message. First validates a
     joining user's name and sends them the list of users.
     """
-    user = get_author(request)
+
+    if message['action'] == "start":
+        user = get_author_by_message(message)
+        msg = make_message(u'%s entered the room' % user, 'activity', 'global')
+        socket.send_and_broadcast_channel(msg)
+        return
+
+    user = get_author_by_message(message)
     room = get_room_or_none(message['room'])
     if user.user.has_perm("chat.super_chat_user"):
         if message['msg'][0] == '/' and message['room'] == "global":

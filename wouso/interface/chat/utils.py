@@ -3,6 +3,7 @@ import array
 import random
 from datetime import datetime
 from django_socketio import broadcast_channel, NoSocket
+from wouso.core.user.models import Player
 from wouso.interface.activity.models import Activity
 from wouso.interface.activity.signals import addedActivity
 from wouso.interface.chat.models import ChatUser, ChatMessage
@@ -133,6 +134,14 @@ def change_text(text):
 def get_author(request):
     return request.user.get_profile().get_extension(ChatUser)
 
+def get_author_by_message(message):
+    try:
+        return Player.objects.get(pk=message['user']).get_extension(ChatUser)
+    except Player.DoesNotExist:
+        return None
+
+def make_message(text, type, room):
+    return {'action': 'message', 'mess_type': type, 'room': room, 'text': text, 'time': datetime.now().strftime("%H:%M")}
 
 def broadcast_activity_handler(sender, **kwargs):
     """ Callback function for addedActivity signal

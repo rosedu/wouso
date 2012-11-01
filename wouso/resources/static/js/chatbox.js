@@ -28,14 +28,14 @@ $(function(){
 
     var connected = function() {
         socket.subscribe("global");
-        socket.send({room:'global', action: 'start', 'msg':"Connect to global chat."});
+        socket.send({room:'global', action: 'start', 'msg':"Connect to global chat.", 'user': myID});
     };
 
     $('#GlobalboxSendButton').click(function() {
         var value = $('#GlobalboxTextBox').val();
 
         if (value) {
-            var data = {'action':'message', 'msg':value, 'room':'global'};
+            var data = {'action':'message', 'msg':value, 'room':'global', 'user': myID};
             socket.send(data);
         }
         $('#GlobalboxTextBox').val('').focus();
@@ -78,7 +78,7 @@ $(function(){
     };
 
     var start = function() {
-        socket = new io.Socket();
+        socket = new io.Socket(chat_host, {'port': chat_port});
         socket.connect();
 
         socket.on('connect', connected);

@@ -123,6 +123,9 @@ def context(request):
     if not settings.CHAT_ENABLED:
         settings_dict['config_disable_chat'] = True
         settings_dict['config_disable_private_chat'] = True
+    else:
+        settings_dict['config_chat_host'] = settings.SOCKETIO_HOST
+        settings_dict['config_chat_port'] = settings.SOCKETIO_PORT
 
     # override theme using GET args
     if request.GET.get('theme', None) is not None:
