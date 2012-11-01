@@ -19,6 +19,10 @@
     <span class="points"><a class="button" href="{% url ws_edit_spot info.get_spot.0 info.get_spot.1 %}">✍spot</a></span>
 
     <div class="spacer"><!-- --></div>
+    <h4>Actions</h4>
+    <a href="?integrity_check=1">Integrity check</a>
+
+    <div class="spacer"><!-- --></div>
     <h4>Help</h4>
     <p>Workshops are sets of assessments per semigroup.</p>
 
@@ -34,6 +38,11 @@
 {% endblock %}
 
 {% block tabcontent %}
+    <div class="spacer-small">
+    {% autoescape off %}{{ config_ws_cpanel_extra }}{% endautoescape %}
+    </div>
+    <div class="spacer-small"><!-- --></div>
+
     <table>
         <tr>
             <th>Id</th>
@@ -85,7 +94,9 @@
                     <a href="{% url ws_reviewers_map w.id %}">{% if w.is_gradable %}Grades{% else %}Reviewers map{% endif %}</a>
                 {% endif %}
             </td>
+            {% if integrity_check %}
             <td>{{ w.integrity }}</td>
+            {% endif %}
         </tr>
         {% endfor %}
     </table>

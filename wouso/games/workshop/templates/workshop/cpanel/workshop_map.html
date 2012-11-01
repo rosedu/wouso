@@ -4,8 +4,15 @@
 
 {% block sectiontitle %}Workshop #{{ workshop.id }}{% endblock %}
 
+{% block information %}
+<div class="spacer"><!-- --></div>
+    <h4>Actions</h4>
+    <a href="?integrity_check=1">Integrity check</a>
+{% endblock %}
+
 {% block tabcontent %}
-<p>Assessments and reviewers:</p>
+    <h4>{{ workshop.semigroup }}, {{workshop.date}}, {{ workshop.active_until|date:"H:m" }}</h4>
+    <p>Assessments and reviewers:</p>
 
 <table>
     <tr>
@@ -29,10 +36,10 @@
             <a href="{% url ws_grade_assessment ass.id %}">Grade</a>
             {% endif %}
 
-            <a href="{% url ws_view_assessment workshop.id ass.id %}">view</a>
-            <a href="{% url ws_reset_assessment_reviews workshop.id ass.id %}" onclick="return confirm('are you sure? an angry mob will kill you if you do this');">reset</a>
+            <a class="button button-min" href="{% url ws_view_assessment workshop.id ass.id %}">view</a>
+            <a class="button button-min" href="{% url ws_reset_assessment_reviews workshop.id ass.id %}" onclick="return confirm('are you sure? an angry mob will kill you if you do this');">reset</a>
         </td>
-        <td>{{ ass.integrity }}</td>
+        <td>{% if integrity_check %}{{ ass.integrity }}{% else %}-{% endif %}</td>
         <td valign="top" rowspan="2">
             {% for a in ass.real_reviewers %}
                 {{ a }},

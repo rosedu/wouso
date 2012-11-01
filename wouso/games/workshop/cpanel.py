@@ -159,6 +159,7 @@ def workshops(request):
                          'workshops': workshops,
                          'page': 'workshops',
                          'info': WorkshopGame,
+                         'integrity_check': request.GET.get('integrity_check', False),
                          },
                         context_instance=RequestContext(request)
     )
@@ -202,6 +203,7 @@ def workshop_reviewers(request, workshop):
                         {'module': 'workshop',
                          'workshop': workshop,
                          'page': 'workshops',
+                         'integrity_check': request.GET.get('integrity_check', False),
                          },
                         context_instance=RequestContext(request)
     )
