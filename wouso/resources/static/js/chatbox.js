@@ -9,8 +9,6 @@ var timeStamp = null;
 var keepAlive = null;
 var oneMinute = 60000;
 
-var url_base = '';
-
 /* Private chat staff */
 var firstFreeChat;
 var max_room;
