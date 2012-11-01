@@ -21,6 +21,7 @@ from wouso.core.god import God
 from wouso.core import scoring
 from wouso.core.scoring.models import Formula
 from wouso.interface.activity.signals import addActivity
+from wouso.interface.apps.messaging.models import Message
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
@@ -840,13 +841,13 @@ def reports(request, page=0):
     """
     This page shows the reports
     """
-    
+
     return render_to_response('cpanel/reports.html',{'reports': Report.objects.all().order_by('-timestamp')})
 
 @staff_required
 def edit_report(request, id):
     report = get_object_or_404(Report, pk=id)
-    
+
     if request.method == "POST":
         form = EditReportForm(data = request.POST, instance=report)
         if form.is_valid():
@@ -855,3 +856,20 @@ def edit_report(request, id):
     else:
         reportForm = EditReportForm(instance = report)
         return render_to_response('cpanel/edit_report.html',{'report': report, 'form': reportForm, 'id': id}, context_instance=RequestContext(request))
+
+
+@staff_required
+def system_message_group(request, group):
+    group = get_object_or_404(PlayerGroup, pk=group)
+
+    if request.method == 'POST':
+        text = request.POST['text']
+        for p in group.players.all():
+            Message.send(sender=None, receiver=p, subject="System message", text=text)
+        message = 'Message sent!'
+    else:
+        message = ''
+
+    return render_to_response('cpanel/system_message_group.html',
+                        {'group': group, 'message': message},
+                        context_instance=RequestContext(request))

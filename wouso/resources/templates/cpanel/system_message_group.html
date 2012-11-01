@@ -1,0 +1,25 @@
+{% extends 'cpanel/index.html' %}
+{% load user %}
+
+{% block sectiontitle %}System Message{% endblock %}
+
+{% block sectioncontent %}
+<form   method="post" action="">
+    <table>
+        <tr>
+            <th>To:</th>
+            <td>{% player_group group %}</td>
+        </tr>
+        <tr>
+            <th>Text</th>
+            <td>
+                <textarea name="text" rows="20" cols="60"></textarea>
+            </td>
+        </tr>
+    </table>
+
+{% csrf_token %}
+<button type="submit">Send</button>
+</form>
+
+{% endblock %}
