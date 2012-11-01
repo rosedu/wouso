@@ -247,7 +247,25 @@ class Assessment(models.Model):
         """
         return self.player.assessments_review.filter(workshop=self.workshop)
 
+    @property
+    def real_reviewers(self):
+        """
+         Return a set of users from reviews
+        """
+        rr = Player.objects.filter(id__in=Review.objects.filter(answer__assessment=self).values('reviewer'))
+        return [r for r in rr if not r.in_staff_group()]
+
+    @property
+    def integrity(self):
+        r_ids = [int(a[0]) for a in self.reviewers.all().values_list('id')]
+        for r in self.real_reviewers:
+            if r.id not in r_ids:
+                return False
+
+        return True
+
     __unicode__ = lambda self: u"#%d" % self.id
+
 
 class Answer(models.Model):
     assessment = models.ForeignKey(Assessment)
