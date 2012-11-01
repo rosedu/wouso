@@ -1,0 +1,13 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Activity' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Activity' %}
+    <span class="points"><small>Updated: {{ activity.0.timestamp }}</small></span>
+{% endblock %}
+
+{% block sectioncontent %}
+    <div id="wall">
+        {% include 'activity/stream.html' %}
+    </div>
+{% endblock %}

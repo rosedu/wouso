@@ -138,6 +138,7 @@ def homepage(request, page=u'1'):
                               },
                               context_instance=RequestContext(request))
 
+
 @csrf_exempt
 def search(request):
     """ Perform regular search by either first or last name """
@@ -250,3 +251,17 @@ def ui(request):
     """
 
     return render_to_response('interface/ui.html', {}, context_instance=RequestContext(request))
+
+def all_activity(request):
+    """
+     Render all public activity, no matter race or game
+    """
+    page = 1
+    activity_list = Activity.get_global_activity(wouso_only=False)
+    paginator = Paginator(activity_list, 100)
+    try:
+        activity = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        activity = paginator.page(paginator.num_pages)
+
+    return render_to_response('activity/all.html', {'activity': activity}, context_instance=RequestContext(request))

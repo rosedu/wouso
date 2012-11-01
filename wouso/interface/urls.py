@@ -9,6 +9,8 @@ urlpatterns = patterns('',
     url(r'^hub/$', 'wouso.interface.views.hub', name='hub'),
     url(r'^(?P<page>\d*)/$', 'wouso.interface.views.homepage', name='homepage'),
 
+    url(r'^activity/all/$', 'wouso.interface.views.all_activity', name='all_activity'),
+
     # TODO: refactor this into wouso.interface.top.urls and include vvvvv
     url(r'^top/$', 'wouso.interface.top.views.gettop', name='view_top'),
     url(r'^top/toptype/(?P<toptype>\d)/sortcrit/(?P<sortcrit>\d)/page/(?P<page>\d+)/$', 'wouso.interface.top.views.gettop', name='view_top'),
@@ -47,7 +49,7 @@ urlpatterns = patterns('',
     (r'^instantsearch/$', 'wouso.interface.views.instantsearch'),
     (r'^searchone/$', 'wouso.interface.views.searchone'),
     url(r'^s/(.+)/$', 'wouso.interface.apps.pages.views.staticpage', name='static_page'),
-    
+
     #Report
     url(r'^report/(?P<id>\d*)/$','wouso.core.security.views.report', name='report_player'),
 

@@ -26,6 +26,8 @@
         {% if activity.has_next %}
             <a href="{% url homepage page=activity.next_page_number %}"> &laquo;</a>
         {% endif %}
+
+            <span class="points"><a href="{% url all_activity %}">All &raquo;</a></span>
         </div>
    </div>
 
