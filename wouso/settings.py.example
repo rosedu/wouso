@@ -95,6 +95,7 @@ MIDDLEWARE_CLASSES = (
     # for last 10 minutes to work
     'wouso.middleware.Seen',
     'wouso.middleware.DebugExceptionMiddleware',
+    'wouso.middleware.ImpersonateMiddleware',
     )
 AUTHENTICATION_BACKENDS = (
     #'wouso.middleware.ldap_connection.LDAPBackend',
