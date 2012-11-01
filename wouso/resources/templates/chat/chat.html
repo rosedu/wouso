@@ -10,11 +10,8 @@
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery.flot.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
     <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/chatbox.css" />
-    {% if config_disable_private_chat %}
-        {% load socketio_tags %}
-        {% socketio %}
-        <script type="text/javascript">var chat_host = '{{config_chat_host}}'; var chat_port='{{ config_chat_port }}';</script>
-        <script type="text/javascript" src="{{ basepath }}/static/js/chatbox.js"></script>
+    {% if not config_disable_chat  %}
+        {% include 'chat/setup.html' %}
     {% endif %}
 {% endblock %}
 
