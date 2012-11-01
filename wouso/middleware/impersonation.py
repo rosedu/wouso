@@ -5,6 +5,8 @@ KEYWORD = "_as"
 
 class ImpersonateMiddleware(object):
     def process_request(self, request):
+        if not hasattr(request, 'user'):
+            return
         if request.user.is_superuser and KEYWORD in request.GET:
             from django.contrib.auth.models import User
             real_user = request.user
@@ -16,6 +18,8 @@ class ImpersonateMiddleware(object):
                 request.user = real_user
 
     def process_response(self, request, response):
+        if not hasattr(request, 'user'):
+            return response
         if request.user.is_superuser and KEYWORD in request.GET:
             if isinstance(response, http.HttpResponseRedirect):
                 location = response["Location"]
