@@ -1,10 +1,12 @@
+from django import forms
+from django.core.exceptions import ValidationError
 from hashlib import md5
 from django.utils import simplejson
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core import serializers
 from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from wouso.core.god import God
 from wouso.core.user.models import Player, PlayerGroup, Race
@@ -25,9 +27,28 @@ def player_points_history(request, id):
 @login_required
 def set_profile(request):
     user = request.user.get_profile()
+    class SForm(forms.ModelForm):
+        class Meta:
+            model = Player
+            fields = ('nickname',)
+
+        def clean_nickname(self):
+            if Player.objects.exclude(id=self.instance.id).filter(nickname=self.cleaned_data['nickname']).count():
+                raise ValidationError("Nickname is used")
+            self.cleaned_data['nickname'] = self.cleaned_data['nickname'].strip().replace(' ', '_')
+            return self.cleaned_data['nickname']
+
+
+    if request.method == 'POST':
+        form = SForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('player_profile', id=user.id)
+    else:
+        form = SForm(instance=user)
+
     return render_to_response('profile/set_profile.html',
-            {'profile': user,
-             },
+            {'profile': user, 'form': form},
         context_instance=RequestContext(request))
 
 @login_required

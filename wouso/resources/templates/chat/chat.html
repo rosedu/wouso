@@ -47,9 +47,13 @@
                         <td colspan = "1">
                                <button type="submit" id="GlobalboxSendButton">{% trans 'Send' %}</button>
                         </td>
+                        <td colspan = "1">
                         {% if not config_disable_chat_archive %}
-                        <td colspan = "1"><a class="button" href="{% url archive %}" title="{% trans 'Send a message' %}">Archive</a>
+                        <a class="button button-min" href="{% url archive %}" title="{% trans 'View archive' %}">H</a>
                         {% endif %}
+
+                        <!--<a class="button button-min" href="{% url set_profile %}" title="{% trans 'Set your nickname' %}">S</a>-->
+                        </td>
                     </tr>
                 </table>
 

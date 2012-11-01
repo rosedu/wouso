@@ -1,41 +1,17 @@
-{% extends base_template %}
+{% extends 'interface/section_base.html' %}
 {% load artifacts %}
 {% load user %}
 {% load i18n %}
 
 {% block title %}{{ profile }}{% endblock %}
-{% block scripts %}
-<script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
-<script type="text/javascript" src="{{ basepath }}/static/js/jquery.flot.min.js"></script>
-<script type="text/javascript" src="{{ basepath }}/static/js/profile_setting.js"></script>
-<link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
-{% endblock %}
+{% block sectiontitle %}{{ profile }}{% endblock %}
 
-{% block content %}
-    </br>
-    </br>
-    <table align="right">
-        <tr>
-            <td>Nick-Name:</td>
-            <td align="left"><input type="text" id="Nick_Name" value="{{profile.nickname}}" maxlength="20" size="20"></td>
-        </tr>
-        <tr>
-            <td width="100px">First-Name:</td>
-            <td align="left"><input type="text" id="First_Name" value="{{profile.user.first_name}}" maxlength="25" size="20"></td>
-        </tr>
-        <tr>
-            <td><br></td>
-        </tr>
-        <tr>
-            <td>Description:</td>
-        </tr>
-        <tr>
-            <td colspan="2"><textarea id="Description" style="width: 690px; height: 200px; display:block; resize:none">{{profile.description}}</textarea></td>
-        </tr>
-        <tr>
-            <td><input type="submit" class="default" value="Save" onclick="save_changes()"></td>
-        </tr>
+{% block sectioncontent %}
+    <form   method="POST" action="">
+    <table>
+        {{ form.as_table }}
     </table>
-
-
+    {% csrf_token %}
+    <button type="submit">{% trans 'Save' %}</button>
+    </form>
 {% endblock %}
