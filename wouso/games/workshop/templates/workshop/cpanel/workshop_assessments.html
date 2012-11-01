@@ -12,7 +12,14 @@
             {% for a in assessment.answer_set.all %}
             <li>{{ a.question }}
                 <br/>
-                {{ a }}
+                <pre>{{ a }}</pre>
+                <br/>
+                <ul>
+                    {% for review in a.review_set.all %}
+                        <li><span {% if review.reviewer.in_staff_group %}class="red"{% endif %}>{{ review.reviewer }}: [{{ review.answer_grade }}] - {{ review.feedback }}</span> <span class="red">[{{ review.review_grade }}]</span></li>
+                    {% endfor %}
+                </ul>
+                <br/>
             </li>
             {% endfor %}
         </ol>
