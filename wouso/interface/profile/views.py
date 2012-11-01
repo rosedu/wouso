@@ -6,6 +6,7 @@ from django.core import serializers
 from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+from wouso.core.god import God
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.scoring.models import History
 from wouso.core.magic.models import Spell, PlayerSpellDue
@@ -106,9 +107,9 @@ def player_contact(request, player):
     player = get_object_or_404(Player, pk=player)
 
     return render_to_response('profile/contactbox.html',
-								{'contactbox': player},
-								context_instance=RequestContext(request)
-	)
+                                {'contactbox': player},
+                                context_instance=RequestContext(request)
+    )
 
 
 @login_required
@@ -162,12 +163,20 @@ def player_race(request, race_id):
 
     groups = NewHistory.get_children_top(race, PlayerGroup)
 
+    # Get levels
+    levels = []
+    for i, limit in enumerate(God.LEVEL_LIMITS):
+        l = God.get_race_level(level_no=i + 1, race=race)
+        l.limit = limit
+        levels.append(l)
+
     return render_to_response('profile/race.html',
                             {'race': race,
                              'children': groups,
                              'top_users': top_users,
                              'top_rank': top_rank,
-                             'activity': activity},
+                             'activity': activity,
+                             'levels': levels},
                             context_instance=RequestContext(request)
     )
 
@@ -176,7 +185,7 @@ def player_race(request, race_id):
 def groups_index(request):
     PlayerGroup.top = lambda(self): GroupHistory(self)
     groups = PlayerGroup.objects.exclude(parent=None).order_by('name')
-    
+
     return render_to_response('profile/groups.html',
                               {'groups': groups},
                               context_instance=RequestContext(request))
@@ -202,5 +211,5 @@ def magic_spell(request):
     except:
         raise Http404
     spell = get_object_or_404(Spell, pk=spell)
-    
+
     return HttpResponse(serializers.serialize('json', (spell,)))

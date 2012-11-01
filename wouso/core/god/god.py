@@ -39,26 +39,27 @@ class DefaultGod:
         ]
         return fs
 
-    def get_user_level(self, level_no, player):
-        """
-        Return the artifact object for the given level_no.
-        If there is a group for player series, use it.
-        """
+    def get_race_level(self, level_no, race):
         try:
-            group = ArtifactGroup.objects.get(name=player.race.name)
+            group = ArtifactGroup.objects.get(name=race.name)
         except (ArtifactGroup.DoesNotExist, AttributeError):
             group = Artifact.DEFAULT()
 
         name = 'level-%d' % level_no
         try:
-            artifact = Artifact.objects.get(name=name, group=group)
+            return Artifact.objects.get(name=name, group=group)
         except Artifact.DoesNotExist:
             try:
-                artifact = Artifact.objects.get(name=name, group=Artifact.DEFAULT())
+                return Artifact.objects.get(name=name, group=Artifact.DEFAULT())
             except Artifact.DoesNotExist:
                 return NoArtifactLevel(level_no)
 
-        return artifact
+    def get_user_level(self, level_no, player):
+        """
+        Return the artifact object for the given level_no.
+        If there is a group for player series, use it.
+        """
+        return self.get_race_level(level_no, player.race)
 
     def get_level_for_points(self, points, player=None):
         """ Implement points limits, for passing a level points must be in an interval.
@@ -250,7 +251,7 @@ class DefaultGod:
                 return False
 
         return True
-        
+
 
 def spell_cleanup(spell,destination,spell_name):
     """
