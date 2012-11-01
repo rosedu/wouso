@@ -59,9 +59,6 @@
                                 <br/>
                                 <em>{% trans 'grade:' %}</em> <strong>{{ r.answer_grade }}</strong>,
                                 <em class="red">{% trans 'review grade:' %} <strong>{{ r.review_grade }}</strong></em>
-                                {% if r.reviewer == user.get_profile and r.workshop.is_reviewable %}
-                                    <a class="button" href="{% url workshop_edit_review r.id %}">{% trans 'Change' %}</a>
-                                {% endif %}
                             {% endif %}
                         {% endif %}
                         </li>

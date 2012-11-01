@@ -6,7 +6,7 @@
 
 {% block tabcontent %}
 {% if assessment %}
-        <h3>Assessment #{{ assesment.id }}</h3>
+        <h3>Assessment #{{ assessment.id }}</h3>
         <h4>{{ assessment.player }}, {{ assessment.workshop.semigroup }}, {{ assessment.player.group.name }}</h4>
         <ol>
             {% for a in assessment.answer_set.all %}
