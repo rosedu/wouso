@@ -30,6 +30,7 @@
             {% endif %}
 
             <a href="{% url ws_view_assessment workshop.id ass.id %}">view</a>
+            <a href="{% url ws_reset_assessment_reviews workshop.id ass.id %}" onclick="return confirm('are you sure? an angry mob will kill you if you do this');">reset</a>
         </td>
         <td>{{ ass.integrity }}</td>
         <td valign="top" rowspan="2">
