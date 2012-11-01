@@ -66,8 +66,8 @@ class MessageApp(App):
 
 #admin
 class MessageAdmin(admin.ModelAdmin):
-    list_filter = ('sender', 'receiver')
-    list_display = ('__unicode__', 'subject', 'text')
+    list_filter = ('read', 'sender', 'receiver')
+    list_display = ('__unicode__', 'subject', 'text', 'timestamp')
 
 admin.site.register(MessagingUser)
 admin.site.register(Message, MessageAdmin)
