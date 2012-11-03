@@ -42,9 +42,9 @@ $(function(){
 
     function addMessage(data){
         if(data.mess_type == 'normal')
-            $("#GlobalboxTextArea").append(data.time + " " + data.user + ": " + replace_emoticons(data.text) + "<br />");
-        else if (data.mess_type == 'activity')
-            $("#GlobalboxTextArea").append("<em>" + data.time  +  ": " + replace_emoticons(data.text) + "</em>" + "<br />");
+            $("#GlobalboxTextArea").append(data.time + "<em> " + data.user + ": " + replace_emoticons(data.text) + "</em><br />");
+        //else if (data.mess_type == 'activity')
+        //    $("#GlobalboxTextArea").append("<em>" + data.time  +  ": " + replace_emoticons(data.text) + "</em>" + "<br />");
         else if(data.mess_type == 'special' && data.command == 'kick' && data.dest_user == myName && window.location.pathname == url_base + '/chat/')
             window.location = url_base + "/";
         AutoScroll();

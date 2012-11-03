@@ -71,7 +71,7 @@
     text-align:left;
     height:300px;
     width:500px;
-
+    word-wrap: break-word;
     border: thin solid black;
     overflow: auto;
 }
