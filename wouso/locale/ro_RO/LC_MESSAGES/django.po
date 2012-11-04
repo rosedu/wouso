@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-10-30 23:19+0200\n"
 "PO-Revision-Date: 2012-10-30 23:28+0200\n"
-"Last-Translator: Alex Eftimie <alex@eftimie.ro>\n"
+"Last-Translator: Matei Oprea <matei.oprea@rosedu.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -277,7 +277,7 @@ msgstr "Provocări refuzate:"
 
 #: games/challenge/templates/challenge/statistics.html:13
 msgid "Win percentage: "
-msgstr ""
+msgstr "Procentaj câștig:"
 
 #: games/challenge/templates/challenge/statistics.html:14
 msgid "Average time taken: "
@@ -321,7 +321,7 @@ msgstr ""
 
 #: games/challenge/templates/challenge/statistics_detail.html:16
 msgid "Score Opponent"
-msgstr ""
+msgstr "Scorul adversarului"
 
 #: games/qotd/models.py:49
 msgid "has given a correct answer to QotD."
@@ -333,7 +333,7 @@ msgstr "a răspuns greșit la întrebarea zilei."
 
 #: games/qotd/views.py:21
 msgid "You have been blinded,you cannot answer to the Question of the Day"
-msgstr ""
+msgstr "Ai primit "Blind". Nu poți răspunde la întrebarea zilei."
 
 #: games/qotd/templates/qotd/done.html:4
 #: games/qotd/templates/qotd/done.html:5
@@ -730,11 +730,11 @@ msgstr "Workshop pentru revizie!"
 
 #: games/workshop/models.py:433
 msgid "Hello, the reviewing stage for the latest workshop has begun."
-msgstr ""
+msgstr "Salut, etapa de recenzie pentru ultimul workshop a inceput."
 
 #: games/workshop/views.py:40
 msgid "No workshop for you"
-msgstr ""
+msgstr "Niciun workshop pentru tine"
 
 #: games/workshop/views.py:43
 msgid "Workshop is not active"
@@ -746,7 +746,7 @@ msgstr "Ai răspuns deja la acest workshop"
 
 #: games/workshop/views.py:74
 msgid "Cannot review an workshop you did not participate to."
-msgstr ""
+msgstr "Nu poți face recenzie la un workshop la care nu ai participat."
 
 #: games/workshop/views.py:103
 msgid "Cannot change another review"
@@ -754,11 +754,11 @@ msgstr ""
 
 #: games/workshop/views.py:106
 msgid "Workshop not reviewable"
-msgstr ""
+msgstr "Nu poți face recenzie acestui workshop."
 
 #: games/workshop/views.py:135
 msgid "Cannot view results for an workshop you did not participate to."
-msgstr ""
+msgstr "Nu poți vedea rezultate pentru workshopuri la care nu ai participat."
 
 #: games/workshop/templates/workshop/index.html:5
 #: games/workshop/templates/workshop/index.html:6
@@ -823,7 +823,7 @@ msgstr "Workshop disponibil până la"
 
 #: games/workshop/templates/workshop/play.html:15
 msgid "Assessment started"
-msgstr ""
+msgstr "Evaluarea a inceput"
 
 #: games/workshop/templates/workshop/play.html:46
 msgid "Are you sure do you want to submit?"
@@ -848,11 +848,11 @@ msgstr "niciuna"
 
 #: games/workshop/templates/workshop/results.html:22
 msgid "Assessment grade:"
-msgstr ""
+msgstr "Nota Evaluării:"
 
 #: games/workshop/templates/workshop/results.html:23
 msgid "Reviewer grade:"
-msgstr ""
+msgstr "Nota recenzorului"
 
 #: games/workshop/templates/workshop/results.html:24
 msgid "Your final grade is:"
@@ -875,11 +875,11 @@ msgstr "Anonim"
 
 #: games/workshop/templates/workshop/review.html:5
 msgid "Reviews for workshop"
-msgstr ""
+msgstr "Recenzii pentru workshop"
 
 #: games/workshop/templates/workshop/review.html:11
 msgid "assesment"
-msgstr ""
+msgstr "Evaluare"
 
 #: games/workshop/templates/workshop/review.html:21
 msgid "Assistant grade:"
@@ -893,7 +893,7 @@ msgstr "Nota"
 #: games/workshop/templates/workshop/review.html:38
 #: games/workshop/templates/workshop/review.html:81
 msgid "Feedback:"
-msgstr ""
+msgstr "Feedback:"
 
 #: games/workshop/templates/workshop/review.html:60
 msgid "grade:"
@@ -917,7 +917,7 @@ msgstr "Index"
 
 #: games/workshop/templates/workshop/review_change.html:5
 msgid "Change review for workshop"
-msgstr ""
+msgstr "Schimba revizia pentru workshop"
 
 #: games/workshop/templates/workshop/review_change.html:13
 msgid "Save"
@@ -1162,7 +1162,7 @@ msgstr "Rezultate căutare"
 #: resources/templates/magic/artifact_hof.html:6
 #: resources/templates/magic/artifact_hof.html:7
 msgid "Hall of Fame"
-msgstr ""
+msgstr "Hall of Fame"
 
 #: resources/templates/magic/artifact_hof.html:21
 msgid "Back"
@@ -1171,11 +1171,11 @@ msgstr "Înapoi"
 #: resources/templates/magic/artifact_hof.html:23
 #: resources/templates/top/sidebar.html:29
 msgid "Achievements"
-msgstr "Realizări"
+msgstr "Achievements"
 
 #: resources/templates/magic/artifact_hof.html:28
 msgid "No achievements received yet. Stay tuned!"
-msgstr ""
+msgstr "Niciun achievement primit."
 
 #: resources/templates/magic/artifact_hof.html:33
 msgid "Players"
@@ -1527,7 +1527,7 @@ msgstr "Câștigat"
 #: resources/templates/top/challenge_top.html:25
 #, python-format
 msgid "Won %%"
-msgstr ""
+msgstr "Câștigat %%"
 
 #: resources/templates/top/challenge_top.html:26
 msgid "Lost"
