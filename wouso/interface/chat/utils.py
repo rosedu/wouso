@@ -140,8 +140,8 @@ def get_author_by_message(message):
     except Player.DoesNotExist:
         return None
 
-def make_message(text, type, room):
-    return {'action': 'message', 'mess_type': type, 'room': room, 'text': text, 'time': datetime.now().strftime("%H:%M")}
+def make_message(text, type, room, id):
+    return {'action': 'message', 'mess_type': type, 'room': room, 'text': text, 'id': id , 'time': datetime.now().strftime("%H:%M")}
 
 def broadcast_activity_handler(sender, **kwargs):
     """ Callback function for addedActivity signal

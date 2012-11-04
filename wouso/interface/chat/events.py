@@ -15,7 +15,7 @@ def message(request, socket, context, message):
 
     if message['action'] == "start":
         user = get_author_by_message(message)
-        msg = make_message(u'%s entered the room' % user, 'activity', 'global')
+        msg = make_message(u'%s entered the room' % user, 'activity', 'global', message['user'])
         socket.send_and_broadcast_channel(msg)
         return
 
@@ -59,6 +59,19 @@ def message(request, socket, context, message):
         message['mess_type'] = "normal"
         message['dest_user'] = unicode(user.nickname)
         socket.send_and_broadcast_channel(message)
+
+
+@events.on_finish(channel="global")
+def finish(request, socket, context):
+    """
+    Event handler for a socket session ending in a room. Broadcast
+    the user leaving and delete them from the DB.
+    """
+    print "finish"
+
+    left = make_message(u'%s left the room' % request.user, 'left', 'global', request.user.id)
+    socket.broadcast_channel(left)
+
 
 def get_room_or_none(room_name):
     try:
