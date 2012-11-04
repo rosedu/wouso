@@ -43,8 +43,11 @@ $(function(){
     function addMessage(data){
         if(data.mess_type == 'normal')
             $("#GlobalboxTextArea").append(data.time + "<em> " + data.user + ": " + replace_emoticons(data.text) + "</em><br />");
-        //else if (data.mess_type == 'activity')
-        //    $("#GlobalboxTextArea").append("<em>" + data.time  +  ": " + replace_emoticons(data.text) + "</em>" + "<br />");
+        else if (data.mess_type == 'activity')
+            $("#status_" + data.id).attr("src", "/static/img/status_online.png");
+        else if (data.mess_type == 'left')
+            $("#status_" + data.id).attr("src", "/static/img/status_ingame.png");
+
         else if(data.mess_type == 'special' && data.command == 'kick' && data.dest_user == myName && window.location.pathname == url_base + '/chat/')
             window.location = url_base + "/";
         AutoScroll();
@@ -75,13 +78,17 @@ $(function(){
         }
     };
 
+    var disconnect = function() {
+        setTimeout(start,100);
+    };
+
     var start = function() {
         socket = new io.Socket(chat_host, {'port': chat_port});
         socket.connect();
 
         socket.on('connect', connected);
         socket.on('message', messaged);
-
+        socket.on('disconnect', disconnect)
     };
 
 
@@ -559,7 +566,7 @@ $(document).ready(function () {
     $(document).ready(NewLog);
     //$(document).ready(SendPing);
     //SendPingTimer = setInterval(function(){SendPing();}, keepAlive);
-    NewUserTimer = setInterval(function(){NewUsers();}, 10000);
+    NewUserTimer = setInterval(function(){NewUsers();}, 30000);
     InitialChat();
 
     /*function SetTimeForKeepAlive(time){
