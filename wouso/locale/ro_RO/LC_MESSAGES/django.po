@@ -333,7 +333,7 @@ msgstr "a răspuns greșit la întrebarea zilei."
 
 #: games/qotd/views.py:21
 msgid "You have been blinded,you cannot answer to the Question of the Day"
-msgstr "Ai primit "Blind". Nu poți răspunde la întrebarea zilei."
+msgstr "Ai primit Blind. Nu poți răspunde la întrebarea zilei."
 
 #: games/qotd/templates/qotd/done.html:4
 #: games/qotd/templates/qotd/done.html:5
