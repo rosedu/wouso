@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from django.utils.translation import ugettext_noop
 from wouso.core.app import App
 from wouso.core.user.models import Player
+from wouso.core.scoring.models import History
 from wouso.interface.apps.messaging.models import Message
 from wouso.games.challenge.models import Challenge
 from wouso.core.magic.models import PlayerSpellDue, SpellHistory
@@ -182,6 +183,13 @@ def spent_gold(player):
 
     return cost
 
+def gold_amount(player):
+    """
+     Return player's amount of gold
+    """
+    coins = History.user_coins(player)
+    return coins['gold']
+
 class Achievements(App):
     @classmethod
     def earn_achievement(cls, player, modifier):
@@ -305,6 +313,12 @@ class Achievements(App):
                 if player.level_no >= 10:
                     cls.earn_achievement(player, 'ach-level-10')
 
+        if 'gold' in action:
+            # Check if player has 300 gold
+            if not player.magic.has_modifier('ach-gold-300'):
+                if gold_amount(player) >= 300:
+                    cls.earn_achievement(player, 'ach-gold-300')
+
     @classmethod
     def get_modifiers(self):
         return ['ach-login-10',
@@ -323,6 +337,7 @@ class Achievements(App):
                 'ach-spell-5',
                 'ach-level-5',
                 'ach-level-10',
+                'ach-gold-300',
                 'ach-spent-gold',
         ]
 
