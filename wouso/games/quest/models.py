@@ -176,17 +176,23 @@ class Quest(models.Model):
             logging.error("No such question")
             return False
 
-        if not user.current_level == self.count and \
-                answer.lower() == question.answers.all()[0].text.lower():
-            # score current progress
-            scoring.score(user, QuestGame, self.get_formula('quest-ok'), level=(user.current_level + 1))
-            user.current_level += 1
-            if user.current_level == self.count:
-                user.finish_quest()
-                # score finishing
-                scoring.score(user, QuestGame, self.get_formula('quest-finish-ok'))
-            user.save()
-            return True
+        if not user.current_level == self.count:
+            answers = question.answers.all()
+            correct = False
+            for a in answers:
+                if answer.lower() == a.lower():
+                    correct = True
+                    break
+            if correct:
+                # score current progress
+                scoring.score(user, QuestGame, self.get_formula('quest-ok'), level=(user.current_level + 1))
+                user.current_level += 1
+                if user.current_level == self.count:
+                    user.finish_quest()
+                    # score finishing
+                    scoring.score(user, QuestGame, self.get_formula('quest-finish-ok'))
+                user.save()
+                return True
         return False
 
     def reorder(self, order):
