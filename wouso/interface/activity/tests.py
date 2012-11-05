@@ -587,8 +587,9 @@ class SpellAchievement(WousoTest):
 
 class LevelUpTest(WousoTest):
 
-    def test_level_5_ach(self):
+    def test_level_ach(self):
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-level-5')
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-level-10')
         player = self._get_player()
         player.level_no = 5
         player.save()
@@ -597,6 +598,14 @@ class LevelUpTest(WousoTest):
                                 user_to=player, action='gold-won',
                                 game=None)
         self.assertTrue(player.magic.has_modifier('ach-level-5'))
+
+        player.level_no = 10
+        player.save()
+
+        signals.addActivity.send(sender=None, user_from=player,
+                                user_to=player, action='gold-won',
+                                game=None)
+        self.assertTrue(player.magic.has_modifier('ach-level-10'))
 
 
 class GodModeTest(WousoTest):

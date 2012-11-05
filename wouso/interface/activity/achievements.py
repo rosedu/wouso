@@ -300,6 +300,10 @@ class Achievements(App):
             if not player.magic.has_modifier('ach-level-5'):
                 if player.level_no >= 5:
                     cls.earn_achievement(player, 'ach-level-5')
+            # Check if player reached level 10
+            if not player.magic.has_modifier('ach-level-10'):
+                if player.level_no >= 10:
+                    cls.earn_achievement(player, 'ach-level-10')
 
     @classmethod
     def get_modifiers(self):
@@ -318,6 +322,7 @@ class Achievements(App):
                 'ach-god-mode-on',
                 'ach-spell-5',
                 'ach-level-5',
+                'ach-level-10',
                 'ach-spent-gold',
         ]
 
