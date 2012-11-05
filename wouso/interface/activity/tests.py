@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from wouso.core.magic.models import Artifact, Spell
+from wouso.core.magic.models import Artifact, Spell, SpellHistory
 from wouso.core.magic.manager import MagicManager
 from wouso.core.tests import WousoTest
 from wouso.core import scoring
@@ -12,7 +12,7 @@ from achievements import consecutive_chall_won, challenge_count
 from achievements import refused_challenges, get_challenge_time
 from achievements import unique_users_pm , wrong_first_qotd
 from achievements import get_chall_score, challenges_played_today
-from achievements import check_for_god_mode, spell_count
+from achievements import check_for_god_mode, spell_count, spent_gold
 from models import Activity
 from achievements import Achievements
 from . import signals
@@ -553,6 +553,29 @@ class SpellAchievement(WousoTest):
         signals.addActivity.send(sender=None, user_from=player,
                 user_to=player, action="cast", game=None)
         self.assertTrue(player.magic.has_modifier('ach-spell-5'))
+
+    def test_gold_spent(self):
+        player = self._get_player()
+        spell = Spell.objects.create(name="test", title="", description="",
+                                    image=None, percents=100, type='s',
+                                    price=25)
+        SpellHistory.objects.create(type='b', user_from=player, user_to=player,
+                                date=datetime.now(), spell=spell)
+        self.assertTrue(spent_gold(player), 25)
+
+    def test_gold_spent_activity(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-spent-gold')
+        player = self._get_player()
+        spell = Spell.objects.create(name="test", title="", description="",
+                                    image=None, percents=100, type='s',
+                                    price=600)
+        SpellHistory.objects.create(type='b', user_from=player, user_to=player,
+                                date=datetime.now(), spell=spell)
+        signals.addActivity.send(sender=None, user_from=player,
+                                user_to=player, action='spell-buy',
+                                game=None)
+
+        self.assertTrue(player.magic.has_modifier('ach-spent-gold'))
 
 class GodModeTest(WousoTest):
 
