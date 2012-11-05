@@ -5,7 +5,7 @@ from wouso.core.app import App
 from wouso.core.user.models import Player
 from wouso.interface.apps.messaging.models import Message
 from wouso.games.challenge.models import Challenge
-from wouso.core.magic.models import PlayerSpellDue
+from wouso.core.magic.models import PlayerSpellDue, SpellHistory
 from models import Activity
 from wouso.core.signals import addActivity,messageSignal
 
@@ -171,6 +171,17 @@ def spell_count(player):
     today = datetime.now().date()
     return PlayerSpellDue.objects.filter(player=player, due__gte=today).count()
 
+def spent_gold(player):
+    """
+        Return the amount of gold spent on spells
+    """
+    activity = SpellHistory.objects.filter(type='b', user_from=player)
+    cost = 0
+    for a in activity:
+        cost += a.spell.price
+
+    return cost
+
 class Achievements(App):
     @classmethod
     def earn_achievement(cls, player, modifier):
@@ -278,6 +289,11 @@ class Achievements(App):
             if not player.magic.has_modifier('ach-spell-5'):
                 if spell_count(player) >= 5:
                     cls.earn_achievement(player, 'ach-spell-5')
+        if "buy" in action:
+            # Check if player spent 500 gold on spells
+            if not player.magic.has_modifier('ach-spent-gold'):
+                if spent_gold(player) >= 500:
+                    cls.earn_achievement(player, 'ach-spent-gold')
 
     @classmethod
     def get_modifiers(self):
@@ -295,6 +311,7 @@ class Achievements(App):
                 'ach-win-fast',
                 'ach-god-mode-on',
                 'ach-spell-5',
+                'ach-spent-gold',
         ]
 
 
