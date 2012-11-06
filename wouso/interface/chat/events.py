@@ -15,7 +15,7 @@ def message(request, socket, context, message):
 
     if message['action'] == "start":
         user = get_author_by_message(message)
-        msg = make_message(u'%s entered the room' % user, 'activity', 'global', message['user'])
+        msg = make_message(u'%s' % user, 'activity', 'global', message['user'])
         socket.send_and_broadcast_channel(msg)
         return
 
