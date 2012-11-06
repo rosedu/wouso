@@ -19,7 +19,7 @@ var private_users;
 function AutoScroll() {
     $('#GlobalboxTextArea').scrollTop($('#GlobalboxTextArea')[0].scrollHeight);
 }
-
+var online_user = new Array();
 $(function(){
 
     var socket;
@@ -43,11 +43,20 @@ $(function(){
     function addMessage(data){
         if(data.mess_type == 'normal')
             $("#GlobalboxTextArea").append(data.time + "<em> " + data.user + ": " + replace_emoticons(data.text) + "</em><br />");
-        else if (data.mess_type == 'activity')
+        else if (data.mess_type == 'activity'){
+
+            online_user.push(data.id);
             $("#status_" + data.id).attr("src", "/static/img/status_online.png");
-        else if (data.mess_type == 'left')
+        }else if (data.mess_type == 'left'){
+            for(var i = 0; i < online_user.length; i++){
+                if(online_user[i] == data.id){
+                    online_user.splice(i,1);
+                }
+            }
+
             $("#status_" + data.id).attr("src", "/static/img/status_ingame.png");
 
+        }
         else if(data.mess_type == 'special' && data.command == 'kick' && data.dest_user == myName && window.location.pathname == url_base + '/chat/')
             window.location = url_base + "/";
         AutoScroll();
@@ -79,7 +88,7 @@ $(function(){
     };
 
     var disconnect = function() {
-        setTimeout(start,100);
+        start();
     };
 
     var start = function() {
@@ -508,6 +517,12 @@ $(document).ready(function () {
     function NewUsers() {
         $.get(url_base + '/chat/last/', function (data) {
             $('#GlobalboxUserList').html(data);
+
+
+            for(var i = 0 ; i < online_user.length; i ++){
+                //alert(online_user[i])
+                $("#status_" + online_user[i]).attr("src", "/static/img/status_online.png");
+            }
             if (selectID) {
                 $('#cl_' + selectID).attr('style', 'font-weight: bold;background-color:#ffffff;');
                 $('.caction').attr('disabled', false);
@@ -520,6 +535,8 @@ $(document).ready(function () {
             else
                 $('.caction').attr('disabled', true);
         });
+
+
     }
 
     /* Last 50 messages that was write in global chat.*/
@@ -566,7 +583,7 @@ $(document).ready(function () {
     $(document).ready(NewLog);
     //$(document).ready(SendPing);
     //SendPingTimer = setInterval(function(){SendPing();}, keepAlive);
-    NewUserTimer = setInterval(function(){NewUsers();}, 30000);
+    NewUserTimer = setInterval(function(){NewUsers();}, 5000);
     InitialChat();
 
     /*function SetTimeForKeepAlive(time){
