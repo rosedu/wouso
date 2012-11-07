@@ -269,7 +269,7 @@ class Achievements(App):
                 if challenges_played_today(player) >= 10:
                     cls.earn_achievement(player, 'ach-chall-10-a-day')
 
-        if action == "message":
+        if action == 'message':
             # Check the number of unique users who send pm to player in the last m minutes
             if unique_users_pm(kwargs.get('user_to'), 15) >= 5:
                 if not kwargs.get('user_to').magic.has_modifier('ach-popularity'):
@@ -292,18 +292,18 @@ class Achievements(App):
                 if not player.magic.has_modifier('ach-login-10'):
                     cls.earn_achievement(player, 'ach-login-10')
 
-        if action == "cast":
+        if action == 'cast':
             # Check if player is affected by 5 or more spells
             if not player.magic.has_modifier('ach-spell-5'):
                 if spell_count(player) >= 5:
                     cls.earn_achievement(player, 'ach-spell-5')
-        if "buy" in action:
+        if 'buy' in action:
             # Check if player spent 500 gold on spells
             if not player.magic.has_modifier('ach-spent-gold'):
                 if spent_gold(player) >= 500:
                     cls.earn_achievement(player, 'ach-spent-gold')
 
-        if action == "gold-won":
+        if action == 'gold-won':
             # Check if player reached level 5
             if not player.magic.has_modifier('ach-level-5'):
                 if player.level_no >= 5:
