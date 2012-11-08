@@ -24,7 +24,7 @@
         <th></th>
         <th>Integrity</th>
     </tr>
-    {% for ass in workshop.assessment_set.all %}
+    {% for ass in assessments %}
     <tr>
         <td colspan="2">{{ ass.player }}</td>
         <td>{{ ass.grade }}</td>

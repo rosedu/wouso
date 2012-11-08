@@ -16,7 +16,7 @@
         <th>#{{ w.id }}</th>
         {% endfor %}
     </tr>
-    {% for p in semigroup.players.all %}
+    {% for p in players %}
     <tr>
         <td>{{ p }}</td>
         {% for w in semigroup.workshop_set.all %}

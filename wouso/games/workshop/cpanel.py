@@ -199,9 +199,12 @@ def workshop_reviewers(request, workshop):
     if workshop.is_started():
         return redirect('ws_workshops')
 
+    assessments = workshop.assessment_set.all().order_by('player__user__last_name', 'player__user__first_name')
+
     return render_to_response('workshop/cpanel/workshop_map.html',
                         {'module': 'workshop',
                          'workshop': workshop,
+                         'assessments': assessments,
                          'page': 'workshops',
                          'integrity_check': request.GET.get('integrity_check', False),
                          },
@@ -344,8 +347,9 @@ def gradebook(request, semigroup):
     List all students and grades
     """
     semigroup = get_object_or_404(Semigroup, pk=semigroup)
+    players = semigroup.players.all().order_by('user__last_name', 'user__first_name')
 
     return render_to_response('workshop/cpanel/gradebook.html',
-                        {'module': 'workshop', 'page': 'workshops', 'semigroup': semigroup},
+                        {'module': 'workshop', 'page': 'workshops', 'semigroup': semigroup, 'players': players},
                         context_instance=RequestContext(request)
     )
