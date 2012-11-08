@@ -120,6 +120,6 @@ def quest_bonus(request, quest):
 
     for i, r in enumerate(quest.top_results()):
         player = r.user.get_extension(Player)
-        scoring.score(player, QuestGame, 'quest-finish-bonus', position=i + 1)
+        scoring.score(player, QuestGame, 'quest-finish-bonus', position=i + 1, external_id=quest.id)
 
     return redirect('quest_home')
