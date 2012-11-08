@@ -265,3 +265,14 @@ def all_activity(request):
         activity = paginator.page(paginator.num_pages)
 
     return render_to_response('activity/all.html', {'activity': activity}, context_instance=RequestContext(request))
+
+
+@login_required
+def seen_24h(request):
+    """
+    Display all players seen in the last 24h
+    """
+    oldest = datetime.datetime.now() - datetime.timedelta(minutes = 3600)
+    online_last24h = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
+
+    return render_to_response('activity/seen24h.html', {'seen_players': online_last24h}, context_instance=RequestContext(request))

@@ -6,6 +6,7 @@ from wouso.core.config.models import Setting
 from wouso.core.magic.models import Bazaar
 from wouso.interface.top.models import Top
 from wouso.interface.apps.qproposal.models import Qproposal
+from wouso.interface.apps.statistics.models import Statistics
 from wouso.interface.apps.messaging.models import Message
 from wouso.interface.apps.statistics.views import footer_link as stats_link
 from wouso.interface.chat.models import Chat
@@ -72,6 +73,9 @@ def header_footer(request):
     # qporposal
     if not Qproposal.disabled():
         footer.append(Qproposal.get_footer_link(request))
+
+    if not Statistics.disabled():
+        footer.append(Statistics.get_footer_link(request))
 
     # format header
     hids = lambda p: '<span id="head-%s"><a href="%s">%s</a>%s</span>' % (p[1].lower(), \
