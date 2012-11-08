@@ -1,5 +1,6 @@
 {% extends 'interface/section_base.html' %}
 {% load i18n %}
+{% load user %}
 {% block title %}{% trans 'Challenges' %} - {{ current_player }}{% endblock %}
 {% block sectiontitle %}{% trans 'Challenge statistics' %} - {{ current_player }}{% endblock %}
 
@@ -21,15 +22,17 @@
         <td><b>Draw</b></td>
         <td><b>Refused</b></td>
         <td><b>Total</b></td>
+        <td><b>Details</b></td>
     </tr>
 {% for op in opponents %}
     <tr align=center>
-        <td><a href="{% url detailed_challenge_stats target_id=op.0.id player_id=current_player.id %}">{{op.0.nickname}}</a></td>
+        <td>{% player op.0 %}</td>
         <td>{{op.1}}</td>
         <td>{{op.2}}</td>
         <td>{{op.3}}</td>
         <td>{{op.4}}</td>
         <td>{{op.5}}</td>
+        <td><a href="{% url detailed_challenge_stats target_id=op.0.id player_id=current_player.id %}">details</a></td>
     </tr>
 {% endfor %}
 </table>
