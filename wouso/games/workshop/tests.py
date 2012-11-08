@@ -108,6 +108,6 @@ class TestAssessment(WousoTest):
 
         a1.update_grade()
         self.assertEqual(a1.grade, 10)
-        self.assertEqual(a1.reviewer_grade, 100)
-        self.assertEqual(a1.final_grade, 55)
+        self.assertEqual(a1.reviewer_grade, 200)
+        self.assertEqual(a1.final_grade, 68)
         self.assertEqual(a1.reviews_grade, 3)

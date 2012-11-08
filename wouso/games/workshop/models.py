@@ -1,3 +1,4 @@
+from math import ceil
 from random import shuffle
 from datetime import datetime, time, timedelta
 from django.db import models
@@ -223,9 +224,17 @@ class Assessment(models.Model):
         grade = Answer.objects.filter(assessment=self).aggregate(grade=models.Sum('grade'))['grade']
         self.grade = grade
         reviewer_grade = self.player.review_set.filter(answer__assessment__workshop=self.workshop).aggregate(grade=models.Sum('review_grade'))['grade']
-        self.reviewer_grade = reviewer_grade
+        if reviewer_grade is None:
+            self.reviewer_grade = 0
+        else:
+            self.reviewer_grade = reviewer_grade
+
+        # Special case: one of the reviewed was empty: will point it as it is
+        if self.reviews.filter(answered=True).count() == 1:
+            self.reviewer_grade *= 2
+
         try:
-            self.final_grade = (self.grade + self.reviewer_grade)/2
+            self.final_grade = ceil((self.grade * 10 + self.reviewer_grade * 5)/16)
         except TypeError: # one of the grades is None
             self.final_grade = None
         self.save()
