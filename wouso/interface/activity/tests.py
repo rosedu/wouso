@@ -458,12 +458,12 @@ class NotificationsTest(WousoTest):
 
 class FlawlessVictoryTest(WousoTest):
     def setUp(self):
-        user_from = self._get_player(1)
-        user_to   = self._get_player(2)
-        chall_user1 = user_from.get_extension(ChallengeUser)
-        chall_user2 = user_to.get_extension(ChallengeUser)
+        self.user_from = self._get_player(1)
+        self.user_to   = self._get_player(2)
+        self.chall_user1 = self.user_from.get_extension(ChallengeUser)
+        self.chall_user2 = self.user_to.get_extension(ChallengeUser)
         scoring.setup_scoring()
-        self.chall = Challenge.create(user_from=chall_user1, user_to=chall_user2, ignore_questions=True)
+        self.chall = Challenge.create(user_from=self.chall_user1, user_to=self.chall_user2, ignore_questions=True)
 
 
     def test_scorring(self):
@@ -479,7 +479,7 @@ class FlawlessVictoryTest(WousoTest):
         self.chall.user_to.save()
         self.assertEqual(get_chall_score(dict(id=self.chall.id)),500)
 
-    def test_ach(self):
+    def test_ach_fake(self):
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-flawless-victory')
         player=self._get_player()
         self.chall.user_from.score = 100
@@ -493,6 +493,16 @@ class FlawlessVictoryTest(WousoTest):
         signals.addActivity.send(sender=None, user_from=player, user_to=player, arguments=dict(id=self.chall.id), action="chall-won", game=None)
         self.assertTrue(player.magic.has_modifier('ach-flawless-victory'))
 
+    def test_ach_real(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-flawless-victory')
+        self.chall.user_from.score = 500
+        self.chall.user_from.save()
+        self.chall.user_to.score = 200
+        self.chall.user_to.save()
+
+        self.assertFalse(self.user_from.magic.has_modifier('ach-flawless-victory'))
+        self.chall.played()
+        self.assertTrue(self.user_from.magic.has_modifier('ach-flawless-victory'))
 
 class WinFastTest(WousoTest):
     def setUp(self):

@@ -342,7 +342,7 @@ class Challenge(models.Model):
         Notice the fact this is the only function where the scoring is affected
         """
         """ Handle artifacts and spells """
-        
+
         for u in (self.user_to, self.user_from):
             # always lose, you mofo
             if u.user.has_modifier('challenge-always-lose'):
@@ -389,10 +389,10 @@ class Challenge(models.Model):
             # warranty not affected by percents
             scoring.score(self.user_won.user, ChallengeGame, 'chall-warranty-return',
                           external_id=self.id)
-                
+
             if self.user_won.user.has_modifier('challenge-affect-scoring-won'):
                 self.user_won.percents += self.user_won.user.modifier_percents('challenge-affect-scoring-won')
-                
+
             scoring.score(self.user_won.user, ChallengeGame, 'chall-won',
                 external_id=self.id, percents=self.user_won.percents,
                 points=self.user_won.score, points2=self.user_lost.score,
@@ -406,7 +406,7 @@ class Challenge(models.Model):
                     #He's lucky,no penalty,return warrany
                     scoring.score(self.user_lost.user, ChallengeGame, 'chall-warranty-return', external_id=self.id)
                     Message.send(sender=None, receiver=self.user_lost.user, subject="Challenge evaded", text="You have just evaded losing points in a challenge")
-                          
+
             scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
                 external_id=self.id, points=self.user_lost.score, points2=self.user_lost.score)
             # send activty signal
