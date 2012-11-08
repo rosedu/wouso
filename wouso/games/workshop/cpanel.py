@@ -323,6 +323,7 @@ def workshop_assessments(request, workshop, assessment=None):
                         context_instance=RequestContext(request)
     )
 
+
 @staff_required
 def reset_reviews(request, workshop, assessment):
     """
@@ -335,3 +336,16 @@ def reset_reviews(request, workshop, assessment):
                 r.delete()
 
     return redirect('ws_reviewers_map', workshop=assessment.workshop.id)
+
+
+@staff_required
+def gradebook(request, semigroup):
+    """
+    List all students and grades
+    """
+    semigroup = get_object_or_404(Semigroup, pk=semigroup)
+
+    return render_to_response('workshop/cpanel/gradebook.html',
+                        {'module': 'workshop', 'page': 'workshops', 'semigroup': semigroup},
+                        context_instance=RequestContext(request)
+    )

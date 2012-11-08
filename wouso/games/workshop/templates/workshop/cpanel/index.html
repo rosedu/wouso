@@ -34,7 +34,7 @@
             <strong>Semigroups:</strong>
             <ul>
                 {% for s in semigroups %}
-                <li>{{ s }} <a href="{% url ws_edit_group s.id %}">✍</a></li>
+                <li>{{ s }} <a href="{% url ws_edit_group s.id %}">✍</a> <a href="{% url ws_gradebook s.id %}">grades</a></li>
                 {% endfor %}
             </ul>
         {% endif %}
