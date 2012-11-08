@@ -51,6 +51,7 @@ def create(request, to=None, reply_to=None):
     else:
         subject = ''
 
+    error = ''
     if request.method == "POST":
         form = ComposeForm(request.POST)
         if form.is_valid():
@@ -60,11 +61,14 @@ def create(request, to=None, reply_to=None):
                             form.cleaned_data['text'],
                             reply_to=form.cleaned_data['reply_to'],
             )
-            return HttpResponseRedirect(reverse('messaging'))
+            if m is None:
+                return HttpResponseRedirect(reverse('messaging'))
+            else:
+                error = m
         #else:
         #   print form, form.is_valid(), request.POST
     return render_to_response('messaging/create.html',
-                              {'to': to,
+                              {'error': error, 'to': to,
                                'reply_to': reply_to,
                                'subject': subject},
                               context_instance=RequestContext(request))

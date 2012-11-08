@@ -6,6 +6,9 @@ from wouso.core.app import App
 from wouso.core.user.models import Player
 from wouso.interface.activity import signals
 
+
+CONSECUTIVE_LIMIT = 12 # in seconds
+
 class MessagingUser(Player):
     '''extension of the user profile, customized for messages'''
 
@@ -31,10 +34,26 @@ class Message(models.Model):
         else:
              return 'from ' + "System" + ' to ' + self.receiver.__unicode__() +\
             ' @ ' + self.timestamp.strftime("%A, %d %B %Y %I:%M %p")
+
     @classmethod
-    def send(kls, sender, receiver, subject, text, reply_to=None):
-        # TODO: check cand send
-        m = kls()
+    def can_send(cls, sender, receiver):
+        """
+        Check against scripts and spam
+        """
+        sender = sender.get_extension(MessagingUser)
+        seconds_since_last = (datetime.now() - sender.last_message_ts).seconds if sender.last_message_ts else 0
+        if seconds_since_last < CONSECUTIVE_LIMIT:
+            return False
+
+        return True
+
+
+    @classmethod
+    def send(cls, sender, receiver, subject, text, reply_to=None):
+        if not cls.can_send(sender, receiver):
+            return _("Cannot send message.")
+
+        m = cls()
         if sender:
             sender = sender.get_extension(MessagingUser)
         receiver = receiver.get_extension(MessagingUser)
@@ -46,7 +65,7 @@ class Message(models.Model):
             sender.last_message_ts = datetime.now()
             sender.save()
         signals.messageSignal.send(sender=None, user_from=sender, user_to=receiver, message='', action='message', game=None)
-
+        return None
 
     @classmethod
     def get_header_link(kls, request):
