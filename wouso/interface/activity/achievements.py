@@ -2,6 +2,7 @@ import logging
 from datetime import datetime, timedelta
 from django.utils.translation import ugettext_noop
 from wouso.core.app import App
+from wouso.core.user.models import Player
 from wouso.interface.apps.messaging.models import Message
 from wouso.games.challenge.models import Challenge
 from wouso.core.magic.models import PlayerSpellDue, SpellHistory
@@ -64,7 +65,7 @@ def wrong_first_qotd(player):
     if activities[0].action == 'qotd-wrong':
         return True
     return False
-    
+
 def challenge_count(player, days=None):
     """
      Return the count of challenges played by player in the last x _days_.
@@ -110,14 +111,14 @@ def check_for_god_mode(player, days, chall_min):
         return False
     if qotd_list[0].action == 'qotd-wrong':
         return False#Last qotd was incorrect no point to check any further
-    
+
     last_time = qotd_list[0].timestamp.replace(hour=0,minute=0,second=0,microsecond=0) + timedelta(days=1) #The day when the latest qotd was ok
     first_time = last_time - timedelta(days=days)#The earlyest day to check
-    
+
     chall_won = Activity.objects.all().filter(user_from=player, action='chall-won', timestamp__gte=first_time).exclude(timestamp__gte=last_time).count()
     chall_lost = Activity.objects.all().filter(user_to=player, action='chall-won', timestamp__gte=first_time).exclude(timestamp__gte=last_time).count()
     qotd_ok = Activity.objects.all().filter(user_from=player, action='qotd-correct', timestamp__gte=first_time).exclude(timestamp__gte=last_time).count()
-    
+
     if chall_won >= chall_min and chall_lost == 0 and qotd_ok == days:
         return True
     return False
@@ -135,7 +136,7 @@ def challenges_played_today(player):
     """
     today = datetime.now().date()
     activities = Activity.get_player_activity(player).filter(action__contains='chall', timestamp__gte=today)
-    result = 0;
+    result = 0
     for a in activities:
         if not 'refused' in a.action:
             result += 1
@@ -191,7 +192,7 @@ class Achievements(App):
             addActivity.send(sender=None, user_from=player, game=None, message=message,
                 arguments=dict(artifact=result.artifact), action=action_msg
             )
-            Message.send(sender=None, receiver=player, subject="Achievement", text="You have just earned "+modifier)
+            Message.send(sender=None, receiver=player, subject="Achievement", text="You have just earned " + modifier)
         else:
             logging.debug('%s would have earned %s, but there was no artifact' % (player, modifier))
 
@@ -199,6 +200,10 @@ class Achievements(App):
     def activity_handler(cls, sender, **kwargs):
         action = kwargs.get('action', None)
         player = kwargs.get('user_from', None)
+
+        if player:
+            player = player.get_extension(Player)
+
         if not action:
             return
 

@@ -1,0 +1,38 @@
+{% extends 'workshop/cpanel/index.html' %}
+{% load workshop %}
+{% load i18n %}
+
+{% block sectiontitle %}Gradebook for semigroup {{ semigroup }}{% endblock %}
+
+{% block information %}
+{% endblock %}
+
+{% block tabcontent %}
+
+<table>
+    <tr>
+        <th>Student</th>
+        {% for w in semigroup.workshop_set.all %}
+        <th>#{{ w.id }}</th>
+        {% endfor %}
+    </tr>
+    {% for p in players %}
+    <tr>
+        <td>{{ p }}</td>
+        {% for w in semigroup.workshop_set.all %}
+            <td>{% get_final_grade w p %}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    <tr>
+        <td></td>
+        {% for w in semigroup.workshop_set.all %}
+        <td>
+            <a href="{% url ws_reviewers_map w.id %}">view</a>
+        </td>
+        {% endfor %}
+    </tr>
+</table>
+
+    <a class="button" href="{% url ws_workshops %}">Workshops</a>
+{% endblock %}

@@ -1,20 +1,23 @@
 from datetime import datetime
 from django.db import models
-from django.contrib import admin
 from django.utils.translation import ugettext as _
 from wouso.core.app import App
 from wouso.core.user.models import Player
 from wouso.interface.activity import signals
 
+
+CONSECUTIVE_LIMIT = 12 # in seconds
+
 class MessagingUser(Player):
-    '''extension of the user profile, customized for messages'''
+    """ extension of the user profile, customized for messages """
 
     can_send_message = models.BooleanField(null=False, blank=False, default=True)
     last_message_ts = models.DateTimeField(null=True, blank=False, default=datetime.now)
 
 
 class Message(models.Model):
-    '''the message itself'''
+    """ the message itself """
+    _CHECK = True
 
     sender = models.ForeignKey(MessagingUser, null=True, blank=False, default=None, related_name='sender')
     receiver = models.ForeignKey(MessagingUser, null=True, blank=False, default=None, related_name='receiver')
@@ -31,10 +34,38 @@ class Message(models.Model):
         else:
              return 'from ' + "System" + ' to ' + self.receiver.__unicode__() +\
             ' @ ' + self.timestamp.strftime("%A, %d %B %Y %I:%M %p")
+
     @classmethod
-    def send(kls, sender, receiver, subject, text, reply_to=None):
-        # TODO: check cand send
-        m = kls()
+    def disable_check(cls):
+        cls._CHECK = False
+
+    @classmethod
+    def enable_check(cls):
+        cls._CHECK = True
+
+    @classmethod
+    def can_send(cls, sender, receiver):
+        """
+        Check against scripts and spam
+        """
+        if not sender or not cls._CHECK:
+            return True # System message
+
+        sender = sender.get_extension(MessagingUser)
+        seconds_since_last = (datetime.now() - sender.last_message_ts).seconds if sender.last_message_ts else 0
+        if seconds_since_last < CONSECUTIVE_LIMIT:
+            seconds_since_last, sender.last_message_ts, datetime.now()
+            return False
+
+        return True
+
+
+    @classmethod
+    def send(cls, sender, receiver, subject, text, reply_to=None):
+        if not cls.can_send(sender, receiver):
+            return _("Cannot send message.")
+
+        m = cls()
         if sender:
             sender = sender.get_extension(MessagingUser)
         receiver = receiver.get_extension(MessagingUser)
@@ -46,7 +77,7 @@ class Message(models.Model):
             sender.last_message_ts = datetime.now()
             sender.save()
         signals.messageSignal.send(sender=None, user_from=sender, user_to=receiver, message='', action='message', game=None)
-
+        return None
 
     @classmethod
     def get_header_link(kls, request):
@@ -63,11 +94,3 @@ class MessageApp(App):
             return -1
         msg_user = request.user.get_profile().get_extension(MessagingUser)
         return Message.objects.filter(receiver=msg_user).filter(read=False).count()
-
-#admin
-class MessageAdmin(admin.ModelAdmin):
-    list_filter = ('read', 'sender', 'receiver')
-    list_display = ('__unicode__', 'subject', 'text', 'timestamp')
-
-admin.site.register(MessagingUser)
-admin.site.register(Message, MessageAdmin)

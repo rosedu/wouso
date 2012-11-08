@@ -23,7 +23,7 @@
     <h3>{% trans 'Achievements' %}</h3>
     <ol>
         {% for a in artifacts %}
-        <li><a href="{% url artifact_hof a.id %}">{% artifact a %} {{ a.title }}</a> - {{ a.used }}</li>
+        <li><a href="{% url artifact_hof a.id %}">{% artifact a %} {{ a.title }}</a> - {% autoescape off %}{{ a.description }}{% endautoescape %} ({{ a.used }})</li>
         {% empty %}
         <li>{% trans 'No achievements received yet. Stay tuned!' %}</li>
         {% endfor %}

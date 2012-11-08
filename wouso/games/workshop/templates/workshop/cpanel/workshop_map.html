@@ -24,7 +24,7 @@
         <th></th>
         <th>Integrity</th>
     </tr>
-    {% for ass in workshop.assessment_set.all %}
+    {% for ass in assessments %}
     <tr>
         <td colspan="2">{{ ass.player }}</td>
         <td>{{ ass.grade }}</td>
@@ -65,4 +65,5 @@
     {% if workshop.is_gradable %}
     <a class="button" href="{% url ws_update_grades workshop.id %}">Update grades</a>
     {% endif %}
+    <a class="button" href="{% url ws_gradebook workshop.semigroup.id %}">Gradebook</a>
 {% endblock %}

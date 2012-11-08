@@ -43,7 +43,8 @@
                             </table>
                         {% else %}
                             {% if r.reviewer == user.get_profile %}
-                                {{ r.reviewer }}
+                                {{ r.reviewer }}:
+                                <tt>{{ r.feedback }}</tt>
                             {% else %}
                                 {% if r.reviewer.in_staff_group %}
                                     <span class="red">{% trans 'Assistant' %}:
