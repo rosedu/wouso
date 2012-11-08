@@ -2,12 +2,14 @@ from django.test import TestCase
 from django.db.models.query import QuerySet
 from django.contrib.auth.models import User
 from wouso.core.game.models import Game
-from wouso.core.scoring.models import Formula, Coin, History
-from wouso.core.scoring import FormulaParsingError, setup_scoring, CORE_POINTS, check_setup, update_points
 from wouso.core import scoring
 from wouso.core.tests import WousoTest
 from wouso.core.user.models import Player
 from wouso.interface.activity import signals
+
+from models import Formula, Coin, History
+from sm import FormulaParsingError, setup_scoring, CORE_POINTS, check_setup, update_points, calculate
+
 
 class ScoringTestCase(TestCase):
     def setUp(self):
@@ -177,3 +179,18 @@ class ScoringFirstLogin(WousoTest):
 
         player = Player.objects.get(pk=player.pk)
         self.assertEqual(player.points, 10)
+
+
+class ScoringTestFunctions(TestCase):
+    def test_fibbonaci_formula(self):
+        formula = Formula.objects.create(id='test-fib', formula='points=fib(0)')
+        value = calculate(formula)['points']
+        self.assertEqual(value, 0)
+        formula.formula = 'points=fib(1)'; formula.save(); value = calculate(formula)['points']
+        self.assertEqual(value, 1)
+        formula.formula = 'points=fib(2)'; formula.save(); value = calculate(formula)['points']
+        self.assertEqual(value, 1)
+        formula.formula = 'points=fib(3)'; formula.save(); value = calculate(formula)['points']
+        self.assertEqual(value, 2)
+        formula.formula = 'points=fib(4)'; formula.save(); value = calculate(formula)['points']
+        self.assertEqual(value, 3)
