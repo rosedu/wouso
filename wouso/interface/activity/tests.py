@@ -123,7 +123,7 @@ class QotdAchievementTest(WousoTest):
             timestamp=datetime.now() + timedelta(days=-i)
             a = Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-correct',message_string=str(i),public=True)
         self.assertEqual(consecutive_qotd_correct(player),3)
-    
+
     def test_10_qotd_1wrong(self):
         player = self._get_player()
         for i in range(10):
@@ -133,7 +133,7 @@ class QotdAchievementTest(WousoTest):
             else:
                 a = Activity.objects.create(timestamp=timestamp, user_from=player, user_to=player, action='qotd-correct',message_string=str(i),public=True)
         self.assertEqual(consecutive_qotd_correct(player),4)
-    
+
     def test_10_qotd_get_ach(self):
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-qotd-10')
         player = self._get_player()
@@ -409,6 +409,12 @@ class ChallengeAchievementTest(WousoTest):
         self.assertTrue(player.magic.has_modifier('ach-chall-10-a-day'))
 
 class PopularityTest(WousoTest):
+    def setUp(self):
+        Message.disable_check()
+
+    def tearDown(self):
+        Message.enable_check()
+
     def test_popularity_5_pm_1(self):
         player = self._get_player()
         player = player.get_extension(MessagingUser)
@@ -416,7 +422,7 @@ class PopularityTest(WousoTest):
             timestamp=datetime.now() + timedelta(minutes = -1)
             a = Message.objects.create(timestamp=timestamp, sender=player,receiver=player,subject = "a",text = "b")
         self.assertEqual(unique_users_pm(player,3),1)
-    
+
     def test_popularity_5_pm_2(self):
         player = self._get_player()
         player=player.get_extension(MessagingUser)
@@ -424,23 +430,23 @@ class PopularityTest(WousoTest):
         a = Message.objects.create(timestamp=timestamp, sender=player,receiver=player,subject = "a",text = "b")
         a = Message.objects.create(timestamp=timestamp, sender=self._get_player(2).get_extension(MessagingUser),receiver=player,subject = "a",text = "b")
         self.assertEqual(unique_users_pm(player,3),2)
-    
+
     def test_popularity_5_pm_3(self):
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-popularity')
         user_to = self._get_player(100).get_extension(MessagingUser)
         for i in range(10):
             player = self._get_player(i).get_extension(MessagingUser)
             if i <= 3:
-                timestamp = datetime.now() + timedelta(minutes=-1)
+                timestamp = datetime.now() + timedelta(minutes=-10)
                 a = Message.objects.create(timestamp=timestamp, sender=player,receiver=user_to,subject = "a",text = "b")
             else:
                 timestamp = datetime.now() + timedelta(minutes=-35)
                 a = Message.objects.create(timestamp=timestamp, sender=player,receiver=user_to,subject = "a",text = "b")
         Message.send(sender=player,receiver=user_to,subject="a",text="b")
-        
+
         self.assertEqual(unique_users_pm(user_to,30),5)
         self.assertTrue(user_to.magic.has_modifier('ach-popularity'))
-        
+
 
 class NotificationsTest(WousoTest):
     def test_ach_notification(self):
@@ -459,7 +465,7 @@ class FlawlessVictoryTest(WousoTest):
         scoring.setup_scoring()
         self.chall = Challenge.create(user_from=chall_user1, user_to=chall_user2, ignore_questions=True)
 
-      
+
     def test_scorring(self):
         self.chall.user_from.score = 100
         self.chall.user_from.save()
@@ -472,7 +478,7 @@ class FlawlessVictoryTest(WousoTest):
         self.chall.user_to.score = 500
         self.chall.user_to.save()
         self.assertEqual(get_chall_score(dict(id=self.chall.id)),500)
-        
+
     def test_ach(self):
         Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-flawless-victory')
         player=self._get_player()
@@ -486,8 +492,8 @@ class FlawlessVictoryTest(WousoTest):
         self.chall.user_from.save()
         signals.addActivity.send(sender=None, user_from=player, user_to=player, arguments=dict(id=self.chall.id), action="chall-won", game=None)
         self.assertTrue(player.magic.has_modifier('ach-flawless-victory'))
-         
-    
+
+
 class WinFastTest(WousoTest):
     def setUp(self):
         user_from = self._get_player(1)

@@ -1,6 +1,5 @@
 from datetime import datetime
 from django.db import models
-from django.contrib import admin
 from django.utils.translation import ugettext as _
 from wouso.core.app import App
 from wouso.core.user.models import Player
@@ -18,6 +17,7 @@ class MessagingUser(Player):
 
 class Message(models.Model):
     """ the message itself """
+    _CHECK = True
 
     sender = models.ForeignKey(MessagingUser, null=True, blank=False, default=None, related_name='sender')
     receiver = models.ForeignKey(MessagingUser, null=True, blank=False, default=None, related_name='receiver')
@@ -36,16 +36,25 @@ class Message(models.Model):
             ' @ ' + self.timestamp.strftime("%A, %d %B %Y %I:%M %p")
 
     @classmethod
+    def disable_check(cls):
+        cls._CHECK = False
+
+    @classmethod
+    def enable_check(cls):
+        cls._CHECK = True
+
+    @classmethod
     def can_send(cls, sender, receiver):
         """
         Check against scripts and spam
         """
-        if not sender:
+        if not sender or not cls._CHECK:
             return True # System message
 
         sender = sender.get_extension(MessagingUser)
         seconds_since_last = (datetime.now() - sender.last_message_ts).seconds if sender.last_message_ts else 0
         if seconds_since_last < CONSECUTIVE_LIMIT:
+            seconds_since_last, sender.last_message_ts, datetime.now()
             return False
 
         return True
@@ -85,11 +94,3 @@ class MessageApp(App):
             return -1
         msg_user = request.user.get_profile().get_extension(MessagingUser)
         return Message.objects.filter(receiver=msg_user).filter(read=False).count()
-
-#admin
-class MessageAdmin(admin.ModelAdmin):
-    list_filter = ('read', 'sender', 'receiver')
-    list_display = ('__unicode__', 'subject', 'text', 'timestamp')
-
-admin.site.register(MessagingUser)
-admin.site.register(Message, MessageAdmin)

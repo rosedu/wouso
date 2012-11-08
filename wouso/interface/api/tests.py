@@ -9,6 +9,7 @@ class DisableAPI(TestCase):
     def setUp(self):
         self.user = User.objects.create(username='test')
         self.user.set_password('test')
+        self.user.save()
         self.client.login(username='test', password='test')
 
     def test_enabled(self):
