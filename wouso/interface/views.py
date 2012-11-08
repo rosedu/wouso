@@ -1,6 +1,5 @@
 import datetime
 import logging
-import os
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -14,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
+from wouso.core import signals
 
 from wouso.interface import logger, detect_mobile
 from wouso.interface.apps.pages.models import NewsItem
@@ -22,7 +22,6 @@ from wouso.interface.forms import *
 from wouso.core.user.models import Player, PlayerGroup
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, History as TopHistory
-from wouso.interface.activity import signals
 
 
 def get_wall(page=u'1'):

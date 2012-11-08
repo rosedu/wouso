@@ -3,11 +3,11 @@ import logging
 from django.utils.translation import ugettext_noop
 from django.db import models
 from django.contrib.auth.models import User
+from wouso.core import signals
 from wouso.core.user.models import Player
 from wouso.core.scoring.models import Coin, Formula, History
 from wouso.core.god import God
 from wouso.core.game import get_games, Game
-from wouso.interface.activity import signals
 
 class NotSetupError(Exception): pass
 class InvalidFormula(Exception): pass

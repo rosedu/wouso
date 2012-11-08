@@ -7,7 +7,7 @@ from wouso.interface.apps.messaging.models import Message
 from wouso.games.challenge.models import Challenge
 from wouso.core.magic.models import PlayerSpellDue
 from models import Activity
-from signals import addActivity,messageSignal
+from wouso.core.signals import addActivity,messageSignal
 
 def consecutive_seens(player, timestamp):
     """

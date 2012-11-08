@@ -12,9 +12,8 @@ from wouso.core.magic.manager import InsufficientAmount
 from wouso.core.qpool.models import Question
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.game.models import Game
-from wouso.core import scoring
+from wouso.core import scoring, signals
 from wouso.core.god import God
-from wouso.interface.activity import signals
 from wouso.interface.apps.messaging.models import Message
 
 

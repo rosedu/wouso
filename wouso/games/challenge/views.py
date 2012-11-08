@@ -107,7 +107,7 @@ def launch(request, to_id):
         PREFIX = "_user:"
         action_msg = "multiple-login"
         if (PREFIX + user_to.user.username) in request.session:
-            from wouso.interface.activity.signals import addActivity
+            from wouso.core.signals import addActivity
             addActivity.send(sender=None, user_to=user_to, user_from=user_from, action=action_msg,
                              game=None, public=False)
         return do_result(request, message=_('Successfully challenged'))

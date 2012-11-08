@@ -1,8 +1,7 @@
-from django.db.models import Q
+from wouso.core import signals
 from wouso.core.config.models import BoolSetting
 from wouso.core.app import App
 from wouso.core.scoring.models import Coin, Formula
-from wouso.interface.activity import signals
 
 class SecurityInspector:
     #global check function dispatcher
@@ -46,12 +45,12 @@ class SecurityInspector:
         #TODO test if multiple account suspicion
         return False, None
     #TODO add more rules for security
-    
+
     @classmethod
     def reported_user(cls, **kwargs):
         return True, kwargs.get('user_to')
-        
-        
+
+
 class Security(App):
     """Class that parses signals received from user activities
     and assigns penalty points as necessary"""

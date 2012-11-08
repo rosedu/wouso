@@ -7,11 +7,9 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext_noop
 from wouso.core.user.models import Player
-from wouso.core import scoring
-from wouso.interface.activity import signals
+from wouso.core import scoring, signals
 from models import SpecialQuestTask, SpecialQuestUser, SpecialQuestGame, SpecialQuestGroup
 from forms import TaskForm
-from wouso.interface.activity.signals import addActivity
 
 @permission_required('specialquest.change_specialquestuser')
 def home(request):

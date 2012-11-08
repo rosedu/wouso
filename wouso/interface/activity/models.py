@@ -6,7 +6,7 @@ from django.utils.translation import ugettext as _
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player
 from wouso.interface import logger
-from wouso.interface.activity.signals import addActivity, addedActivity
+from wouso.core.signals import addActivity, addedActivity
 
 class Activity(models.Model):
     timestamp = models.DateTimeField(default=datetime.now, blank=True)

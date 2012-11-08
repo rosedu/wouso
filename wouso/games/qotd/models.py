@@ -4,10 +4,9 @@ from django.db import models
 from django.http import Http404
 from django.utils.translation import ugettext_noop
 from random import randint, shuffle
-from wouso.interface.activity import signals
 from wouso.core.user.models import Player
 from wouso.core.game.models import Game
-from wouso.core import scoring
+from wouso.core import scoring, signals
 from wouso.core.qpool.models import Schedule, Answer, Question
 
 # Qotd uses questions from qpool
@@ -111,9 +110,9 @@ class QotdGame(Game):
 
         if correct:
             now = datetime.now()
-	    
+
             pr = randint(0, 99)
-            
+
             scoring.score(user, QotdGame, 'qotd-ok', hour=now.hour);
             if pr < settings.QOTD_BONUS_PROB:
                 scoring.score(user, QotdGame, 'qotd-ok-bonus', hour=now.hour)

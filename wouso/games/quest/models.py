@@ -6,10 +6,9 @@ from django.db import models
 from django.utils.translation import ugettext_noop
 from wouso.core.user.models import Player
 from wouso.core.game.models import Game
-from wouso.core import scoring
+from wouso.core import scoring, signals
 from wouso.core.scoring.models import Formula
 from wouso.core.qpool.models import Question
-from wouso.interface.activity import signals
 from wouso import settings
 
 # Quest will use QPool questions tagged 'quest'
@@ -108,7 +107,7 @@ class Quest(models.Model):
         Hackish by now, think of a better approach in next version
         TODO
         """
-        if type not in ('quest-ok', 'quest-finish-ok', 'finalquest-ok'):
+        if type not in ('quest-ok', 'quest-finish-ok', 'finalquest-ok', 'quest-finish-bonus'):
             return None
         try:
             formula = Formula.objects.get(id='%s-%d' % (type, self.id))
@@ -245,6 +244,10 @@ class QuestGame(Game):
         fs.append(dict(id='quest-finish-ok', formula='points=10',
             owner=quest_game.game,
             description='Bonus points earned when finishing the entire quest. No arguments.')
+        )
+        fs.append(dict(id='quest-finish-bonus', formula='points=fib(12 - {position})',
+            owner=quest_game.game,
+            description='Bonus points earned when finishing a quest. Given to first 10, argument: position.')
         )
         fs.append(dict(id='finalquest-ok', formula='points={level}+{level_users}',
             owner=quest_game.game,

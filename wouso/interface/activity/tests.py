@@ -1,24 +1,14 @@
 from datetime import datetime, timedelta
 from wouso.core.magic.models import Artifact, Spell
-from wouso.core.magic.manager import MagicManager
 from wouso.core.tests import WousoTest
-from wouso.core import scoring
+from wouso.core import scoring, signals
 from wouso.games.qotd.models import QotdGame
 from wouso.games.challenge.models import ChallengeGame, ChallengeUser, Challenge
 from wouso.interface.apps.messaging.models import Message, MessagingUser
-from achievements import consecutive_seens
-from achievements import consecutive_qotd_correct
-from achievements import consecutive_chall_won, challenge_count
-from achievements import refused_challenges, get_challenge_time
-from achievements import unique_users_pm , wrong_first_qotd
-from achievements import get_chall_score, challenges_played_today
-from achievements import check_for_god_mode, spell_count
+from achievements import consecutive_seens, consecutive_qotd_correct, consecutive_chall_won, challenge_count, \
+                refused_challenges, get_challenge_time, unique_users_pm, wrong_first_qotd, get_chall_score, \
+                challenges_played_today, check_for_god_mode, spell_count, Achievements
 from models import Activity
-from achievements import Achievements
-from . import signals
-from wouso.games.challenge.models import Challenge, ChallengeUser
-from wouso.core import scoring
-
 
 class AchievementTest(WousoTest):
     def test_login_10(self):

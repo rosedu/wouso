@@ -20,7 +20,7 @@ from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
 from wouso.core import scoring
 from wouso.core.scoring.models import Formula
-from wouso.interface.activity.signals import addActivity
+from wouso.core.signals import addActivity
 from wouso.interface.apps.messaging.models import Message
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD

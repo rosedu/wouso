@@ -2,10 +2,9 @@ from django.test import TestCase
 from django.db.models.query import QuerySet
 from django.contrib.auth.models import User
 from wouso.core.game.models import Game
-from wouso.core import scoring
+from wouso.core import scoring, signals
 from wouso.core.tests import WousoTest
 from wouso.core.user.models import Player
-from wouso.interface.activity import signals
 
 from models import Formula, Coin, History
 from sm import FormulaParsingError, setup_scoring, CORE_POINTS, check_setup, update_points, calculate

@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.management.commands.dumpdata import Command as DumpdataCommand
 from optparse import make_option
 from wouso.core.magic.utils import setup_magic
-from wouso.core.scoring.sm import check_setup, setup_scoring
+from wouso.core.scoring import check_setup, setup_scoring
 from wouso.core.user.utils import setup_user_groups
 
 

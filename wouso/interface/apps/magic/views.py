@@ -12,9 +12,8 @@ from wouso.core.config.models import BoolSetting
 from wouso.core.scoring.sm import InvalidFormula
 from wouso.core.user.models import Player
 from wouso.core.magic.models import Spell, SpellHistory, PlayerSpellDue, Artifact
-from wouso.core import scoring
+from wouso.core import scoring, signals
 from wouso.interface.activity.models import Activity
-from wouso.interface.activity import signals
 
 # marche
 def bazaar(request, message='', error=''):

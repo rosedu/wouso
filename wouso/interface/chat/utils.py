@@ -1,11 +1,10 @@
-import json
 import array
 import random
 from datetime import datetime
 from django_socketio import broadcast_channel, NoSocket
 from wouso.core.user.models import Player
 from wouso.interface.activity.models import Activity
-from wouso.interface.activity.signals import addedActivity
+from wouso.core.signals import addedActivity
 from wouso.interface.chat.models import ChatUser, ChatMessage
 
 def add_message(text, sender, to_room, user_to, mess_type, comand):
