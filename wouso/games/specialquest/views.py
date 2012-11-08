@@ -22,6 +22,7 @@ def index(request, error=''):
                      'squser': user, 'error': error},
                     context_instance=RequestContext(request))
 
+@login_required
 def task(request, task_id):
     user = request.user.get_profile().get_extension(SpecialQuestUser)
     t = get_object_or_404(SpecialQuestTask, pk=task_id)
@@ -114,6 +115,7 @@ def view_group(request, group_id):
 
     return render_to_response('specialquest/group.html', dict(sqgroup=group), context_instance=RequestContext(request))
 
+@login_required
 def sidebar_widget(request):
     if SpecialQuestGame.disabled():
         return ''
@@ -127,6 +129,7 @@ def sidebar_widget(request):
 
     return render_to_string('specialquest/sidebar.html', {'not_done': len(tasks)})
 
+@login_required
 def header_link(request):
     profile = request.user.get_profile()
     if SpecialQuestGame.disabled():
