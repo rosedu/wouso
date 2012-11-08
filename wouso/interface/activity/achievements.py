@@ -136,7 +136,7 @@ def challenges_played_today(player):
     """
     today = datetime.now().date()
     activities = Activity.get_player_activity(player).filter(action__contains='chall', timestamp__gte=today)
-    result = 0;
+    result = 0
     for a in activities:
         if not 'refused' in a.action:
             result += 1
