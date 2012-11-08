@@ -10,14 +10,14 @@ from wouso.interface.activity import signals
 CONSECUTIVE_LIMIT = 12 # in seconds
 
 class MessagingUser(Player):
-    '''extension of the user profile, customized for messages'''
+    """ extension of the user profile, customized for messages """
 
     can_send_message = models.BooleanField(null=False, blank=False, default=True)
     last_message_ts = models.DateTimeField(null=True, blank=False, default=datetime.now)
 
 
 class Message(models.Model):
-    '''the message itself'''
+    """ the message itself """
 
     sender = models.ForeignKey(MessagingUser, null=True, blank=False, default=None, related_name='sender')
     receiver = models.ForeignKey(MessagingUser, null=True, blank=False, default=None, related_name='receiver')
@@ -40,6 +40,9 @@ class Message(models.Model):
         """
         Check against scripts and spam
         """
+        if not sender:
+            return True # System message
+
         sender = sender.get_extension(MessagingUser)
         seconds_since_last = (datetime.now() - sender.last_message_ts).seconds if sender.last_message_ts else 0
         if seconds_since_last < CONSECUTIVE_LIMIT:
