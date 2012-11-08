@@ -41,7 +41,7 @@ def bazaar(request, message='', error=''):
 
     paginator = Paginator(activity_list, 40)
     try:
-        activity = paginator.page(0)
+        activity = paginator.page(1)
     except (EmptyPage, InvalidPage):
         activity = paginator.page(paginator.num_pages)
 
