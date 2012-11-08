@@ -439,10 +439,13 @@ class WorkshopGame(Game):
     def start_reviewing(cls, workshop):
         """ Set the reviewers for all assessments in this workshop
         """
-        le_assessments = [a for a in list(workshop.assessment_set.all()) if not a.player.in_staff_group()]
+        le_assessments = [a for a in list(workshop.assessment_set.filter(answered=True)) if not a.player.in_staff_group()]
         shuffle(le_assessments)
 
         participating_players = [a.player for a in le_assessments]
+
+        if not participating_players:
+            return
 
         pp_rotated = [participating_players[-1]] + participating_players[:-1]
         for i,a in enumerate(le_assessments):

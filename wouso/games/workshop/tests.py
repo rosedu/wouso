@@ -28,8 +28,8 @@ class TestWorkshop(TestCase):
         u1 = User.objects.create(username='u1').get_profile()
         u2 = User.objects.create(username='u2').get_profile()
 
-        a1 = Assessment.objects.create(player=u1, workshop=ws)
-        a2 = Assessment.objects.create(player=u2, workshop=ws)
+        a1 = Assessment.objects.create(player=u1, workshop=ws, answered=True)
+        a2 = Assessment.objects.create(player=u2, workshop=ws, answered=True)
 
         WorkshopGame.start_reviewing(ws)
 
