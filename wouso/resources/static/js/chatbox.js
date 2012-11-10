@@ -44,9 +44,10 @@ $(function(){
         if(data.mess_type == 'normal')
             $("#GlobalboxTextArea").append(data.time + "<em> " + data.user + ": " + replace_emoticons(data.text) + "</em><br />");
         else if (data.mess_type == 'activity'){
-
-            online_user.push(data.id);
-            $("#status_" + data.id).attr("src", "/static/img/status_online.png");
+            for(var i = 0; i < data.count; i++){
+                $("#status_" + data.users[i].user_id).attr("src", "/static/img/status_online.png");
+                online_user[i] = data.users[i].user_id;
+            }
         }else if (data.mess_type == 'left'){
             for(var i = 0; i < online_user.length; i++){
                 if(online_user[i] == data.id){

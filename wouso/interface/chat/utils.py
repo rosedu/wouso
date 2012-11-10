@@ -157,4 +157,17 @@ def broadcast_activity_handler(sender, **kwargs):
     except NoSocket:
         pass # fail silently
 
+def add_users_to_message(users):
+    """
+    Method that create a dict with id for all online players
+    """
+    msgs = []
+    print users
+    for user in users:
+        mesaj = {}
+        mesaj['user_id'] = user.user.id
+        msgs.append(mesaj)
+
+    return msgs
+
 addedActivity.connect(broadcast_activity_handler)
