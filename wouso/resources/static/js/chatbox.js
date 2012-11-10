@@ -61,22 +61,6 @@ $(function(){
             window.location = url_base + "/";
         AutoScroll();
     }
-    /*
-    var addMessage = function(data) {
-        var d = new Date();
-        var win = $(window), doc = $(window.document);
-        var bottom = win.scrollTop() + win.height() == doc.height();
-        data.time = $.map([d.getHours(), d.getMinutes(), d.getSeconds()],
-            function(s) {
-                s = String(s);
-                return (s.length == 1 ? '0' : '') + s;
-            }).join(':');
-        addItem('#messages', data);
-        if (bottom) {
-            window.scrollBy(0, 10000);
-        }
-    };
-    */
 
     var messaged = function(data) {
         switch (data.action) {
