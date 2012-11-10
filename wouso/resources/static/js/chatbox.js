@@ -7,7 +7,6 @@ var TimeOut = null;
 var title;
 var timeStamp = null;
 var keepAlive = null;
-var oneMinute = 60000;
 
 /* Private chat staff */
 var firstFreeChat;
@@ -577,7 +576,6 @@ $(document).ready(function () {
             }
         }
     }
-
 
     $(document).ready(AutoScroll);
     $(document).ready(NewUsers);
