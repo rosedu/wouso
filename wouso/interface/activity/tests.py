@@ -600,6 +600,19 @@ class SpellAchievement(WousoTest):
 
         self.assertTrue(player.magic.has_modifier('ach-use-all-spells'))
 
+    def test_used_all_mass_spells_activity(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-use-all-mass')
+        player = self._get_player()
+        spell = Spell.objects.create(name="test", title="", description="",
+                                    image=None, percents=100, type='s',
+                                    price=600, mass=True)
+        SpellHistory.objects.create(type='u', user_from=player, user_to=player,
+                                date=datetime.now(), spell=spell)
+        signals.addActivity.send(sender=None, user_from=player,
+                                user_to=player, action='cast',
+                                game=None)
+
+        self.assertTrue(player.magic.has_modifier('ach-use-all-mass'))
 
 
 class LevelUpTest(WousoTest):

@@ -317,6 +317,11 @@ class Achievements(App):
                 if used_all_spells(player, False):
                     cls.earn_achievement(player, 'ach-use-all-spells')
 
+            # Check if player used all mass spells
+            if not player.magic.has_modifier('ach-use-all-mass'):
+                if used_all_spells(player, True):
+                    cls.earn_achievement(player, 'ach-use-all-mass')
+
         if 'buy' in action:
             # Check if player spent 500 gold on spells
             if not player.magic.has_modifier('ach-spent-gold'):
@@ -359,6 +364,7 @@ class Achievements(App):
                 'ach-level-10',
                 'ach-gold-300'
                 'ach-use-all-spells',
+                'ach-use-all-mass',
                 'ach-spent-gold',
         ]
 
