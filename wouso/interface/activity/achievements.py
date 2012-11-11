@@ -6,7 +6,7 @@ from wouso.core.user.models import Player
 from wouso.core.scoring.models import History
 from wouso.interface.apps.messaging.models import Message
 from wouso.games.challenge.models import Challenge
-from wouso.core.magic.models import PlayerSpellDue, SpellHistory
+from wouso.core.magic.models import PlayerSpellDue, SpellHistory, Spell
 from models import Activity
 from wouso.core.signals import addActivity,messageSignal
 
@@ -190,6 +190,20 @@ def gold_amount(player):
     coins = History.user_coins(player)
     return coins['gold']
 
+def used_all_spells(player, mass):
+    """
+     Return True if player used all non-mass spells if mass is False,
+     or True if player used all mass spells if mass is True.
+    """
+    all_spells = Spell.objects.filter(mass=mass)
+    magic_activity = SpellHistory.objects.filter(user_from=player, type='u')
+    used_spells = [m.spell for m in magic_activity if m.spell.mass == mass]
+
+    for s in all_spells:
+        if not s in used_spells:
+            return False
+    return True
+
 class Achievements(App):
     @classmethod
     def earn_achievement(cls, player, modifier):
@@ -297,6 +311,12 @@ class Achievements(App):
             if not player.magic.has_modifier('ach-spell-5'):
                 if spell_count(player) >= 5:
                     cls.earn_achievement(player, 'ach-spell-5')
+
+            # Check if player used all non-mass spells
+            if not player.magic.has_modifier('ach-use-all-spells'):
+                if used_all_spells(player, False):
+                    cls.earn_achievement(player, 'ach-use-all-spells')
+
         if 'buy' in action:
             # Check if player spent 500 gold on spells
             if not player.magic.has_modifier('ach-spent-gold'):
@@ -337,7 +357,8 @@ class Achievements(App):
                 'ach-spell-5',
                 'ach-level-5',
                 'ach-level-10',
-                'ach-gold-300',
+                'ach-gold-300'
+                'ach-use-all-spells',
                 'ach-spent-gold',
         ]
 
