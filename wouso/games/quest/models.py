@@ -180,7 +180,7 @@ class Quest(models.Model):
             answers = question.answers.all()
             correct = False
             for a in answers:
-                if answer.lower() == a.lower():
+                if answer.lower() == a.text.lower():
                     correct = True
                     break
             if correct:
