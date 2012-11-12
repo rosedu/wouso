@@ -3,9 +3,10 @@ from datetime import datetime, timedelta
 from django.utils.translation import ugettext_noop
 from wouso.core.app import App
 from wouso.core.user.models import Player
+from wouso.core.scoring.models import History
 from wouso.interface.apps.messaging.models import Message
 from wouso.games.challenge.models import Challenge
-from wouso.core.magic.models import PlayerSpellDue
+from wouso.core.magic.models import PlayerSpellDue, SpellHistory, Spell
 from models import Activity
 from wouso.core.signals import addActivity,messageSignal
 
@@ -171,6 +172,38 @@ def spell_count(player):
     today = datetime.now().date()
     return PlayerSpellDue.objects.filter(player=player, due__gte=today).count()
 
+def spent_gold(player):
+    """
+        Return the amount of gold spent on spells
+    """
+    activity = SpellHistory.objects.filter(type='b', user_from=player)
+    cost = 0
+    for a in activity:
+        cost += a.spell.price
+
+    return cost
+
+def gold_amount(player):
+    """
+     Return player's amount of gold
+    """
+    coins = History.user_coins(player)
+    return coins['gold']
+
+def used_all_spells(player, mass):
+    """
+     Return True if player used all non-mass spells if mass is False,
+     or True if player used all mass spells if mass is True.
+    """
+    all_spells = Spell.objects.filter(mass=mass)
+    magic_activity = SpellHistory.objects.filter(user_from=player, type='u')
+    used_spells = [m.spell for m in magic_activity if m.spell.mass == mass]
+
+    for s in all_spells:
+        if not s in used_spells:
+            return False
+    return True
+
 class Achievements(App):
     @classmethod
     def earn_achievement(cls, player, modifier):
@@ -250,7 +283,7 @@ class Achievements(App):
                 if challenges_played_today(player) >= 10:
                     cls.earn_achievement(player, 'ach-chall-10-a-day')
 
-        if action == "message":
+        if action == 'message':
             # Check the number of unique users who send pm to player in the last m minutes
             if unique_users_pm(kwargs.get('user_to'), 15) >= 5:
                 if not kwargs.get('user_to').magic.has_modifier('ach-popularity'):
@@ -273,11 +306,43 @@ class Achievements(App):
                 if not player.magic.has_modifier('ach-login-10'):
                     cls.earn_achievement(player, 'ach-login-10')
 
-        if action == "cast":
+        if action == 'cast':
             # Check if player is affected by 5 or more spells
             if not player.magic.has_modifier('ach-spell-5'):
                 if spell_count(player) >= 5:
                     cls.earn_achievement(player, 'ach-spell-5')
+
+            # Check if player used all non-mass spells
+            if not player.magic.has_modifier('ach-use-all-spells'):
+                if used_all_spells(player, False):
+                    cls.earn_achievement(player, 'ach-use-all-spells')
+
+            # Check if player used all mass spells
+            if not player.magic.has_modifier('ach-use-all-mass'):
+                if used_all_spells(player, True):
+                    cls.earn_achievement(player, 'ach-use-all-mass')
+
+        if 'buy' in action:
+            # Check if player spent 500 gold on spells
+            if not player.magic.has_modifier('ach-spent-gold'):
+                if spent_gold(player) >= 500:
+                    cls.earn_achievement(player, 'ach-spent-gold')
+
+        if action == 'gold-won':
+            # Check if player reached level 5
+            if not player.magic.has_modifier('ach-level-5'):
+                if player.level_no >= 5:
+                    cls.earn_achievement(player, 'ach-level-5')
+            # Check if player reached level 10
+            if not player.magic.has_modifier('ach-level-10'):
+                if player.level_no >= 10:
+                    cls.earn_achievement(player, 'ach-level-10')
+
+        if 'gold' in action:
+            # Check if player has 300 gold
+            if not player.magic.has_modifier('ach-gold-300'):
+                if gold_amount(player) >= 300:
+                    cls.earn_achievement(player, 'ach-gold-300')
 
     @classmethod
     def get_modifiers(self):
@@ -295,6 +360,12 @@ class Achievements(App):
                 'ach-win-fast',
                 'ach-god-mode-on',
                 'ach-spell-5',
+                'ach-level-5',
+                'ach-level-10',
+                'ach-gold-300',
+                'ach-use-all-spells',
+                'ach-use-all-mass',
+                'ach-spent-gold',
         ]
 
 
