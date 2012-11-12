@@ -1,13 +1,16 @@
 from datetime import datetime, timedelta
-from wouso.core.magic.models import Artifact, Spell
+from wouso.core.magic.models import Artifact, Spell, SpellHistory
+from wouso.core.magic.manager import MagicManager
 from wouso.core.tests import WousoTest
 from wouso.core import scoring, signals
+from wouso.core.scoring.models import Coin
 from wouso.games.qotd.models import QotdGame
 from wouso.games.challenge.models import ChallengeGame, ChallengeUser, Challenge
 from wouso.interface.apps.messaging.models import Message, MessagingUser
 from achievements import consecutive_seens, consecutive_qotd_correct, consecutive_chall_won, challenge_count, \
                 refused_challenges, get_challenge_time, unique_users_pm, wrong_first_qotd, get_chall_score, \
-                challenges_played_today, check_for_god_mode, spell_count, Achievements
+                challenges_played_today, check_for_god_mode, spell_count, spent_gold, gold_amount, \
+                Achievements
 from models import Activity
 
 class AchievementTest(WousoTest):
@@ -559,6 +562,105 @@ class SpellAchievement(WousoTest):
         signals.addActivity.send(sender=None, user_from=player,
                 user_to=player, action="cast", game=None)
         self.assertTrue(player.magic.has_modifier('ach-spell-5'))
+
+    def test_gold_spent(self):
+        player = self._get_player()
+        spell = Spell.objects.create(name="test", title="", description="",
+                                    image=None, percents=100, type='s',
+                                    price=25)
+        SpellHistory.objects.create(type='b', user_from=player, user_to=player,
+                                date=datetime.now(), spell=spell)
+        self.assertTrue(spent_gold(player), 25)
+
+    def test_gold_spent_activity(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-spent-gold')
+        player = self._get_player()
+        spell = Spell.objects.create(name="test", title="", description="",
+                                    image=None, percents=100, type='s',
+                                    price=600)
+        SpellHistory.objects.create(type='b', user_from=player, user_to=player,
+                                date=datetime.now(), spell=spell)
+        signals.addActivity.send(sender=None, user_from=player,
+                                user_to=player, action='spell-buy',
+                                game=None)
+
+        self.assertTrue(player.magic.has_modifier('ach-spent-gold'))
+
+    def test_used_all_spells_activity(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-use-all-spells')
+        player = self._get_player()
+        spell = Spell.objects.create(name="test", title="", description="",
+                                    image=None, percents=100, type='s',
+                                    price=600)
+        SpellHistory.objects.create(type='u', user_from=player, user_to=player,
+                                date=datetime.now(), spell=spell)
+        signals.addActivity.send(sender=None, user_from=player,
+                                user_to=player, action='cast',
+                                game=None)
+
+        self.assertTrue(player.magic.has_modifier('ach-use-all-spells'))
+
+    def test_used_all_mass_spells_activity(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-use-all-mass')
+        player = self._get_player()
+        spell = Spell.objects.create(name="test", title="", description="",
+                                    image=None, percents=100, type='s',
+                                    price=600, mass=True)
+        SpellHistory.objects.create(type='u', user_from=player, user_to=player,
+                                date=datetime.now(), spell=spell)
+        signals.addActivity.send(sender=None, user_from=player,
+                                user_to=player, action='cast',
+                                game=None)
+
+        self.assertTrue(player.magic.has_modifier('ach-use-all-mass'))
+
+
+class LevelUpTest(WousoTest):
+
+    def test_level_ach(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-level-5')
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-level-10')
+        coin = Coin.objects.create(id='gold')
+        player = self._get_player()
+        player.level_no = 5
+        player.save()
+
+        signals.addActivity.send(sender=None, user_from=player,
+                                user_to=player, action='gold-won',
+                                game=None)
+        self.assertTrue(player.magic.has_modifier('ach-level-5'))
+
+        player.level_no = 10
+        player.save()
+
+        signals.addActivity.send(sender=None, user_from=player,
+                                user_to=player, action='gold-won',
+                                game=None)
+        self.assertTrue(player.magic.has_modifier('ach-level-10'))
+
+
+class GoldTest(WousoTest):
+
+    def test_gold_amount(self):
+        player = self._get_player()
+        coin = Coin.objects.create(id='gold')
+
+        scoring.score_simple(player, coin, amount=100)
+
+        self.assertEqual(gold_amount(player), 100)
+
+    def test_gold_amount_ach(self):
+        Artifact.objects.create(group=Artifact.DEFAULT(), name='ach-gold-300')
+        player = self._get_player()
+        coin = Coin.objects.create(id='gold')
+
+        scoring.score_simple(player, coin, amount=500)
+
+        signals.addActivity.send(sender=None, user_from=player,
+                                user_to=player, action='gold-won',
+                                game=None)
+        self.assertTrue(player.magic.has_modifier('ach-gold-300'))
+
 
 class GodModeTest(WousoTest):
 
