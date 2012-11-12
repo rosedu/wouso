@@ -362,7 +362,7 @@ class Achievements(App):
                 'ach-spell-5',
                 'ach-level-5',
                 'ach-level-10',
-                'ach-gold-300'
+                'ach-gold-300',
                 'ach-use-all-spells',
                 'ach-use-all-mass',
                 'ach-spent-gold',
