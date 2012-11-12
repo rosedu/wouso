@@ -234,7 +234,7 @@ class Assessment(models.Model):
             self.reviewer_grade *= 2
 
         try:
-            self.final_grade = ceil((self.grade * 10 + self.reviewer_grade * 5)/16)
+            self.final_grade = ceil((self.grade * 10 + self.reviewer_grade * 5)/16.0)
         except TypeError: # one of the grades is None
             self.final_grade = None
         self.save()
