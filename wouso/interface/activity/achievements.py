@@ -311,43 +311,6 @@ class Achievements(App):
             if not player.magic.has_modifier('ach-spell-5'):
                 if spell_count(player) >= 5:
                     cls.earn_achievement(player, 'ach-spell-5')
-        if "buy" in action:
-            # Check if player spent 500 gold on spells
-            if not player.magic.has_modifier('ach-spent-gold'):
-                if spent_gold(player) >= 500:
-                    cls.earn_achievement(player, 'ach-spent-gold')
-
-            # Check if player used all non-mass spells
-            if not player.magic.has_modifier('ach-use-all-spells'):
-                if used_all_spells(player, False):
-                    cls.earn_achievement(player, 'ach-use-all-spells')
-
-            # Check if player used all mass spells
-            if not player.magic.has_modifier('ach-use-all-mass'):
-                if used_all_spells(player, True):
-                    cls.earn_achievement(player, 'ach-use-all-mass')
-
-        if 'buy' in action:
-            # Check if player spent 500 gold on spells
-            if not player.magic.has_modifier('ach-spent-gold'):
-                if spent_gold(player) >= 500:
-                    cls.earn_achievement(player, 'ach-spent-gold')
-
-        if action == 'gold-won':
-            # Check if player reached level 5
-            if not player.magic.has_modifier('ach-level-5'):
-                if player.level_no >= 5:
-                    cls.earn_achievement(player, 'ach-level-5')
-            # Check if player reached level 10
-            if not player.magic.has_modifier('ach-level-10'):
-                if player.level_no >= 10:
-                    cls.earn_achievement(player, 'ach-level-10')
-
-        if 'gold' in action:
-            # Check if player has 300 gold
-            if not player.magic.has_modifier('ach-gold-300'):
-                if gold_amount(player) >= 300:
-                    cls.earn_achievement(player, 'ach-gold-300')
 
             # Check if player used all non-mass spells
             if not player.magic.has_modifier('ach-use-all-spells'):
