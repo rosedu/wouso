@@ -10,6 +10,7 @@ urlpatterns = patterns('',
     url(r'^(?P<page>\d*)/$', 'wouso.interface.views.homepage', name='homepage'),
 
     url(r'^activity/all/$', 'wouso.interface.views.all_activity', name='all_activity'),
+    url(r'^activity/seen/$', 'wouso.interface.views.seen_24h', name='seen24'),
 
     # TODO: refactor this into wouso.interface.top.urls and include vvvvv
     url(r'^top/$', 'wouso.interface.top.views.gettop', name='view_top'),

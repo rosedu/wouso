@@ -1,5 +1,5 @@
 from datetime import datetime
-from wouso.interface.activity import signals
+from wouso.core import signals
 
 class Seen:
     def process_request(self, request):

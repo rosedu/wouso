@@ -1,0 +1,16 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+{% load user %}
+
+{% block title %}{% trans 'Seen players' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Seen last 24h' %}{% endblock %}
+
+{% block sectioncontent %}
+
+    {% for p in seen_players %}
+        {% player p %}
+    {% endfor %}
+    <p>
+    {% trans 'Total:' %} {{ seen_players.count }}
+    </p>
+{% endblock %}

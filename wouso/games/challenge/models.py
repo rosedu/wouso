@@ -12,9 +12,8 @@ from wouso.core.magic.manager import InsufficientAmount
 from wouso.core.qpool.models import Question
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.game.models import Game
-from wouso.core import scoring
+from wouso.core import scoring, signals
 from wouso.core.god import God
-from wouso.interface.activity import signals
 from wouso.interface.apps.messaging.models import Message
 
 
@@ -614,7 +613,7 @@ class ChallengeGame(Game):
 
     @classmethod
     def get_profile_superuser_actions(kls, request, player):
-        url = reverse('wouso.games.challenge.views.history', args=(player.id,))
+        url = reverse('challenge_stats', args=(player.id,))
         return '<a class="button" href="%s">%s</a>' % (url, _('Challenges'))
 
     @classmethod

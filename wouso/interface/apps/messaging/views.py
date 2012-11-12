@@ -26,7 +26,7 @@ def home(request, quiet=None, box=None, page=u'0'):
     else:
         messages = Message.objects.none()
 
-    messages = messages.order_by('-timestamp')
+    messages = messages.order_by('-timestamp')[:100] # Temporary fix until we introduce archive and trash (do not actually delete for auditing)
 
     if quiet is not None:
         template = 'messaging/message.html'

@@ -1,3 +1,4 @@
+from wouso.core import signals
 from wouso.core.magic.models import Artifact, ArtifactGroup, SpellHistory, NoArtifactLevel
 from wouso.core.game import get_games
 
@@ -175,7 +176,6 @@ class DefaultGod:
         # Always executed, so log
         SpellHistory.used(psdue.source, psdue.spell, psdue.player)
         # Also trigger anonymous activiy
-        from wouso.interface.activity import signals
         if psdue.source == psdue.player:
             signal_msg = 'a facut o vraja asupra sa.'
         else:

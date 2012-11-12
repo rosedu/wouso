@@ -1,15 +1,19 @@
 # views for wouso cpanel
 import datetime
 from django.contrib.auth.decorators import permission_required
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.conf import settings
+
+from wouso.core import scoring
 from wouso.core.qpool import get_questions_with_category
-from wouso import settings
-from models import Quest, QuestUser, FinalQuest
+from wouso.core.user.models import Player
+from models import Quest, QuestUser, FinalQuest, QuestGame
 from forms import QuestCpanel
+
 
 @permission_required('quest.change_quest')
 def quest_home(request):
@@ -108,3 +112,14 @@ def create_finale(request):
         fq = FinalQuest.objects.create(start=datetime.datetime.now(), end=datetime.datetime.now())
 
     return HttpResponseRedirect(reverse('quest_edit', args=(fq.id,)))
+
+
+@permission_required('quest.change_quest')
+def quest_bonus(request, quest):
+    quest = get_object_or_404(Quest, pk=quest)
+
+    for i, r in enumerate(quest.top_results()):
+        player = r.user.get_extension(Player)
+        scoring.score(player, QuestGame, 'quest-finish-bonus', position=i + 1, external_id=quest.id)
+
+    return redirect('quest_home')

@@ -107,7 +107,7 @@ def launch(request, to_id):
         PREFIX = "_user:"
         action_msg = "multiple-login"
         if (PREFIX + user_to.user.username) in request.session:
-            from wouso.interface.activity.signals import addActivity
+            from wouso.core.signals import addActivity
             addActivity.send(sender=None, user_to=user_to, user_from=user_from, action=action_msg,
                              game=None, public=False)
         return do_result(request, message=_('Successfully challenged'))
@@ -220,6 +220,7 @@ def history(request, playerid):
                               context_instance=RequestContext(request))
 
 
+@login_required
 def challenge_random(request):
 
     current_player = request.user.get_profile().get_extension(ChallengeUser)
@@ -238,9 +239,12 @@ def challenge_random(request):
     return launch(request, players[i].id)
 
 @login_required
-def detailed_challenge_stats(request, target_id):
-    """Statistics for one pair of users, current_player and target_id"""
-    current_player = request.user.get_profile().get_extension(ChallengeUser)
+def detailed_challenge_stats(request, target_id, player_id=None):
+    """ Statistics for one pair of users, current_player and target_id """
+    if player_id and request.user.get_profile().in_staff_group():
+        current_player = get_object_or_404(Player, pk=player_id).get_extension(ChallengeUser)
+    else:
+        current_player = request.user.get_profile().get_extension(ChallengeUser)
 
     target_user = get_object_or_404(ChallengeUser, user__id=target_id)
 
@@ -259,9 +263,12 @@ def detailed_challenge_stats(request, target_id):
             context_instance=RequestContext(request))
 
 @login_required
-def challenge_stats(request):
-    """Statistics for one user"""
-    current_player = request.user.get_profile().get_extension(ChallengeUser)
+def challenge_stats(request, player_id=None):
+    """ Statistics for one user """
+    if player_id and request.user.get_profile().in_staff_group():
+        current_player = get_object_or_404(Player, pk=player_id).get_extension(ChallengeUser)
+    else:
+        current_player = request.user.get_profile().get_extension(ChallengeUser)
 
     from django.db.models import Avg, Q
 

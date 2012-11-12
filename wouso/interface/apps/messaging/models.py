@@ -1,9 +1,9 @@
 from datetime import datetime
 from django.db import models
 from django.utils.translation import ugettext as _
+from wouso.core import signals
 from wouso.core.app import App
 from wouso.core.user.models import Player
-from wouso.interface.activity import signals
 
 
 CONSECUTIVE_LIMIT = 12 # in seconds

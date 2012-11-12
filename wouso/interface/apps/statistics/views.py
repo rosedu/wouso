@@ -92,5 +92,5 @@ def stats(request):
 
 
 def footer_link(request):
-    link = '<a id="page-special-statistics" href="'+ reverse('wouso.interface.statistics.views.stats') +'">' + _('Live stats') + '</a>'
+    link = '<a id="page-special-statistics" href="'+ reverse('wouso.interface.apps.statistics.views.stats') +'">' + _('Live stats') + '</a>'
     return link

@@ -96,13 +96,12 @@ def challenge_top(request, sortcritno='0', pageno=1):
     base_query = TopUser.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
 
     if sortcritno == '0':
-        allUsers = sorted(base_query, key=lambda x: x.won_challenges)
+        allUsers = sorted(base_query, key=lambda x: -x.won_challenges)
     elif sortcritno == '1':
-        allUsers = sorted(base_query, key=lambda x: x.won_perc_challenges)
+        allUsers = sorted(base_query, key=lambda x: -x.won_perc_challenges)
     else :
-        allUsers = sorted(base_query, key=lambda x: x.lost_challenges)
+        allUsers = sorted(base_query, key=lambda x: -x.lost_challenges)
 
-    allUsers.reverse()
     paginator = Paginator(allUsers, PERPAGE)
     try:
         users = paginator.page(int(pageno))

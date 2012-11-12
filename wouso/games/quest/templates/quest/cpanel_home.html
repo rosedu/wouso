@@ -32,6 +32,11 @@
                     <a class="button" href="{% url final_results %}">Results</a>
                     </td>
                 {% endif %}
+                {% if not q.is_active %}
+                <td>
+                    <a class="button" href="{% url quest_bonus q.id %}">Bonus top 10</a>
+                </td>
+                {% endif %}
             </td>
         </tr>
     {% empty %}

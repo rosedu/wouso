@@ -1,5 +1,5 @@
 from django.dispatch import Signal
 """ Register new signal """
-addActivity = Signal(providing_args=['request'])
+addActivity = Signal()
 addedActivity = Signal()
 messageSignal = Signal()

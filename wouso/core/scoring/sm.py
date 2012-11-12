@@ -3,11 +3,11 @@ import logging
 from django.utils.translation import ugettext_noop
 from django.db import models
 from django.contrib.auth.models import User
+from wouso.core import signals
 from wouso.core.user.models import Player
 from wouso.core.scoring.models import Coin, Formula, History
 from wouso.core.god import God
 from wouso.core.game import get_games, Game
-from wouso.interface.activity import signals
 
 class NotSetupError(Exception): pass
 class InvalidFormula(Exception): pass
@@ -21,7 +21,14 @@ class InvalidScoreCall(Exception): pass
 
 CORE_POINTS = ('points', 'gold', 'penalty')
 
+# Utility functions
+PHI = (1 + 5**0.5) / 2
 
+def fib(n):
+    return int(round((PHI**n - (1-PHI)**n) / 5**0.5))
+
+
+# Setup
 def check_setup():
     """ Check if the module has been setup """
 
