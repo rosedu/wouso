@@ -348,7 +348,7 @@ class Achievements(App):
     def get_modifiers(self):
         return ['ach-login-10',
                 'ach-qotd-10',
-                'ach-chall-100',
+                'ach-chall-30',
                 'ach-chall-won-10',
                 'ach-chall-10-a-day',
                 'ach-night-owl',
