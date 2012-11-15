@@ -84,8 +84,8 @@ $(function(){
         socket.on('disconnect', disconnect)
     };
 
-
-    start();
+    if(window.location.pathname == url_base + '/chat/')
+        start();
 });
 
 if(sessionStorage.firstFreeChat){
@@ -458,7 +458,13 @@ $(document).ready(function () {
         $.ajax(args);
         $("#Contactbox").hide();
     });
-
+    $("#ContactboxChatButton").click(function(){
+        var sendID = (selectID_over != null)? selectID_over: selectID;
+        var msgdata = {'opcode':'getRoom', 'from':myID, 'to':sendID, 'time': timeStamp};
+        var args = {type:"POST", url:url_base + "/chat/chat_m/", data:msgdata, complete:create_chat_box};
+        $.ajax(args);
+        $("#Contactbox").hide();
+    });
     /* Create chat box and place it on screen */
     function create_chat_box(res) {
         var obj = $.parseJSON(res.responseText);

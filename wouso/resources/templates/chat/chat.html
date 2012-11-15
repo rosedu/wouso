@@ -9,8 +9,7 @@
     <script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery.flot.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
-    <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/chatbox.css" />
-    {% if not config_disable_chat  %}
+    {% if not config_disable_chat and config_disable_private_chat %}
         {% include 'chat/setup.html' %}
     {% endif %}
 {% endblock %}

@@ -20,13 +20,7 @@ $(document).ready(function(){
         window.location = url_base + "/m/create/to=" + selectID_over;
     });
 
-    $("#ContactboxChatButton").click(function(){
-        var sendID = (selectID_over != null)? selectID_over: selectID;
-        var msgdata = {'opcode':'getRoom', 'from':myID, 'to':sendID, 'time': timeStamp};
-        var args = {type:"POST", url:url_base + "/chat/chat_m/", data:msgdata, complete:create_chat_box};
-        $.ajax(args);
-        $("#Contactbox").hide();
-    });
+
 });
 
 function set_mouseout(){
@@ -83,7 +77,7 @@ function on_userlist_mouseover(nickname, name, score, avatar, level, id, x_posit
             }
 
             if(tempY + 145 > window.innerHeight)
-                tempY = window.innerHeight - 175;
+                tempY = window.innerHeight  ;
 
             $("#Contactbox").css("top",tempY+"px").css("left",position + "px");
             $("#Contactbox").show();

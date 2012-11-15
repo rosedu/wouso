@@ -25,7 +25,7 @@
     <script type="text/javascript" src="{{ basepath }}/static/js/format.item.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery.timers.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/ajaxify.js"></script>
-    {% if not config_disable_chat  %}
+    {% if not config_disable_chat and not config_disable_private_chat %}
         {% include 'chat/setup.html' %}
     {% endif %}
     <script type="text/javascript">
