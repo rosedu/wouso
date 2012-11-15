@@ -20,13 +20,7 @@ $(document).ready(function(){
         window.location = url_base + "/m/create/to=" + selectID_over;
     });
 
-    $("#ContactboxChatButton").click(function(){
-        var sendID = (selectID_over != null)? selectID_over: selectID;
-        var msgdata = {'opcode':'getRoom', 'from':myID, 'to':sendID, 'time': timeStamp};
-        var args = {type:"POST", url:url_base + "/chat/chat_m/", data:msgdata, complete:create_chat_box};
-        $.ajax(args);
-        $("#Contactbox").hide();
-    });
+
 });
 
 function set_mouseout(){
@@ -71,19 +65,19 @@ function on_userlist_mouseover(nickname, name, score, avatar, level, id, x_posit
 
             if (x_position == 1){
                 if(tempX + 220 > window.innerWidth)
-                    position = window.innerWidth - 220;
+                    position = window.innerWidth - 250;
                 else
                     position = tempX;
             }else {
                 var TopLeft = getElementTopLeft("GlobalboxUserList");
                 if(TopLeft.left + 360 > window.innerWidth)
-                    position = window.innerWidth - 220;
+                    position = window.innerWidth - 250;
                 else
                     position = TopLeft.left + 140
             }
 
             if(tempY + 145 > window.innerHeight)
-                tempY = window.innerHeight - 145;
+                tempY = window.innerHeight  ;
 
             $("#Contactbox").css("top",tempY+"px").css("left",position + "px");
             $("#Contactbox").show();
@@ -106,7 +100,7 @@ function on_userlist_mouseover(nickname, name, score, avatar, level, id, x_posit
 
 function on_userlist_mouseout(x_position) {
     if(x_position == 0){
-        time_for_chat_hide = setTimeout(function(){$("#Contactbox").hide()},500);
+        time_for_chat_hide = setTimeout(function(){$("#Contactbox").hide()},1000);
     }
     else
         time_for_chat_hide = setTimeout(function(){$("#Contactbox").hide();},0);

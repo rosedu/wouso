@@ -7,7 +7,6 @@ var TimeOut = null;
 var title;
 var timeStamp = null;
 var keepAlive = null;
-var oneMinute = 60000;
 
 /* Private chat staff */
 var firstFreeChat;
@@ -19,7 +18,7 @@ var private_users;
 function AutoScroll() {
     $('#GlobalboxTextArea').scrollTop($('#GlobalboxTextArea')[0].scrollHeight);
 }
-
+var online_user = new Array();
 $(function(){
 
     var socket;
@@ -42,29 +41,26 @@ $(function(){
 
     function addMessage(data){
         if(data.mess_type == 'normal')
-            $("#GlobalboxTextArea").append(data.time + " " + data.user + ": " + replace_emoticons(data.text) + "<br />");
-        else if (data.mess_type == 'activity')
-            $("#GlobalboxTextArea").append("<em>" + data.time  +  ": " + replace_emoticons(data.text) + "</em>" + "<br />");
+            $("#GlobalboxTextArea").append(data.time + "<em> " + data.user + ": " + replace_emoticons(data.text) + "</em><br />");
+        else if (data.mess_type == 'activity'){
+            for(var i = 0; i < data.count; i++){
+                $("#status_" + data.users[i].user_id).attr("src", "/static/img/status_online.png");
+                online_user[i] = data.users[i].user_id;
+            }
+        }else if (data.mess_type == 'left'){
+            for(var i = 0; i < online_user.length; i++){
+                if(online_user[i] == data.id){
+                    online_user.splice(i,1);
+                }
+            }
+
+            $("#status_" + data.id).attr("src", "/static/img/status_ingame.png");
+
+        }
         else if(data.mess_type == 'special' && data.command == 'kick' && data.dest_user == myName && window.location.pathname == url_base + '/chat/')
             window.location = url_base + "/";
         AutoScroll();
     }
-    /*
-    var addMessage = function(data) {
-        var d = new Date();
-        var win = $(window), doc = $(window.document);
-        var bottom = win.scrollTop() + win.height() == doc.height();
-        data.time = $.map([d.getHours(), d.getMinutes(), d.getSeconds()],
-            function(s) {
-                s = String(s);
-                return (s.length == 1 ? '0' : '') + s;
-            }).join(':');
-        addItem('#messages', data);
-        if (bottom) {
-            window.scrollBy(0, 10000);
-        }
-    };
-    */
 
     var messaged = function(data) {
         switch (data.action) {
@@ -75,17 +71,21 @@ $(function(){
         }
     };
 
+    var disconnect = function() {
+        start();
+    };
+
     var start = function() {
         socket = new io.Socket(chat_host, {'port': chat_port});
         socket.connect();
 
         socket.on('connect', connected);
         socket.on('message', messaged);
-
+        socket.on('disconnect', disconnect)
     };
 
-
-    start();
+    if(window.location.pathname == url_base + '/chat/')
+        start();
 });
 
 if(sessionStorage.firstFreeChat){
@@ -458,7 +458,13 @@ $(document).ready(function () {
         $.ajax(args);
         $("#Contactbox").hide();
     });
-
+    $("#ContactboxChatButton").click(function(){
+        var sendID = (selectID_over != null)? selectID_over: selectID;
+        var msgdata = {'opcode':'getRoom', 'from':myID, 'to':sendID, 'time': timeStamp};
+        var args = {type:"POST", url:url_base + "/chat/chat_m/", data:msgdata, complete:create_chat_box};
+        $.ajax(args);
+        $("#Contactbox").hide();
+    });
     /* Create chat box and place it on screen */
     function create_chat_box(res) {
         var obj = $.parseJSON(res.responseText);
@@ -501,6 +507,12 @@ $(document).ready(function () {
     function NewUsers() {
         $.get(url_base + '/chat/last/', function (data) {
             $('#GlobalboxUserList').html(data);
+
+
+            for(var i = 0 ; i < online_user.length; i ++){
+                //alert(online_user[i])
+                $("#status_" + online_user[i]).attr("src", "/static/img/status_online.png");
+            }
             if (selectID) {
                 $('#cl_' + selectID).attr('style', 'font-weight: bold;background-color:#ffffff;');
                 $('.caction').attr('disabled', false);
@@ -513,6 +525,8 @@ $(document).ready(function () {
             else
                 $('.caction').attr('disabled', true);
         });
+
+
     }
 
     /* Last 50 messages that was write in global chat.*/
@@ -553,13 +567,12 @@ $(document).ready(function () {
         }
     }
 
-
     $(document).ready(AutoScroll);
     $(document).ready(NewUsers);
     $(document).ready(NewLog);
     //$(document).ready(SendPing);
     //SendPingTimer = setInterval(function(){SendPing();}, keepAlive);
-    NewUserTimer = setInterval(function(){NewUsers();}, 10000);
+    NewUserTimer = setInterval(function(){NewUsers();}, 5000);
     InitialChat();
 
     /*function SetTimeForKeepAlive(time){

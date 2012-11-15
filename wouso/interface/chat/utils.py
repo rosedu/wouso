@@ -139,8 +139,8 @@ def get_author_by_message(message):
     except Player.DoesNotExist:
         return None
 
-def make_message(text, type, room):
-    return {'action': 'message', 'mess_type': type, 'room': room, 'text': text, 'time': datetime.now().strftime("%H:%M")}
+def make_message(text, type, room, id):
+    return {'action': 'message', 'mess_type': type, 'room': room, 'text': text, 'id': id , 'time': datetime.now().strftime("%H:%M")}
 
 def broadcast_activity_handler(sender, **kwargs):
     """ Callback function for addedActivity signal
@@ -156,5 +156,18 @@ def broadcast_activity_handler(sender, **kwargs):
         broadcast_channel(msg, 'global')
     except NoSocket:
         pass # fail silently
+
+def add_users_to_message(users):
+    """
+    Method that create a dict with id for all online players
+    """
+    msgs = []
+    print users
+    for user in users:
+        mesaj = {}
+        mesaj['user_id'] = user.user.id
+        msgs.append(mesaj)
+
+    return msgs
 
 addedActivity.connect(broadcast_activity_handler)

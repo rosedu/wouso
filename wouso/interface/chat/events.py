@@ -2,7 +2,7 @@
 from datetime import datetime
 from django.utils.html import strip_tags
 from django_socketio import events
-from wouso.interface.chat.utils import get_author, add_message, make_message, get_author_by_message
+from wouso.interface.chat.utils import get_author, add_message, make_message, get_author_by_message, add_users_to_message
 from models import *
 
 
@@ -15,7 +15,12 @@ def message(request, socket, context, message):
 
     if message['action'] == "start":
         user = get_author_by_message(message)
-        msg = make_message(u'%s entered the room' % user, 'activity', 'global')
+        msg = make_message(u'%s' % user, 'activity', 'global', message['user'])
+        global_room = get_room_or_none('global')
+        global_room.participants.add(user)
+        #The new user must know about all other online players
+        msg['users'] =  add_users_to_message(global_room.participants.all())
+        msg['count'] =  len(global_room.participants.all())
         socket.send_and_broadcast_channel(msg)
         return
 
@@ -59,6 +64,19 @@ def message(request, socket, context, message):
         message['mess_type'] = "normal"
         message['dest_user'] = unicode(user.nickname)
         socket.send_and_broadcast_channel(message)
+
+
+@events.on_finish(channel="global")
+def finish(request, socket, context):
+    """
+    Event handler for a socket session ending in a room. Broadcast
+    the user leaving and delete them from the DB.
+    """
+    global_room = get_room_or_none('global')
+    global_room.participants.remove(request.user)
+    left = make_message(u'%s left the room' % request.user, 'left', 'global', request.user.id)
+    socket.broadcast_channel(left)
+
 
 def get_room_or_none(room_name):
     try:
