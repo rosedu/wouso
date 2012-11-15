@@ -239,8 +239,8 @@ class Achievements(App):
             # Check if number of challenge games is >= 100
             games_played = challenge_count(player)
             if games_played >= 100:
-                if not player.magic.has_modifier('ach-chall-30'):
-                    cls.earn_achievement(player, 'ach-chall-30')
+                if not player.magic.has_modifier('ach-chall-100'):
+                    cls.earn_achievement(player, 'ach-chall-100')
 
             # Check if the number of refused challenges in the past week is 0
             # also check for minimum number of challenges played = 5
@@ -348,7 +348,7 @@ class Achievements(App):
     def get_modifiers(self):
         return ['ach-login-10',
                 'ach-qotd-10',
-                'ach-chall-30',
+                'ach-chall-100',
                 'ach-chall-won-10',
                 'ach-chall-10-a-day',
                 'ach-night-owl',
