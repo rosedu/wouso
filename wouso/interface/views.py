@@ -40,10 +40,7 @@ def anonymous_homepage(request):
 
 def login_view(request):
     #TODO: rethink and rewrite
-    if '?next=' in request.get_full_path():
-        redirect_to = request.get_full_path().split('?next=')[1]
-    else:
-        redirect_to = None
+    redirect_to = request.REQUEST.get('next')
     if request.method != 'POST':
         form = AuthenticationForm(request)
         return render_to_response('registration/login.html', 
