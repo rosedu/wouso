@@ -70,7 +70,7 @@ def login_view(request):
             login(request, user)
             signals.addActivity.send(sender=None, user_from=user.get_profile(), action="login", game = None, public=False)
             redirect_url = request.REQUEST.get('next')
-            if redirect_url == None:
+            if redirect_url is None:
                 return redirect(settings.LOGIN_REDIRECT_URL)
             else:
                 return HttpResponseRedirect(redirect_url)
