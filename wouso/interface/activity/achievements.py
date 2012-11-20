@@ -161,7 +161,10 @@ def get_challenge_time(arguments):
 
     if "id" in arguments:
         chall = Challenge.objects.get(pk=arguments["id"])
-        return chall.user_from.seconds_took
+        if chall.user_from.user == chall.winner:
+            return chall.user_from.seconds_took
+        else:
+            return chall.user_to.seconds_took
     else:
         return 0
 

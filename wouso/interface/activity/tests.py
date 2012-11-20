@@ -513,12 +513,15 @@ class WinFastTest(WousoTest):
         self.chall.user_to.seconds_took = 80
         self.chall.user_to.score = 0
         self.chall.user_to.save()
+        self.chall.winner = self.chall.user_from.user
+        self.chall.save()
         self.assertEqual(get_challenge_time(dict(id=self.chall.id)), 30)
 
         self.chall.user_from.seconds_took = 180
         self.chall.user_from.save()
         self.chall.user_to.seconds_took = 20
         self.chall.user_to.save()
+
         self.assertEqual(get_challenge_time(dict(id=self.chall.id)), 180)
 
     def test_ach(self):
@@ -530,6 +533,9 @@ class WinFastTest(WousoTest):
         self.chall.user_to.seconds_took = 80
         self.chall.user_to.score = 300
         self.chall.user_to.save()
+        self.chall.winner = self.chall.user_from.user
+        self.chall.save()
+
         signals.addActivity.send(sender=None, user_from=player,
                                  user_to=player,
                                  arguments=dict(id=self.chall.id),
