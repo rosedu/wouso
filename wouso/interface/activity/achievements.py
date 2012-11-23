@@ -253,6 +253,11 @@ class Achievements(App):
                         first_seen(player) >= 7:
                     cls.earn_achievement(player, 'ach-this-is-sparta')
 
+            # Check if player played 10 challenges in a day"
+            if not player.magic.has_modifier('ach-chall-10-a-day'):
+                if challenges_played_today(player) >= 10:
+                    cls.earn_achievement(player, 'ach-chall-10-a-day')
+
         if action == 'chall-won':
             # Check for flawless victory
             if get_chall_score(kwargs.get("arguments")) == 500:
@@ -280,11 +285,6 @@ class Achievements(App):
                 seconds_no = get_challenge_time(kwargs.get("arguments"))
                 if seconds_no > 0 and seconds_no <= 60:
                     cls.earn_achievement(player, 'ach-win-fast')
-
-            # Check if player played 10 challenges in a day"
-            if not player.magic.has_modifier('ach-chall-10-a-day'):
-                if challenges_played_today(player) >= 10:
-                    cls.earn_achievement(player, 'ach-chall-10-a-day')
 
         if action == 'message':
             # Check the number of unique users who send pm to player in the last m minutes
