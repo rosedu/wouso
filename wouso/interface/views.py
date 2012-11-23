@@ -39,20 +39,15 @@ def anonymous_homepage(request):
 
 
 def login_view(request):
-    #TODO: rethink and rewrite
-    redirect_to = request.REQUEST.get('next')
+    # TODO: rethink and rewrite
     if request.method != 'POST':
         form = AuthenticationForm(request)
-        return render_to_response('registration/login.html', 
-                {'form': form,
-                 'next': redirect_to},
+        return render_to_response('registration/login.html', {'form': form},
             context_instance=RequestContext(request))
     else:
         form = AuthenticationForm(data=request.POST)
         if not form.is_valid():
-            return render_to_response('registration/login.html',
-                    {'form': form,
-                     'next': redirect_to},
+            return render_to_response('registration/login.html', {'form': form},
                 context_instance=RequestContext(request))
 
     user = authenticate(username=request.POST['username'], password=request.POST['password'])
@@ -69,11 +64,7 @@ def login_view(request):
             request.session.set_expiry(MAX_TIME)
             login(request, user)
             signals.addActivity.send(sender=None, user_from=user.get_profile(), action="login", game = None, public=False)
-            redirect_url = request.REQUEST.get('next')
-            if redirect_url is None:
-                return redirect(settings.LOGIN_REDIRECT_URL)
-            else:
-                return HttpResponseRedirect(redirect_url)
+            return redirect(settings.LOGIN_REDIRECT_URL)
     return HttpResponseRedirect("/")
 
 
