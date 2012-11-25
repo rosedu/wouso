@@ -60,6 +60,9 @@ class QuestionForm(forms.Form):
         self.instance.text = data['text']
         self.instance.active = data['active']
 
+        if self.instance.category.name == 'workshop':
+            self.instance.answer_type = 'F'
+
         if self.users:
             self.instance.endorsed_by = data['endorsed_by']
             self.instance.proposed_by = data['proposed_by']
