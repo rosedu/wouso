@@ -20,7 +20,7 @@ def api_enabled_required(function=None):
             if settings.API_ENABLED:
                 return function(request, *args, **kwargs)
             else:
-                return Htttp404
+                return Http404
         _view.__name__ = function.__name__
         _view.__dict__ = function.__dict__
         _view.__doc__ = function.__doc__
