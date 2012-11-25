@@ -1,0 +1,13 @@
+{# Loaded only when chat is enabled #}
+
+{% if user.is_authenticated %}
+    {% if not config_disable_contactbox %}
+    <script type="text/javascript" src="{{ basepath }}/static/js/contactbox.js"></script>
+    {% endif %}
+    {% if not config_disable_chat  %}
+        {% load socketio_tags %}
+        {% socketio %}
+        <script type="text/javascript" src="{{ basepath }}/static/js/chatbox.js"></script>
+        <script type="text/javascript">var chat_host = '{{config_chat_host}}'; var chat_port='{{ config_chat_port }}';</script>
+    {% endif %}
+{% endif %}
