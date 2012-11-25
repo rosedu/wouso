@@ -3,6 +3,7 @@
 *.pyc
 *.db
 *.mo
+/pybox/
 /wouso/settings.py
 /wouso/localsettings.py
 /wouso/resources/static/upload/*
