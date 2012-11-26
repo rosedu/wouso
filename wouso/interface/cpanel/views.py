@@ -880,27 +880,27 @@ def system_message_group(request, group):
                         {'group': group, 'message': message},
                         context_instance=RequestContext(request))
 
-@login_required
+@staff_required
 def lastchalls(request):
     last30 = Challenge.objects.filter(status__in=['P', 'D']).order_by('-date')[:30]
     return render_to_response('cpanel/lastchalls.html',
             {'last30': last30},
         context_instance=RequestContext(request))
 
-@login_required
+@staff_required
 def grandchalls(request):
     return render_to_response('cpanel/grandchallenge.html',
             { 'nr': -1},
         context_instance=RequestContext(request))
 
-@login_required
+@staff_required
 def grandchalls_set_active():
     """ Start the game """
     GrandChallengeGame.set_active()
     return render_to_response('cpanel/grandchallenge.html',
         context_instance=RequestContext(request))
 
-@login_required
+@staff_required
 def grandchalls_start(request):
     """ Play the game """
     GrandChallengeGame.start()
@@ -915,7 +915,7 @@ def grandchalls_start(request):
              'over': 0},
         context_instance=RequestContext(request))
 
-@login_required
+@staff_required
 def grandchalls_round(request):
     """ Play a round """
 
@@ -958,7 +958,7 @@ def grandchalls_round(request):
              'over': over},
         context_instance=RequestContext(request))
 
-@login_required
+@staff_required
 def grandchalls_results(request):
     return render_to_response('cpanel/grandchallenge_results.html',
             {'gchalls': GrandChallenge.get_challenges(),
