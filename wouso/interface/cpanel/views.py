@@ -29,7 +29,6 @@ from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, Answe
 from forms import FormulaForm
 from wouso.core.security.models import Report
 
-
 @staff_required
 def dashboard(request):
     from wouso.games.quest.models import Quest, QuestGame
@@ -878,3 +877,12 @@ def system_message_group(request, group):
     return render_to_response('cpanel/system_message_group.html',
                         {'group': group, 'message': message},
                         context_instance=RequestContext(request))
+@login_required
+def lastchalls(request):
+    # TODO: this should not be here, but in a cpanel.py file
+    from wouso.games.challenge.models import Challenge
+
+    last30 = Challenge.objects.filter(status__in=['P', 'D']).order_by('-date')[:30]
+    return render_to_response('cpanel/lastchalls.html',
+                            {'last30': last30},
+                            context_instance=RequestContext(request))
