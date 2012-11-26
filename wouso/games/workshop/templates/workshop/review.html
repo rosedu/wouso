@@ -28,9 +28,9 @@
                             <table>
                                 <tr>
                                     <td>{% trans 'Grade' %}:
-                                        <input type="radio" {% if r.answer_grade == 0 %}selected{%endif%} name="grade_{{a.id}}" value="0">0</input>
-                                        <input type="radio" {% if r.answer_grade == 1 %}selected{%endif%} name="grade_{{a.id}}" value="1">1</input>
-                                        <input type="radio" {% if r.answer_grade == 2 %}selected{%endif%} name="grade_{{a.id}}" value="2">2</input>
+                                        <input type="radio" {% if r.answer_grade == 0 %}selected{% endif %} name="grade_{{a.id}}" value="0">0</input>
+                                        <input type="radio" {% if r.answer_grade == 1 %}selected{% endif %} name="grade_{{a.id}}" value="1">1</input>
+                                        <input type="radio" {% if r.answer_grade == 2 %}selected{% endif %} name="grade_{{a.id}}" value="2">2</input>
                                     </td>
                                     <td>
                                         {% trans 'Feedback:' %}
