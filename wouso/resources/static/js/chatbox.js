@@ -48,6 +48,7 @@ $(function(){
                 online_user[i] = data.users[i].user_id;
             }
         }else if (data.mess_type == 'left'){
+            if(data.id != myID){
             for(var i = 0; i < online_user.length; i++){
                 if(online_user[i] == data.id){
                     online_user.splice(i,1);
@@ -55,7 +56,7 @@ $(function(){
             }
 
             $("#status_" + data.id).attr("src", "/static/img/status_ingame.png");
-
+            }
         }
         else if(data.mess_type == 'special' && data.command == 'kick' && data.dest_user == myName && window.location.pathname == url_base + '/chat/')
             window.location = url_base + "/";
@@ -72,7 +73,15 @@ $(function(){
     };
 
     var disconnect = function() {
+       // socket.onclose('mess', connected);
+        //socket.disconnect();
+        //alert("x")
+        //socket.send({room:'global', action: 'finish', 'msg':"Connect to global chat.", 'user': myID});
+        //var data = {'action':'message', 'msg':"sunt sucar!!", 'room':'global', 'user': myID};
+        //socket.send(data);
+
         start();
+        //socket.subscribe("global");
     };
 
     var start = function() {
