@@ -420,15 +420,17 @@ class Challenge(models.Model):
                                      game=ChallengeGame.get_instance())
         self.save()
 
-    def _calculate_points(self, responses):
+
+    @classmethod
+    def _calculate_points(cls, responses):
         """ Response contains a dict with question id and checked answers ids.
         Example:
-            1 : [14], - has answered answer with id 14 at the question with id 1
+            {1 : [14,], ...}, - has answered answer with id 14 at the question with id 1
         """
         points = 0.0
         results = {}
         for r, v in responses.iteritems():
-            checked, missed = 0, 0
+            checked, missed, wrong = 0, 0, 0
             q = Question.objects.get(id=r)
             for a in q.answers.all():
                 if a.correct:
@@ -437,7 +439,7 @@ class Challenge(models.Model):
                     else:
                         missed += 1
                 elif a.id in v:
-                    missed += 1
+                    wrong += 1
             correct_count = len([a for a in q.answers if a.correct])
             wrong_count = len([a for a in q.answers if not a.correct])
             if correct_count == 0:
@@ -445,8 +447,8 @@ class Challenge(models.Model):
             elif wrong_count == 0:
                 qpoints = 1 if (len(v) == q.answers.count()) else 0
             else:
-                qpoints = float(checked) / correct_count - float(missed) / wrong_count
-            qpoints = qpoints if qpoints > 0 else 0
+                qpoints = float(checked) / correct_count - float(wrong) / wrong_count
+            #qpoints = qpoints if qpoints > 0 else 0
             points += qpoints
             results[r] = (( checked, correct_count ))
         return {'points': int(100.0 * points), 'results' : results}
@@ -463,7 +465,7 @@ class Challenge(models.Model):
             exp = True
             user_played.score = 0.0
         else:
-            results = self._calculate_points(responses)
+            results = Challenge._calculate_points(responses)
             user_played.score = results['points']
         user_played.save()
 

@@ -215,3 +215,56 @@ class ChallengeApi(TestCase):
 
         self.assertTrue(data['success'])
         self.assertEqual(data['result']['points'], 500)
+
+
+class TestCalculatePoints(TestCase):
+    def get_question(self, correct_answers, wrong_answers):
+        """ Create a question object with specific answers, first correct, then wrong
+        """
+        q = Question.objects.create(text='')
+        for i in range(correct_answers):
+            Answer.objects.create(question=q, correct=True, text='correct %d' % i)
+        for i in range(wrong_answers):
+            Answer.objects.create(question=q, correct=False, text='wrong %d' % i)
+        return q
+
+    def fake_answers(self, question, correct_answers, wrong_answers):
+        """ Return a fake answers response, in the same format it is received with POST
+        """
+        post = {question.id: []}
+        correct_answers_count = question.correct_answers.count()
+        for i in range(correct_answers):
+            post[question.id].append(question.answers[i].id)
+        for i in range(wrong_answers):
+            post[question.id].append(question.answers[i + correct_answers_count].id)
+        return post
+
+    def test_partial_correct_no_wrong(self):
+        q = self.get_question(4, 3)
+        post = self.fake_answers(q, 2, 0)
+        self.assertEqual(Challenge._calculate_points(post)['points'], 50)
+
+    def test_full_correct_no_wrong(self):
+        q = self.get_question(4, 3)
+        post = self.fake_answers(q, 4, 0)
+        self.assertEqual(Challenge._calculate_points(post)['points'], 100)
+
+    def test_partial_correct_and_wrong1(self):
+        q = self.get_question(4, 3)
+        post = self.fake_answers(q, 3, 2)
+        self.assertEqual(Challenge._calculate_points(post)['points'], 8)
+
+    def test_no_correct_and_partial_wrong(self):
+        q = self.get_question(4, 3)
+        post = self.fake_answers(q, 0, 2)
+        self.assertEqual(Challenge._calculate_points(post)['points'], -66)
+
+    def test_full_wrong(self):
+        q = self.get_question(4, 3)
+        post = self.fake_answers(q, 0, 3)
+        self.assertEqual(Challenge._calculate_points(post)['points'], -100)
+
+    def test_all_answers(self):
+        q = self.get_question(4, 3)
+        post = self.fake_answers(q, 4, 3)
+        self.assertEqual(Challenge._calculate_points(post)['points'], 0)
