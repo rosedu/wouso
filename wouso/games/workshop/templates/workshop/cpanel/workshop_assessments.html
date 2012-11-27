@@ -23,6 +23,9 @@
             </li>
             {% endfor %}
         </ol>
+    {% if user.is_superuser %}
+<a class="button" href="{% url ws_edit_assessment workshop.id assessment.id %}">Edit</a>
+    {% endif %}
 <a class="button" href="{% url ws_view_assessments workshop.id %}">All assessments</a>
 {% else %}
         <h3>Workshop #{{workshop.id}}</h3>
@@ -31,6 +34,9 @@
             {% for ass in workshop.assessment_set.all %}
             <li>#{{ ass.id }} - {{ ass.player }} [{% if ass.answered %}answered{% endif %}]
                 <a href="{% url ws_view_assessment workshop.id ass.id %}">view</a>
+                {% if user.is_superuser %}
+                <a href="{% url ws_edit_assessment workshop.id ass.id %}">edit</a>
+                {% endif %}
             </li>
             {% endfor %}
         </ul>

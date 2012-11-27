@@ -1,0 +1,26 @@
+{% extends 'workshop/cpanel/index.html' %}
+{% load workshop %}
+{% load i18n %}
+
+{% block sectiontitle %}Workshop #{{ workshop.id }} - Assessments{% endblock %}
+
+{% block tabcontent %}
+        <h3>Assessment #{{ assessment.id }}</h3>
+        <h4>{{ assessment.player }}, {{ assessment.workshop.semigroup }}, {{ assessment.player.group.name }}, {{ assessment.workshop.date }}</h4>
+        <form   method="post" action="">
+        <ol>
+            {% for a in assessment.answer_set.all %}
+            <li>{{ a.question }}
+                <br/>
+                <td><textarea name="answer_{{ a.id }}" rows="8" cols="80">{{ a.text }}</textarea></td>
+                <br/>
+            </li>
+            {% endfor %}
+        </ol>
+        <button type="submit">Update</button>
+        {% csrf_token %}
+        </form>
+
+<a class="button" href="{% url ws_view_assessment workshop.id assessment.id %}">View</a>
+<a class="button" href="{% url ws_view_assessments workshop.id %}">All assessments</a>
+{% endblock %}

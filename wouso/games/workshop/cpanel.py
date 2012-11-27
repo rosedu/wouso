@@ -1,10 +1,8 @@
 from django import forms
-from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template.context import RequestContext
 
-from models import DAY_CHOICES
-from models import WorkshopGame, Semigroup, Schedule
+from models import WorkshopGame, Semigroup, Schedule, DAY_CHOICES, Answer
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player
 from wouso.games.workshop.models import Workshop, Assessment, Review
@@ -324,6 +322,25 @@ def workshop_assessments(request, workshop, assessment=None):
     return render_to_response('workshop/cpanel/workshop_assessments.html',
                         {'module': 'workshop', 'page': 'workshops', 'workshop': workshop, 'assessment': assessment},
                         context_instance=RequestContext(request)
+    )
+
+
+@staff_required
+def workshop_assessment_edit(request, assessment, **kwargs):
+    assessment = get_object_or_404(Assessment, pk=assessment)
+
+    for q in assessment.questions.all():
+        Answer.objects.get_or_create(question=q, assessment=assessment)
+
+    if request.method == 'POST':
+        for a in assessment.answer_set.all():
+            text = request.POST.get('answer_%d' % a.id, '')
+            if text:
+                a.text = text
+                a.save()
+    return render_to_response('workshop/cpanel/workshop_assessment_change.html',
+                              {'module': 'workshop', 'page': 'workshops', 'workshop': assessment.workshop, 'assessment': assessment},
+                              context_instance=RequestContext(request)
     )
 
 
