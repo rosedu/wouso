@@ -215,6 +215,9 @@ li label {
     width: 95%;
     padding: 6px;
 }
+li label.checkbox {
+    width: 30px;
+}
 li label:hover {
     background-color: #eee;
 }
@@ -586,4 +589,10 @@ div.group-cc {
 table.border td {
     border-bottom: 1px solid silver;
     border-right: 1px solid silver;
+}
+
+
+input.inline, label.inline {
+    display: inline-block;
+    float: none;
 }

@@ -24,10 +24,10 @@
                         <tt>{{ r.feedback }}</tt>
                         <br/>
                         <em>grade:</em> <strong>{{ r.answer_grade }}</strong>,
-                        <em>review grade:</em>
-                        <input type="radio" {% if r.review_grade == 0 %}selected{% endif %} name="review_grade_{{r.id}}" value="0">0</input>
-                        <input type="radio" {% if r.review_grade == 1 %}selected{% endif %} name="review_grade_{{r.id}}" value="1">1</input>
-                        <input type="radio" {% if r.review_grade == 2 %}selected{% endif %} name="review_grade_{{r.id}}" value="2">2</input>
+                        <em>review grade:</em><br/>
+                        <input class="inline" type="radio" {% if r.review_grade == 0 %}checked="checked"{% endif %} name="review_grade_{{r.id}}" id="rinput_grade_{{ r.id }}0" value="0" /><label class="checkbox inline" for="rinput_grade_{{ r.id }}0">0</label>
+                        <input class="inline" type="radio" {% if r.review_grade == 1 %}checked="checked"{% endif %} name="review_grade_{{r.id}}" id="rinput_grade_{{ r.id }}1" value="1" /><label class="checkbox inline" for="rinput_grade_{{ r.id }}1">1</label>
+                        <input class="inline" type="radio" {% if r.review_grade == 2 %}checked="checked"{% endif %} name="review_grade_{{r.id}}" id="rinput_grade_{{ r.id }}2" value="2" /><label class="checkbox inline" for="rinput_grade_{{ r.id }}2">2</label>
                     </li>
                     {% endif %}
                 {% endfor %}
@@ -37,10 +37,10 @@
                 <tr>
                     <td>
                         <span class="red">
-                        Answer Grade:</span>
-                        <input type="radio" {% if a.grade == 0 %}selected{% endif %} name="grade_{{a.id}}" value="0">0</input>
-                        <input type="radio" {% if a.grade == 1 %}selected{% endif %} name="grade_{{a.id}}" value="1">1</input>
-                        <input type="radio" {% if a.grade == 2 %}selected{% endif %} name="grade_{{a.id}}" value="2">2</input>
+                        Answer Grade:</span><br/>
+                        <input type="radio" {% if a.grade == 0 %}checked{% endif %} name="grade_{{a.id}}" value="0" id="rgrade_{{ a.id }}0" /><label class="checkbox" for="rgrade_{{ a.id }}0">0</label>
+                        <input type="radio" {% if a.grade == 1 %}checked{% endif %} name="grade_{{a.id}}" value="1" id="rgrade_{{ a.id }}1" /><label class="checkbox" for="rgrade_{{ a.id }}1">1</label>
+                        <input type="radio" {% if a.grade == 2 %}checked{% endif %} name="grade_{{a.id}}" value="2" id="rgrade_{{ a.id }}2" /><label class="checkbox" for="rgrade_{{ a.id }}2">2</label>
                     </td>
                     <td>
                         <span class="red">
