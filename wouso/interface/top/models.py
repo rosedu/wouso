@@ -215,6 +215,15 @@ class Top(App):
                 hs.position, hs.points = i + 1, g.points
                 hs.save()
 
+        stdout.write(' Updating race history...\n')
+        race_data = [(race, race.points) for race in Race.objects.all() if race.can_play]
+        # sort by number of points, decreasing order
+        race_data = sorted(race_data, key=lambda r:r[1], reverse=True)
+        for i, rd in enumerate(race_data):
+            hs = NewHistory.record(rd[0], today, relative_to=None)
+            hs.position, hs.points = i + 1, rd[1]
+            hs.save()
+
         # I don't think these are necessary, so I'm disabling them for now
         return
         # In group ladder
