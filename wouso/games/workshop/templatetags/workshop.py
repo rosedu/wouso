@@ -21,14 +21,6 @@ def get_schedule(day, hour):
 
 
 @register.simple_tag
-def get_reviewer_grade(workshop, player):
-    """ Render sum of grades from reviewer
-    """
-    qs = Review.objects.filter(answer__assessment__workshop=workshop, reviewer=player)
-
-    return qs.aggregate(grade=Sum('answer_grade'))['grade']
-
-@register.simple_tag
 def get_ass_reviewer_grade(assessment, player):
     """ Render sum of grades from player reviewer, for a specific assessment
     So player reviewed assessment and gave it this results.
