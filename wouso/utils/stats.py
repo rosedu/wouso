@@ -34,6 +34,12 @@ def scoring_activity_stats():
     from wouso.core.scoring.models import History
 
     data = []
+    header = ['id',
+              'player',
+              'days',
+              'days_positive'
+    ]
+    data.append(header)
     for p in Player.objects.all():
         day = None
         days = 0
