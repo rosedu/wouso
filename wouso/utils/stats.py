@@ -3,27 +3,72 @@
 #   Preserve points and position for each user.
 #   Call this in cron at 11:59 am.
 #
+import argparse
 import sys
 import csv
 from datetime import date, timedelta
-from time import strftime
 from django.core.management import setup_environ
+
 
 def init():
     import settings
     setup_environ(settings)
 
+
 def daterange(start_date, end_date):
     for n in range((end_date - start_date).days):
         yield start_date + timedelta(n)
 
-def main(args):
-    try:
-        init()
-    except:
-        print "No wouso/settings.py file. Maybe you can symlink the example file?"
-        sys.exit(1)
 
+def save_csv(csv_path, data):
+    with open(csv_path, 'w') as fout:
+        writer = csv.writer(fout)
+        for row in data:
+            writer.writerow(row)
+
+    return csv_path
+
+
+def peruser_stats():
+    from wouso.core.user.models import Player
+    from wouso.core.scoring.models import History
+    from wouso.games.challenge.models import ChallengeUser, ChallengeGame
+    from wouso.games.qotd.models import QotdGame
+    from wouso.games.quest.models import QuestGame
+    from wouso.games.specialquest.models import SpecialQuestGame
+
+    data = []
+    header = ['id',
+              'player',
+              'points',
+              'gold',
+              'challs',
+              'chall_won',
+              'chall_lost',
+              'chall_points',
+              'qotd_points',
+              'quest_points',
+              'special_gold',
+    ]
+    data.append(header)
+    for p in Player.objects.all():
+        chall = p.get_extension(ChallengeUser)
+        row = [p.id,
+               p,
+               p.points,
+               p.coins.get('gold', 0),
+               chall.get_all_challenges().count(),
+               chall.get_won_challenges().count(),
+               chall.get_lost_challenges().count(),
+               History.user_points_from_game(p.user, ChallengeGame)['points'],
+               History.user_points_from_game(p.user, QotdGame)['points'],
+               History.user_points_from_game(p.user, QuestGame)['points'],
+               History.user_points_from_game(p.user, SpecialQuestGame)['gold'],
+        ]
+        data.append(row)
+    return data
+
+def main(args):
     from django.db import models
     from wouso.core.user.models import Player
     from wouso.core.scoring.models import History, Formula
@@ -31,7 +76,7 @@ def main(args):
     res = History.objects.aggregate(models.Min('timestamp'))['timestamp__min']
     start_date = res.date() if res else date.today()
     end_date = date.today()
-        
+
     data = []
     print "Analyzing ", start_date, "-", end_date
     for single_date in daterange(start_date, end_date):
@@ -41,7 +86,7 @@ def main(args):
         singledata = {'date': single_date, 'data': []}
         for player in Player.objects.all():
             hs = History.objects.filter(timestamp__year=single_date.year, timestamp__month=single_date.month, timestamp__day=single_date.day, user=player)
-            
+
             player = {'uid': player.pk}
             has_score = False
             for formula in Formula.objects.all():
@@ -52,11 +97,11 @@ def main(args):
                     #print formula.id, hss
                 else:
                     player[formula.id] = 0
-     
+
             if has_score:
                 singledata['data'].append(player)
-        
-        if singledata['data']:    
+
+        if singledata['data']:
             data.append(singledata)
     # final
     writer = csv.writer(open('statistics.csv', 'w'))
@@ -71,4 +116,18 @@ def main(args):
     print " done!"
 
 if __name__ == '__main__':
-    main(sys.argv)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--peruser', action='store_true')
+    arguments = parser.parse_args()
+
+    try:
+        init()
+    except:
+        print "No wouso/settings.py file. Maybe you can symlink the example file?"
+        sys.exit(1)
+
+    if arguments.peruser:
+        data = peruser_stats()
+        print "Saved to", save_csv('peruser.csv', data)
+    else:
+        main(sys.argv)
