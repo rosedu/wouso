@@ -116,6 +116,7 @@ class History(models.Model):
     @staticmethod
     def user_points(user):
         """ :return: a list of (game, points) - distribution of points per source """
+        # TODO: use user_points_from_game, but exclude empty coins
         points = {}
         for game in get_games() + [None]:
             pp = {}
@@ -132,6 +133,18 @@ class History(models.Model):
                     points['wouso'] = pp
 
         return points
+
+    @staticmethod
+    def user_points_from_game(user, game):
+        # FIXME: add test
+        game = game.get_instance() if game else game
+        hs = History.objects.filter(user=user, game=game)
+        pp = {}
+        for c in Coin.objects.all():
+            pp[c.id] = 0
+        for h in hs:
+            pp[h.coin.id] = pp.get(h.coin.id, 0) + h.amount
+        return pp
 
     def __unicode__(self):
         return "{user} {date}-{formula}[{ext}]: {amount}{coin}".format(user=self.user, date=self.timestamp, formula=self.formula, ext=self.external_id, amount=self.amount, coin=self.coin)
