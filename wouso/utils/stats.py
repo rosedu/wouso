@@ -29,6 +29,29 @@ def save_csv(csv_path, data):
     return csv_path
 
 
+def scoring_activity_stats():
+    from wouso.core.user.models import Player
+    from wouso.core.scoring.models import History
+
+    data = []
+    for p in Player.objects.all():
+        day = None
+        days = 0
+        days_positive = 0
+        hs = History.objects.filter(user=p.user).order_by('timestamp')
+        for h in hs:
+            if h.timestamp.date() != day:
+                days += 1
+                day = h.timestamp.date()
+        day = None
+        for h in hs.filter(amount__gt=0):
+            if h.timestamp.date() != day:
+                days_positive += 1
+                day = h.timestamp.date()
+        data.append([p.id, p, days, days_positive])
+    return data
+
+
 def peruser_stats():
     from wouso.core.user.models import Player
     from wouso.core.scoring.models import History
@@ -118,6 +141,7 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--peruser', action='store_true')
+    parser.add_argument('--activity', action='store_true')
     arguments = parser.parse_args()
 
     try:
@@ -129,5 +153,8 @@ if __name__ == '__main__':
     if arguments.peruser:
         data = peruser_stats()
         print "Saved to", save_csv('peruser.csv', data)
+    elif arguments.activity:
+        data = scoring_activity_stats()
+        print "Saved to", save_csv('activity.csv', data)
     else:
         main(sys.argv)
