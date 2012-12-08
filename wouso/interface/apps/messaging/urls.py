@@ -1,6 +1,5 @@
 from django.conf.urls.defaults import *
-#from django.conf import settings
-url(r'^qpool/del/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.qpool_delete', name='question_del'),
+
 urlpatterns = patterns('wouso.interface.apps.messaging.views',
     url(r'^$', 'home', name='messaging'),
     url(r'^create$', 'create', name='create'),
