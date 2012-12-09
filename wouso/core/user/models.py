@@ -112,9 +112,13 @@ class Player(models.Model):
     race = models.ForeignKey(Race, blank=False, default=None, null=True)
     description = models.TextField(max_length=600, blank=True)
 
-    def get_neighbours_from_top(self, count):
+    def get_neighbours_from_top(self, count, user_race=None):
         """ Returns an array of neighbouring players from top: count up and count down """
-        base_query = Player.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
+        if user_race is None:
+            base_query = Player.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
+        else:
+            base_query = Player.objects.exclude(user__is_superuser=True).exclude(race__can_play=False).exclude(race__name=user_race.name)
+
         allUsers = list(base_query.order_by('-points'))
         try:
             pos = allUsers.index(self)

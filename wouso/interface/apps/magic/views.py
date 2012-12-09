@@ -151,7 +151,7 @@ def magic_cast(request, destination=None, spell=None):
                 if not spell.mass:
                     error = destination.magic.cast_spell(spell=spell, source=player, due=due)
                 else:
-                    players = player.get_neighbours_from_top(2)
+                    players = destination.get_neighbours_from_top(2, player.race)
                     players = player.magic.filter_players_by_spell(players, spell)
                     error = player.magic.mass_cast(spell=spell, destination=players, due=due)
 
@@ -176,7 +176,8 @@ def affected_players(request):
 
     if spell.mass:
         user = request.user.get_profile()
-        players = user.get_neighbours_from_top(2)
+        destination = get_object_or_404(Player, pk=user_id)
+        players = destination.get_neighbours_from_top(2, user.race)
         players = user.magic.filter_players_by_spell(players, spell)
     else :
         user = get_object_or_404(Player, pk=user_id)
