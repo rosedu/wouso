@@ -136,12 +136,15 @@ class DefaultGod:
         source_play = source.race.can_play if source.race else False
         destin_play = destination.race.can_play if destination.race else False
 
-        if (spell.type == 'n') and (source.race == destination.race):
-            return False, 'Player is the same race as you'
-
         if source_play != destin_play:
             # This prevents Others from casting spells on actual players.
             return False, 'Different world races'
+
+        if (spell.type == 'p') and (source.race != destination.race):
+            return False, 'Different race player'
+
+        if (spell.type == 'n') and (source.race == destination.race):
+            return False, 'Player is the same race as you'
 
         if destination.has_modifier('immunity'):
             return False, 'Player has immunity'
