@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from wouso.core.config.models import IntegerSetting
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player
@@ -9,17 +10,23 @@ class GrandChallengeUser(Player):
     """ Extension of the user profile for GrandChallenge """
     lost = models.IntegerField(default=0)
 
+    def get_challenges(self):
+        """
+        Return a queryset of grandchallenges for this player
+        """
+        return Challenge.objects.filter(id__in=GrandChallenge.objects.filter(Q(challenge__user_from__user__id=self.id)|Q(challenge__user_to__user__id=self.id)).order_by('round').values('challenge'))
+
     def get_active(self):
         """
         Return a list of active GrandChallenges for this user
         """
-        return []
+        return self.get_challenges().filter(status='A')
 
     def get_played(self):
         """
         Return a list of played GrandChallenges, ordered by round
         """
-        return []
+        return self.get_challenges().filter(status__in=('D', 'P'))
 
 
 class GrandChallenge(models.Model):
@@ -123,6 +130,22 @@ class GrandChallenge(models.Model):
         results.reverse()
         return results
 
+
+class Round(object):
+    def __init__(self, round_number):
+        self.round_number = round_number
+
+    def get_challenges(self):
+        """
+         Return a list of challenges in this round, ordered by status
+        """
+        return [gc.challenge for gc in GrandChallenge.objects.filter(round=self.round_number).order_by('status')]
+
+    def info(self):
+        """
+         Return a dictionary with information about this round
+        """
+        return {}
 
 
 class GrandChallengeGame(Game):
@@ -236,6 +259,18 @@ class GrandChallengeGame(Game):
                 all.remove(u)
                 GrandChallenge(u, adversar)
             except: pass
+
+    @classmethod
+    def get_current_round(cls):
+        setting_round = IntegerSetting.get('gc_round')
+        round = setting_round.get_value()
+        if round == 0:
+            return None
+        return cls.get_round(round)
+
+    @classmethod
+    def get_round(cls, round):
+        return Round(round_number=round)
 
     @classmethod
     def get_sidebar_widget(kls, request):
