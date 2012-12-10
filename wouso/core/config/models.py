@@ -74,3 +74,14 @@ class ChoicesSetting(Setting):
             html += '<option value="%s" %s>%s</option>' % (v, 'selected' if self.value == v else '', n)
         html += '</select>'
         return html
+
+
+class IntegerSetting(Setting):
+    def set_value(self, v):
+        self.value = unicode(v)
+
+    def get_value(self):
+        try:
+            return int(self.value)
+        except ValueError:
+            return 0

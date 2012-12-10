@@ -1,4 +1,5 @@
 from django.db import models
+from wouso.core.config.models import IntegerSetting
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player
 from wouso.games.challenge.models import Challenge, ChallengeUser
@@ -7,6 +8,18 @@ from wouso.games.challenge.models import Challenge, ChallengeUser
 class GrandChallengeUser(Player):
     """ Extension of the user profile for GrandChallenge """
     lost = models.IntegerField(default=0)
+
+    def get_active(self):
+        """
+        Return a list of active GrandChallenges for this user
+        """
+        return []
+
+    def get_played(self):
+        """
+        Return a list of played GrandChallenges, ordered by round
+        """
+        return []
 
 
 class GrandChallenge(models.Model):
@@ -35,6 +48,16 @@ class GrandChallenge(models.Model):
         chall.accept()
         self.challenge_id = chall.id
         self.__class__.CHALLENGES.append(chall.id)
+
+    @classmethod
+    def create(cls, user_from, user_to, round):
+        """ Create a new Challenge and automatically accept it.
+        """
+        grand_challenge = cls.objects.create(round=round)
+        grand_challenge.challenge = Challenge.create(user_from.get_extension(ChallengeUser), user_to.get_extension(ChallengeUser))
+        grand_challenge.challenge.accept()
+        grand_challenge.save()
+        return grand_challenge
 
     @classmethod
     def get_challenges(cls):
@@ -120,6 +143,10 @@ class GrandChallengeGame(Game):
         self._meta.get_field('url').default = "grandchallenge_index_view"
         super(GrandChallengeGame, self).__init__(*args, **kwargs)
 
+    @classmethod
+    def is_started(cls):
+        setting_round = IntegerSetting.get('gc_round')
+        return setting_round.get_value() > 0
 
     @classmethod
     def reset(cls):
@@ -139,19 +166,24 @@ class GrandChallengeGame(Game):
 
     @classmethod
     def start(cls):
+        """
+         Create challenges for each consecutive players. Return a list of created challenges.
+        """
         cls.create_users()
-
-        user_list = GrandChallengeGame.base_query
+        challenges = []
+        round = 1
         last = None
-        for user in user_list:
-            u = user.user
-            u = u.get_profile().get_extension(GrandChallengeUser)
-            GrandChallengeGame.ALL.append(u)
+        for user in cls.base_query:
             if last is None:
-                last = u
+                last = user
             else:
-                GrandChallenge(u, last)
+                c = GrandChallenge.create(user, last, round)
+                challenges.append(c)
                 last = None
+
+        setting_round = IntegerSetting.get('gc_round')
+        setting_round.set_value(round)
+        return challenges
 
     @classmethod
     def eligible(cls, lost_count):

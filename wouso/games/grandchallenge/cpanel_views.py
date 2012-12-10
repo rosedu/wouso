@@ -82,14 +82,14 @@ def grandchalls_start(request):
 @staff_required
 def grandchalls_set_active(request):
     """ Start the game """
-    GrandChallengeGame.set_active()
+    #GrandChallengeGame.set_active()
     return render_to_response('grandchallenge/cpanel/grandchallenge.html',
         context_instance=RequestContext(request))
 
 
 @staff_required
 def lastchalls(request):
-    last30 = GrandChallenge.objects.filter(status__in=['P', 'D']).order_by('-date')[:30]
+    last30 = GrandChallenge.objects.filter(challenge__status__in=['P', 'D']).order_by('-challenge__date')[:30]
     return render_to_response('grandchallenge/cpanel/lastchalls.html',
             {'last30': last30},
         context_instance=RequestContext(request))

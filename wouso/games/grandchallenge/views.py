@@ -10,8 +10,8 @@ def index(request):
     profile = request.user.get_profile()
     gc_user = profile.get_extension(GrandChallengeUser)
 
-    active = GrandChallengeGame.get_active(gc_user)
-    played = GrandChallengeGame.get_played(gc_user)
+    active = gc_user.get_active()
+    played = gc_user.get_played()
 
     if not gc_user in GrandChallengeGame.allUsers:
         return do_result(request, error='Ne pare rau, nu participi in turneu ')
