@@ -25,10 +25,9 @@ from wouso.interface.apps.messaging.models import Message
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
+from wouso.core.security.models import Report
 from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, AnswerForm, EditReportForm
 from forms import FormulaForm
-from wouso.core.security.models import Report
-
 
 @staff_required
 def dashboard(request):
@@ -836,6 +835,7 @@ def the_bell(request):
 
     return redirect('dashboard')
 
+
 @staff_required
 def reports(request, page=0):
     """
@@ -878,3 +878,15 @@ def system_message_group(request, group):
     return render_to_response('cpanel/system_message_group.html',
                         {'group': group, 'message': message},
                         context_instance=RequestContext(request))
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,32 @@
+{% extends 'cpanel/index.html' %}
+
+{% block sectiontitle %}Last Challenges{% endblock %}
+
+{% block sectioncontent %}
+<table>
+    <tr><th>Date</th>
+        <th>Challenger</th>
+        <th>Challenged</th>
+        <th>Status</th>
+        <th>Winner</th>
+    </tr>
+{% for chall in last30 %}
+    {% if chall %}
+    <tr><td>{{chall.date}}</td>
+        <td><a href="{% url interface.profile.views.user_profile user.id %}">{{chall.user_from}}</a></td>
+        <td><a href="{% url interface.profile.views.user_profile user.id %}">{{chall.user_to}}</a></td>
+        <td>{% for item in chall.STATUS %}
+            {% if item.0 == chall.status%}
+                {{ item.1}}
+            {% endif %}
+            {% endfor %}
+        </td>
+        <td>{% if chall.winner != null %}
+        <a href="{% url interface.profile.views.user_profile user.id %}">{{chall.winner}}</a>
+        {% else %}No winner
+        {%endif%}</td>
+    </tr>
+    {% endif %}
+{% endfor %}
+</table>
+{% endblock %}
