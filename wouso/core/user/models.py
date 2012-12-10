@@ -2,7 +2,7 @@
 from datetime import datetime, timedelta
 from django import forms
 from django.db import models
-from django.db.models import Sum, Q
+from django.db.models import Sum
 from django.contrib.auth.models import User, Group
 from wouso.core.game.models import Game
 from wouso.core.magic.manager import MagicManager
