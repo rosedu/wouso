@@ -10,7 +10,7 @@ class GrandChallengeUser(Player):
     lost = models.IntegerField(default=0)
 
 
-class GrandChallenge(models.Model):
+class GrandChallenge(Challenge):
     ALL = []
     OUT_PLAY = []
     CHALLENGES= []
