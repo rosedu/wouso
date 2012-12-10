@@ -79,6 +79,7 @@ class ChoicesSetting(Setting):
 class IntegerSetting(Setting):
     def set_value(self, v):
         self.value = unicode(v)
+        self.save()
 
     def get_value(self):
         try:

@@ -30,7 +30,7 @@ class GrandChallenge(models.Model):
     OUT_PLAY = []
     CHALLENGES= []
 
-    def __init__(self, user_from, user_to):
+    def __oldinit__(self, user_from, user_to):
         # TODO: change this constructor to a classmethod
         if not GrandChallengeGame.is_final() and not GrandChallengeGame.is_winner():
             self.branch = max(user_from.lost, user_to.lost)
@@ -66,9 +66,6 @@ class GrandChallenge(models.Model):
     @classmethod
     def active(cls):
         return filter(lambda c: c.active, cls.ALL)
-
-        #Din TopUser faci .user => usr = u.user
-        #usr.get_profile().get_extenion(..)
 
     @classmethod
     def all_done(cls):
@@ -174,10 +171,11 @@ class GrandChallengeGame(Game):
         round = 1
         last = None
         for user in cls.base_query:
+            u = user.user.get_profile()
             if last is None:
-                last = user
+                last = u
             else:
-                c = GrandChallenge.create(user, last, round)
+                c = GrandChallenge.create(u, last, round)
                 challenges.append(c)
                 last = None
 

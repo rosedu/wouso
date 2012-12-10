@@ -142,6 +142,7 @@ class Challenge(models.Model):
     TIME_LIMIT = 300 # seconds
     TIME_SAFE = 10 # seconds more
     WARRANTY = True # on/off switch
+    SCORING = True # on/off switch for rewarding challenges
 
     @classmethod
     def create(cls, user_from, user_to, ignore_questions = False):
@@ -345,17 +346,11 @@ class Challenge(models.Model):
         """ Both players have played, save and score
         Notice the fact this is the only function where the scoring is affected
         """
-        """ Handle artifacts and spells """
 
         for u in (self.user_to, self.user_from):
             # always lose, you mofo
             if u.user.has_modifier('challenge-always-lose'):
                 u.score = -1
-            # affect bonuses
-            if u.user.has_modifier('challenge-affect-scoring'):
-                u.percents = u.user.modifier_percents('challenge-affect-scoring')
-            else:
-                u.percents = 100
 
         if self.user_to.score > self.user_from.score:
             result = (self.user_to, self.user_from)
@@ -366,6 +361,27 @@ class Challenge(models.Model):
 
         if result == 'draw':
             self.status = 'D'
+        else:
+            self.status = 'P'
+            self.user_won, self.user_lost = result
+            self.winner = self.user_won.user
+        self.save()
+
+        if self.SCORING:
+            self.score_players(result)
+
+    def score_players(self, result):
+        """
+        Called from played
+        """
+        for u in (self.user_to, self.user_from):
+            # affect bonuses
+            if u.user.has_modifier('challenge-affect-scoring'):
+                u.percents = u.user.modifier_percents('challenge-affect-scoring')
+            else:
+                u.percents = 100
+
+        if result == 'draw':
             scoring.score(self.user_to.user, ChallengeGame, 'chall-draw', percents=self.user_to.percents)
             scoring.score(self.user_from.user, ChallengeGame, 'chall-draw', percents=self.user_from.percents)
             # send activty signal
@@ -374,15 +390,11 @@ class Challenge(models.Model):
             signals.addActivity.send(sender=None, user_from=self.user_to.user, \
                                      user_to=self.user_from.user, \
                                      message=signal_msg, \
-                                     arguments=dict(user_to=self.user_to,
-                                                    user_from=self.user_from,
+                                     arguments=dict(user_to=self.user_to, user_from=self.user_from,
                                                     extra=self.extraInfo(self.user_from, self.user_to)),\
                                      action=action_msg, \
                                      game=ChallengeGame.get_instance())
         else:
-            self.status = 'P'
-            self.user_won, self.user_lost = result
-            self.winner = self.user_won.user
             diff_race = self.user_won.user.race != self.user_lost.user.race
             diff_class = self.user_won.user.group != self.user_lost.user.group
             diff_race = 1 if diff_race else 0
@@ -390,19 +402,18 @@ class Challenge(models.Model):
             winner_points = self.user_won.user.points
             loser_points = self.user_lost.user.points
 
-            if self.WARRANTY:
-                # warranty not affected by percents
-                scoring.score(self.user_won.user, ChallengeGame, 'chall-warranty-return',
-                          external_id=self.id)
-
             if self.user_won.user.has_modifier('challenge-affect-scoring-won'):
                 self.user_won.percents += self.user_won.user.modifier_percents('challenge-affect-scoring-won')
 
+            if self.WARRANTY:
+                # warranty not affected by percents
+                scoring.score(self.user_won.user, ChallengeGame, 'chall-warranty-return', external_id=self.id)
+
             scoring.score(self.user_won.user, ChallengeGame, 'chall-won',
-                external_id=self.id, percents=self.user_won.percents,
-                points=self.user_won.score, points2=self.user_lost.score,
-                different_race=diff_race, different_class=diff_class,
-                winner_points=winner_points, loser_points=loser_points,
+                          external_id=self.id, percents=self.user_won.percents,
+                          points=self.user_won.score, points2=self.user_lost.score,
+                          different_race=diff_race, different_class=diff_class,
+                          winner_points=winner_points, loser_points=loser_points,
             )
             #Check for spell evade
             if self.user_lost.user.has_modifier('challenge-evade'):
@@ -413,7 +424,7 @@ class Challenge(models.Model):
                     Message.send(sender=None, receiver=self.user_lost.user, subject="Challenge evaded", text="You have just evaded losing points in a challenge")
 
             scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
-                external_id=self.id, points=self.user_lost.score, points2=self.user_lost.score)
+                          external_id=self.id, points=self.user_lost.score, points2=self.user_lost.score)
             # send activty signal
             signal_msg = ugettext_noop('won challenge with {user_lost}: {extra}')
             action_msg = "chall-won"
@@ -421,11 +432,9 @@ class Challenge(models.Model):
                                      user_to=self.user_lost.user, \
                                      message=signal_msg,
                                      arguments=dict(user_lost=self.user_lost, id=self.id,
-                                                                        extra=self.extraInfo(self.user_won, self.user_lost)), \
+                                                    extra=self.extraInfo(self.user_won, self.user_lost)), \
                                      action=action_msg, \
                                      game=ChallengeGame.get_instance())
-        self.save()
-
 
     @classmethod
     def _calculate_points(cls, responses):
