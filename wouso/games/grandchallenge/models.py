@@ -173,7 +173,7 @@ class GrandChallengeGame(Game):
         """
         Reset a GC game, set every user lost to 0
         """
-        GrandChallenge.objects.delete()
+        GrandChallenge.objects.all().delete()
         GrandChallengeUser.objects.update(lost=0)
 
     @classmethod

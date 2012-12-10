@@ -22,7 +22,7 @@ def grandchalls_results(request):
 @staff_required
 def grandchalls_round(request):
     """ Play a round """
-
+    # TODO: move logic to models.
     """ regular round """
     over = 0
     done = GrandChallenge.all_done()
