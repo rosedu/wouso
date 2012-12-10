@@ -141,13 +141,14 @@ class Challenge(models.Model):
     LIMIT = 5
     TIME_LIMIT = 300 # seconds
     TIME_SAFE = 10 # seconds more
+    WARRANTY = True # on/off switch
 
-    @staticmethod
-    def create(user_from, user_to, ignore_questions = False):
+    @classmethod
+    def create(cls, user_from, user_to, ignore_questions = False):
         """ Assigns questions, and returns the number of assigned q """
 
         questions = [q for q in get_questions_with_category('challenge')]
-        if (len(questions) < 5) and not ignore_questions:
+        if (len(questions) < cls.LIMIT) and not ignore_questions:
             raise ChallengeException('Too few questions')
         shuffle(questions)
 
@@ -159,15 +160,16 @@ class Challenge(models.Model):
 
         # TODO: better question selection
         #limit = 5
-        for q in questions[:Challenge.LIMIT]:
+        for q in questions[:cls.LIMIT]:
             c.questions.add(q)
 
         # set last_launched
         user_from.last_launched = datetime.now()
         user_from.save()
 
-        # take 3 points from user_from
-        scoring.score(user_from, ChallengeGame, 'chall-warranty', external_id=c.id)
+        if cls.WARRANTY:
+            # take 3 points from user_from
+            scoring.score(user_from, ChallengeGame, 'chall-warranty', external_id=c.id)
         return c
 
     @staticmethod
@@ -208,8 +210,9 @@ class Challenge(models.Model):
     def accept(self):
         self.status = 'A'
         self.save()
-        # take warranty from user_to
-        scoring.score(self.user_to.user, ChallengeGame, 'chall-warranty', external_id=self.id)
+        if self.WARRANTY:
+            # take warranty from user_to
+            scoring.score(self.user_to.user, ChallengeGame, 'chall-warranty', external_id=self.id)
 
     def refuse(self, auto=False):
         self.status = 'R'
@@ -229,12 +232,14 @@ class Challenge(models.Model):
                                      action=action_msg, \
                                      game=ChallengeGame.get_instance())
         self.save()
-        # give warranty back to initiator
-        scoring.unset(self.user_from.user, ChallengeGame, 'chall-warranty', external_id=self.id)
+        if self.WARRANTY:
+            # give warranty back to initiator
+            scoring.unset(self.user_from.user, ChallengeGame, 'chall-warranty', external_id=self.id)
 
     def cancel(self):
-        # give warranty back to initiator
-        scoring.unset(self.user_from.user, ChallengeGame, 'chall-warranty', external_id=self.id)
+        if self.WARRANTY:
+            # give warranty back to initiator
+            scoring.unset(self.user_from.user, ChallengeGame, 'chall-warranty', external_id=self.id)
 
         self.user_from.user.last_launched = datetime(1, 1, 1)
         self.user_from.user.save()
@@ -385,8 +390,9 @@ class Challenge(models.Model):
             winner_points = self.user_won.user.points
             loser_points = self.user_lost.user.points
 
-            # warranty not affected by percents
-            scoring.score(self.user_won.user, ChallengeGame, 'chall-warranty-return',
+            if self.WARRANTY:
+                # warranty not affected by percents
+                scoring.score(self.user_won.user, ChallengeGame, 'chall-warranty-return',
                           external_id=self.id)
 
             if self.user_won.user.has_modifier('challenge-affect-scoring-won'):
@@ -402,7 +408,7 @@ class Challenge(models.Model):
             if self.user_lost.user.has_modifier('challenge-evade'):
                 random.seed()
                 if random.random() < 0.33:
-                    #He's lucky,no penalty,return warrany
+                    #He's lucky,no penalty,return warranty
                     scoring.score(self.user_lost.user, ChallengeGame, 'chall-warranty-return', external_id=self.id)
                     Message.send(sender=None, receiver=self.user_lost.user, subject="Challenge evaded", text="You have just evaded losing points in a challenge")
 
