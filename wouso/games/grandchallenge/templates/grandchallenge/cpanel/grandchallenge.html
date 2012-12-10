@@ -5,14 +5,14 @@
 
 {% block sectioncontent %}
 {% if nr == -1 %}
-<a class="button" href="{% url grandchalls_start %}">Start</a>
-{# If necessary, add info to explain the tournament here #}
+    <a class="button" href="{% url grandchalls_start %}">Start</a>
+    {# If necessary, add info to explain the tournament here #}
 {% else %}
-{% if nr < 9 %} <a class="button" href="{% url grandchalls_round %}"> Next round </a>
-{% else %}{% if nr = 9 %} <a class="button" href="{% url grandchalls_round %}"> Final round </a>
-{% else %}{% if nr = 10 and over = 0%} <a class="button" href="{% url grandchalls_round %}"> Last Final round </a>
-{% else %} <a class="button" href="{% url grandchalls_results %}"> Results </a>
-{% endif %}{% endif %}{% endif %}
+    {% if nr < 9 %} <a class="button" href="{% url grandchalls_round %}"> Next round </a>
+    {% else %}{% if nr = 9 %} <a class="button" href="{% url grandchalls_round %}"> Final round </a>
+    {% else %}{% if nr = 10 and over = 0%} <a class="button" href="{% url grandchalls_round %}"> Last Final round </a>
+    {% else %} <a class="button" href="{% url grandchalls_results %}"> Results </a>
+    {% endif %}{% endif %}{% endif %}
 <p>
 <table>
     <tr><th>{% if nr == 0 %} Start List

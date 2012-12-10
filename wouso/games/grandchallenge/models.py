@@ -3,18 +3,18 @@ from wouso.core.game.models import Game
 from wouso.core.user.models import Player
 from wouso.games.challenge.models import Challenge, ChallengeUser
 from wouso.interface.top.models import TopUser
-from random import randint
 
 
-# Create your models here.
 class GrandChallengeUser(Player):
     """ Extension of the user profile for GrandChallenge """
     lost = models.IntegerField(default=0)
+
 
 class GrandChallenge(models.Model):
     ALL = []
     OUT_PLAY = []
     CHALLENGES= []
+
     def __init__(self, user_from, user_to):
         if not GrandChallengeGame.is_final() and not GrandChallengeGame.is_winner():
             self.branch = max(user_from.lost, user_to.lost)
@@ -126,6 +126,7 @@ class GrandChallenge(models.Model):
                 GrandChallenge(u, adversar)
             except: pass
 
+
 class GrandChallengeGame(Game):
     """ Each game must extend Game """
     NUM_USERS = 8
@@ -166,7 +167,7 @@ class GrandChallengeGame(Game):
     def is_final(cls):
         arb_win  = cls.eligible(0)
         arb_lose = cls.eligible(1)
-        if((len(arb_win) == 1) and (len(arb_lose) == 1)):
+        if (len(arb_win) == 1) and (len(arb_lose) == 1):
             return True
         return False
 
@@ -194,4 +195,3 @@ class GrandChallengeGame(Game):
             from views import sidebar_widget
             return sidebar_widget(request)
         return None
-

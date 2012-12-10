@@ -1,6 +1,8 @@
-from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import login_required
-from models import GrandChallenge, GrandChallengeGame
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+from models import  GrandChallengeGame, GrandChallengeUser
+from wouso.interface import render_string
 
 @login_required
 def index(request):
@@ -27,4 +29,4 @@ def do_result(request, error='', message=''):
 def sidebar_widget(request):
     gc = GrandChallengeGame
     gc_user = request.user.get_profile().get_extension(GrandChallengeUser)
-    return render_string('grandchallenge/sidebar.html', {'gchall': gc, 'gcuser': gcuser})
+    return render_string('grandchallenge/sidebar.html', {'gchall': gc, 'gcuser': gc_user})
