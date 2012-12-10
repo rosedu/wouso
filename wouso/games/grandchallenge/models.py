@@ -2,7 +2,6 @@ from django.db import models
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player
 from wouso.games.challenge.models import Challenge, ChallengeUser
-from wouso.interface.top.models import TopUser
 
 
 class GrandChallengeUser(Player):
@@ -10,12 +9,16 @@ class GrandChallengeUser(Player):
     lost = models.IntegerField(default=0)
 
 
-class GrandChallenge(Challenge):
+class GrandChallenge(models.Model):
+    challenge = models.ForeignKey(Challenge, blank=True, null=True)
+    round = models.IntegerField(blank=True, null=True)
+
     ALL = []
     OUT_PLAY = []
     CHALLENGES= []
 
     def __init__(self, user_from, user_to):
+        # TODO: change this constructor to a classmethod
         if not GrandChallengeGame.is_final() and not GrandChallengeGame.is_winner():
             self.branch = max(user_from.lost, user_to.lost)
         else:
@@ -100,40 +103,13 @@ class GrandChallenge(Challenge):
         results.reverse()
         return results
 
-    @classmethod
-    def play_round(cls, l_w):
-        if (l_w == 0):
-            all = GrandChallengeGame.eligible(0)
-        elif(l_w == 1):
-            all = GrandChallengeGame.eligible(1)
-
-        while len(all):
-            u = all[0]
-            # print "elig", u
-            # nu e respectata# gasesc un jucator cu care nu am mai jucat 
-            # si care are acelasi numar de pierdute
-            # Iulian
-            played = GrandChallenge.played_with(u)
-
-            efm = [eu for eu in all if ((eu.lost == u.lost) and (eu != u) and ( (eu not in played) or (eu == all[len(all) - 1])) )]
-            if not len(efm):
-                break
-
-            try:
-                adversar = efm[0]
-                all.remove(adversar)
-                all.remove(u)
-                GrandChallenge(u, adversar)
-            except: pass
 
 
 class GrandChallengeGame(Game):
-    """ Each game must extend Game """
     NUM_USERS = 8
-    round_number = 0
     ALL = []
-    #Iulian - primii 16
-    base_query = TopUser.objects.exclude(user__is_superuser=True)
+    round_number = 0
+    base_query = GrandChallengeUser.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
     allUsers = base_query.order_by('-points')[:NUM_USERS]
 
     def __init__(self, *args, **kwargs):
@@ -144,6 +120,7 @@ class GrandChallengeGame(Game):
         self._meta.get_field('url').default = "grandchallenge_index_view"
         super(GrandChallengeGame, self).__init__(*args, **kwargs)
 
+
     @classmethod
     def reset(cls):
         """
@@ -152,9 +129,19 @@ class GrandChallengeGame(Game):
         GrandChallenge.objects.delete()
         GrandChallengeUser.objects.update(lost=0)
 
-    @staticmethod
-    def start():
-        user_list = GrandChallengeGame.allUsers
+    @classmethod
+    def create_users(cls):
+        """
+         Create GrandChallengeUser extensions for all eligibile players.
+        """
+        for p in Player.objects.exclude(race__can_play=False):
+            p.get_extension(GrandChallengeUser)
+
+    @classmethod
+    def start(cls):
+        cls.create_users()
+
+        user_list = GrandChallengeGame.base_query
         last = None
         for user in user_list:
             u = user.user
@@ -167,8 +154,10 @@ class GrandChallengeGame(Game):
                 last = None
 
     @classmethod
-    def eligible(cls, result):
-        return filter(lambda user: user.lost==result, cls.ALL)
+    def eligible(cls, lost_count):
+        """ Return a queryset with players of lost_count
+        """
+        return cls.base_query.filter(lost=lost_count)
 
     @classmethod
     def is_final(cls):
@@ -186,15 +175,37 @@ class GrandChallengeGame(Game):
 
     @classmethod
     def final_second_round(cls):
-        GrandChallenge.play_round(1)
+        GrandChallengeGame.play_round(1)
 
     @classmethod
     def is_winner(cls):
         arb_win  = cls.eligible(0)
         arb_lose = cls.eligible(1)
-        if((len(arb_win) == 0) and (len(arb_lose) == 2)):
+        if (len(arb_win) == 0) and (len(arb_lose) == 2):
             return False
         return True
+
+    @classmethod
+    def play_round(cls, l_w):
+        if l_w == 0:
+            all = GrandChallengeGame.eligible(0)
+        elif l_w == 1:
+            all = GrandChallengeGame.eligible(1)
+
+        while len(all):
+            u = all[0]
+            played = GrandChallenge.played_with(u)
+
+            efm = [eu for eu in all if ((eu.lost == u.lost) and (eu != u) and ( (eu not in played) or (eu == all[len(all) - 1])) )]
+            if not len(efm):
+                break
+
+            try:
+                adversar = efm[0]
+                all.remove(adversar)
+                all.remove(u)
+                GrandChallenge(u, adversar)
+            except: pass
 
     @classmethod
     def get_sidebar_widget(kls, request):
