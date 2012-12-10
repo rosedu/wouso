@@ -4,10 +4,12 @@ from wouso.core.tests import WousoTest
 from wouso.games.challenge.models import Challenge
 from models import GrandChallengeGame, GrandChallenge, GrandChallengeUser
 
-Challenge.LIMIT = 0
-Challenge.WARRANTY = False
 
 class GrandChallengeTest(WousoTest):
+    def setUp(self):
+        Challenge.LIMIT = 0
+        Challenge.WARRANTY = False
+
     def test_start_gc(self):
         u1 = self._get_player(1)
         u2 = self._get_player(2)
@@ -22,6 +24,10 @@ class GrandChallengeTest(WousoTest):
 
 
 class GCUserTest(WousoTest):
+    def setUp(self):
+        Challenge.LIMIT = 0
+        Challenge.WARRANTY = False
+
     def test_get_challenges_active_and_played(self):
         u1 = self._get_player(1)
         u2 = self._get_player(2)

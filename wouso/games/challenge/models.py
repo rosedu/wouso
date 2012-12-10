@@ -361,10 +361,30 @@ class Challenge(models.Model):
 
         if result == 'draw':
             self.status = 'D'
+            # send activty signal
+            action_msg = "chall-draw"
+            signal_msg = ugettext_noop('draw result between {user_to} and {user_from}:\n{extra}')
+            signals.addActivity.send(sender=None, user_from=self.user_to.user, \
+                                     user_to=self.user_from.user, \
+                                     message=signal_msg, \
+                                     arguments=dict(user_to=self.user_to, user_from=self.user_from,
+                                                    extra=self.extraInfo(self.user_from, self.user_to)),\
+                                     action=action_msg, \
+                                     game=ChallengeGame.get_instance())
         else:
             self.status = 'P'
             self.user_won, self.user_lost = result
             self.winner = self.user_won.user
+            # send activty signal
+            signal_msg = ugettext_noop('won challenge with {user_lost}: {extra}')
+            action_msg = "chall-won"
+            signals.addActivity.send(sender=None, user_from=self.user_won.user, \
+                                     user_to=self.user_lost.user, \
+                                     message=signal_msg,
+                                     arguments=dict(user_lost=self.user_lost, id=self.id,
+                                                    extra=self.extraInfo(self.user_won, self.user_lost)), \
+                                     action=action_msg, \
+                                     game=ChallengeGame.get_instance())
         self.save()
 
         if self.SCORING:
@@ -384,16 +404,6 @@ class Challenge(models.Model):
         if result == 'draw':
             scoring.score(self.user_to.user, ChallengeGame, 'chall-draw', percents=self.user_to.percents)
             scoring.score(self.user_from.user, ChallengeGame, 'chall-draw', percents=self.user_from.percents)
-            # send activty signal
-            action_msg = "chall-draw"
-            signal_msg = ugettext_noop('draw result between {user_to} and {user_from}:\n{extra}')
-            signals.addActivity.send(sender=None, user_from=self.user_to.user, \
-                                     user_to=self.user_from.user, \
-                                     message=signal_msg, \
-                                     arguments=dict(user_to=self.user_to, user_from=self.user_from,
-                                                    extra=self.extraInfo(self.user_from, self.user_to)),\
-                                     action=action_msg, \
-                                     game=ChallengeGame.get_instance())
         else:
             diff_race = self.user_won.user.race != self.user_lost.user.race
             diff_class = self.user_won.user.group != self.user_lost.user.group
@@ -425,16 +435,6 @@ class Challenge(models.Model):
 
             scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
                           external_id=self.id, points=self.user_lost.score, points2=self.user_lost.score)
-            # send activty signal
-            signal_msg = ugettext_noop('won challenge with {user_lost}: {extra}')
-            action_msg = "chall-won"
-            signals.addActivity.send(sender=None, user_from=self.user_won.user, \
-                                     user_to=self.user_lost.user, \
-                                     message=signal_msg,
-                                     arguments=dict(user_lost=self.user_lost, id=self.id,
-                                                    extra=self.extraInfo(self.user_won, self.user_lost)), \
-                                     action=action_msg, \
-                                     game=ChallengeGame.get_instance())
 
     @classmethod
     def _calculate_points(cls, responses):

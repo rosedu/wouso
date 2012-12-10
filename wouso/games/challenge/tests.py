@@ -11,6 +11,8 @@ from wouso.core.user.models import Player
 from wouso.core import scoring
 from wouso.core.scoring.models import Formula
 
+Challenge.LIMIT = 5
+
 class ChallengeTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create(username='_test')
@@ -142,6 +144,7 @@ class ChallengeTestCase(TestCase):
 
 class ChallengeApi(TestCase):
     def setUp(self):
+        Challenge.LIMIT = 5
         self.user = User.objects.create_user('_test', '', password='test')
         self.client.login(username='_test', password='test')
 
@@ -185,7 +188,7 @@ class ChallengeApi(TestCase):
         Formula.objects.create(id='chall-warranty')
         Formula.objects.create(id='chall-timer')
         category = Category.objects.create(name='challenge')
-        for i in range(5):
+        for i in range(Challenge.LIMIT + 1):
             q = Question.objects.create(text='text %s' % i, category=category, active=True)
             for j in range(5):
                 Answer.objects.create(correct=j==1, question=q)
@@ -197,7 +200,7 @@ class ChallengeApi(TestCase):
         self.assertTrue(data)
         self.assertEqual(data['status'], 'A')
         self.assertEqual(data['to'], self.challuser.user.username)
-        self.assertEqual(len(data['questions']), 5)
+        self.assertEqual(len(data['questions']), Challenge.LIMIT)
 
         # attempt post
         data = {}
@@ -214,7 +217,7 @@ class ChallengeApi(TestCase):
         data = json.loads(response.content)
 
         self.assertTrue(data['success'])
-        self.assertEqual(data['result']['points'], 500)
+        self.assertEqual(data['result']['points'], Challenge.LIMIT * 100)
 
 
 class TestCalculatePoints(TestCase):
