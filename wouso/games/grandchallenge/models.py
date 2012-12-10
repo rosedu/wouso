@@ -144,7 +144,14 @@ class GrandChallengeGame(Game):
         self._meta.get_field('url').default = "grandchallenge_index_view"
         super(GrandChallengeGame, self).__init__(*args, **kwargs)
 
-    #schimbat!!!!!!!
+    @classmethod
+    def reset(cls):
+        """
+        Reset a GC game, set every user lost to 0
+        """
+        GrandChallenge.objects.delete()
+        GrandChallengeUser.objects.update(lost=0)
+
     @staticmethod
     def start():
         user_list = GrandChallengeGame.allUsers
