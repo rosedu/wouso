@@ -41,7 +41,7 @@ class ManagerTestCase(WousoTest):
 
     def test_cast_spell(self):
         spell1 = Spell.objects.create(name='le-spell')
-        spell2 = Spell.objects.create(name='le-spell2', mass=True, type='n')
+        spell2 = Spell.objects.create(name='le-spell2', mass=True, type='o')
         v = []
         for i in range(0,7):
             player = self._get_player(i+2)
@@ -56,7 +56,7 @@ class ManagerTestCase(WousoTest):
         
         for i in [1, 2, 4, 5]:
             self.assertTrue(v[i].magic.is_spelled)
-        self.assertFalse(v[3].magic.is_spelled)
+        self.assertTrue(v[3].magic.is_spelled)
 
         v[6].magic.cast_spell(spell1, v[0], datetime.now()+timedelta(days=1))
         self.assertFalse(v[6].magic.is_spelled)
