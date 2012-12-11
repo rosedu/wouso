@@ -9,7 +9,7 @@ from authentication import SessionAuthentication, SimpleAuthentication
 
 # needed by oauth
 urlpatterns = patterns('',
-    url(r'^oauth/request_token/$',csrf_exempt(oauth_request_token), name='oauth_request_token'),
+    url(r'^oauth/request_token/$', csrf_exempt(oauth_request_token), name='oauth_request_token'),
     url(r'^oauth/authorize/$', csrf_exempt(oauth_user_auth), name='oauth_authorize'),
     url(r'^oauth/access_token/$', csrf_exempt(oauth_access_token), name='oauth_access_token'),
 )

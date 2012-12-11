@@ -10,12 +10,17 @@
     {% else %}
     <h1>Request token ready</h1>
 
-    <p>Please enter the following verifier in your application, for the authorization process to finish.</p>
+        {% if token %}
+        <p>Please enter the following verifier in your application, for the authorization process to finish.</p>
 
-    <p>
-        <label for="verifier">Verifier:</label>
-        <input name="verifier" id="verifier" type="text" value="{{ token.verifier }}" />
-    </p>
-    <button onclick="javascript:window.close(); return false;">Close</button>
+        <p>
+            <label for="verifier">Verifier:</label>
+            <input name="verifier" id="verifier" type="text" value="{{ token.verifier }}" />
+        </p>
+        <button onclick="javascript:window.close(); return false;">Close</button>
+        {% else %}
+        <p>Nothing to see here.</p>
+        {% endif %}
     {% endif %}
+    <a href="{% url logout_view %}">Logout</a>
 {% endblock %}

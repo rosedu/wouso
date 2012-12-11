@@ -5,8 +5,9 @@ from piston import forms
 from piston.models import Consumer
 from wouso.core.decorators import api_enabled_required
 
+
 @api_enabled_required
-def request_token_ready(request, token):
+def request_token_ready(request, token=None):
     """
     It shows an easy-to-copy verifier, needed by consumer in order
     to receive its access token.
