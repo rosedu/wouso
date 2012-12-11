@@ -17,6 +17,7 @@ def api_enabled_required(function=None):
 
     def _dec(function):
         def _view(request, *args, **kwargs):
+            from django.conf import settings
             if settings.API_ENABLED:
                 return function(request, *args, **kwargs)
             else:
