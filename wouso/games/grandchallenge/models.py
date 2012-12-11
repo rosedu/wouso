@@ -70,6 +70,8 @@ class GrandChallenge(models.Model):
         """ Create a new Challenge and automatically accept it.
         """
         grand_challenge = cls.objects.create(round=round)
+        user_from = user_from.user.get_profile()
+        user_to = user_to.user.get_profile()
         grand_challenge.challenge = Challenge.create(user_from.get_extension(ChallengeUser), user_to.get_extension(ChallengeUser))
         grand_challenge.challenge.accept()
         grand_challenge.save()
@@ -169,13 +171,13 @@ class Round(object):
            for i in range(self.round_number):
                yield Round(i + 1)
 
+    def __repr__(self):
+        return '<' + 'Round ' + unicode(self.round_number) + '>'
+
 
 class GrandChallengeGame(Game):
-    NUM_USERS = 8
     ALL = []
     round_number = 0
-    base_query = GrandChallengeUser.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
-    allUsers = base_query.order_by('-points')[:NUM_USERS]
 
     def __init__(self, *args, **kwargs):
         # Set parent's fields
@@ -184,6 +186,10 @@ class GrandChallengeGame(Game):
         # the url field takes as value only a named url from module's urls.py
         self._meta.get_field('url').default = "grandchallenge_index_view"
         super(GrandChallengeGame, self).__init__(*args, **kwargs)
+
+    @classmethod
+    def base_query(cls):
+        return GrandChallengeUser.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
 
     @classmethod
     def is_started(cls):
@@ -216,7 +222,7 @@ class GrandChallengeGame(Game):
         challenges = []
         round = 1
         last = None
-        for user in cls.base_query:
+        for user in cls.base_query():
             u = user.user.get_profile()
             if last is None:
                 last = u
@@ -233,7 +239,7 @@ class GrandChallengeGame(Game):
     def eligible(cls, lost_count):
         """ Return a queryset with players of lost_count
         """
-        return cls.base_query.filter(lost=lost_count)
+        return cls.base_query().filter(lost=lost_count)
 
     @classmethod
     def is_final(cls):
@@ -265,7 +271,6 @@ class GrandChallengeGame(Game):
     def is_finished(cls):
         arb_win  = cls.eligible(0)
         arb_lose = cls.eligible(1)
-        print "ARB win", arb_win, "ARB lose", arb_lose
         if len(arb_win) == 0 or (len(arb_win) == 1 and len(arb_lose) != 1):
             return True
         return False
@@ -321,7 +326,7 @@ class GrandChallengeGame(Game):
         """
         if cls.is_finished():
             final_gc = GrandChallenge.objects.filter(round=cls.get_current_round().round_number)[0]
-            return final_gc.challenge.winner
+            return final_gc.challenge.winner.user.get_profile()
         return None
 
     @classmethod

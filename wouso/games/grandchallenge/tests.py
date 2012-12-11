@@ -14,7 +14,6 @@ class GrandChallengeTest(WousoTest):
         u1 = self._get_player(1)
         u2 = self._get_player(2)
 
-
         self.assertFalse(GrandChallengeGame.is_started())
         GrandChallengeGame.start()
         self.assertTrue(GrandChallengeGame.is_started())
@@ -22,6 +21,43 @@ class GrandChallengeTest(WousoTest):
         c = Challenge.objects.filter(Q(user_from__user=u1, user_to__user=u2)|Q(user_from__user=u2, user_to__user=u1))
         self.assertEqual(c.count(), 1)
 
+    def _simulate_n_users(self, n):
+        """
+        Create n users and simulate a GC run.
+        """
+        for i in range(n):
+            self._get_player(i)
+
+        GrandChallengeGame.start()
+        self.assertEqual(GrandChallengeGame.get_current_round().round_number, 1)
+        self.assertEqual(GrandChallengeGame.base_query().count(), n)
+        self.assertEqual(len(GrandChallengeGame.get_current_round().participants()), n - n % 2)
+        while not GrandChallengeGame.is_finished():
+            GrandChallengeGame.round_next()
+        GrandChallengeGame.force_round_close(GrandChallengeGame.get_current_round())
+        GrandChallengeGame.round_next()
+        GrandChallengeGame.force_round_close(GrandChallengeGame.get_current_round())
+
+    def test_4_players(self):
+        self._simulate_n_users(4)
+        self.assertEqual(GrandChallengeGame.get_winner().id, self._get_player(1).id)
+
+    def test_5_players(self):
+        self._simulate_n_users(5)
+        self.assertEqual(GrandChallengeGame.get_winner().id, self._get_player(1).id)
+
+    def test_6_players(self):
+        self._simulate_n_users(6)
+        self.assertEqual(GrandChallengeGame.get_winner().id, self._get_player(1).id)
+
+
+    def test_16_players(self):
+        self._simulate_n_users(16)
+        self.assertEqual(GrandChallengeGame.get_winner().id, self._get_player(1).id)
+
+    def test_16_players(self):
+        self._simulate_n_users(17)
+        self.assertEqual(GrandChallengeGame.get_winner().id, self._get_player(1).id)
 
 class GCUserTest(WousoTest):
     def setUp(self):

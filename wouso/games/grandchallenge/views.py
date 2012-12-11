@@ -13,7 +13,7 @@ def index(request):
     active = gc_user.get_active()
     played = gc_user.get_played()
 
-    if not gc_user in GrandChallengeGame.allUsers:
+    if not gc_user in GrandChallengeGame.base_query():
         return do_result(request, error='Ne pare rau, nu participi in turneu ')
 
     return render_to_response('grandchallenge/index.html',
