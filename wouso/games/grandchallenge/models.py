@@ -10,6 +10,7 @@ from wouso.games.challenge.models import Challenge, ChallengeUser
 class GrandChallengeUser(Player):
     """ Extension of the user profile for GrandChallenge """
     lost = models.IntegerField(default=0)
+    last_round = models.IntegerField(default=0)
 
     def get_challenges(self):
         """
@@ -33,6 +34,9 @@ class GrandChallengeUser(Player):
         self.lost += 1
         self.save()
 
+    def set_last_round(self, round_number):
+        self.last_round = round_number
+        self.save()
 
 class GrandChallenge(models.Model):
     challenge = models.ForeignKey(Challenge, blank=True, null=True)
@@ -69,6 +73,8 @@ class GrandChallenge(models.Model):
         grand_challenge.challenge = Challenge.create(user_from.get_extension(ChallengeUser), user_to.get_extension(ChallengeUser))
         grand_challenge.challenge.accept()
         grand_challenge.save()
+        user_from.get_extension(GrandChallengeUser).set_last_round(round)
+        user_to.get_extension(GrandChallengeUser).set_last_round(round)
         return grand_challenge
 
     @classmethod
@@ -192,7 +198,7 @@ class GrandChallengeGame(Game):
         Reset a GC game, set every user lost to 0
         """
         GrandChallenge.objects.all().delete()
-        GrandChallengeUser.objects.update(lost=0)
+        GrandChallengeUser.objects.update(lost=0, last_round=0)
         cls.set_current_round(0)
 
     @classmethod
