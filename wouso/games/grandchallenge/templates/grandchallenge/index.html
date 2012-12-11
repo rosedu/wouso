@@ -35,6 +35,20 @@
         {% endfor %}
     </table>
 
+<h3>Status</h3>
+<p>
+    {% if gc.is_started %}
+        Grand Challenge is running.
+        {% if gcuser.last_round == gc.get_current_round.round_number %}
+            You are part of the game!
+        {% else %}
+            You left the game at round {{ gcuser.last_round }} with {{ gcuser.lost }} lost challenges.
+        {% endif %}
+    {% else %}
+        Grand Challenge is not started (either not started or finished)
+    {% endif %}.
+</p>
+
 
 <h3>{% trans 'Active' %}</h3>
 <ul class="answers">
