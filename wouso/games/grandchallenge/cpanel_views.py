@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from wouso.core.decorators import staff_required
 from wouso.games.grandchallenge.models import GrandChallenge, GrandChallengeGame
@@ -6,8 +6,10 @@ from wouso.games.grandchallenge.models import GrandChallenge, GrandChallengeGame
 
 @staff_required
 def grandchalls(request):
+    round = GrandChallengeGame.get_current_round()
+    nr = round.round_number if round else -1
     return render_to_response('grandchallenge/cpanel/grandchallenge.html',
-        { 'nr': -1},
+        {'nr': nr, 'round': round},
         context_instance=RequestContext(request))
 
 
@@ -67,17 +69,7 @@ def grandchalls_round(request):
 def grandchalls_start(request):
     """ Play the game """
     GrandChallengeGame.start()
-    users = sorted(GrandChallengeGame.allUsers, key=lambda u: u.user)
-    gchalls = sorted(GrandChallenge.get_challenges(), key=lambda gc: gc.branch)
-    GrandChallengeGame.round_number += 1
-
-    return render_to_response('grandchallenge/cpanel/grandchallenge.html',
-            {'gchalls': gchalls,
-             'nr': GrandChallengeGame.round_number - 1,
-             'users': users,
-             'over': 0},
-        context_instance=RequestContext(request))
-
+    return redirect('grandchalls')
 
 @staff_required
 def grandchalls_set_active(request):

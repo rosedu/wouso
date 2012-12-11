@@ -135,17 +135,22 @@ class Round(object):
     def __init__(self, round_number):
         self.round_number = round_number
 
-    def get_challenges(self):
+    def challenges(self):
         """
          Return a list of challenges in this round, ordered by status
         """
-        return [gc.challenge for gc in GrandChallenge.objects.filter(round=self.round_number).order_by('status')]
+        return [gc.challenge for gc in GrandChallenge.objects.filter(round=self.round_number).order_by('challenge__status')]
 
     def info(self):
         """
          Return a dictionary with information about this round
         """
         return {}
+
+    def participants(self):
+        ps = set([c.user_from.user for c in self.challenges()] + [c.user_to.user for c in self.challenges()])
+        ps = map(lambda a: a.get_extension(GrandChallengeUser), ps)
+        return ps
 
 
 class GrandChallengeGame(Game):
