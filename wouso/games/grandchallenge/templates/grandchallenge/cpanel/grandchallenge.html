@@ -19,7 +19,14 @@
         <div class="subgroups">
             {% block information %}
                 <p>Current round: {{ nr }}</p>
+                <p>Previous rounds:</p>
+                <ul>
+                    {% for r in round.rounds %}
+                    <li><a href="{% url grandchalls_round_results r.round_number %}">{{ r.round_number }}</a></li>
+                    {% endfor %}
+                </ul>
 
+                <a class="button" href="{% url grandchalls_hard_reset %}">Reset</a>
             {% endblock %}
         </div>
 
@@ -56,10 +63,12 @@
                 </tr>
                 {% endfor %}
             </table>
+
+            <a class="button" href="{% url grandchalls_round_next %}">Next round</a>
         {% else %}
             <p>No current round. Did you started it?</p>
         {% endif %}
-
+        <hr/>
 
 
 

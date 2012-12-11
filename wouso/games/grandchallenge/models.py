@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import Q
+import logging
 from wouso.core.config.models import IntegerSetting
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player
@@ -27,6 +28,10 @@ class GrandChallengeUser(Player):
         Return a list of played GrandChallenges, ordered by round
         """
         return self.get_challenges().filter(status__in=('D', 'P'))
+
+    def increase_lost(self):
+        self.lost += 1
+        self.save()
 
 
 class GrandChallenge(models.Model):
@@ -133,7 +138,7 @@ class GrandChallenge(models.Model):
 
 class Round(object):
     def __init__(self, round_number):
-        self.round_number = round_number
+        self.round_number = int(round_number)
 
     def challenges(self):
         """
@@ -151,6 +156,14 @@ class Round(object):
         ps = set([c.user_from.user for c in self.challenges()] + [c.user_to.user for c in self.challenges()])
         ps = map(lambda a: a.get_extension(GrandChallengeUser), ps)
         return ps
+
+    def rounds(self):
+        """
+        Return a list of previous rounds, as an iterator
+        """
+        if self.round_number > 0:
+           for i in range(self.round_number):
+               yield Round(i + 1)
 
 
 class GrandChallengeGame(Game):
@@ -180,6 +193,7 @@ class GrandChallengeGame(Game):
         """
         GrandChallenge.objects.all().delete()
         GrandChallengeUser.objects.update(lost=0)
+        cls.set_current_round(0)
 
     @classmethod
     def create_users(cls):
@@ -244,26 +258,34 @@ class GrandChallengeGame(Game):
         return True
 
     @classmethod
-    def play_round(cls, l_w):
-        if l_w == 0:
+    def play_round(cls, lost_count, round_number):
+        if lost_count == 0:
             all = GrandChallengeGame.eligible(0)
-        elif l_w == 1:
+        elif lost_count == 1:
             all = GrandChallengeGame.eligible(1)
 
+        all = list(all)
         while len(all):
             u = all[0]
-            played = GrandChallenge.played_with(u)
+            played_with = GrandChallenge.played_with(u)
 
-            efm = [eu for eu in all if ((eu.lost == u.lost) and (eu != u) and ( (eu not in played) or (eu == all[len(all) - 1])) )]
-            if not len(efm):
+            adversari = [eu for eu in all if ((eu.lost == u.lost) and (eu != u) and ((eu not in played_with) or (eu == all[-1])) )]
+            if not len(adversari):
                 break
 
+            print adversari
             try:
-                adversar = efm[0]
+                adversar = adversari[0]
                 all.remove(adversar)
                 all.remove(u)
-                GrandChallenge(u, adversar)
-            except: pass
+                GrandChallenge.create(u, adversar, round_number)
+            except Exception as e:
+                logging.exception(e)
+
+    @classmethod
+    def set_current_round(cls, number):
+        setting_round = IntegerSetting.get('gc_round')
+        setting_round.set_value(number)
 
     @classmethod
     def get_current_round(cls):
@@ -276,6 +298,36 @@ class GrandChallengeGame(Game):
     @classmethod
     def get_round(cls, round):
         return Round(round_number=round)
+
+
+    @classmethod
+    def round_next(cls):
+        """
+         Progress to next round
+        """
+        round = cls.get_current_round()
+        # Finish existing challenges
+        for c in round.challenges():
+            if c.is_runnable():
+                c.set_expired()
+            # Upgrade lost count
+            if c.user_from.user == c.winner:
+                gc_user_lost = c.user_to.user.get_extension(GrandChallengeUser)
+                gc_user_lost.increase_lost()
+            elif c.user_to.user == c.winner:
+                gc_user_lost = c.user_from.user.get_extension(GrandChallengeUser)
+                gc_user_lost.increase_lost()
+
+        # Create new challenges
+        if round.round_number % 2 == 0:
+            cls.play_round(1, round.round_number + 1)
+            cls.play_round(0, round.round_number + 1)
+        else:
+            cls.play_round(1, round.round_number + 1)
+        # Update round number
+        round.round_number += 1
+        cls.set_current_round(round.round_number)
+        return round
 
     @classmethod
     def get_sidebar_widget(kls, request):

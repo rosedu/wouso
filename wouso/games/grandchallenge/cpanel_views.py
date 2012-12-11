@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from wouso.core.decorators import staff_required
-from wouso.games.grandchallenge.models import GrandChallenge, GrandChallengeGame
+from wouso.games.grandchallenge.models import GrandChallenge, GrandChallengeGame, Round
 
 
 @staff_required
@@ -11,6 +11,28 @@ def grandchalls(request):
     return render_to_response('grandchallenge/cpanel/grandchallenge.html',
         {'nr': nr, 'round': round},
         context_instance=RequestContext(request))
+
+
+@staff_required
+def grandchalls_round_next(request):
+    if request.method == 'POST':
+        GrandChallengeGame.round_next()
+        return redirect('grandchalls')
+    return render_to_response('grandchallenge/cpanel/grandchallenge_round_next.html', {}, context_instance=RequestContext(request))
+
+
+@staff_required
+def grandchalls_hard_reset(request):
+    if request.method == 'POST':
+        GrandChallengeGame.reset()
+        return redirect('grandchalls')
+    return render_to_response('grandchallenge/cpanel/grandchallenge_hard_reset.html', {}, context_instance=RequestContext(request))
+
+
+@staff_required
+def grandchalls_round_results(request, round_number):
+    round = Round(round_number)
+    return render_to_response('grandchallenge/cpanel/grandchallenge_round_results.html', {'round': round}, context_instance=RequestContext(request))
 
 
 @staff_required
