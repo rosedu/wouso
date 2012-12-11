@@ -1,0 +1,12 @@
+{% extends 'grandchallenge/cpanel/grandchallenge.html' %}
+{% load artifacts %}
+
+{% block sectiontitle %}The GrandChallenge - close round{% endblock %}
+
+{% block tabcontent %}
+    <form method="post" action="">
+        <p>Are you sure?</p>
+        {% csrf_token %}
+        <button type="submit">Close round</button>
+    </form>
+{% endblock %}

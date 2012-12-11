@@ -1,5 +1,6 @@
 {% extends 'interface/section_base.html'%}
 {% load i18n %}
+{% load user %}
 {% block title %}{% trans 'GrandChallenges' %}{% endblock %}
 {% block sectiontitle %}{% trans 'Grand Challenge' %}{% endblock %}
 
@@ -48,6 +49,11 @@
         Grand Challenge is not started (either not started or finished)
     {% endif %}.
 </p>
+{% if gc.is_finished %}
+<p>
+    Grand Challenge is over, winner is: {% player_simple gc.get_winner %}
+</p>
+{% endif %}
 
 
 <h3>{% trans 'Active' %}</h3>

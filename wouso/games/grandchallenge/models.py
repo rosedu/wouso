@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Max
 import logging
 from wouso.core.config.models import IntegerSetting
 from wouso.core.game.models import Game
@@ -73,8 +73,6 @@ class GrandChallenge(models.Model):
         grand_challenge.challenge = Challenge.create(user_from.get_extension(ChallengeUser), user_to.get_extension(ChallengeUser))
         grand_challenge.challenge.accept()
         grand_challenge.save()
-        user_from.get_extension(GrandChallengeUser).set_last_round(round)
-        user_to.get_extension(GrandChallengeUser).set_last_round(round)
         return grand_challenge
 
     @classmethod
@@ -264,7 +262,19 @@ class GrandChallengeGame(Game):
         return True
 
     @classmethod
+    def is_finished(cls):
+        arb_win  = cls.eligible(0)
+        arb_lose = cls.eligible(1)
+        print "ARB win", arb_win, "ARB lose", arb_lose
+        if len(arb_win) == 0 or (len(arb_win) == 1 and len(arb_lose) != 1):
+            return True
+        return False
+
+    @classmethod
     def play_round(cls, lost_count, round_number):
+        """
+        Create new challenges.
+        """
         if lost_count == 0:
             all = GrandChallengeGame.eligible(0)
         elif lost_count == 1:
@@ -304,6 +314,15 @@ class GrandChallengeGame(Game):
     def get_round(cls, round):
         return Round(round_number=round)
 
+    @classmethod
+    def get_winner(cls):
+        """
+        Return gc winner
+        """
+        if cls.is_finished():
+            final_gc = GrandChallenge.objects.filter(round=cls.get_current_round().round_number)[0]
+            return final_gc.challenge.winner
+        return None
 
     @classmethod
     def force_round_close(cls, round):
@@ -320,28 +339,44 @@ class GrandChallengeGame(Game):
                 else:
                     c.set_won_by_player(c.user_to.user)
 
+            gc_user_from = c.user_from.user.get_extension(GrandChallengeUser)
+            gc_user_to = c.user_to.user.get_extension(GrandChallengeUser)
+
             # Upgrade lost count
             if c.user_from.user == c.winner:
-                gc_user_lost = c.user_to.user.get_extension(GrandChallengeUser)
-                gc_user_lost.increase_lost()
+                if gc_user_to.last_round < round.round_number:
+                    gc_user_to.increase_lost()
             elif c.user_to.user == c.winner:
-                gc_user_lost = c.user_from.user.get_extension(GrandChallengeUser)
-                gc_user_lost.increase_lost()
+                if gc_user_from.last_round < round.round_number:
+                    gc_user_from.increase_lost()
+
+            gc_user_from.set_last_round(round.round_number)
+            gc_user_to.set_last_round(round.round_number)
 
     @classmethod
     def round_next(cls):
         """
          Progress to next round
         """
+        if cls.is_finished():
+            logging.error('Grand challenge finished.')
+            return None
+
         round = cls.get_current_round()
         cls.force_round_close(round)
 
-        # Create new challenges
-        if round.round_number % 2 == 1:
-            cls.play_round(1, round.round_number + 1)
-            cls.play_round(0, round.round_number + 1)
+        if cls.is_final():
+            # Only two players left in the game
+            arb_win  = cls.eligible(0)
+            arb_lose = cls.eligible(1)
+            GrandChallenge.create(arb_win[0], arb_lose[0], round.round_number + 1)
         else:
-            cls.play_round(1, round.round_number + 1)
+            # More than two players, create new challenges
+            if round.round_number % 2 == 1:
+                cls.play_round(1, round.round_number + 1)
+                cls.play_round(0, round.round_number + 1)
+            else:
+                cls.play_round(1, round.round_number + 1)
         # Update round number
         round.round_number += 1
         cls.set_current_round(round.round_number)

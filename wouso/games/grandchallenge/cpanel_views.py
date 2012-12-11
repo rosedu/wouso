@@ -9,7 +9,7 @@ def grandchalls(request):
     round = GrandChallengeGame.get_current_round()
     nr = round.round_number if round else -1
     return render_to_response('grandchallenge/cpanel/grandchallenge.html',
-        {'nr': nr, 'round': round},
+        {'nr': nr, 'round': round, 'gc': GrandChallengeGame},
         context_instance=RequestContext(request))
 
 
@@ -19,6 +19,15 @@ def grandchalls_round_next(request):
         GrandChallengeGame.round_next()
         return redirect('grandchalls')
     return render_to_response('grandchallenge/cpanel/grandchallenge_round_next.html', {}, context_instance=RequestContext(request))
+
+
+@staff_required
+def grandchalls_round_close(request):
+    if request.method == 'POST':
+        round = GrandChallengeGame.get_current_round()
+        GrandChallengeGame.force_round_close(round)
+        return redirect('grandchalls')
+    return render_to_response('grandchallenge/cpanel/grandchallenge_round_close.html', {}, context_instance=RequestContext(request))
 
 
 @staff_required
