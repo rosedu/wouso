@@ -17,8 +17,9 @@ def index(request):
         return do_result(request, error='Ne pare rau, nu participi in turneu ')
 
     return render_to_response('grandchallenge/index.html',
-            {'active': active, 'played': played, 'gcuser': gc_user},
+            {'active': active, 'played': played, 'gcuser': gc_user, 'gc': GrandChallengeGame},
             context_instance=RequestContext(request))
+
 
 @login_required
 def do_result(request, error='', message=''):
@@ -26,7 +27,8 @@ def do_result(request, error='', message=''):
         {'error': error, 'message': message},
         context_instance=RequestContext(request))
 
+
 def sidebar_widget(request):
     gc = GrandChallengeGame
     gc_user = request.user.get_profile().get_extension(GrandChallengeUser)
-    return render_string('grandchallenge/sidebar.html', {'gchall': gc, 'gcuser': gc_user})
+    return render_string('grandchallenge/sidebar.html', {'gc': gc, 'gcuser': gc_user})

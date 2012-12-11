@@ -5,7 +5,7 @@
 
 {% block content %}
 
-{% if not active %}
+{% if not gc.is_started %}
     {% trans 'Grand Challenge has not started yet' %}
 {% else %}
     <a href="{% url games.grandchallenge.views.index %}" class="">{% trans 'Check now' %}</a>!

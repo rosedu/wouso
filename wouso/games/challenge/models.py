@@ -517,6 +517,9 @@ class Challenge(models.Model):
     def is_draw(self):
         return self.status == 'D'
 
+    def is_played(self):
+        return self.status == 'P'
+
     def title(self):
         return u"%s vs %s" % (self.user_from, self.user_to)
 
