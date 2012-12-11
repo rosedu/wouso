@@ -36,10 +36,10 @@ class GCUserTest(WousoTest):
 
         gc1 = u1.get_extension(GrandChallengeUser)
         gc2 = u2.get_extension(GrandChallengeUser)
-        self.assertFalse(gc1.challenges())
+        self.assertFalse(gc1.get_challenges())
         chall = GrandChallenge.create(u1, u2, round=3)
-        self.assertEqual(gc1.challenges().count(), 1)
-        self.assertEqual(gc2.challenges().count(), 1)
+        self.assertEqual(gc1.get_challenges().count(), 1)
+        self.assertEqual(gc2.get_challenges().count(), 1)
         self.assertEqual(gc1.get_active().count(), 1)
         chall.challenge.set_won_by_player(u1)
         self.assertEqual(gc1.get_active().count(), 0)

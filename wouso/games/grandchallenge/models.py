@@ -273,7 +273,6 @@ class GrandChallengeGame(Game):
             if not len(adversari):
                 break
 
-            print adversari
             try:
                 adversar = adversari[0]
                 all.remove(adversar)
