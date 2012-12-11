@@ -514,6 +514,9 @@ class Challenge(models.Model):
     def is_refused(self):
         return self.status == 'R'
 
+    def title(self):
+        return u"%s vs %s" % (self.user_from, self.user_to)
+
     def __unicode__(self):
         return "%s vs %s (%s) - %s [%d] " % (
             unicode(self.user_from),
