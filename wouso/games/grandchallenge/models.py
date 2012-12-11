@@ -286,6 +286,7 @@ class GrandChallengeGame(Game):
             all = GrandChallengeGame.eligible(1)
 
         all = list(all)
+        challenges = []
         while len(all):
             u = all[0]
             played_with = GrandChallenge.played_with(u)
@@ -298,9 +299,11 @@ class GrandChallengeGame(Game):
                 adversar = adversari[0]
                 all.remove(adversar)
                 all.remove(u)
-                GrandChallenge.create(u, adversar, round_number)
+                c = GrandChallenge.create(u, adversar, round_number)
+                challenges.append(c)
             except Exception as e:
                 logging.exception(e)
+        return challenges
 
     @classmethod
     def set_current_round(cls, number):
@@ -370,21 +373,24 @@ class GrandChallengeGame(Game):
         round = cls.get_current_round()
         cls.force_round_close(round)
 
+        challenges = []
         if cls.is_final():
             # Only two players left in the game
             arb_win  = cls.eligible(0)
             arb_lose = cls.eligible(1)
-            GrandChallenge.create(arb_win[0], arb_lose[0], round.round_number + 1)
+            challenges.append(GrandChallenge.create(arb_win[0], arb_lose[0], round.round_number + 1))
         else:
             # More than two players, create new challenges
             if round.round_number % 2 == 1:
-                cls.play_round(1, round.round_number + 1)
-                cls.play_round(0, round.round_number + 1)
+                challenges += cls.play_round(1, round.round_number + 1)
+                challenges += cls.play_round(0, round.round_number + 1)
             else:
-                cls.play_round(1, round.round_number + 1)
-        # Update round number
-        round.round_number += 1
-        cls.set_current_round(round.round_number)
+                challenges += cls.play_round(1, round.round_number + 1)
+
+        if challenges:
+            # Update round number
+            round.round_number += 1
+            cls.set_current_round(round.round_number)
         return round
 
     @classmethod
