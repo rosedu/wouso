@@ -140,12 +140,17 @@ class DefaultGod:
             # This prevents Others from casting spells on actual players.
             return False, 'Different world races'
 
+        if (spell.type == 'p') and (source.race != destination.race):
+            return False, 'Different race player'
+
+        if (spell.type == 'n') and (source.race == destination.race):
+            return False, 'Player is the same race as you'
+
         if destination.has_modifier('immunity'):
             return False, 'Player has immunity'
 
         if destination.has_modifier(spell.name):
                 return False, 'Player already has this spell casted on him'
-
 
         if destination.has_modifier('curse') and (spell.type != 'n'):
             return False, 'Player is cursed'

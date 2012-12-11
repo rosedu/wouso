@@ -112,14 +112,24 @@ class Player(models.Model):
     race = models.ForeignKey(Race, blank=False, default=None, null=True)
     description = models.TextField(max_length=600, blank=True)
 
-    def get_neighbours_from_top(self, count):
-        """ Returns an array of neighbouring players from top: count up and count down """
+    def get_neighbours_from_top(self, count, user_race=None, spell_type=None):
+        """ Returns an array of neighbouring players from top: count up and count down
+            user_race and spell_type are used by mass spells for neighbours list.
+        """
         base_query = Player.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
+
         allUsers = list(base_query.order_by('-points'))
         try:
             pos = allUsers.index(self)
         except ValueError:
             return []
+
+        if (spell_type is not None) and (user_race is not None) and (spell_type != 'o'):
+            if spell_type == 'p':
+                allUsers = [user for user in allUsers if user.race.name == user_race.name]
+            else:
+                allUsers = [user for user in allUsers if user.race.name != user_race.name]
+
 
         if len(allUsers) <= 2*count+1:
             return allUsers
