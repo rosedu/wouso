@@ -514,6 +514,9 @@ class Challenge(models.Model):
     def is_refused(self):
         return self.status == 'R'
 
+    def is_draw(self):
+        return self.status == 'D'
+
     def title(self):
         return u"%s vs %s" % (self.user_from, self.user_to)
 

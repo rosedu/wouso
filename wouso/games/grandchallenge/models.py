@@ -300,15 +300,20 @@ class GrandChallengeGame(Game):
 
 
     @classmethod
-    def round_next(cls):
+    def force_round_close(cls, round):
         """
-         Progress to next round
+         Finish every challenge in the round
         """
-        round = cls.get_current_round()
-        # Finish existing challenges
         for c in round.challenges():
             if c.is_runnable():
                 c.set_expired()
+            if c.is_draw():
+                # Temporary hack FIXME
+                if c.user_from.seconds_took < c.user_to.seconds_took:
+                    c.set_won_by_player(c.user_from.user)
+                else:
+                    c.set_won_by_player(c.user_to.user)
+
             # Upgrade lost count
             if c.user_from.user == c.winner:
                 gc_user_lost = c.user_to.user.get_extension(GrandChallengeUser)
@@ -317,8 +322,16 @@ class GrandChallengeGame(Game):
                 gc_user_lost = c.user_from.user.get_extension(GrandChallengeUser)
                 gc_user_lost.increase_lost()
 
+    @classmethod
+    def round_next(cls):
+        """
+         Progress to next round
+        """
+        round = cls.get_current_round()
+        cls.force_round_close(round)
+
         # Create new challenges
-        if round.round_number % 2 == 0:
+        if round.round_number % 2 == 1:
             cls.play_round(1, round.round_number + 1)
             cls.play_round(0, round.round_number + 1)
         else:
