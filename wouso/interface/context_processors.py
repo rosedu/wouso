@@ -8,7 +8,6 @@ from wouso.interface.top.models import Top
 from wouso.interface.apps.qproposal.models import Qproposal
 from wouso.interface.apps.statistics.models import Statistics
 from wouso.interface.apps.messaging.models import Message
-from wouso.interface.apps.statistics.views import footer_link as stats_link
 from wouso.interface.chat.models import Chat
 from wouso.interface import get_static_pages, detect_mobile, mobile_browser
 from wouso.settings import FORCE_SCRIPT_NAME
@@ -57,14 +56,6 @@ def header_footer(request):
             if f:
                 footer.append(f)
     except: pass
-
-    # also add stats link
-    try:
-        f = stats_link(request)
-        if f:
-            footer.append(f)
-    except:
-        pass
 
     # also add static pages
     for sp in get_static_pages():
