@@ -14,8 +14,8 @@
         {% for a in as.answer_set.all %}
             <li>{{ forloop.counter }}. {{ a.question.text }}
                 <p>
-                    <em>{% trans 'Answer' %}:</em>
-                    <tt>{{ a.text }}</tt>
+                    <em>{% trans 'Answer' %}:</em><br/>
+                    <pre>{{ a.text }}</pre>
 
                     <span class="points red">
                         <em>{% trans 'Assistant grade:' %}</em> <strong>{{ a.grade }}</strong>
