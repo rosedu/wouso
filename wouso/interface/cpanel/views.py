@@ -847,6 +847,7 @@ def reports(request, page=0):
                     context_instance=RequestContext(request)
     )
 
+
 @staff_required
 def edit_report(request, id):
     report = get_object_or_404(Report, pk=id)
@@ -878,15 +879,3 @@ def system_message_group(request, group):
     return render_to_response('cpanel/system_message_group.html',
                         {'group': group, 'message': message},
                         context_instance=RequestContext(request))
-
-
-
-
-
-
-
-
-
-
-
-
