@@ -19,7 +19,7 @@ from wouso.core.qpool.models import Schedule, Question, Tag, Category, Answer
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
 from wouso.core import scoring
-from wouso.core.scoring.models import Formula
+from wouso.core.scoring.models import Formula, History
 from wouso.core.signals import addActivity
 from wouso.interface.apps.messaging.models import Message
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
@@ -773,7 +773,6 @@ def stafftoggle(request, id):
 
 @permission_required('config.change_setting')
 def players(request):
-    from wouso.core.scoring.models import History
     from wouso.interface.activity.models import Activity
     def qotdc(self):
         return History.objects.filter(user=self, game__name='QotdGame').count()
@@ -781,9 +780,13 @@ def players(request):
         return Activity.get_player_activity(self).count()
     def cc(self):
         return History.objects.filter(user=self, game__name='ChallengeGame').count()
+    def inf(self):
+        return History.user_coins(user=self)['penalty']
+
     Player.qotd_count = qotdc
     Player.activity_count = ac
     Player.chall_count = cc
+    Player.infraction_points = inf
     all = Player.objects.all().order_by('-user__date_joined')
 
     return render_to_response('cpanel/players.html', dict(players=all), context_instance=RequestContext(request))
@@ -815,6 +818,29 @@ def edit_player(request, user_id):
         form = UserForm(instance=user)
         form.fields['password'].widget.attrs['readonly'] = True
     return render_to_response('cpanel/edit_player.html', {'form':form}, context_instance=RequestContext(request))
+
+
+@staff_required
+def infraction_history(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+    inf_list = History.objects.filter(user=user, coin__name='penalty').order_by('-timestamp')
+    infractions = {}
+    for i in inf_list:
+        if i.formula.id=="chall-was-set-up-infraction":
+            from wouso.games.challenge.models import Challenge
+            list = infractions.setdefault(i.formula.id, [])
+            list.append( (i, Challenge.objects.get(pk=i.external_id)) )
+
+    return render_to_response('cpanel/view_infractions.html',
+            {'infractions':infractions, 'p':user.player_related.get()},
+            context_instance=RequestContext(request))
+
+
+@staff_required
+def infraction_clear(request, user_id, infraction_id):
+    History.objects.get(pk=infraction_id).delete()
+    return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.infraction_history',
+        args=(user_id,)))
 
 
 @permission_required('config.change_setting')

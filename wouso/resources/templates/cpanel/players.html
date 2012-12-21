@@ -13,6 +13,7 @@
     <th>A#</th>
     <th>Qotd#</th>
     <th>Ch#</th>
+    <th>Infraction</th>
 	<th>Edit</th>
 </tr>
 {% for p in players %}
@@ -22,6 +23,15 @@
     <td>{{ p.activity_count }}</td>
     <td>{{ p.qotd_count }}</td>
     <td>{{ p.chall_count }}</td>
+    <td>{% if p.infraction_points %}
+            <a class="button" href="{% url infraction_history p.user_id %}">
+                {{ p.infraction_points }}
+            </a>
+        {% else %}
+            {{ p.infraction_points }}
+        {% endif %}
+
+    </td>
     <td><a class="button" href="{% url edit_player p.user_id %}">Edit</a></td>
 </tr>
 {% endfor %}
