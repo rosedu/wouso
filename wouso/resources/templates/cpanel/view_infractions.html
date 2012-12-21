@@ -30,7 +30,7 @@
     <td> {{i.0.timestamp}} </td>
     <td> {{i.0.amount}} </td>
     {% if type == 'chall-was-set-up-infraction' %}
-        <td> {{i.1.winner}} </td> 
+        <td> {{i.1.winner}} </td>
         <td> {{i.1.user_from}} </td>
         <td> {{i.1.user_from.seconds_took}} seconds</td>
         <td> {{i.1.user_from.score}} </td>
@@ -38,7 +38,7 @@
         <td> {{i.1.user_to.seconds_took}} seconds</td>
         <td> {{i.1.user_to.score}} </td>
     {% endif %}
-    <td> <a class="button" href="{% url infraction_clear i.0.id %}">Clear</a></td>
+    <td> <a class="button" href="{% url infraction_clear p.id i.0.id %}">Clear</a></td>
 </tr>
 {%endfor%}
 {% endfor %}

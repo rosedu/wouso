@@ -837,10 +837,37 @@ def infraction_history(request, user_id):
 
 
 @staff_required
+def infraction_recheck(request):
+    try:
+        inf_list = History.objects.filter(coin__name='penalty',
+                formula__id='chall-was-set-up-infraction').delete()
+    except:
+        pass
+
+    from wouso.games.challenge.models import Participant
+    all_participants = Participant.objects.filter(seconds_took__lt=15)
+    formula = Formula.objects.get(id='chall-was-set-up-infraction')
+    for p in all_participants:
+        id = None
+        if p.user_from.all().count():
+            if p.user_from.all()[0].winner.id != p.user.id:
+                user = p.user.player_ptr
+                id = p.user_from.all()[0].id
+        if p.user_to.all().count():
+             if p.user_to.all()[0].winner.id != p.user.id:
+                user = p.user.player_ptr
+                id = p.user_to.all()[0].id
+        from wouso.core.scoring import score
+        if id:
+            score(user=user, game=None, formula=formula, 
+                    external_id=id)
+    return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.players'))
+
+
+@staff_required
 def infraction_clear(request, user_id, infraction_id):
     History.objects.get(pk=infraction_id).delete()
-    return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.infraction_history',
-        args=(user_id,)))
+    return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.infraction_history', args=(user_id,)))
 
 
 @permission_required('config.change_setting')

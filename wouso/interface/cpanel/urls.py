@@ -56,6 +56,7 @@ upat = [
     url(r'^add_player/$', 'wouso.interface.cpanel.views.add_player', name='add_player'),
 	url(r'^infractions/(?P<user_id>\d+)/$', 'wouso.interface.cpanel.views.infraction_history', name='infraction_history'),
 	url(r'^infractions_clear/(?P<user_id>\d+)/(?P<infraction_id>\d+)/$', 'wouso.interface.cpanel.views.infraction_clear', name='infraction_clear'),
+	url(r'^infractions_recheck/$', 'wouso.interface.cpanel.views.infraction_recheck', name='infraction_recheck'),
 	url(r'^edit_player/(?P<user_id>\d+)/$', 'wouso.interface.cpanel.views.edit_player', name='edit_player'),
     url(r'^races_groups/$', 'wouso.interface.cpanel.views.races_groups', name='races_groups'),
 
