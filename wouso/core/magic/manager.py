@@ -58,7 +58,7 @@ class MagicManager(object):
             pass
 
         try:
-            return PlayerSpellDue.objects.filter(player=self.player, spell__name=modifier).count() > 0
+            return PlayerSpellDue.objects.filter(player=self.player, spell__name=modifier, due__gte=datetime.now().date()).count() > 0
         except PlayerSpellDue.DoesNotExist:
             pass
         return False
