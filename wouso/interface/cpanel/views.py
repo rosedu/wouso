@@ -845,22 +845,21 @@ def infraction_recheck(request):
         pass
 
     from wouso.games.challenge.models import Participant
-    all_participants = Participant.objects.filter(seconds_took__lt=15)
+    all_participants = Participant.objects.filter(seconds_took__lt=15).exclude(seconds_took=None)
     formula = Formula.objects.get(id='chall-was-set-up-infraction')
     for p in all_participants:
         id = None
         if p.user_from.all().count():
-            if p.user_from.all()[0].winner.id != p.user.id:
+            if p.user_from.all()[0].status == 'P' and p.user_from.all()[0].winner.id != p.user.id:
                 user = p.user.player_ptr
                 id = p.user_from.all()[0].id
         if p.user_to.all().count():
-             if p.user_to.all()[0].winner.id != p.user.id:
+            if p.user_to.all()[0].status == 'P' and p.user_to.all()[0].winner.id != p.user.id:
                 user = p.user.player_ptr
                 id = p.user_to.all()[0].id
         from wouso.core.scoring import score
         if id:
-            score(user=user, game=None, formula=formula, 
-                    external_id=id)
+            score(user=user, game=None, formula=formula, external_id=id)
     return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.players'))
 
 
