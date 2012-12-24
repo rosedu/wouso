@@ -2,6 +2,7 @@ from wouso.core import signals
 from wouso.core.config.models import BoolSetting
 from wouso.core.app import App
 from wouso.core.scoring.models import Coin, Formula
+from wouso.core.scoring import score
 
 class SecurityInspector:
     #global check function dispatcher
@@ -21,15 +22,15 @@ class SecurityInspector:
         suspect = kwargs.get('user_to', None)
         #suspect is a ChallengeUser in this case, scoring requires Player
         if suspect is None:
-            return False, None, None
+            return (False, None, None)
         player = suspect.user.player_related.get()
 
         signal_args = kwargs.get('arguments', None)
         if signal_args == None:
-            return False, None, None
+            return (False, None, None)
         chall_pk = signal_args.get('id', None)
         if chall_pk == None:
-            return False, None, None
+            return (False, None, None)
         challenge = Challenge.objects.get(pk=chall_pk)
         if challenge.user_from.user == suspect:
             participant = challenge.user_from
@@ -37,18 +38,18 @@ class SecurityInspector:
             participant = challenge.user_to
         #time interval could be made customizable
         if participant.seconds_took < 15:
-            return True, player, chall_pk
-        return False, None, None
+            return (True, player, chall_pk)
+        return (False, None, None)
 
     @classmethod
     def login_multiple_account(cls, **kwargs):
         #TODO test if multiple account suspicion
-        return False, None, None
+        return (False, None, None)
     #TODO add more rules for security
 
     @classmethod
     def reported_user(cls, **kwargs):
-        return True, kwargs.get('user_to'), None
+        return (True, kwargs.get('user_to'), None)
 
 
 class Security(App):
@@ -65,7 +66,6 @@ class Security(App):
     @classmethod
     def penalise(cls, player, formula, external_id=None):
         coins = Coin.get('penalty')
-        from wouso.core.scoring import score
         if not coins is None:
             score(user=player, game=None, formula=formula, external_id=external_id)
 
@@ -76,7 +76,7 @@ class Security(App):
         for rule in rules:
             #check if rule is not disabled
             if not BoolSetting.objects.get(pk__startswith='disable-%s' % rule[0]).get_value():
-                guilty, player, external_id = SecurityInspector.check(rule[0], **kwargs)
+                (guilty, player, external_id) = SecurityInspector.check(rule[0], **kwargs)
                 if guilty:
                     formula = Formula.get('%s-infraction' % rule[0], 'general-infraction')
                     cls.penalise(player, formula, external_id)
