@@ -5,13 +5,21 @@ from wouso.core.scoring.models import Coin, Formula
 from wouso.core.scoring import score
 
 class SecurityInspector:
-    #global check function dispatcher
+    """ Global check function dispatcher """
     @classmethod
     def check(cls, rule, **kwargs):
-        #convert - to _ from name of rule
-        #Ex: chall-was-set-up -> chall_was_set_up
+        # convert - to _ from name of rule
+        # Ex: chall-was-set-up -> chall_was_set_up
         return getattr(cls, rule.replace('-', '_'), False)(**kwargs)
 
+    """ Security Rules
+    Returns a tuple with the following information:
+
+    (is_guilty, who, related_event_id)
+
+    is_guilty -- True if the rule determined an infraction
+    who -- Player object for who is guilty of the infraction
+    related_event_id -- ID for the event that caused the infraction """
     @classmethod
     def chall_was_set_up(cls, **kwargs):
         """
@@ -20,7 +28,7 @@ class SecurityInspector:
         """
         from wouso.games.challenge.models import Challenge
         suspect = kwargs.get('user_to', None)
-        #suspect is a ChallengeUser in this case, scoring requires Player
+        # suspect is a ChallengeUser in this case, scoring requires Player
         if suspect is None:
             return (False, None, None)
         player = suspect.user.player_related.get()
@@ -36,16 +44,16 @@ class SecurityInspector:
             participant = challenge.user_from
         else:
             participant = challenge.user_to
-        #time interval could be made customizable
+        # time interval could be made customizable
         if participant.seconds_took < 15:
             return (True, player, chall_pk)
         return (False, None, None)
 
     @classmethod
     def login_multiple_account(cls, **kwargs):
-        #TODO test if multiple account suspicion
+        # TODO test if multiple account suspicion
         return (False, None, None)
-    #TODO add more rules for security
+    # TODO add more rules for security
 
     @classmethod
     def reported_user(cls, **kwargs):
@@ -74,7 +82,7 @@ class Security(App):
         action = kwargs.get('action', None)
         rules = filter(lambda x : x[2]==action, cls.SECURITY_RULES)
         for rule in rules:
-            #check if rule is not disabled
+            # check if rule is not disabled
             if not BoolSetting.objects.get(pk__startswith='disable-%s' % rule[0]).get_value():
                 (guilty, player, external_id) = SecurityInspector.check(rule[0], **kwargs)
                 if guilty:
