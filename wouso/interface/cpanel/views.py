@@ -21,11 +21,12 @@ from wouso.core.god import God
 from wouso.core import scoring
 from wouso.core.scoring.models import Formula, History
 from wouso.core.signals import addActivity
+from wouso.core.security.models import Report
+from wouso.games.challenge.models import Challenge, Participant
 from wouso.interface.apps.messaging.models import Message
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
-from wouso.core.security.models import Report
 from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, AnswerForm, EditReportForm
 from forms import FormulaForm
 
@@ -827,7 +828,6 @@ def infraction_history(request, user_id):
     infractions = {}
     for i in inf_list:
         if i.formula.id=="chall-was-set-up-infraction":
-            from wouso.games.challenge.models import Challenge
             list = infractions.setdefault(i.formula.id, [])
             list.append( (i, Challenge.objects.get(pk=i.external_id)) )
 
@@ -844,22 +844,20 @@ def infraction_recheck(request):
     except:
         pass
 
-    from wouso.games.challenge.models import Participant
     all_participants = Participant.objects.filter(seconds_took__lt=15).exclude(seconds_took=None)
     formula = Formula.objects.get(id='chall-was-set-up-infraction')
     for p in all_participants:
         id = None
-        if p.user_from.all().count():
+        if p.user_from.count():
             if p.user_from.all()[0].status == 'P' and p.user_from.all()[0].winner.id != p.user.id:
                 user = p.user.player_ptr
                 id = p.user_from.all()[0].id
-        if p.user_to.all().count():
+        if p.user_to.count():
             if p.user_to.all()[0].status == 'P' and p.user_to.all()[0].winner.id != p.user.id:
                 user = p.user.player_ptr
                 id = p.user_to.all()[0].id
-        from wouso.core.scoring import score
         if id:
-            score(user=user, game=None, formula=formula, external_id=id)
+           scoring.score(user=user, game=None, formula=formula, external_id=id)
     return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.players'))
 
 
