@@ -88,21 +88,23 @@ def sidebar(request):
 
     sidebar = []
 
-    try:
-        # Request blocks from games
-        for game in get_games():
+    # Request blocks from games
+    for game in get_games():
+        try:
             w = game.get_sidebar_widget(request)
             if w:
                 sidebar.append(w)
+        except Exception as e:
+            logging.exception(e)
 
-        # Request blocks from apps
-        for app in (Top,):
+    # Request blocks from apps
+    for app in (Top,):
+        try:
             w = app.get_sidebar_widget(request)
             if w:
                 sidebar.append(w)
-    except Exception as e:
-        logging.error(e)
-        # This is a hack for fixing test. TODO: actually fix ./manage.py test
+        except Exception as e:
+            logging.exception(e)
 
     return {'sidebar': sidebar}
 
