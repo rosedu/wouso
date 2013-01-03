@@ -81,7 +81,7 @@ def final_results(request):
 
     # fetch levels
     levels = []
-    for level in xrange(len(final.levels)):
+    for level in xrange(len(final.levels) + 1):
         level_data = {'id': level, 'users': []}
         for user in QuestUser.objects.filter(current_quest=final, current_level=level):
             level_data['users'].append(user)
