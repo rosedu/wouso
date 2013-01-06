@@ -1,11 +1,10 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from hashlib import md5
-from django.utils import simplejson
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core import serializers
-from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseBadRequest
+from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from wouso.core.god import God
@@ -13,7 +12,7 @@ from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.scoring.models import History
 from wouso.core.magic.models import Spell, PlayerSpellDue
 from wouso.interface.activity.models import Activity
-from wouso.interface.top.models import TopUser, GroupHistory, NewHistory
+from wouso.interface.top.models import TopUser, GroupHistory, NewHistory, ObjectHistory
 from wouso.core.game import get_games
 
 
@@ -196,6 +195,7 @@ def player_race(request, race_id):
                              'children': groups,
                              'top_users': top_users,
                              'top_rank': top_rank,
+                             'top': ObjectHistory(),
                              'activity': activity,
                              'levels': levels},
                             context_instance=RequestContext(request)
