@@ -129,7 +129,7 @@ def extra_stats(request):
     for u in seen_basequery.values('user_from').distinct():
         if seen_basequery.filter(user_from=u['user_from']).dates('timestamp', 'day').count() >= s95:
             su95 += 1
-    data['seen_all'] = seen_days_count
+    data['seen_all_days'] = seen_days_count
     data['seen_more_than_95'] = su95
 
     # Challenge
@@ -138,19 +138,21 @@ def extra_stats(request):
     for d in chall_basequery.dates('date', 'day'):
         chall_counts.append(chall_basequery.filter(date__range=(d, d + timedelta(days=1))).count())
     data['challenge_all'] = chall_basequery.count()
+    data['challenge_all_days'] = chall_basequery.dates('date', 'day').count()
     data['challenge_min_perday'] = min(chall_counts)
     data['challenge_max_perday'] = max(chall_counts)
 
     # Qotd
     qotd_basequery = Activity.objects.filter(action__in=('qotd-correct', 'qotd-wrong'))
-    q75 = int(0.75 * qotd_basequery.count())
+    qotd_days = qotd_basequery.dates('timestamp', 'day').count()
+    q75 = int(0.75 * qotd_days)
     qu75 = 0
     for u in qotd_basequery.values('user_from').distinct():
         cnt = qotd_basequery.filter(user_from=u['user_from']).count()
         if cnt > q75:
             qu75 += 1
     data['qotd_all'] = qotd_basequery.count()
-    data['qotd_all_days'] = qotd_basequery.dates('timestamp', 'day').count()
+    data['qotd_all_days'] = qotd_days
     data['qotd_perday_average'] = int(1.0 * data['qotd_all'] / data['qotd_all_days'])
     data['qotd_answered_more_75'] = qu75
 
