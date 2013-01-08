@@ -268,6 +268,10 @@ class QuestGame(Game):
             return sidebar_widget(request)
         return None
 
+    @classmethod
+    def final_exists(cls):
+        return FinalQuest.objects.all().count() != 0
+
 class FinalQuest(Quest):
     def check_answer(self, user, answer):
         self.error = ''
