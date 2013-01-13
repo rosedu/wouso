@@ -10,6 +10,7 @@ from django.conf import settings
 
 from wouso.core import scoring
 from wouso.core.qpool import get_questions_with_category
+from wouso.core.scoring import History
 from wouso.core.user.models import Player
 from models import Quest, QuestUser, FinalQuest, QuestGame
 from forms import QuestCpanel
@@ -84,6 +85,12 @@ def final_results(request):
     for level in xrange(len(final.levels) + 1):
         level_data = {'id': level, 'users': []}
         for user in QuestUser.objects.filter(current_quest=final, current_level=level):
+            # Check finalquest bonus amount
+            try:
+                amount = History.objects.filter(user=user.user, formula__id='finalquest-ok')[0].amount
+            except IndexError:
+                amount = None
+            user.amount = amount
             level_data['users'].append(user)
         levels.append(level_data)
 
