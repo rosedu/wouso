@@ -320,7 +320,7 @@ class FinalQuest(Quest):
         for level in xrange(len(self.levels) + 1):
             if level == 0:
                 continue
-            users = QuestUser.objects.filter(current_quest=final, current_level=level, race__can_play=True)
+            users = QuestUser.objects.filter(current_quest=final, current_level__gte=level, race__can_play=True)
 
             for user in users:
                 scoring.score(
