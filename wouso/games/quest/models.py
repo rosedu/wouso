@@ -313,7 +313,9 @@ class FinalQuest(Quest):
 
     def give_level_bonus(self):
         for level in xrange(len(self.levels)):
-            users = QuestUser.objects.filter(current_level=level)
+            if level == 0:
+                continue
+            users = QuestUser.objects.filter(current_level=level, race__can_play=True)
 
             for user in users:
                 scoring.score(
@@ -322,4 +324,10 @@ class FinalQuest(Quest):
                         self.get_formula('finalquest-ok'),
                         level=level,
                         level_users=users.count()
+                )
+                signal_msg = ugettext_noop("received bonus for reaching level {level} in the final quest")
+                signals.addActivity.send(sender=None, user_from=user,
+                    user_to=user, message=signal_msg,
+                    arguments=dict(level=level),
+                    game=QuestGame.get_instance()
                 )
