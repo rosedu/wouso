@@ -1,6 +1,7 @@
 # views for wouso cpanel
 import datetime
 from django.contrib.auth.decorators import permission_required
+from django.db.models import Sum
 from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -86,10 +87,7 @@ def final_results(request):
         level_data = {'id': level, 'users': []}
         for user in QuestUser.objects.filter(current_quest=final, current_level=level):
             # Check finalquest bonus amount
-            try:
-                amount = History.objects.filter(user=user.user, formula__id='finalquest-ok')[0].amount
-            except IndexError:
-                amount = None
+            amount = History.objects.filter(user=user.user, formula__id='finalquest-ok').aggregate(sum=Sum('amount'))['sum']
             user.amount = amount
             level_data['users'].append(user)
         levels.append(level_data)
