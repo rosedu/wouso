@@ -6,12 +6,12 @@ from django.db.models import Count, Q
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
-from django.utils.translation import ugettext as _, ugettext, ugettext_noop
+from django.utils.translation import ugettext as _, ugettext_noop
 from exceptions import ValueError
 from wouso.core.config.models import BoolSetting
 from wouso.core.scoring.sm import InvalidFormula
 from wouso.core.user.models import Player
-from wouso.core.magic.models import Spell, SpellHistory, PlayerSpellDue, Artifact
+from wouso.core.magic.models import Spell, SpellHistory, PlayerSpellDue, Artifact, Bazaar
 from wouso.core import scoring, signals
 from wouso.interface.activity.models import Activity
 
@@ -106,7 +106,10 @@ def bazaar_buy(request, spell):
 
     player = request.user.get_profile()
     error, message = '',''
-    if spell.price > player.coins.get('gold', 0):
+
+    if Bazaar.disabled():
+        error = _("Magic is disabled")
+    elif spell.price > player.coins.get('gold', 0):
         error = _("Insufficient gold amount")
     elif spell.available == False:
         error = _("Spell is not available")
@@ -137,7 +140,9 @@ def magic_cast(request, destination=None, spell=None):
 
     error = ''
 
-    if request.method == 'POST':
+    if Bazaar.disabled():
+        error = _("Magic is disabled")
+    elif request.method == 'POST':
         spell = get_object_or_404(Spell, pk=request.POST.get('spell', 0))
         try:
             days = int(request.POST.get('days', 0))
