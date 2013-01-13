@@ -57,9 +57,9 @@ class FinalQuestTestCase(WousoTest):
         question = Question.objects.create(text='test', answer_type='F')
         final.questions.add(question)
 
-        u1.current_level = 1; u1.race = r
+        u1.current_level = 1; u1.race = r; u1.current_quest = final
         u1.save()
-        u2.current_level = 1; u2.race = r
+        u2.current_level = 1; u2.race = r; u2.current_quest = final
         u2.save()
         final.give_level_bonus()
         u1 = QuestUser.objects.get(pk=u1.pk)
