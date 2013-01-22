@@ -258,7 +258,7 @@ def first_login_check(sender, **kwargs):
 
     if player.activity_from.count() == 0:
         # kick some activity
-        signal_msg = ugettext_noop('has joined the game.')
+        signal_msg = ugettext_noop('joined the game.')
 
         signals.addActivity.send(sender=None, user_from=player,
             user_to=player,
