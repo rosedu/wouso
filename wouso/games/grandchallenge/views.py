@@ -30,5 +30,7 @@ def do_result(request, error='', message=''):
 
 def sidebar_widget(request):
     gc = GrandChallengeGame
+    if gc.disabled():
+        return ''
     gc_user = request.user.get_profile().get_extension(GrandChallengeUser)
     return render_string('grandchallenge/sidebar.html', {'gc': gc, 'gcuser': gc_user})
