@@ -8,7 +8,6 @@ from wouso.interface.top.models import Top
 from wouso.interface.apps.qproposal.models import Qproposal
 from wouso.interface.apps.statistics.models import Statistics
 from wouso.interface.apps.messaging.models import Message
-from wouso.interface.apps.statistics.views import footer_link as stats_link
 from wouso.interface.chat.models import Chat
 from wouso.interface import get_static_pages, detect_mobile, mobile_browser
 from wouso.settings import FORCE_SCRIPT_NAME
@@ -58,14 +57,6 @@ def header_footer(request):
                 footer.append(f)
     except: pass
 
-    # also add stats link
-    try:
-        f = stats_link(request)
-        if f:
-            footer.append(f)
-    except:
-        pass
-
     # also add static pages
     for sp in get_static_pages():
         footer.append(sp.html_link())
@@ -97,21 +88,23 @@ def sidebar(request):
 
     sidebar = []
 
-    try:
-        # Request blocks from games
-        for game in get_games():
+    # Request blocks from games
+    for game in get_games():
+        try:
             w = game.get_sidebar_widget(request)
             if w:
                 sidebar.append(w)
+        except Exception as e:
+            logging.exception(e)
 
-        # Request blocks from apps
-        for app in (Top,):
+    # Request blocks from apps
+    for app in (Top,):
+        try:
             w = app.get_sidebar_widget(request)
             if w:
                 sidebar.append(w)
-    except Exception as e:
-        logging.error(e)
-        # This is a hack for fixing test. TODO: actually fix ./manage.py test
+        except Exception as e:
+            logging.exception(e)
 
     return {'sidebar': sidebar}
 

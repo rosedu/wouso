@@ -268,6 +268,10 @@ class QuestGame(Game):
             return sidebar_widget(request)
         return None
 
+    @classmethod
+    def final_exists(cls):
+        return FinalQuest.objects.all().count() != 0
+
 class FinalQuest(Quest):
     def check_answer(self, user, answer):
         self.error = ''
@@ -282,15 +286,14 @@ class FinalQuest(Quest):
             logging.error("No such question")
 
         # Get the checker path
-        path = os.path.join(settings.FINAL_QUEST_CHECKER_PATH, 'task-%02d' % (user.current_level + 1), 'check')
+        work_dir = os.path.join(settings.FINAL_QUEST_CHECKER_PATH, 'task-%02d' % (user.current_level + 0))
+        path = os.path.join(work_dir, 'check')
         if not os.path.exists(path):
             self.error = 'No checker for level %d' % user.current_level
             return False
 
         # Run checker path
-
         args = [path, user.user.username, answer]
-        work_dir = os.path.join(settings.FINAL_QUEST_CHECKER_PATH, 'task-%02d' % (user.current_level + 1))
         p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=work_dir)
         retval = p.wait()
 
@@ -309,8 +312,15 @@ class FinalQuest(Quest):
         return False
 
     def give_level_bonus(self):
-        for level in xrange(len(self.levels)):
-            users = QuestUser.objects.filter(current_level=level)
+        try:
+            final = FinalQuest.objects.all()[0]
+        except IndexError:
+            return
+
+        for level in xrange(len(self.levels) + 1):
+            if level == 0:
+                continue
+            users = QuestUser.objects.filter(current_quest=final, current_level__gte=level, race__can_play=True)
 
             for user in users:
                 scoring.score(
@@ -319,4 +329,10 @@ class FinalQuest(Quest):
                         self.get_formula('finalquest-ok'),
                         level=level,
                         level_users=users.count()
+                )
+                signal_msg = ugettext_noop("received bonus for reaching level {level} in the final quest")
+                signals.addActivity.send(sender=None, user_from=user,
+                    user_to=user, message=signal_msg,
+                    arguments=dict(level=level),
+                    game=QuestGame.get_instance()
                 )

@@ -1,6 +1,7 @@
 # views for wouso cpanel
 import datetime
 from django.contrib.auth.decorators import permission_required
+from django.db.models import Sum
 from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -10,6 +11,7 @@ from django.conf import settings
 
 from wouso.core import scoring
 from wouso.core.qpool import get_questions_with_category
+from wouso.core.scoring import History
 from wouso.core.user.models import Player
 from models import Quest, QuestUser, FinalQuest, QuestGame
 from forms import QuestCpanel
@@ -81,9 +83,12 @@ def final_results(request):
 
     # fetch levels
     levels = []
-    for level in xrange(len(final.levels)):
+    for level in xrange(len(final.levels) + 1):
         level_data = {'id': level, 'users': []}
         for user in QuestUser.objects.filter(current_quest=final, current_level=level):
+            # Check finalquest bonus amount
+            amount = History.objects.filter(user=user.user, formula__id='finalquest-ok').aggregate(sum=Sum('amount'))['sum']
+            user.amount = amount
             level_data['users'].append(user)
         levels.append(level_data)
 

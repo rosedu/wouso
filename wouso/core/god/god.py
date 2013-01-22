@@ -150,7 +150,7 @@ class DefaultGod:
             return False, 'Player has immunity'
 
         if destination.has_modifier(spell.name):
-                return False, 'Player already has this spell casted on him'
+                return False, 'Player already has this spell cast on him'
 
         if destination.has_modifier('curse') and (spell.type != 'n'):
             return False, 'Player is cursed'

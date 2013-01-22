@@ -86,6 +86,9 @@ def coin_amount(amount, coin=None):
     if coin is None:
         return '(not setup)'
 
+    if amount is None:
+        return '(none)'
+
     if isinstance(amount, Player):
         amount = amount.coins.get(coin.name, 0)
 

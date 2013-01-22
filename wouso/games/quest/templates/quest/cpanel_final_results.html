@@ -9,7 +9,7 @@
     <h3>{{ level.id }}</h3>
     <ul>
     {% for user in level.users %}
-        <li>{% player user %} TODO: points</li>
+        <li>{% player user %} amount: {% coin_amount user.amount %}</li>
     {% endfor %}
     </ul>
 {% endfor %}

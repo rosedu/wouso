@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block sectioncontent %}
-{% if top.disabled %}
+{% if top.disabled and not user.get_profile.in_staff_group %}
     <p>{% trans 'Top has been disabled.' %}</p>
 {% else %}
     <table id="clasament" class="custom">
