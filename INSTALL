@@ -5,9 +5,9 @@ WoUSO Installation
 
 First run:
 	cp settings.py.example settings.py #and customize for your needs
-	./manage.py syncdb
+	./manage.py wousoctl --setup
 		- choose yes, and create a super user
-	./default_setup.bash
+Run:
 	./manage.py runserver
 
 Hints:

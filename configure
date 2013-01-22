@@ -25,10 +25,9 @@ if [ ! -f settings.py ]; then
 	ln -sf settings.py.example settings.py
 fi
 
-# Syncdb
-./manage.py syncdb
+# Syncdb and setup
+./manage.py wousoctl --setup
 
-bash default_setup.bash
 
 # Done
 echo "Done!"
