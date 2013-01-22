@@ -52,10 +52,12 @@ upat = [
     url(r'^staff/toggle/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.stafftoggle', name='staff_toggle'),
 
     url(r'^players/$', 'wouso.interface.cpanel.views.players', name='all_players'),
-
     url(r'^add_player/$', 'wouso.interface.cpanel.views.add_player', name='add_player'),
-	url(r'^edit_player/(?P<user_id>\d+)/$', 'wouso.interface.cpanel.views.edit_player', name='edit_player'),
+    url(r'^edit_player/(?P<user_id>\d+)/$', 'wouso.interface.cpanel.views.edit_player', name='edit_player'),
     url(r'^races_groups/$', 'wouso.interface.cpanel.views.races_groups', name='races_groups'),
+    url(r'^roles/$', 'wouso.interface.cpanel.views.roles', name='roles'),
+    url(r'^roles/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.roles_update', name='roles_update'),
+    url(r'^roles/(?P<id>\d+)/kick/player=(?P<player_id>\d+)/$', 'wouso.interface.cpanel.views.roles_update_kick', name='roles_update_kick'),
 
     # misc
     url(r'^bell/$', 'wouso.interface.cpanel.views.the_bell', name='the_bell'),

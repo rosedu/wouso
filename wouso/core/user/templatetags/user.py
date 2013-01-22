@@ -107,6 +107,6 @@ def spell_stock(player, spell):
 def player_input(name, id=None):
     id = id if id else name
 
-    return '<input type="hidden" name="{name}" id="ac_input_{id}_value" />' \
+    return '<input type="hidden" placeholder="Player..." name="{name}" id="ac_input_{id}_value" />' \
            '<input type="text" id="ac_input_{id}" class="ac_input big" />' \
            '<script>setAutocomplete("#ac_input_{id}");</script>'.format(name=name, id=id)

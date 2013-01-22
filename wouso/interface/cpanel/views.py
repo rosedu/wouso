@@ -11,7 +11,7 @@ from django.template import RequestContext
 from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_noop
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
@@ -822,6 +822,40 @@ def races_groups(request):
     return render_to_response('cpanel/races_groups.html', {'races': Race.objects.all()},
         context_instance=RequestContext(request)
     )
+
+
+@permission_required('superuser')
+def roles(request):
+    roles = Group.objects.all()
+
+    return render_to_response('cpanel/roles.html', {'roles': roles},
+                              context_instance=RequestContext(request)
+    )
+
+
+@permission_required('superuser')
+def roles_update(request, id):
+    group = get_object_or_404(Group, pk=id)
+
+    if request.method == 'POST':
+        player_id = request.POST['player']
+        user = get_object_or_404(Player, pk=player_id).user
+        user.groups.add(group)
+
+    return render_to_response('cpanel/roles_update.html', {'role': group},
+                              context_instance=RequestContext(request)
+    )
+
+
+@permission_required('superuser')
+def roles_update_kick(request, id, player_id):
+    group = get_object_or_404(Group, pk=id)
+    player = get_object_or_404(Player, pk=player_id)
+
+    if group in player.user.groups.all():
+        player.user.groups.remove(group)
+
+    return redirect('roles_update', id=group.id)
 
 
 @staff_required

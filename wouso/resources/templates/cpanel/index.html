@@ -105,6 +105,12 @@
                     </ul>
                 </div>
                 <div class="widget-content">
+                    {% if user.is_staff or user.is_superuser %}
+                    <ul class="menu">
+                        Admin
+                        <li><a href="{% url roles %}">Roles</a></li>
+                    </ul>
+                    {% endif %}
                     <ul class="menu">
                         Shortcuts
 
@@ -207,7 +213,7 @@
 
     {% autoescape off %}
     {{ config_hidden_footer }}
-    {% endautoescape %} 
+    {% endautoescape %}
 </div>
 </body>
 </html>

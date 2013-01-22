@@ -1,0 +1,29 @@
+{% extends 'cpanel/index.html' %}
+{% load user %}
+
+{% block sectiontitle %}Roles{% endblock %}
+
+{% block sectioncontent %}
+
+<table>
+    <tr>
+        <th>Role</th>
+        <th>Permissions</th>
+        <th>Members</th>
+    </tr>
+    {% for r in roles %}
+    <tr>
+        <td>{{ r }}</td>
+        <td>
+            {{ r.permissions.all|join:"," }}
+        </td>
+        <td>{{ r.user_set.all.count }}</td>
+        <td>
+            <a href="{% url roles_update r.id %}" class="button button-min">edit</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<a class="" href="{% url admin:auth_group_add %}">New role (external)</a>
+{% endblock %}

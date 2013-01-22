@@ -1,0 +1,38 @@
+{% extends 'cpanel/index.html' %}
+{% load user %}
+
+{% block sectiontitle %}Role Update: {{ role }}{% endblock %}
+
+{% block sectioncontent %}
+
+<h3>Members</h3>
+<table>
+    <tr>
+        <th>User</th>
+    </tr>
+    {% for u in role.user_set.all %}
+    <tr>
+        <td>{% player u.get_profile %}</td>
+        <td><a class="button button-min" href="{% url roles_update_kick role.id u.id %}">remove</a></td>
+    </tr>
+    {% endfor %}
+</table>
+
+<form action="" method="post">
+   {% player_input 'player' role.id %}
+   {% csrf_token %}
+   <button type="submit">Add</button>
+</form>
+
+<h3>Permissions</h3>
+<ul>
+    {% for p in role.permissions.all %}
+    <li>{{ p }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url admin:auth_group_change role.pk %}">Change (external)</a>
+
+<div class="actions actions-left">
+<a class="button" href="{% url roles %}">Back to roles</a>
+</div>
+{% endblock %}
