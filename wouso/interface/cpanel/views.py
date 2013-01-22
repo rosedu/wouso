@@ -33,9 +33,12 @@ from forms import FormulaForm
 def dashboard(request):
     from wouso.games.quest.models import Quest, QuestGame
     from django import get_version
-    from wouso.settings import WOUSO_VERSION
+    from wouso.settings import WOUSO_VERSION, DATABASES
     from wouso.core.config.models import Setting
 
+    database = DATABASES['default'].copy()
+    database_engine = database['ENGINE'].split('.')[-1]
+    database_name = database['NAME']
     future_questions = Schedule.objects.filter(day__gte=datetime.datetime.now())
     nr_future_questions = len(future_questions)
 
@@ -71,6 +74,8 @@ def dashboard(request):
                                'artifact_groups': artifact_groups,
                                'django_version': get_version(),
                                'wouso_version': WOUSO_VERSION,
+                               'database_engine': database_engine,
+                               'database_name': database_name,
                                'staff': staff_group,
                                'last_run': last_run,
                                'online_users': online_last10,
