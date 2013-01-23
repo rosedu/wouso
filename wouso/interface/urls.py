@@ -12,18 +12,7 @@ urlpatterns = patterns('',
     url(r'^activity/all/$', 'wouso.interface.views.all_activity', name='all_activity'),
     url(r'^activity/seen/$', 'wouso.interface.views.seen_24h', name='seen24'),
 
-    # TODO: refactor this into wouso.interface.top.urls and include vvvvv
-    url(r'^top/$', 'wouso.interface.top.views.gettop', name='view_top'),
-    url(r'^top/toptype/(?P<toptype>\d)/sortcrit/(?P<sortcrit>\d)/page/(?P<page>\d+)/$', 'wouso.interface.top.views.gettop', name='view_top'),
-    url(r'^top/pyramid/$', 'wouso.interface.top.views.pyramid', name='pyramid'),
-    url(r'top/challenge/$', 'wouso.interface.top.views.challenge_top', name='challenge_top'),
-    url(r'^top/challenge/(?P<sortcritno>\d+)/(?P<pageno>\d+)/$', 'wouso.interface.top.views.challenge_top', name='challenge_top_arg'),
-    url(r'^top/classes/$', 'wouso.interface.top.views.topclasses', name='top_classes'),
-    # toptype = 0 means overall top
-    # toptype = 1 means top for 1 week
-    # sortcrit = 0 means sort by points descending
-    # sortcrit = 1 means sort by progress descending
-    # sortcrit = 2 means sort by last_seen descending
+    (r'^top/', include('wouso.interface.top.urls')),
 
     url(r'^user/login/$','wouso.interface.views.login_view', name='login_view'),
     url(r'^user/logout/$','wouso.interface.views.logout_view', name='logout_view'),

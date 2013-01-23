@@ -189,7 +189,7 @@ class Top(App):
         top5 = top5.order_by('-points')[:10]
         is_top = request.get_full_path().startswith('/top/')
         return render_to_string('top/sidebar.html',
-            {'topusers': top5, 'is_top': is_top, 'top': Top, 'disable_challenge_top': BoolSetting.get('disable-Challenge-Top').get_value()}
+            {'topusers': top5, 'is_top': is_top, 'top': Top, 'config_disable_challenge_top': BoolSetting.get('disable-Challenge-Top').get_value()}
         )
 
     @classmethod
