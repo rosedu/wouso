@@ -143,42 +143,7 @@ class QotdGame(Game):
 
     @classmethod
     def get_api(kls):
-        from piston.handler import BaseHandler
-        class QotdHandler(BaseHandler):
-            methods_allowed = ('GET', 'POST')
-            def read(self, request):
-                question = kls.get_for_today()
-                try:
-                    qotduser = request.user.get_profile().get_extension(QotdUser)
-                except models.Model.DoesNotExist:
-                    raise Http404()
-                if question:
-                    return {'text': question.text, 'answers': dict([(a.id, a.text) for a in question.answers]),
-                            'had_answered': qotduser.has_answered}
-                return {}
-
-            def create(self, request):
-                question = kls.get_for_today()
-                try:
-                    qotduser = request.user.get_profile().get_extension(QotdUser)
-                except models.Model.DoesNotExist:
-                    raise Http404()
-                if not question:
-                    return {'success': False, 'error': 'No question for today'}
-                if qotduser.has_answered:
-                    return {'success': False, 'error': 'User already answered'}
-                attrs = self.flatten_dict(request.data)
-                if 'answer' not in attrs.keys():
-                    return {'success': False, 'error': 'Answer not provided'}
-                try:
-                    answer_id = int(attrs['answer'])
-                    answer = Answer.objects.get(pk=answer_id)
-                except ValueError, Answer.DoesNotExist:
-                    return {'success': False, 'error': 'Invalid answer'}
-                else:
-                    qotduser.set_answered(answer.id, answer.correct)
-                    return {'success': True, 'correct': answer.correct, 'has_answered': qotduser.has_answered}
-
+        from api import QotdHandler
         return {r'^qotd/today/$': QotdHandler}
 
     @classmethod

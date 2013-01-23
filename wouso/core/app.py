@@ -62,7 +62,6 @@ class App:
     def get_api(kls):
         """ Return a dictionary with url-regex keys, and PistonHandler values.
         """
-
         return {}
 
     @classmethod
