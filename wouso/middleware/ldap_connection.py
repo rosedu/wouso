@@ -16,6 +16,7 @@ class LDAPBackend:
         if password == "" or password is None or username is None:
             raise Exception('Invalid user or password')
 
+        username, password = username.strip(), password.strip()
         try:
             conn = ldap.initialize(LDAP_URL)
             if LDAP_BINDNAME != '':
