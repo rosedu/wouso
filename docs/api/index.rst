@@ -488,6 +488,60 @@ Challenge
             17: [ ]
         }
 
+
+Quest
+~~~~~
+
+The calls in the `/admin/` namespace must be made by users having `quest.change_quest` permission set.
+
+.. http:get:: /api/quest/admin/
+
+    Return a list of quests.
+
+    **Example response**:
+     .. sourcecode:: json
+
+         [
+            {
+                 id: 1,
+                 title: "Gioconda",
+                 start: "2012-11-08T14:11:42",
+                 end: "2013-11-08T16:00:00"
+            }
+         ]
+
+.. http:get:: /api/quest/admin/quest=(quest_id)/username=(username)/
+
+    Fetch user information regarding specific quest.
+
+    **Example response**:
+     .. sourcecode:: json
+
+        {
+            status: "Available",
+            current_level: 4,
+            user: {
+                    id: 1
+            }
+        }
+
+.. http:post:: /api/quest/admin/quest=(quest_id)/username=(username)/
+
+    Increment current level for specific user and quest.
+
+    **Example response**
+     .. sourcecode:: json
+
+        {
+            current_level: 5,
+            user: {
+                id: 3,
+                username: "toma"
+            }
+        }
+
+
+
 Indices and tables
 ==================
 

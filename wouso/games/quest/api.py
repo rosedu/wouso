@@ -12,7 +12,7 @@ class QuestAdminHandler(BaseHandler):
 
     def read(self, request):
         quests = Quest.objects.all()
-        return {'quests': quests}
+        return list(quests)
 
 
 class QuestAdminUserHandler(BaseHandler):
@@ -28,7 +28,7 @@ class QuestAdminUserHandler(BaseHandler):
         if quest_user.current_quest != quest:
             return {'status': 'Not available'}
 
-        return {'user': quest_user, 'status': 'Available'}
+        return {'user': quest_user, 'status': 'Available', 'current_level': quest_user.current_level}
 
     def create(self, request, quest_id, username):
         if not request.user.has_perm('quest.change_quest'):
