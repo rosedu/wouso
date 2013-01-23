@@ -119,6 +119,7 @@ class QuestResult(models.Model):
 class Quest(models.Model):
     QUEST_TYPES = (
         (TYPE_CLASSIC, 'In site text answers'),
+        (TYPE_CHECKER, 'In site answers, verified by checker'),
         (TYPE_EXTERNAL, 'External levels and answers'),
     )
     start = models.DateTimeField()
