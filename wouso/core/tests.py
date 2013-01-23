@@ -7,3 +7,14 @@ class WousoTest(TestCase):
         user.set_password('test')
         user.save()
         return user.get_profile()
+
+    def _get_superuser(self):
+        user = User.objects.get_or_create(username='admin')[0]
+        user.is_superuser = True
+        user.set_password('admin')
+        user.save()
+        return user
+
+    def _client_superuser(self):
+        self._get_superuser()
+        self.client.login(username='admin', password='admin')

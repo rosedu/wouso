@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from django.test import TestCase
 from django.contrib.auth.models import User
+import json
 from wouso.core import scoring
 from wouso.core.qpool.models import Question, Answer, Category
 from models import *
@@ -66,3 +67,31 @@ class FinalQuestTestCase(WousoTest):
         self.assertEqual(u1.points, 50)
         u2 = QuestUser.objects.get(pk=u2.pk)
         self.assertEqual(u2.points, 50)
+
+
+# API tests
+class QuestAPITestCase(WousoTest):
+    def test_info(self):
+        quser = self._get_player(1).get_extension(QuestUser)
+        quest = Quest.objects.create(start=datetime.datetime.now(), end=datetime.datetime.now()+timedelta(days=1))
+        quser.set_current(quest)
+
+        self._client_superuser()
+        response = self.client.get('/api/quest/admin/quest=%d/username=%s/' % (quest.id, quser.user.username))
+        data = json.loads(response.content)
+
+        self.assertEqual(data['user']['id'], quser.id)
+
+    def test_level_increment(self):
+        quser = self._get_player(1).get_extension(QuestUser)
+        quest = Quest.objects.create(start=datetime.datetime.now(), end=datetime.datetime.now()+timedelta(days=1))
+        quser.set_current(quest)
+        formula = Formula.objects.create(id='quest-ok')
+
+        self._client_superuser()
+        response = self.client.post('/api/quest/admin/quest=%d/username=%s/' % (quest.id, quser.user.username))
+        data = json.loads(response.content)
+        self.assertEqual(data['current_level'], quser.current_level + 1)
+        response = self.client.post('/api/quest/admin/quest=%d/username=%s/' % (quest.id, quser.user.username))
+        data = json.loads(response.content)
+        self.assertEqual(data['current_level'], quser.current_level + 2)

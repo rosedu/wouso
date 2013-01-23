@@ -55,13 +55,27 @@ class QuestUser(Player):
         else:
             return self.finished_time - self.started_time
 
+    def pass_level(self, quest):
+        """
+        Pass current level. Increment current level and score.
+        """
+        if self.current_quest != quest:
+            return None
+        scoring.score(self, QuestGame, quest.get_formula('quest-ok'), level=(self.current_level + 1), external_id=quest.id)
+        self.current_level += 1
+        if self.current_level == quest.count:
+            self.finish_quest()
+            scoring.score(self, QuestGame, quest.get_formula('quest-finish-ok'), external_id=quest.id)
+        self.save()
+        return self.current_level
+
     def finish_quest(self):
         if not self.finished:
-            qr = QuestResult(user=self, quest=self.current_quest, level=self.current_level)
-            qr.save()
-
             if self.current_level < self.current_quest.count:
                 return
+
+            qr = QuestResult(user=self, quest=self.current_quest, level=self.current_level)
+            qr.save()
 
             # sending the signal
             signal_msg = ugettext_noop("has finished quest {quest}")
@@ -90,10 +104,12 @@ class QuestUser(Player):
                                  arguments=dict(quest=quest.title),
                                  game=QuestGame.get_instance())
 
+
 class QuestResult(models.Model):
     user = models.ForeignKey('QuestUser')
     quest = models.ForeignKey('Quest')
     level = models.IntegerField(default=0)
+
 
 class Quest(models.Model):
     start = models.DateTimeField()
@@ -183,14 +199,7 @@ class Quest(models.Model):
                     correct = True
                     break
             if correct:
-                # score current progress
-                scoring.score(user, QuestGame, self.get_formula('quest-ok'), level=(user.current_level + 1))
-                user.current_level += 1
-                if user.current_level == self.count:
-                    user.finish_quest()
-                    # score finishing
-                    scoring.score(user, QuestGame, self.get_formula('quest-finish-ok'))
-                user.save()
+                user.pass_level(self)
                 return True
         return False
 
@@ -269,6 +278,13 @@ class QuestGame(Game):
         return None
 
     @classmethod
+    def get_api(kls):
+        from api import QuestAdminHandler, QuestAdminUserHandler
+        return {r'^quest/admin/$': QuestAdminHandler,
+                r'^quest/admin/quest=(?P<quest_id>\d+)/username=(?P<username>[^/]+)/$': QuestAdminUserHandler
+        }
+
+    @classmethod
     def final_exists(cls):
         return FinalQuest.objects.all().count() != 0
 
@@ -300,14 +316,8 @@ class FinalQuest(Quest):
         if retval > 1:
             self.error = 'Error running checker for %d' % user.current_level
 
-        if not user.current_level == self.count and \
-            (retval == 0):
-            scoring.score(user, QuestGame, self.get_formula('quest-ok'), level=(user.current_level + 1))
-            user.current_level += 1
-            user.save()
-            if user.current_level == self.count:
-                user.finish_quest()
-                scoring.score(user, QuestGame, self.get_formula('quest-finish-ok'))
+        if not user.current_level == self.count and retval == 0:
+            user.pass_level(self)
             return True
         return False
 
