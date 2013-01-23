@@ -9,6 +9,7 @@ from wouso.interface.top.models import  TopUser, Top
 
 PERPAGE = 20
 TOPGROUPS_NO = 5
+
 def gettop(request, toptype=0, sortcrit=0, page=1):
     # toptype = 0 means overall top
     # toptype = 1 means top for 1 week

@@ -75,6 +75,14 @@
             <a href="{% url wouso.interface.top.views.gettop sortcrit=sortcrit toptype=toptype page=allUsers.previous_page_number %}"> Previous </a>
             {% endif %}
 
+            {% for p in allUsers.paginator.page_range %}
+                {% if p == allUsers.number %}
+                    <strong>{{ p }}</strong>
+                {% else %}
+                <a href="{% url view_top sortcrit=sortcrit toptype=toptype page=p %}">{{ p }}</a>
+                {% endif %}
+            {% endfor %}
+
             {% if allUsers.has_next %}
             <a href="{% url wouso.interface.top.views.gettop sortcrit=sortcrit toptype=toptype page=allUsers.next_page_number %}"> Next </a>
             {% endif %}
