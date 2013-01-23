@@ -124,6 +124,12 @@ def context(request):
         settings_dict['config_chat_host'] = settings.SOCKETIO_HOST
         settings_dict['config_chat_port'] = settings.SOCKETIO_PORT
 
+    for k, v in settings_dict.iteritems():
+        if k.startswith('config_disable'):
+            try:
+                settings_dict[k] = bool(v)
+            except ValueError: pass
+
     # override theme using GET args
     if request.GET.get('theme', None) is not None:
         from wouso.utils import get_themes

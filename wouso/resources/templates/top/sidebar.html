@@ -24,8 +24,10 @@
     <br/>
     <a href="{% url quest_history %}" class="goto">{% trans 'Quest History' %}</a>
     <br/>
+    {% if not disable_challenge_top %}
     <a href="{% url wouso.interface.top.views.challenge_top %}" class="goto">{% trans 'Challenge top' %}</a>
     <br/>
+    {% endif %}
     <a href="{% url artifact_hof %}" class="goto">{% trans 'Achievements' %}</a>
     <br/>
     <a href="{% url wouso.interface.top.views.pyramid %}" class="goto">{% trans 'Pyramid' %}</a>

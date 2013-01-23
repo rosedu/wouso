@@ -1,10 +1,12 @@
 from django.db.models import Sum
+from django.template import RequestContext
 import sys
 from datetime import datetime, timedelta
 from django.db import models
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from wouso.core.app import App
+from wouso.core.config.models import BoolSetting
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.games.challenge.models import ChallengeUser
 
@@ -187,7 +189,7 @@ class Top(App):
         top5 = top5.order_by('-points')[:10]
         is_top = request.get_full_path().startswith('/top/')
         return render_to_string('top/sidebar.html',
-            {'topusers': top5, 'is_top': is_top, 'top': Top}
+            {'topusers': top5, 'is_top': is_top, 'top': Top, 'disable_challenge_top': BoolSetting.get('disable-Challenge-Top').get_value()}
         )
 
     @classmethod
