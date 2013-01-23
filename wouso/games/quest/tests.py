@@ -68,6 +68,17 @@ class FinalQuestTestCase(WousoTest):
         u2 = QuestUser.objects.get(pk=u2.pk)
         self.assertEqual(u2.points, 50)
 
+    def test_final_task_call_checker(self):
+        from django.conf import settings
+        settings.FINAL_QUEST_CHECKER_PATH = os.path.join(os.path.dirname(__file__), 'tests')
+
+        final = FinalQuest.objects.create(start=datetime.datetime.now(), end=datetime.datetime.now(), type=TYPE_CHECKER)
+        question = Question.objects.create(text='test', answer_type='F')
+        final.questions.add(question)
+        u1 = self._get_player(1).get_extension(QuestUser)
+
+        self.assertFalse(final.answer_correct(0, question, u1.user.username + "wrong", u1))
+        self.assertTrue(final.answer_correct(0, question, u1.user.username, u1))
 
 # API tests
 class QuestAPITestCase(WousoTest):

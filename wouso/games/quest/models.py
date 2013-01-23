@@ -1,17 +1,22 @@
+# Quest will use QPool questions tagged 'quest'
 import os
 import logging
 import datetime
 import subprocess
 from django.db import models
 from django.utils.translation import ugettext_noop
+from django.conf import settings
 from wouso.core.user.models import Player
 from wouso.core.game.models import Game
 from wouso.core import scoring, signals
 from wouso.core.scoring.models import Formula
 from wouso.core.qpool.models import Question
-from wouso import settings
 
-# Quest will use QPool questions tagged 'quest'
+
+(TYPE_CLASSIC,
+ TYPE_CHECKER,
+ TYPE_EXTERNAL) = range(3)
+
 
 class QuestUser(Player):
     current_quest = models.ForeignKey('Quest', null=True, blank=True, default=None)
@@ -112,11 +117,16 @@ class QuestResult(models.Model):
 
 
 class Quest(models.Model):
+    QUEST_TYPES = (
+        (TYPE_CLASSIC, 'In site text answers'),
+        (TYPE_EXTERNAL, 'External levels and answers'),
+    )
     start = models.DateTimeField()
     end = models.DateTimeField()
     title = models.CharField(default="", max_length=100)
     questions = models.ManyToManyField(Question)
     order = models.CharField(max_length=1000, default="", blank=True)
+    type = models.IntegerField(default=TYPE_CLASSIC, choices=QUEST_TYPES)
 
     def get_formula(self, type='quest-ok'):
         """ Allow specific formulas for specific quests.
@@ -134,6 +144,9 @@ class Quest(models.Model):
     def is_final(self):
         final = FinalQuest.objects.filter(id=self.id).count()
         return final > 0
+
+    def is_answerable(self):
+        return self.type == TYPE_CLASSIC
 
     @property
     def count(self):
@@ -192,15 +205,31 @@ class Quest(models.Model):
             return False
 
         if not user.current_level == self.count:
-            answers = question.answers.all()
-            correct = False
-            for a in answers:
-                if answer.lower() == a.text.lower():
-                    correct = True
-                    break
-            if correct:
+            if self.answer_correct(user.current_level, question, answer, user):
                 user.pass_level(self)
                 return True
+        return False
+
+    def answer_correct(self, level, question, answer, user):
+        """
+        Check if an answer is correct for a question and level.
+        """
+        if self.type == TYPE_EXTERNAL:
+            return False
+        elif self.type == TYPE_CHECKER:
+            path = os.path.join(settings.FINAL_QUEST_CHECKER_PATH, 'task-%02d' % (level + 0), 'check')
+            if not os.path.exists(path):
+                self.error = 'No checker for level %d' % level
+                return False
+            p = subprocess.Popen([path, user.user.username, answer], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=os.path.dirname(path))
+            retval = p.wait()
+            if retval > 1:
+                self.error = 'Error running checker for %d' % level
+                return False
+            return retval == 0
+        elif self.type == TYPE_CLASSIC:
+            answers = [a.text.lower() for a in question.answers.all()]
+            return answer.strip().lower() in answers
         return False
 
     def reorder(self, order):
@@ -289,38 +318,6 @@ class QuestGame(Game):
         return FinalQuest.objects.all().count() != 0
 
 class FinalQuest(Quest):
-    def check_answer(self, user, answer):
-        self.error = ''
-        if user.current_quest.id != self.id:
-            user.finish_quest()
-            user.set_current(self)
-            return False
-
-        try:
-            question = self.levels[user.current_level]
-        except IndexError:
-            logging.error("No such question")
-
-        # Get the checker path
-        work_dir = os.path.join(settings.FINAL_QUEST_CHECKER_PATH, 'task-%02d' % (user.current_level + 0))
-        path = os.path.join(work_dir, 'check')
-        if not os.path.exists(path):
-            self.error = 'No checker for level %d' % user.current_level
-            return False
-
-        # Run checker path
-        args = [path, user.user.username, answer]
-        p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=work_dir)
-        retval = p.wait()
-
-        if retval > 1:
-            self.error = 'Error running checker for %d' % user.current_level
-
-        if not user.current_level == self.count and retval == 0:
-            user.pass_level(self)
-            return True
-        return False
-
     def give_level_bonus(self):
         try:
             final = FinalQuest.objects.all()[0]

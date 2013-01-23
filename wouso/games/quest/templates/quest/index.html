@@ -25,9 +25,13 @@
             {% else %}
                 <p style="color:red">{{ quest.error }}</p>
 
-                <h3>Nivel curent #{{ progress.current_level }}
-                {% if progress.current_level < quest.count|add:-1 %}. Nivelul următor #{{ progress.current_level|add:1 }}
-                {% else %} - ultimul {% endif %}
+                <h3>
+                    {% trans "Current level" %} #{{ progress.current_level }}.
+                    {% if progress.current_level < quest.count|add:-1 %}
+                        {% trans "Next level" %} #{{ progress.current_level|add:1 }}
+                    {% else %}
+                        {% trans "This is the last level" %}.
+                    {% endif %}
                 </h3>
 
                 <div class="spacer">
@@ -35,8 +39,8 @@
                 </div><!-- .spacer -->
 
                 <p>
-                {%autoescape off %}
-                {{ progress.current_question.text }}
+                {% autoescape off %}
+                    {{ progress.current_question.text }}
                 {% endautoescape %}
                 </p>
 
@@ -44,6 +48,7 @@
                     <!-- -->
                 </div><!-- .spacer -->
 
+                {% if quest.is_answerable %}
                 <form method="post" action="{% url quest_index_view %}">
                     <table>
                         {{ form.answer }}
@@ -59,6 +64,9 @@
                         <button type="submit" class="default">{% trans 'Answer' %}</button>
                     </div>
                 </form>
+                {% else %}
+                <em>{% trans 'You must provide the answer to this level outside this site.' %}</em>
+                {% endif %}
 
                 <div class="clear">
                     <!-- -->
