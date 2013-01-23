@@ -54,6 +54,10 @@ upat = [
     url(r'^players/$', 'wouso.interface.cpanel.views.players', name='all_players'),
     url(r'^add_player/$', 'wouso.interface.cpanel.views.add_player', name='add_player'),
     url(r'^edit_player/(?P<user_id>\d+)/$', 'wouso.interface.cpanel.views.edit_player', name='edit_player'),
+    url(r'^infractions/(?P<user_id>\d+)/$', 'wouso.interface.cpanel.views.infraction_history', name='infraction_history'),
+    url(r'^infractions_clear/(?P<user_id>\d+)/(?P<infraction_id>\d+)/$', 'wouso.interface.cpanel.views.infraction_clear', name='infraction_clear'),
+    url(r'^infractions_recheck/$', 'wouso.interface.cpanel.views.infraction_recheck', name='infraction_recheck'),
+    url(r'^edit_player/(?P<user_id>\d+)/$', 'wouso.interface.cpanel.views.edit_player', name='edit_player'),
     url(r'^races_groups/$', 'wouso.interface.cpanel.views.races_groups', name='races_groups'),
     url(r'^roles/$', 'wouso.interface.cpanel.views.roles', name='roles'),
     url(r'^roles/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.roles_update', name='roles_update'),
@@ -70,7 +74,5 @@ upat = [
 
 for g in get_cpanel_games():
     upat.append((r'games/{game}/'.format(game=g), include('wouso.games.{game}.cpanel_urls'.format(game=g))))
-
 upat.append(url(r'^games/', 'wouso.interface.cpanel.views.games', name='games_home'))
-
 urlpatterns = patterns('', *upat)

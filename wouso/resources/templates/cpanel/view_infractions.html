@@ -1,0 +1,47 @@
+{% extends 'cpanel/index.html' %}
+{% load user %}
+
+{% block sectiontitle %}Infractions for {% player p %}{% endblock %}
+
+{% block sectioncontent %}
+
+{% for type, list in infractions.iteritems %}
+
+<table>
+    {% if type == 'chall-was-set-up-infraction' %}
+    <tr>
+        <th colspan=10>{{type}}</th>
+    </tr>
+    <tr>
+        <th> Timestamp </th>
+        <th> Amount </th>
+        <th> Winner </th>
+        <th> User from </th>
+        <th> Time taken </th>
+        <th> Score </th>
+        <th> User to </th>
+        <th> Time taken </th>
+        <th> Score </th>
+    {% endif %}
+        <th> Clear </th>
+     </tr>
+<tr>
+    {% for i in list %}
+    <td> {{i.0.timestamp}} </td>
+    <td> {{i.0.amount}} </td>
+    {% if type == 'chall-was-set-up-infraction' %}
+        <td> {{i.1.winner}} </td>
+        <td> {{i.1.user_from}} </td>
+        <td> {{i.1.user_from.seconds_took}} seconds</td>
+        <td> {{i.1.user_from.score}} </td>
+        <td> {{i.1.user_to}} </td>
+        <td> {{i.1.user_to.seconds_took}} seconds</td>
+        <td> {{i.1.user_to.score}} </td>
+    {% endif %}
+    <td> <a class="button" href="{% url infraction_clear p.id i.0.id %}">Clear</a></td>
+</tr>
+{%endfor%}
+{% endfor %}
+</table>
+
+{% endblock %}
