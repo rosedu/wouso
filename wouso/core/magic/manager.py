@@ -1,7 +1,8 @@
 from django.db.utils import IntegrityError
 import logging
 from datetime import datetime, timedelta
-
+from django.utils.translation import ugettext as _
+from wouso.core import signals
 from wouso.core.god import God
 from wouso.core.magic.models import PlayerSpellDue, PlayerSpellAmount, PlayerArtifactAmount
 
@@ -164,22 +165,33 @@ class MagicManager(object):
     def basic_cast(self, player_dest, spell, due):
         # Pre-cast God actions: immunity and curse ar done by this
         # check
-
         can_cast, error = God.can_cast(spell=spell, source=self.player, destination=player_dest)
         if not can_cast:
             return error
+
         try:
             psdue = PlayerSpellDue.objects.create(player=player_dest, source=self.player, spell=spell, due=due)
         except IntegrityError:
             if not spell.mass:
                 return 'Cannot cast the same spell more than once'
-            #extend the affected time by spell
+            # extend the affected time by spell
             psdue = PlayerSpellDue.objects.get(player=player_dest, spell=spell)
             if psdue.due < due:
                 psdue.delete()
                 psdue = PlayerSpellDue.objects.create(player=player_dest, source=self.player, spell=spell, due=due)
             else:
                 return None
+
+        if psdue.source == psdue.player:
+            signal_msg = _("cast a spell on himself/herself")
+        else:
+            signal_msg = _("cast a spell on {to} ")
+        signals.addActivity.send(sender=None, user_from=psdue.source,
+                                 user_to=psdue.player,
+                                 message=signal_msg,
+                                 arguments=dict(to=psdue.player),
+                                 action='cast',
+                                 game=None)
 
         # Post-cast God action (there are specific modifiers, such as clean-spells
         # that are implemented in God

@@ -1,4 +1,4 @@
-from wouso.core import signals
+from django.utils.translation import ugettext as _
 from wouso.core.magic.models import Artifact, ArtifactGroup, SpellHistory, NoArtifactLevel
 from wouso.core.game import get_games
 
@@ -165,10 +165,10 @@ class DefaultGod:
             return False, 'Cannot steal from self'
 
         if spell.name == 'challenge-affect-scoring':
-           if spell_cleanup(spell, destination, spell.name) == False:
+           if not spell_cleanup(spell, destination, spell.name):
                return False, 'Something wrong'
         if spell.name == 'challenge-affect-scoring-won':
-            if spell_cleanup(spell, destination, spell.name) == False:
+            if not spell_cleanup(spell, destination, spell.name):
                 return False, 'Something wrong'
         return True, None
 
@@ -178,21 +178,9 @@ class DefaultGod:
 
         Returns True if action has been taken, False if not.
         """
-        # Always executed, so log
+        # Log usage to SpellHistory
         SpellHistory.used(psdue.source, psdue.spell, psdue.player)
-        # Also trigger anonymous activiy
-        if psdue.source == psdue.player:
-            signal_msg = 'a facut o vraja asupra sa.'
-        else:
-            signal_msg = 'a facut o vraja asupra {to}.'
-        action_msg = 'cast'
-        signals.addActivity.send(sender=None, user_from=psdue.source,
-                                 user_to=psdue.player,
-                                 message=signal_msg,
-                                 arguments=dict(to=psdue.player),
-                                 action=action_msg,
-                                 game=None)
-
+        # Special actions
         if psdue.spell.name == 'dispell':
             for psd in psdue.player.magic.spells:
                 self.post_expire(psd)
