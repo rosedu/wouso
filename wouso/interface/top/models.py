@@ -90,6 +90,9 @@ class TopUser(ObjectHistory, Player):
         tot = len(hs)
         return [(tot - i, h.points) for (i,h) in enumerate(hs)]
 
+Player.register_extension('top', TopUser)
+
+
 class NewHistory(models.Model):
     TYPES = (('u', 'user'), ('r', 'race'), ('g', 'group'))
 

@@ -92,8 +92,7 @@ class Player(models.Model):
     """ Base class for the game user. This is extended by game specific
     player models.
     """
-    user = models.ForeignKey(User, unique=True,
-        related_name="%(class)s_related")
+    user = models.ForeignKey(User, unique=True, related_name="%(class)s_related")
 
     # Unique differentiator for ladder
     # Do not modify it manually, use scoring.score instead
@@ -111,6 +110,8 @@ class Player(models.Model):
     # race
     race = models.ForeignKey(Race, blank=False, default=None, null=True)
     description = models.TextField(max_length=600, blank=True)
+
+    EXTENSIONS = {}
 
     def get_neighbours_from_top(self, count, user_race=None, spell_type=None):
         """ Returns an array of neighbouring players from top: count up and count down
@@ -287,6 +288,18 @@ class Player(models.Model):
             extension.save()
 
         return extension
+
+    @classmethod
+    def register_extension(cls, attr, ext_cls):
+        """
+        Register new attribute with an ext_cls
+        """
+        cls.EXTENSIONS[attr] = ext_cls
+
+    def __getitem__(self, item):
+        if item in self.__class__.EXTENSIONS:
+            return self.get_extension(self.__class__.EXTENSIONS[item])
+        return super(Player, self).__getitem__(item)
 
     def __unicode__(self):
         ret = u"%s %s" % (self.user.first_name, self.user.last_name)
