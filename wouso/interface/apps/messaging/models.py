@@ -5,7 +5,6 @@ from wouso.core import signals
 from wouso.core.app import App
 from wouso.core.user.models import Player
 
-
 CONSECUTIVE_LIMIT = 12 # in seconds
 
 class MessagingUser(Player):
@@ -19,21 +18,35 @@ class Message(models.Model):
     """ the message itself """
     _CHECK = True
 
-    sender = models.ForeignKey(MessagingUser, null=True, blank=False, default=None, related_name='sender')
-    receiver = models.ForeignKey(MessagingUser, null=True, blank=False, default=None, related_name='receiver')
-    timestamp = models.DateTimeField(null=True, blank=False, default=datetime.now)
-    subject = models.CharField(max_length=64, null=False, blank=False, default=None)
+    sender = models.ForeignKey(MessagingUser, null=True, blank=True, default=None, related_name='sender')
+    receiver = models.ForeignKey(MessagingUser, blank=False, related_name='receiver')
+    timestamp = models.DateTimeField(blank=True, default=datetime.now)
+    subject = models.CharField(max_length=200, null=False, blank=False, default=None)
     text = models.CharField(max_length=1000, null=False, blank=False, default=None)
-    read = models.BooleanField(null=False, blank=False, default=False)
+    read = models.BooleanField(blank=False, default=False)
+    archived = models.BooleanField(blank=True, default=False)
+    deleted = models.BooleanField(blank=True, default=False)
     reply_to = models.ForeignKey('Message', null=True, default=None, blank=True, related_name='thread_parent')
 
+    def trash(self):
+        self.deleted = True
+        self.archived = True
+        self.save()
+
+    def archive(self):
+        self.archived = True
+        self.save()
+
+    def unarchive(self):
+        self.archived = False
+        self.save()
+
     def __unicode__(self):
-        if self.sender:
-            return 'from ' + self.sender.__unicode__() + ' to ' + self.receiver.__unicode__() +\
-            ' @ ' + self.timestamp.strftime("%A, %d %B %Y %I:%M %p")
-        else:
-             return 'from ' + "System" + ' to ' + self.receiver.__unicode__() +\
-            ' @ ' + self.timestamp.strftime("%A, %d %B %Y %I:%M %p")
+        sender = _('System') if not self.sender else self.sender.__unicode__()
+
+        return _(u"from {{sender}} to {{receiver}} @ {{date}}").format(sender=sender,
+                                                                       receiver=self.receiver.__unicode__(),
+                                                                       date=self.timestamp.strftime("%A, %d %B %Y %I:%M %p"))
 
     @classmethod
     def disable_check(cls):
@@ -85,6 +98,7 @@ class Message(models.Model):
             from wouso.interface.apps.messaging.views import header_link
             return header_link(request)
         return dict(text=_('Messages'), link='')
+
 
 class MessageApp(App):
 
