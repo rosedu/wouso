@@ -84,7 +84,7 @@ TEMPLATE_LOADERS = (
     #     'django.template.loaders.eggs.Loader',
     )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -96,7 +96,7 @@ MIDDLEWARE_CLASSES = (
     'wouso.middleware.Seen',
     'wouso.middleware.DebugExceptionMiddleware',
     'wouso.middleware.ImpersonateMiddleware',
-    )
+]
 AUTHENTICATION_BACKENDS = (
     #'wouso.middleware.ldap_connection.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
@@ -203,11 +203,8 @@ else:
 
 AVATAR_DEFAULT = 'monsterid'
 
-
 BASE_PATH = os.path.dirname(__file__)
-
 QUNIT_TEST_DIRECTORY = os.path.join(BASE_PATH, 'qunit_tests')
-
 
 try:
 	import django_qunit
@@ -231,6 +228,18 @@ else:
     CHAT_ENABLED = True
     SOCKETIO_HOST = ''
     SOCKETIO_PORT = '8000'
+
+try:
+    imp.find_module('debug_toolbar')
+except ImportError:
+    pass
+else:
+    if DEBUG:
+        MIDDLEWARE_CLASSES.append('debug_toolbar.middleware.DebugToolbarMiddleware')
+        INSTALLED_APPS.append('debug_toolbar')
+        INTERNAL_IPS = ('127.0.0.1',)
+
+    
 # the probability of getting bonus points for correctly answered qotd
 # must be a number between 0 and 100
 QOTD_BONUS_PROB = 30
