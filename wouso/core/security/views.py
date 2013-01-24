@@ -3,9 +3,11 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.contrib.auth.models import User
 from wouso.core import signals
+from wouso.core.security.forms import UserReportForm
 
-from wouso.core.user.models import Player, UserReportForm
+from wouso.core.user.models import Player
 from wouso.core.security.models import Report, add_report
+from wouso.interface.views import homepage
 
 @login_required
 def report(request,id):
