@@ -1,9 +1,15 @@
 from django.db import models
+from django.core.cache import cache
+
 
 class Setting(models.Model):
     """ Generic configuration (name, value) pair definition, stored in db """
     name = models.CharField(max_length=100, primary_key=True)
     value = models.TextField(default='', null=True, blank=True)
+
+    @classmethod
+    def _cache_key(cls, name):
+        return 'Setting-' + name
 
     def set_value(self, v):
         """ value setter, overridden by subclasses """
@@ -22,8 +28,19 @@ class Setting(models.Model):
     @classmethod
     def get(cls, name):
         """ Get or create a Setting with the name name """
+        cache_key = cls._cache_key(name)
+        if cache_key in cache:
+            return cache.get(cache_key)
         obj, new = cls.objects.get_or_create(name=name)
+        cache.set(cache_key, obj)
         return obj
+
+    def save(self, **kwargs):
+        ret = super(Setting, self).save(**kwargs)
+        cache_key = self.__class__._cache_key(self.name)
+        cache.set(cache_key, self)
+        return ret
+
 
     @property
     def title(self):

@@ -14,6 +14,7 @@ class GrandChallengeTest(WousoTest):
         u1 = self._get_player(1)
         u2 = self._get_player(2)
 
+        GrandChallengeGame.reset()
         self.assertFalse(GrandChallengeGame.is_started())
         GrandChallengeGame.start()
         self.assertTrue(GrandChallengeGame.is_started())

@@ -117,6 +117,7 @@ class ScoringHistoryTest(WousoTest):
         Coin.add('points')
         Coin.add('gold')
         player = self._get_player()
+        scoring.score_simple(player, 'points', 10)
         self.assertIn('points', History.user_coins(player.user))
 
     def test_user_points(self):
@@ -127,8 +128,8 @@ class ScoringHistoryTest(WousoTest):
 
         up = History.user_points(player.user)
         self.assertTrue(up.has_key('wouso'))
-        self.assertTrue(up['wouso'].has_key(coin))
-        self.assertEqual(up['wouso'][coin], 10)
+        self.assertTrue(up['wouso'].has_key(coin.id))
+        self.assertEqual(up['wouso'][coin.id], 10)
 
     def test_accessors(self):
         player = self._get_player()
