@@ -1,5 +1,5 @@
 # TODO: check usage of these functions and rename/refactor
-
+from django.db import models
 from django.db.models import Q
 
 def get_questions_with_tags(tlist, select='any', active_only=True, endorsed_only=True):
