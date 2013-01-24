@@ -11,8 +11,8 @@ class ImportQuestion(TestCase):
         with open(contrib + 'questions.txt', 'r') as f:
             count = import_from_file(f)
 
-        self.assertEqual(count, 20)
-        self.assertEqual(Question.objects.all().count(), 20)
+        self.assertEqual(count, 22)
+        self.assertEqual(Question.objects.all().count(), 22)
 
 
     def test_add_question(self):
