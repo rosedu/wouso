@@ -16,6 +16,9 @@
 <div id="topbar">
     <div class="first-line">
     {% if user.is_authenticated %}
+        {% if user.real_user %}
+            Impersonated by {{ user.real_user }} <a href="{% url impersonate_clear %}">clear</a>
+        {% endif %}
         {% if perms.config.change_setting %}
         <a id="head-cpanel" href="{% url dashboard %}">CPanel</a>
         {% endif %}

@@ -70,6 +70,9 @@ upat = [
     url(r'^reports/edit/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.edit_report', name='edit_report'),
 
     url(r'^system_message/group/(?P<group>\d+)/$', 'wouso.interface.cpanel.views.system_message_group', name='system_message_group'),
+
+    url(r'^impersonate/(?P<player_id>\d+)/$', 'wouso.interface.cpanel.views.impersonate', name='impersonate'),
+    url(r'^impersonate/clear/$', 'wouso.interface.cpanel.views.clean_impersonation', name='impersonate_clear'),
 ]
 
 for g in get_cpanel_games():
