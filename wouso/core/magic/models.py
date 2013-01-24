@@ -31,7 +31,7 @@ class Modifier(models.Model):
             return "%s/%s" % (settings.MEDIA_ARTIFACTS_URL, os.path.basename(str(self.image)))
 
         if hasattr(self, 'group'):
-            return ("%s-%s" %  (self.group, self.name)).lower()
+            return ("%s-%s" %  (self.group if self.group else 'default', self.name)).lower()
 
         return self.name.lower()
 
@@ -55,7 +55,7 @@ class Artifact(Modifier):
     def __unicode__(self):
         if self.title:
             return u"%s" % self.title
-        return u"%s [%s]" % (self.name, self.group.name)
+        return u"%s %s" % (self.name, "[%s]" % self.group.name if self.group else '(none)')
 
 
 class NoArtifactLevel(object):
