@@ -20,11 +20,7 @@ from forms import QuestCpanel
 @permission_required('quest.change_quest')
 def quest_home(request):
     quests = Quest.objects.all()
-    final = FinalQuest.objects.all()
-    if final.count():
-        final = final[0]
-    else:
-        final = None
+    final = QuestGame.get_final()
 
     return render_to_response('quest/cpanel_home.html',
                               {'quests': quests,
@@ -75,9 +71,8 @@ def quest_sort(request, id):
 
 @permission_required('quest.change_quest')
 def final_results(request):
-    try:
-        final = FinalQuest.objects.all()[0] # TODO
-    except IndexError:
+    final = QuestGame.get_final()
+    if not final:
         return render_to_response('quest/cpanel_final_results.html',
                             context_instance=RequestContext(request))
 
@@ -100,11 +95,8 @@ def final_results(request):
 
 @permission_required('quest.change_quest')
 def final_score(request):
-    try:
-        final = FinalQuest.objects.all()[0]
-    except IndexError:
-        final = None
-    else:
+    final = QuestGame.get_final()
+    if final:
         final.give_level_bonus()
 
     return render_to_response('quest/cpanel_final_results.html',
@@ -113,7 +105,9 @@ def final_score(request):
 
 @permission_required('quest.change_quest')
 def create_finale(request):
-    if FinalQuest.objects.all().count() == 0:
+    if QuestGame.final_exists():
+        fq = QuestGame.get_final()
+    else:
         fq = FinalQuest.objects.create(start=datetime.datetime.now(), end=datetime.datetime.now())
 
     return HttpResponseRedirect(reverse('quest_edit', args=(fq.id,)))
@@ -123,6 +117,7 @@ def create_finale(request):
 def quest_bonus(request, quest):
     quest = get_object_or_404(Quest, pk=quest)
 
+    # TODO: move logic to models
     for i, r in enumerate(quest.top_results()):
         player = r.user.get_extension(Player)
         scoring.score(player, QuestGame, 'quest-finish-bonus', position=i + 1, external_id=quest.id)

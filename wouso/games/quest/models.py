@@ -318,11 +318,17 @@ class QuestGame(Game):
     def final_exists(cls):
         return FinalQuest.objects.all().count() != 0
 
+    @classmethod
+    def get_final(cls):
+        try:
+            return FinalQuest.objects.all()[0]
+        except IndexError:
+            return None
+
 class FinalQuest(Quest):
     def give_level_bonus(self):
-        try:
-            final = FinalQuest.objects.all()[0]
-        except IndexError:
+        final = QuestGame.get_final()
+        if not final:
             return
 
         for level in xrange(len(self.levels) + 1):

@@ -318,7 +318,7 @@ class Review(models.Model):
     feedback = models.TextField(max_length=2000, blank=True, null=True)
     answer_grade = models.IntegerField(blank=True, null=True)
 
-    review_reviewer = models.ForeignKey(Player, related_name='reviews', blank=True, null=True) #TODO
+    review_reviewer = models.ForeignKey(Player, related_name='reviews', blank=True, null=True)
     review_grade = models.IntegerField(blank=True, null=True)
 
     # Properties and methods
