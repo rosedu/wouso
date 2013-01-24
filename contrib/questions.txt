@@ -98,3 +98,16 @@
 - chmod
 - ls
 - file
+? Enunt intrebare
+pe
+mai multe
+linii
++ raspuns corect
+pe mai multe
+linii
+- raspuns gresit
+? Alta intrebare?
++ un singur raspuns corect
+- mai
+- multe
+- raspunsuri gresite

@@ -8,3 +8,5 @@ def get_themes():
         if os.path.exists(themes_dir + '/' + g + '/styles.css'):
             themes.append(g)
     return themes
+
+# TODO: move scripts in this module to management commands.
