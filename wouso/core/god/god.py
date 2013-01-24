@@ -15,27 +15,27 @@ class DefaultGod:
         If inherited, should not override super's result, but extend it.
         """
         fs = [
-            dict(id='start-points', formula='points=420', owner=None,
+            dict(id='start-points', definition='points=420', owner=None,
                 description='Points received at the start of the game'),
-            dict(id='buy-spell', formula='gold=-{price}', owner=None,
+            dict(id='buy-spell', definition='gold=-{price}', owner=None,
                 description='Gold spent on spells'),
-            dict(id='gold-points-rate', formula='points={gold}*3;gold=-{gold}', owner=None,
+            dict(id='gold-points-rate', definition='points={gold}*3;gold=-{gold}', owner=None,
                 description='Exchange gold in points'),
-            dict(id='points-gold-rate', formula='points=-{points};gold={points}*0.1', owner=None,
+            dict(id='points-gold-rate', definition='points=-{points};gold={points}*0.1', owner=None,
                 description='Exchange points in gold'),
-            dict(id='bonus-gold', formula='gold={gold}', owner=None,
+            dict(id='bonus-gold', definition='gold={gold}', owner=None,
                 description='Give bonus gold to the poor people'),
-            dict(id='bonus-points', formula='points={points}', owner=None,
+            dict(id='bonus-points', definition='points={points}', owner=None,
                 description='Give bonus points'),
-            dict(id='steal-points', formula='points={points}', owner=None,
+            dict(id='steal-points', definition='points={points}', owner=None,
                 description='Steal points using spells'),
-            dict(id='penalty-points', formula='points=-{points}', owner=None,
+            dict(id='penalty-points', definition='points=-{points}', owner=None,
                 description='Take back points from user'),
-            dict(id='level-gold', formula='gold=10*{level}', owner=None,
+            dict(id='level-gold', definition='gold=10*{level}', owner=None,
                 description='Bonus gold on level upgrade'),
-            dict(id='general-infraction', formula='penalty=10', owner=None,
+            dict(id='general-infraction', definition='penalty=10', owner=None,
                 description='Give penalty points to suspicious users'),
-            dict(id='chall-was-set-up-infraction', formula='penalty=20', owner=None,
+            dict(id='chall-was-set-up-infraction', definition='penalty=20', owner=None,
                 description='Give penalty points for losing a challenge on purpose')
         ]
         return fs

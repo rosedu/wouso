@@ -44,7 +44,7 @@ class BazaarApi(TestCase):
     def test_bazaar_buy_ok(self):
         spell = Spell.objects.create(price=0)
         f = Formula.objects.get_or_create(id='buy-spell')[0]
-        f.formula='points=0'
+        f.definition = 'points=0'
         f.save()
         Coin.objects.get_or_create(id='points')
 

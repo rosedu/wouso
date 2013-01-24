@@ -119,7 +119,7 @@ def formula_delete(request, id):
 def add_formula(request):
     form = FormulaForm()
     if request.method == "POST":
-        formula=FormulaForm(data = request.POST)
+        formula = FormulaForm(data = request.POST)
         if formula.is_valid():
             formula.save()
             return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.formulas'))

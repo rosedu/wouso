@@ -282,19 +282,19 @@ class QuestGame(Game):
         """ Returns a list of formulas used by qotd """
         fs = []
         quest_game = kls.get_instance()
-        fs.append(dict(id='quest-ok', formula='points={level}',
+        fs.append(dict(id='quest-ok', definition='points={level}',
             owner=quest_game.game,
             description='Points earned when finishing a level. Arguments: level.')
         )
-        fs.append(dict(id='quest-finish-ok', formula='points=10',
+        fs.append(dict(id='quest-finish-ok', definition='points=10',
             owner=quest_game.game,
             description='Bonus points earned when finishing the entire quest. No arguments.')
         )
-        fs.append(dict(id='quest-finish-bonus', formula='points=fib(12 - {position})',
+        fs.append(dict(id='quest-finish-bonus', definition='points=fib(12 - {position})',
             owner=quest_game.game,
             description='Bonus points earned when finishing a quest. Given to first 10, argument: position.')
         )
-        fs.append(dict(id='finalquest-ok', formula='points={level}+{level_users}',
+        fs.append(dict(id='finalquest-ok', definition='points={level}+{level_users}',
             owner=quest_game.game,
             description='Bonus points earned when finishing the final quest. Arguments: level, level_users')
         )

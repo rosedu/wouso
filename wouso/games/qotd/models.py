@@ -123,12 +123,12 @@ class QotdGame(Game):
         fs = []
         qotd_game = kls.get_instance()
         fs.append(dict(id='qotd-ok',
-            formula='points=4 + (1 if {hour} < 12 else -1)',
+            definition='points=4 + (1 if {hour} < 12 else -1)',
             owner=qotd_game.game,
             description='Points earned on a correct answer in the morning')
         )
         fs.append(dict(id="qotd-ok-bonus",
-            formula='points=2',
+            definition='points=2',
             owner=qotd_game.game,
             description='Points earned in case of bonus')
         )

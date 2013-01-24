@@ -39,7 +39,7 @@ class ScoringTestCase(TestCase):
 
     def testCalculate(self):
         formula = Formula.objects.create(id='_test_formula',
-            formula='_test=5', owner=self.game)
+            definition='_test=5', owner=self.game)
 
         # Call by name
         ret = scoring.calculate('_test_formula')
@@ -51,14 +51,14 @@ class ScoringTestCase(TestCase):
         self.assertEqual(ret['_test'], 5)
 
         formula2 = Formula.objects.create(id='_test_formula2',
-            formula='_test=5*3', owner=self.game)
+            definition='_test=5*3', owner=self.game)
 
         ret = scoring.calculate(formula2)
         self.assertTrue(isinstance(ret, dict))
         self.assertEqual(ret['_test'], 15)
 
         # Multiple coins
-        formula2.formula='_test=5*3; points=4'
+        formula2.definition='_test=5*3; points=4'
 
         ret = scoring.calculate(formula2)
         self.assertTrue(isinstance(ret, dict))
@@ -66,7 +66,7 @@ class ScoringTestCase(TestCase):
         self.assertEqual(ret['points'], 4)
 
         # Fail safe
-        formula2.formula='_test=5*cucu'
+        formula2.definition='_test=5*cucu'
         try:
             ret = scoring.calculate(formula2)
             # no error? wtf
@@ -76,7 +76,7 @@ class ScoringTestCase(TestCase):
 
     def testScore(self):
         formula = Formula.objects.create(id='_test_formula_sc',
-            formula='_test=13', owner=self.game)
+            definition='_test=13', owner=self.game)
 
         scoring.score(self.user.get_profile(), self.game, formula,
             external_id=3)
@@ -95,7 +95,7 @@ class UpdateScoringTest(WousoTest):
     def testUpdatePoints(self):
         Coin.add('points')
         Coin.add('gold')
-        Formula.objects.create(id='level-gold', formula='gold=10*{level}', owner=None)
+        Formula.objects.create(id='level-gold', definition='gold=10*{level}', owner=None)
         player = self._get_player()
         player.points = 82
         player.level_no = 1
@@ -165,7 +165,7 @@ class ScoringSetupTest(TestCase):
 
 class ScoringFirstLogin(WousoTest):
     def test_first_login_points(self):
-        f = Formula.add('start-points', formula='points=10')
+        f = Formula.add('start-points', definition='points=10')
         Coin.add('points')
         player = self._get_player()
 
@@ -182,14 +182,14 @@ class ScoringFirstLogin(WousoTest):
 
 class ScoringTestFunctions(TestCase):
     def test_fibbonaci_formula(self):
-        formula = Formula.objects.create(id='test-fib', formula='points=fib(0)')
+        formula = Formula.objects.create(id='test-fib', definition='points=fib(0)')
         value = calculate(formula)['points']
         self.assertEqual(value, 0)
-        formula.formula = 'points=fib(1)'; formula.save(); value = calculate(formula)['points']
+        formula.definition = 'points=fib(1)'; formula.save(); value = calculate(formula)['points']
         self.assertEqual(value, 1)
-        formula.formula = 'points=fib(2)'; formula.save(); value = calculate(formula)['points']
+        formula.definition = 'points=fib(2)'; formula.save(); value = calculate(formula)['points']
         self.assertEqual(value, 1)
-        formula.formula = 'points=fib(3)'; formula.save(); value = calculate(formula)['points']
+        formula.definition = 'points=fib(3)'; formula.save(); value = calculate(formula)['points']
         self.assertEqual(value, 2)
-        formula.formula = 'points=fib(4)'; formula.save(); value = calculate(formula)['points']
+        formula.definition = 'points=fib(4)'; formula.save(); value = calculate(formula)['points']
         self.assertEqual(value, 3)

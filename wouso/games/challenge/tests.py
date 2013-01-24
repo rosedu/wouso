@@ -126,18 +126,18 @@ class ChallengeTestCase(TestCase):
 
         # TODO: improve usage of formulas inside tests.
         formula = Formula.objects.get(id='chall-won')
-        formula.formula = 'points=10 + min(10, int(3 * {winner_points}/{loser_points}))'
+        formula.definition = 'points=10 + min(10, int(3 * {winner_points}/{loser_points}))'
         formula.save()
         chall.played()
 
     def test_variable_timer(self):
         formula = Formula.objects.get_or_create(id='chall-timer')[0]
-        formula.formula = 'tlimit=10'
+        formula.definition = 'tlimit=10'
         formula.save()
 
         self.assertEqual(scoring.timer(self.chall_user, ChallengeGame, 'chall-timer', level=self.chall_user.level_no), 10)
 
-        formula.formula = 'tlimit={level}'
+        formula.definition = 'tlimit={level}'
         formula.save()
 
         self.assertEqual(scoring.timer(self.chall_user, ChallengeGame, 'chall-timer', level=self.chall_user.level_no), self.chall_user.level_no)

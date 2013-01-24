@@ -65,12 +65,12 @@ def calculate(formula, **params):
     if formula is None:
         raise InvalidFormula(formula)
 
-    if not formula.formula:
+    if not formula.definition:
         return {}
 
     ret = {}
     try:
-        frml = formula.formula.format(**params)
+        frml = formula.definition.format(**params)
         # Apparently, Python does not allow assignments inside eval
         # Using this workaround for now
         ass = frml.split(';')
@@ -107,7 +107,7 @@ def timer(user, game, formula, default=300, **params):
     formula = Formula.get(formula)
     if formula is None:
         raise InvalidFormula(formula)
-    if not formula.formula:
+    if not formula.definition:
         return default
 
     values = calculate(formula, **params)
