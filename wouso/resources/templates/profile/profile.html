@@ -80,6 +80,7 @@
     <div class="actions">
         <span class="button-list">Admin:</span>
         {% autoescape off %}{{ profile_superuser_actions }}{% endautoescape %}
+        <a class="button" href="{% url impersonate profile.id %}">Impersonate</a>
     </div>
     {% endif %}
 
