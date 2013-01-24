@@ -72,11 +72,7 @@ class ChatMessage(models.Model):
         return mesaj
 
 class Chat(App):
-
-    @classmethod
-    def get_header_link(kls, request):
-        return ''
-
+    pass
 
 # admin interface
 admin.site.register(ChatRoom)

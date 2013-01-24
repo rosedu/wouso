@@ -153,13 +153,10 @@ class ScoringHistoryTest(WousoTest):
 
 class ScoringSetupTest(TestCase):
     def test_check_setup(self):
-        self.assertFalse(check_setup())
         setup_scoring()
         self.assertTrue(check_setup())
 
     def test_setup(self):
-        for c in CORE_POINTS:
-            self.assertFalse(Coin.get(c))
         setup_scoring()
         for c in CORE_POINTS:
             self.assertTrue(Coin.get(c))
