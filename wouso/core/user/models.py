@@ -204,8 +204,8 @@ class Player(models.Model):
 
     # special:
     @classmethod
-    def _cache_key(cls, ext_cls):
-        return "PlayerExt-" + ext_cls.__name__
+    def _cache_key(cls, ext_cls, id):
+        return "PlayerExt-" + ext_cls.__name__ + '-' + str(id)
 
     def get_extension(self, cls):
         """ Search for an extension of this object, with the type cls
@@ -214,7 +214,7 @@ class Player(models.Model):
         Using an workaround, while: http://code.djangoproject.com/ticket/7623 gets fixed.
         Also see: http://code.djangoproject.com/ticket/11618
         """
-        cache_key = Player._cache_key(cls)
+        cache_key = Player._cache_key(cls, self.id)
         if cache_key in cache:
             return cache.get(cache_key)
         try:
@@ -234,6 +234,12 @@ class Player(models.Model):
         Register new attribute with an ext_cls
         """
         cls.EXTENSIONS[attr] = ext_cls
+
+    def save(self, **kwargs):
+        cache_key = Player._cache_key(self.__class__, self.id)
+        if cache_key in cache:
+            cache.delete(cache_key)
+        return super(Player, self).save(**kwargs)
 
     def __getitem__(self, item):
         if item in self.__class__.EXTENSIONS:
