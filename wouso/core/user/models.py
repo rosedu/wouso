@@ -204,10 +204,6 @@ class Player(models.Model):
     def add_spell(self, spell):
         self.magic.add_spell(spell)
 
-    @deprecated('Function deprecated, please use player.magic.spell_stock instead')
-    def spell_stock(self, spell):
-        return self.magic.spell_stock(spell)
-
     # Other stuff
     @property
     def level(self):

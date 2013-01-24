@@ -100,7 +100,7 @@ def coin_amount(amount, coin=None):
 def spell_stock(player, spell):
     if player is None:
         return ''
-    stock = player.spell_stock(spell)
+    stock = player.magic.spell_stock(spell)
     return 'x%d' % stock if stock > 0 else '-'
 
 @register.simple_tag
