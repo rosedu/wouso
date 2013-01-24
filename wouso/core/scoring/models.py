@@ -11,6 +11,10 @@ class ScoringModel:
     and get_if_it_isnt_already_an_instance methods
     """
     @classmethod
+    def _cache_key(cls, id):
+        return 'SM' + cls.__name__ + '-' + id
+
+    @classmethod
     def add(kls, id, **data):
         if isinstance(id, kls):
             id.save()
@@ -27,8 +31,13 @@ class ScoringModel:
             return id
         if isinstance(id, dict):
             id = id.get('id', '')
+        cache_key = kls._cache_key(id)
+        if cache_key in cache:
+            return cache.get(cache_key)
         try:
-            return kls.objects.get(id=id)
+            val = kls.objects.get(id=id)
+            cache.set(cache_key, val)
+            return val
         except kls.DoesNotExist:
             return None
 
