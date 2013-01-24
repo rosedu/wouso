@@ -1,5 +1,6 @@
 # coding=utf-8
 from datetime import datetime, timedelta
+from django.core.cache import cache
 from django.db import models
 from django.db.models import Sum
 from django.contrib.auth.models import User, Group
@@ -202,6 +203,9 @@ class Player(models.Model):
         scoring.score(userto, None, 'steal-points', external_id=self.id, points=amount)
 
     # special:
+    @classmethod
+    def _cache_key(cls, ext_cls):
+        return "PlayerExt-" + ext_cls.__name__
 
     def get_extension(self, cls):
         """ Search for an extension of this object, with the type cls
@@ -210,6 +214,9 @@ class Player(models.Model):
         Using an workaround, while: http://code.djangoproject.com/ticket/7623 gets fixed.
         Also see: http://code.djangoproject.com/ticket/11618
         """
+        cache_key = Player._cache_key(cls)
+        if cache_key in cache:
+            return cache.get(cache_key)
         try:
             extension = cls.objects.get(user=self.user)
         except cls.DoesNotExist:
@@ -218,6 +225,7 @@ class Player(models.Model):
                 setattr(extension, f.name, getattr(self, f.name))
             extension.save()
 
+        cache.set(cache_key, extension)
         return extension
 
     @classmethod
