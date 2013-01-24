@@ -1,7 +1,7 @@
 import sys
 import os.path
-from datetime import datetime
 from django.core.urlresolvers import reverse
+from django.core.cache import cache
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.conf import settings
@@ -39,6 +39,19 @@ class Modifier(models.Model):
 class ArtifactGroup(Item, models.Model):
     """ A group of artifacts for a Species. It cannot contain two artifacts of the same name."""
     name = models.CharField(max_length=100, unique=True)
+
+    @classmethod
+    def _cache_key(cls, id):
+        return 'Magic' + cls.__name__ + '-' + id
+
+    @classmethod
+    def get(cls, name):
+        cache_key = cls._cache_key(name)
+        if cache_key in cache:
+            return cache.get(cache_key)
+        obj = cls.objects.get(name=name)
+        cache.set(cache_key, obj)
+        return obj
 
     def __unicode__(self):
         return self.name
