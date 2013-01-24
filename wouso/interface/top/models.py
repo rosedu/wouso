@@ -153,7 +153,7 @@ class NewHistory(models.Model):
         return None
 
 
-class History(models.Model): # TODO: deprecate
+class History(models.Model): # TODO: deprecate (maybe), check if NewHistory covers usage
     user = models.ForeignKey('TopUser', blank=True, null=True)
     group = models.ForeignKey(PlayerGroup, blank=True, null=True)
     relative_to = models.ForeignKey(PlayerGroup, blank=True, null=True, related_name='relativeto')
