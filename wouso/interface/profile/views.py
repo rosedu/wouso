@@ -71,10 +71,10 @@ def save_profile(request):
 
 @login_required
 def user_profile(request, id, page=u'1'):
-    try:
-        profile = Player.objects.get(id=id)
-    except Player.DoesNotExist:
-        raise Http404
+    if int(id) == request.user.get_profile().id:
+        profile = request.user.get_profile()
+    else:
+        profile = get_object_or_404(Player, id=id)
 
     activity_list = Activity.get_player_activity(profile)
 
