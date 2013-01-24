@@ -68,10 +68,23 @@ def calculate(formula, **params):
     if not formula.definition:
         return {}
 
+    return calculate_definition(formula.definition, formula, **params)
+
+
+def calculate_definition(definition, formula=None, **params):
+    """
+    Calculate a formula defintion. Example of such defintions are:
+        * points=50
+        * points=10+{{level}}*100
+        * gold=3;points=100
+
+    Returns a dictionary with coins and values, example:
+        {'points': 30, 'gold': 100}
+    """
     ret = {}
     try:
-        frml = formula.definition.format(**params)
-        # Apparently, Python does not allow assignments inside eval
+        frml = definition.format(**params)
+        # Python does not allow assignments inside eval
         # Using this workaround for now
         ass = frml.split(';')
         for a in ass:
@@ -86,7 +99,6 @@ def calculate(formula, **params):
     except Exception as e:
         logging.exception(e)
         raise FormulaParsingError(formula)
-
     return ret
 
 

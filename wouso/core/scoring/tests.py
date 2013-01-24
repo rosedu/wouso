@@ -45,7 +45,7 @@ class ScoringTestCase(TestCase):
         ret = scoring.calculate('_test_formula')
         self.assertTrue(isinstance(ret, dict))
 
-        # Call by objcet
+        # Call by object
         ret = scoring.calculate(formula)
         self.assertTrue(isinstance(ret, dict))
         self.assertEqual(ret['_test'], 5)
