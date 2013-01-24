@@ -50,12 +50,7 @@ class Artifact(Modifier):
     class Meta:
         unique_together = ('name', 'group', 'percents')
 
-    group = models.ForeignKey(ArtifactGroup)
-
-    @classmethod
-    def DEFAULT(kls):
-        # TODO: get rid of me
-        return ArtifactGroup.objects.get_or_create(name='Default')[0]
+    group = models.ForeignKey(ArtifactGroup, null=True, blank=True, default=None)
 
     def __unicode__(self):
         if self.title:

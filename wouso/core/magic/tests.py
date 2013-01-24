@@ -32,7 +32,7 @@ class ManagerTestCase(WousoTest):
         self.assertEqual(self.player.magic.modifier_percents('inexistent-modifier'), 100) # should return 0
 
     def test_manager_use_modifier(self):
-        Artifact.objects.create(name='modifier-name', group=Artifact.DEFAULT())
+        Artifact.objects.create(name='modifier-name')
         self.player.magic.give_modifier('modifier-name', 1)
         self.assertTrue(self.player.magic.has_modifier('modifier-name'))
 
@@ -48,23 +48,23 @@ class ManagerTestCase(WousoTest):
             player.points = 10-i
             player.save()
             v.append(player)
-        
+
         v[3].magic.add_spell(spell2)
         neigh = v[3].get_neighbours_from_top(2)
         neigh = v[3].magic.filter_players_by_spell(neigh, spell2)
         v[3].magic.mass_cast(spell2, neigh, datetime.now()+timedelta(days=1))
-        
+
         for i in [1, 2, 4, 5]:
             self.assertTrue(v[i].magic.is_spelled)
         self.assertTrue(v[3].magic.is_spelled)
 
         v[6].magic.cast_spell(spell1, v[0], datetime.now()+timedelta(days=1))
         self.assertFalse(v[6].magic.is_spelled)
-        
+
         v[0].magic.add_spell(spell1)
         v[6].magic.cast_spell(spell1, v[0], datetime.now()+timedelta(days=1))
         self.assertTrue(v[6].magic.is_spelled)
-        
+
 
 class ModifierTest(TestCase):
     def test_path_simple(self):

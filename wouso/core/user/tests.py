@@ -4,7 +4,7 @@ from wouso.core.magic.models import Artifact
 
 class PlayerTestCase(TestCase):
     def testModifierPercents(self):
-        artif = Artifact.objects.create(name='test', group=Artifact.DEFAULT(), percents=50)
+        artif = Artifact.objects.create(name='test', group=None, percents=50)
         user = User.objects.create(username='-pt-test')
         player = user.get_profile()
 

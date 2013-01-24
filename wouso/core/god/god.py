@@ -44,14 +44,14 @@ class DefaultGod:
         try:
             group = ArtifactGroup.objects.get(name=race.name)
         except (ArtifactGroup.DoesNotExist, AttributeError):
-            group = Artifact.DEFAULT()
+            group = None
 
         name = 'level-%d' % level_no
         try:
             return Artifact.objects.get(name=name, group=group)
         except Artifact.DoesNotExist:
             try:
-                return Artifact.objects.get(name=name, group=Artifact.DEFAULT())
+                return Artifact.objects.get(name=name, group=None)
             except Artifact.DoesNotExist:
                 return NoArtifactLevel(level_no)
 
