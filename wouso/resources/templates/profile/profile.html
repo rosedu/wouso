@@ -17,7 +17,7 @@
         <div class="rank">{% if top.disabled %}-{% else %}{% trans 'rank' %}: {{ top.position }}{% endif %}</div>
     </div>
 
-    <img src="{{ avatar }}" class="avatar" />
+    <img src="{% player_avatar profile %}" class="avatar" />
     <h2>{{ profile }}</h2>
     <h3>{% artifact_full profile.level %} </h3>
     <h4>{% if profile.group %}{% trans 'Group' %}: {% player_group profile.group %}{% endif %}

@@ -12,7 +12,6 @@ def add_message(text, sender, to_room, user_to, mess_type, comand):
 
     time_stamp = datetime.now()
 
-    #TODO: Putem renunta la spam:) este inutil.
     difference_in_seconds = 1
     # sau>>
     #diff = time_stamp - sender.last_message_ts

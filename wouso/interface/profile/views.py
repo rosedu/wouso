@@ -76,9 +76,6 @@ def user_profile(request, id, page=u'1'):
     except Player.DoesNotExist:
         raise Http404
 
-    # TODO: parca exista o functie in core pentru gravatar
-    avatar = "http://www.gravatar.com/avatar/%s.jpg?d=monsterid"\
-        % md5(profile.user.email).hexdigest()
     activity_list = Activity.get_player_activity(profile)
 
     top_user = profile.get_extension(TopUser)
@@ -113,7 +110,6 @@ def user_profile(request, id, page=u'1'):
 
     return render_to_response('profile/profile.html',
                               {'profile': profile,
-                               'avatar': avatar,
                                'activity': activity,
                                'top': top_user,
                                'scoring': history,

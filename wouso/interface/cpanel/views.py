@@ -486,7 +486,7 @@ def qpool_importer(request):
 
 @permission_required('config.change_setting')
 def qpool_import_from_upload(request):
-    # TODO: use form
+    # TODO: use a form
     cat = request.POST.get('category', None)
     tags = request.POST.getlist('tags')
 
@@ -768,9 +768,9 @@ def stafftoggle(request, id):
 
     if profile != request.user.get_profile():
         staff_group, new = auth.Group.objects.get_or_create(name='Staff')
-        # TODO: fixme
-        if staff_group in profile.user.groups.all():
-            profile.user.groups.remove(staff_group)
+        if profile.in_staff_group():
+            if staff_group in profile.user.groups.all():
+                profile.user.groups.remove(staff_group)
         else:
             profile.user.groups.add(staff_group)
 
