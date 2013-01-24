@@ -146,16 +146,16 @@ class DefaultGod:
         if (spell.type == 'n') and (source.race == destination.race):
             return False, 'Player is the same race as you'
 
-        if destination.has_modifier('immunity'):
+        if destination.magic.has_modifier('immunity'):
             return False, 'Player has immunity'
 
-        if destination.has_modifier(spell.name):
+        if destination.magic.has_modifier(spell.name):
                 return False, 'Player already has this spell cast on him'
 
-        if destination.has_modifier('curse') and (spell.type != 'n'):
+        if destination.magic.has_modifier('curse') and (spell.type != 'n'):
             return False, 'Player is cursed'
 
-        if source.has_modifier('curse'):
+        if source.magic.has_modifier('curse'):
             return False, 'Player is cursed'
 
         if (spell.name == 'steal') and (destination.points < spell.percents):

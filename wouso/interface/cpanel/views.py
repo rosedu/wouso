@@ -643,7 +643,7 @@ def artifactset(request, id):
     if request.method == "POST":
         artifact = get_object_or_404(Artifact, pk=request.POST.get('artifact', 0))
         amount = int(request.POST.get('amount', 1))
-        profile.give_modifier(artifact.name, amount)
+        profile.magic.give_modifier(artifact.name, amount)
 
     return render_to_response('cpanel/artifactset.html',
                               {'to': profile,

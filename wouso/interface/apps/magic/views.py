@@ -116,7 +116,7 @@ def bazaar_buy(request, spell):
     elif spell.level_required > player.level_no:
         error = _("Level {level} is required to buy this spell").format(level=spell.level_required)
     else:
-        player.add_spell(spell)
+        player.magic.add_spell(spell)
         scoring.score(player, None, 'buy-spell', external_id=spell.id,
                       price=spell.price)
         signal_msg = ugettext_noop('bought a spell')

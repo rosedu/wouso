@@ -36,7 +36,7 @@ class ChallengeUser(Player):
         today_end = datetime.combine(now, time(23, 59, 59))
         if today_start <= self.last_launched <= today_end:
             return False
-        if self.has_modifier('challenge-cannot-challenge'):
+        if self.magic.has_modifier('challenge-cannot-challenge'):
             return False
         return True
 
@@ -53,16 +53,16 @@ class ChallengeUser(Player):
         if self.user == user.user:
             # Cannot challenge myself
             return False
-        if user.has_modifier('challenge-cannot-be-challenged'):
+        if user.magic.has_modifier('challenge-cannot-be-challenged'):
             return False
         return God.user_can_interact_with(self, user, game=ChallengeGame)
 
     def has_one_more(self):
-        return self.has_modifier('challenge-one-more')
+        return self.magic.has_modifier('challenge-one-more')
 
     def do_one_more(self):
         try:
-            modifier = self.use_modifier('challenge-one-more', 1)
+            modifier = self.magic.use_modifier('challenge-one-more', 1)
         except InsufficientAmount:
             return False
         self.last_launched -= timedelta(days=-1)
@@ -349,7 +349,7 @@ class Challenge(models.Model):
 
         for u in (self.user_to, self.user_from):
             # always lose, you mofo
-            if u.user.has_modifier('challenge-always-lose'):
+            if u.user.magic.has_modifier('challenge-always-lose'):
                 u.score = -1
 
         if self.user_to.score > self.user_from.score:
@@ -396,8 +396,8 @@ class Challenge(models.Model):
         """
         for u in (self.user_to, self.user_from):
             # affect bonuses
-            if u.user.has_modifier('challenge-affect-scoring'):
-                u.percents = u.user.modifier_percents('challenge-affect-scoring')
+            if u.user.magic.has_modifier('challenge-affect-scoring'):
+                u.percents = u.user.magic.modifier_percents('challenge-affect-scoring')
             else:
                 u.percents = 100
 
@@ -412,8 +412,8 @@ class Challenge(models.Model):
             winner_points = self.user_won.user.points
             loser_points = self.user_lost.user.points
 
-            if self.user_won.user.has_modifier('challenge-affect-scoring-won'):
-                self.user_won.percents += self.user_won.user.modifier_percents('challenge-affect-scoring-won')
+            if self.user_won.user.magic.has_modifier('challenge-affect-scoring-won'):
+                self.user_won.percents += self.user_won.user.magic.modifier_percents('challenge-affect-scoring-won')
 
             if self.WARRANTY:
                 # warranty not affected by percents
@@ -426,7 +426,7 @@ class Challenge(models.Model):
                           winner_points=winner_points, loser_points=loser_points,
             )
             #Check for spell evade
-            if self.user_lost.user.has_modifier('challenge-evade'):
+            if self.user_lost.user.magic.has_modifier('challenge-evade'):
                 random.seed()
                 if random.random() < 0.33:
                     #He's lucky,no penalty,return warranty

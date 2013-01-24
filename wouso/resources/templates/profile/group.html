@@ -65,7 +65,7 @@
             <li>{% player u %}
                 <span class="points w50">{{ u.points }}</span>
                 {% if not group.parent %}
-                <span class="points w50">{% player_group u.proximate_group  %}</span>
+                <span class="points w50">{% player_group u.group  %}</span>
                 {% endif %}
             </li>
             {% empty %}

@@ -15,7 +15,7 @@ def index(request):
     user = request.user.get_profile()
     chat_user = get_author(request)
 
-    if user.has_modifier('block-global-chat-page') or user.has_modifier('block-communication') or not chat_user.can_access_chat:
+    if user.magic.has_modifier('block-global-chat-page') or user.magic.has_modifier('block-communication') or not chat_user.can_access_chat:
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
     if BoolSetting.get('disable-Chat').get_value():
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
@@ -30,7 +30,7 @@ def archive(request):
     user = request.user.get_profile()
     chat_user = get_author(request)
 
-    if user.has_modifier('block-global-chat-page') or user.has_modifier('block-communication') or not chat_user.can_access_chat:
+    if user.magic.has_modifier('block-global-chat-page') or user.magic.has_modifier('block-communication') or not chat_user.can_access_chat:
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
     if BoolSetting.get('disable-Chat').get_value():
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
@@ -63,7 +63,7 @@ def online_players(request):
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('user__username')
 
     def is_not_blocked(x):
-        return not x.has_modifier('block-communication')
+        return not x.magic.has_modifier('block-communication')
 
     online_last10 = filter(is_not_blocked, online_last10)
 
@@ -171,9 +171,9 @@ def sendmessage(request):
             return HttpResponseBadRequest()
     elif data['opcode'] == 'keepAlive':
         chat_global = roomexist('global')
-        if user.has_modifier('block-communication'):
+        if user.magic.has_modifier('block-communication'):
             return json_response(special_message(user, None, "block-communication", time_stamp))
-        elif user.has_modifier('block-global-chat-page') or not user.can_access_chat:
+        elif user.magic.has_modifier('block-global-chat-page') or not user.can_access_chat:
             return json_response(special_message(user, None, "kick", time_stamp))
 
         if user not in chat_global.participants.all():
@@ -185,9 +185,9 @@ def sendmessage(request):
             user_to = user_to.get_extension(ChatUser)
         except ChatUser.DoesNotExist:
             return HttpResponseBadRequest()
-        if user.has_modifier('block-communication'):
+        if user.magic.has_modifier('block-communication'):
             return HttpResponseBadRequest()
-        if user_to.has_modifier('block-communication'):
+        if user_to.magic.has_modifier('block-communication'):
             return HttpResponseBadRequest()
         rooms = ChatRoom.objects.exclude(name='global').filter(participants=user).filter(participants=user_to)
         rooms = [r for r in rooms if r.participants.count() <= 2]

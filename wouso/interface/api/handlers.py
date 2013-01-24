@@ -177,7 +177,7 @@ class BazaarBuy(BaseHandler):
         if spell.price > player.coins.get('gold', 0):
             return {'success': False, 'error': 'Insufficient gold'}
         else:
-            player.add_spell(spell)
+            player.magic.add_spell(spell)
             scoring.score(player, None, 'buy-spell', external_id=spell.id,
                 price=spell.price)
             SpellHistory.bought(player, spell)

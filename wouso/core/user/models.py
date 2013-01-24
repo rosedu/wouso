@@ -159,50 +159,6 @@ class Player(models.Model):
     def magic(self):
         return MagicManager(self)
 
-    @property
-    @deprecated
-    def spells(self):
-        return self.magic.spells
-
-    @property
-    @deprecated
-    def spells_cast(self):
-        return self.magic.spells_cast
-
-    @property
-    @deprecated
-    def spells_available(self):
-        return self.magic.spells_available
-
-    @property
-    @deprecated
-    def artifact_amounts(self):
-        return self.magic.artifact_amounts
-
-    @property
-    @deprecated
-    def spell_amounts(self):
-        return self.magic.spell_amounts
-
-    @deprecated('Function deprecated, please use player.magic.has_modifier instead')
-    def has_modifier(self, modifier):
-        return self.magic.has_modifier(modifier)
-
-    @deprecated('Function deprecated, please use player.magic.modifier_percents instead')
-    def modifier_percents(self, modifier):
-        return self.magic.modifier_percents(modifier)
-
-    @deprecated('Function deprecated, please use player.magic.use_modifier instead')
-    def use_modifier(self, modifier, amount):
-        return self.magic.use_modifier(modifier, amount)
-
-    @deprecated('Function deprecated, please use player.magic.give_modifier instead')
-    def give_modifier(self, modifier, amount):
-        return self.magic.give_modifier(modifier, amount)
-
-    @deprecated('Function deprecated, please use player.magic.add_spell instead')
-    def add_spell(self, spell):
-        self.magic.add_spell(spell)
 
     # Other stuff
     @property
@@ -218,14 +174,6 @@ class Player(models.Model):
         # TODO check usage and deprecate this function
         from wouso.core.scoring.models import History
         return History.user_coins(self.user)
-
-    @property
-    @deprecated('Does not make sense any more')
-    def proximate_group(self):
-        """ Return the group with minimum class, for which the user
-        is a member of, or None.
-        """
-        return self.group
 
     @property
     def group(self):
@@ -245,16 +193,6 @@ class Player(models.Model):
 
         group.players.add(self)
         return group
-
-    @property
-    @deprecated('There is race waiting to be used')
-    def series(self):
-        """ Return the group with class == 1, for which the user
-        is a member of, or None.
-
-        TODO: get rid of old gclass=1 series, we now have race.
-        """
-        return None
 
     def level_progress(self):
         """ Return a dictionary with: points_gained, points_left, next_level """
@@ -301,7 +239,9 @@ class Player(models.Model):
         ret = u"%s %s" % (self.user.first_name, self.user.last_name)
         return ret if ret != u" " else self.user.__unicode__()
 
+
 class UserReportForm(forms.Form):
+    # TODO: move it
     message = forms.CharField(widget = forms.Textarea)
 
 

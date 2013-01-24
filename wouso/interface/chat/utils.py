@@ -18,10 +18,10 @@ def add_message(text, sender, to_room, user_to, mess_type, comand):
     #diff = time_stamp - sender.last_message_ts
     #difference_in_seconds = (diff.microseconds + (diff.seconds + diff.days * 24 * 3600) * 10**6) / 10**6
 
-    if sender.has_modifier('block-communication'):
+    if sender.magic.has_modifier('block-communication'):
         return False
     if difference_in_seconds > 0.5:
-        if sender.has_modifier('block-messages'):
+        if sender.magic.has_modifier('block-messages'):
             text = change_text(text)
         msg = ChatMessage(content=text, author=sender, dest_room=to_room, time_stamp=time_stamp,
             dest_user = user_to, mess_type=mess_type, comand=comand)

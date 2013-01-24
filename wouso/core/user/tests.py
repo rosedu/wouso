@@ -8,15 +8,15 @@ class PlayerTestCase(TestCase):
         user = User.objects.create(username='-pt-test')
         player = user.get_profile()
 
-        player.give_modifier('test', 1)
-        self.assertEqual(player.modifier_percents('test'), 150)
+        player.magic.give_modifier('test', 1)
+        self.assertEqual(player.magic.modifier_percents('test'), 150)
 
-        player.give_modifier('test', 1)
-        self.assertEqual(player.modifier_percents('test'), 200)
+        player.magic.give_modifier('test', 1)
+        self.assertEqual(player.magic.modifier_percents('test'), 200)
 
         artif.percents = -50
         artif.save()
-        self.assertEqual(player.modifier_percents('test'), 0)
+        self.assertEqual(player.magic.modifier_percents('test'), 0)
 
         user.delete()
         artif.delete()
@@ -29,7 +29,7 @@ class PlayerTestCase(TestCase):
             player.points = 10*(10-i)
             player.save()
             v.append(player)
-        
+
         #check neighbours for first player in top
         players = v[0].get_neighbours_from_top(2)
         self.assertEqual(len(players), 5)

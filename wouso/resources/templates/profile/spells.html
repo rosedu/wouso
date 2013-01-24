@@ -9,12 +9,12 @@
 <h2>{% trans 'Magic summary' %}</h2>
 
 <h3>{% trans 'Available' %}</h3>
-{% if theowner.spell_amounts.all %}
+{% if theowner.magic.spell_amounts.all %}
     <table>
     <tr><th>{% trans 'Spell' %}</th>
         <th>{% trans 'Amount' %}</th>
     </tr>
-    {% for s in theowner.spell_amounts.all %}
+    {% for s in theowner.magic.spell_amounts.all %}
     <tr><td>{% artifact s.spell %} {{ s.spell.title }}</td>
         <td align="right">{% spell_stock theowner s.spell %}</td>
     </tr>
@@ -24,14 +24,14 @@
     {% trans 'None.' %}
 {% endif %}
 
-{% if theowner.spells.all %}
+{% if theowner.magic.spells.all %}
 <h3>{% trans 'Active on me' %}</h3>
 <table>
     <tr><th>{% trans 'Spell' %}</th>
         <th>{% trans 'Source' %}</th>
         <th>{% trans 'Until' %}</th>
     </tr>
-    {% for s in theowner.spells.all %}
+    {% for s in theowner.magic.spells.all %}
     <tr>
         <td>{% artifact s.spell %} {{ s.spell.title }}</td>
         <td>{% player_simple s.source %}</td>
