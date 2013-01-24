@@ -18,18 +18,18 @@ class TestSettings(TestCase):
         self.assertIsInstance(c, ChoicesSetting)
 
     def test_set_value(self):
-        a = BoolSetting.get('test')
+        a = BoolSetting.get('btest')
 
         a.set_value(False)
         self.assertEqual(a.get_value(), False)
         self.assertIsInstance(a.get_value(), bool)
 
     def test_setting_forms(self):
-        c = ChoicesSetting.get('test')
+        c = ChoicesSetting.get('ctest')
 
         self.assertTrue('<select' in c.form())
 
-        h = HTMLSetting.get('test')
+        h = HTMLSetting.get('htest')
         self.assertTrue('<textarea' in h.form())
 
         b = BoolSetting.get('test')
@@ -39,9 +39,9 @@ class TestSettings(TestCase):
         self.assertTrue('value="0"' in c.form())
 
     def test_setting_unicode(self):
-        a = Setting.get('test')
+        a = Setting.get('stest')
 
-        self.assertEqual(a.__unicode__(), 'test')
+        self.assertEqual(a.__unicode__(), 'stest')
 
         a.set_value('e')
         self.assertEqual(a.get_value(), 'e')

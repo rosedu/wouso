@@ -22,6 +22,7 @@ class ChallengeTestCase(TestCase):
         self.user2.save()
         self.chall_user2 = self.user2.get_profile().get_extension(ChallengeUser)
         scoring.setup_scoring()
+        ChallengeGame.get_instance().save()
 
     def tearDown(self):
         self.user.delete()
@@ -151,6 +152,7 @@ class ChallengeApi(TestCase):
         self.user2 = User.objects.create_user('_test2', '', password='test')
         self.challuser = self.user.get_profile().get_extension(ChallengeUser)
         self.challuser2 = self.user2.get_profile().get_extension(ChallengeUser)
+        ChallengeGame.get_instance().save()
 
     def test_list_active(self):
         response = self.client.get('/api/challenge/list/')

@@ -496,11 +496,8 @@ class WorkshopGame(Game):
             assessment = workshop.get_assessment(player)
         else:
             assessment = None
-        sm = False
-        for sg in semigroups:
-            if player in sg.players.all():
-                sm = True
-                break
+        player_sg = Semigroup.get_by_player()
+        sm = player_sg in semigroups
 
         return render_to_string('workshop/sidebar.html',
                 {'semigroups': semigroups, 'workshop': workshop, 'semigroup_member': sm, 'assessment': assessment})

@@ -145,9 +145,7 @@ class Player(models.Model):
         return self.user.username
 
     def in_staff_group(self):
-        # TODO fixme, rename me.
-        staff, new = Group.objects.get_or_create(name='Staff')
-        return self.user.is_superuser or (staff in self.user.groups.all())
+        return self.user.has_perm('config.change_setting')
 
     @property
     def race_name(self):
