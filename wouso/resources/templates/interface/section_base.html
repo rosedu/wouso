@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="section">
-    <h2>{% block sectiontitle %}title{% endblock %}</h2>
+    <h2>{% block title %}{% block sectiontitle %}title{% endblock %}{% endblock %}</h2>
     <div class="section-content">
         {% block sectioncontent %}
         {% endblock %}
