@@ -88,12 +88,8 @@
                         </li>
                         <li class="spells"><a href="{% url spells %}">Spells</a></li>
                         <li class="artifacts"><a href="{% url artifact_home %}">Artifacts</a></li>
-                        {% if user.is_superuser %}
-                        <li class="custom"><a href="{% url customization %}">Customization</a></li>
                         <li><a href="{% url all_players %}">Players</a></li>
                         <li><a href="{% url races_groups %}">Races & groups</a></li>
-                        <li><a href="{% url reports %}">Reports</a></li>
-                        {% endif %}
                     </ul>
                 </div>
                 <div class="widget-content">
@@ -108,7 +104,9 @@
                     {% if user.is_staff or user.is_superuser %}
                     <ul class="menu">
                         Admin
-                        <li><a href="{% url roles %}">Roles</a></li>
+                        <li class="roles"><a href="{% url roles %}">Roles</a></li>
+                        <li class="custom"><a href="{% url customization %}">Customization</a></li>
+                        <li class="reports"><a href="{% url reports %}">Reports</a></li>
                     </ul>
                     {% endif %}
                     <ul class="menu">
