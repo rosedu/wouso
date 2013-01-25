@@ -1,0 +1,16 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+{% load user %}
+
+{% block sectiontitle %}{% trans 'Special Challenge' %} - {% trans 'Edit question in challenge' %} #{{ challenge.id }}{% endblock %}
+
+{% block sectioncontent %}
+    <form method="post" action="">
+        <table>
+        {{ form.as_table }}
+        </table>
+        {% csrf_token %}
+        <button type="submit">{% trans 'Submit' %}</button>
+    </form>
+    <a class="button" href="{% url specialchallenge_challenge challenge.id %}">{% trans 'Back' %}</a>
+{% endblock %}

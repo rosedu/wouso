@@ -1,0 +1,33 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+{% load user %}
+
+{% block sectiontitle %}{% trans 'Special Challenge' %} - {% trans 'View challenge' %} #{{ challenge.id }}{% endblock %}
+
+{% block sectioncontent %}
+
+    <p>{% trans 'Destination:' %} {% player_simple challenge.player_to %}, {% trans 'Status:' %} {% trans challenge.get_status_display %}</p>
+    <ol>
+        {% for q in challenge.questions.all %}
+        <li>
+            {% autoescape off %}
+            {{ q.text }}
+                <ul>
+                    {% for a in q.answers %}
+                    <li>
+                        {% if a.correct %}X {% endif %}
+                        {% autoescape off %}{{ a.text }}{% endautoescape %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% endautoescape %}
+
+            <a class="button button-min" href="{% url specialchallenge_edit_question challenge.pk q.pk %}">{% trans 'edit' %}</a>
+            <a class="button button-min" href="{% url specialchallenge_del_question challenge.pk q.pk %}">{% trans 'del' %}</a>
+        </li>
+        {% endfor %}
+    </ol>
+
+    <a class="button" href="{% url specialchallenge_add_question challenge.id %}">{% trans 'Add question' %}</a>
+    <a class="button" href="{% url specialchallenge_index  %}">{% trans 'Index' %}</a>
+{% endblock %}

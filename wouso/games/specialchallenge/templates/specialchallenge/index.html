@@ -1,0 +1,28 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+
+{% block sectiontitle %}{% trans 'Special Challenge' %}{% endblock %}
+
+{% block sectioncontent %}
+
+    <h3>{% trans 'My challenges' %}</h3>
+    <table>
+        <tr>
+            <th>{% trans 'Challenge' %}</th>
+            <th>{% trans 'Status' %}</th>
+            <th>{% trans 'Questions' %}</th>
+            <th>{% trans 'Actions' %}</th>
+        </tr>
+        {% for c in player.specialchallenges_from.all %}
+        <tr>
+            <td>{{ c }}</td>
+            <td>{% trans c.get_status_display %}</td>
+            <td>{{ c.questions.all.count }}</td>
+            <td><a class="button button-min" href="{% url specialchallenge_challenge c.id %}">{% trans 'view' %}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3>{% trans 'Actions' %}</h3>
+    <a class="button" href="{% url specialchallenge_create %}">{% trans 'Create new' %}</a>
+{% endblock %}

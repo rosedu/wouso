@@ -141,6 +141,7 @@ INSTALLED_APPS = [
     'wouso.games.qotd',
     'wouso.games.challenge',
     'wouso.games.grandchallenge',
+    'wouso.games.specialchallenge',
     'wouso.games.quest',
     'wouso.games.specialquest',
     'wouso.games.workshop',
