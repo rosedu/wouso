@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime, timedelta
 from django.utils.translation import ugettext_noop
-from wouso.core.app import App
+from wouso.core.common import App
 from wouso.core.user.models import Player
 from wouso.core.scoring.models import History
 from wouso.interface.apps.messaging.models import Message

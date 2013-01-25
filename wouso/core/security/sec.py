@@ -1,6 +1,6 @@
 from wouso.core import signals
 from wouso.core.config.models import BoolSetting
-from wouso.core.app import App
+from wouso.core.common import App
 from wouso.core.scoring.models import Coin, Formula
 from wouso.core.scoring import score
 

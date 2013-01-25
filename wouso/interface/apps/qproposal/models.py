@@ -1,6 +1,6 @@
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.utils.translation import ugettext as _
-from wouso.core.app import App
+from wouso.core.common import App
 
 class Qproposal(App):
     @classmethod
@@ -10,4 +10,3 @@ class Qproposal(App):
             return '<a href="%s">' % url + _('Propose question') + '</a>'
         except NoReverseMatch:
             return '-'
-  

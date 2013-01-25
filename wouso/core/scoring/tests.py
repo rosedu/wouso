@@ -14,7 +14,7 @@ class ScoringTestCase(TestCase):
     def setUp(self):
         self.user, new = User.objects.get_or_create(username='33')
         self.game = Game.get_instance()
-        self.coin = Coin.objects.create(id='_test')
+        self.coin = Coin.add('_test')
 
     def tearDown(self):
         #self.user.delete()
@@ -38,7 +38,7 @@ class ScoringTestCase(TestCase):
         self.assertEqual(history.amount, 10)
 
     def testCalculate(self):
-        formula = Formula.objects.create(id='_test_formula',
+        formula = Formula.add('_test_formula',
             definition='_test=5', owner=self.game)
 
         # Call by name
@@ -50,7 +50,7 @@ class ScoringTestCase(TestCase):
         self.assertTrue(isinstance(ret, dict))
         self.assertEqual(ret['_test'], 5)
 
-        formula2 = Formula.objects.create(id='_test_formula2',
+        formula2 = Formula.add('_test_formula2',
             definition='_test=5*3', owner=self.game)
 
         ret = scoring.calculate(formula2)
@@ -75,7 +75,7 @@ class ScoringTestCase(TestCase):
             self.assertTrue(isinstance(e, FormulaParsingError))
 
     def testScore(self):
-        formula = Formula.objects.create(id='_test_formula_sc',
+        formula = Formula.add('_test_formula_sc',
             definition='_test=13', owner=self.game)
 
         scoring.score(self.user.get_profile(), self.game, formula,
@@ -95,7 +95,7 @@ class UpdateScoringTest(WousoTest):
     def testUpdatePoints(self):
         Coin.add('points')
         Coin.add('gold')
-        Formula.objects.create(id='level-gold', definition='gold=10*{level}', owner=None)
+        Formula.add('level-gold', definition='gold=10*{level}', owner=None)
         player = self._get_player()
         player.points = 82
         player.level_no = 1
@@ -182,7 +182,7 @@ class ScoringFirstLogin(WousoTest):
 
 class ScoringTestFunctions(TestCase):
     def test_fibbonaci_formula(self):
-        formula = Formula.objects.create(id='test-fib', definition='points=fib(0)')
+        formula = Formula.add('test-fib', definition='points=fib(0)')
         value = calculate(formula)['points']
         self.assertEqual(value, 0)
         formula.definition = 'points=fib(1)'; formula.save(); value = calculate(formula)['points']

@@ -3,6 +3,7 @@ from datetime import datetime, date, timedelta
 from django.db import models
 from django.contrib.auth.models import User
 from utils import validate_dynq_code
+from wouso.core.common import Item
 
 class Tag(models.Model):
     """ A simple way of grouping Questions """
@@ -34,14 +35,11 @@ class Tag(models.Model):
         self.question_set.update(active=False)
 
 
-class Category(models.Model):
+class Category(Item, models.Model):
     """ One to many grouping for Question objects. Usually a game
     defines it's own category of questions in qpool.
     """
-    #TODO ScoringModel
-    name = models.CharField(max_length=64)
-    def __unicode__(self):
-        return self.name
+    name = models.CharField(max_length=100, unique=True)
 
 class Question(models.Model):
     """ A question in a qpool has text and a variable number of answers,

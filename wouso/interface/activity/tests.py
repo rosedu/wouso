@@ -626,7 +626,7 @@ class LevelUpTest(WousoTest):
     def test_level_ach(self):
         Artifact.objects.create(group=None, name='ach-level-5')
         Artifact.objects.create(group=None, name='ach-level-10')
-        coin = Coin.objects.create(id='gold')
+        coin = Coin.add('gold')
         player = self._get_player()
         player.level_no = 5
         player.save()
@@ -649,7 +649,7 @@ class GoldTest(WousoTest):
 
     def test_gold_amount(self):
         player = self._get_player()
-        coin = Coin.objects.create(id='gold')
+        coin = Coin.add('gold')
 
         scoring.score_simple(player, coin, amount=100)
 
@@ -658,7 +658,7 @@ class GoldTest(WousoTest):
     def test_gold_amount_ach(self):
         Artifact.objects.create(group=None, name='ach-gold-300')
         player = self._get_player()
-        coin = Coin.objects.create(id='gold')
+        coin = Coin.add('gold')
 
         scoring.score_simple(player, coin, amount=500)
 

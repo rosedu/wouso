@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.urlresolvers import reverse
-from wouso.core.app import App
+from wouso.core.common import App
 
 class Game(models.Model, App):
     """ Generic game class. Each installed application acting like a

@@ -97,8 +97,8 @@ class ArtifactTestCase(TestCase):
 class SpellTestCase(WousoTest):
 
     def test_buy_spell(self):
-        Coin.objects.create(id='gold')
-        Formula.objects.create(id='buy-spell', definition="gold=-{price}")
+        Coin.add('gold')
+        Formula.add('buy-spell', definition="gold=-{price}")
         spell = Spell.objects.create(name='test-spell', available=True, price=10)
         player = User.objects.create_user('test', 'test@a.ro', password='test').get_profile()
 

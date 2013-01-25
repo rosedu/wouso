@@ -136,10 +136,12 @@ class Quest(models.Model):
         """
         if type not in ('quest-ok', 'quest-finish-ok', 'finalquest-ok', 'quest-finish-bonus'):
             return None
+
+        # TODO: use Formula.get here
         try:
-            formula = Formula.objects.get(id='%s-%d' % (type, self.id))
+            formula = Formula.objects.get(name='%s-%d' % (type, self.id))
         except Formula.DoesNotExist:
-            formula = Formula.objects.get(id=type)
+            formula = Formula.objects.get(name=type)
         return formula
 
     def is_final(self):
@@ -282,19 +284,19 @@ class QuestGame(Game):
         """ Returns a list of formulas used by qotd """
         fs = []
         quest_game = kls.get_instance()
-        fs.append(dict(id='quest-ok', definition='points={level}',
+        fs.append(dict(name='quest-ok', definition='points={level}',
             owner=quest_game.game,
             description='Points earned when finishing a level. Arguments: level.')
         )
-        fs.append(dict(id='quest-finish-ok', definition='points=10',
+        fs.append(dict(name='quest-finish-ok', definition='points=10',
             owner=quest_game.game,
             description='Bonus points earned when finishing the entire quest. No arguments.')
         )
-        fs.append(dict(id='quest-finish-bonus', definition='points=fib(12 - {position})',
+        fs.append(dict(name='quest-finish-bonus', definition='points=fib(12 - {position})',
             owner=quest_game.game,
             description='Bonus points earned when finishing a quest. Given to first 10, argument: position.')
         )
-        fs.append(dict(id='finalquest-ok', definition='points={level}+{level_users}',
+        fs.append(dict(name='finalquest-ok', definition='points={level}+{level_users}',
             owner=quest_game.game,
             description='Bonus points earned when finishing the final quest. Arguments: level, level_users')
         )

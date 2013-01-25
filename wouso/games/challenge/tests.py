@@ -125,13 +125,13 @@ class ChallengeTestCase(TestCase):
         chall.user_to.save()
 
         # TODO: improve usage of formulas inside tests.
-        formula = Formula.objects.get(id='chall-won')
+        formula = Formula.get('chall-won')
         formula.definition = 'points=10 + min(10, int(3 * {winner_points}/{loser_points}))'
         formula.save()
         chall.played()
 
     def test_variable_timer(self):
-        formula = Formula.objects.get_or_create(id='chall-timer')[0]
+        formula = Formula.add('chall-timer')
         formula.definition = 'tlimit=10'
         formula.save()
 
@@ -161,7 +161,7 @@ class ChallengeApi(TestCase):
         self.assertFalse(data)
 
         # create an active challenge
-        Formula.objects.create(id='chall-warranty')
+        Formula.add('chall-warranty')
         chall = Challenge.create(user_from=self.challuser2, user_to=self.challuser, ignore_questions=True)
         response = self.client.get('/api/challenge/list/')
         data = json.loads(response.content)
@@ -172,8 +172,8 @@ class ChallengeApi(TestCase):
 
     def test_get_challenge(self):
         # create an active challenge
-        Formula.objects.create(id='chall-warranty')
-        Formula.objects.create(id='chall-timer')
+        Formula.add('chall-warranty')
+        Formula.add('chall-timer')
         chall = Challenge.create(user_from=self.challuser2, user_to=self.challuser, ignore_questions=True)
         chall.accept()
         response = self.client.get('/api/challenge/{id}/'.format(id=chall.id))
@@ -185,9 +185,9 @@ class ChallengeApi(TestCase):
 
     def test_post_challenge(self):
         # create an active challenge, with fake questions
-        Formula.objects.create(id='chall-warranty')
-        Formula.objects.create(id='chall-timer')
-        category = Category.objects.create(name='challenge')
+        Formula.add('chall-warranty')
+        Formula.add('chall-timer')
+        category = Category.add('challenge')
         for i in range(Challenge.LIMIT + 1):
             q = Question.objects.create(text='text %s' % i, category=category, active=True)
             for j in range(5):

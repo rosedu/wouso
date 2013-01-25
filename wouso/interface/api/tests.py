@@ -43,10 +43,10 @@ class BazaarApi(TestCase):
 
     def test_bazaar_buy_ok(self):
         spell = Spell.objects.create(price=0)
-        f = Formula.objects.get_or_create(id='buy-spell')[0]
+        f = Formula.add('buy-spell')
         f.definition = 'points=0'
         f.save()
-        Coin.objects.get_or_create(id='points')
+        Coin.add('points')
 
         response = self.client.post('/api/bazaar/buy/', {'spell': spell.id})
 

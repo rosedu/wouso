@@ -42,7 +42,7 @@ def setup_scoring():
     """ Prepare database for Scoring """
     for cc in CORE_POINTS:
         if not Coin.get(cc):
-            Coin.add(cc, name=cc)
+            Coin.add(cc)
     # special case, gold is integer
     gold = Coin.get('gold')
     gold.integer = True
@@ -130,6 +130,7 @@ def timer(user, game, formula, default=300, **params):
 
 def unset(user, game, formula, external_id=None, **params):
     """ Remove all history records by the external_id, formula and game given to the user """
+    formula = Formula.get(formula)
     for history in History.objects.filter(user=user, game=game.get_instance(), formula=formula, external_id=external_id):
         if history.coin.name == 'points':
             user.points -= history.amount
@@ -193,7 +194,7 @@ def score_simple(player, coin, amount, game=None, formula=None,
         game=game, formula=formula, external_id=external_id, percents=percents)
 
     # update user.points asap
-    if coin.id == 'points':
+    if coin.name == 'points':
         if player.magic.has_modifier('top-disguise'):
             computed_amount = 1.0 * computed_amount * player.magic.modifier_percents('top-disguise') / 100
 

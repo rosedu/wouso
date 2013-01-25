@@ -22,7 +22,7 @@ class QuestTestCase(TestCase):
         pass
 
     def check_answer_test(self):
-        cat = Category.objects.create(name='quest')
+        cat = Category.add('quest')
         question = Question.objects.create(text='test_q', answer_type='F',
                                            category=cat, active=True)
         answer1 = Answer.objects.create(text='test_a1', correct=True, question=question)
@@ -48,10 +48,10 @@ class FinalQuestTestCase(WousoTest):
         u1 = self._get_player(1).get_extension(QuestUser)
         u2 = self._get_player(2).get_extension(QuestUser)
         r = Race.objects.create(name='rasa_buna', can_play=True)
-        Formula.objects.create(id='finalquest-ok', definition='points=50*({level}+1)/{level_users}')
-        Formula.objects.create(id='level-gold', definition='gold=0')
-        Coin.objects.create(id='points')
-        Coin.objects.create(id='gold')
+        Formula.add('finalquest-ok', definition='points=50*({level}+1)/{level_users}')
+        Formula.add('level-gold', definition='gold=0')
+        Coin.add('points')
+        Coin.add('gold')
         final = FinalQuest.objects.create(start=datetime.datetime.now(), end=datetime.datetime.now())
         question = Question.objects.create(text='test', answer_type='F')
         final.questions.add(question)
@@ -97,7 +97,7 @@ class QuestAPITestCase(WousoTest):
         quser = self._get_player(1).get_extension(QuestUser)
         quest = Quest.objects.create(start=datetime.datetime.now(), end=datetime.datetime.now()+timedelta(days=1))
         quser.set_current(quest)
-        formula = Formula.objects.create(id='quest-ok')
+        formula = Formula.add('quest-ok')
 
         self._client_superuser()
         response = self.client.post('/api/quest/admin/quest=%d/username=%s/' % (quest.id, quser.user.username))

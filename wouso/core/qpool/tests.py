@@ -153,7 +153,7 @@ class QuestionTest(TestCase):
 
 class ScheduleTest(TestCase):
     def test_schedule_automatic(self):
-        cat = Category.objects.create(name='qotd')
+        cat = Category.add('qotd')
         q = Question.objects.create(active=True, category=cat)
 
         self.assertFalse(q.day)

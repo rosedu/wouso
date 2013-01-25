@@ -1,4 +1,4 @@
-from wouso.core.app import App
+from wouso.core.common import App
 from views import footer_link
 
 class Statistics(App):

@@ -1,3 +1,4 @@
+from django.db import models
 import sys
 
 class App:
@@ -75,3 +76,38 @@ class App:
         pass
 
     management_task = None # Disable it by default
+
+
+class Item:
+    """
+     Interface for items that can and should be cached. Usually, they have a string id as the SQL key.
+    """
+    CREATE_IF_NOT_EXISTS = False
+
+    @classmethod
+    def add(cls, name, **data):
+        if isinstance(name, cls):
+            name.save()
+            obj = name
+        elif isinstance(name, dict):
+            obj = cls.objects.create(**name)
+        else:
+            obj = cls.objects.get_or_create(name=name, **data)[0]
+        return obj
+
+    @classmethod
+    def get(cls, id):
+        if isinstance(id, cls):
+            return id
+        if isinstance(id, dict):
+            id = id.get('id', '')
+        try:
+            return cls.objects.get(name=id)
+        except cls.DoesNotExist:
+            try:
+                return cls.objects.get(id=id)
+            except:
+                return None
+
+    def __str__(self):
+        return u'%s' % self.id

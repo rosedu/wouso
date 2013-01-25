@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.conf import settings
-from wouso.core.app import App
+from wouso.core.common import App, Item
 
 class Modifier(models.Model):
     """ Basic model for all the magic.
@@ -36,7 +36,7 @@ class Modifier(models.Model):
         return self.name.lower()
 
 
-class ArtifactGroup(models.Model):
+class ArtifactGroup(Item, models.Model):
     """ A group of artifacts for a Species. It cannot contain two artifacts of the same name."""
     name = models.CharField(max_length=100, unique=True)
 

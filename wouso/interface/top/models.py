@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from django.db import models
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
-from wouso.core.app import App
+from wouso.core.common import App
 from wouso.core.config.models import BoolSetting
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.games.challenge.models import ChallengeUser

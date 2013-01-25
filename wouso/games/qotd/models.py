@@ -122,12 +122,12 @@ class QotdGame(Game):
         """ Returns a list of formulas used by qotd """
         fs = []
         qotd_game = kls.get_instance()
-        fs.append(dict(id='qotd-ok',
+        fs.append(dict(name='qotd-ok',
             definition='points=4 + (1 if {hour} < 12 else -1)',
             owner=qotd_game.game,
             description='Points earned on a correct answer in the morning')
         )
-        fs.append(dict(id="qotd-ok-bonus",
+        fs.append(dict(name="qotd-ok-bonus",
             definition='points=2',
             owner=qotd_game.game,
             description='Points earned in case of bonus')
