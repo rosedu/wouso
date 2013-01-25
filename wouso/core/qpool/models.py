@@ -38,8 +38,8 @@ class Category(models.Model):
     """ One to many grouping for Question objects. Usually a game
     defines it's own category of questions in qpool.
     """
+    #TODO ScoringModel
     name = models.CharField(max_length=64)
-
     def __unicode__(self):
         return self.name
 

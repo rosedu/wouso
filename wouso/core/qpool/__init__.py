@@ -46,3 +46,15 @@ def get_questions_with_tag_for_day(tag, select):
             if q.day == select:
                 return q
         return None
+
+# Public API
+def register_category(category_name, game=None):
+    """
+     Register a new category so questions in this category can be added and filtered.
+    """
+    # TODO: use it everywhere
+    from . import models
+    try:
+        return models.Category.objects.get_or_create(name=category_name)[0]
+    except:
+        return None
