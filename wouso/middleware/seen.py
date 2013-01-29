@@ -3,6 +3,7 @@ from wouso.core import signals
 
 class Seen:
     def process_request(self, request):
+#        import pprint; pprint.pprint(request.META['HTTP_AUTHORIZATION']);pprint.pprint(request.POST);
         if not request.user.is_anonymous():
             try:
                 profile = request.user.get_profile()
