@@ -224,14 +224,14 @@ class Messages(BaseHandler):
         player = request.user.get_profile()
         msguser = player.get_extension(MessagingUser)
         if type == 'all':
-            qs = Message.objects.filter(Q(sender=msguser)|Q(receiver=msguser))[:self.LIMIT]
+            qs = Message.objects.filter(Q(sender=msguser)|Q(receiver=msguser)).exclude(archived=True)[:self.LIMIT]
         elif type == 'sent':
             qs = Message.objects.filter(sender=msguser)[:self.LIMIT]
         elif type == 'recv':
-            qs = Message.objects.filter(receiver=msguser)[:self.LIMIT]
+            qs = Message.objects.filter(receiver=msguser).exclude(archived=True)[:self.LIMIT]
         else:
             return []
-        return [{'date': m.timestamp, 'from':unicode(m.sender), 'to':unicode(m.receiver), 'text': m.text,
+        return [{'id': m.id, 'date': m.timestamp, 'from':unicode(m.sender), 'to':unicode(m.receiver), 'text': m.text,
                  'subject': m.subject, 'reply_to': m.reply_to.id if m.reply_to else None,
                  'read': m.read}    for m in qs]
 
@@ -267,6 +267,44 @@ class MessagesSender(BaseHandler):
         Message.send(sender, receiver, attrs['subject'], attrs['text'], reply_to=reply_to)
 
         return {'success': True}
+
+class MessagesAction(BaseHandler):
+    allowed_methods = ('POST', )
+
+    def do_action(self, msg):
+        raise NotImplemented
+
+    def create(self, request, id):
+        receiver = request.user.get_profile()
+        msg = Message.objects.filter(id=id, receiver=receiver)
+        if not msg.count():
+            return {'success': False, 'error': 'No such message'}
+
+        msg = msg.get()
+        self.do_action(msg)
+        return {'success': True}
+
+
+class MessagesSetread(MessagesAction):
+    def do_action(self, msg):
+        return msg.set_read()
+
+
+class MessagesSetunread(MessagesAction):
+    def do_action(self, msg):
+        return msg.set_unread()
+
+
+class MessagesArchive(MessagesAction):
+    def do_action(self, msg):
+        return msg.archive()
+
+
+class MessagesUnarchive(MessagesAction):
+    def do_action(self, msg):
+        return msg.unarchive()
+
+
 
 class CastHandler(BaseHandler):
     allowed_methods = ('POST',)

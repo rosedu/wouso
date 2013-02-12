@@ -41,6 +41,14 @@ class Message(models.Model):
         self.archived = False
         self.save()
 
+    def set_read(self):
+        self.read = True
+        self.save()
+
+    def set_unread(self):
+        self.read = False
+        self.save()
+
     def __unicode__(self):
         sender = _('System') if not self.sender else self.sender.__unicode__()
 

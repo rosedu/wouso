@@ -317,6 +317,15 @@ Messages API
      * subject
      * reply_to (id of the message to reply_to)
 
+.. http:post:: /api/messages/(action)/(msg_id)/
+
+    Apply an action on a message, if it is received by user. Available actions are:
+     * setread
+     * setunread
+     * archive
+     * unarchive
+
+
 Game API
 --------
 
