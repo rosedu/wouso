@@ -49,14 +49,14 @@ Notifications
 Player information
 ~~~~~~~~~~~~~~~~~~
 
-.. http:get:: /api/info/
+.. http:get:: /api/player/(player_id)/info/
 
     Returns information about current (authenticated) user.
 
     **Example request**:
      .. sourcecode:: http
 
-        GET /api/info/ HTTP/1.1
+        GET /api/player/1/info/ HTTP/1.1
         Host: wouso-next.rosedu.org
         Accept: application/json, text/javascript
         Authorization: OAuth oauth_version="1.0",oauth_nonce="a1df9b758e16eaebe8a2208d1e210bfb",oauth_timestamp="1312861474",oauth_consumer_key="xxxxxx",oauth_token="xxxxx",oauth_signature_method="PLAINTEXT",oauth_signature="xxxxxx"
@@ -69,6 +69,7 @@ Player information
         Content-Type: text/javascript
 
         {
+            username: "alex.eftimie",
             first_name: "Alex",
             last_name: "Eftimie",
             avatar:  "http://www.gravatar.com/avatar/d43fad239b039cebdb4206cdc692f314.jpg",
@@ -96,6 +97,10 @@ Player information
     :statuscode 200: no error
     :statuscode 401: not authorized
     :statuscode 404: current user doesn't have a profile
+
+.. http:get:: /api/player/info/
+
+    Returns information about current (authenticated) user. Same response as `/api/player/(player_id)/info/`.
 
 .. http:get:: /api/search/<query string>/
 
