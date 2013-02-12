@@ -119,7 +119,9 @@ class InfoHandler(BaseHandler):
         gold = player.coins['gold'] if 'gold' in player.coins.keys() else 0
         topuser = player.get_extension(TopUser)
 
-        return {'first_name': player.user.first_name,
+        return {'username': player.user.username,
+                'nickname': player.nickname,
+                'first_name': player.user.first_name,
                 'last_name': player.user.last_name,
                 'email': player.user.email,
                 'avatar': player_avatar(player),
