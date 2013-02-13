@@ -116,6 +116,7 @@ class Player(models.Model):
     """
     user = models.ForeignKey(User, unique=True, related_name="%(class)s_related")
 
+    full_name = models.CharField(max_length=200)
     # Unique differentiator for ladder
     # Do not modify it manually, use scoring.score instead
     points = models.FloatField(default=0, blank=True, null=True, editable=False)
@@ -261,6 +262,14 @@ class Player(models.Model):
         """
         cls.EXTENSIONS[attr] = ext_cls
 
+    @property
+    def race_name(self):
+        key = 'race-%d' % self.race_id
+        if key in cache:
+            return cache.get(key)
+        cache.set(key, self.race.name)
+        return self.race.name
+
     def save(self, **kwargs):
         """ Clear cache for extensions
         """
@@ -273,8 +282,7 @@ class Player(models.Model):
         return super(Player, self).__getitem__(item)
 
     def __unicode__(self):
-        ret = u"%s %s" % (self.user.first_name, self.user.last_name)
-        return ret if ret != u" " else self.user.__unicode__()
+        return self.full_name or self.user.__unicode__()
 
 
 # Hack for having user and user's profile always in sync
@@ -298,6 +306,9 @@ def user_post_save(sender, instance, **kwargs):
             profile.race = default_race
             profile.save()
         profile.nickname = profile.user.username
+        profile.save()
+    else:
+        profile.full_name = "%s %s" % (profile.user.first_name, profile.user.last_name)
         profile.save()
 
 models.signals.post_save.connect(user_post_save, User)

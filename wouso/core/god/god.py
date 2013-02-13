@@ -41,7 +41,12 @@ class DefaultGod:
         return fs
 
     def get_race_level(self, level_no, race):
-        group = ArtifactGroup.get(race.name if race else 'default')
+        if isinstance(race, unicode):
+            group = ArtifactGroup.get(race)
+        elif race:
+            group = ArtifactGroup.get(race.name)
+        else:
+            group = None
 
         name = 'level-%d' % level_no
         full_name = '%s-%s-%s' % (group.name if group else 'default', name, 100)
@@ -53,7 +58,7 @@ class DefaultGod:
         Return the artifact object for the given level_no.
         If there is a group for player series, use it.
         """
-        return self.get_race_level(level_no, player.race)
+        return self.get_race_level(level_no, player.race_name)
 
     def get_level_for_points(self, points, player=None):
         """ Implement points limits, for passing a level points must be in an interval.

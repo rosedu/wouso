@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from django.core.cache import cache
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext as _
@@ -101,6 +102,26 @@ class Activity(models.Model):
             arguments[k] = unicode(arguments[k])
         arguments = json.dumps(arguments)
         cls.objects.filter(game=game, user_from=user_from, user_to=user_to, message_string=message, arguments=arguments).delete()
+
+    @property
+    def player_from(self):
+        id = self.user_from_id
+        key = 'Player-%d' % id
+        if key in cache:
+            return cache.get(key)
+        player = Player.objects.get(id=id)
+        cache.set(key, player)
+        return player
+
+    @property
+    def player_to(self):
+        id = self.user_to_id
+        key = 'Player-%d' % id
+        if key in cache:
+            return cache.get(key)
+        player = Player.objects.get(id=id)
+        cache.set(key, player)
+        return player
 
     def __unicode__(self):
         return u"[%s] %s %s" % (self.game, self.user_from, self.user_to)
