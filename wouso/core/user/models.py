@@ -199,10 +199,15 @@ class Player(models.Model):
     def group(self):
         """ Return the core game group, if any
         """
+        key = 'PG-%d' % self.id
+        if key in cache:
+            return cache.get(key)
         try:
-            return self.playergroup_set.filter(owner=None).get()
+            group = self.playergroup_set.filter(owner=None).get()
         except (PlayerGroup.DoesNotExist, PlayerGroup.MultipleObjectsReturned):
-            return None
+            group = None
+        cache.set(key, group)
+        return group
 
     def set_group(self, group):
         """
@@ -212,6 +217,8 @@ class Player(models.Model):
             g.players.remove(self)
 
         group.players.add(self)
+        key = 'PG-%d' % self.id
+        cache.delete(key)
         return group
 
     def level_progress(self):
