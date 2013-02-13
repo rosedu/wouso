@@ -1,6 +1,7 @@
 import datetime
 from django.contrib.auth import models as auth
 from django.contrib.auth.decorators import  permission_required
+from django.core.cache import cache
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django import forms
 from django.http import  HttpResponseRedirect, HttpResponse
@@ -977,6 +978,16 @@ def impersonate(request, player_id):
     ImpersonateMiddleware.set_impersonation(request, player)
     return redirect('player_profile', kwargs={'id': player.id})
 
+
 def clean_impersonation(request):
     ImpersonateMiddleware.clear(request)
     return redirect('homepage')
+
+
+@permission_required('superuser')
+def clear_cache(request):
+    if request.method == 'POST':
+        cache.clear()
+        return redirect('dashboard')
+    else:
+        return render_to_response('cpanel/clear_cache.html', {}, context_instance=RequestContext(request))
