@@ -9,7 +9,7 @@ class Setting(models.Model):
 
     @classmethod
     def _cache_key(cls, name):
-        return 'Setting-' + name
+        return '%s-' % cls.__name__ + name
 
     def set_value(self, v):
         """ value setter, overridden by subclasses """
@@ -70,7 +70,7 @@ class BoolSetting(Setting):
         self.save()
 
     def get_value(self):
-        return (self.value == 'True')
+        return self.value == 'True'
 
     def form(self):
         return '<label for="%s">%s</label><input type="checkbox" name="%s" id="%s" %s value="True" />' \
