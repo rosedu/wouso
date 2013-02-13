@@ -3,16 +3,18 @@ from datetime import datetime
 from django.db import models
 from django.core.cache import cache
 from django.contrib.auth.models import User
-from wouso.core.common import Item
+from wouso.core.common import Item, CachedItem
 from wouso.core.game import get_games
 from wouso.core.game.models import Game
 
 
-class Coin(Item, models.Model):
+class Coin(CachedItem, models.Model):
     """ Different scoring categories.
 
     A special coin is 'points' since is used for ladder and levels.
     """
+    CACHE_PART = 'name'
+
     name = models.CharField(max_length=100, unique=True)
     # The coin owner module, or null if is a core coin
     owner = models.ForeignKey(Game, blank=True, null=True)

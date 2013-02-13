@@ -78,7 +78,7 @@ class App:
     management_task = None # Disable it by default
 
 
-class Item:
+class Item(object):
     """
      Interface for items that can and should be cached. Usually, they have a string id as the SQL key.
     """
@@ -114,7 +114,7 @@ class Item:
         return u'%s' % self.id
 
 
-class CachedItem(object):
+class CachedItem(Item):
     """
     Interface for standard cached objects
     """
@@ -132,12 +132,16 @@ class CachedItem(object):
 
     @classmethod
     def _get_fresh(cls, part):
-        return cls.objects.get(**{cls.CACHE_PART: part})
+        try:
+            return cls.objects.get(**{cls.CACHE_PART: part})
+        except cls.DoesNotExist:
+            return None
 
     def save(self, **kwargs):
         r = super(CachedItem, self).save(**kwargs)
-        key = self._get_cache_key(self._cache_key_part())
-        cache.set(key, self)
+        if self.id:
+            key = self._get_cache_key(self._cache_key_part())
+            cache.delete(key)
         return r
 
     def delete(self):
@@ -147,9 +151,12 @@ class CachedItem(object):
 
     @classmethod
     def get(cls, part):
+        if isinstance(part, cls):
+            return part
         key = cls._cache_key(part)
         if key in cache:
             return cache.get(key)
         obj = cls._get_fresh(part)
-        cache.set(key, obj)
+        if obj is not None:
+            cache.set(key, obj)
         return obj

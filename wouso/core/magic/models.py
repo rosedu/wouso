@@ -36,7 +36,7 @@ class Modifier(models.Model):
         return self.name.lower()
 
 
-class ArtifactGroup(Item, CachedItem, models.Model):
+class ArtifactGroup(CachedItem, models.Model):
     """ A group of artifacts for a Species. It cannot contain two artifacts of the same name."""
     CACHE_PART = 'name'
 

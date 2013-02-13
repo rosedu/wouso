@@ -6,6 +6,7 @@ from wouso.core import scoring
 
 class SecurityRulesTest(WousoTest):
     def setUp(self):
+        super(SecurityRulesTest, self).setUp()
         self.user = User.objects.create(username='_test')
         self.user.save()
         self.chall_user = self.user.get_profile().get_extension(ChallengeUser)
@@ -13,7 +14,6 @@ class SecurityRulesTest(WousoTest):
         self.user2.save()
         self.chall_user2 = self.user2.get_profile().get_extension(ChallengeUser)
         scoring.setup_scoring()
-        super(SecurityRulesTest, self).setUp()
 
     def test_rule_challenge_was_set_up(self):
         #run a challenge
