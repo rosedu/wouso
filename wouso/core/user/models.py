@@ -4,6 +4,7 @@ from django.core.cache import cache
 from django.db import models
 from django.db.models import Sum
 from django.contrib.auth.models import User, Group
+from wouso.core.common import CachedItem
 from wouso.core.game.models import Game
 from wouso.core.magic.manager import MagicManager
 from wouso.core.god import God
@@ -87,6 +88,28 @@ class PlayerGroup(models.Model):
 
     def __unicode__(self):
         return self.name if self.title == '' else self.title
+
+class PlayerExtensionManager(object):
+    """
+    Manage extensions in a cached way
+    """
+    def __init__(self, player):
+        self.player = player
+
+    def get_extension(self, cls):
+        key = 'PEM-%d-%s' % (self.player.id or 0, cls.__name__)
+        if key in cache:
+            return cache.get(key)
+        ext = self.player._get_extension(cls)
+        cache.set(key, ext)
+        return ext
+
+    def update(self, obj):
+        key = 'PEM-%d-%s' % (self.player.id or 0, obj.__class__.__name__)
+        cache.delete(key) # cache.set does not work
+        return obj
+
+
 
 class Player(models.Model):
     """ Base class for the game user. This is extended by game specific
@@ -203,20 +226,19 @@ class Player(models.Model):
         scoring.score(userto, None, 'steal-points', external_id=self.id, points=amount)
 
     # special:
-    @classmethod
-    def _cache_key(cls, ext_cls, id):
-        return "PlayerExt-" + ext_cls.__name__ + '-' + str(id)
-
     def get_extension(self, cls):
+        return PlayerExtensionManager(self).get_extension(cls)
+
+    def _get_extension(self, cls):
         """ Search for an extension of this object, with the type cls
         Create instance if there isn't any.
 
         Using an workaround, while: http://code.djangoproject.com/ticket/7623 gets fixed.
         Also see: http://code.djangoproject.com/ticket/11618
         """
-        cache_key = Player._cache_key(cls, self.id)
-        if cache_key in cache:
-            return cache.get(cache_key)
+        if self.__class__ is cls:
+            return self
+
         try:
             extension = cls.objects.get(user=self.user)
         except cls.DoesNotExist:
@@ -224,8 +246,6 @@ class Player(models.Model):
             for f in self._meta.local_fields:
                 setattr(extension, f.name, getattr(self, f.name))
             extension.save()
-
-        cache.set(cache_key, extension)
         return extension
 
     @classmethod
@@ -236,9 +256,9 @@ class Player(models.Model):
         cls.EXTENSIONS[attr] = ext_cls
 
     def save(self, **kwargs):
-        cache_key = Player._cache_key(self.__class__, self.id)
-        if cache_key in cache:
-            cache.delete(cache_key)
+        """ Clear cache for extensions
+        """
+        PlayerExtensionManager(self).update(self)
         return super(Player, self).save(**kwargs)
 
     def __getitem__(self, item):

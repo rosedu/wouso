@@ -42,7 +42,7 @@ class DefaultGod:
 
     def get_race_level(self, level_no, race):
         try:
-            group = ArtifactGroup.get(name=race.name)
+            group = ArtifactGroup.get(race.name)
         except (ArtifactGroup.DoesNotExist, AttributeError):
             group = None
 

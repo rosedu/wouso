@@ -1,4 +1,4 @@
-from django.db import models
+from django.core.cache import cache
 import sys
 
 class App:
@@ -97,6 +97,7 @@ class Item:
 
     @classmethod
     def get(cls, id):
+        # TODO: deprecate, poor design
         if isinstance(id, cls):
             return id
         if isinstance(id, dict):
@@ -111,3 +112,44 @@ class Item:
 
     def __str__(self):
         return u'%s' % self.id
+
+
+class CachedItem(object):
+    """
+    Interface for standard cached objects
+    """
+    CACHE_PART = 'id'
+
+    @classmethod
+    def _cache_key(cls, part):
+        return cls.__name__ + str(part)
+
+    def _get_cache_key(self, part):
+        return self.__class__._cache_key(part)
+
+    def _cache_key_part(self):
+        return getattr(self, self.CACHE_PART)
+
+    @classmethod
+    def _get_fresh(cls, part):
+        return cls.objects.get(**{cls.CACHE_PART: part})
+
+    def save(self, **kwargs):
+        r = super(CachedItem, self).save(**kwargs)
+        key = self._get_cache_key(self._cache_key_part())
+        cache.set(key, self)
+        return r
+
+    def delete(self):
+        key = self._get_cache_key(self._cache_key_part())
+        cache.delete(key)
+        return super(CachedItem, self).delete()
+
+    @classmethod
+    def get(cls, part):
+        key = cls._cache_key(part)
+        if key in cache:
+            return cache.get(key)
+        obj = cls._get_fresh(part)
+        cache.set(key, obj)
+        return obj

@@ -37,6 +37,7 @@ class QuestTestCase(TestCase):
         self.assertEqual(quest.count, 1)
 
         self.quest_user.current_quest = quest
+        #self.quest_user.current_level = 0
 
         quest.check_answer(self.quest_user, 'Test_a2')
 
