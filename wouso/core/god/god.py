@@ -41,19 +41,12 @@ class DefaultGod:
         return fs
 
     def get_race_level(self, level_no, race):
-        try:
-            group = ArtifactGroup.get(race.name)
-        except (ArtifactGroup.DoesNotExist, AttributeError):
-            group = None
+        group = ArtifactGroup.get(race.name if race else 'default')
 
         name = 'level-%d' % level_no
-        try:
-            return Artifact.objects.get(name=name, group=group)
-        except Artifact.DoesNotExist:
-            try:
-                return Artifact.objects.get(name=name, group=None)
-            except Artifact.DoesNotExist:
-                return NoArtifactLevel(level_no)
+        full_name = '%s-%s-%s' % (group.name if group else 'default', name, 100)
+        full_fallback = '%s-%s-%s' % ('default', name, 100)
+        return Artifact.get(full_name) or Artifact.get(full_fallback) or NoArtifactLevel(level_no)
 
     def get_user_level(self, level_no, player):
         """

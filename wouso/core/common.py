@@ -157,6 +157,5 @@ class CachedItem(Item):
         if key in cache:
             return cache.get(key)
         obj = cls._get_fresh(part)
-        if obj is not None:
-            cache.set(key, obj)
+        cache.set(key, obj)
         return obj

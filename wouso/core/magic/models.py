@@ -45,19 +45,25 @@ class ArtifactGroup(CachedItem, models.Model):
     def __unicode__(self):
         return self.name
 
-class Artifact(Modifier):
+class Artifact(CachedItem, Modifier):
     """ The generic artifact model. This should contain the name (identifier) and group,
     but also personalization such as: image (icon) and title
     """
+    CACHE_PART = 'full_name'
     class Meta:
         unique_together = ('name', 'group', 'percents')
 
     group = models.ForeignKey(ArtifactGroup, null=True, blank=True, default=None)
+    full_name = models.CharField(max_length=200, editable=False)
 
     def __unicode__(self):
         if self.title:
             return u"%s" % self.title
         return u"%s %s" % (self.name, "[%s]" % self.group.name if self.group else '(none)')
+
+    def save(self, **kwargs):
+        self.full_name = "%s-%s-%s" % (self.name, self.group.name.lower() if self.group else 'default', self.percents)
+        return super(Artifact, self).save(**kwargs)
 
 
 class NoArtifactLevel(object):
