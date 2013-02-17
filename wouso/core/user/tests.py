@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 from wouso.core.magic.models import Artifact
+from wouso.core.tests import WousoTest
+from wouso.core.user.models import Race, PlayerGroup
 
 class PlayerTestCase(TestCase):
     def testModifierPercents(self):
@@ -48,3 +50,20 @@ class PlayerTestCase(TestCase):
         for i in range(0,5):
             self.assertEqual(players[i], v[i+2])
 
+
+class PlayerCacheTest(WousoTest):
+    def test_race_name(self):
+        p = self._get_player()
+        r = Race.objects.create(name='rasa')
+        self.assertEqual(p.race_name, '')
+        p.race = r
+        p.save()
+        self.assertEqual(p.race_name, r.name)
+
+    def test_group(self):
+        p = self._get_player()
+        g = PlayerGroup.objects.create(name='group')
+
+        self.assertEqual(p.group, None)
+        p.set_group(g)
+        self.assertEqual(p.group, g)

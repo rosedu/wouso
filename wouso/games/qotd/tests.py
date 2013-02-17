@@ -3,13 +3,15 @@ import logging
 import django.test
 from django.contrib.auth.models import User
 from models import *
+from wouso.core.tests import WousoTest
 from wouso.core.user.models import Player
 from wouso.core import scoring
 from wouso.core.qpool.models import Question, Schedule, Tag, Category
 
 
-class QotdTestCase(django.test.TestCase):
+class QotdTestCase(WousoTest):
     def setUp(self):
+        super(QotdTestCase, self).setUp()
         self.user, new = User.objects.get_or_create(username='_test')
         self.user.save()
         profile = self.user.get_profile()
@@ -80,9 +82,9 @@ def _make_question_for_today(user, text):
     sched.save()
     return question
 
-class PageTests(django.test.TestCase):
-
+class PageTests(WousoTest):
     def setUp(self):
+        super(PageTests, self).setUp()
         self.user = User.objects.create(username='_test')
         self.user.set_password('_test_pw')
         self.user.save()
@@ -101,12 +103,13 @@ class PageTests(django.test.TestCase):
         self.assertContains(response, 'No question for today.', 0)
         self.assertContains(response, 'what is the question?')
 
-class ApiTest(django.test.TestCase):
+class ApiTest(WousoTest):
 
     def setUp(self):
         self.user = User.objects.create(username='_test')
         self.user.set_password('pw')
         self.user.save()
+        super(ApiTest, self).setUp()
 
     def test_answer_qotd(self):
         q = _make_question_for_today(user=self.user, text="api question")

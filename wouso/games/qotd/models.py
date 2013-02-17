@@ -28,7 +28,7 @@ class QotdUser(Player):
         return True
 
     def set_question(self, question):
-        if not self.has_question:
+        if question and not self.has_question:
             self.my_question = question
             self.save()
 

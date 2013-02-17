@@ -22,6 +22,11 @@ class StaticPage(models.Model):
         except NoReverseMatch:
             return ''
 
+    @classmethod
+    def get_links(cls):
+        result = [sp.html_link() for sp in cls.objects.filter(hidden=False).order_by('position')]
+        return result
+
 
 class NewsItem(models.Model):
     title = models.CharField(max_length=100)

@@ -1,8 +1,8 @@
-from md5 import md5
 from django import template
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
+from wouso.core.decorators import cached_method
 from wouso.core.user.models import Player
 from wouso.core.scoring.models import Coin
 from wouso.core.magic.templatetags.artifacts import artifact
@@ -20,7 +20,7 @@ def player(user):
     link = reverse('wouso.interface.profile.views.user_profile', args=(user.id,))
 
     artif_html = artifact(user.level)
-    rel_data = u"%s,%s,%s,%s,%s,%s,1" % (user.nickname, user.user.first_name, user.points, player_avatar(user), user.level_no, user.id)
+    rel_data = u"%s,%s,%s,%s,%s,%s,1" % (user.nickname, user.full_name, user.points, player_avatar(user), user.level_no, user.id)
     return u'<a href="%s" class="cplayer" rel="%s">%s%s</a>' % (link, rel_data, artif_html, user)
 
 @register.simple_tag
@@ -30,7 +30,7 @@ def player_simple(user):
         return ''
 
     link = reverse('wouso.interface.profile.views.user_profile', args=(user.id,))
-    rel_data_simple = u"%s,%s,%s,%s,%s,%s,1" % (user.nickname, user.user.first_name, user.points, player_avatar(user), user.level_no, user.id)
+    rel_data_simple = u"%s,%s,%s,%s,%s,%s,1" % (user.nickname, user.full_name, user.points, player_avatar(user), user.level_no, user.id)
 
     if hasattr(user, 'level'):
         return u'<a href="%s" rel="%s" class="cplayer">%s</a>' % (link, rel_data_simple, user)
@@ -66,15 +66,12 @@ def player_race(race):
 
     return u'<a href="%s%s" title="%s">%s</a>' % (link, race, race.name, race)
 
+
 @register.simple_tag
 def player_avatar(player_obj):
     """ Return avatar's URL using the gravatar service """
-    if not player_obj:
-        return ''
+    return player_obj.avatar if player_obj else ''
 
-    avatar = "http://www.gravatar.com/avatar/%s.jpg?d=%s" % (md5(player_obj.user.email).hexdigest(), settings.AVATAR_DEFAULT)
-
-    return avatar
 
 @register.simple_tag
 def coin_amount(amount, coin=None):

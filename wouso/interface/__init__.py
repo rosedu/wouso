@@ -13,7 +13,8 @@ def render_string(template, data=None):
 def get_static_pages():
     """ Return a list of static pages ordered by position, for rendering in footer """
     from wouso.interface.apps.pages.models import StaticPage
-    return StaticPage.objects.filter(hidden=False).order_by('position')
+
+    return StaticPage.get_links()
 
 def mobile_browser(request):
     if request.META.has_key("HTTP_USER_AGENT"):
@@ -30,14 +31,6 @@ def detect_mobile(request):
         return request.session['mobile'] == '1'
     return mobile_browser(request)
 
-def get_apps():
-    """ Returns a list of apps defined inside the wouso.interface module.
-    """
-    from wouso.core.magic.models import Bazaar
-    from wouso.interface.top.models import Top
-    from wouso.interface.activity.achievements import Achievements
-
-    return [Top, Bazaar, Achievements]
 
 _theme = None
 def get_theme():

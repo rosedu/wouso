@@ -34,9 +34,9 @@ class QuestUser(Player):
         Check if we started the current quest.
         """
         quest = QuestGame.get_current()
-        if (not quest) or (not self.current_quest):
+        if (not quest) or (not self.current_quest_id):
             return False
-        return self.current_quest.id == quest.id
+        return self.current_quest_id == quest.id
 
     @property
     def current_question(self):
@@ -270,14 +270,15 @@ class QuestGame(Game):
     @classmethod
     def get_current(cls):
         try:
-            return FinalQuest.objects.get(start__lte=datetime.datetime.now(),
+            quest =  FinalQuest.objects.get(start__lte=datetime.datetime.now(),
                 end__gte=datetime.datetime.now())
         except:
             try:
-                return Quest.objects.get(start__lte=datetime.datetime.now(),
+                quest = Quest.objects.get(start__lte=datetime.datetime.now(),
                                 end__gte=datetime.datetime.now())
             except:
-                return None
+                quest = None
+        return quest
 
     @classmethod
     def get_formulas(kls):

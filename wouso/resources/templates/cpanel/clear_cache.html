@@ -1,0 +1,12 @@
+{% extends 'cpanel/index.html' %}
+
+{% block sectiontitle %}Clear cache{% endblock %}
+
+{% block sectioncontent %}
+<p>Use this option to clear all the cache.</p>
+
+<form method="post" action="">
+    {% csrf_token %}
+    <button type="submit">Clear cache</button>
+</form>
+{% endblock %}

@@ -2,16 +2,19 @@ import logging
 from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
-from wouso.core.common import Item
+from wouso.core.common import Item, CachedItem
+from wouso.core.decorators import cached_method, drop_cache
 from wouso.core.game import get_games
 from wouso.core.game.models import Game
 
 
-class Coin(Item, models.Model):
+class Coin(CachedItem, models.Model):
     """ Different scoring categories.
 
     A special coin is 'points' since is used for ladder and levels.
     """
+    CACHE_PART = 'name'
+
     name = models.CharField(max_length=100, unique=True)
     # The coin owner module, or null if is a core coin
     owner = models.ForeignKey(Game, blank=True, null=True)
@@ -71,8 +74,25 @@ class History(models.Model):
     # group same kind of bonuses together, using the same formula
     tag = models.CharField(max_length=64, blank=True, null=True)
 
+    @classmethod
+    def add(cls, user=None, game=None, **kwargs):
+        ret = History.objects.create(user=user, game=game, **kwargs)
+
+        drop_cache(cls._user_points, user=user)
+        drop_cache(cls._user_coins, user=user)
+        return ret
+
+    @classmethod
+    def user_coins(cls, user):
+        return cls._user_coins(user=user)
+
+    @classmethod
+    def user_points(cls, user):
+        return cls._user_points(user=user)
+
     @staticmethod
-    def user_coins(user):
+    @cached_method
+    def _user_coins(user):
         """ Returns a dictionary of coins and amounts for a specific user. """
         allcoins = Coin.objects.all()
         coins = {}
@@ -86,37 +106,37 @@ class History(models.Model):
         return coins
 
     @staticmethod
-    def user_points(user):
+    @cached_method
+    def _user_points(user):
         """ :return: a list of (game, points) - distribution of points per source """
-        # TODO: use user_points_from_game, but exclude empty coins
         points = {}
         for game in get_games() + [None]:
-            pp = {}
-            hs = History.objects.filter(user=user, game=game.get_instance() if game else game)
-            for h in hs:
-                if h.coin in pp.keys():
-                    pp[h.coin] += h.amount
-                else:
-                    pp[h.coin] = h.amount
+            pp = History.user_points_from_game(user=user, game=game, zeros=False)
             if pp:
                 if game:
                     points[game.get_instance().verbose_name] = pp
                 else:
                     points['wouso'] = pp
-
         return points
 
     @staticmethod
-    def user_points_from_game(user, game):
+    def user_points_from_game(user, game, zeros=True):
         # FIXME: add test
         game = game.get_instance() if game else game
         hs = History.objects.filter(user=user, game=game)
         pp = {}
-        for c in Coin.objects.all():
-            pp[c.name] = 0
+        if zeros:
+            for c in Coin.objects.all():
+                pp[c.name] = 0
         for h in hs:
             pp[h.coin.name] = pp.get(h.coin.name, 0) + h.amount
         return pp
+
+    def delete(self, using=None):
+        cls = self.__class__
+        drop_cache(cls._user_points, self.user)
+        drop_cache(cls._user_coins, self.user)
+        super(History, self).delete(using=using)
 
     def __unicode__(self):
         return "{user} {date}-{formula}[{ext}]: {amount}{coin}".format(user=self.user, date=self.timestamp, formula=self.formula, ext=self.external_id, amount=self.amount, coin=self.coin)

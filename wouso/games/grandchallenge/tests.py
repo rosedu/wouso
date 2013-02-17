@@ -9,11 +9,13 @@ class GrandChallengeTest(WousoTest):
     def setUp(self):
         Challenge.LIMIT = 0
         Challenge.WARRANTY = False
+        super(GrandChallengeTest, self).setUp()
 
     def test_start_gc(self):
         u1 = self._get_player(1)
         u2 = self._get_player(2)
 
+        GrandChallengeGame.reset()
         self.assertFalse(GrandChallengeGame.is_started())
         GrandChallengeGame.start()
         self.assertTrue(GrandChallengeGame.is_started())
@@ -63,6 +65,7 @@ class GCUserTest(WousoTest):
     def setUp(self):
         Challenge.LIMIT = 0
         Challenge.WARRANTY = False
+        super(GCUserTest, self).setUp()
 
     def test_get_challenges_active_and_played(self):
         u1 = self._get_player(1)

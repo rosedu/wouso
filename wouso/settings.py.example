@@ -240,11 +240,19 @@ else:
         INSTALLED_APPS.append('debug_toolbar')
         INTERNAL_IPS = ('127.0.0.1',)
 
-    
+
 # the probability of getting bonus points for correctly answered qotd
 # must be a number between 0 and 100
 QOTD_BONUS_PROB = 30
 
+
+# To setup a cache, put this in localsettings:
+# CACHES = {
+#    'default': {
+#        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+#        'LOCATION': 'unique-snowflake'
+#    }
+# }
 
 # PLEASE LEAVE THIS ON THE LAST LINES OF THIS FILE
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):

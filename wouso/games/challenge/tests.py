@@ -3,9 +3,9 @@ import unittest
 from datetime import datetime,timedelta
 from mock import patch
 
-from django.test import TestCase
 from django.contrib.auth.models import User
 from wouso.core.qpool.models import Question, Answer, Category
+from wouso.core.tests import WousoTest
 from wouso.games.challenge.models import ChallengeUser, Challenge, ChallengeGame
 from wouso.core.user.models import Player
 from wouso.core import scoring
@@ -13,8 +13,9 @@ from wouso.core.scoring.models import Formula
 
 Challenge.LIMIT = 5
 
-class ChallengeTestCase(TestCase):
+class ChallengeTestCase(WousoTest):
     def setUp(self):
+        super(ChallengeTestCase, self).setUp()
         self.user = User.objects.create(username='_test')
         self.user.save()
         self.chall_user = self.user.get_profile().get_extension(ChallengeUser)
@@ -22,6 +23,7 @@ class ChallengeTestCase(TestCase):
         self.user2.save()
         self.chall_user2 = self.user2.get_profile().get_extension(ChallengeUser)
         scoring.setup_scoring()
+        ChallengeGame.get_instance().save()
 
     def tearDown(self):
         self.user.delete()
@@ -51,6 +53,7 @@ class ChallengeTestCase(TestCase):
         user.delete()
 
     def testLaunch(self):
+        Challenge.WARRANTY = False
         chall = Challenge.create(user_from=self.chall_user, user_to=self.chall_user2, ignore_questions=True)
 
         self.assertTrue(isinstance(chall, Challenge))
@@ -142,8 +145,9 @@ class ChallengeTestCase(TestCase):
 
         self.assertEqual(scoring.timer(self.chall_user, ChallengeGame, 'chall-timer', level=self.chall_user.level_no), self.chall_user.level_no)
 
-class ChallengeApi(TestCase):
+class ChallengeApi(WousoTest):
     def setUp(self):
+        super(ChallengeApi, self).setUp()
         Challenge.LIMIT = 5
         self.user = User.objects.create_user('_test', '', password='test')
         self.client.login(username='_test', password='test')
@@ -151,6 +155,7 @@ class ChallengeApi(TestCase):
         self.user2 = User.objects.create_user('_test2', '', password='test')
         self.challuser = self.user.get_profile().get_extension(ChallengeUser)
         self.challuser2 = self.user2.get_profile().get_extension(ChallengeUser)
+        ChallengeGame.get_instance().save()
 
     def test_list_active(self):
         response = self.client.get('/api/challenge/list/')
@@ -220,7 +225,7 @@ class ChallengeApi(TestCase):
         self.assertEqual(data['result']['points'], Challenge.LIMIT * 100)
 
 
-class TestCalculatePoints(TestCase):
+class TestCalculatePoints(WousoTest):
     def get_question(self, correct_answers, wrong_answers):
         """ Create a question object with specific answers, first correct, then wrong
         """

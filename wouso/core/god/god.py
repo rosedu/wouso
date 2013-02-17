@@ -41,26 +41,24 @@ class DefaultGod:
         return fs
 
     def get_race_level(self, level_no, race):
-        try:
-            group = ArtifactGroup.objects.get(name=race.name)
-        except (ArtifactGroup.DoesNotExist, AttributeError):
+        if isinstance(race, unicode):
+            group = ArtifactGroup.get(race)
+        elif race:
+            group = ArtifactGroup.get(race.name)
+        else:
             group = None
 
         name = 'level-%d' % level_no
-        try:
-            return Artifact.objects.get(name=name, group=group)
-        except Artifact.DoesNotExist:
-            try:
-                return Artifact.objects.get(name=name, group=None)
-            except Artifact.DoesNotExist:
-                return NoArtifactLevel(level_no)
+        full_name = '%s-%s-%s' % (group.name if group else 'default', name, 100)
+        full_fallback = '%s-%s-%s' % ('default', name, 100)
+        return Artifact.get(full_name) or Artifact.get(full_fallback) or NoArtifactLevel(level_no)
 
     def get_user_level(self, level_no, player):
         """
         Return the artifact object for the given level_no.
         If there is a group for player series, use it.
         """
-        return self.get_race_level(level_no, player.race)
+        return self.get_race_level(level_no, player.race_name)
 
     def get_level_for_points(self, points, player=None):
         """ Implement points limits, for passing a level points must be in an interval.
@@ -115,7 +113,7 @@ class DefaultGod:
         for g in get_games():
             ms.extend(g.get_modifiers())
 
-        from wouso.interface import get_apps
+        from wouso.interface.apps import get_apps
         for a in get_apps():
             ms.extend(a.get_modifiers())
 
