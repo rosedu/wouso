@@ -1,5 +1,6 @@
 from django.db.models import Sum
 from django.template import RequestContext
+import logging
 import sys
 from datetime import datetime, timedelta
 from django.db import models
@@ -36,6 +37,8 @@ class GroupHistory(ObjectHistory):
         return [(tot - i, h.position) for (i,h) in enumerate(hs)]
 
 class TopUser(ObjectHistory, Player):
+    _history = None
+
     @property
     def progress(self):
         """ Return position difference between last two recorded positions. """
@@ -48,15 +51,15 @@ class TopUser(ObjectHistory, Player):
 
     @property
     def played_challenges(self):
-        return self.user.get_profile().get_extension(ChallengeUser).get_all_challenges().count()
+        return self.get_extension(ChallengeUser).get_all_challenges().count()
 
     @property
     def won_challenges(self):
-        return self.user.get_profile().get_extension(ChallengeUser).get_won_challenges().count()
+        return self.get_extension(ChallengeUser).get_won_challenges().count()
 
     @property
     def lost_challenges(self):
-        return self.user.get_profile().get_extension(ChallengeUser).get_lost_challenges().count()
+        return self.get_extension(ChallengeUser).get_lost_challenges().count()
 
     @property
     def won_perc_challenges(self):
@@ -67,26 +70,44 @@ class TopUser(ObjectHistory, Player):
 
     @property
     def weeklyprogress(self):
+        hs = self.history()
         try:
-            yesterday     = History.objects.filter(user=self).order_by('-date')[0]
-            day1weekprior = History.objects.filter(user=self).order_by('-date')[7]
+            yesterday     = hs[0]
+            day1weekprior = hs[-1]
         except Exception as e:
+            logging.exception(e)
             return 0
         return -(yesterday.position - day1weekprior.position)
 
     @property
     def position(self):
-        return History.get_user_position(self)
+        try:
+            return self.history()[0].position
+        except IndexError:
+            return 0
+
+    def history(self):
+        """
+         History queryset, attempt to reuse it
+        """
+        if self._history is not None:
+            return self._history
+
+        self._history = list(History.objects.filter(user=self, relative_to=None).order_by('-date')[:7])
+        return self._history
 
     def week_evolution(self, relative_to=None):
         """ :return: list of pairs (index, position) for the last week """
-        hs = History.objects.filter(user=self, relative_to=relative_to).order_by('-date')[:7]
+        if relative_to is None:
+            hs = self.history()
+        else:
+            hs = self.history().filter(relative_to=relative_to).order_by('-date')[:7]
         tot = len(hs)
         return [(tot - i, h.position) for (i,h) in enumerate(hs)]
 
     def week_points_evolution(self):
         """ :return: list of pairs (index, points) for the last week """
-        hs = History.objects.filter(user=self, relative_to=None).order_by('-date')[:7]
+        hs = self.history()
         tot = len(hs)
         return [(tot - i, h.points) for (i,h) in enumerate(hs)]
 
