@@ -126,7 +126,7 @@ class ScoringHistoryTest(WousoTest):
 
         scoring.score_simple(player, 'points', 10)
 
-        up = History.user_points(player.user)
+        up = History.user_points(user=player.user)
         self.assertTrue(up.has_key('wouso'))
         self.assertTrue(up['wouso'].has_key(coin.name))
         self.assertEqual(up['wouso'][coin.name], 10)

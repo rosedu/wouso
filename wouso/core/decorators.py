@@ -1,5 +1,8 @@
+from django.core.cache import cache
 from django.contrib.auth.decorators import user_passes_test
 from django.http import Http404
+import inspect
+import logging
 
 def staff_required(function=None, login_url=None):
     """
@@ -32,3 +35,32 @@ def api_enabled_required(function=None):
         return _dec
     else:
         return _dec(function)
+
+
+def _get_cache_key(function, **kwargs):
+    params = inspect.getargspec(function)[0]
+    cache_key = 'F-%s-' % function.__name__
+    for param_name in params:
+        value = kwargs.get(param_name, None)
+        cache_key += '%s-%s' % (param_name, value)
+    return cache_key
+
+
+def cached_method(function=None):
+    def _dec(function):
+        def _cached(**kwargs):
+            cache_key = _get_cache_key(function, **kwargs)
+            if cache_key in cache:
+                return cache.get(cache_key)
+            return function(**kwargs)
+        return _cached
+
+    if function:
+        return _dec(function)
+    return _dec
+
+
+def drop_cache(function, **kwargs):
+    cache_key = _get_cache_key(function, **kwargs)
+    if cache_key in cache:
+        cache.delete(cache_key)

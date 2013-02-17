@@ -111,7 +111,7 @@ class Item(object):
                 return None
 
     def __str__(self):
-        return u'%s' % self.id if hasattr(self, 'id') else self.name
+        return u'%s' % self.id
 
 
 class CachedItem(Item):

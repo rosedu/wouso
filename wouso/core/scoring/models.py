@@ -1,9 +1,9 @@
 import logging
 from datetime import datetime
 from django.db import models
-from django.core.cache import cache
 from django.contrib.auth.models import User
 from wouso.core.common import Item, CachedItem
+from wouso.core.decorators import cached_method, drop_cache
 from wouso.core.game import get_games
 from wouso.core.game.models import Game
 
@@ -75,24 +75,25 @@ class History(models.Model):
     tag = models.CharField(max_length=64, blank=True, null=True)
 
     @classmethod
-    def _cache_key(cls, user, game=None, default=False):
-        if default:
-            return 'ScoringH-' + str(user.id)
-        return 'ScoringHG-' + (game.name if game else '') + '-' + str(user.id)
-
-    @classmethod
     def add(cls, user=None, game=None, **kwargs):
         ret = History.objects.create(user=user, game=game, **kwargs)
-        cache.delete(cls._cache_key(user, default=True))
-        cache.delete(cls._cache_key(user, game=game))
+
+        drop_cache(cls._user_points, user=user)
+        drop_cache(cls._user_coins, user=user)
         return ret
 
+    @classmethod
+    def user_coins(cls, user):
+        return cls._user_coins(user=user)
+
+    @classmethod
+    def user_points(cls, user):
+        return cls._user_points(user=user)
+
     @staticmethod
-    def user_coins(user):
+    @cached_method
+    def _user_coins(user):
         """ Returns a dictionary of coins and amounts for a specific user. """
-        cache_key = History._cache_key(user, default=True)
-        if cache_key in cache:
-            return cache.get(cache_key)
         allcoins = Coin.objects.all()
         coins = {}
         for coin in allcoins:
@@ -102,15 +103,15 @@ class History(models.Model):
             else:
                 if coin.is_core():
                     coins[coin.name] = 0
-        cache.set(cache_key, coins)
         return coins
 
     @staticmethod
-    def user_points(user):
+    @cached_method
+    def _user_points(user):
         """ :return: a list of (game, points) - distribution of points per source """
         points = {}
         for game in get_games() + [None]:
-            pp = History.user_points_from_game(user, game, zeros=False)
+            pp = History.user_points_from_game(user=user, game=game, zeros=False)
             if pp:
                 if game:
                     points[game.get_instance().verbose_name] = pp
@@ -122,9 +123,6 @@ class History(models.Model):
     def user_points_from_game(user, game, zeros=True):
         # FIXME: add test
         game = game.get_instance() if game else game
-        cache_key = History._cache_key(user, game=game)
-        if cache_key in cache:
-            return cache.get(cache_key)
         hs = History.objects.filter(user=user, game=game)
         pp = {}
         if zeros:
@@ -132,13 +130,12 @@ class History(models.Model):
                 pp[c.name] = 0
         for h in hs:
             pp[h.coin.name] = pp.get(h.coin.name, 0) + h.amount
-        cache.set(cache_key, pp)
         return pp
 
     def delete(self, using=None):
         cls = self.__class__
-        cache.delete(cls._cache_key(self.user, default=True))
-        cache.delete(cls._cache_key(self.user, game=self.game))
+        drop_cache(cls._user_points, user=self.user)
+        drop_cache(cls._user_coins, user=self.user)
         super(History, self).delete(using=using)
 
     def __unicode__(self):
