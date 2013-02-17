@@ -71,17 +71,25 @@ class SpecialQuestTask(models.Model):
             today = date.today()
         return self.end_date < today
 
+    @classmethod
+    def active(cls):
+        today = date.today()
+        return cls.objects.filter(end_date__lte=today)
+
     @property
     def completed_teams(self):
         return GroupCompletion.objects.filter(task=self).order_by('-date')
 
     def __unicode__(self):
-            return unicode(self.name)
+        return unicode(self.name)
+
 
 class SpecialQuestUser(Player):
     group = models.ForeignKey('SpecialQuestGroup', blank=True, default=None, null=True)
     done_tasks = models.ManyToManyField(SpecialQuestTask, blank=True, default=None, null=True,
                                         related_name="%(app_label)s_%(class)s_done")
+
+    _active_tasks = None
 
     @property
     def active(self):
@@ -94,8 +102,18 @@ class SpecialQuestUser(Player):
             return None
         return gs[0]
 
+    @property
+    def active_tasks(self):
+        if self._active_tasks is not None:
+            return self._active_tasks
+        tasks = SpecialQuestTask.active()
+        today = date.today()
+        self._active_tasks = [t for t in tasks if t not in self.done_tasks.all() and t.start_date <= today <= t.end_date]
+        return self._active_tasks
+
     def invitations(self):
         return self.invitation_set.all()
+
 
 class SpecialQuestGame(Game):
     """ Each game must extend Game """

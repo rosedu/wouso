@@ -180,6 +180,9 @@ class Player(models.Model):
     def magic(self):
         return MagicManager(self)
 
+    @property
+    def extension_manager(self):
+        return PlayerExtensionManager(self)
 
     # Other stuff
     @property
@@ -278,7 +281,7 @@ class Player(models.Model):
     def save(self, **kwargs):
         """ Clear cache for extensions
         """
-        PlayerExtensionManager(self).update(self)
+        self.extension_manager.update(self)
         return super(Player, self).save(**kwargs)
 
     def __getitem__(self, item):
