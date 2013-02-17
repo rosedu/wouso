@@ -1,0 +1,14 @@
+[
+ {
+  "pk": 1,
+  "model": "piston.consumer",
+  "fields": {
+   "status": "accepted",
+   "name": "android",
+   "secret": "secret",
+   "user": null,
+   "key": "key",
+   "description": "a"
+  }
+ }
+]
