@@ -234,6 +234,8 @@ class Player(models.Model):
 
     # special:
     def get_extension(self, cls):
+        if self.__class__ is cls:
+            return self
         if self.__class__ != Player:
             obj = self.user.get_profile()
         else:
@@ -247,9 +249,6 @@ class Player(models.Model):
         Using an workaround, while: http://code.djangoproject.com/ticket/7623 gets fixed.
         Also see: http://code.djangoproject.com/ticket/11618
         """
-        if self.__class__ is cls:
-            return self
-
         try:
             extension = cls.objects.get(user=self.user)
         except cls.DoesNotExist:
