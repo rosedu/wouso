@@ -1,6 +1,5 @@
 # coding=utf-8
 from datetime import datetime, timedelta
-from django.core.cache import cache
 from django.db import models
 from django.db.models import Sum
 from django.contrib.auth.models import User, Group
@@ -177,16 +176,16 @@ class Player(models.Model):
 
     @property
     def group(self):
+        return self._group()
+
+    @cached_method
+    def _group(self):
         """ Return the core game group, if any
         """
-        key = 'PG-%d' % self.id
-        if key in cache:
-            return cache.get(key)
         try:
             group = self.playergroup_set.filter(owner=None).get()
         except (PlayerGroup.DoesNotExist, PlayerGroup.MultipleObjectsReturned):
             group = None
-        cache.set(key, group)
         return group
 
     def set_group(self, group):
@@ -197,8 +196,7 @@ class Player(models.Model):
             g.players.remove(self)
 
         group.players.add(self)
-        key = 'PG-%d' % self.id
-        cache.delete(key)
+        drop_cache(self._group, self)
         return group
 
     def level_progress(self):
@@ -247,11 +245,11 @@ class Player(models.Model):
 
     @property
     def race_name(self):
-        key = 'race-%s' % self.race_id
-        if key in cache:
-            return cache.get(key)
+        return self._race_name()
+
+    @cached_method
+    def _race_name(self):
         if self.race:
-            cache.set(key, self.race.name)
             return self.race.name
         return ''
 
@@ -259,6 +257,8 @@ class Player(models.Model):
         """ Clear cache for extensions
         """
         drop_cache(self.get_extension, self.__class__)
+        drop_cache(self._race_name)
+        drop_cache(self._group)
         return super(Player, self).save(**kwargs)
 
     def __getitem__(self, item):

@@ -2,8 +2,8 @@ from md5 import md5
 from django import template
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.core.cache import cache
 from django.utils.translation import ugettext as _
+from wouso.core.decorators import cached_method
 from wouso.core.user.models import Player
 from wouso.core.scoring.models import Coin
 from wouso.core.magic.templatetags.artifacts import artifact
@@ -67,18 +67,14 @@ def player_race(race):
 
     return u'<a href="%s%s" title="%s">%s</a>' % (link, race, race.name, race)
 
+@cached_method
 @register.simple_tag
 def player_avatar(player_obj):
     """ Return avatar's URL using the gravatar service """
     if not player_obj:
         return ''
 
-    key = 'avatar-%d' % player_obj.id
-    if key in cache:
-        return cache.get(key)
-
     avatar = "http://www.gravatar.com/avatar/%s.jpg?d=%s" % (md5(player_obj.user.email).hexdigest(), settings.AVATAR_DEFAULT)
-    cache.set(key, avatar)
     return avatar
 
 @register.simple_tag

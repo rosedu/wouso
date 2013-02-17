@@ -4,7 +4,6 @@ import logging
 import datetime
 import subprocess
 from django.db import models
-from django.core.cache import cache
 from django.utils.translation import ugettext_noop
 from django.conf import settings
 from wouso.core.user.models import Player
@@ -270,9 +269,6 @@ class QuestGame(Game):
 
     @classmethod
     def get_current(cls):
-        cache_key = 'QG-current'
-        if cache_key in cache:
-            return cache.get(cache_key)
         try:
             quest =  FinalQuest.objects.get(start__lte=datetime.datetime.now(),
                 end__gte=datetime.datetime.now())
@@ -282,7 +278,6 @@ class QuestGame(Game):
                                 end__gte=datetime.datetime.now())
             except:
                 quest = None
-        cache.set(cache_key, quest)
         return quest
 
     @classmethod
