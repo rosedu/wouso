@@ -36,10 +36,9 @@ class Setting(models.Model):
         return obj
 
     def save(self, **kwargs):
-        ret = super(Setting, self).save(**kwargs)
         cache_key = self.__class__._cache_key(self.name)
-        cache.set(cache_key, self)
-        return ret
+        cache.delete(cache_key)
+        return super(Setting, self).save(**kwargs)
 
 
     @property
