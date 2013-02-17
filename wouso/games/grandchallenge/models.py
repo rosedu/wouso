@@ -90,7 +90,6 @@ class GrandChallenge(models.Model):
         for i in cls.CHALLENGES:
             x = Challenge.objects.get(id = i)
             if x.status != "P":
-                print "not played"
                 return False
         return True
 
@@ -391,6 +390,7 @@ class GrandChallengeGame(Game):
             # Update round number
             round.round_number += 1
             cls.set_current_round(round.round_number)
+        logging.debug('Played round %s' % round.round_number)
         return round
 
     @classmethod

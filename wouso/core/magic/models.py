@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.conf import settings
-from wouso.core.common import App, Item
+from wouso.core.common import App, Item, CachedItem
 
 class Modifier(models.Model):
     """ Basic model for all the magic.
@@ -36,26 +36,34 @@ class Modifier(models.Model):
         return self.name.lower()
 
 
-class ArtifactGroup(Item, models.Model):
+class ArtifactGroup(CachedItem, models.Model):
     """ A group of artifacts for a Species. It cannot contain two artifacts of the same name."""
+    CACHE_PART = 'name'
+
     name = models.CharField(max_length=100, unique=True)
 
     def __unicode__(self):
         return self.name
 
-class Artifact(Modifier):
+class Artifact(CachedItem, Modifier):
     """ The generic artifact model. This should contain the name (identifier) and group,
     but also personalization such as: image (icon) and title
     """
+    CACHE_PART = 'full_name'
     class Meta:
         unique_together = ('name', 'group', 'percents')
 
     group = models.ForeignKey(ArtifactGroup, null=True, blank=True, default=None)
+    full_name = models.CharField(max_length=200, editable=False)
 
     def __unicode__(self):
         if self.title:
             return u"%s" % self.title
         return u"%s %s" % (self.name, "[%s]" % self.group.name if self.group else '(none)')
+
+    def save(self, **kwargs):
+        self.full_name = "%s-%s-%s" % (self.name, self.group.name.lower() if self.group else 'default', self.percents)
+        return super(Artifact, self).save(**kwargs)
 
 
 class NoArtifactLevel(object):

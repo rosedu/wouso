@@ -4,6 +4,7 @@ from django.conf import settings
 from wouso.core.game import get_games
 from wouso.core.config.models import Setting
 from wouso.core.magic.models import Bazaar
+from wouso.interface.apps import get_apps
 from wouso.interface.top.models import Top
 from wouso.interface.apps.qproposal.models import Qproposal
 from wouso.interface.apps.statistics.models import Statistics
@@ -11,8 +12,8 @@ from wouso.interface.apps.messaging.models import Message
 from wouso.interface.chat.models import Chat
 from wouso.interface import get_static_pages, detect_mobile, mobile_browser
 from wouso.settings import FORCE_SCRIPT_NAME
-
 from . import set_theme
+
 
 def header_footer(request):
     """ Generate header and footer bar contents.
@@ -45,7 +46,6 @@ def header_footer(request):
         h = Chat.get_header_link(request)
         if h:
             header.append((h, 'Chat'))
-
     except Exception as e:
         logging.exception(e)
 
@@ -58,15 +58,12 @@ def header_footer(request):
     except: pass
 
     # also add static pages
-    for sp in get_static_pages():
-        footer.append(sp.html_link())
+    footer.extend(get_static_pages())
 
-    # qporposal
-    if not Qproposal.disabled():
-        footer.append(Qproposal.get_footer_link(request))
-
-    if not Statistics.disabled():
-        footer.append(Statistics.get_footer_link(request))
+    for a in get_apps():
+        f = a.get_footer_link(request)
+        if f:
+            footer.append(a.get_footer_link(request))
 
     # format header
     hids = lambda p: '<span id="head-%s"><a href="%s">%s</a>%s</span>' % (p[1].lower(), \

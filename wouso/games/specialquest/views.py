@@ -120,14 +120,12 @@ def sidebar_widget(request):
     if SpecialQuestGame.disabled():
         return ''
     user = request.user.get_profile().get_extension(SpecialQuestUser)
-    tasks = SpecialQuestTask.objects.all()
-    today = date.today()
-    tasks = [t for t in tasks if t not in user.done_tasks.all() and t.start_date <= today <= t.end_date]
+    count = len(user.active_tasks)
 
-    if not tasks:
+    if not count:
         return ''
 
-    return render_to_string('specialquest/sidebar.html', {'not_done': len(tasks)})
+    return render_to_string('specialquest/sidebar.html', {'not_done': count})
 
 @login_required
 def header_link(request):
@@ -136,13 +134,9 @@ def header_link(request):
         return None
     if profile:
         user = profile.get_extension(SpecialQuestUser)
-        tasks = SpecialQuestTask.objects.all()
-        today = date.today()
-        tasks = [t for t in tasks if t not in user.done_tasks.all() and t.start_date <= today <= t.end_date]
-
-        count = len(tasks)
+        count = len(user.active_tasks)
     else:
         count = 0
     url = reverse('wouso.games.specialquest.views.index')
-    
+
     return dict(link=url, count=count, text=_('Special'))

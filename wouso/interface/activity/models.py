@@ -3,6 +3,7 @@ from datetime import datetime
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext as _
+from wouso.core.decorators import cached_method
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player
 from wouso.interface import logger
@@ -60,10 +61,17 @@ class Activity(models.Model):
         return queryset.order_by('-timestamp')
 
     @classmethod
+    def queryset(cls):
+        """
+        Default queryset
+        """
+        return cls.objects.select_related('game')
+
+    @classmethod
     def get_global_activity(cls, exclude_others=True, wouso_only=True):
         """ Return all game activity, ordered by timestamp, newest first
         """
-        query = cls.objects.all()
+        query = cls.queryset()
         return cls.filter_activity(query, exclude_others=exclude_others, wouso_only=wouso_only)
 
     @classmethod
@@ -71,7 +79,7 @@ class Activity(models.Model):
         """
         Return an user's activity.
         """
-        query = cls.objects.filter(Q(user_to=player) | Q(user_from=player)).order_by('-timestamp')
+        query = cls.queryset().filter(Q(user_to=player) | Q(user_from=player)).order_by('-timestamp')
         return cls.filter_activity(query)
 
     @classmethod
@@ -79,7 +87,7 @@ class Activity(models.Model):
         """
         Return all group activity
         """
-        query = cls.objects.filter(Q(user_to__race=race) | Q(user_from__race=race)).distinct()
+        query = cls.queryset().filter(Q(user_to__race=race) | Q(user_from__race=race)).distinct()
         return cls.filter_activity(query, **kwargs)
 
     @classmethod
@@ -87,12 +95,12 @@ class Activity(models.Model):
         """
         Return all group activity
         """
-        query = cls.objects.filter(Q(user_to__playergroup=group) | Q(user_from__playergroup=group)).distinct()
+        query = cls.queryset().filter(Q(user_to__playergroup=group) | Q(user_from__playergroup=group)).distinct()
         return cls.filter_activity(query, **kwargs)
 
     @classmethod
     def get_private_activity(cls, player):
-        return cls.objects.filter(user_from=player, public=False)
+        return cls.queryset().filter(user_from=player, public=False)
 
     @classmethod
     def delete(cls, game, user_from, user_to, message, arguments):
@@ -102,8 +110,20 @@ class Activity(models.Model):
         arguments = json.dumps(arguments)
         cls.objects.filter(game=game, user_from=user_from, user_to=user_to, message_string=message, arguments=arguments).delete()
 
+    @cached_method
+    def _get_player(self, id):
+        return Player.objects.get(id=id)
+
+    @property
+    def player_from(self):
+        return self._get_player(self.user_from_id)
+
+    @property
+    def player_to(self):
+        return self._get_player(self.user_to_id)
+
     def __unicode__(self):
-        return u"[%s] %s %s" % (self.game, self.user_from, self.user_to)
+        return u"#%d" % (self.id)
 
 def save_activity_handler(sender, **kwargs):
     """ Callback function for addActivity signal """

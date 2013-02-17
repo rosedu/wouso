@@ -7,13 +7,13 @@ Replace these with more appropriate tests for your application.
 import unittest
 import json
 from datetime import datetime
-import django.test
 from django.test.client import Client
+from wouso.core.tests import WousoTest
 from wouso.interface.chat.views import roomexist
 from wouso.interface.chat.models import ChatUser, ChatRoom, ChatMessage
 from wouso.core.user.models import User
 
-class ChatTestCase(django.test.TestCase):
+class ChatTestCase(WousoTest):
     """
         After setUp method is passed, you are login with "_chat1" account
         Author for all next messages will be "_chat1", the login user
@@ -44,7 +44,7 @@ class ChatTestCase(django.test.TestCase):
 
         self.client.login(username='_chat1', password='secret')
         self.client.post('/chat/chat_m/', {'opcode':'keepAlive', 'time':self.time_stamp})
-
+        super(ChatTestCase, self).setUp()
 
 
 
@@ -101,10 +101,10 @@ class ChatTestCase(django.test.TestCase):
     def test_combine_messages(self):
         self.test_message_send_more_message()
 
-        resp = self.client.post('/chat/chat_m/', {'opcode':'getRoom', 'from':self.user.id, 'to':self.user1.id, 'time':self.time_stamp})
+        resp = self.client.post('/chat/chat_m/', {'opcode':'getRoom', 'from': self.user.id, 'to':self.user1.id, 'time':self.time_stamp})
         room1 = json.loads(resp.content)
 
-        resp = self.client.post('/chat/chat_m/', {'opcode':'getRoom', 'from':self.user.id, 'to':self.user2.id, 'time':self.time_stamp})
+        resp = self.client.post('/chat/chat_m/', {'opcode':'getRoom', 'from': self.user.id, 'to':self.user2.id, 'time':self.time_stamp})
         room2 = json.loads(resp.content)
 
 

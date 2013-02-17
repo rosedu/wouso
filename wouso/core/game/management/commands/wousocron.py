@@ -10,7 +10,7 @@ class Command(BaseCommand):
         self.stdout.write('Starting at: %s\n' % datetime.now())
 
         # Now handle other apps
-        from wouso.interface import get_apps
+        from wouso.interface.apps import get_apps
         apps = get_apps()
 
         for a in apps:

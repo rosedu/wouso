@@ -1,8 +1,11 @@
 # coding=utf-8
+from md5 import md5
 from datetime import datetime, timedelta
 from django.db import models
 from django.db.models import Sum
 from django.contrib.auth.models import User, Group
+from django.conf import settings
+from wouso.core.decorators import cached_method, drop_cache
 from wouso.core.game.models import Game
 from wouso.core.magic.manager import MagicManager
 from wouso.core.god import God
@@ -87,12 +90,14 @@ class PlayerGroup(models.Model):
     def __unicode__(self):
         return self.name if self.title == '' else self.title
 
+
 class Player(models.Model):
     """ Base class for the game user. This is extended by game specific
     player models.
     """
     user = models.ForeignKey(User, unique=True, related_name="%(class)s_related")
 
+    full_name = models.CharField(max_length=200)
     # Unique differentiator for ladder
     # Do not modify it manually, use scoring.score instead
     points = models.FloatField(default=0, blank=True, null=True, editable=False)
@@ -145,9 +150,7 @@ class Player(models.Model):
         return self.user.username
 
     def in_staff_group(self):
-        # TODO fixme, rename me.
-        staff, new = Group.objects.get_or_create(name='Staff')
-        return self.user.is_superuser or (staff in self.user.groups.all())
+        return self.user.has_perm('config.change_setting')
 
     @property
     def race_name(self):
@@ -157,7 +160,6 @@ class Player(models.Model):
     @property
     def magic(self):
         return MagicManager(self)
-
 
     # Other stuff
     @property
@@ -176,12 +178,17 @@ class Player(models.Model):
 
     @property
     def group(self):
+        return self._group()
+
+    @cached_method
+    def _group(self):
         """ Return the core game group, if any
         """
         try:
-            return self.playergroup_set.filter(owner=None).get()
+            group = self.playergroup_set.filter(owner=None).get()
         except (PlayerGroup.DoesNotExist, PlayerGroup.MultipleObjectsReturned):
-            return None
+            group = None
+        return group
 
     def set_group(self, group):
         """
@@ -191,6 +198,7 @@ class Player(models.Model):
             g.players.remove(self)
 
         group.players.add(self)
+        drop_cache(self._group, self)
         return group
 
     def level_progress(self):
@@ -203,9 +211,29 @@ class Player(models.Model):
         scoring.score(self, None, 'steal-points', external_id=userto.id, points=-amount)
         scoring.score(userto, None, 'steal-points', external_id=self.id, points=amount)
 
-    # special:
+    @property
+    def avatar(self):
+        return self._avatar()
 
+    @cached_method
+    def _avatar(self):
+        avatar = "http://www.gravatar.com/avatar/%s.jpg?d=%s" % (md5(self.user.email).hexdigest(), settings.AVATAR_DEFAULT)
+        return avatar
+
+    # special:
+    @cached_method
     def get_extension(self, cls):
+        if self.__class__ is cls:
+            return self
+        if cls == Player:
+            return self.user.get_profile()
+        if self.__class__ != Player:
+            obj = self.user.get_profile()
+        else:
+            obj = self
+        return obj._get_extension(cls)
+
+    def _get_extension(self, cls):
         """ Search for an extension of this object, with the type cls
         Create instance if there isn't any.
 
@@ -219,7 +247,6 @@ class Player(models.Model):
             for f in self._meta.local_fields:
                 setattr(extension, f.name, getattr(self, f.name))
             extension.save()
-
         return extension
 
     @classmethod
@@ -229,14 +256,31 @@ class Player(models.Model):
         """
         cls.EXTENSIONS[attr] = ext_cls
 
+    @property
+    def race_name(self):
+        return self._race_name()
+
+    @cached_method
+    def _race_name(self):
+        if self.race:
+            return self.race.name
+        return ''
+
+    def save(self, **kwargs):
+        """ Clear cache for extensions
+        """
+        drop_cache(self.get_extension, self, self.__class__)
+        drop_cache(self._race_name, self)
+        drop_cache(self._group, self)
+        return super(Player, self).save(**kwargs)
+
     def __getitem__(self, item):
         if item in self.__class__.EXTENSIONS:
             return self.get_extension(self.__class__.EXTENSIONS[item])
         return super(Player, self).__getitem__(item)
 
     def __unicode__(self):
-        ret = u"%s %s" % (self.user.first_name, self.user.last_name)
-        return ret if ret != u" " else self.user.__unicode__()
+        return self.full_name or self.user.__unicode__()
 
 
 # Hack for having user and user's profile always in sync
@@ -260,6 +304,9 @@ def user_post_save(sender, instance, **kwargs):
             profile.race = default_race
             profile.save()
         profile.nickname = profile.user.username
+        profile.save()
+    else:
+        profile.full_name = ("%s %s" % (profile.user.first_name, profile.user.last_name)).strip()
         profile.save()
 
 models.signals.post_save.connect(user_post_save, User)

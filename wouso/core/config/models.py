@@ -1,9 +1,15 @@
 from django.db import models
+from django.core.cache import cache
+
 
 class Setting(models.Model):
     """ Generic configuration (name, value) pair definition, stored in db """
     name = models.CharField(max_length=100, primary_key=True)
     value = models.TextField(default='', null=True, blank=True)
+
+    @classmethod
+    def _cache_key(cls, name):
+        return '%s-' % cls.__name__ + name
 
     def set_value(self, v):
         """ value setter, overridden by subclasses """
@@ -22,8 +28,18 @@ class Setting(models.Model):
     @classmethod
     def get(cls, name):
         """ Get or create a Setting with the name name """
+        cache_key = cls._cache_key(name)
+        if cache_key in cache:
+            return cache.get(cache_key)
         obj, new = cls.objects.get_or_create(name=name)
+        cache.set(cache_key, obj)
         return obj
+
+    def save(self, **kwargs):
+        cache_key = self.__class__._cache_key(self.name)
+        cache.delete(cache_key)
+        return super(Setting, self).save(**kwargs)
+
 
     @property
     def title(self):
@@ -53,7 +69,7 @@ class BoolSetting(Setting):
         self.save()
 
     def get_value(self):
-        return (self.value == 'True')
+        return self.value == 'True'
 
     def form(self):
         return '<label for="%s">%s</label><input type="checkbox" name="%s" id="%s" %s value="True" />' \

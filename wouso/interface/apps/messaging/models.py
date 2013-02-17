@@ -18,8 +18,8 @@ class Message(models.Model):
     """ the message itself """
     _CHECK = True
 
-    sender = models.ForeignKey(MessagingUser, null=True, blank=True, default=None, related_name='sender')
-    receiver = models.ForeignKey(MessagingUser, blank=False, related_name='receiver')
+    sender = models.ForeignKey(MessagingUser, null=True, blank=True, default=None, related_name='sent')
+    receiver = models.ForeignKey(MessagingUser, blank=False, related_name='received')
     timestamp = models.DateTimeField(blank=True, default=datetime.now)
     subject = models.CharField(max_length=200, null=False, blank=False, default=None)
     text = models.CharField(max_length=1000, null=False, blank=False, default=None)
@@ -115,4 +115,4 @@ class MessageApp(App):
         if not request.user.get_profile():
             return -1
         msg_user = request.user.get_profile().get_extension(MessagingUser)
-        return Message.objects.filter(receiver=msg_user).filter(read=False).count()
+        return msg_user.received.filter(read=False).count()

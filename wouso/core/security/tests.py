@@ -1,11 +1,12 @@
-from django.test import TestCase
 from django.contrib.auth.models import User
-from wouso.games.challenge.models import Challenge, ChallengeUser, ChallengeGame
+from wouso.games.challenge.models import Challenge, ChallengeUser
+from wouso.core.tests import WousoTest
 from wouso.core import scoring
-from wouso.core.config.models import BoolSetting
 
-class SecurityRulesTest(TestCase):
+
+class SecurityRulesTest(WousoTest):
     def setUp(self):
+        super(SecurityRulesTest, self).setUp()
         self.user = User.objects.create(username='_test')
         self.user.save()
         self.chall_user = self.user.get_profile().get_extension(ChallengeUser)

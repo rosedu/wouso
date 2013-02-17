@@ -198,12 +198,12 @@ def header_link(request):
     return dict(link=url, count=count, text=_('Challenges'))
 
 def sidebar_widget(request):
-    profile = request.user.get_profile()
-    if not profile:
+    if not request.user.is_authenticated():
         return ''
-    chall_user = profile.get_extension(ChallengeUser)
+    chall_user = request.user.get_profile().get_extension(ChallengeUser)
     challs = ChallengeGame.get_active(chall_user)
     challs = [c for c in challs if c.status == 'A']
+
     # reduce noise, thanks
     if not challs:
         return ''
