@@ -34,6 +34,7 @@ MIN_HOUR, MAX_HOUR = 8, 20
 
 class Schedule(Tag):
     """ Schedule qpool tags per date intervals.
+    TODO: move it to qpool
     """
     start_date = models.DateField(default=datetime.today)
     end_date = models.DateField(default=datetime.today)
@@ -48,6 +49,18 @@ class Schedule(Tag):
     def is_active(self, timestamp=None):
         timestamp = timestamp if timestamp else datetime.now()
         return datetime.combine(self.start_date, time(0, 0, 0)) <= timestamp <= datetime.combine(self.end_date, time(23, 59, 59))
+
+
+class WorkshopPlayer(Player):
+    _semigroup = None
+
+    @property
+    def semigroup(self):
+        if self._semigroup is not None:
+            return self._semigroup
+
+        self._semigroup = Semigroup.get_by_player(self)
+        return self._semigroup
 
 
 class Semigroup(PlayerGroup):
@@ -72,8 +85,8 @@ class Semigroup(PlayerGroup):
     @classmethod
     def get_by_player(cls, player):
         try:
-            return Semigroup.objects.filter(players=player).all()[0]
-        except:
+            return Semigroup.objects.filter(players__id=player.id).all()[0]
+        except IndexError:
             return None
 
     @classmethod
@@ -490,14 +503,14 @@ class WorkshopGame(Game):
         if request.user.is_anonymous():
             return ''
         player = request.user.get_profile()
+        ws_player = player.get_extension(WorkshopPlayer)
         semigroups = cls.get_semigroups()
         workshop = cls.get_for_player_now(player)
         if workshop:
             assessment = workshop.get_assessment(player)
         else:
             assessment = None
-        player_sg = Semigroup.get_by_player(player)
-        sm = player_sg in semigroups
+        sm = ws_player.semigroup in semigroups
 
         return render_to_string('workshop/sidebar.html',
                 {'semigroups': semigroups, 'workshop': workshop, 'semigroup_member': sm, 'assessment': assessment})
