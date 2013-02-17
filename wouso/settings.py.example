@@ -245,6 +245,8 @@ else:
 # must be a number between 0 and 100
 QOTD_BONUS_PROB = 30
 
+DISPLAY_NAME = '{first_name} {last_name}'
+
 
 # To setup a cache, put this in localsettings:
 # CACHES = {
