@@ -159,7 +159,7 @@ class ChallengeApi(WousoTest):
 
     def test_list_active(self):
         response = self.client.get('/api/challenge/list/')
-
+        print response.content
         self.assertEqual(response.status_code, 200)
 
         data = json.loads(response.content)
