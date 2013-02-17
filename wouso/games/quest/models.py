@@ -35,9 +35,9 @@ class QuestUser(Player):
         Check if we started the current quest.
         """
         quest = QuestGame.get_current()
-        if (not quest) or (not self.current_quest):
+        if (not quest) or (not self.current_quest_id):
             return False
-        return self.current_quest.id == quest.id
+        return self.current_quest_id == quest.id
 
     @property
     def current_question(self):
