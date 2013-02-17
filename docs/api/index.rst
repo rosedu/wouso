@@ -32,6 +32,20 @@ Base api:
 
     Variation: `/api/info/online/list/`, with response: `[ "admin", ...]`
 
+.. http:get:: /api/info/nickname/
+
+    Return the current player's nickname.
+
+.. http:post:: /api/info/nickname/
+
+    Attempt to change the nickname of the authenticated player. Possible errors: "no nickname", "nickname already in use".
+
+    **Example response**:
+     .. sourcecode:: http
+
+        { "success": True }
+        { "success": False, "error": "Nickname in use" }
+
 
 Notifications
 ~~~~~~~~~~~~~

@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from django.template.defaultfilters import slugify
 from piston.handler import BaseHandler
 from piston.utils import rc
 
@@ -149,6 +150,30 @@ class InfoHandler(BaseHandler):
                 'level_progress': God.get_level_progress(player),
                 'rank': topuser.position,
         }
+
+
+class ChangeNickname(BaseHandler):
+    allowed_methods = ('GET', 'POST',)
+
+    def read(self, request):
+        return {'nickname': request.user.get_profile().nickname}
+
+    def create(self, request):
+        """
+        Attempt to change the nickname
+        """
+        player = request.user.get_profile()
+        nickname = request.POST.get('nickname')
+        if not nickname:
+            return {'success': False, 'error': 'Nickname not provided'}
+        if nickname == player.nickname:
+            return {'success': False, 'error': 'Nickname is the same'}
+        if Player.objects.exclude(id=player.id).filter(nickname=nickname).count() > 0:
+            return {'success': False, 'error': 'Nickname in use'}
+        player.nickname = slugify(nickname)
+        player.save()
+        return {'success': True}
+
 
 class BazaarHandler(BaseHandler):
     allowed_methods = ('GET',)
