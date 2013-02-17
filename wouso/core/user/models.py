@@ -264,11 +264,13 @@ class Player(models.Model):
 
     @property
     def race_name(self):
-        key = 'race-%d' % self.race_id
+        key = 'race-%s' % self.race_id
         if key in cache:
             return cache.get(key)
-        cache.set(key, self.race.name)
-        return self.race.name
+        if self.race:
+            cache.set(key, self.race.name)
+            return self.race.name
+        return ''
 
     def save(self, **kwargs):
         """ Clear cache for extensions
@@ -308,7 +310,7 @@ def user_post_save(sender, instance, **kwargs):
         profile.nickname = profile.user.username
         profile.save()
     else:
-        profile.full_name = "%s %s" % (profile.user.first_name, profile.user.last_name)
+        profile.full_name = ("%s %s" % (profile.user.first_name, profile.user.last_name)).strip()
         profile.save()
 
 models.signals.post_save.connect(user_post_save, User)
