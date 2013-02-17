@@ -225,6 +225,8 @@ class Player(models.Model):
     def get_extension(self, cls):
         if self.__class__ is cls:
             return self
+        if cls == Player:
+            return self.user.get_profile()
         if self.__class__ != Player:
             obj = self.user.get_profile()
         else:
@@ -267,9 +269,9 @@ class Player(models.Model):
     def save(self, **kwargs):
         """ Clear cache for extensions
         """
-        drop_cache(self.get_extension, self.__class__)
-        drop_cache(self._race_name)
-        drop_cache(self._group)
+        drop_cache(self.get_extension, self, self.__class__)
+        drop_cache(self._race_name, self)
+        drop_cache(self._group, self)
         return super(Player, self).save(**kwargs)
 
     def __getitem__(self, item):
