@@ -9,6 +9,30 @@ Welcome to Wouso API's documentation!
 Base api:
 --------
 
+.. http:post:: /api/info/online/
+
+    Fetch information about players seen online in the last 10 minutes.
+
+    **Example response**:
+     .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Vary: Accept
+        Content-Type: text/javascript
+
+        [
+            {
+                "first_name": "Alex",
+                "last_name": "Eftimie2",
+                "nickname": "admin",
+                "id": 1,
+                "last_seen": "2013-02-17T18:45:56.643"
+            }
+        ]
+
+    Variation: `/api/info/online/list/`, with response: `[ "admin", ...]`
+
+
 Notifications
 ~~~~~~~~~~~~~
 

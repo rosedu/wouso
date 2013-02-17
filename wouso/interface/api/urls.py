@@ -32,6 +32,8 @@ urlpatterns += patterns('',
     url(r'^notifications/devices/$', Resource(handler=NotificationsDevices, **ad)),
     url(r'^notifications/(?P<type>[^/]+)/$', notifications_resource),
     url(r'^info/$', Resource(handler=InfoHandler, **ad)),
+    url(r'^info/online/$', Resource(handler=OnlineUsers, **ad)),
+    url(r'^info/online/(?P<type>list)/$', Resource(handler=OnlineUsers, **ad)),
     url(r'^player/(?P<player_id>\d+)/info/$', Resource(handler=InfoHandler, **ad)),
     url(r'^player/(?P<player_id>\d+)/cast/$', Resource(handler=CastHandler, **ad)),
 

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from piston.handler import BaseHandler
 from piston.utils import rc
 
@@ -52,6 +52,21 @@ class Search(BaseHandler):
         searchresults = Player.objects.filter(Q(user__first_name__icontains=query) | Q(user__last_name__icontains=query) | Q(user__username__icontains=query))
 
         return [{'first_name': p.user.first_name, 'last_name': p.user.last_name, 'id': p.id} for p in searchresults]
+
+
+class OnlineUsers(BaseHandler):
+    allowed_methods = ('GET',)
+
+    def read(self, request, type=None):
+        oldest = datetime.now() - timedelta(minutes = 10)
+        online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
+
+        if type == 'list':
+            return [u.nickname for u in online_last10]
+        # default, more info
+        return [{'nickname': u.nickname, 'first_name': u.user.first_name, 'last_name': u.user.last_name,
+                 'id': u.id, 'last_seen': u.last_seen} for u in online_last10]
+
 
 class NotificationsHandler(BaseHandler):
     allowed_methods = ('GET',)
