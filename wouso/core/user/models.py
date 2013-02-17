@@ -305,9 +305,13 @@ def user_post_save(sender, instance, **kwargs):
             profile.save()
         profile.nickname = profile.user.username
         profile.save()
-    else:
-        profile.full_name = ("%s %s" % (profile.user.first_name, profile.user.last_name)).strip()
-        profile.save()
+    update_display_name(profile)
 
 models.signals.post_save.connect(user_post_save, User)
 
+def update_display_name(player):
+    display_name = settings.DISPLAY_NAME.format(first_name=player.user.first_name,
+                                                last_name=player.user.last_name,
+                                                nickname=player.nickname).strip()
+    player.full_name = display_name
+    player.save()
