@@ -234,7 +234,11 @@ class Player(models.Model):
 
     # special:
     def get_extension(self, cls):
-        return PlayerExtensionManager(self).get_extension(cls)
+        if self.__class__ != Player:
+            obj = self.user.get_profile()
+        else:
+            obj = self
+        return PlayerExtensionManager(obj).get_extension(cls)
 
     def _get_extension(self, cls):
         """ Search for an extension of this object, with the type cls
