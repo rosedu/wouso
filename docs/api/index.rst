@@ -9,7 +9,7 @@ Welcome to Wouso API's documentation!
 Base api:
 --------
 
-.. http:post:: /api/info/online/
+.. http:get:: /api/info/online/
 
     Fetch information about players seen online in the last 10 minutes.
 
