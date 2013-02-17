@@ -123,7 +123,7 @@ class Activity(models.Model):
         return self._get_player(self.user_to_id)
 
     def __unicode__(self):
-        return u"[%s] %s %s" % (self.game, self.user_from, self.user_to)
+        return u"#%d" % (self.id)
 
 def save_activity_handler(sender, **kwargs):
     """ Callback function for addActivity signal """

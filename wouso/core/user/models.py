@@ -1,8 +1,10 @@
 # coding=utf-8
+from md5 import md5
 from datetime import datetime, timedelta
 from django.db import models
 from django.db.models import Sum
 from django.contrib.auth.models import User, Group
+from django.conf import settings
 from wouso.core.decorators import cached_method, drop_cache
 from wouso.core.game.models import Game
 from wouso.core.magic.manager import MagicManager
@@ -208,6 +210,15 @@ class Player(models.Model):
         from wouso.core import scoring
         scoring.score(self, None, 'steal-points', external_id=userto.id, points=-amount)
         scoring.score(userto, None, 'steal-points', external_id=self.id, points=amount)
+
+    @property
+    def avatar(self):
+        return self._avatar()
+
+    @cached_method
+    def _avatar(self):
+        avatar = "http://www.gravatar.com/avatar/%s.jpg?d=%s" % (md5(self.user.email).hexdigest(), settings.AVATAR_DEFAULT)
+        return avatar
 
     # special:
     @cached_method

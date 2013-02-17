@@ -139,7 +139,7 @@ def unset(user, game, formula, external_id=None, **params):
     update_points(user, game)
 
 def rollback(user, game, formula, external_id=None, **params):
-    if game != None:
+    if game is not None:
         game = game.get_instance()
     formula = Formula.get(formula)
     for history in History.objects.filter(user=user, game=game, formula=formula, external_id=external_id):

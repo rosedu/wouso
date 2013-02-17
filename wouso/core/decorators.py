@@ -55,10 +55,11 @@ def cached_method(function=None):
         def _cached(*args, **kwargs):
             cache_key = _get_cache_key(function, *args, **kwargs)
             if cache_key in cache:
-                print "Returning form cache:", cache_key
                 return cache.get(cache_key)
-            print "Calling cuntiona", cache_key, function, function.__name__
-            return function(*args, **kwargs)
+            result = function(*args, **kwargs)
+            cache.set(cache_key, result)
+            return result
+        _cached._function = function
         return _cached
 
     if function:
@@ -67,6 +68,8 @@ def cached_method(function=None):
 
 
 def drop_cache(function, *args, **kwargs):
-    cache_key = _get_cache_key(function, *args, **kwargs)
-    if cache_key in cache:
+    if hasattr(function, '_function'):
+        cache_key = _get_cache_key(function._function, *args, **kwargs)
         cache.delete(cache_key)
+    else:
+        logging.exception('Invalid function: ', function)

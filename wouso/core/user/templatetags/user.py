@@ -1,4 +1,3 @@
-from md5 import md5
 from django import template
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -67,15 +66,12 @@ def player_race(race):
 
     return u'<a href="%s%s" title="%s">%s</a>' % (link, race, race.name, race)
 
-@cached_method
+
 @register.simple_tag
 def player_avatar(player_obj):
     """ Return avatar's URL using the gravatar service """
-    if not player_obj:
-        return ''
+    return player_obj.avatar if player_obj else ''
 
-    avatar = "http://www.gravatar.com/avatar/%s.jpg?d=%s" % (md5(player_obj.user.email).hexdigest(), settings.AVATAR_DEFAULT)
-    return avatar
 
 @register.simple_tag
 def coin_amount(amount, coin=None):

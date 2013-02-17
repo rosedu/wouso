@@ -134,8 +134,8 @@ class History(models.Model):
 
     def delete(self, using=None):
         cls = self.__class__
-        drop_cache(cls._user_points, user=self.user)
-        drop_cache(cls._user_coins, user=self.user)
+        drop_cache(cls._user_points, self.user)
+        drop_cache(cls._user_coins, self.user)
         super(History, self).delete(using=using)
 
     def __unicode__(self):
