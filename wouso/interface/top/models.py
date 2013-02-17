@@ -268,7 +268,7 @@ class Top(App):
                 hs.save()
 
 
-def user_post_save(sender, instance, **kwargs):
-    profile = instance.get_profile()
-    profile.get_extension(TopUser)
-models.signals.post_save.connect(user_post_save, User)
+#def user_post_save(sender, instance, **kwargs):
+#    profile = instance.get_profile()
+#    profile.get_extension(TopUser)
+#models.signals.post_save.connect(user_post_save, User)

@@ -4,6 +4,7 @@ from django.core.cache import cache
 from django.db import models
 from django.db.models import Sum
 from django.contrib.auth.models import User, Group
+from wouso.core.decorators import cached_method, drop_cache
 from wouso.core.game.models import Game
 from wouso.core.magic.manager import MagicManager
 from wouso.core.god import God
@@ -88,27 +89,6 @@ class PlayerGroup(models.Model):
     def __unicode__(self):
         return self.name if self.title == '' else self.title
 
-class PlayerExtensionManager(object):
-    """
-    Manage extensions in a cached way
-    """
-    def __init__(self, player):
-        self.player = player
-
-    def get_extension(self, cls):
-        key = 'PEM-%d-%s' % (self.player.id or 0, cls.__name__)
-        if key in cache:
-            return cache.get(key)
-        ext = self.player._get_extension(cls)
-        cache.set(key, ext)
-        return ext
-
-    def update(self, obj):
-        key = 'PEM-%d-%s' % (self.player.id or 0, obj.__class__.__name__)
-        cache.delete(key) # cache.set does not work
-        return obj
-
-
 
 class Player(models.Model):
     """ Base class for the game user. This is extended by game specific
@@ -180,10 +160,6 @@ class Player(models.Model):
     def magic(self):
         return MagicManager(self)
 
-    @property
-    def extension_manager(self):
-        return PlayerExtensionManager(self)
-
     # Other stuff
     @property
     def level(self):
@@ -236,6 +212,7 @@ class Player(models.Model):
         scoring.score(userto, None, 'steal-points', external_id=self.id, points=amount)
 
     # special:
+    @cached_method
     def get_extension(self, cls):
         if self.__class__ is cls:
             return self
@@ -243,7 +220,7 @@ class Player(models.Model):
             obj = self.user.get_profile()
         else:
             obj = self
-        return PlayerExtensionManager(obj).get_extension(cls)
+        return obj._get_extension(cls)
 
     def _get_extension(self, cls):
         """ Search for an extension of this object, with the type cls
@@ -281,7 +258,7 @@ class Player(models.Model):
     def save(self, **kwargs):
         """ Clear cache for extensions
         """
-        self.extension_manager.update(self)
+        drop_cache(self.get_extension, self.__class__)
         return super(Player, self).save(**kwargs)
 
     def __getitem__(self, item):

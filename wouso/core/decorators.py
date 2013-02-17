@@ -37,22 +37,28 @@ def api_enabled_required(function=None):
         return _dec(function)
 
 
-def _get_cache_key(function, **kwargs):
+def _get_cache_key(function, *args, **kwargs):
     params = inspect.getargspec(function)[0]
     cache_key = 'F-%s-' % function.__name__
-    for param_name in params:
-        value = kwargs.get(param_name, None)
+    for i,param_name in enumerate(params):
+        if i < len(args):
+            value = args[i]
+        else:
+            value = kwargs.get(param_name, None)
         cache_key += '%s-%s' % (param_name, value)
+    cache_key = cache_key.replace(' ', '')
     return cache_key
 
 
 def cached_method(function=None):
     def _dec(function):
-        def _cached(**kwargs):
-            cache_key = _get_cache_key(function, **kwargs)
+        def _cached(*args, **kwargs):
+            cache_key = _get_cache_key(function, *args, **kwargs)
             if cache_key in cache:
+                print "Returning form cache:", cache_key
                 return cache.get(cache_key)
-            return function(**kwargs)
+            print "Calling cuntiona", cache_key, function, function.__name__
+            return function(*args, **kwargs)
         return _cached
 
     if function:
@@ -60,7 +66,7 @@ def cached_method(function=None):
     return _dec
 
 
-def drop_cache(function, **kwargs):
-    cache_key = _get_cache_key(function, **kwargs)
+def drop_cache(function, *args, **kwargs):
+    cache_key = _get_cache_key(function, *args, **kwargs)
     if cache_key in cache:
         cache.delete(cache_key)
