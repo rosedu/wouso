@@ -451,6 +451,7 @@ class NotificationsTest(WousoTest):
 
 class FlawlessVictoryTest(WousoTest):
     def setUp(self):
+        super(FlawlessVictoryTest, self).setUp()
         self.user_from = self._get_player(1)
         self.user_to   = self._get_player(2)
         self.chall_user1 = self.user_from.get_extension(ChallengeUser)
@@ -499,6 +500,7 @@ class FlawlessVictoryTest(WousoTest):
 
 class WinFastTest(WousoTest):
     def setUp(self):
+        super(WinFastTest, self).setUp()
         user_from = self._get_player(1)
         user_to = self._get_player(2)
         chall_user1 = user_from.get_extension(ChallengeUser)

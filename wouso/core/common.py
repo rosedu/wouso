@@ -111,7 +111,7 @@ class Item(object):
                 return None
 
     def __str__(self):
-        return u'%s' % self.id
+        return u'%s' % self.id if hasattr(self, 'id') else self.name
 
 
 class CachedItem(Item):
@@ -139,7 +139,7 @@ class CachedItem(Item):
 
     def save(self, **kwargs):
         r = super(CachedItem, self).save(**kwargs)
-        if self.id:
+        if hasattr(self, self.CACHE_PART) and getattr(self, self.CACHE_PART):
             key = self._get_cache_key(self._cache_key_part())
             cache.delete(key)
         return r

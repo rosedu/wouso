@@ -15,6 +15,7 @@ Challenge.LIMIT = 5
 
 class ChallengeTestCase(WousoTest):
     def setUp(self):
+        super(ChallengeTestCase, self).setUp()
         self.user = User.objects.create(username='_test')
         self.user.save()
         self.chall_user = self.user.get_profile().get_extension(ChallengeUser)
@@ -23,7 +24,6 @@ class ChallengeTestCase(WousoTest):
         self.chall_user2 = self.user2.get_profile().get_extension(ChallengeUser)
         scoring.setup_scoring()
         ChallengeGame.get_instance().save()
-        super(ChallengeTestCase, self).setUp()
 
     def tearDown(self):
         self.user.delete()
@@ -147,6 +147,7 @@ class ChallengeTestCase(WousoTest):
 
 class ChallengeApi(WousoTest):
     def setUp(self):
+        super(ChallengeApi, self).setUp()
         Challenge.LIMIT = 5
         self.user = User.objects.create_user('_test', '', password='test')
         self.client.login(username='_test', password='test')
@@ -155,7 +156,6 @@ class ChallengeApi(WousoTest):
         self.challuser = self.user.get_profile().get_extension(ChallengeUser)
         self.challuser2 = self.user2.get_profile().get_extension(ChallengeUser)
         ChallengeGame.get_instance().save()
-        super(ChallengeApi, self).setUp()
 
     def test_list_active(self):
         response = self.client.get('/api/challenge/list/')

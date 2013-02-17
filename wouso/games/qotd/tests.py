@@ -11,12 +11,12 @@ from wouso.core.qpool.models import Question, Schedule, Tag, Category
 
 class QotdTestCase(WousoTest):
     def setUp(self):
+        super(QotdTestCase, self).setUp()
         self.user, new = User.objects.get_or_create(username='_test')
         self.user.save()
         profile = self.user.get_profile()
         self.qotd_user = profile.get_extension(QotdUser)
         scoring.setup_scoring()
-        super(QotdTestCase, self).setUp()
 
     def _get_foo_question(self, correct=2):
         """ Return a Question object selected for Today """
@@ -84,6 +84,7 @@ def _make_question_for_today(user, text):
 
 class PageTests(WousoTest):
     def setUp(self):
+        super(PageTests, self).setUp()
         self.user = User.objects.create(username='_test')
         self.user.set_password('_test_pw')
         self.user.save()
@@ -91,7 +92,6 @@ class PageTests(WousoTest):
         self.qotd_user = profile.get_extension(QotdUser)
         scoring.setup_scoring()
         self.client.login(username='_test', password='_test_pw')
-        super(PageTests, self).setUp()
 
     def testNoQuestion(self):
         response = self.client.get('/g/qotd/')
