@@ -38,7 +38,16 @@ Base api:
 
 .. http:post:: /api/info/nickname/
 
-    Attempt to change the nickname of the authenticated player. Possible errors: "no nickname", "nickname already in use".
+    Attempt to change the nickname of the authenticated player. The nickname is sent as the payload to the POST request. Possible errors: "no nickname", "nickname already in use".
+
+    **Example request**
+     .. sourcecode:: http
+
+        POST /api/info/nickname/ HTTP/1.1
+        Host: wouso-next.rosedu.org
+        ...
+
+        nickname=myl33tnickname
 
     **Example response**:
      .. sourcecode:: http
