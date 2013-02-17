@@ -6,4 +6,4 @@ class TopTest(WousoTest):
         player = self._get_player()
         top_player = player.get_extension(TopUser)
 
-        self.assertEqual(top_player.won_challenges(), 0)
+        self.assertEqual(top_player.won_challenges, 0)
