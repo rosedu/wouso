@@ -38,6 +38,9 @@ class Setting(models.Model):
     def save(self, **kwargs):
         cache_key = self.__class__._cache_key(self.name)
         cache.delete(cache_key)
+        # Also flush generic
+        cache_key = Setting._cache_key(self.name)
+        cache.delete(cache_key)
         return super(Setting, self).save(**kwargs)
 
 
