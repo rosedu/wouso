@@ -61,6 +61,9 @@
     <div id="header-cp">
         <div id="topbar">
             <div class="first-line">
+                {% if user.real_user %}
+                   Impersonated by {{ user.real_user }} <a href="{% url impersonate_clear %}">clear</a>
+                {% endif %}
                 {{ user.get_profile }}
                 <a id="head-home" href="{% url homepage %}">Game</a>&nbsp;
                 <a id="head-cpanel" href="{% url dashboard %}">CPanel</a>&nbsp;
