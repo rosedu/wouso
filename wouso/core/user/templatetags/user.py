@@ -9,7 +9,7 @@ from wouso.core.magic.templatetags.artifacts import artifact
 register = template.Library()
 
 @register.simple_tag
-def player(user):
+def player(user, artif_html=None):
     """ Render player name and level image with link to player's profile """
     if not user or isinstance(user, str):
         return ''
@@ -19,23 +19,22 @@ def player(user):
 
     link = reverse('wouso.interface.profile.views.user_profile', args=(user.id,))
 
-    artif_html = artifact(user.level)
+    if artif_html is None:
+        artif_html = artifact(user.level)
+
     rel_data = u"%s,%s,%s,%s,%s,%s,1" % (user.nickname, user.full_name, user.points, player_avatar(user), user.level_no, user.id)
-    return u'<a href="%s" class="cplayer" rel="%s">%s%s</a>' % (link, rel_data, artif_html, user)
+    if user.in_staff_group():
+        staff_class = 'cplayer-staff'
+    else:
+        staff_class = ''
+    return u'<a href="%s" class="cplayer %s" rel="%s">%s%s</a>' % (link, staff_class, rel_data, artif_html, user)
+
 
 @register.simple_tag
 def player_simple(user):
     """ Render only the player name with link to player's profile """
-    if not user:
-        return ''
+    return player(user, artif_html='')
 
-    link = reverse('wouso.interface.profile.views.user_profile', args=(user.id,))
-    rel_data_simple = u"%s,%s,%s,%s,%s,%s,1" % (user.nickname, user.full_name, user.points, player_avatar(user), user.level_no, user.id)
-
-    if hasattr(user, 'level'):
-        return u'<a href="%s" rel="%s" class="cplayer">%s</a>' % (link, rel_data_simple, user)
-    else:
-        return u'<a href="%s" rel="%s" class="cplayer">%s</a>' % (link, rel_data_simple, user)
 
 @register.simple_tag
 def player_simple2(user, user2):
