@@ -137,6 +137,8 @@ class Challenge(models.Model):
     status = models.CharField(max_length=1, choices=STATUS, default='L')
     winner = models.ForeignKey(ChallengeUser, related_name="winner", null=True, blank=True)
     questions = models.ManyToManyField(Question)
+    owner = models.ForeignKey(Game, null=True, blank=True)
+
     nr_q = 0
     LIMIT = 5
     TIME_LIMIT = 300 # seconds
@@ -147,22 +149,13 @@ class Challenge(models.Model):
     @classmethod
     def create(cls, user_from, user_to, ignore_questions = False):
         """ Assigns questions, and returns the number of assigned q """
-
         questions = [q for q in get_questions_with_category('challenge')]
         if (len(questions) < cls.LIMIT) and not ignore_questions:
             raise ChallengeException('Too few questions')
         shuffle(questions)
 
-        uf, ut = Participant(user=user_from), Participant(user=user_to)
-        uf.save(), ut.save()
-
-        c = Challenge(user_from=uf, user_to=ut, date=datetime.now())
-        c.save()
-
-        # TODO: better question selection
-        #limit = 5
-        for q in questions[:cls.LIMIT]:
-            c.questions.add(q)
+        questions_qs = questions[:cls.LIMIT]
+        challenge = cls.create_custom(user_from, user_to, questions_qs)
 
         # set last_launched
         user_from.last_launched = datetime.now()
@@ -170,7 +163,18 @@ class Challenge(models.Model):
 
         if cls.WARRANTY:
             # take 3 points from user_from
-            scoring.score(user_from, ChallengeGame, 'chall-warranty', external_id=c.id)
+            scoring.score(user_from, ChallengeGame, 'chall-warranty', external_id=challenge.id)
+        return challenge
+
+    @classmethod
+    def create_custom(cls, player_from, player_to, questions_qs, game=None):
+        user_from, user_to = player_from.get_extension(ChallengeUser), player_to.get_extension(ChallengeUser)
+        uf, ut = Participant.objects.create(user=user_from), Participant.objects.create(user=user_to)
+
+        c = Challenge.objects.create(user_from=uf, user_to=ut, date=datetime.now(), owner=game)
+        for q in questions_qs:
+            c.questions.add(q)
+
         return c
 
     @staticmethod

@@ -276,3 +276,16 @@ class TestCalculatePoints(WousoTest):
         q = self.get_question(4, 3)
         post = self.fake_answers(q, 4, 3)
         self.assertEqual(Challenge._calculate_points(post)['points'], 0)
+
+
+class TestCustomChallenge(WousoTest):
+    def test_custom_create(self):
+        game = ChallengeGame.get_instance()
+        p1, p2 = self._get_player(1), self._get_player(2)
+
+        challenge = Challenge.create_custom(p1, p2, [], game)
+        self.assertTrue(challenge)
+        self.assertEqual(challenge.owner, game)
+
+
+# TODO: add page tests (views) for challenge run
