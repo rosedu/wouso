@@ -974,9 +974,10 @@ def system_message_group(request, group):
 
 @permission_required('superuser')
 def impersonate(request, player_id):
+    # TODO: write tests
     player = get_object_or_404(Player, pk=player_id)
     ImpersonateMiddleware.set_impersonation(request, player)
-    return redirect('player_profile', kwargs={'id': player.id})
+    return redirect('player_profile', id=player.id)
 
 
 def clean_impersonation(request):
