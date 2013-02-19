@@ -1,0 +1,20 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+{% load user %}
+
+{% block sectiontitle %}{% trans 'Special Challenge' %} - {% trans 'Launch' %}{% endblock %}
+
+{% block sectioncontent %}
+    <div class="">
+        {{ form.errors }}
+    </div>
+    <form method="post" action="">
+        <p>{% blocktrans %}If you launch a challenge, it will be sent to review by an admin, and then sent to the player.
+        You won't be able to edit it, and if the players answers correctly, you lose the amount of points.
+        {% endblocktrans %}
+        </p>
+        {% csrf_token %}
+        <button type="submit">{% trans 'Launch' %}</button>
+    </form>
+    <a class="button" href="{% url specialchallenge_index %}">{% trans 'Back' %}</a>
+{% endblock %}

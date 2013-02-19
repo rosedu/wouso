@@ -23,6 +23,10 @@
             <td>{{ c.questions.all.count }}</td>
             <td><a class="button button-min" href="{% url specialchallenge_challenge c.id %}">{% trans 'view' %}</a></td>
             <td><a class="button button-min" href="{% url specialchallenge_configure c.id %}">{% trans 'conf' %}</a></td>
+            <td>{% if c.is_editable %}
+                <a class="button button-min" href="{% url specialchallenge_launch c.id %}">{% trans 'launch' %}</a>
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </table>

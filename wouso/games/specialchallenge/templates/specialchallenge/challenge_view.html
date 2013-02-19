@@ -21,13 +21,18 @@
                     {% endfor %}
                 </ul>
             {% endautoescape %}
-
+            {% if challenge.is_editable %}
             <a class="button button-min" href="{% url specialchallenge_edit_question challenge.pk q.pk %}">{% trans 'edit' %}</a>
             <a class="button button-min" href="{% url specialchallenge_del_question challenge.pk q.pk %}">{% trans 'del' %}</a>
+            {% endif %}
         </li>
         {% endfor %}
     </ol>
 
+    {% if challenge.is_editable %}
     <a class="button" href="{% url specialchallenge_add_question challenge.id %}">{% trans 'Add question' %}</a>
+    <a class="button" href="{% url specialchallenge_launch challenge.id %}">{% trans 'Launch' %}</a>
+    {% else %}
+    {% endif %}
     <a class="button" href="{% url specialchallenge_index  %}">{% trans 'Index' %}</a>
 {% endblock %}

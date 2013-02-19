@@ -31,6 +31,14 @@ class SpecialChallenge(models.Model):
     def create(cls, player_from, player_to):
         return cls.objects.create(player_from=player_from, player_to=player_to)
 
+    def launch(self):
+        if self.is_editable():
+            self.status = STATUS_PROPOSED
+            self.save()
+
+    def is_editable(self):
+        return self.status in (STATUS_NEW, STATUS_REJECTED)
+
     def __unicode__(self):
         return u"#%d against %s" % (self.id, self.player_to)
 

@@ -1,4 +1,5 @@
 # Django 1.3 from now on
+from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import TemplateView, FormView, DetailView, UpdateView, DeleteView
@@ -20,7 +21,7 @@ class CreateChallenge(FormView):
         player_to = form.cleaned_data['player_to']
         player_from = self.request.user.get_profile()
         chal = SpecialChallenge.create(player_from, player_to)
-        return redirect('specialchallenge_configure', challenge=chal.id)
+        return redirect('specialchallenge_configure', pk=chal.id)
 
 
 class ConfigureChallenge(UpdateView):
@@ -34,13 +35,22 @@ class ConfigureChallenge(UpdateView):
 
 
 class ChallengeMixin(object):
+    def get_challenge(self, **kwargs):
+        return get_object_or_404(SpecialChallenge, pk=self.kwargs['challenge'])
+
     def get_context_data(self, **kwargs):
         context = super(ChallengeMixin, self).get_context_data(**kwargs)
-        challenge = get_object_or_404(SpecialChallenge, pk=self.kwargs['challenge'])
-        self.challenge = challenge
+        self.challenge = self.get_challenge(**kwargs)
         context.update({'challenge': self.challenge})
         return context
 
+    def dispatch(self, request, *args, **kwargs):
+        self.kwargs = kwargs
+        challenge = self.get_challenge(**kwargs)
+        if not challenge.is_editable():
+            messages.error(request, 'Challenge is not editable')
+            return redirect('specialchallenge_index')
+        return super(ChallengeMixin, self).dispatch(request, *args, **kwargs)
 
 class ChallengeQuestionAdd(ChallengeMixin, FormView):
     template_name = 'specialchallenge/challenge_add_question.html'
@@ -73,6 +83,19 @@ class ChallengeQuestionDelete(ChallengeMixin, DeleteView):
     def get_success_url(self):
         self.get_context_data()
         return reverse('specialchallenge_challenge', args=(self.challenge.id,))
+
+
+class ChallengeLaunch(DetailView):
+    template_name = 'specialchallenge/challenge_launch.html'
+    model = SpecialChallenge
+
+    def post(self, request, **kwargs):
+        chal = self.get_object()
+        if chal.launch():
+            messages.info(request, 'Challenge launched successfully')
+        else:
+            messages.error(request, 'Challenge was not launched')
+        return redirect('specialchallenge_index')
 
 
 class ChallengeView(DetailView):
