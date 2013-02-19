@@ -572,10 +572,10 @@ class ChallengeGame(Game):
         return []
 
     @classmethod
-    def get_formulas(kls):
+    def get_formulas(cls):
         """ Returns a list of formulas used by qotd """
         fs = []
-        chall_game = kls.get_instance()
+        chall_game = cls.get_instance()
         fs.append(dict(name='chall-won', definition='points=6+{different_race}+{different_class}',
             owner=chall_game.game,
             description='Points earned when winning a challenge. Arguments: different_race (int 0,1), different_class (int 0,1)')
@@ -600,7 +600,7 @@ class ChallengeGame(Game):
         return fs
 
     @classmethod
-    def get_modifiers(kls):
+    def get_modifiers(cls):
         """
         Challenge game modifiers
         """
@@ -614,21 +614,21 @@ class ChallengeGame(Game):
         ]
 
     @classmethod
-    def get_header_link(kls, request):
+    def get_header_link(cls, request):
         if not request.user.is_anonymous():
             from views import header_link
             return header_link(request)
         return dict(text=_('Challenges'), link='')
 
     @classmethod
-    def get_sidebar_widget(kls, request):
+    def get_sidebar_widget(cls, request):
         if not request.user.is_anonymous():
             from views import sidebar_widget
             return sidebar_widget(request)
         return None
 
     @classmethod
-    def get_profile_actions(kls, request, player):
+    def get_profile_actions(cls, request, player):
         url = reverse('wouso.games.challenge.views.launch', args=(player.id,))
         if request.user.get_profile().id != player.id:
             # check if there isn't another challenge launched
@@ -638,7 +638,7 @@ class ChallengeGame(Game):
         return ''
 
     @classmethod
-    def get_profile_superuser_actions(kls, request, player):
+    def get_profile_superuser_actions(cls, request, player):
         url = reverse('challenge_stats', args=(player.id,))
         return '<a class="button" href="%s">%s</a>' % (url, _('Challenges'))
 
@@ -657,7 +657,7 @@ class ChallengeGame(Game):
                 c.set_expired()
 
     @classmethod
-    def get_api(kls):
+    def get_api(cls):
         from api import ChallengesHandler, ChallengeLaunch, ChallengeHandler
 
         return {r'^challenge/list/$': ChallengesHandler,

@@ -183,7 +183,7 @@ class History(models.Model): # TODO: deprecate (maybe), check if NewHistory cove
     date = models.DateField()
 
     @classmethod
-    def get_user_position(kls, user, relative_to=None):
+    def get_user_position(cls, user, relative_to=None):
         try:
             history = History.objects.filter(user=user,relative_to=relative_to).order_by('-date')[0]
             return history.position
@@ -193,7 +193,7 @@ class History(models.Model): # TODO: deprecate (maybe), check if NewHistory cove
             return 0
 
     @classmethod
-    def get_group_position(kls, group, relative_to=None):
+    def get_group_position(cls, group, relative_to=None):
         try:
             history = History.objects.filter(group=group, relative_to=relative_to).order_by('-date')[0]
             return history.position
@@ -208,7 +208,7 @@ class History(models.Model): # TODO: deprecate (maybe), check if NewHistory cove
 class Top(App):
 
     @classmethod
-    def get_sidebar_widget(kls, request):
+    def get_sidebar_widget(cls, request):
         top5 = TopUser.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
         top5 = top5.order_by('-points')[:10]
         is_top = request.get_full_path().startswith('/top/')

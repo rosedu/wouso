@@ -154,7 +154,7 @@ class Schedule(models.Model):
     day = models.DateField(default=datetime.now, blank=True)
 
     @classmethod
-    def automatic(kls, qotd='qotd'):
+    def automatic(cls, qotd='qotd'):
         """ Automatically schedule all active questions on dates newer
         than the newest in database or today.
 

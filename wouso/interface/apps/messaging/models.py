@@ -101,7 +101,7 @@ class Message(models.Model):
         return None
 
     @classmethod
-    def get_header_link(kls, request):
+    def get_header_link(cls, request):
         if not request.user.is_anonymous():
             from wouso.interface.apps.messaging.views import header_link
             return header_link(request)
@@ -111,7 +111,7 @@ class Message(models.Model):
 class MessageApp(App):
 
     @classmethod
-    def get_unread_count(kls, request):
+    def get_unread_count(cls, request):
         if not request.user.get_profile():
             return -1
         msg_user = request.user.get_profile().get_extension(MessagingUser)

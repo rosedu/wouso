@@ -118,10 +118,10 @@ class QotdGame(Game):
                 scoring.score(user, QotdGame, 'qotd-ok-bonus', hour=now.hour)
 
     @classmethod
-    def get_formulas(kls):
+    def get_formulas(cls):
         """ Returns a list of formulas used by qotd """
         fs = []
-        qotd_game = kls.get_instance()
+        qotd_game = cls.get_instance()
         fs.append(dict(name='qotd-ok',
             definition='points=4 + (1 if {hour} < 12 else -1)',
             owner=qotd_game.game,
@@ -135,14 +135,14 @@ class QotdGame(Game):
         return fs
 
     @classmethod
-    def get_sidebar_widget(kls, request):
+    def get_sidebar_widget(cls, request):
         if not request.user.is_anonymous():
             from views import sidebar_widget
             return sidebar_widget(request)
         return None
 
     @classmethod
-    def get_api(kls):
+    def get_api(cls):
         from api import QotdHandler
         return {r'^qotd/today/$': QotdHandler}
 

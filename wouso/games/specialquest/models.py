@@ -132,7 +132,7 @@ class SpecialQuestGame(Game):
         super(SpecialQuestGame, self).__init__(*args, **kwargs)
 
     @classmethod
-    def tasks_for_user(kls, user):
+    def tasks_for_user(cls, user):
         """ Return a pair of tasks_done, tasks_not_done for requested user
         """
         tasks = SpecialQuestTask.objects.all()
@@ -142,27 +142,27 @@ class SpecialQuestGame(Game):
         return tasks_done, tasks_not_done
 
     @classmethod
-    def get_sidebar_widget(kls, request):
+    def get_sidebar_widget(cls, request):
         if not request.user.is_anonymous():
             from views import sidebar_widget
             return sidebar_widget(request)
         return None
 
     @classmethod
-    def get_header_link(kls, request):
+    def get_header_link(cls, request):
         if not request.user.is_anonymous():
             from views import header_link
             return header_link(request)
         return dict(text=_('Special'), link='')
 
     @classmethod
-    def get_profile_superuser_actions(kls, request, player):
+    def get_profile_superuser_actions(cls, request, player):
         return '<a class="button" href="%s">Special quest</a>' % reverse('specialquest_manage', args=(player.id,))
 
     @classmethod
-    def get_formulas(kls):
+    def get_formulas(cls):
         fs = []
-        quest_game = kls.get_instance()
+        quest_game = cls.get_instance()
         fs.append(dict(name='specialquest-passed', definition='gold={value}',
             owner=quest_game.game,
             description='Points earned when finishing a task. Arguments: value.')
@@ -170,7 +170,7 @@ class SpecialQuestGame(Game):
         return fs
 
     @classmethod
-    def get_profile_actions(kls, request, player):
+    def get_profile_actions(cls, request, player):
         url = reverse('specialquest_invite', args=(player.id,))
         if request.user.get_profile().id != player.id:
             squser = request.user.get_profile().get_extension(SpecialQuestUser)

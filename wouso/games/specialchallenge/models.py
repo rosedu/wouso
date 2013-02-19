@@ -1,4 +1,6 @@
 from django.db import models
+from django.template import RequestContext
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from wouso.core.game import Game
 from wouso.core.qpool import register_category
@@ -47,5 +49,6 @@ class SpecialChallengeGame(Game):
     @classmethod
     def get_category(cls):
         return Category.objects.get(name=cls.QPOOL_CATEGORY)
+
 
 register_category(SpecialChallengeGame.QPOOL_CATEGORY, SpecialChallengeGame)
