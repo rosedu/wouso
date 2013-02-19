@@ -23,6 +23,7 @@ class SpecialChallenge(models.Model):
     player_to = models.ForeignKey(Player, related_name='specialchallenges_to')
     status = models.SmallIntegerField(choices=STATUSES, default=STATUS_NEW)
     questions = models.ManyToManyField(Question, blank=True, default=None)
+    amount = models.IntegerField(default=0, help_text='Amount of points earned/lost after this challenge')
 
     @classmethod
     def create(cls, player_from, player_to):
