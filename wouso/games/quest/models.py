@@ -281,10 +281,10 @@ class QuestGame(Game):
         return quest
 
     @classmethod
-    def get_formulas(cls):
+    def get_formulas(kls):
         """ Returns a list of formulas used by qotd """
         fs = []
-        quest_game = cls.get_instance()
+        quest_game = kls.get_instance()
         fs.append(dict(name='quest-ok', definition='points={level}',
             owner=quest_game.game,
             description='Points earned when finishing a level. Arguments: level.')
@@ -304,14 +304,14 @@ class QuestGame(Game):
         return fs
 
     @classmethod
-    def get_sidebar_widget(cls, request):
+    def get_sidebar_widget(kls, request):
         if not request.user.is_anonymous():
             from views import sidebar_widget
             return sidebar_widget(request)
         return None
 
     @classmethod
-    def get_api(cls):
+    def get_api(kls):
         from api import QuestAdminHandler, QuestAdminUserHandler
         return {r'^quest/admin/$': QuestAdminHandler,
                 r'^quest/admin/quest=(?P<quest_id>\d+)/username=(?P<username>[^/]+)/$': QuestAdminUserHandler

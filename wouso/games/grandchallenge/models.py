@@ -394,7 +394,7 @@ class GrandChallengeGame(Game):
         return round
 
     @classmethod
-    def get_sidebar_widget(cls, request):
+    def get_sidebar_widget(kls, request):
         if not request.user.is_anonymous():
             from views import sidebar_widget
             return sidebar_widget(request)
