@@ -1,3 +1,4 @@
+import logging
 from django.db import models
 from django.core.urlresolvers import reverse
 from wouso.core.common import App, CachedItem
@@ -39,6 +40,16 @@ class Game(CachedItem, models.Model, App):
     def get_game_absolute_url(self):
         """ Return a tuple for django template system """
         return reverse(self.url) if self.url else ''
+
+    def get_real_object(self):
+        """ Find a class by name, and instantiate it
+        """
+        from . import get_games
+        for g in get_games():
+            if g.__name__ == self.name:
+                return g.get_instance()
+        logging.error('Could not find game class for self.name %s' % self.name)
+        return self
 
     def __unicode__(self):
         return self.name

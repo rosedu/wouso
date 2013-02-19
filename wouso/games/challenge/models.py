@@ -161,9 +161,6 @@ class Challenge(models.Model):
         user_from.last_launched = datetime.now()
         user_from.save()
 
-        if cls.WARRANTY:
-            # take 3 points from user_from
-            scoring.score(user_from, ChallengeGame, 'chall-warranty', external_id=challenge.id)
         return challenge
 
     @classmethod
@@ -175,6 +172,7 @@ class Challenge(models.Model):
         for q in questions_qs:
             c.questions.add(q)
 
+        c.manager.created()
         return c
 
     @staticmethod
@@ -204,6 +202,12 @@ class Challenge(models.Model):
     def participants(self):
         return (self.user_from, self.user_to)
 
+    @property
+    def manager(self):
+        if self.owner is None or self.owner.name == 'ChallengeGame':
+            return ChallengeGame.get_manager(self)
+        return self.owner.get_real_object().get_manager(self)
+
     def participant_for_player(self, player):
         player = player.get_extension(ChallengeUser)
         if self.user_from.user == player:
@@ -215,37 +219,15 @@ class Challenge(models.Model):
     def accept(self):
         self.status = 'A'
         self.save()
-        if self.WARRANTY:
-            # take warranty from user_to
-            scoring.score(self.user_to.user, ChallengeGame, 'chall-warranty', external_id=self.id)
+        self.manager.accept()
 
     def refuse(self, auto=False):
         self.status = 'R'
-        self.user_from.user.last_launched = datetime(1, 1, 1)
-        self.user_from.user.save()
-
-        # send activity signal
-        if auto:
-            signal_msg = ugettext_noop('has refused challenge from {chall_from} (expired)')
-        else:
-            signal_msg = ugettext_noop('has refused challenge from {chall_from}')
-        action_msg = 'chall-refused'
-        signals.addActivity.send(sender=None, user_from=self.user_to.user, \
-                                     user_to=self.user_from.user, \
-                                     message=signal_msg, \
-                                     arguments=dict(chall_from=self.user_from), \
-                                     action=action_msg, \
-                                     game=ChallengeGame.get_instance())
         self.save()
-        if self.WARRANTY:
-            # give warranty back to initiator
-            scoring.unset(self.user_from.user, ChallengeGame, 'chall-warranty', external_id=self.id)
+        self.manager.refuse(auto)
 
     def cancel(self):
-        if self.WARRANTY:
-            # give warranty back to initiator
-            scoring.unset(self.user_from.user, ChallengeGame, 'chall-warranty', external_id=self.id)
-
+        self.manager.cancel()
         self.user_from.user.last_launched = datetime(1, 1, 1)
         self.user_from.user.save()
         self.delete()
@@ -350,95 +332,18 @@ class Challenge(models.Model):
         """ Both players have played, save and score
         Notice the fact this is the only function where the scoring is affected
         """
-
-        for u in (self.user_to, self.user_from):
-            # always lose, you mofo
-            if u.user.magic.has_modifier('challenge-always-lose'):
-                u.score = -1
-
-        if self.user_to.score > self.user_from.score:
-            result = (self.user_to, self.user_from)
-        elif self.user_from.score > self.user_to.score:
-            result = (self.user_from, self.user_to)
-        else: #draw game
-            result = 'draw'
+        result = self.manager.get_result()
 
         if result == 'draw':
             self.status = 'D'
-            # send activty signal
-            action_msg = "chall-draw"
-            signal_msg = ugettext_noop('draw result between {user_to} and {user_from}:\n{extra}')
-            signals.addActivity.send(sender=None, user_from=self.user_to.user, \
-                                     user_to=self.user_from.user, \
-                                     message=signal_msg, \
-                                     arguments=dict(user_to=self.user_to, user_from=self.user_from,
-                                                    extra=self.extraInfo(self.user_from, self.user_to)),\
-                                     action=action_msg, \
-                                     game=ChallengeGame.get_instance())
         else:
             self.status = 'P'
             self.user_won, self.user_lost = result
             self.winner = self.user_won.user
-            # send activty signal
-            signal_msg = ugettext_noop('won challenge with {user_lost}: {extra}')
-            action_msg = "chall-won"
-            signals.addActivity.send(sender=None, user_from=self.user_won.user, \
-                                     user_to=self.user_lost.user, \
-                                     message=signal_msg,
-                                     arguments=dict(user_lost=self.user_lost, id=self.id,
-                                                    extra=self.extraInfo(self.user_won, self.user_lost)), \
-                                     action=action_msg, \
-                                     game=ChallengeGame.get_instance())
         self.save()
 
-        if self.SCORING:
-            self.score_players(result)
-
-    def score_players(self, result):
-        """
-        Called from played
-        """
-        for u in (self.user_to, self.user_from):
-            # affect bonuses
-            if u.user.magic.has_modifier('challenge-affect-scoring'):
-                u.percents = u.user.magic.modifier_percents('challenge-affect-scoring')
-            else:
-                u.percents = 100
-
-        if result == 'draw':
-            scoring.score(self.user_to.user, ChallengeGame, 'chall-draw', percents=self.user_to.percents)
-            scoring.score(self.user_from.user, ChallengeGame, 'chall-draw', percents=self.user_from.percents)
-        else:
-            diff_race = self.user_won.user.race != self.user_lost.user.race
-            diff_class = self.user_won.user.group != self.user_lost.user.group
-            diff_race = 1 if diff_race else 0
-            diff_class = 1 if diff_class else 0
-            winner_points = self.user_won.user.points
-            loser_points = self.user_lost.user.points
-
-            if self.user_won.user.magic.has_modifier('challenge-affect-scoring-won'):
-                self.user_won.percents += self.user_won.user.magic.modifier_percents('challenge-affect-scoring-won')
-
-            if self.WARRANTY:
-                # warranty not affected by percents
-                scoring.score(self.user_won.user, ChallengeGame, 'chall-warranty-return', external_id=self.id)
-
-            scoring.score(self.user_won.user, ChallengeGame, 'chall-won',
-                          external_id=self.id, percents=self.user_won.percents,
-                          points=self.user_won.score, points2=self.user_lost.score,
-                          different_race=diff_race, different_class=diff_class,
-                          winner_points=winner_points, loser_points=loser_points,
-            )
-            #Check for spell evade
-            if self.user_lost.user.magic.has_modifier('challenge-evade'):
-                random.seed()
-                if random.random() < 0.33:
-                    #He's lucky,no penalty,return warranty
-                    scoring.score(self.user_lost.user, ChallengeGame, 'chall-warranty-return', external_id=self.id)
-                    Message.send(sender=None, receiver=self.user_lost.user, subject="Challenge evaded", text="You have just evaded losing points in a challenge")
-
-            scoring.score(self.user_lost.user, ChallengeGame, 'chall-lost',
-                          external_id=self.id, points=self.user_lost.score, points2=self.user_lost.score)
+        self.manager.handle_result()
+        self.manager.score()
 
     @classmethod
     def _calculate_points(cls, responses):
@@ -534,6 +439,154 @@ class Challenge(models.Model):
             self.date,
             self.status,
             self.questions.count())
+
+
+class ChallengeManager(object):
+    def __init__(self, challenge):
+        self.challenge = challenge
+
+    def created(self):
+        pass
+
+    def accept(self):
+        pass
+
+    def refuse(self):
+        raise NotImplementedError
+
+    def cancel(self):
+        raise NotImplementedError
+
+    def get_result(self):
+        raise NotImplementedError
+
+    def handle_result(self):
+        """ Called after status is one of: 'D', 'P'
+        """
+        pass
+
+    def score(self):
+        raise NotImplementedError
+
+class DefaultChallengeManager(ChallengeManager):
+    def created(self):
+        if self.challenge.WARRANTY:
+            # take 3 points from user_from
+            scoring.score(self.challenge.user_from, ChallengeGame, 'chall-warranty', external_id=self.challenge.id)
+
+    def accept(self):
+        if self.challenge.WARRANTY:
+            # take warranty from user_to
+            scoring.score(self.challenge.user_to.user, ChallengeGame, 'chall-warranty', external_id=self.challenge.id)
+
+    def refuse(self, auto):
+        self.challenge.user_from.user.last_launched = datetime(1, 1, 1)
+        self.challenge.user_from.user.save()
+
+        # send activity signal
+        if auto:
+            signal_msg = ugettext_noop('has refused challenge from {chall_from} (expired)')
+        else:
+            signal_msg = ugettext_noop('has refused challenge from {chall_from}')
+        action_msg = 'chall-refused'
+        signals.addActivity.send(sender=None, user_from=self.challenge.user_to.user, \
+                                     user_to=self.challenge.user_from.user, \
+                                     message=signal_msg, \
+                                     arguments=dict(chall_from=self.challenge.user_from), \
+                                     action=action_msg, \
+                                     game=ChallengeGame.get_instance())
+        self.challenge.save()
+        if self.challenge.WARRANTY:
+            # give warranty back to initiator
+            scoring.unset(self.challenge.user_from.user, ChallengeGame, 'chall-warranty', external_id=self.challenge.id)
+
+    def cancel(self):
+        if self.challenge.WARRANTY:
+            # give warranty back to initiator
+            scoring.unset(self.challenge.user_from.user, ChallengeGame, 'chall-warranty', external_id=self.challenge.id)
+
+    def get_result(self):
+        for u in (self.challenge.user_to, self.challenge.user_from):
+            if u.user.magic.has_modifier('challenge-always-lose'):
+                u.score = -1
+
+        if self.challenge.user_to.score > self.challenge.user_from.score:
+            result = (self.challenge.user_to, self.challenge.user_from)
+        elif self.challenge.user_from.score > self.challenge.user_to.score:
+            result = (self.challenge.user_from, self.challenge.user_to)
+        else: #draw game
+            result = 'draw'
+
+        return result
+
+    def handle_result(self):
+        if self.challenge.status == 'D':
+            action_msg = "chall-draw"
+            signal_msg = ugettext_noop('draw result between {user_to} and {user_from}:\n{extra}')
+            signals.addActivity.send(sender=None, user_from=self.challenge.user_to.user, \
+                                     user_to=self.challenge.user_from.user, \
+                                     message=signal_msg, \
+                                     arguments=dict(user_to=self.challenge.user_to, user_from=self.challenge.user_from,
+                                                    extra=self.challenge.extraInfo(self.challenge.user_from, self.challenge.user_to)),\
+                                     action=action_msg, \
+                                     game=ChallengeGame.get_instance())
+        elif self.challenge.status == 'P':
+            action_msg = "chall-won"
+            signal_msg = ugettext_noop('won challenge with {user_lost}: {extra}')
+            signals.addActivity.send(sender=None, user_from=self.challenge.user_won.user, \
+                                     user_to=self.challenge.user_lost.user, \
+                                     message=signal_msg,
+                                     arguments=dict(user_lost=self.challenge.user_lost, id=self.challenge.id,
+                                                    extra=self.challenge.extraInfo(self.challenge.user_won, self.challenge.user_lost)), \
+                                     action=action_msg, \
+                                     game=ChallengeGame.get_instance())
+
+    def score(self):
+        if not self.challenge.SCORING:
+            return
+
+        for u in (self.challenge.user_to, self.challenge.user_from):
+            # affect bonuses
+            if u.user.magic.has_modifier('challenge-affect-scoring'):
+                u.percents = u.user.magic.modifier_percents('challenge-affect-scoring')
+            else:
+                u.percents = 100
+
+        if self.challenge.status == 'D':
+            scoring.score(self.challenge.user_to.user, ChallengeGame, 'chall-draw', percents=self.challenge.user_to.percents)
+            scoring.score(self.challenge.user_from.user, ChallengeGame, 'chall-draw', percents=self.challenge.user_from.percents)
+        else:
+            diff_race = self.challenge.user_won.user.race != self.challenge.user_lost.user.race
+            diff_class = self.challenge.user_won.user.group != self.challenge.user_lost.user.group
+            diff_race = 1 if diff_race else 0
+            diff_class = 1 if diff_class else 0
+            winner_points = self.challenge.user_won.user.points
+            loser_points = self.challenge.user_lost.user.points
+
+            if self.challenge.user_won.user.magic.has_modifier('challenge-affect-scoring-won'):
+                self.challenge.user_won.percents += self.challenge.user_won.user.magic.modifier_percents('challenge-affect-scoring-won')
+
+            if self.challenge.WARRANTY:
+                # warranty not affected by percents
+                scoring.score(self.challenge.user_won.user, ChallengeGame, 'chall-warranty-return', external_id=self.challenge.id)
+
+            scoring.score(self.challenge.user_won.user, ChallengeGame, 'chall-won',
+                          external_id=self.challenge.id, percents=self.challenge.user_won.percents,
+                          points=self.challenge.user_won.score, points2=self.challenge.user_lost.score,
+                          different_race=diff_race, different_class=diff_class,
+                          winner_points=winner_points, loser_points=loser_points,
+            )
+            #Check for spell evade
+            if self.challenge.user_lost.user.magic.has_modifier('challenge-evade'):
+                random.seed()
+                if random.random() < 0.33:
+                    #He's lucky,no penalty,return warranty
+                    scoring.score(self.challenge.user_lost.user, ChallengeGame, 'chall-warranty-return', external_id=self.challenge.id)
+                    Message.send(sender=None, receiver=self.challenge.user_lost.user, subject="Challenge evaded", text="You have just evaded losing points in a challenge")
+
+            scoring.score(self.challenge.user_lost.user, ChallengeGame, 'chall-lost',
+                          external_id=self.challenge.id, points=self.challenge.user_lost.score, points2=self.challenge.user_lost.score)
+
 
 class ChallengeGame(Game):
     """ Each game must extend Game """
@@ -670,6 +723,9 @@ class ChallengeGame(Game):
                 r'^challenge/(?P<challenge_id>\d+)/(?P<action>refuse|cancel|accept)/$': ChallengeHandler,
         }
 
+    @classmethod
+    def get_manager(cls, challenge):
+        return DefaultChallengeManager(challenge)
 
 # Hack for having participants in sync
 def challenge_post_delete(sender, instance, **kwargs):

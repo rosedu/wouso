@@ -17,6 +17,7 @@ class SecurityRulesTest(WousoTest):
 
     def test_rule_challenge_was_set_up(self):
         #run a challenge
+        Challenge.WARRANTY = False
         chall = Challenge.create(user_from=self.chall_user,
                     user_to=self.chall_user2, ignore_questions=True)
 
