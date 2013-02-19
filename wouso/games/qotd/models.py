@@ -150,3 +150,8 @@ class QotdGame(Game):
     def get_modifiers(cls):
         return ['qotd-blind', #player cannot launch QuestionOfTheDay
                 ]
+
+    @classmethod
+    def get_history(cls):
+        qs = Schedule.objects.all().order_by('-day')[:7]
+        return qs

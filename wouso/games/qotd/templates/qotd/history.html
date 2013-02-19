@@ -1,0 +1,16 @@
+{% extends 'qotd/index.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Recent questions of the day' %}{% endblock %}
+
+{% block sectioncontent %}
+    <ul>
+        {% for q in history %}
+            <li><em>{{ q.date }}</em>
+                <p>{{ q.question.text }}</p>
+            </li>
+        {% empty %}
+            <li class="empty">{% trans 'No questions' %}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -25,10 +25,12 @@
 <div class="actions">
 <button class="default" type="submit">Answer</button>
 </div>
-{% csrf_token %} 
+{% csrf_token %}
 </form>
 {% else %}
-    No question for today.
+    {% trans 'No question for today.' %}
 {% endif %}
+
+<p><a href="{% url qotd_history_view %}">{% trans 'History' %}</a></p>
 
 {% endblock %}

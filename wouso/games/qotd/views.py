@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.http import HttpResponseRedirect
@@ -18,9 +19,9 @@ def index(request):
     qotd_user = profile.get_extension(QotdUser)
 
     if qotd_user.magic.has_modifier('qotd-blind'):
-        return render_to_response('qotd/index.html', {"error":_("You have been blinded,you cannot answer to the Question of the Day")}, context_instance=RequestContext(request))
-
-    if not qotd_user.has_question:
+        messages.error(request, _("You have been blinded,you cannot answer to the Question of the Day"))
+        return redirect('games.qotd.views.history')
+    elif not qotd_user.has_question:
         qotd = QotdGame.get_for_today()
         qotd_user.set_question(qotd)
     else:
@@ -78,6 +79,12 @@ def done(request):
     return render_to_response('qotd/done.html',
             {'question': qotd, 'choice': ans, 'valid': valid,},
             context_instance=RequestContext(request))
+
+
+@login_required
+def history(request):
+    return render_to_response('qotd/history.html', {'history': QotdGame.get_history()}, context_instance=RequestContext(request))
+
 
 def sidebar_widget(request):
     qotd = QotdGame.get_for_today()

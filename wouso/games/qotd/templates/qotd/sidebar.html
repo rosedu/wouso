@@ -20,6 +20,7 @@
         {% endif %}
     {% else %}
         {% trans 'No question for today' %}.
+        <a href="{% url qotd_history_view %}">{% trans 'History' %}</a>
     {% endif %}
 {% endif %}
 {% endblock %}
