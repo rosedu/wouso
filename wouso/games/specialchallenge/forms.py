@@ -1,10 +1,17 @@
 from django import forms
 from wouso.core.qpool.models import Question, Answer
 from wouso.core.user.models import Player
+from models import SpecialChallenge
 
 
 class CreateForm(forms.Form):
     player_to = forms.ModelChoiceField(Player.objects.all())
+
+
+class ConfigureForm(forms.ModelForm):
+    class Meta:
+        model = SpecialChallenge
+        fields = ('amount', )
 
 
 class QuestionForm(forms.ModelForm):

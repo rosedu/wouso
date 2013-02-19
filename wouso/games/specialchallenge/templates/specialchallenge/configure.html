@@ -1,0 +1,17 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+{% load user %}
+
+{% block sectiontitle %}{% trans 'Special Challenge' %} - {% trans 'Create' %}{% endblock %}
+
+{% block sectioncontent %}
+    <div class="">
+        {{ form.errors }}
+    </div>
+    <form method="post" action="">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <button type="submit">{% trans 'Submit' %}</button>
+    </form>
+    <a class="button" href="{% url specialchallenge_index %}">{% trans 'Back' %}</a>
+{% endblock %}

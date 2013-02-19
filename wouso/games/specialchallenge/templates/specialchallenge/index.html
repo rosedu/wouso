@@ -1,5 +1,6 @@
 {% extends 'interface/section_base.html' %}
 {% load i18n %}
+{% load user %}
 
 {% block sectiontitle %}{% trans 'Special Challenge' %}{% endblock %}
 
@@ -10,15 +11,18 @@
         <tr>
             <th>{% trans 'Challenge' %}</th>
             <th>{% trans 'Status' %}</th>
+            <th>{% trans 'Amount' %}</th>
             <th>{% trans 'Questions' %}</th>
-            <th>{% trans 'Actions' %}</th>
+            <th colspan="2">{% trans 'Actions' %}</th>
         </tr>
         {% for c in player.specialchallenges_from.all %}
         <tr>
             <td>{{ c }}</td>
             <td>{% trans c.get_status_display %}</td>
+            <td>{% coin_amount c.amount %}</td>
             <td>{{ c.questions.all.count }}</td>
             <td><a class="button button-min" href="{% url specialchallenge_challenge c.id %}">{% trans 'view' %}</a></td>
+            <td><a class="button button-min" href="{% url specialchallenge_configure c.id %}">{% trans 'conf' %}</a></td>
         </tr>
         {% endfor %}
     </table>

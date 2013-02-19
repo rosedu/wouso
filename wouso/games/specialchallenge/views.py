@@ -2,7 +2,7 @@
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import TemplateView, FormView, DetailView, UpdateView, DeleteView
-from forms import CreateForm, QuestionForm
+from forms import CreateForm, QuestionForm, ConfigureForm
 from models import SpecialChallenge, SpecialChallengeGame
 from wouso.core.qpool.models import Question
 
@@ -20,6 +20,16 @@ class CreateChallenge(FormView):
         player_to = form.cleaned_data['player_to']
         player_from = self.request.user.get_profile()
         chal = SpecialChallenge.create(player_from, player_to)
+        return redirect('specialchallenge_configure', challenge=chal.id)
+
+
+class ConfigureChallenge(UpdateView):
+    template_name = 'specialchallenge/configure.html'
+    model = SpecialChallenge
+    form_class = ConfigureForm
+
+    def form_valid(self, form):
+        chal = form.save()
         return redirect('specialchallenge_add_question', challenge=chal.id)
 
 
