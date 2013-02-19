@@ -1,0 +1,9 @@
+{% extends 'interface/sidebar_widget.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Special Challenge' %}{% endblock %}
+
+{% block content %}
+    {% trans 'Challenge a player to a custom challenge defined by you.' %}
+    <a class="" href="{% url specialchallenge_index %}">{% trans 'More...' %}</a>
+{% endblock %}
