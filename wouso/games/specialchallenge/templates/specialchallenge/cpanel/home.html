@@ -1,0 +1,32 @@
+{% extends 'cpanel/index.html' %}
+{% block scripts %}
+    <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
+{% endblock %}
+
+{% block sectiontitle %}Special Challenges{% endblock %}
+
+{% block sectioncontent %}
+    <table>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Player</th>
+            <th>To</th>
+            <th>Questions</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for c in object_list %}
+        <tr>
+            <td>{{ c.id }}</td>
+            <td>{{ c.player_from }}</td>
+            <td>{{ c.player_to }}</td>
+            <td>{{ c.questions.all.count }}</td>
+            <td>{{ c.get_status_display }}</td>
+            <td><a href="{% url sc_challenge c.pk %}">view</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

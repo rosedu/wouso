@@ -1,0 +1,18 @@
+{% extends 'specialchallenge/cpanel/home.html' %}
+
+{% block sectioncontent %}
+    <h2>Specialchallenge #{{ object.id }}</h2>
+    <ol>
+        {% for question in object.questions.all %}
+        <li>{{ question.text }}</li>
+        {% endfor %}
+    </ol>
+
+    <h3>Update</h3>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+
+{% endblock %}
