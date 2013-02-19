@@ -1,3 +1,5 @@
+# coding=utf-8
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import TestCase
 from wouso.core.magic.models import Artifact
@@ -67,3 +69,14 @@ class PlayerCacheTest(WousoTest):
         self.assertEqual(p.group, None)
         p.set_group(g)
         self.assertEqual(p.group, g)
+
+
+class PlayerCreateTest(WousoTest):
+    """ Test that creating a player with diacritics in name, won't break the site
+    """
+    def test_unicode(self):
+        settings.DISPLAY_NAME = '{first_name} {last_name}'
+        try:
+            User.objects.create(first_name=u'Țuțurel', last_name=u'Șănilă')
+        except (UnicodeEncodeError, UnicodeDecodeError):
+            self.assertTrue(False, 'Unicode names fail')

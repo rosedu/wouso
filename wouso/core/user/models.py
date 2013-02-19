@@ -310,7 +310,7 @@ def user_post_save(sender, instance, **kwargs):
 models.signals.post_save.connect(user_post_save, User)
 
 def update_display_name(player):
-    display_name = settings.DISPLAY_NAME.format(first_name=player.user.first_name,
+    display_name = unicode(settings.DISPLAY_NAME).format(first_name=player.user.first_name,
                                                 last_name=player.user.last_name,
                                                 nickname=player.nickname).strip()
     player.full_name = display_name
