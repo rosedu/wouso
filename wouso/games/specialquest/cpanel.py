@@ -95,8 +95,8 @@ def manage_player(request, player_id):
                 scoring.score(player, None, 'penalty-points', external_id=request.user.get_profile().id, points=amount)
                 message = 'Successfully punished'
 
-    bonuses = scoring.History.objects.filter(user=player, formula__id='bonus-gold').order_by('-timestamp')
-    penalties = scoring.History.objects.filter(user=player, formula__id='penalty-points').order_by('-timestamp')
+    bonuses = scoring.History.objects.filter(user=player, formula__name='bonus-gold').order_by('-timestamp')
+    penalties = scoring.History.objects.filter(user=player, formula__name='penalty-points').order_by('-timestamp')
 
     return render_to_response('specialquest/cpanel_manage.html',
                     dict(mplayer=player, tasks_not_done=tasks_not_done, message=message, error=error,

@@ -849,7 +849,7 @@ def infraction_history(request, user_id):
 def infraction_recheck(request):
     try:
         inf_list = History.objects.filter(coin__name='penalty',
-                formula__id='chall-was-set-up-infraction').delete()
+                formula__name='chall-was-set-up-infraction').delete()
     except:
         pass
 

@@ -82,7 +82,7 @@ def final_results(request):
         level_data = {'id': level, 'users': []}
         for user in QuestUser.objects.filter(current_quest=final, current_level=level):
             # Check finalquest bonus amount
-            amount = History.objects.filter(user=user.user, formula__id='finalquest-ok').aggregate(sum=Sum('amount'))['sum']
+            amount = History.objects.filter(user=user.user, formula__name='finalquest-ok').aggregate(sum=Sum('amount'))['sum']
             user.amount = amount
             level_data['users'].append(user)
         levels.append(level_data)
