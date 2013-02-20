@@ -95,12 +95,13 @@ def sidebar(request):
             logging.exception(e)
 
     # Request blocks from apps
-    for app in (Top,):
+    for app in get_apps():
         try:
             w = app.get_sidebar_widget(request)
             if w:
                 sidebar.append(w)
         except Exception as e:
+            print e
             logging.exception(e)
 
     return {'sidebar': sidebar}

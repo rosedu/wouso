@@ -1,5 +1,5 @@
 from django.db.models import Sum
-from django.template import RequestContext
+from django.template import RequestContext, Context
 import logging
 import sys
 from datetime import datetime, timedelta
@@ -225,7 +225,12 @@ class Top(App):
         top5 = top5.order_by('-points')[:10]
         is_top = request.get_full_path().startswith('/top/')
         return render_to_string('top/sidebar.html',
-            {'topusers': top5, 'is_top': is_top, 'top': Top, 'config_disable_challenge_top': BoolSetting.get('disable-Challenge-Top').get_value()}
+            {'topusers': top5,
+             'is_top': is_top,
+             'top': Top,
+             'coin_top_setting': kls.coin_top_settings(),
+             'config_disable_challenge_top': BoolSetting.get('disable-Challenge-Top').get_value(),
+            }
         )
 
     @classmethod
@@ -263,10 +268,9 @@ class Top(App):
             hs.save()
 
         # Check for coin tops
-        coin_tops = Setting.get('top-coins').get_value().split(',')
-        if coin_tops:
-            for c in coin_tops:
-                cls.coin_top(c, today, stdout=stdout)
+        coin_tops = cls.coin_top_settings()
+        for c in coin_tops:
+            cls.coin_top(c, today, stdout=stdout)
 
         # I don't think these are necessary, so I'm disabling them for now
         return
@@ -304,6 +308,14 @@ class Top(App):
             hs.save()
 
         stdout.write('\n')
+
+    @classmethod
+    def coin_top_settings(cls):
+        """
+        Return a list of coins for which we calculate the top
+        """
+        return Setting.get('top-coins').get_value().split(',') or []
+
 
 #def user_post_save(sender, instance, **kwargs):
 #    profile = instance.get_profile()
