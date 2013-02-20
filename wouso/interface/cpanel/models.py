@@ -30,11 +30,15 @@ class Switchboard(ConfigGroup):
     def props(self):
         p = []
         for a in ('Qproposal', 'Top', 'Magic', 'Chat', 'Private-Chat', 'Bazaar', 'Bazaar-Exchange', 'Contactbox', 'Chat-Archive', 'Statistics',
-                  'Challenge-Top'):
+                  'Challenge-Top', 'Top-Pyramid'):
             p.append(BoolSetting.get('disable-%s' % a))
 
         p.append(BoolSetting.get('disable_login'))
         p.append(BoolSetting.get('enable_header_autoreload'))
+        coin_tops = Setting.get('top-coins')
+        coin_tops.help_text = 'Coin names, comma separated'
+        #coin_tops.choices = [(g.name, unicode(g)) for g in Coin.objects.all()]
+        p.append(coin_tops)
 
         return p
 

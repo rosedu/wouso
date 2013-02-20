@@ -22,8 +22,11 @@ class Setting(models.Model):
 
     def form(self):
         """ Get HTML form input and label. """
-        return '<label for="%s">%s</label><textarea name="%s" id="%s">%s</textarea>' \
+        html = '<label for="%s">%s</label><textarea name="%s" id="%s">%s</textarea>' \
                     % (self.name, self.title, self.name, self.name, self.value)
+        if hasattr(self, 'help_text'):
+            html += '<br/><em>' + self.help_text + '</em>'
+        return html
 
     @classmethod
     def get(cls, name):

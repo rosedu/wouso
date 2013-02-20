@@ -8,7 +8,9 @@
 {% for sgroup in settings %}
     <fieldset><legend>{{ sgroup.name }}:</legend>
     {% for s in sgroup.props %}
-        {% autoescape off %}{{ s.form }}{% endautoescape %}
+        {% autoescape off %}
+            {{ s.form }}
+        {% endautoescape %}
         <br/>
     {% endfor %}
     </fieldset>
