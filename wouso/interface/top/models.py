@@ -7,7 +7,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from wouso.core.common import App
-from wouso.core.config.models import BoolSetting
+from wouso.core.config.models import BoolSetting, Setting
+from wouso.core.scoring import Coin
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.games.challenge.models import ChallengeUser
 
@@ -115,11 +116,11 @@ Player.register_extension('top', TopUser)
 
 
 class NewHistory(models.Model):
-    TYPES = (('u', 'user'), ('r', 'race'), ('g', 'group'))
+    TYPES = (('u', 'user'), ('r', 'race'), ('g', 'group'), ('c', 'coin'))
 
     object = models.IntegerField(help_text='Object id, user, race, group')
     object_type = models.CharField(max_length=1, choices=TYPES, default='u')
-    relative_to = models.IntegerField(help_text='Relative to id, race or group')
+    relative_to = models.IntegerField(help_text='Relative to id, race or group', blank=True, null=True)
     relative_to_type = models.CharField(max_length=1, choices=TYPES, default=None, blank=True, null=True)
 
     position = models.IntegerField(default=0)
@@ -128,8 +129,9 @@ class NewHistory(models.Model):
 
     @classmethod
     def record(cls, obj, date, relative_to=None):
+        relative_to = relative_to.id if relative_to else None
         return cls.objects.get_or_create(object=obj.id, object_type=cls._get_type(obj), date=date,
-                                  relative_to=relative_to.id, relative_to_type=cls._get_type(relative_to))[0]
+                                  relative_to=relative_to, relative_to_type=cls._get_type(relative_to))[0]
 
     @classmethod
     def get_obj_position(cls, obj, relative_to=None):
@@ -171,6 +173,8 @@ class NewHistory(models.Model):
             return 'r'
         if isinstance(object, PlayerGroup) or object is PlayerGroup:
             return 'g'
+        if isinstance(object, Coin):
+            return 'c'
         return None
 
 
@@ -205,8 +209,8 @@ class History(models.Model): # TODO: deprecate (maybe), check if NewHistory cove
     def __unicode__(self):
         return u"%s %s at %s, position: %d, points: %f" % ('[%s]' % self.relative_to if self.relative_to else '',self.user if self.user else self.group, self.date, self.position, self.points)
 
-class Top(App):
 
+class Top(App):
     @classmethod
     def get_sidebar_widget(kls, request):
         top5 = TopUser.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
@@ -250,6 +254,12 @@ class Top(App):
             hs.position, hs.points = i + 1, rd[1]
             hs.save()
 
+        # Check for coin tops
+        coin_tops = Setting.get('top-coins').get_value().split(',')
+        if coin_tops:
+            for c in coin_tops:
+                cls.coin_top(c, today, stdout=stdout)
+
         # I don't think these are necessary, so I'm disabling them for now
         return
         # In group ladder
@@ -267,6 +277,25 @@ class Top(App):
                 hs.position, hs.points = i + 1, u.points
                 hs.save()
 
+    @classmethod
+    def coin_top(cls, coin, now, stdout=sys.stdout):
+        """
+        Calculate and record a new top for a coin
+        """
+        coin_obj = Coin.get(coin)
+        if not coin_obj:
+            stdout.write('No such coin %s' % coin)
+            return
+
+        stdout.write(' Calculating coin %s top...' % coin)
+        players = list(Player.objects.filter(race__can_play=True))
+        players.sort(lambda a,b: a.coins.get(coin) - b.coins.get(coin))
+        for i, p in enumerate(players):
+            hs = NewHistory.record(p, now, relative_to=coin_obj)
+            hs.position, hs.points = i + 1, p.coins.get(coin)
+            hs.save()
+
+        stdout.write('\n')
 
 #def user_post_save(sender, instance, **kwargs):
 #    profile = instance.get_profile()
