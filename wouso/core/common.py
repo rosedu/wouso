@@ -90,7 +90,7 @@ class Item(object):
             name.save()
             obj = name
         elif isinstance(name, dict):
-            obj = cls.objects.create(**name)
+            obj = cls.objects.get_or_create(**name)[0]
         else:
             obj = cls.objects.get_or_create(name=name, **data)[0]
         return obj
