@@ -281,6 +281,10 @@ class QuestGame(Game):
         return quest
 
     @classmethod
+    def get_staff_and_permissions(cls):
+        return [{'name': 'Quest Staff', 'permissions': ['change_quest']}]
+
+    @classmethod
     def get_formulas(kls):
         """ Returns a list of formulas used by qotd """
         fs = []
