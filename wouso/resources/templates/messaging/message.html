@@ -13,7 +13,7 @@
             <th width="100%">Subject</th>
             <th>Date</th>
         </tr>
-        {% for msg in messages %}
+        {% for msg in messages_list %}
             <tr {% if msg.read %}class="read"{% else %}class="unread"{% endif %}>
 		        <td><a class="button-min" href="{% url delete_msg msg.id%}" onclick="return confirm('really?');">✕</a></td>
                 {% if box != 'sent' %}

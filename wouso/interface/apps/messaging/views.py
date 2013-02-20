@@ -35,7 +35,7 @@ def home(request, quiet=None, box=None, page=u'0'):
 
     return render_to_response(template,
                               {'user': request.user,
-                               'messages': messages,
+                               'messages_list': messages,
                                'box': box,
                                },
                               context_instance=RequestContext(request))
