@@ -31,6 +31,10 @@ class Coin(CachedItem, models.Model):
             return int(round(amount))
         return amount
 
+    def __unicode__(self):
+        return self.title or self.name
+
+
 class Formula(Item, models.Model):
     """ Define the way coin amounts are given to the user, based
     on keyword arguments formulas.
@@ -57,6 +61,7 @@ class Formula(Item, models.Model):
             formula = super(Formula, cls).get(default_string)
             return formula
         return formula
+
 
 class History(models.Model):
     """ Scoring history keeps track of scoring events per user, saving
