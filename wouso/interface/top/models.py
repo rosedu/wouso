@@ -129,9 +129,9 @@ class NewHistory(models.Model):
 
     @classmethod
     def record(cls, obj, date, relative_to=None):
-        relative_to = relative_to.id if relative_to else None
+        relative_to_id = relative_to.id if relative_to else None
         return cls.objects.get_or_create(object=obj.id, object_type=cls._get_type(obj), date=date,
-                                  relative_to=relative_to, relative_to_type=cls._get_type(relative_to))[0]
+                                  relative_to=relative_to_id, relative_to_type=cls._get_type(relative_to))[0]
 
     @classmethod
     def get_obj_position(cls, obj, relative_to=None):
@@ -164,6 +164,14 @@ class NewHistory(models.Model):
         Return the latest position of this group
         """
         return cls.get_obj_position(group, relative_to)
+
+    @classmethod
+    def get_coin_top(cls, coin):
+        try:
+            last_day = NewHistory.objects.filter(relative_to_type='c', relative_to=coin.id).order_by('-date')[0]
+        except IndexError:
+            return NewHistory.objects.none()
+        return NewHistory.objects.filter(date=last_day.date, relative_to_type='c', relative_to=coin.id)
 
     @classmethod
     def _get_type(cls, object):

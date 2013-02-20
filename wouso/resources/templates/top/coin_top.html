@@ -1,0 +1,36 @@
+{% extends 'top/maintop.html' %}
+{% load artifacts %}
+{% load i18n %}
+{% load user %}
+
+{% block title %}{% block sectiontitle %}{% trans 'Top for' %} {{ coin }}{% endblock %}{% endblock %}
+
+{% block sectioncontent %}
+    {% if top.disabled and not user.get_profile.in_staff_group %}
+        <p>{% trans 'Top has been disabled.' %}</p>
+    {% else %}
+        <table id="clasament" class="custom">
+            <tr>
+                <th>#</th>
+                <th colspan="2" width = "100%" align=left>{% trans 'Player' %}</th>
+                <th>{{ coin }}</th>
+            </tr>
+
+            {% for hs in top %}
+                <tr>
+                    <td>{{ forloop.counter|add:page_start }}</td>
+                    <td>
+                        <a href="{% url player_profile hs.object.id %}" class="player-avatar-small">
+                            <img class="avatar small player-avatar-image" src="{% player_avatar hs.object %}&s=24" />
+                            <div class="player-avatar-race player-avatar-race-{{ hs.object.race_name|lower }}"></div>
+                        </a>
+                    </td>
+                    <td width="100%">
+                        {% player hs.object %}
+                    </td>
+                    <td>{% coin_amount hs.points coin %}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endblock %}

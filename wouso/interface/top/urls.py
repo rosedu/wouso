@@ -7,6 +7,7 @@ urlpatterns = patterns('wouso.interface.top.views',
     url(r'^challenge/$', 'challenge_top', name='challenge_top'),
     url(r'^challenge/(?P<sortcritno>\d+)/(?P<pageno>\d+)/$', 'challenge_top', name='challenge_top_arg'),
     url(r'^classes/$', 'topclasses', name='top_classes'),
+    url(r'^coin/(?P<coin>\w+)/$', 'topcoin', name='top_coin'),
     # toptype = 0 means overall top
     # toptype = 1 means top for 1 week
     # sortcrit = 0 means sort by points descending

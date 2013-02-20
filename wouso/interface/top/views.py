@@ -1,11 +1,12 @@
 # Create your views here.
+from wouso.core.scoring import Coin
 from wouso.core.user.models import  Race
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import Http404
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from wouso.core.user.models import PlayerGroup
-from wouso.interface.top.models import  TopUser, Top
+from wouso.interface.top.models import  TopUser, Top, NewHistory
 
 PERPAGE = 20
 TOPGROUPS_NO = 5
@@ -121,3 +122,14 @@ def challenge_top(request, sortcritno='0', pageno=1):
                     'top': Top
                     }, context_instance=RequestContext(request))
 
+def topcoin(request, coin):
+    coin_obj = Coin.get(coin)
+    if coin_obj is None:
+        raise Http404
+
+    topcoin = NewHistory.get_coin_top(coin_obj)
+
+    return render_to_response('top/coin_top.html',
+                {'top': topcoin, 'coin': coin_obj, 'page_start': 0},
+                context_instance=RequestContext(request)
+    )
