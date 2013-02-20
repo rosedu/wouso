@@ -171,7 +171,7 @@ class NewHistory(models.Model):
             last_day = NewHistory.objects.filter(relative_to_type='c', relative_to=coin.id).order_by('-date')[0]
         except IndexError:
             return NewHistory.objects.none()
-        return NewHistory.objects.filter(date=last_day.date, relative_to_type='c', relative_to=coin.id)
+        return NewHistory.objects.filter(date=last_day.date, relative_to_type='c', relative_to=coin.id).order_by('-position')
 
     @classmethod
     def _get_type(cls, object):
