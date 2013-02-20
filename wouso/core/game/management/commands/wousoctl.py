@@ -5,7 +5,7 @@ from optparse import make_option
 from wouso.core.magic.utils import setup_magic
 from wouso.core.scoring import check_setup, setup_scoring
 from wouso.core.user.models import update_display_name, Player
-from wouso.core.user.utils import setup_user_groups
+from wouso.core.user.utils import setup_user_groups, setup_staff_groups
 
 
 def update_all_display_names():
@@ -78,6 +78,7 @@ class Command(BaseCommand):
             self.stdout.write('\n')
             self.stdout.write('Setting up user groups...')
             setup_user_groups()
+            setup_staff_groups()
             self.stdout.write('\n')
             self.stdout.write('Setting up magic...')
             setup_magic()

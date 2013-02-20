@@ -28,6 +28,10 @@ class Game(CachedItem, models.Model, App):
         return Game.objects.get(name=name)
 
     @classmethod
+    def get_staff_and_permissions(cls):
+        return []
+
+    @classmethod
     def get_formulas(cls):
         """ Returns a list of formulas used by the game """
         return []
