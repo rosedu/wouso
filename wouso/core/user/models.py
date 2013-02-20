@@ -27,7 +27,7 @@ class Race(models.Model):
     def points(self):
         """ Sum of race members points
         """
-        return self.player_set.aggregate(points=Sum('points'))['points']
+        return self.player_set.aggregate(points=Sum('points'))['points'] or 0
 
     @property
     def children(self):
@@ -59,9 +59,7 @@ class PlayerGroup(models.Model):
     def live_points(self):
         """ Calculate sum of user points dynamically """
         p = self.players.aggregate(total=models.Sum('points'))
-        if p['total'] is None:
-            return 0
-        return p['total']
+        return p['total'] or 0
 
     @property
     @deprecated('Please get rid of me')
