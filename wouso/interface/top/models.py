@@ -304,7 +304,7 @@ class Top(App):
         players.sort(lambda a,b: a.coins.get(coin) - b.coins.get(coin))
         for i, p in enumerate(players):
             hs = NewHistory.record(p, now, relative_to=coin_obj)
-            hs.position, hs.points = i + 1, p.coins.get(coin)
+            hs.position, hs.points = i + 1, p.coins.get(coin_obj.name)
             hs.save()
 
         stdout.write('\n')
