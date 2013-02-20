@@ -1,7 +1,9 @@
 import datetime
+from django.contrib import messages
 from django.contrib.auth import models as auth
 from django.contrib.auth.decorators import  permission_required
 from django.core.cache import cache
+from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django import forms
 from django.http import  HttpResponseRedirect, HttpResponse
@@ -20,7 +22,7 @@ from wouso.core.qpool.models import Schedule, Question, Tag, Category, Answer
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
 from wouso.core import scoring
-from wouso.core.scoring.models import Formula, History
+from wouso.core.scoring.models import Formula, History, Coin
 from wouso.core.signals import addActivity
 from wouso.core.security.models import Report
 from wouso.games.challenge.models import Challenge, Participant
@@ -992,3 +994,40 @@ def clear_cache(request):
         return redirect('dashboard')
     else:
         return render_to_response('cpanel/clear_cache.html', {}, context_instance=RequestContext(request))
+
+
+class BonusForm(forms.Form):
+    amount = forms.IntegerField(initial=0)
+    coin = forms.ModelChoiceField(queryset=Coin.objects.all())
+
+    def clean_amount(self):
+        amount = self.cleaned_data.get('amount', None)
+        if not amount:
+            raise ValidationError('Invalid amount')
+        return amount
+
+
+@permission_required('config.change_setting')
+def bonus(request, player_id):
+    player = get_object_or_404(Player, pk=player_id)
+
+    if request.method == 'POST':
+        form = BonusForm(request.POST)
+        if form.is_valid():
+            coin, amount = form.cleaned_data['coin'], form.cleaned_data['amount']
+            formula = Formula.get('bonus-%s' % coin.name)
+            if formula is None:
+                messages.error(request, 'No such formula, bonus-%s' % coin.name)
+            else:
+                scoring.score(player, None, formula, external_id=request.user.get_profile().id, **{coin.name: amount})
+                messages.info(request, 'Successfully given bonus')
+            return redirect('player_profile', id=player.id)
+    else:
+        form = BonusForm()
+
+    bonuses = scoring.History.objects.filter(user=player, formula__name__startswith='bonus-').order_by('-timestamp')
+    penalties = scoring.History.objects.filter(user=player, formula__name__startswith='penalty-').order_by('-timestamp')
+
+    return render_to_response('cpanel/bonus.html', {'target_player': player, 'form': form, 'bonuses': bonuses, 'penalties': penalties},
+        context_instance=RequestContext(request)
+    )

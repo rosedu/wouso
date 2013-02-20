@@ -1,0 +1,27 @@
+{% extends 'cpanel/index.html' %}
+{% load i18n %}
+{% load user %}
+{% block sectiontitle %}{% block title %}{% trans 'Bonus' %}{% endblock %}{% endblock %}
+
+{% block sectioncontent %}
+    <h4>Give bonus to player {{ target_player }}:</h4>
+    <form action="" method="post">
+        {{ form.as_p }}
+        <button class="btn" type="submit">Bonus this player!</button>
+        {% csrf_token %}
+    </form>
+
+
+    <p>History:</p>
+    <ul>
+        {% for bonus in bonuses %}
+            <li>{{ bonus.timestamp }} - {{ bonus.amount }} {{ bonus.coin }} from {% player bonus.external_id %}</li>
+        {% endfor %}
+    </ul>
+    <hr/>
+    <ul>
+        {% for penalty in penalties %}
+            <li>{{ penalty.timestamp }} - {{ penalty.amount }} {{ penalty.coin }} by {% player penalty.external_id %}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
