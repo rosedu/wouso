@@ -69,6 +69,8 @@ def player_race(race):
 @register.simple_tag
 def player_avatar(player_obj):
     """ Return avatar's URL using the gravatar service """
+    if isinstance(player_obj, int):
+        player_obj = Player.objects.get(pk=player_obj)
     return player_obj.avatar if player_obj else ''
 
 
