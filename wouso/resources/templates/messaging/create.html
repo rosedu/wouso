@@ -1,4 +1,4 @@
-{% extends base_template %}
+{% extends 'messaging/index.html' %}
 {% load user %}
 {% load i18n %}
 
@@ -36,12 +36,12 @@
     <input type="hidden" name="reply_to" value="{{ reply_to.id }}" />
 </form>
 
-<script type="text/javascript"> 
+<script type="text/javascript">
     $(document).ready(function() {
     $("#to_input").autocomplete("/instantsearch/", { minChars:3, matchSubset:1, matchContains:1, cacheLength:10, formatItem:formatItem, onItemSelect:selectItemMessaging, selectOnly:1 });
     });
     $("#to_input").bind('focusout', messagingOut);
     $("#to_input").bind('focusin', function(){ $("#to_input").css('color', 'black') } )
 </script>
- 
+
 {% endblock %}
