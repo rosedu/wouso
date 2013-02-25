@@ -127,9 +127,18 @@ def topcoin(request, coin):
     if coin_obj is None:
         raise Http404
 
-    topcoin = NewHistory.get_coin_top(coin_obj)
+    pageno = request.GET.get('page', 0)
+    topcoin_qs = NewHistory.get_coin_top(coin_obj)
+    paginator = Paginator(topcoin_qs, PERPAGE)
+    try:
+        pageno = int(pageno)
+        topcoin = paginator.page(pageno)
+    except (EmptyPage, InvalidPage, ValueError):
+        pageno = 1
+        topcoin = paginator.page(pageno)
+
 
     return render_to_response('top/coin_top.html',
-                {'top': topcoin, 'coin': coin_obj, 'page_start': 0},
+                {'top': topcoin, 'coin': coin_obj, 'page_start': (pageno - 1)* PERPAGE},
                 context_instance=RequestContext(request)
     )

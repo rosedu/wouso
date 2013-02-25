@@ -32,5 +32,23 @@
                 </tr>
             {% endfor %}
         </table>
+
+        {% if top.has_previous %}
+        <a href="{% url top_coin coin.name %}?page={{ top.previous_page_number }}"> Previous </a>
+        {% endif %}
+
+        {% for p in top.paginator.page_range %}
+        {% if p == top.number %}
+           <strong>{{ p }}</strong>
+        {% else %}
+        <a href="{% url top_coin coin.name %}?page={{ p }}">{{ p }}</a>
+        {% endif %}
+        {% endfor %}
+
+        {% if top.has_next %}
+        <a href="{% url top_coin coin.name %}?page={{ top.next_page_number }}"> Next </a>
+        {% endif %}
+
+
     {% endif %}
 {% endblock %}
