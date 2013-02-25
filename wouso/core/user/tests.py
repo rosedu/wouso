@@ -80,3 +80,13 @@ class PlayerCreateTest(WousoTest):
             User.objects.create(first_name=u'Țuțurel', last_name=u'Șănilă')
         except (UnicodeEncodeError, UnicodeDecodeError):
             self.assertTrue(False, 'Unicode names fail')
+
+    def test_nickname_update(self):
+        settings.DISPLAY_NAME = '{nickname}'
+        player = self._get_player()
+        self.assertEqual(unicode(player), player.user.username)
+
+        player.nickname = 'altc3va'
+        player.save()
+        #self.assertEqual(unicode(player), player.nickname)
+        self.assertEqual(player.full_name, player.nickname)

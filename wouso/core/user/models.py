@@ -270,6 +270,7 @@ class Player(models.Model):
         drop_cache(self.get_extension, self, self.__class__)
         drop_cache(self._race_name, self)
         drop_cache(self._group, self)
+        update_display_name(self, save=False)
         return super(Player, self).save(**kwargs)
 
     def __getitem__(self, item):
@@ -307,9 +308,10 @@ def user_post_save(sender, instance, **kwargs):
 
 models.signals.post_save.connect(user_post_save, User)
 
-def update_display_name(player):
+def update_display_name(player, save=True):
     display_name = unicode(settings.DISPLAY_NAME).format(first_name=player.user.first_name,
                                                 last_name=player.user.last_name,
                                                 nickname=player.nickname).strip()
     player.full_name = display_name
-    player.save()
+    if save:
+        player.save()
