@@ -1,10 +1,8 @@
 from django.db.models import Sum
-from django.template import RequestContext, Context
 import logging
 import sys
 from datetime import datetime, timedelta
 from django.db import models
-from django.contrib.auth.models import User
 from django.template.loader import render_to_string
 from wouso.core.common import App
 from wouso.core.config.models import BoolSetting, Setting
@@ -86,6 +84,19 @@ class TopUser(ObjectHistory, Player):
             return self.history()[0].position
         except IndexError:
             return 0
+
+    @property
+    def coin_position(self):
+        """
+        Return the position in custom coin top, if any, as a dictionary.
+
+        Example response:
+            {'karma': 1}, {'gold': 10} # first in karma, 10th in gold, as of today
+        """
+        ret = {}
+        for c in Top.coin_top_settings():
+            ret[c] = Top.get_coin_position(c, self)
+        return ret
 
     def history(self):
         """
@@ -312,10 +323,16 @@ class Top(App):
     @classmethod
     def coin_top_settings(cls):
         """
-        Return a list of coins for which we calculate the top
+        Return a list of coin names for which we calculate the top
+
+        Example: ['gold', 'karma']
         """
         return Setting.get('top-coins').get_value().split(',') or []
 
+    @classmethod
+    def get_coin_position(cls, coin, user):
+        coin = Coin.get(coin)
+        return NewHistory.get_obj_position(user, relative_to=coin)
 
 #def user_post_save(sender, instance, **kwargs):
 #    profile = instance.get_profile()
