@@ -38,13 +38,14 @@ class Schedule(Tag):
     """
     start_date = models.DateField(default=datetime.today)
     end_date = models.DateField(default=datetime.today)
+    count = models.IntegerField(default=4, help_text='How many questions of this tag to select')
 
     @classmethod
     def get_current_tags(cls, timestamp=None):
         """ Return the questions tags currently active
         """
         timestamp = timestamp if timestamp else datetime.now()
-        return cls.objects.filter(start_date__lte=timestamp, end_date__gte=timestamp)
+        return cls.objects.filter(start_date__lte=timestamp, end_date__gte=timestamp).order_by('name')
 
     def is_active(self, timestamp=None):
         timestamp = timestamp if timestamp else datetime.now()
@@ -159,10 +160,15 @@ class Workshop(models.Model):
         """
         assessment, is_new = Assessment.objects.get_or_create(player=player, workshop=self)
         if is_new:
-            questions = list(WorkshopGame.get_question_pool(self.date))
-            shuffle(questions)
-            for q in questions[:self.question_count]:
-                assessment.questions.add(q)
+            total_count = self.question_count
+            for count, questions in WorkshopGame.get_question_pool(self.date):
+                questions = list(questions)
+                shuffle(questions)
+                for q in questions[:count]:
+                    assessment.questions.add(q)
+                total_count -= count
+                if total_count <= 0:
+                    break
         return assessment
 
     def start(self, timestamp=None):
@@ -380,11 +386,13 @@ class WorkshopGame(Game):
 
     @classmethod
     def get_question_pool(cls, timestamp=None):
-        """ Return the question pool active right now
+        """ Return the question pool active right now as a list of querysets and and counts to be used
         """
         tags = Schedule.get_current_tags(timestamp=timestamp)
-        questions = Question.objects.filter(tags__in=tags).distinct()
-        return questions
+        result = []
+        for t in tags:
+            result.append((t.count, t.question_set.all()))
+        return result
 
     @classmethod
     def get_for_now(cls, timestamp=None):
@@ -436,10 +444,10 @@ class WorkshopGame(Game):
 
          Returns: False if no error, string if error.
         """
-        questions = cls.get_question_pool(date)
-
-        if not questions or questions.count() < question_count:
-            return _("No questions for this date")
+        #questions = cls.get_question_pool(date)
+        #
+        #if not questions or questions.count() < question_count:
+        #    return _("No questions for this date")
 
         if cls.get_workshop(semigroup, date):
             return _("Workshop already exists for group at date")

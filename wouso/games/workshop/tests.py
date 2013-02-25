@@ -75,6 +75,10 @@ class TestAssessment(WousoTest):
         self.assertFalse(a1.answered)
         self.assertFalse(a2.answered)
 
+        # Check questions
+        self.assertEqual(a1.questions.all().count(), 1)
+        self.assertEqual(a1.questions.all()[0], q)
+
         a1.set_answered()
         a2.set_answered()
 
