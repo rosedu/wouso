@@ -220,6 +220,8 @@ class PlayerSpellDue(models.Model):
 class Bazaar(App):
     @classmethod
     def get_header_link(kls, request):
+        if kls.disabled():
+            return None
         url = reverse('bazaar_home')
         player = request.user.get_profile() if request.user.is_authenticated() else None
         if player:
