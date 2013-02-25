@@ -11,12 +11,14 @@
 {% endblock %}
 
 {% block tabcontent %}
+    <p>Question tags used for workshops.</p>
     <table>
         <tr>
             <th>Tag</th>
             <th>Start</th>
             <th>End</th>
             <th>Questions</th>
+            <th>Select</th>
             <th>Active</th>
         </tr>
         {% for s in schedules %}
@@ -27,6 +29,7 @@
             <td>{{ s.start_date }}</td>
             <td>{{ s.end_date }}</td>
             <td align="right">{{ s.question_set.count }}</td>
+            <td align="right">{{ s.count }}</td>
             <td>{% if s.is_active %}{% trans 'Yes' %}{% endif %}</td>
 
             <td><a href="{% url ws_schedule_change s.id %}">✍</a></td>
@@ -36,4 +39,5 @@
     </table>
 
     <a class="button" href="{% url ws_schedule_change %}">Add</a>
+    <a class="button" href="{% url qpool_home cat=category.name %}">Go to question pool</a>
 {% endblock %}

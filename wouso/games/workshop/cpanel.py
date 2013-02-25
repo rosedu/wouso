@@ -7,6 +7,12 @@ from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player
 from wouso.games.workshop.models import Workshop, Assessment, Review
 
+class SCForm(forms.ModelForm):
+    class Meta:
+        model = Schedule
+        fields = ('name', 'start_date', 'end_date', 'count')
+
+
 class AGForm(forms.ModelForm):
     class Meta:
         model = Semigroup
@@ -112,22 +118,18 @@ def kick_off(request, player):
 
 @staff_required
 def schedule(request):
-    schedules = Schedule.objects.all().order_by('start_date')
+    schedules = Schedule.objects.all().order_by('start_date', 'name')
 
     return render_to_response('workshop/cpanel/schedule.html',
                         {'module': 'workshop',
                          'schedules': schedules,
+                         'category': WorkshopGame.get_question_category(),
                          'page': 'schedule'},
                         context_instance=RequestContext(request)
     )
 
 @staff_required
 def schedule_change(request, schedule=None):
-    class SCForm(forms.ModelForm):
-        class Meta:
-            model = Schedule
-            fields = ('name', 'start_date', 'end_date')
-
     if schedule:
         schedule = get_object_or_404(Schedule, pk=schedule)
 
