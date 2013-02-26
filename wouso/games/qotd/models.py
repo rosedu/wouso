@@ -153,5 +153,6 @@ class QotdGame(Game):
 
     @classmethod
     def get_history(cls):
-        qs = Schedule.objects.all().order_by('-day')[:7]
+        today = datetime.now()
+        qs = Schedule.objects.filter(day__lte=today).order_by('-day')[:7]
         return qs

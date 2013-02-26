@@ -6,7 +6,7 @@
 {% block sectioncontent %}
     <ul>
         {% for q in history %}
-            <li><em>{{ q.date }}</em>
+            <li><em>{{ q.day }}</em>
                 <p>{{ q.question.text }}</p>
             </li>
         {% empty %}
