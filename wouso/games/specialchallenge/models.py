@@ -111,6 +111,8 @@ class SpecialChallengeGame(Game):
 
     @classmethod
     def get_sidebar_widget(kls, request):
+        if kls.disabled():
+            return ''
         return render_to_string('specialchallenge/sidebar.html', {})
 
     @classmethod
