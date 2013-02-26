@@ -20,6 +20,9 @@ class CreateChallenge(FormView):
         # TODO: create a widget using the player_input template tag
         player_to = form.cleaned_data['player_to']
         player_from = self.request.user.get_profile()
+        if player_from.id == player_to.id:
+            messages.error(self.request, 'Cannot challenge yourself')
+            return redirect('specialchallenge_create')
         chal = SpecialChallenge.create(player_from, player_to)
         return redirect('specialchallenge_configure', pk=chal.id)
 
