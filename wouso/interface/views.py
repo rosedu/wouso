@@ -179,7 +179,7 @@ def instantsearch(request):
         query = form.cleaned_data['q']
         users = User.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(username__icontains=query))
         user_ids = [u.id for u in users]
-        searchresults = Player.objects.filter(user__in=user_ids)
+        searchresults = Player.objects.filter(Q(user__in=user_ids) | Q(full_name__icontains=query) | Q(nickname__icontains=query))
 
         return render_to_response('interface/instant_search_results.txt',
                                   {'searchresults': searchresults},
