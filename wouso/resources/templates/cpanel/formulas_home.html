@@ -17,7 +17,7 @@
   <th>Delete</th>
 </tr>
 {% for p in formulas %}
-<tr><td> {{ p.id }}</td>
+<tr><td> {{ p.name }}</td>
   <td> {{ p.definition }}</td>
   <td> {{ p.owner }}</td>
   <td><a class="button" href="{% url edit_formula p.id %}">Edit</a></td>
