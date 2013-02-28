@@ -171,8 +171,9 @@ class Challenge(models.Model):
         c = Challenge.objects.create(user_from=uf, user_to=ut, date=datetime.now(), owner=game)
         for q in questions_qs:
             c.questions.add(q)
+        c.save()
 
-        c.manager.created()
+        c.manager.created(user_from)
         return c
 
     @staticmethod
@@ -445,7 +446,7 @@ class ChallengeManager(object):
     def __init__(self, challenge):
         self.challenge = challenge
 
-    def created(self):
+    def created(self, user_from):
         pass
 
     def accept(self):
@@ -469,10 +470,10 @@ class ChallengeManager(object):
         raise NotImplementedError
 
 class DefaultChallengeManager(ChallengeManager):
-    def created(self):
+    def created(self, user_from):
         if self.challenge.WARRANTY:
             # take 3 points from user_from
-            scoring.score(self.challenge.user_from, ChallengeGame, 'chall-warranty', external_id=self.challenge.id)
+            scoring.score(user_from, ChallengeGame, 'chall-warranty', external_id=self.challenge.id)
 
     def accept(self):
         if self.challenge.WARRANTY:
