@@ -113,7 +113,7 @@ class Workshop(models.Model):
     start_at = models.DateTimeField(blank=True, null=True)
     active_until = models.DateTimeField(blank=True, null=True)
     status = models.IntegerField(choices=STATUSES, default=0)
-    question_count = models.IntegerField(default=4, blank=True)
+    question_count = models.IntegerField(default=3, blank=True)
 
     def is_started(self):
         return self.status == 0
