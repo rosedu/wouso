@@ -38,7 +38,7 @@ class Schedule(Tag):
     """
     start_date = models.DateField(default=datetime.today)
     end_date = models.DateField(default=datetime.today)
-    count = models.IntegerField(default=4, help_text='How many questions of this tag to select')
+    count = models.IntegerField(default=3, help_text='How many questions of this tag to select')
 
     @classmethod
     def get_current_tags(cls, timestamp=None):
