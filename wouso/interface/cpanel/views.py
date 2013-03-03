@@ -836,8 +836,8 @@ def infraction_history(request, user_id):
     inf_list = History.objects.filter(user=user, coin__name='penalty').order_by('-timestamp')
     infractions = {}
     for i in inf_list:
-        if i.formula.id=="chall-was-set-up-infraction":
-            list = infractions.setdefault(i.formula.id, [])
+        if i.formula.name=="chall-was-set-up-infraction":
+            list = infractions.setdefault(i.formula.name, [])
             list.append( (i, Challenge.objects.get(pk=i.external_id)) )
 
     return render_to_response('cpanel/view_infractions.html',
@@ -847,6 +847,9 @@ def infraction_history(request, user_id):
 
 @staff_required
 def infraction_recheck(request):
+    """ Rerun an infraction check on the current challenge history
+
+        The view should allow for other infraction additions. """
     try:
         inf_list = History.objects.filter(coin__name='penalty',
                 formula__name='chall-was-set-up-infraction').delete()
@@ -854,7 +857,7 @@ def infraction_recheck(request):
         pass
 
     all_participants = Participant.objects.filter(seconds_took__lt=15).exclude(seconds_took=None)
-    formula = Formula.objects.get(id='chall-was-set-up-infraction')
+    formula = Formula.objects.get(name='chall-was-set-up-infraction')
     for p in all_participants:
         id = None
         if p.user_from.count():
