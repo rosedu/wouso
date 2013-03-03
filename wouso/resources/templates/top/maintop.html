@@ -20,9 +20,9 @@
     <tr>
     <th>#</th>
     <th colspan="2" width = "100%" align=left>{% trans 'Player' %}</th>
-    <th> <a href="/top/toptype/{{ toptype }}/sortcrit/0/page/1/">{% trans 'Points' %}</a> </th>
-    <th> <a href="/top/toptype/{{ toptype }}/sortcrit/1/page/1/">{% trans 'Progress' %}</a> </th>
-    <th nowrap> <a href="/top/toptype/{{ toptype }}/sortcrit/2/page/1/">{% trans 'Last seen' %}</a> </th>
+    <th> <a href="{% url view_top toptype=toptype sortcrit=0 page=1 %}">{% trans 'Points' %}</a> </th>
+    <th> <a href="{% url view_top toptype=toptype sortcrit=1 page=1 %}">{% trans 'Progress' %}</a> </th>
+    <th nowrap> <a href="{% url view_top toptype=toptype sortcrit=2 page=1 %}">{% trans 'Last seen' %}</a> </th>
     </tr>
 
     {% for user in allUsers.object_list %}
@@ -87,11 +87,5 @@
             <a href="{% url wouso.interface.top.views.gettop sortcrit=sortcrit toptype=toptype page=allUsers.next_page_number %}"> Next </a>
             {% endif %}
 
-    {% if page_top_prev %}
-    <a href="/top/toptype/{{ toptype }}/sortcrit/{{ sortcrit }}/page/{{ page_top_prev }}/"> prev </a>
-    {% endif %}
-    {% if page_top_next %}
-    <a href="/top/toptype/{{ toptype }}/sortcrit/{{ sortcrit }}/page/{{ page_top_next }}/"> next </a>
-    {% endif %}
 {% endif %}
 {% endblock %}
