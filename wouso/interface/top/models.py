@@ -150,7 +150,7 @@ class NewHistory(models.Model):
          Return the latest position computed for this object (user, race, group)
         """
         history = cls.objects.filter(object=obj.id, object_type=cls._get_type(obj),
-                                     relative_to=relative_to.id, relative_to_type=cls._get_type(relative_to))
+                                     relative_to=relative_to.id, relative_to_type=cls._get_type(relative_to)).order_by('-date')
         if not history.count():
             return 0
         return history[0].position
@@ -312,7 +312,7 @@ class Top(App):
 
         stdout.write(' Calculating coin %s top...' % coin)
         players = list(Player.objects.filter(race__can_play=True))
-        players.sort(lambda a,b: a.coins.get(coin) - b.coins.get(coin))
+        players.sort(lambda b,a: a.coins.get(coin) - b.coins.get(coin))
         for i, p in enumerate(players):
             hs = NewHistory.record(p, now, relative_to=coin_obj)
             hs.position, hs.points = i + 1, p.coins.get(coin_obj.name)
