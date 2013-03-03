@@ -472,7 +472,7 @@ class DefaultChallengeManager(ChallengeManager):
     def created(self):
         if self.challenge.WARRANTY:
             # take 3 points from user_from
-            scoring.score(self.challenge.user_from, ChallengeGame, 'chall-warranty', external_id=self.challenge.id)
+            scoring.score(self.challenge.user_from.user, ChallengeGame, 'chall-warranty', external_id=self.challenge.id)
 
     def accept(self):
         if self.challenge.WARRANTY:
