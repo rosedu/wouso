@@ -59,7 +59,7 @@ def done(request):
         return HttpResponseRedirect(reverse('wouso.interface.views.homepage'))
     # Do not show results until done
     if not request.user.get_profile().get_extension(QotdUser).has_answered:
-        return HttpResponseRedirect(reverse("games.qotd.views.index"))
+        return HttpResponseRedirect(reverse("games.qotd.views.history"))
 
     user = request.user.get_profile().get_extension(QotdUser)
     qotd = user.my_question
@@ -87,6 +87,7 @@ def history(request):
 
 
 def sidebar_widget(request):
+    # TODO: nothing should happen in the sidebar_widget
     qotd = QotdGame.get_for_today()
     qotd_user = request.user.get_profile().get_extension(QotdUser)
 
