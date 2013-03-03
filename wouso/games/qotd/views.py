@@ -32,7 +32,7 @@ def index(request):
         extra = request.GET.urlencode()
         if extra:
             extra = '?' + extra
-        return HttpResponseRedirect(reverse('games.qotd.views.done') + extra)
+        return HttpResponseRedirect(reverse('games.qotd.views.history') + extra)
 
     if qotd is None:
         form = None
