@@ -1,9 +1,10 @@
+from django.contrib import messages
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from wouso.core.user.models import Player
 from wouso.games.challenge.models import ChallengeException
@@ -89,7 +90,7 @@ def launch(request, to_id):
         return do_result(request, error='Provocarile sunt dezactivate')
 
     if (not user_to.is_eligible()) or (not user_from.is_eligible()):
-        return do_result(request, error='Ne pare rau, doar studentii de anul I pot provoca/fi provocati')
+        return do_result(request, error=_('Sorry, challenge failed.'))
 
     if not user_from.can_launch():
         return do_result(request, _('You cannot launch another challenge today.'))
@@ -229,6 +230,10 @@ def challenge_random(request):
     players = ChallengeUser.objects.exclude(user = current_player.user)
     players = players.exclude(race__can_play=False)
     players = [p for p in players if current_player.can_challenge(p)]
+
+    if not players:
+        messages.error(request, _('There is no one you can challenge now.'))
+        return redirect('challenge_index_view')
 
     no_players = len(players)
 
