@@ -162,3 +162,6 @@ class CachedItem(Item):
         obj = cls._get_fresh(part)
         cache.set(key, obj)
         return obj
+
+    def __str__(self):
+        return str(getattr(self, self.CACHE_PART))
