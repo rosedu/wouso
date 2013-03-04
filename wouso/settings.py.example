@@ -240,12 +240,17 @@ else:
         INSTALLED_APPS.append('debug_toolbar')
         INTERNAL_IPS = ('127.0.0.1',)
         DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS': False}
-        
+
 
 
 # the probability of getting bonus points for correctly answered qotd
 # must be a number between 0 and 100
 QOTD_BONUS_PROB = 30
+
+# Default time for a workshop, minutes
+WORKSHOP_TIME_MINUTES = 7
+# Time to allow post answers, minutes
+WORKSHOP_GRACE_PERIOD = 1
 
 DISPLAY_NAME = '{first_name} {last_name}'
 

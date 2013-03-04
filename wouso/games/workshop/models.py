@@ -4,6 +4,7 @@ from datetime import datetime, time, timedelta
 from django.db import models
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
+from django.conf import settings
 from wouso.core.game.models import Game
 from wouso.core.qpool.models import Tag, Question, Category
 from wouso.core.user.models import PlayerGroup, Player
@@ -26,9 +27,6 @@ ROOM_CHOICES = (
 )
 
 ROOM_DEFAULT = 'eg306'
-
-WORKSHOP_TIME_MINUTES = 10
-WORKSHOP_GRACE_PERIOD = 1 # 1 minute
 
 MIN_HOUR, MAX_HOUR = 8, 20
 
@@ -123,7 +121,7 @@ class Workshop(models.Model):
 
     def is_active(self, timestamp=None):
         timestamp = timestamp if timestamp else datetime.now()
-        timestamp2 = timestamp - timedelta(minutes=WORKSHOP_GRACE_PERIOD)
+        timestamp2 = timestamp - timedelta(minutes=settings.WORKSHOP_GRACE_PERIOD)
         if not self.start_at or not self.active_until:
             return False
 
@@ -178,7 +176,7 @@ class Workshop(models.Model):
 
         if self.is_ready():
             self.start_at = timestamp
-            self.active_until = timestamp + timedelta(minutes=WORKSHOP_TIME_MINUTES)
+            self.active_until = timestamp + timedelta(minutes=settings.WORKSHOP_TIME_MINUTES)
             self.save()
             return True
 
@@ -419,7 +417,7 @@ class WorkshopGame(Game):
         if player.in_staff_group():
             return None
         timestamp = timestamp if timestamp else datetime.now()
-        timestamp2 = timestamp - timedelta(minutes=WORKSHOP_GRACE_PERIOD)
+        timestamp2 = timestamp - timedelta(minutes=settings.WORKSHOP_GRACE_PERIOD)
         ws = Workshop.objects.filter(start_at__lte=timestamp, active_until__gte=timestamp2)
         for w in ws:
             if player in w.semigroup.players.all():
