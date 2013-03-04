@@ -103,6 +103,7 @@ class ChallengeUser(Player):
     def get_lost_challenges(self):
         return self.get_all_challenges().exclude(winner=self)
 
+Player.register_extension('challenge', ChallengeUser)
 
 class Participant(models.Model):
     user = models.ForeignKey(ChallengeUser)
