@@ -2,6 +2,7 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import TestCase
+import logging
 from wouso.core.magic.models import Artifact
 from wouso.core.tests import WousoTest
 from wouso.core.user.models import Race, PlayerGroup
@@ -69,6 +70,17 @@ class PlayerCacheTest(WousoTest):
         self.assertEqual(p.group, None)
         p.set_group(g)
         self.assertEqual(p.group, g)
+
+    def test_cache_points(self):
+        from wouso.games.challenge.models import ChallengeUser
+        p = self._get_player()
+        c = p.get_extension(ChallengeUser)
+        p.points = 10
+        p.save()
+        # refetch from cache
+        c = p.get_extension(ChallengeUser)
+        self.assertEqual(c.points, p.points)
+
 
 
 class PlayerCreateTest(WousoTest):

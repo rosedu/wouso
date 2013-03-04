@@ -1,4 +1,5 @@
 # coding=utf-8
+import logging
 from md5 import md5
 from datetime import datetime, timedelta
 from django.db import models
@@ -267,6 +268,8 @@ class Player(models.Model):
     def save(self, **kwargs):
         """ Clear cache for extensions
         """
+        for k, v in self.EXTENSIONS.iteritems():
+            drop_cache(self.get_extension, self, v)
         drop_cache(self.get_extension, self, self.__class__)
         drop_cache(self._race_name, self)
         drop_cache(self._group, self)
