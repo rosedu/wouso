@@ -45,6 +45,9 @@ def _get_cache_key(function, *args, **kwargs):
             value = args[i]
         else:
             value = kwargs.get(param_name, None)
+        # post processing
+        if hasattr(value, 'id'):
+            value = value.id
         cache_key += '%s-%s' % (param_name, value)
     cache_key = cache_key.replace(' ', '')
     return cache_key
