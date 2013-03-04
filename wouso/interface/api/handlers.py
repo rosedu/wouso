@@ -189,7 +189,7 @@ class ChangeTheme(ChangeNickname):
         if not theme:
             return {'success': False, 'error': 'Theme not provided'}
         if set_custom_theme(player, theme):
-            return {'sucess': True}
+            return {'success': True}
         else:
             return {'success': False, 'error': 'Theme does not exist'}
 
