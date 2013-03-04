@@ -34,7 +34,9 @@
         {% for q in assessment.questions.all %}
             <tr>
                 <td>{{ forloop.counter }}.</td>
-                <td>{{ q }}</td>
+                <td>
+                    <pre>{{ q }}</pre>
+                </td>
             </tr>
             <tr>
                 <td></td>
