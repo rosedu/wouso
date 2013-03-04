@@ -83,7 +83,7 @@ def user_profile(request, id, page=u'1'):
     #for g in top_user.topgroups:
     #    g.week_evolution = top_user.week_evolution(relative_to=g)
     #    g.position = TopHistory.get_user_position(top_user, relative_to=g)
-    history = History.user_points(profile)
+    history = History.user_points(profile.user)
     paginator = Paginator(activity_list, 10)
 
     try:
