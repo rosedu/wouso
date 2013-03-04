@@ -549,6 +549,9 @@ div.progress {
 .coin-gold {
     background:url(../art/default/gold.png) center left no-repeat;
 }
+.coin-karma {
+    background:url(../art/default/karma.png) center left no-repeat;
+}
 .artifact-spells {
     background-color: transparent !important;
 }
