@@ -35,6 +35,7 @@ urlpatterns += patterns('',
     url(r'^info/online/$', Resource(handler=OnlineUsers, **ad)),
     url(r'^info/online/(?P<type>list)/$', Resource(handler=OnlineUsers, **ad)),
     url(r'^info/nickname/$', Resource(handler=ChangeNickname, **ad)),
+    url(r'^info/theme/$', Resource(handler=ChangeTheme, **ad)),
     url(r'^player/(?P<player_id>\d+)/info/$', Resource(handler=InfoHandler, **ad)),
     url(r'^player/(?P<player_id>\d+)/cast/$', Resource(handler=CastHandler, **ad)),
 

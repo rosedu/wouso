@@ -52,3 +52,17 @@ def set_theme(value):
     global _theme
 
     _theme = value
+
+
+def get_custom_theme(player):
+    from wouso.core.config.models import Setting
+    return Setting.get('theme_user_%d' % player.id).get_value()
+
+
+def set_custom_theme(player, theme):
+    from wouso.utils import get_themes
+    from wouso.core.config.models import Setting
+    if theme in get_themes():
+        Setting.get('theme_user_%d' % player.id).set_value(theme)
+        return True
+    return False

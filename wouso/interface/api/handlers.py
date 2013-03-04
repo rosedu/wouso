@@ -13,6 +13,7 @@ from wouso.core.user.models import Player, Race, PlayerGroup
 from wouso.core.magic.models import Spell, SpellHistory
 from wouso.core.god import God
 from wouso.core import scoring
+from wouso.interface import get_custom_theme
 from wouso.interface.apps import get_apps
 from wouso.interface.activity.models import Activity
 from wouso.interface.api.c2dm.models import register_device
@@ -173,6 +174,24 @@ class ChangeNickname(BaseHandler):
         player.nickname = slugify(nickname)
         player.save()
         return {'success': True}
+
+
+class ChangeTheme(ChangeNickname):
+    def read(self, request):
+        from wouso.interface import get_custom_theme
+        from wouso.utils import get_themes
+        return {'theme': get_custom_theme(request.user.get_profile()), 'themes': get_themes()}
+
+    def create(self, request):
+        from wouso.interface import set_custom_theme
+        player = request.user.get_profile()
+        theme = request.POST.get('theme')
+        if not theme:
+            return {'success': False, 'error': 'Theme not provided'}
+        if set_custom_theme(player, theme):
+            return {'sucess': True}
+        else:
+            return {'success': False, 'error': 'Theme does not exist'}
 
 
 class BazaarHandler(BaseHandler):
