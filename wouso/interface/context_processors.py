@@ -128,6 +128,13 @@ def context(request):
                 settings_dict[k] = bool(v)
             except ValueError: pass
 
+    # user defined theme
+    if request.user.is_authenticated():
+        custom_theme = settings_dict.get('config_theme_user_%d' % request.user.get_profile().id, None)
+        if custom_theme:
+            settings_dict['config_theme'] = custom_theme
+            set_theme(custom_theme)
+
     # override theme using GET args
     if request.GET.get('theme', None) is not None:
         from wouso.utils import get_themes
@@ -136,7 +143,7 @@ def context(request):
             settings_dict['config_theme'] = theme
             set_theme(theme)
     else:
-        set_theme(None)
+        set_theme(settings_dict['config_theme'])
 
     # shorthand user.get_profile
     settings_dict['player'] = request.user.get_profile() if request.user.is_authenticated() else None
