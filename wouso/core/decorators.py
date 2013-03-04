@@ -58,9 +58,11 @@ def cached_method(function=None):
         def _cached(*args, **kwargs):
             cache_key = _get_cache_key(function, *args, **kwargs)
             if cache_key in cache:
+                logging.debug('Returning  : %s' % cache_key)
                 return cache.get(cache_key)
             result = function(*args, **kwargs)
             cache.set(cache_key, result)
+            logging.debug('Setting    : %s' % cache_key)
             return result
         _cached._function = function
         return _cached
@@ -74,5 +76,6 @@ def drop_cache(function, *args, **kwargs):
     if hasattr(function, '_function'):
         cache_key = _get_cache_key(function._function, *args, **kwargs)
         cache.delete(cache_key)
+        logging.debug('Deleted key: %s' % cache_key)
     else:
         logging.exception('Invalid function: ', function)
