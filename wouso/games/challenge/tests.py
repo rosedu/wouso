@@ -280,6 +280,7 @@ class TestCalculatePoints(WousoTest):
 
 class TestCustomChallenge(WousoTest):
     def test_custom_create(self):
+        Challenge.WARRANTY = False
         game = ChallengeGame.get_instance()
         p1, p2 = self._get_player(1), self._get_player(2)
 
@@ -288,4 +289,20 @@ class TestCustomChallenge(WousoTest):
         self.assertEqual(challenge.owner, game)
 
 
+class TestChallengeCache(WousoTest):
+    def test_cache_points(self):
+        scoring.setup_scoring()
+        Challenge.WARRANTY = True
+        p1, p2 = self._get_player(1), self._get_player(2)
+
+        initial_points = p1.points
+        challenge = Challenge.create(p1, p2, ignore_questions=True)
+        p1 = Player.objects.get(pk=p1.pk)
+        self.assertNotEqual(p1.points, initial_points)
+        self.assertTrue(challenge)
+        challenge.refuse()
+        p1 = p1.user.get_profile()
+        self.assertEqual(p1.points, initial_points)
+
 # TODO: add page tests (views) for challenge run
+
