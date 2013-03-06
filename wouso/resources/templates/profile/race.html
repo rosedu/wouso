@@ -12,9 +12,8 @@
 
 {% block content %}
 <div class="profile race-{{ race.name.lower }} race-{{ race.id }}">
-    <div class="points">
-        <div class="points-big">{{ race.live_points}}</div>
-        <div class="rank">{% if top.disabled %}-{% else %}{% trans 'rank' %}: {{ top.position }}{% endif %}</div>
+    <div class="points pull-right">
+        <div class="points-big">{{ race.points}} points</div>
     </div>
 
     <h2>{{ race }} {% if race.title != '' %}<small>[{{ race.name }}]</small>{% endif %}</h2>
