@@ -131,6 +131,7 @@ def timer(user, game, formula, default=300, **params):
 def unset(user, game, formula, external_id=None, **params):
     """ Remove all history records by the external_id, formula and game given to the user """
     formula = Formula.get(formula)
+    user = user.user.get_profile() # make sure you are working on fresh Player
     for history in History.objects.filter(user=user, game=game.get_instance(), formula=formula, external_id=external_id):
         if history.coin.name == 'points':
             user.points -= history.amount
@@ -142,6 +143,7 @@ def rollback(user, game, formula, external_id=None, **params):
     if game is not None:
         game = game.get_instance()
     formula = Formula.get(formula)
+    user = user.user.get_profile() # make sure you are working on fresh Player
     for history in History.objects.filter(user=user, game=game, formula=formula, external_id=external_id):
         if history.coin.name == 'points':
             user.points -= history.amount
@@ -185,6 +187,7 @@ def score_simple(player, coin, amount, game=None, formula=None,
         raise InvalidScoreCall()
 
     user = player.user
+    player = user.get_profile()
 
     coin = Coin.get(coin)
     formula = Formula.get(formula)
