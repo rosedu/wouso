@@ -15,6 +15,7 @@ from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_noop
 from django.contrib.auth.models import User, Group
+from django.utils.translation import ugettext as _
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
@@ -23,7 +24,7 @@ from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
 from wouso.core import scoring
 from wouso.core.scoring.models import Formula, History, Coin
-from wouso.core.signals import addActivity
+from wouso.core.signals import addActivity, add_activity
 from wouso.core.security.models import Report
 from wouso.games.challenge.models import Challenge, Participant
 from wouso.interface.apps.messaging.models import Message
@@ -1002,6 +1003,7 @@ def clear_cache(request):
 class BonusForm(forms.Form):
     amount = forms.IntegerField(initial=0)
     coin = forms.ModelChoiceField(queryset=Coin.objects.all())
+    reason = forms.CharField(required=False)
 
     def clean_amount(self):
         amount = self.cleaned_data.get('amount', None)
@@ -1023,6 +1025,8 @@ def bonus(request, player_id):
                 messages.error(request, 'No such formula, bonus-%s' % coin.name)
             else:
                 scoring.score(player, None, formula, external_id=request.user.get_profile().id, **{coin.name: amount})
+                if form.cleaned_data['reason']:
+                    add_activity(player, _('received {amount} {coin} bonus for {reason}'), amount=amount, coin=coin, reason=form.cleaned_data['reason'])
                 messages.info(request, 'Successfully given bonus')
             return redirect('player_profile', id=player.id)
     else:
