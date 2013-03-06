@@ -26,7 +26,7 @@ def player(user, artif_html=None):
     if user.in_staff_group():
         staff_class = 'cplayer-staff'
     else:
-        staff_class = ''
+        staff_class = 'cplayer-%s' % user.race_name.lower()
     return u'<a href="%s" class="cplayer %s" rel="%s">%s%s</a>' % (link, staff_class, rel_data, artif_html, user)
 
 
@@ -63,7 +63,7 @@ def player_race(race):
     """ Render group with link to group's profile page """
     link = reverse('race_view', args=(race.id,))
 
-    return u'<a href="%s%s" title="%s">%s</a>' % (link, race, race.name, race)
+    return u'<a href="%s%s" title="%s" class="cplayer-%s">%s</a>' % (link, race, race.name, race.name.lower(), race)
 
 
 @register.simple_tag

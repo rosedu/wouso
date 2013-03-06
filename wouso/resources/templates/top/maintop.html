@@ -19,7 +19,7 @@
     <table id="clasament" class="custom">
     <tr>
     <th>#</th>
-    <th colspan="2" width = "100%" align=left>{% trans 'Player' %}</th>
+    <th colspan="2" width = "100%" style="text-align:left" class="left">{% trans 'Player' %}</th>
     <th> <a href="{% url view_top toptype=toptype sortcrit=0 page=1 %}">{% trans 'Points' %}</a> </th>
     <th> <a href="{% url view_top toptype=toptype sortcrit=1 page=1 %}">{% trans 'Progress' %}</a> </th>
     <th nowrap> <a href="{% url view_top toptype=toptype sortcrit=2 page=1 %}">{% trans 'Last seen' %}</a> </th>
@@ -28,13 +28,13 @@
     {% for user in allUsers.object_list %}
     <tr>
     <td>{{ forloop.counter|add:page_start }}</td>
-    <td>
+    <td class="avatar-col">
         <a href="{% url player_profile user.id %}" class="player-avatar-small">
             <img class="avatar small player-avatar-image" src="{% player_avatar user%}&s=24" />
             <div class="player-avatar-race player-avatar-race-{{ user.race.name|lower }}"></div>
         </a>
     </td>
-    <td width="100%">
+    <td width="100%"  style="text-align:left" class="left">
         {% player user %}
         <div class = "artifacts">
         {% for artf in user.artifacts.all %}
