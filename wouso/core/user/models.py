@@ -220,7 +220,7 @@ class Player(models.Model):
         return avatar
 
     # special:
-    @cached_method
+    #@cached_method
     def get_extension(self, cls):
         if self.__class__ is cls:
             return self
