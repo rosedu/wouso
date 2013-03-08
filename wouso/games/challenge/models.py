@@ -23,7 +23,7 @@ class ChallengeException(Exception):
 class ChallengeUser(Player):
     """ Extension of the userprofile, customized for challenge """
 
-    last_launched = models.DateTimeField(default=datetime(1, 1, 1), blank=True, null=True)
+    last_launched = models.DateTimeField(blank=True, null=True)
 
     def is_eligible(self):
         return God.user_is_eligible(self, ChallengeGame)
@@ -34,6 +34,8 @@ class ChallengeUser(Player):
         now = datetime.now()
         today_start = datetime.combine(now, time())
         today_end = datetime.combine(now, time(23, 59, 59))
+        if not self.last_launched:
+            return True
         if today_start <= self.last_launched <= today_end:
             return False
         if self.magic.has_modifier('challenge-cannot-challenge'):
@@ -65,7 +67,8 @@ class ChallengeUser(Player):
             modifier = self.magic.use_modifier('challenge-one-more', 1)
         except InsufficientAmount:
             return False
-        self.last_launched -= timedelta(days=-1)
+        if self.last_launched:
+            self.last_launched -= timedelta(days=-1)
         self.save()
 
         signal_msg = ugettext_noop('used {artifact} to enable one more challenge.')
@@ -229,7 +232,7 @@ class Challenge(models.Model):
 
     def cancel(self):
         self.manager.cancel()
-        self.user_from.user.last_launched = datetime(1, 1, 1)
+        self.user_from.user.last_launched = None
         self.user_from.user.save()
         self.delete()
 
@@ -481,7 +484,7 @@ class DefaultChallengeManager(ChallengeManager):
             scoring.score(self.challenge.user_to.user, ChallengeGame, 'chall-warranty', external_id=self.challenge.id)
 
     def refuse(self, auto):
-        self.challenge.user_from.user.last_launched = datetime(1, 1, 1)
+        self.challenge.user_from.user.last_launched = None
         self.challenge.user_from.user.save()
 
         # send activity signal
