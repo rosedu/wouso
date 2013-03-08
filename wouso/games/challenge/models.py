@@ -67,8 +67,7 @@ class ChallengeUser(Player):
             modifier = self.magic.use_modifier('challenge-one-more', 1)
         except InsufficientAmount:
             return False
-        if self.last_launched:
-            self.last_launched -= timedelta(days=-1)
+        self.set_last_launched(None)
         self.save()
 
         signal_msg = ugettext_noop('used {artifact} to enable one more challenge.')
@@ -95,6 +94,10 @@ class ChallengeUser(Player):
             raise ChallengeException('Player cannot launch against this opponent')
 
         return Challenge.create(user_from=self, user_to=destination)
+
+    def set_last_launched(self, value):
+        self.last_launched = value
+        self.save()
 
     def get_all_challenges(self):
         chall_total = Challenge.objects.exclude(status=u'L').filter(Q(user_from__user=self) | Q(user_to__user=self))
@@ -162,8 +165,8 @@ class Challenge(models.Model):
         challenge = cls.create_custom(user_from, user_to, questions_qs)
 
         # set last_launched
-        user_from.last_launched = datetime.now()
-        user_from.save()
+        user_from = user_from.get_extension(ChallengeUser)
+        user_from.set_last_launched(datetime.now())
 
         return challenge
 
@@ -232,8 +235,7 @@ class Challenge(models.Model):
 
     def cancel(self):
         self.manager.cancel()
-        self.user_from.user.last_launched = None
-        self.user_from.user.save()
+        self.user_from.user.set_last_launched(None)
         self.delete()
 
     def set_start(self, user):
@@ -484,8 +486,7 @@ class DefaultChallengeManager(ChallengeManager):
             scoring.score(self.challenge.user_to.user, ChallengeGame, 'chall-warranty', external_id=self.challenge.id)
 
     def refuse(self, auto):
-        self.challenge.user_from.user.last_launched = None
-        self.challenge.user_from.user.save()
+        self.challenge.user_from.user.set_last_launched(None)
 
         # send activity signal
         if auto:
