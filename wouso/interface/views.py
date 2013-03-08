@@ -149,7 +149,9 @@ def search(request):
     if form.is_valid():
         query = form.cleaned_data['query']
         if len(query.split()) == 1:
-            searchresults = Player.objects.filter(Q(user__first_name__icontains=query) | Q(user__last_name__icontains=query) | Q(user__username__icontains=query))
+            searchresults = Player.objects.filter(Q(user__first_name__icontains=query) | Q(user__last_name__icontains=query) |
+                                                  Q(user__username__icontains=query) | Q(nickname__icontains=query)
+            )
             # special queries
             if query == 'outsiders':
                 searchresults = Player.objects.filter(groups=None)
@@ -157,7 +159,9 @@ def search(request):
             query = query.split()
             searchresults = set()
             for word in query:
-                r = Player.objects.filter(Q(user__first_name__icontains=word) | Q(user__last_name__icontains=word))
+                r = Player.objects.filter(Q(user__first_name__icontains=word) | Q(user__last_name__icontains=word) |
+                                          Q(nickname__icontains=query)
+                )
                 searchresults = searchresults.union(r)
 
         # search groups
@@ -170,6 +174,7 @@ def search(request):
                                   context_instance=RequestContext(request))
 
     return render_to_response('site_base.html', context_instance=RequestContext(request))
+
 
 def instantsearch(request):
     """ Perform instant search """
