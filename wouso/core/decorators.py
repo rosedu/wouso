@@ -78,4 +78,4 @@ def drop_cache(function, *args, **kwargs):
         cache.delete(cache_key)
         logging.debug('Deleted key: %s' % cache_key)
     else:
-        logging.exception('Invalid function: ', function)
+        logging.exception('Invalid function: %s' % str(function))
