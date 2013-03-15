@@ -599,3 +599,19 @@ input.inline, label.inline {
     display: inline-block;
     float: none;
 }
+
+.pagination ul {
+    list-style-type: none;
+}
+.pagination li {
+    float: left;
+    border: 1px solid #dddddd;
+}
+.pagination li a, .pagination li span {
+    display: block;
+    padding: 10px;
+    margin: 2px;
+}
+.pagination li.active {
+    font-weight: bold;
+}

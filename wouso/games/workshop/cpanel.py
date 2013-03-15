@@ -1,6 +1,7 @@
 from django import forms
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template.context import RequestContext
+from django.views.generic import ListView
 
 from models import WorkshopGame, Semigroup, Schedule, DAY_CHOICES, Answer
 from wouso.core.decorators import staff_required
@@ -151,18 +152,37 @@ def schedule_change(request, schedule=None):
                         context_instance=RequestContext(request)
     )
 
-@staff_required
-def workshops(request):
-    workshops = Workshop.objects.all().order_by('-active_until')
-    return render_to_response('workshop/cpanel/workshops.html',
-                        {'module': 'workshop',
-                         'workshops': workshops,
-                         'page': 'workshops',
-                         'info': WorkshopGame,
-                         'integrity_check': request.GET.get('integrity_check', False),
-                         },
-                        context_instance=RequestContext(request)
-    )
+
+class WorkshopList(ListView):
+    model = Workshop
+    template_name = 'workshop/cpanel/workshops.html'
+    paginate_by = 25
+    context_object_name = 'workshops'
+
+    def get_queryset(self):
+        return self.model.objects.all().order_by('-active_until')
+
+    def get_context_data(self, **kwargs):
+        context = super(WorkshopList, self).get_context_data(**kwargs)
+        context.update({'module': 'workshop', 'page': 'workshops', 'info': WorkshopGame,
+                        'integrity_check': self.request.GET.get('integrity_check', False)
+        })
+        return context
+
+workshops = staff_required(WorkshopList.as_view())
+
+#@staff_required
+#def workshops_old(request):
+#    workshops = Workshop.objects.all().order_by('-active_until')
+#    return render_to_response('workshop/cpanel/workshops.html',
+#                        {'module': 'workshop',
+#                         'workshops': workshops,
+#                         'page': 'workshops',
+#                         'info': WorkshopGame,
+#                         'integrity_check': request.GET.get('integrity_check', False),
+#                         },
+#                        context_instance=RequestContext(request)
+#    )
 
 @staff_required
 def workshop_mark4review(request, workshop):
