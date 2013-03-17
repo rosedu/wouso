@@ -259,7 +259,7 @@ class Assessment(models.Model):
                 max(reviewer) = 16
                 8 * 10 + 16 * 5 / 16 = 10 = max(final_grade)
             """
-            self.final_grade = ceil((self.grade * 10 + self.reviewer_grade * 5)/(4 * count))
+            self.final_grade = ceil((self.grade * 10 + self.reviewer_grade * 5) * 1.0 / (4 * count))
         except (ZeroDivisionError, TypeError): # one of the grades is None
             self.final_grade = None
         self.save()
