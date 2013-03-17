@@ -231,10 +231,23 @@ def workshop_reviewers(request, workshop):
                         context_instance=RequestContext(request)
     )
 
+
+def get_next_assessment(assessment):
+    """
+    Find the next assessment in list (ordered alphabetically)
+    """
+    assessments = list(assessment.workshop.assessment_set.all().order_by('player__user__last_name', 'player__user__first_name'))
+    index = assessments.index(assessment)
+    if index == len(assessments) - 1:
+        return None
+    return assessments[index + 1]
+
+
 @staff_required
 def workshop_grade_assessment(request, assessment):
     assessment = get_object_or_404(Assessment, pk=assessment)
     assistant = request.user.get_profile()
+    next_ass = get_next_assessment(assessment)
 
     if request.method == 'POST':
         data = request.POST
@@ -265,10 +278,21 @@ def workshop_grade_assessment(request, assessment):
                     r.save()
         # Grade the entire assessment
         assessment.update_grade()
+        submit = data.get('submit', 'save')
+        if submit == 'save':
+            pass
+        elif submit == 'save_return':
+            return redirect('ws_reviewers_map', workshop=assessment.workshop.id)
+        elif submit == 'save_next':
+            if next_ass:
+                return redirect('ws_grade_assessment', assessment=next_ass.id)
+            else:
+                return redirect('ws_reviewers_map', workshop=assessment.workshop.id)
 
     return render_to_response('workshop/cpanel/workshop_grade_assessment.html',
                         {'module': 'workshop',
                          'assessment': assessment,
+                         'next_ass': next_ass,
                          'page': 'workshops',
                          },
                          context_instance=RequestContext(request)
