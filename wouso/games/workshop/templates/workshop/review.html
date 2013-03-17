@@ -5,7 +5,6 @@
 {% block sectiontitle %}{% trans 'Reviews for workshop' %} #{{ workshop.pk }}{% endblock %}
 
 {% block sectioncontent %}
-
 <form action="" method="post">
     {% for as in assessments %}
     <h4>{% trans 'Anonymous' %} {% trans 'assesment' %} {{ forloop.counter }}</h4>
@@ -17,9 +16,11 @@
                     <em>{% trans 'Answer' %}:</em><br/>
                     <pre>{{ a.text }}</pre>
 
+                    {% if not workshop.is_reviewable %}
                     <span class="points red">
                         <em>{% trans 'Assistant grade:' %}</em> <strong>{{ a.grade }}</strong>
                     </span>
+                    {% endif %}
 
                     <ul class="spaced">
                     {% for r in a.review_set.all %}
