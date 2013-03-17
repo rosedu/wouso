@@ -250,9 +250,17 @@ class Assessment(models.Model):
         if self.reviews.filter(answered=True).count() == 1:
             self.reviewer_grade *= 2
 
+        count = self.questions.count()
         try:
-            self.final_grade = ceil((self.grade * 10 + self.reviewer_grade * 5)/16.0)
-        except TypeError: # one of the grades is None
+            """
+             Formula:
+                (grade * 10 + reviewer * 5) / 16 - when there are 4 questions
+                max(grade) = 8
+                max(reviewer) = 16
+                8 * 10 + 16 * 5 / 16 = 10 = max(final_grade)
+            """
+            self.final_grade = ceil((self.grade * 10 + self.reviewer_grade * 5)/(4 * count))
+        except (ZeroDivisionError, TypeError): # one of the grades is None
             self.final_grade = None
         self.save()
 
