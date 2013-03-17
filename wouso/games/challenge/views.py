@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
+from wouso.core.config.models import Setting, BoolSetting
 from wouso.core.user.models import Player
 from wouso.games.challenge.models import ChallengeException
 from models import ChallengeUser, ChallengeGame, Challenge, Participant
@@ -223,7 +224,10 @@ def history(request, playerid):
 
 @login_required
 def challenge_random(request):
-
+    setting = BoolSetting.get('disable-challenge-random').get_value()
+    if setting:
+        messages.error(request, _('Random challenge disabled'))
+        return redirect('challenge_index_view')
     current_player = request.user.get_profile().get_extension(ChallengeUser)
 
     # selects challengeable players
