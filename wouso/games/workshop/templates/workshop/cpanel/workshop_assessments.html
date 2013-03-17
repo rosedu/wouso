@@ -43,5 +43,6 @@
 
         <p>Total: {{ workshop.assessment_set.all.count }}</p>
         <a class="button" href="{% url ws_workshops %}">Workshops</a>
+        <a class="button" href="{% url ws_reviewers_map workshop.pk %}">Grades</a>
 {% endif %}
 {% endblock %}

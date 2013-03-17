@@ -38,7 +38,7 @@
         <td><strong>{{ ass.final_grade }}</strong></td>
         <td>
             {% if workshop.is_gradable %}
-            <a href="{% url ws_grade_assessment ass.id %}">Grade</a>
+            <a class="button" href="{% url ws_grade_assessment ass.id %}" title="Review and grade"><strong>Grade</strong></a>
             {% endif %}
 
             <a class="button button-min" href="{% url ws_view_assessment workshop.id ass.id %}">view</a>
