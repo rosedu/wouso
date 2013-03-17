@@ -83,6 +83,8 @@
             </li>
         {% endfor %}
         </ul>
+    {% empty %}
+        <p>{% trans 'There are no assessments to review. Maybe the review did not started.' %}</p>
     {% endfor %}
 
     {% csrf_token %}
