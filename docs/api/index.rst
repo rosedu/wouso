@@ -135,7 +135,8 @@ Player information
                 points_left: 45,
             }
             race: "Oxynia",
-            race_id: "ca",
+            race_id: "1",
+            race_slug: "ca",
             group: "CA311",
             email: "alex@rosedu.org",
             points: 0,
