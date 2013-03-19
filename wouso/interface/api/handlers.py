@@ -145,6 +145,7 @@ class InfoHandler(BaseHandler):
                 'points': player.points,
                 'gold': gold,
                 'race': player.race_name,
+                'race_id': player.race.name.lower() if player.race and player.race.name else '',
                 'group': group,
                 'level_no': player.level_no,
                 'level': level,
