@@ -20,9 +20,12 @@ urlpatterns += patterns(
 
 # API:
 sessionauth = SessionAuthentication()
-simple = SimpleAuthentication()
+#simple = SimpleAuthentication()
 authoauth = OAuthAuthentication(realm='Wouso')
-ad = {'authentication': [simple, authoauth, sessionauth]}
+ad = {'authentication': [#simple,
+                         authoauth,
+                         sessionauth]
+}
 
 notifications_resource = Resource(handler=NotificationsHandler, **ad)
 
