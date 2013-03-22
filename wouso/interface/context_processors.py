@@ -5,9 +5,6 @@ from wouso.core.game import get_games
 from wouso.core.config.models import Setting
 from wouso.core.magic.models import Bazaar
 from wouso.interface.apps import get_apps
-from wouso.interface.top.models import Top
-from wouso.interface.apps.qproposal.models import Qproposal
-from wouso.interface.apps.statistics.models import Statistics
 from wouso.interface.apps.messaging.models import Message
 from wouso.interface.chat.models import Chat
 from wouso.interface import get_static_pages, detect_mobile, mobile_browser
@@ -24,56 +21,30 @@ def header_footer(request):
         return {}
     #TODO ordering, using config
 
-    header = []
-    try:
+    def header_generator():
         for game in get_games():
             h = game.get_header_link(request)
             if h:
-                header.append((h, game.get_instance().name))
-    except Exception as e:
-        logging.exception(e)
+                yield h, game.get_instance().verbose_name
+        for game in [Message, Bazaar, Chat]:
+            h = game.get_header_link(request)
+            if h:
+                yield h, game.__name__
 
-    # add also messages and magic link
-    try:
-        h = Message.get_header_link(request)
-        if h:
-            header.append((h, 'Message'))
-
-        h = Bazaar.get_header_link(request)
-        if h:
-            header.append((h, 'Magic'))
-
-        h = Chat.get_header_link(request)
-        if h:
-            header.append((h, 'Chat'))
-    except Exception as e:
-        logging.exception(e)
-
-    footer = []
-    try:
+    def footer_generator():
         for game in get_games():
             f = game.get_footer_link(request)
             if f:
-                footer.append(f)
-    except: pass
+                yield f
+        for s in get_static_pages():
+            yield s
+        for a in get_apps():
+            f = a.get_footer_link(request)
+            if f:
+                yield f
 
-    # also add static pages
-    footer.extend(get_static_pages())
+    return {'header': header_generator, 'heads': header_generator, 'footer': footer_generator}
 
-    for a in get_apps():
-        f = a.get_footer_link(request)
-        if f:
-            footer.append(a.get_footer_link(request))
-
-    # format header
-    hids = lambda p: '<span id="head-%s"><a href="%s">%s</a>%s</span>' % (p[1].lower(), \
-                        p[0]['link'], p[0]['text'], \
-                        '<sup class="unread-count">%d</sup>' % p[0]['count'] if p[0].get('count', False) else '')
-
-    header_html = " ".join(map(hids, header))
-    footer = " | ".join(footer)
-
-    return {'header': header_html, 'heads': header, 'footer': footer}
 
 def sidebar(request):
     """ For each registered game, get a widget to be displayed in sidebar
@@ -82,29 +53,18 @@ def sidebar(request):
 
     Returns a 'sidebar' list containing html boxes.
     """
-
-    sidebar = []
-
-    # Request blocks from games
-    for game in get_games():
-        try:
-            w = game.get_sidebar_widget(request)
+    def sidebar_generator():
+        for game in get_games() + list(get_apps()):
+            try:
+                w = game.get_sidebar_widget(request)
+            except Exception as e:
+                logging.exception(e)
+                w = None
             if w:
-                sidebar.append(w)
-        except Exception as e:
-            logging.exception(e)
+                yield w
 
-    # Request blocks from apps
-    for app in get_apps():
-        try:
-            w = app.get_sidebar_widget(request)
-            if w:
-                sidebar.append(w)
-        except Exception as e:
-            print e
-            logging.exception(e)
+    return {'sidebar': sidebar_generator}
 
-    return {'sidebar': sidebar}
 
 def context(request):
     """ Make all configuration settings available as config_name
