@@ -152,6 +152,8 @@ class Workshop(models.Model):
             return Assessment.objects.get(player=player, workshop=self)
         except Assessment.DoesNotExist:
             return None
+        except Assessment.MultipleObjectsReturned:
+            return Assessment.objects.filter(player=player, workshop=self).order_by('id')[0]
 
     def get_or_create_assessment(self, player):
         """ Return existing or new assessment for player
