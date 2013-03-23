@@ -16,7 +16,7 @@
         <li>{% trans 'none' %}.</li>
         {% endfor %}
     </ul>
-    <a href="{% url workshop_review assessment.workshop.id %}">all</a>
+    <a href="{% url workshop_review assessment.workshop.id %}">{% trans 'Details' %}</a> {% trans 'about your reviews' %}
 </div>
 
 <p>{% trans "Assessment grade:" %} {{ assessment.grade }}</p>

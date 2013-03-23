@@ -8,6 +8,11 @@
 <div class="spacer"><!-- --></div>
     <h4>Actions</h4>
     <a href="?integrity_check=1">Integrity check</a>
+
+    <h4>Help</h4>
+    <p>
+    Click on <strong>Upgrade grades</strong> to calculate final grades (after correcting the entire group).
+    </p>
 {% endblock %}
 
 {% block tabcontent %}
@@ -26,14 +31,14 @@
     </tr>
     {% for ass in assessments %}
     <tr>
-        <td colspan="2">{{ ass.player }}</td>
+        <td colspan="2">{{ ass.player }} - {{ ass.player.user.username }}</td>
         <td>{{ ass.grade }}</td>
         <td><em>{{ ass.reviews_grade }}</em></td>
         <td>{{ ass.reviewer_grade }}</td>
         <td><strong>{{ ass.final_grade }}</strong></td>
         <td>
             {% if workshop.is_gradable %}
-            <a href="{% url ws_grade_assessment ass.id %}">Grade</a>
+            <a class="button" href="{% url ws_grade_assessment ass.id %}" title="Review and grade"><strong>Grade</strong></a>
             {% endif %}
 
             <a class="button button-min" href="{% url ws_view_assessment workshop.id ass.id %}">view</a>
@@ -49,7 +54,7 @@
         {% for r in ass.reviewers.all %}
         <tr>
             <td>{{ forloop.counter }}.</td>
-            <td>{{ r }}</td>
+            <td>{{ r }} - {{ ass.player.user.username }}</td>
             <td></td>
             <td>{% get_ass_reviewer_grade ass r %}</td>
             <td><em>{% get_ass_review_grade ass r %}</em></td>

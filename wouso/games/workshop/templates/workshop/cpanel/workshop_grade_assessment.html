@@ -55,8 +55,11 @@
     </ul>
     {% csrf_token %}
 
-    <button type="submit" name="submit" value="save_go_back">Save and return</button>
-    <!--<button type="submit" name="submit" value="save_go_next">Save and see next</button>-->
+    <button type="submit" name="submit" value="save" title="Save and stay on this page">Save</button>
+    <button type="submit" name="submit" value="save_return" title="Save and return to semigroup">Save and return</button>
+    {% if next_ass %}
+    <button type="submit" name="submit" value="save_next">Save and see next</button>
+    {% endif %}
 </form>
 
 <a class="button" href="{% url ws_reviewers_map assessment.workshop.id %}">Back to review</a>

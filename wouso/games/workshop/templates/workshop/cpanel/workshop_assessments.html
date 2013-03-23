@@ -13,10 +13,15 @@
             <li>{{ a.question }}
                 <br/>
                 <pre>{{ a }}</pre>
-                <br/>
                 <ul>
                     {% for review in a.review_set.all %}
-                        <li><span {% if review.reviewer.in_staff_group %}class="red"{% endif %}>{{ review.reviewer }}: [{{ review.answer_grade }}] - {{ review.feedback }}</span> <span class="red">[{{ review.review_grade }}]</span></li>
+                        {% if review.reviewer.in_staff_group %}
+                        <li><span class="red">{{ review.reviewer }}: - [{{ a.grade }}] {{ review.feedback }}</span>
+
+                        </li>
+                        {% else %}
+                        <li><span>{{ review.reviewer }}: [{{ review.answer_grade }}] - {{ review.feedback }}</span> <span class="red">[{{ review.review_grade }}]</span></li>
+                        {% endif %}
                     {% endfor %}
                 </ul>
                 <br/>
@@ -43,5 +48,6 @@
 
         <p>Total: {{ workshop.assessment_set.all.count }}</p>
         <a class="button" href="{% url ws_workshops %}">Workshops</a>
+        <a class="button" href="{% url ws_reviewers_map workshop.pk %}">Grades</a>
 {% endif %}
 {% endblock %}

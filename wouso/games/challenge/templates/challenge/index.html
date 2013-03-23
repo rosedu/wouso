@@ -18,7 +18,10 @@
 </p>
 {% else %}
 <p>{% trans 'To launch a challenge, find the player you want to challenge and click on the <em>Challenge</em> button, next to his profile.' %}</p>
-<a href="{% url challenge_random %}">Challenge random player</a> <br>
+
+    {% if not config_disable_challenge_random %}
+    <a href="{% url challenge_random %}">Challenge random player</a> <br>
+    {% endif %}
 
 {% endif %}
 {% endif %}

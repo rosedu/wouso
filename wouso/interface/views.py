@@ -243,7 +243,7 @@ def ajax_notifications(request):
         context = RequestContext(request)
         count = 0
         # TODO use reduce
-        for h in context.get('heads', []):
+        for h in context.get('header', [])():
             count += h[0].get('count', 0)
     else:
         count = -1

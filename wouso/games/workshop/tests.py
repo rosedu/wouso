@@ -58,9 +58,10 @@ class TestAssessment(WousoTest):
         semig = Semigroup.objects.create(day=datetime.today().day, hour=datetime.today().hour - datetime.today().hour % 2)
         semig.players.add(p1, p2)
 
-        q = Question.objects.create()
-        s = Schedule.objects.create()
-        q.tags.add(s)
+        s = Schedule.objects.create(count=4)
+        for i in range(4):
+            q = Question.objects.create()
+            q.tags.add(s)
 
         self.assertTrue(s.is_active())
 
@@ -76,8 +77,8 @@ class TestAssessment(WousoTest):
         self.assertFalse(a2.answered)
 
         # Check questions
-        self.assertEqual(a1.questions.all().count(), 1)
-        self.assertEqual(a1.questions.all()[0], q)
+        self.assertEqual(a1.questions.all().count(), 4)
+        #self.assertEqual(a1.questions.all()[-1], q)
 
         a1.set_answered()
         a2.set_answered()

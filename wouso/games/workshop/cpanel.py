@@ -1,6 +1,7 @@
 from django import forms
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template.context import RequestContext
+from django.views.generic import ListView
 
 from models import WorkshopGame, Semigroup, Schedule, DAY_CHOICES, Answer
 from wouso.core.decorators import staff_required
@@ -151,18 +152,37 @@ def schedule_change(request, schedule=None):
                         context_instance=RequestContext(request)
     )
 
-@staff_required
-def workshops(request):
-    workshops = Workshop.objects.all().order_by('-active_until')
-    return render_to_response('workshop/cpanel/workshops.html',
-                        {'module': 'workshop',
-                         'workshops': workshops,
-                         'page': 'workshops',
-                         'info': WorkshopGame,
-                         'integrity_check': request.GET.get('integrity_check', False),
-                         },
-                        context_instance=RequestContext(request)
-    )
+
+class WorkshopList(ListView):
+    model = Workshop
+    template_name = 'workshop/cpanel/workshops.html'
+    paginate_by = 25
+    context_object_name = 'workshops'
+
+    def get_queryset(self):
+        return self.model.objects.all().order_by('-active_until')
+
+    def get_context_data(self, **kwargs):
+        context = super(WorkshopList, self).get_context_data(**kwargs)
+        context.update({'module': 'workshop', 'page': 'workshops', 'info': WorkshopGame,
+                        'integrity_check': self.request.GET.get('integrity_check', False)
+        })
+        return context
+
+workshops = staff_required(WorkshopList.as_view())
+
+#@staff_required
+#def workshops_old(request):
+#    workshops = Workshop.objects.all().order_by('-active_until')
+#    return render_to_response('workshop/cpanel/workshops.html',
+#                        {'module': 'workshop',
+#                         'workshops': workshops,
+#                         'page': 'workshops',
+#                         'info': WorkshopGame,
+#                         'integrity_check': request.GET.get('integrity_check', False),
+#                         },
+#                        context_instance=RequestContext(request)
+#    )
 
 @staff_required
 def workshop_mark4review(request, workshop):
@@ -211,10 +231,23 @@ def workshop_reviewers(request, workshop):
                         context_instance=RequestContext(request)
     )
 
+
+def get_next_assessment(assessment):
+    """
+    Find the next assessment in list (ordered alphabetically)
+    """
+    assessments = list(assessment.workshop.assessment_set.all().order_by('player__user__last_name', 'player__user__first_name'))
+    index = assessments.index(assessment)
+    if index == len(assessments) - 1:
+        return None
+    return assessments[index + 1]
+
+
 @staff_required
 def workshop_grade_assessment(request, assessment):
     assessment = get_object_or_404(Assessment, pk=assessment)
     assistant = request.user.get_profile()
+    next_ass = get_next_assessment(assessment)
 
     if request.method == 'POST':
         data = request.POST
@@ -245,10 +278,21 @@ def workshop_grade_assessment(request, assessment):
                     r.save()
         # Grade the entire assessment
         assessment.update_grade()
+        submit = data.get('submit', 'save')
+        if submit == 'save':
+            pass
+        elif submit == 'save_return':
+            return redirect('ws_reviewers_map', workshop=assessment.workshop.id)
+        elif submit == 'save_next':
+            if next_ass:
+                return redirect('ws_grade_assessment', assessment=next_ass.id)
+            else:
+                return redirect('ws_reviewers_map', workshop=assessment.workshop.id)
 
     return render_to_response('workshop/cpanel/workshop_grade_assessment.html',
                         {'module': 'workshop',
                          'assessment': assessment,
+                         'next_ass': next_ass,
                          'page': 'workshops',
                          },
                          context_instance=RequestContext(request)

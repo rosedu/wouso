@@ -34,12 +34,14 @@
 <table>
     <tr>
         <th>Workshop</th>
+        <th>Status</th>
         <th>Reviews</th>
         <th>Result</th>
     </tr>
     {% for a in history %}
         <tr>
             <td>{{ a.workshop }}</td>
+            <td>{{ a.workshop.get_status_display }}</td>
             <td>
             {% if not a.workshop.is_active %}
                 <a href="{% url workshop_review a.workshop.id %}">{% trans 'Your reviews' %}</a>

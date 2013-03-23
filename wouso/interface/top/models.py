@@ -327,7 +327,7 @@ class Top(App):
 
         Example: ['gold', 'karma']
         """
-        return Setting.get('top-coins').get_value().split(',') or []
+        return [c for c in Setting.get('top-coins').get_value().split(',') if c] or []
 
     @classmethod
     def get_coin_position(cls, coin, user):
