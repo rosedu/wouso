@@ -265,12 +265,12 @@ class TestCalculatePoints(WousoTest):
     def test_no_correct_and_partial_wrong(self):
         q = self.get_question(4, 3)
         post = self.fake_answers(q, 0, 2)
-        self.assertEqual(Challenge._calculate_points(post)['points'], -66)
+        self.assertEqual(Challenge._calculate_points(post)['points'], 0)
 
     def test_full_wrong(self):
         q = self.get_question(4, 3)
         post = self.fake_answers(q, 0, 3)
-        self.assertEqual(Challenge._calculate_points(post)['points'], -100)
+        self.assertEqual(Challenge._calculate_points(post)['points'], 0)
 
     def test_all_answers(self):
         q = self.get_question(4, 3)

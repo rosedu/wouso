@@ -7,6 +7,7 @@ from django.core import serializers
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
+from django.utils.html import strip_tags
 from wouso.core.god import God
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.scoring.models import History
@@ -34,7 +35,7 @@ def set_profile(request):
         def clean_nickname(self):
             if Player.objects.exclude(id=self.instance.id).filter(nickname=self.cleaned_data['nickname']).count():
                 raise ValidationError("Nickname is used")
-            self.cleaned_data['nickname'] = self.cleaned_data['nickname'].strip().replace(' ', '_')
+            self.cleaned_data['nickname'] = strip_tags(self.cleaned_data['nickname'].strip().replace(' ', '_'))
             return self.cleaned_data['nickname']
 
 

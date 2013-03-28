@@ -158,7 +158,11 @@ class Workshop(models.Model):
     def get_or_create_assessment(self, player):
         """ Return existing or new assessment for player
         """
-        assessment, is_new = Assessment.objects.get_or_create(player=player, workshop=self)
+        try:
+            assessment, is_new = Assessment.objects.get_or_create(player=player, workshop=self)
+        except Assessment.MultipleObjectsReturned:
+            assessment, is_new = Assessment.objects.filter(player=player, workshop=self).order_by('id')[0], False
+
         if is_new:
             total_count = self.question_count
             for count, questions in WorkshopGame.get_question_pool(self.date):
