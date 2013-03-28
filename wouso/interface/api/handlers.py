@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from django.template.defaultfilters import slugify
+from django.utils.html import strip_tags
 from piston.handler import BaseHandler
 from piston.utils import rc
 
@@ -173,7 +174,7 @@ class ChangeNickname(BaseHandler):
             return {'success': False, 'error': 'Nickname is the same'}
         if Player.objects.exclude(id=player.id).filter(nickname=nickname).count() > 0:
             return {'success': False, 'error': 'Nickname in use'}
-        player.nickname = slugify(nickname)
+        player.nickname = slugify(strip_tags(nickname))
         player.save()
         return {'success': True}
 
