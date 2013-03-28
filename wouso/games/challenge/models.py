@@ -378,7 +378,7 @@ class Challenge(models.Model):
                 qpoints = 1 if (len(v) == q.answers.count()) else 0
             else:
                 qpoints = float(checked) / correct_count - float(wrong) / wrong_count
-            #qpoints = qpoints if qpoints > 0 else 0
+            qpoints = qpoints if qpoints > 0 else 0
             points += qpoints
             results[r] = (( checked, correct_count ))
         return {'points': int(100.0 * points), 'results' : results}
