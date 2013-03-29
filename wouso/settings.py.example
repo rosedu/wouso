@@ -266,3 +266,4 @@ DISPLAY_NAME = '{first_name} {last_name}'
 # PLEASE LEAVE THIS ON THE LAST LINES OF THIS FILE
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
     from localsettings import *
+
