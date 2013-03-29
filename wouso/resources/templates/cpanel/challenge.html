@@ -1,0 +1,25 @@
+{% extends 'cpanel/index.html' %}
+
+{% load user %}
+{% block sectiontitle %}Challenges{% endblock %}
+
+{% block sectioncontent %}
+
+{% if challenges %}
+<table>
+    <th>From</th>
+    <th>To</th>
+    <th>Date</th>
+    <th>Status</th>
+    {% for challenge in challenges %}
+    <tr>
+        <td>{% player challenge.user_from.user %}</td>
+        <td>{% player challenge.user_to.user %}</td>
+        <td>{{ challenge.date }}</td>
+        <td>{{ challenge.get_status_display }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+{% endblock %}
