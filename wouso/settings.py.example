@@ -18,11 +18,11 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'data.db', # Or path to database file if using sqlite3.
-        'USER': '', # Not used with sqlite3.
-        'PASSWORD': '', # Not used with sqlite3.
-        'HOST': '', # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '', # Set to empty string for default. Not used with sqlite3.
+        'NAME': 'data.db',                      # Or path to database file if using sqlite3.
+        'USER': '',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -81,7 +81,7 @@ TEMPLATE_LOADERS = (
     'wouso.interface.loaders.Loader',
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-    # 'django.template.loaders.eggs.Loader',
+    #     'django.template.loaders.eggs.Loader',
     )
 
 MIDDLEWARE_CLASSES = [
@@ -208,11 +208,11 @@ BASE_PATH = os.path.dirname(__file__)
 QUNIT_TEST_DIRECTORY = os.path.join(BASE_PATH, 'qunit_tests')
 
 try:
-import django_qunit
+    import django_qunit
 except ImportError:
-pass
+    pass
 else:
-INSTALLED_APPS += ['django_qunit']
+    INSTALLED_APPS += ['django_qunit']
 
 try:
     imp.find_module('django_socketio')
@@ -257,10 +257,10 @@ DISPLAY_NAME = '{first_name} {last_name}'
 
 # To setup a cache, put this in localsettings:
 # CACHES = {
-# 'default': {
-# 'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-# 'LOCATION': 'unique-snowflake'
-# }
+#    'default': {
+#        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+#        'LOCATION': 'unique-snowflake'
+#    }
 # }
 
 # PLEASE LEAVE THIS ON THE LAST LINES OF THIS FILE
