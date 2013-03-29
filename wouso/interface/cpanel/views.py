@@ -1038,14 +1038,3 @@ def bonus(request, player_id):
     return render_to_response('cpanel/bonus.html', {'target_player': player, 'form': form, 'bonuses': bonuses, 'penalties': penalties},
         context_instance=RequestContext(request)
     )
-    
-    
-@staff_required
-def list_challenges(request):
-    challenges = Challenge.objects.all()
-    context = {
-       'challenges': challenges,
-    }
-        
-    return render_to_response('cpanel/challenge.html', context,
-                              context_instance=RequestContext(request))

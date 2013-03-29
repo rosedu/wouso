@@ -75,7 +75,6 @@ upat = [
 
     url(r'^impersonate/(?P<player_id>\d+)/$', 'wouso.interface.cpanel.views.impersonate', name='impersonate'),
     url(r'^impersonate/clear/$', 'wouso.interface.cpanel.views.clean_impersonation', name='impersonate_clear'),
-    url(r'^challenge/$', 'wouso.interface.cpanel.views.list_challenges', name='challenges'),
 ]
 
 for g in get_cpanel_games():
