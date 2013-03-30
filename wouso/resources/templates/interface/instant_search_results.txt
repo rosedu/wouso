@@ -1,6 +1,6 @@
 {% load artifacts %}
 
 {% for sr in searchresults %}
-{{sr}}|{{sr.points}}|{{sr.level.title}}|{{sr.level_no}}|{% artifact sr.level %}|/seniors/|{{ sr.id }}
+{{sr}}|{{sr.user.username}}|{{sr.nickname}}|{{sr.points}}|{{sr.level.title}}|{{sr.level_no}}|{% artifact sr.level %}|/seniors/|{{ sr.id }}
 {% endfor %}
 
