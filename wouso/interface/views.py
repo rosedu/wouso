@@ -149,20 +149,26 @@ def search(request):
     if form.is_valid():
         query = form.cleaned_data['query']
         if len(query.split()) == 1:
-            searchresults = Player.objects.filter(Q(user__first_name__icontains=query) | Q(user__last_name__icontains=query) |
-                                                  Q(user__username__icontains=query) | Q(nickname__icontains=query)
-            )
+            if request.user.get_profile().in_staff_group():
+                searchresults = Player.objects.filter(Q(user__first_name__icontains=query) | Q(user__last_name__icontains=query) |
+                                                      Q(user__username__icontains=query) | Q(nickname__icontains=query)
+                )
+            else:
+                searchresults = Player.objects.filter(Q(nickname__icontains=query))
             # special queries
             if query == 'outsiders':
                 searchresults = Player.objects.filter(groups=None)
         else:
             query = query.split()
             searchresults = set()
-            for word in query:
-                r = Player.objects.filter(Q(user__first_name__icontains=word) | Q(user__last_name__icontains=word) |
+            if request.user.get_profile().in_staff_group():
+                for word in query:
+                    r = Player.objects.filter(Q(user__first_name__icontains=word) | Q(user__last_name__icontains=word) |
                                           Q(nickname__icontains=query)
-                )
-                searchresults = searchresults.union(r)
+                    )
+                    searchresults = searchresults.union(r)
+            else:
+                searchresults = Player.objects.filter(Q(nickname__icontains=query))
 
         # search groups
         group_results = PlayerGroup.objects.filter(Q(name__icontains=query)|Q(title__icontains=query))
@@ -175,24 +181,24 @@ def search(request):
 
     return render_to_response('site_base.html', context_instance=RequestContext(request))
 
-
 def instantsearch(request):
     """ Perform instant search """
     logger.debug('Initiating instant search')
     form = InstantSearchForm(request.GET)
     if form.is_valid():
         query = form.cleaned_data['q']
-        users = User.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(username__icontains=query))
-        user_ids = [u.id for u in users]
-        searchresults = Player.objects.filter(Q(user__in=user_ids) | Q(full_name__icontains=query) | Q(nickname__icontains=query))
-
+        if request.user.get_profile().in_staff_group():
+            users = User.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(username__icontains=query))
+            user_ids = [u.id for u in users]
+            searchresults = Player.objects.filter(Q(user__in=user_ids) | Q(full_name__icontains=query) | Q(nickname__icontains=query))
+        else:
+            searchresults = Player.objects.filter(Q(nickname__icontains=query))
         return render_to_response('interface/instant_search_results.txt',
                                   {'searchresults': searchresults},
                                   context_instance=RequestContext(request))
 
     else:
         return HttpResponse('')
-
 
 def searchone(request):
     """ Get one user, based on his/her name """
