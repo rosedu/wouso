@@ -208,11 +208,11 @@ BASE_PATH = os.path.dirname(__file__)
 QUNIT_TEST_DIRECTORY = os.path.join(BASE_PATH, 'qunit_tests')
 
 try:
-	import django_qunit
+    import django_qunit
 except ImportError:
-	pass
+    pass
 else:
-	INSTALLED_APPS += ['django_qunit']
+    INSTALLED_APPS += ['django_qunit']
 
 try:
     imp.find_module('django_socketio')
