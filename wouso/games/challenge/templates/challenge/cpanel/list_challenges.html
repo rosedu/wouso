@@ -20,6 +20,8 @@
     </tr>
     {% endfor %}
 </table>
+{% else %}
+    <p>No Challenges to display</p>
 {% endif %}
 
 {% include 'cpanel/pagination.html' %}
