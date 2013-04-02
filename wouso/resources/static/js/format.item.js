@@ -24,9 +24,11 @@ function setAutocomplete(id) {
 
 function formatItem( row ) {
     return row[0] + "<br />"+
-        row[4]+" "+
-        "<small><i>" + row[2] + " (" + row[3] + ") " +
-        row[1] + " puncte</small></i>" + "<span class='hidden'>:" + row[6] + "</span>";
+        row[1] + "<br />" +
+        row[2] + "<br />" +
+        row[6]+" "+
+        "<small><i>" + row[4] + " (" + row[5] + ") " +
+        row[3] + " puncte</small></i>" + "<span class='hidden'>:" + row[8] + "</span>";
 }
 function getSelectedPlayer(li) {
     var text = li.innerHTML;
