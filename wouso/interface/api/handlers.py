@@ -216,9 +216,14 @@ class BazaarInventoryHandler(BazaarHandler):
     def read(self, request):
         player = request.user.get_profile()
 
-        return {'spells_available': player.magic.spells_available,
-                'spells_onme': player.magic.spells,
-                'spells_cast': player.magic.spells_cast
+        spells_available = [{'spell_id': s.spell.id, 'spell_name': s.spell.name, 'spell_title': s.spell.title} for s in player.magic.spells_available]
+        spells_onme = [{'spell_id': s.spell.id, 'spell_name': s.spell.name, 'spell_title': s.spell.title, 'due': s.due,
+                        'source': unicode(s.source), 'source_id': s.source.id} for s in player.magic.spells]
+        spells_cast = [{'spell_id': s.spell.id, 'spell_name': s.spell.name, 'spell_title': s.spell.title, 'due': s.due,
+                        'player_id': s.player.id, 'player': unicode(s.player)} for s in player.magic.spells_cast]
+        return {'spells_available': spells_available,
+                'spells_onme': spells_onme,
+                'spells_cast': spells_cast
         }
 
 class BazaarBuy(BaseHandler):

@@ -225,7 +225,7 @@ Magic and Bazaar
 
 .. http:get:: /api/bazaar/inventory/
 
-    Returns a list of spells in current authenticated user's inventory.
+    Returns a list of spells in current authenticated user's inventory, also active and cast lists.
 
     **Example request**:
      .. sourcecode:: http
@@ -243,13 +243,31 @@ Magic and Bazaar
         Content-Type: text/javascript
 
         {
-            spells:
-            [
+            spells_cast: [
                 {
+                    due: "2013-04-04T15:50:03.643",
+                    spell_id: 1,
+                    spell_title: "Disguise -25%",
+                    spell_name: "top-disguise",
                     player_id: 1,
-                    spell_id: 30
-                    amount: 1,
-                    id: 1,
+                    player: "admin"
+                }
+            ],
+            spells_available: [
+                {
+                    spell_id: 2,
+                    spell_name: "top-disguise",
+                    spell_title: "Disguise -15%"
+                }
+            ],
+            spells_onme: [
+                {
+                    due: "2013-04-04T15:50:03.643",
+                    spell_id: 1,
+                    spell_title: "Disguise -25%",
+                    spell_name: "top-disguise",
+                    source_id: 1,
+                    source: "admin"
                 }
             ]
         }
