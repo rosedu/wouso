@@ -210,7 +210,7 @@ Magic and Bazaar
                      title: "Nu poate fi provocat",
                      type: "n",
                      due_days: 3,
-                     image: "/static/upload/challenge.png",
+                     image_url: "/static/upload/challenge.png",
                      price: 10,
                      percents: 100,
                      id: 30,
