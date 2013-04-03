@@ -200,6 +200,8 @@ class ChangeTheme(ChangeNickname):
 class BazaarHandler(BaseHandler):
     allowed_methods = ('GET',)
     object_name = 'spells'
+    fields = ('name', 'title', 'description', 'available', 'due_days', 'type', 'mass', 'level_required', 'image_url',
+            'price')
 
     def get_queryset(self, user=None):
         return Spell.objects.all()
@@ -211,6 +213,7 @@ class BazaarHandler(BaseHandler):
             return rc.NOT_FOUND
 
         return {self.object_name: self.get_queryset(user=player)}
+
 
 class BazaarInventoryHandler(BazaarHandler):
     def read(self, request):
@@ -225,6 +228,7 @@ class BazaarInventoryHandler(BazaarHandler):
                 'spells_onme': spells_onme,
                 'spells_cast': spells_cast
         }
+
 
 class BazaarBuy(BaseHandler):
     allowed_methods = ('POST',)

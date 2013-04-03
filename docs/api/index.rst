@@ -210,10 +210,9 @@ Magic and Bazaar
                      title: "Nu poate fi provocat",
                      type: "n",
                      due_days: 3,
-                     image: "<custom image>",
+                     image: "/static/upload/challenge.png",
                      price: 10,
                      percents: 100,
-                     group_id: 1,
                      id: 30,
                      description: "Nu permite provocarea jucătorului pe care este aplicată."
                  },

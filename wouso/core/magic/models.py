@@ -28,7 +28,7 @@ class Modifier(models.Model):
         """ Image can be stored inside uploads or in theme, return the
         full path or the css class. """
         if self.image:
-            return "%s/%s" % (settings.MEDIA_ARTIFACTS_URL, os.path.basename(str(self.image)))
+            return os.path.join(settings.MEDIA_ARTIFACTS_URL, os.path.basename(str(self.image)))
 
         if hasattr(self, 'group'):
             return ("%s-%s" %  (self.group if self.group else 'default', self.name)).lower()
@@ -94,6 +94,10 @@ class Spell(Modifier):
     def group(self):
         return 'spells'
 
+    @property
+    def image_url(self):
+        return self.path if self.image else ''
+
     def history_bought(self):
         return self.spellhistory_set.filter(type='b').count()
 
@@ -105,7 +109,6 @@ class Spell(Modifier):
 
     def history_expired(self):
         return self.spellhistory_set.filter(type='e').count()
-
 
     def __unicode__(self):
         if self.title:
