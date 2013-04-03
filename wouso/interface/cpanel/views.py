@@ -161,7 +161,7 @@ def spells(request):
 def edit_spell(request, id):
     spell = get_object_or_404(Spell, pk=id)
     if request.method == "POST":
-        form = SpellForm(data = request.POST, instance = spell)
+        form = SpellForm(data = request.POST, instance = spell, files=request.FILES)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.spells'))
@@ -174,7 +174,7 @@ def edit_spell(request, id):
 def add_spell(request):
     form = SpellForm()
     if request.method == "POST":
-        spell = SpellForm(data = request.POST)
+        spell = SpellForm(data=request.POST, files=request.FILES)
         if spell.is_valid():
             spell.save()
             return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.spells'))
