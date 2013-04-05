@@ -3,11 +3,16 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Wouso API's documentation!
-=====================================
+Wouso API's documentation
+=========================
 
-Base api:
---------
+The wouso API is a REST web service using OAuth v1.0 authentication, allowing your application to interact with a
+wouso instance. A testing server is available at: http://wouso-next.rosedu.org/api/ .
+
+A demo python library interfacing with the api is available here: http://github.com/rosedu/wouso-extras .
+
+Basic information:
+------------------
 
 .. http:get:: /api/info/online/
 
@@ -92,6 +97,7 @@ Notifications
 
     :statuscode 200: no error
     :statuscode 401: not authorized
+
 
 Player information
 ~~~~~~~~~~~~~~~~~~
@@ -330,8 +336,8 @@ Magic and Bazaar
 
     Cast a spell given as POST parameter to player_id.
 
-Top API
--------
+Top
+----
 .. http:get:: /api/top/race/
 
     Returns top races in the game.
@@ -356,8 +362,9 @@ Top API
 
     Returns top players in the game.
 
-Group API
----------
+
+Groups
+------
 .. http:get:: /api/group/(group_id)/
 
     Returns information about the group: name, member count, rank.
@@ -370,8 +377,9 @@ Group API
 
     Returns group points evolution.
 
-Messages API
-------------
+
+Messages
+--------
 .. http:get:: /api/messages/(type)
 
     Returns all messages by type:
@@ -396,7 +404,7 @@ Messages API
      * unarchive
 
 
-Game API
+Games
 --------
 
 Question of the Day
