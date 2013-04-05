@@ -26,7 +26,7 @@
     </tr>
     {% endfor %}
     <tr>
-        <td></td>
+        <td colspan="2"></td>
         {% for w in semigroup.workshop_set.all %}
         <td>
             <a href="{% url ws_reviewers_map w.id %}">view</a>
