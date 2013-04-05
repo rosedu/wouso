@@ -18,7 +18,7 @@
     </tr>
     {% for p in players %}
     <tr>
-        <td>{{ p }}</td>
+        <td>{{ p.user.first_name }} {{ p.user.last_name }}</td>
         <td>[{{ p.user.username }}]</td>
         {% for w in semigroup.workshop_set.all %}
             <td>{% get_final_grade w p %}</td>

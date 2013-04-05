@@ -9,7 +9,7 @@ from wouso.core.magic.templatetags.artifacts import artifact
 register = template.Library()
 
 @register.simple_tag
-def player(user, artif_html=None):
+def player(user, artif_html=None, real_name=False):
     """ Render player name and level image with link to player's profile """
     if not user or isinstance(user, str):
         return ''
@@ -27,13 +27,17 @@ def player(user, artif_html=None):
         staff_class = 'cplayer-staff'
     else:
         staff_class = 'cplayer-%s' % user.race_name.lower()
-    return u'<a href="%s" class="cplayer %s" rel="%s">%s%s</a>' % (link, staff_class, rel_data, artif_html, user)
+    if real_name:
+        name = '%s %s (%s)' % (user.user.first_name, user.user.last_name, user.user.username)
+    else:
+        name = '%s' % user
+    return u'<a href="%s" class="cplayer %s" rel="%s">%s%s</a>' % (link, staff_class, rel_data, artif_html, name)
 
 
 @register.simple_tag
-def player_simple(user):
+def player_simple(user, real_name=True):
     """ Render only the player name with link to player's profile """
-    return player(user, artif_html='')
+    return player(user, artif_html='', real_name=real_name)
 
 
 @register.simple_tag

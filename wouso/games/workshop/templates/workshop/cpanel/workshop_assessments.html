@@ -1,4 +1,5 @@
 {% extends 'workshop/cpanel/index.html' %}
+{% load user %}
 {% load workshop %}
 {% load i18n %}
 
@@ -7,7 +8,7 @@
 {% block tabcontent %}
 {% if assessment %}
         <h3>Assessment #{{ assessment.id }}</h3>
-        <h4>{{ assessment.player }}, {{ assessment.workshop.semigroup }}, {{ assessment.player.group.name }}, {{ assessment.workshop.date }}</h4>
+        <h4>{% player_simple assessment.player real_name=True %}, {{ assessment.workshop.semigroup }}, {{ assessment.player.group.name }}, {{ assessment.workshop.date }}</h4>
         <ol>
             {% for a in assessment.answer_set.all %}
             <li>{{ a.question }}
@@ -37,7 +38,7 @@
         <h4>{{ workshop.semigroup }}, {{workshop.date}}</h4>
         <ul class="spaced">
             {% for ass in workshop.assessment_set.all %}
-            <li>#{{ ass.id }} - {{ ass.player }} [{% if ass.answered %}answered{% endif %}]
+            <li>#{{ ass.id }} - {% player_simple ass.player real_name=True %} [{% if ass.answered %}answered{% endif %}]
                 <a href="{% url ws_view_assessment workshop.id ass.id %}">view</a>
                 {% if user.is_superuser %}
                 <a href="{% url ws_edit_assessment workshop.id ass.id %}">edit</a>
