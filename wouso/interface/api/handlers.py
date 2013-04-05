@@ -201,7 +201,7 @@ class BazaarHandler(BaseHandler):
     allowed_methods = ('GET',)
     object_name = 'spells'
     fields = ('name', 'title', 'description', 'available', 'due_days', 'type', 'mass', 'level_required', 'image_url',
-            'price')
+            'price', 'id')
 
     def get_queryset(self, user=None):
         return Spell.objects.all()
@@ -219,11 +219,12 @@ class BazaarInventoryHandler(BazaarHandler):
     def read(self, request):
         player = request.user.get_profile()
 
-        spells_available = [{'spell_id': s.spell.id, 'spell_name': s.spell.name, 'spell_title': s.spell.title} for s in player.magic.spells_available]
+        spells_available = [{'spell_id': s.spell.id, 'spell_name': s.spell.name, 'spell_title': s.spell.title,
+                             'image_url': s.spell.image_url, 'amount': s.amount} for s in player.magic.spells_available]
         spells_onme = [{'spell_id': s.spell.id, 'spell_name': s.spell.name, 'spell_title': s.spell.title, 'due': s.due,
-                        'source': unicode(s.source), 'source_id': s.source.id} for s in player.magic.spells]
+                        'source': unicode(s.source), 'source_id': s.source.id, 'image_url': s.spell.image_url} for s in player.magic.spells]
         spells_cast = [{'spell_id': s.spell.id, 'spell_name': s.spell.name, 'spell_title': s.spell.title, 'due': s.due,
-                        'player_id': s.player.id, 'player': unicode(s.player)} for s in player.magic.spells_cast]
+                        'player_id': s.player.id, 'player': unicode(s.player), 'image_url': s.spell.image_url} for s in player.magic.spells_cast]
         return {'spells_available': spells_available,
                 'spells_onme': spells_onme,
                 'spells_cast': spells_cast

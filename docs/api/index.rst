@@ -206,6 +206,7 @@ Magic and Bazaar
         {
              [
                  {
+                     id: 30,
                      name: "challenge-cannot-be-challenged",
                      title: "Nu poate fi provocat",
                      type: "n",
@@ -213,7 +214,6 @@ Magic and Bazaar
                      image_url: "/static/upload/challenge.png",
                      price: 10,
                      percents: 100,
-                     id: 30,
                      description: "Nu permite provocarea jucătorului pe care este aplicată."
                  },
              ]
@@ -248,6 +248,7 @@ Magic and Bazaar
                     spell_id: 1,
                     spell_title: "Disguise -25%",
                     spell_name: "top-disguise",
+                    image_url: "/static/image.png",
                     player_id: 1,
                     player: "admin"
                 }
@@ -256,7 +257,9 @@ Magic and Bazaar
                 {
                     spell_id: 2,
                     spell_name: "top-disguise",
-                    spell_title: "Disguise -15%"
+                    spell_title: "Disguise -15%",
+                    image_url: "/static/image.png",
+                    amount: 1
                 }
             ],
             spells_onme: [
@@ -265,6 +268,7 @@ Magic and Bazaar
                     spell_id: 1,
                     spell_title: "Disguise -25%",
                     spell_name: "top-disguise",
+                    image_url: "/static/image.png",
                     source_id: 1,
                     source: "admin"
                 }
