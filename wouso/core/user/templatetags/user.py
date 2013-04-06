@@ -35,7 +35,7 @@ def player(user, artif_html=None, real_name=False):
 
 
 @register.simple_tag
-def player_simple(user, real_name=True):
+def player_simple(user, real_name=False):
     """ Render only the player name with link to player's profile """
     return player(user, artif_html='', real_name=real_name)
 
