@@ -28,9 +28,9 @@ def player(user, artif_html=None, real_name=False):
     else:
         staff_class = 'cplayer-%s' % user.race_name.lower()
     if real_name:
-        name = '%s %s (%s)' % (user.user.first_name, user.user.last_name, user.user.username)
+        name = u'%s %s (%s)' % (user.user.first_name, user.user.last_name, user.user.username)
     else:
-        name = '%s' % user
+        name = u'%s' % user
     return u'<a href="%s" class="cplayer %s" rel="%s">%s%s</a>' % (link, staff_class, rel_data, artif_html, name)
 
 
