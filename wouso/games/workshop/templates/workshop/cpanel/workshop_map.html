@@ -1,5 +1,6 @@
 {% extends 'workshop/cpanel/index.html' %}
 {% load workshop %}
+{% load user %}
 {% load i18n %}
 
 {% block sectiontitle %}Workshop #{{ workshop.id }}{% endblock %}
@@ -31,7 +32,7 @@
     </tr>
     {% for ass in assessments %}
     <tr>
-        <td colspan="2">{{ ass.player }} - {{ ass.player.user.username }}</td>
+        <td colspan="2">{% player_simple ass.player real_name=True %}</td>
         <td>{{ ass.grade }}</td>
         <td><em>{{ ass.reviews_grade }}</em></td>
         <td>{{ ass.reviewer_grade }}</td>
@@ -54,7 +55,7 @@
         {% for r in ass.reviewers.all %}
         <tr>
             <td>{{ forloop.counter }}.</td>
-            <td>{{ r }} - {{ ass.player.user.username }}</td>
+            <td>{% player_simple r real_name=True %} - {% player_simple ass.player real_name=True %}</td>
             <td></td>
             <td>{% get_ass_reviewer_grade ass r %}</td>
             <td><em>{% get_ass_review_grade ass r %}</em></td>

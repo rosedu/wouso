@@ -1,12 +1,13 @@
 {% extends 'workshop/cpanel/index.html' %}
 {% load workshop %}
+{% load user %}
 {% load i18n %}
 
 {% block sectiontitle %}Workshop #{{ workshop.id }} - Assessments{% endblock %}
 
 {% block tabcontent %}
         <h3>Assessment #{{ assessment.id }}</h3>
-        <h4>{{ assessment.player }}, {{ assessment.workshop.semigroup }}, {{ assessment.player.group.name }}, {{ assessment.workshop.date }}</h4>
+        <h4>{% player_simple assessment.player real_name=True %}, {{ assessment.workshop.semigroup }}, {{ assessment.player.group.name }}, {{ assessment.workshop.date }}</h4>
         <form   method="post" action="">
         <ol>
             {% for a in assessment.answer_set.all %}

@@ -7,7 +7,7 @@
 
 {% block tabcontent %}
 <h4>Grade assessment #{{ assessment.id }} {{ assessment.player }} [{{ assessment.player.group.name }}]</h4>
-<p> of player: {% player_simple assessment.player %} for workshop {{ assessment.workshop }}:</p>
+<p> of player: {% player_simple assessment.player real_name=True %} for workshop {{ assessment.workshop }}:</p>
 <p>Final grade: {{ assessment.grade }}.</p>
 
 <form method="post" action="">
