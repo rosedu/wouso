@@ -188,6 +188,7 @@ def score_simple(player, coin, amount, game=None, formula=None,
 
     user = player.user
     player = user.get_profile()
+    user = player.user
 
     coin = Coin.get(coin)
     formula = Formula.get(formula)
