@@ -348,7 +348,7 @@ Top
 
 .. http:get:: /api/top/race/(race_id)/player/
 
-    Returns top groups in selected race.
+    Returns top players in selected race.
 
 .. http:get:: /api/top/group/
 
@@ -363,8 +363,20 @@ Top
     Returns top players in the game.
 
 
-Groups
-------
+Races and Groups
+----------------
+.. http:get:: /api/race/
+
+    List all races defined in wouso.
+
+.. http:get:: /api/race/(race_id)/members/
+
+    All players in selected race.
+
+.. http:get:: /api/group/
+
+    List all groups defined in wouso.
+
 .. http:get:: /api/group/(group_id)/
 
     Returns information about the group: name, member count, rank.

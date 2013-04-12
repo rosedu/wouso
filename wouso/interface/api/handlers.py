@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from django.shortcuts import get_object_or_404
 from django.template.defaultfilters import slugify
 from django.utils.html import strip_tags
 from piston.handler import BaseHandler
@@ -426,8 +427,9 @@ class TopGroups(BaseHandler):
                 race = Race.objects.get(pk=race_id)
             except Race.DoesNotExist:
                 return rc.NOT_FOUND
-            qs = race.player_set.distinct('playergroup').values('groups')
-            qs = [PlayerGroup.objects.get(pk=g['groups']) for g in qs]
+            #qs = race.player_set.distinct('playergroup').values('playergroup')
+            #qs = [PlayerGroup.objects.get(pk=g['playergroup']) for g in qs]
+            qs = race.playergroup_set.all()
         else:
             qs = PlayerGroup.objects.all()
 
@@ -461,7 +463,8 @@ class TopPlayers(BaseHandler):
 
         qs = qs.order_by('-points')
 
-        return [dict(first_name=p.user.first_name, last_name=p.user.last_name, id=p.id, points=p.points) for p in qs]
+        return [dict(first_name=p.user.first_name, last_name=p.user.last_name, id=p.id, points=p.points,
+                     level=p.level_no, avatar=player_avatar(p), display_name=unicode(p)) for p in qs]
 
 class GroupHandler(BaseHandler):
     allowed_methods = ('GET',)
@@ -490,3 +493,28 @@ class GroupHandler(BaseHandler):
             return [dict(user_from=unicode(a.user_from), user_to=unicode(a.user_to), message=a.message, date=a.timestamp) for a in qs]
         elif type == 'evolution':
             return gh.week_evolution()
+
+
+class GroupsHandler(BaseHandler):
+    allowed_methods = ('GET',)
+
+    def read(self, request):
+        qs = PlayerGroup.objects.filter(owner=None).order_by('name')
+        return [dict(id=g.id, name=g.name, race_id=g.parent.id if g.parent else None, members=g.players.count()) for g in qs]
+
+
+class RacesHandler(BaseHandler):
+    allowed_methods = ('GET',)
+
+    def read(self, request):
+        qs = Race.objects.all().order_by('name')
+        return [dict(id=r.id, name=r.name, members=r.player_set.count(), can_play=r.can_play) for r in qs]
+
+
+class RaceMembersHandler(BaseHandler):
+    allowed_methods = ('GET',)
+
+    def read(self, request, race_id):
+        race = get_object_or_404(Race, pk=race_id)
+
+        return [dict(id=p.id, display_name=unicode(p)) for p in race.player_set.order_by('-full_name')]
