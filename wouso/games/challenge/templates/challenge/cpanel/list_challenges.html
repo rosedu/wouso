@@ -11,12 +11,20 @@
     <th>To</th>
     <th>Date</th>
     <th>Status</th>
+    <th>Result</th> 
     {% for challenge in challenges %}
     <tr>
         <td>{% player challenge.user_from.user %}</td>
         <td>{% player challenge.user_to.user %}</td>
         <td>{{ challenge.date }}</td>
         <td>{{ challenge.get_status_display }}</td>
+        <td>
+            {% if challenge.winner %}
+                {{ challenge.winner }}
+            {% else %}
+                Pending
+            {% endif %}
+        </td>
     </tr>
     {% endfor %}
 </table>
