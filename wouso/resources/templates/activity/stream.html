@@ -8,7 +8,7 @@
                 <a href="{{ ac.get_game_absolute_url }}" title="{% trans ac.game_name %}">{% trans ac.game_name %}</a>
             </div>
 
-            <a class="player-avatar" href="{% url player_profile ac.player_from.is %}">
+            <a class="player-avatar" href="{% url player_profile ac.player_from.id %}">
                 <img class="avatar medium player-avatar-image" src="{% player_avatar ac.player_from %}" />
 
                 <div class="player-avatar-race player-avatar-race-{{ ac.player_from.race_name|lower}}"></div>

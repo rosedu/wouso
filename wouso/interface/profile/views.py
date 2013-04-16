@@ -72,18 +72,11 @@ def save_profile(request):
 
 @login_required
 def user_profile(request, id, page=u'1'):
-    if int(id) == request.user.get_profile().id:
-        profile = request.user.get_profile()
-    else:
-        profile = get_object_or_404(Player, id=id)
+    profile = get_object_or_404(Player, id=id)
 
     activity_list = Activity.get_player_activity(profile)
 
     top_user = profile.get_extension(TopUser)
-    #top_user.topgroups = list(profile.groups.all())
-    #for g in top_user.topgroups:
-    #    g.week_evolution = top_user.week_evolution(relative_to=g)
-    #    g.position = TopHistory.get_user_position(top_user, relative_to=g)
     history = History.user_points(profile.user)
     paginator = Paginator(activity_list, 10)
 
