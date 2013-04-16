@@ -361,7 +361,7 @@ Top
 
     Returns top races in the game, ordered by points.
 
-    ** Example response**:
+    **Example response**:
      .. sourcecode:: javascript
 
          [
