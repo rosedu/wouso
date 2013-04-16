@@ -359,11 +359,30 @@ Top
 ----
 .. http:get:: /api/top/race/
 
-    Returns top races in the game.
+    Returns top races in the game, ordered by points.
+
+    ** Example response**:
+     .. sourcecode:: javascript
+
+         [
+             {
+                 title: "Others",
+                 points: 2008,
+                 id: 1,
+                 name: "Others"
+             },
+             {
+                 title: "Zota",
+                 points: 315,
+                 id: 4,
+                 name: "CB"
+             }
+             ...
+         ]
 
 .. http:get:: /api/top/race/(race_id)/group/
 
-    Returns top groups in selected race.
+    Returns top groups in selected race, ordered by points.
 
 .. http:get:: /api/top/race/(race_id)/player/
 
@@ -371,7 +390,7 @@ Top
 
 .. http:get:: /api/top/group/
 
-    Returns top groups in the game.
+    Returns top groups in the game, ordered by points.
 
 .. http:get:: /api/top/group/(group_id)/player/
 

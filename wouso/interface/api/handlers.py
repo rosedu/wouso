@@ -417,14 +417,11 @@ class TopRaces(BaseHandler):
     allowed_methods = ('GET',)
 
     def read(self, request):
-        races = []
-        for r in Race.objects.all():
-            races.append([r, r.player_set.aggregate(points=Sum('points'))['points']])
+        races = [{'name': r.name, 'points': r.points, 'title': r.title or r.name, 'id': r.id} for r in Race.objects.all()]
+        races.sort(key=lambda o: o['points'], reverse=True)
 
-        races.sort(lambda a, b: a[1] - b[1] if a[1] and b[1] else 0)
-        races = [(r.name, dict(id=r.id, points=p)) for r,p in races]
+        return races
 
-        return dict(races)
 
 class TopGroups(BaseHandler):
     allowed_methods = ('GET',)
@@ -435,20 +432,15 @@ class TopGroups(BaseHandler):
                 race = Race.objects.get(pk=race_id)
             except Race.DoesNotExist:
                 return rc.NOT_FOUND
-            #qs = race.player_set.distinct('playergroup').values('playergroup')
-            #qs = [PlayerGroup.objects.get(pk=g['playergroup']) for g in qs]
             qs = race.playergroup_set.all()
         else:
             qs = PlayerGroup.objects.all()
 
-        groups = []
-        for g in qs:
-            groups.append([g, g.players.aggregate(points=Sum('points'))['points']])
+        groups = [{'name': g.name, 'id': g.id, 'points': g.points, 'title': g.title or g.name} for g in qs]
+        groups.sort(key=lambda g: g['points'], reverse=True)
 
-        groups.sort(lambda a, b: a[1] - b[1] if a[1] and b[1] else 0)
-        groups = [(r.name, dict(id=r.id, points=p)) for r,p in groups]
+        return groups
 
-        return dict(groups)
 
 class TopPlayers(BaseHandler):
     allowed_methods = ('GET',)
