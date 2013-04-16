@@ -334,7 +334,26 @@ Magic and Bazaar
 
 .. http:post:: /api/player/<player_id>/cast/
 
-    Cast a spell given as POST parameter to player_id.
+    Cast a *spell* given as POST parameter to player_id. Accepts an optional *days* parameter.
+
+    **Example request**:
+     .. sourcecode:: http
+
+        POST /api/player/2/cast/ HTTP/1.1
+        Host: wouso-next.rosedu.org
+        Accept: application/json, text/javascript
+        Content-Type: application/x-www-form-urlencoded
+        Content-Length: 7
+
+        spell=1&days=2
+
+    **Example response**:
+     .. sourcecode:: javascript
+
+        {
+            success: true
+        }
+
 
 Top
 ----

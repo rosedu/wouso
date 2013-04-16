@@ -378,7 +378,6 @@ class MessagesUnarchive(MessagesAction):
         return msg.unarchive()
 
 
-
 class CastHandler(BaseHandler):
     allowed_methods = ('POST',)
 
@@ -400,10 +399,19 @@ class CastHandler(BaseHandler):
         except (Spell.DoesNotExist, AssertionError):
             return {'success': False, 'error': 'No such spell available'}
 
-        if not destination.cast_spell(spell, source=player, due=datetime.now()):
-            return {'succes': False, 'error': 'Cast failed'}
+        try:
+            days = int(attrs.get('days', 0))
+            assert (days <= spell.due_days) and (spell.due_days <= 0 or days >= 1)
+        except (ValueError, AssertionError):
+            return {'success': False, 'error': 'Invalid days parameter'}
+
+        due = datetime.now() + timedelta(days=days)
+        error =  destination.magic.cast_spell(spell, source=player, due=due)
+        if error is not None:
+            return {'succes': False, 'error': 'Cast failed, %s' % error}
 
         return {'success': True}
+
 
 class TopRaces(BaseHandler):
     allowed_methods = ('GET',)
