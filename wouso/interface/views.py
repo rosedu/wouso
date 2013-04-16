@@ -187,7 +187,7 @@ def instantsearch(request):
     form = InstantSearchForm(request.GET)
     if form.is_valid():
         query = form.cleaned_data['q']
-        if request.user.get_profile().in_staff_group():
+        if request.user.is_authenticated() and request.user.get_profile().in_staff_group():
             users = User.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(username__icontains=query))
             user_ids = [u.id for u in users]
             searchresults = Player.objects.filter(Q(user__in=user_ids) | Q(full_name__icontains=query) | Q(nickname__icontains=query))
