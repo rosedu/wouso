@@ -221,7 +221,7 @@ class BazaarInventoryHandler(BazaarHandler):
         player = request.user.get_profile()
 
         spells_available = [{'spell_id': s.spell.id, 'spell_name': s.spell.name, 'spell_title': s.spell.title,
-                             'image_url': s.spell.image_url, 'amount': s.amount} for s in player.magic.spells_available]
+                             'image_url': s.spell.image_url, 'amount': s.amount, 'due_days': s.spell.due_days} for s in player.magic.spells_available]
         spells_onme = [{'spell_id': s.spell.id, 'spell_name': s.spell.name, 'spell_title': s.spell.title, 'due': s.due,
                         'source': unicode(s.source), 'source_id': s.source.id, 'image_url': s.spell.image_url} for s in player.magic.spells]
         spells_cast = [{'spell_id': s.spell.id, 'spell_name': s.spell.name, 'spell_title': s.spell.title, 'due': s.due,
