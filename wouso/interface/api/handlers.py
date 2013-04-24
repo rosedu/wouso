@@ -498,8 +498,11 @@ class GroupHandler(BaseHandler):
 class GroupsHandler(BaseHandler):
     allowed_methods = ('GET',)
 
-    def read(self, request):
-        qs = PlayerGroup.objects.filter(owner=None).order_by('name')
+    def read(self, request, race_id=None):
+        if race_id is None:
+            qs = PlayerGroup.objects.filter(owner=None).order_by('name')
+        else:
+            qs = PlayerGroup.objects.filter(owner=None, parent__id=race_id).order_by('name')
         return [dict(id=g.id, name=g.name, race_id=g.parent.id if g.parent else None, members=g.players.count()) for g in qs]
 
 

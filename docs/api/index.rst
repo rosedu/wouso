@@ -411,6 +411,10 @@ Races and Groups
 
     All players in selected race.
 
+.. http:get:: /api/race/(race_id)/groups/
+
+    All groups in selected race.
+
 .. http:get:: /api/group/
 
     List all groups defined in wouso.
