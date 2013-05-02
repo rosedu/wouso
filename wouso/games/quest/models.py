@@ -244,6 +244,12 @@ class Quest(models.Model):
 
     def players_count(self):
         return self.questresult_set.values('user').distinct().count()
+    
+    def players_completed(self):
+        """
+        Number of players who completed the quest
+        """
+        return self.questresult_set.filter(level=self.count).count()
 
     def top_results(self):
         """
