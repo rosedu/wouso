@@ -76,8 +76,8 @@ class QuestUser(Player):
 
     def finish_quest(self):
         if not self.finished:
-            #if self.current_level < self.current_quest.count:
-            #    return
+            if self.current_level < self.current_quest.count:
+                return
 
             qr = QuestResult(user=self, quest=self.current_quest, level=self.current_level)
             qr.save()
@@ -93,6 +93,11 @@ class QuestUser(Player):
             self.finished = True
             self.finished_time = datetime.datetime.now()
             self.save()
+
+    def register_quest_result(self):
+        if not self.finished:
+            qr = QuestResult(user=self, quest=self.current_quest, level=self.current_level)
+            qr.save()
 
     def set_current(self, quest):
         self.started_time = datetime.datetime.now()
@@ -243,11 +248,14 @@ class Quest(models.Model):
         self.save()
 
     def players_count(self):
+        """
+        Number of players who attempted the quest
+        """
         return self.questresult_set.values('user').distinct().count()
     
     def players_completed(self):
         """
-        Number of players who completed the quest
+        Number of players who finished the quest
         """
         return self.questresult_set.filter(level=self.count).count()
 
