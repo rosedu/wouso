@@ -249,7 +249,9 @@ class Quest(models.Model):
         """
          Return the first 10 players who finished this quest
         """
-        return self.questresult_set.exclude(user__race__can_play=False).order_by('id')[:10]
+        top_results = self.questresult_set.exclude(user__race__can_play=False).order_by('id')
+        top_results = [entry for entry in top_results if entry.level == self.count]
+        return top_results
 
     def __unicode__(self):
         return "%s - %s %s" % (self.start, self.end, self.title)
