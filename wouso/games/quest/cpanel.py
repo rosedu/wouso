@@ -128,7 +128,8 @@ def quest_bonus(request, quest):
 def register_results(request):
     quests = Quest.objects.all()
     for quest in quests:
-        for user in quest.questuser_set.all():
-            user.register_quest_result()
+        if not quest.is_active:
+            for user in quest.questuser_set.all():
+                user.register_quest_result()
     return redirect('quest_home')
     
