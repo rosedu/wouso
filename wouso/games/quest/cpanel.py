@@ -123,3 +123,12 @@ def quest_bonus(request, quest):
         scoring.score(player, QuestGame, 'quest-finish-bonus', position=i + 1, external_id=quest.id)
 
     return redirect('quest_home')
+
+@permission_required('quest.change_quest')
+def register_results(request):
+    quests = Quest.objects.all()
+    for quest in quests:
+        for user in quest.questuser_set.all():
+            user.register_quest_result()
+    return redirect('quest_home')
+    
