@@ -48,6 +48,7 @@
 {% if not final %}
 <a class="button" href="{% url quest_create_finale %}">Create final quest</a>
 {% endif %}
+<a class="button" href="{% url register_results %}">Register finished quests results</a>
 
 <div class="info second" style="clear:both">Current date and time:  {% now "d/m/Y H:i" %}. Final quest checker path: {{ final_checker }}</div>
 
