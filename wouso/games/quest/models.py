@@ -96,8 +96,7 @@ class QuestUser(Player):
 
     def register_quest_result(self):
         if not self.finished:
-            qr = QuestResult(user=self, quest=self.current_quest, level=self.current_level)
-            qr.save()
+            qr, created = QuestResult.objects.get_or_create(user=self, quest=self.current_quest, level=self.current_level)
 
     def set_current(self, quest):
         self.started_time = datetime.datetime.now()
