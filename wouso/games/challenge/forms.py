@@ -43,5 +43,5 @@ class ChallengeForm(forms.Form):
             v.append( results[id] )
         return v
 
-
-
+class ChallengeFormPlayer(forms.Form):
+    query = forms.CharField(max_length=100)
