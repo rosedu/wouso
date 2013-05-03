@@ -9,5 +9,5 @@ urlpatterns = patterns('wouso.games.quest.cpanel',
     url(r'^final/create/$', 'create_finale', name='quest_create_finale'),
     url(r'^final/results/$', 'final_results', name='final_results'),
     url(r'^final/score/$', 'final_score', name='final_second_score'),
-    url(r'^register/', 'register_results', name='register_results'),
+    url(r'^register/(?P<id>\d+)/$', 'register_results', name='register_results'),
 )

@@ -125,11 +125,10 @@ def quest_bonus(request, quest):
     return redirect('quest_home')
 
 @permission_required('quest.change_quest')
-def register_results(request):
-    quests = Quest.objects.all()
-    for quest in quests:
-        if not quest.is_active:
-            for user in quest.questuser_set.all():
-                user.register_quest_result()
+def register_results(request, id):
+    quest = get_object_or_404(Quest, pk=id)
+    if not quest.is_active:
+        for user in quest.questuser_set.all():
+            user.register_quest_result()
     return redirect('quest_home')
     
