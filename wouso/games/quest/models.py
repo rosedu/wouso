@@ -202,7 +202,7 @@ class Quest(models.Model):
 
     def check_answer(self, user, answer):
         if user.current_quest != self:
-            user.finish_quest()
+            user.register_quest_result()
             user.set_current(self)
             return False
         try:
