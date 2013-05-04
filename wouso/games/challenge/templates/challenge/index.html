@@ -1,6 +1,7 @@
 {% extends 'interface/section_base.html'%}
 {% load artifacts %}
 {% load i18n %}
+{% load user %}
 {% block title %}{% trans 'Challenges' %}{% endblock %}
 {% block sectiontitle %}{% trans 'Challenges' %}{% endblock %}
 
@@ -20,7 +21,7 @@
 <p>{% trans 'To launch a challenge, find the player you want to challenge and click on the <em>Challenge</em> button, next to his profile, or type the nickname of the player you want to challenge.' %}</p>
 	<form   method="POST" action="{% url challenge_player %}">
 	<b>{% trans 'Challenge Player:' %}</b>
-	<input type="text" name="query">
+	{% player_input 'player' %}
 	{% csrf_token %}
     <button type="submit">{% trans 'Challenge!' %}</button>
     </form> <br>
