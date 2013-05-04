@@ -10,7 +10,7 @@ from wouso.core.config.models import Setting, BoolSetting
 from wouso.core.user.models import Player
 from wouso.games.challenge.models import ChallengeException
 from models import ChallengeUser, ChallengeGame, Challenge, Participant
-from forms import ChallengeForm, ChallengeFormPlayer
+from forms import ChallengeForm
 
 @login_required
 def index(request):
@@ -224,15 +224,15 @@ def history(request, playerid):
 
 @login_required
 def challenge_player(request):
-    form = ChallengeFormPlayer(request.POST)
-    if form.is_valid():
+    if request.method == 'POST':
         try:
-            player_to_challenge = Player.objects.get(nickname=form.cleaned_data['query'])
+            player_to_challenge = Player.objects.get(pk=int(request.POST.get('player')))
             player_to_challenge = player_to_challenge.get_extension(ChallengeUser)
             return launch(request, player_to_challenge.id)
-        except Player.DoesNotExist:
+        except (ValueError, Player.DoesNotExist):
             messages.error(request, _('Player does not exist'))
             return redirect('challenge_index_view')
+    return redirect('challenge_index_view')
 
 @login_required
 def challenge_random(request):
