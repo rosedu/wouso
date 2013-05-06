@@ -43,5 +43,3 @@ class ChallengeForm(forms.Form):
             v.append( results[id] )
         return v
 
-
-
