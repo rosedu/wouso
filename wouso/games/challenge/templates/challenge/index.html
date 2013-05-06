@@ -18,7 +18,7 @@
     {% endif %}
 </p>
 {% else %}
-<p>{% trans 'To launch a challenge, find the player you want to challenge and click on the <em>Challenge</em> button, next to his profile, or type the nickname of the player you want to challenge.' %}</p>
+<p>{% trans 'To launch a challenge, find the player you want to challenge and click on the <em>Challenge</em> button, next to his profile, or type the name of the player you want to challenge.' %}</p>
 	<form   method="POST" action="{% url challenge_player %}">
 	<b>{% trans 'Challenge Player:' %}</b>
 	{% player_input 'player' %}
