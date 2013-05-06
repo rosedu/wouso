@@ -223,6 +223,18 @@ def history(request, playerid):
 
 
 @login_required
+def challenge_player(request):
+    if request.method == 'POST':
+        try:
+            player_to_challenge = Player.objects.get(pk=int(request.POST.get('player')))
+            player_to_challenge = player_to_challenge.get_extension(ChallengeUser)
+            return launch(request, player_to_challenge.id)
+        except (ValueError, Player.DoesNotExist):
+            messages.error(request, _('Player does not exist'))
+            return redirect('challenge_index_view')
+    return redirect('challenge_index_view')
+
+@login_required
 def challenge_random(request):
     setting = BoolSetting.get('disable-challenge-random').get_value()
     if setting:
