@@ -423,6 +423,10 @@ Races and Groups
 
     Returns information about the group: name, member count, rank.
 
+.. http:get:: /api/group/(group_id)/members/
+
+    All players in selected group.
+
 .. http:get:: /api/group/(group_id)/activity/
 
     Returns latest activity for group members.
