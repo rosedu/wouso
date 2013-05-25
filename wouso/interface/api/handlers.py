@@ -514,10 +514,25 @@ class RacesHandler(BaseHandler):
         return [dict(id=r.id, name=r.name, members=r.player_set.count(), can_play=r.can_play) for r in qs]
 
 
-class RaceMembersHandler(BaseHandler):
+class MembersMixin(object):
+    def to_dict(self, player):
+        return dict(first_name=player.user.first_name, last_name=player.user.last_name, id=player.id, points=player.points,
+                             level=player.level_no, avatar=player_avatar(player), display_name=unicode(player))
+
+
+class RaceMembersHandler(BaseHandler, MembersMixin):
     allowed_methods = ('GET',)
 
     def read(self, request, race_id):
         race = get_object_or_404(Race, pk=race_id)
 
-        return [dict(id=p.id, display_name=unicode(p)) for p in race.player_set.order_by('-full_name')]
+        return [self.to_dict(p) for p in race.player_set.order_by('-full_name')]
+
+
+class GroupMembersHandler(BaseHandler, MembersMixin):
+    allowed_methods = ('GET',)
+
+    def read(self, request, group_id):
+        group = get_object_or_404(PlayerGroup, pk=group_id)
+
+        return [self.to_dict(p) for p in group.players.order_by('-full_name')]

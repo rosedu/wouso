@@ -55,7 +55,7 @@
         {% for r in ass.reviewers.all %}
         <tr>
             <td>{{ forloop.counter }}.</td>
-            <td>{% player_simple r real_name=True %} - {% player_simple ass.player real_name=True %}</td>
+            <td>{% player_simple r real_name=True %}</td>
             <td></td>
             <td>{% get_ass_reviewer_grade ass r %}</td>
             <td><em>{% get_ass_review_grade ass r %}</em></td>
