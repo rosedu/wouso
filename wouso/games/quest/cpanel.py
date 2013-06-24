@@ -130,5 +130,6 @@ def register_results(request, id):
     if not quest.is_active:
         for user in quest.questuser_set.all():
             user.register_quest_result()
+        quest.registered = True
+        quest.save()
     return redirect('quest_home')
-    

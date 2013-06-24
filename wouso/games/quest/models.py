@@ -132,6 +132,7 @@ class Quest(models.Model):
     questions = models.ManyToManyField(Question)
     order = models.CharField(max_length=1000, default="", blank=True)
     type = models.IntegerField(default=TYPE_CLASSIC, choices=QUEST_TYPES)
+    registered = models.BooleanField(default=False)
 
     def get_formula(self, type='quest-ok'):
         """ Allow specific formulas for specific quests.
