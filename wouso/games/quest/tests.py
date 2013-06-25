@@ -9,9 +9,9 @@ from wouso.core.scoring import Coin
 from wouso.core.tests import WousoTest
 from wouso.core.user.models import Race
 
-#my test class
-class QuestStatistics(TestCase):
+class QuestStatistics(WousoTest):
     def setUp(self):
+        super(QuestStatistics, self).setUp()
         self.user1 = User.objects.create(username='test1')
         self.quest_user1 = self.user1.get_profile().get_extension(QuestUser)
         self.user2 = User.objects.create(username='test2')
@@ -37,9 +37,9 @@ class QuestStatistics(TestCase):
          self.assertTrue(self.quest_user1.finished)
          self.assertTrue(self.quest_user2.finished)
          
-#old test class
-class QuestTestCase(TestCase):
+class QuestTestCase(WousoTest):
     def setUp(self):
+        super(QuestTestCase, self).setUp()
         self.user, new = User.objects.get_or_create(username='_test')
         self.user.save()
         profile = self.user.get_profile()
