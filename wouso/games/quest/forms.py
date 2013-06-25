@@ -12,4 +12,4 @@ class QuestCpanel(ModelForm):
                    'start': widgets.AdminSplitDateTime,
                    'end': widgets.AdminSplitDateTime
                    }
-        exclude = ('order',)
+        exclude = ('order', 'registered',)
