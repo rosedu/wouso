@@ -17,10 +17,12 @@
     {% for quest in history %}
         <h3>{{ quest.title }}</h3>
         <p>
-            {% blocktrans with quest.start as start and quest.end as end and quest.questions.count as count and quest.players_count as players %}
-            Available from {{start}} to {{end}}.
-            Had {{count}} questions and {{ players }} players attempted it.
-            {% endblocktrans %}
+            Available from {{quest.start}} to {{quest.end}}.
+            Had {{quest.questions.count}} questions.
+            {% if quest.registered %}
+            {{ quest.players_count }} players attempted it.
+            {% endif %}
+            {{ quest.players_completed }} players successfully completed this quest.
         </p>
 
         <div class="spacer-small"><!-- --></div>
