@@ -5,6 +5,12 @@ from django.contrib.auth.models import User
 from utils import validate_dynq_code
 from wouso.core.common import Item
 
+class Category(Item, models.Model):
+    """ One to many grouping for Question objects. Usually a game
+    defines it's own category of questions in qpool.
+    """
+    name = models.CharField(max_length=100, unique=True)
+
 class Tag(models.Model):
     """ A simple way of grouping Questions """
     name = models.CharField(max_length=256)
@@ -34,12 +40,6 @@ class Tag(models.Model):
         self.save()
         self.question_set.update(active=False)
 
-
-class Category(Item, models.Model):
-    """ One to many grouping for Question objects. Usually a game
-    defines it's own category of questions in qpool.
-    """
-    name = models.CharField(max_length=100, unique=True)
 
 class Question(models.Model):
     """ A question in a qpool has text and a variable number of answers,
