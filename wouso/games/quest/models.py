@@ -267,6 +267,11 @@ class Quest(models.Model):
         top_results = [entry for entry in top_results if entry.level == self.count][:10]
         return top_results
 
+    def give_bonus(self):
+        for i, r in enumerate(self.top_results()):
+            player = r.user.get_extension(Player)
+            scoring.score(player, QuestGame, 'quest-finish-bonus', position=i + 1, external_id=self.id)
+
     def __unicode__(self):
         return "%s - %s %s" % (self.start, self.end, self.title)
 

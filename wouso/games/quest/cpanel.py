@@ -116,12 +116,7 @@ def create_finale(request):
 @permission_required('quest.change_quest')
 def quest_bonus(request, quest):
     quest = get_object_or_404(Quest, pk=quest)
-
-    # TODO: move logic to models
-    for i, r in enumerate(quest.top_results()):
-        player = r.user.get_extension(Player)
-        scoring.score(player, QuestGame, 'quest-finish-bonus', position=i + 1, external_id=quest.id)
-
+    quest.give_bonus()
     return redirect('quest_home')
 
 @permission_required('quest.change_quest')
