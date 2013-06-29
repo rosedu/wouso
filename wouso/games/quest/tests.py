@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.test import Client
 import json
+import re
 from wouso.core import scoring
 from wouso.core.qpool.models import Question, Answer, Category
 from models import *
@@ -82,6 +84,7 @@ class QuestTestCase(WousoTest):
     def setUp(self):
         super(QuestTestCase, self).setUp()
         self.user, new = User.objects.get_or_create(username='_test')
+        self.user.set_password('test')
         self.user.save()
         profile = self.user.get_profile()
         self.quest_user = profile.get_extension(QuestUser)
@@ -112,6 +115,40 @@ class QuestTestCase(WousoTest):
         quest.check_answer(self.quest_user, 'Test_a2')
  
         self.assertTrue(self.quest_user.finished)
+
+    def test_check_bonus_for_quest(self):
+        category = Category.add('quest')
+        question1 = Question.objects.create(text='question1', answer_type='F',
+                                           category=category, active=True)
+        answer1 = Answer.objects.create(text='first answer', correct=True, question=question1)
+        start = datetime.datetime.now()
+        end = datetime.datetime.now() + timedelta(days=1)
+        quest = Quest.objects.create(start=start, end=end)
+        quest.questions.add(question1)
+        self.quest_user.current_quest = quest
+        quest.check_answer(self.quest_user, 'first answer')
+        self.assertEqual(len(quest.top_results()), 1)
+
+        pl = self.user.get_profile()
+        pl.points = 100
+        pl.save()
+
+        admin = User.objects.create_superuser('admin', 'admin@myemail.com', 'admin')
+        c = Client()
+        c.login(username='admin', password='admin')
+        
+        #get initial points
+        response = c.get('/player/1/')
+        string = re.search(r'<div class="points-big">\d+', response.content).group()
+        initial_points = int(re.search(r'\d+', string).group())
+
+        #add quest bonus (not working for the moment)
+        response = c.get('/cpanel/games/quest/register/1/')
+
+        #get final points
+        response = c.get('/player/1/')
+        string = re.search(r'<div class="points-big">\d+', response.content).group()
+        final_points = int(re.search(r'\d+', string).group())
 
 
 class FinalQuestTestCase(WousoTest):
