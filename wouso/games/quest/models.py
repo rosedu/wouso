@@ -94,6 +94,10 @@ class QuestUser(Player):
             self.finished_time = datetime.datetime.now()
             self.save()
 
+    def register_quest_result(self):
+        if not self.finished:
+            qr, created = QuestResult.objects.get_or_create(user=self, quest=self.current_quest, level=self.current_level)
+
     def set_current(self, quest):
         self.started_time = datetime.datetime.now()
         self.current_quest = quest
@@ -128,6 +132,7 @@ class Quest(models.Model):
     questions = models.ManyToManyField(Question)
     order = models.CharField(max_length=1000, default="", blank=True)
     type = models.IntegerField(default=TYPE_CLASSIC, choices=QUEST_TYPES)
+    registered = models.BooleanField(default=False)
 
     def get_formula(self, type='quest-ok'):
         """ Allow specific formulas for specific quests.
@@ -198,7 +203,7 @@ class Quest(models.Model):
 
     def check_answer(self, user, answer):
         if user.current_quest != self:
-            user.finish_quest()
+            user.register_quest_result()
             user.set_current(self)
             return False
         try:
@@ -243,13 +248,24 @@ class Quest(models.Model):
         self.save()
 
     def players_count(self):
+        """
+        Number of players who attempted the quest
+        """
         return self.questresult_set.values('user').distinct().count()
+    
+    def players_completed(self):
+        """
+        Number of players who finished the quest
+        """
+        return self.questresult_set.filter(level=self.count).count()
 
     def top_results(self):
         """
          Return the first 10 players who finished this quest
         """
-        return self.questresult_set.exclude(user__race__can_play=False).order_by('id')[:10]
+        top_results = self.questresult_set.exclude(user__race__can_play=False).order_by('id')
+        top_results = [entry for entry in top_results if entry.level == self.count][:10]
+        return top_results
 
     def __unicode__(self):
         return "%s - %s %s" % (self.start, self.end, self.title)

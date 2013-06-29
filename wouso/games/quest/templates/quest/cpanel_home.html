@@ -25,8 +25,15 @@
             <td>{{ q.status }}</td>
             <td nowrap="nowrap">{{ q.get_formula }}</td>
             <td class="actions" nowrap>
-                <a href="{% url quest_edit q.id%}" title="edit" class="button-min">✍</a>
-                <a href="{% url quest_sort q.id%}" title="sort" class="button-min">➝</a>
+                <a href="{% url quest_edit q.id %}" title="edit" class="button-min">✍</a>
+                <a href="{% url quest_sort q.id %}" title="sort" class="button-min">➝</a>
+                {% ifequal q.status "Passed" %}
+                    {% if q.registered %}
+                        <a class="button-min">Registered</div>
+                    {% else %}
+                        <a href="{% url register_results q.id %}" title="register" class="button-min">Register</a>
+                    {% endif %}
+                {% endifequal %}
                 {% if q.id == final.id %}
                     <td>
                     <a class="button" href="{% url final_results %}">Results</a>
