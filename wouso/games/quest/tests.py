@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.test import Client
+from django.test.client import RequestFactory
+
 import json
 import re
 from wouso.core import scoring
@@ -10,6 +12,7 @@ from models import *
 from wouso.core.scoring import Coin
 from wouso.core.tests import WousoTest
 from wouso.core.user.models import Race
+from wouso.games.quest.cpanel import quest_bonus
 
 class QuestStatistics(WousoTest):
     def setUp(self):
@@ -134,21 +137,21 @@ class QuestTestCase(WousoTest):
         pl.save()
 
         admin = User.objects.create_superuser('admin', 'admin@myemail.com', 'admin')
-        c = Client()
-        c.login(username='admin', password='admin')
+        fact = RequestFactory()
+        request = fact.get('/cpanel/games/quest/register/1')
+        request.user = admin
         
         #get initial points
-        response = c.get('/player/1/')
-        string = re.search(r'<div class="points-big">\d+', response.content).group()
-        initial_points = int(re.search(r'\d+', string).group())
+        initial_points = pl.points
 
-        #add quest bonus (not working for the moment)
-        response = c.get('/cpanel/games/quest/register/1/')
+        #add quest bonus
+        response = quest_bonus(request, 1)
 
         #get final points
-        response = c.get('/player/1/')
-        string = re.search(r'<div class="points-big">\d+', response.content).group()
-        final_points = int(re.search(r'\d+', string).group())
+        pl = User.objects.get(pk=1)
+        final_points = pl.get_profile().points
+
+        self.assertTrue(final_points < initial_points)
 
 
 class FinalQuestTestCase(WousoTest):
