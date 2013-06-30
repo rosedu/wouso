@@ -6,9 +6,11 @@ import subprocess
 from django.db import models
 from django.utils.translation import ugettext_noop
 from django.conf import settings
+from django.db.models import Sum
 from wouso.core.user.models import Player
 from wouso.core.game.models import Game
 from wouso.core import scoring, signals
+from wouso.core.scoring import History
 from wouso.core.scoring.models import Formula
 from wouso.core.qpool.models import Question
 
@@ -378,3 +380,15 @@ class FinalQuest(Quest):
                     arguments=dict(level=level),
                     game=QuestGame.get_instance()
                 )
+    
+    def fetch_levels(self):
+        levels = []
+        for level in xrange(len(self.levels) + 1):
+            level_data = {'id': level, 'users': []}
+            for user in QuestUser.objects.filter(current_quest=self, current_level=level):
+                # Check finalquest bonus amount
+                amount = History.objects.filter(user=user.user, formula__name='finalquest-ok').aggregate(sum=Sum('amount'))['sum']
+                user.amount = amount
+                level_data['users'].append(user)
+            levels.append(level_data)
+        return levels
