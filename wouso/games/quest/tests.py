@@ -3,9 +3,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.test import Client
 from django.test.client import RequestFactory
-
 import json
-import re
 from wouso.core import scoring
 from wouso.core.qpool.models import Question, Answer, Category
 from models import *
@@ -190,6 +188,32 @@ class FinalQuestTestCase(WousoTest):
 
         self.assertFalse(final.answer_correct(0, question, u1.user.username + "wrong", u1))
         self.assertTrue(final.answer_correct(0, question, u1.user.username, u1))
+
+    def test_final_quest_results_view(self):
+        u1 = self._get_player(1).get_extension(QuestUser)
+        u2 = self._get_player(2).get_extension(QuestUser)
+        r = Race.objects.create(name='rasa_buna', can_play=True)
+        Formula.add('finalquest-ok', definition='points=50*({level}+1)/{level_users}')
+        Formula.add('level-gold', definition='gold=0')
+        Coin.add('points')
+        Coin.add('gold')
+        final = FinalQuest.objects.create(start=datetime.datetime.now(), end=datetime.datetime.now())
+        question = Question.objects.create(text='test', answer_type='F')
+        final.questions.add(question)
+        question = Question.objects.create(text='test', answer_type='F')
+        final.questions.add(question)
+
+        u1.current_level = 1; u1.race = r; u1.current_quest = final
+        u1.save()
+        u2.current_level = 1; u2.race = r; u2.current_quest = final
+        u2.save()
+
+        c = Client()
+        admin = User.objects.create_superuser('admin', 'admin@myemail.com', 'admin')
+        c.login(username='admin', password='admin')
+        response = c.get('/cpanel/games/quest/final/results/')
+        self.assertFalse(response.content.find('testuser1') == -1)
+        self.assertFalse(response.content.find('testuser2') == -1)
 
 
 # API tests
