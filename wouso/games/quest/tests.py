@@ -151,7 +151,7 @@ class QuestTestCase(WousoTest):
         pl = User.objects.get(pk=1)
         final_points = pl.get_profile().points
 
-        self.assertTrue(final_points < initial_points)
+        self.assertTrue(final_points > initial_points)
 
 
 class FinalQuestTestCase(WousoTest):
