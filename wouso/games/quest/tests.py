@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.test import Client
+from django.test.client import RequestFactory
 import json
 from wouso.core import scoring
 from wouso.core.qpool.models import Question, Answer, Category
@@ -8,6 +10,7 @@ from models import *
 from wouso.core.scoring import Coin
 from wouso.core.tests import WousoTest
 from wouso.core.user.models import Race
+from wouso.games.quest.cpanel import quest_bonus
 
 class QuestStatistics(WousoTest):
     def setUp(self):
@@ -82,6 +85,7 @@ class QuestTestCase(WousoTest):
     def setUp(self):
         super(QuestTestCase, self).setUp()
         self.user, new = User.objects.get_or_create(username='_test')
+        self.user.set_password('test')
         self.user.save()
         profile = self.user.get_profile()
         self.quest_user = profile.get_extension(QuestUser)
@@ -112,6 +116,40 @@ class QuestTestCase(WousoTest):
         quest.check_answer(self.quest_user, 'Test_a2')
  
         self.assertTrue(self.quest_user.finished)
+
+    def test_check_bonus_for_quest(self):
+        category = Category.add('quest')
+        question1 = Question.objects.create(text='question1', answer_type='F',
+                                           category=category, active=True)
+        answer1 = Answer.objects.create(text='first answer', correct=True, question=question1)
+        start = datetime.datetime.now()
+        end = datetime.datetime.now() + timedelta(days=1)
+        quest = Quest.objects.create(start=start, end=end)
+        quest.questions.add(question1)
+        self.quest_user.current_quest = quest
+        quest.check_answer(self.quest_user, 'first answer')
+        self.assertEqual(len(quest.top_results()), 1)
+
+        pl = self.user.get_profile()
+        pl.points = 100
+        pl.save()
+
+        admin = User.objects.create_superuser('admin', 'admin@myemail.com', 'admin')
+        fact = RequestFactory()
+        request = fact.get('/cpanel/games/quest/register/1')
+        request.user = admin
+        
+        #get initial points
+        initial_points = pl.points
+
+        #add quest bonus
+        response = quest_bonus(request, 1)
+
+        #get final points
+        pl = User.objects.get(pk=1)
+        final_points = pl.get_profile().points
+
+        self.assertTrue(final_points > initial_points)
 
 
 class FinalQuestTestCase(WousoTest):
@@ -150,6 +188,32 @@ class FinalQuestTestCase(WousoTest):
 
         self.assertFalse(final.answer_correct(0, question, u1.user.username + "wrong", u1))
         self.assertTrue(final.answer_correct(0, question, u1.user.username, u1))
+
+    def test_final_quest_results_view(self):
+        u1 = self._get_player(1).get_extension(QuestUser)
+        u2 = self._get_player(2).get_extension(QuestUser)
+        r = Race.objects.create(name='rasa_buna', can_play=True)
+        Formula.add('finalquest-ok', definition='points=50*({level}+1)/{level_users}')
+        Formula.add('level-gold', definition='gold=0')
+        Coin.add('points')
+        Coin.add('gold')
+        final = FinalQuest.objects.create(start=datetime.datetime.now(), end=datetime.datetime.now())
+        question = Question.objects.create(text='test', answer_type='F')
+        final.questions.add(question)
+        question = Question.objects.create(text='test', answer_type='F')
+        final.questions.add(question)
+
+        u1.current_level = 1; u1.race = r; u1.current_quest = final
+        u1.save()
+        u2.current_level = 1; u2.race = r; u2.current_quest = final
+        u2.save()
+
+        c = Client()
+        admin = User.objects.create_superuser('admin', 'admin@myemail.com', 'admin')
+        c.login(username='admin', password='admin')
+        response = c.get('/cpanel/games/quest/final/results/')
+        self.assertFalse(response.content.find('testuser1') == -1)
+        self.assertFalse(response.content.find('testuser2') == -1)
 
 
 # API tests
