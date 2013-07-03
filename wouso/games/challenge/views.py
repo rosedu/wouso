@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
+from django.views.generic import View
 from wouso.core.config.models import Setting, BoolSetting
 from wouso.core.user.models import Player
 from wouso.games.challenge.models import ChallengeException
@@ -34,32 +35,30 @@ def do_result(request, error='', message=''):
         {'error': error, 'message': message},
         context_instance=RequestContext(request))
 
-@login_required
-def challenge(request, id):
-    """ Displays a challenge, only if status = accepted
-    This is play """
-    chall_user = request.user.get_profile().get_extension(ChallengeUser)
+class ChallengeView(View):
+    def get(self, request, **kwargs):
+        chall_user = self.request.user.get_profile().get_extension(ChallengeUser)
+        chall = get_object_or_404(Challenge, pk=self.kwargs['id'])
+        try:
+            participant = chall.participant_for_player(chall_user)
+        except:
+            raise Http404
 
-    chall = get_object_or_404(Challenge, pk=id)
+        if participant.played:
+            return do_result(request, _('You have already submitted this challenge'\
+                                       ' and scored %.2f points') % participant.score)
+        if not chall.is_started_for_user(chall_user):
+            chall.set_start(chall_user)
+        form = ChallengeForm(chall)
+        seconds_left = chall.time_for_user(chall_user)
+        return render_to_response('challenge/challenge.html',
+                {'challenge': chall, 'form': form, 'challenge_user': chall_user,
+                'seconds_left': seconds_left},
+                context_instance=RequestContext(request))
 
-    # check to see if challenge was already submitted
-    try:
-        participant = chall.participant_for_player(chall_user)
-    except:
-        raise Http404
-
-    if participant.played:
-        return do_result(request, _('You have already submitted this challenge'\
-                                   ' and scored %.2f points') % participant.score)
-
-    # this is caught by chall_user
-    #if not chall_user.can_play(chall):
-    #    return do_result(request, _('You cannot play this challenge.'))
-
-    if request.method == 'GET' and not chall.is_started_for_user(chall_user):
-        chall.set_start(chall_user)
-
-    if request.method == "POST":
+    def post(self, request, **kwargs):
+        chall_user = self.request.user.get_profile().get_extension(ChallengeUser)
+        chall = get_object_or_404(Challenge, pk=self.kwargs['id'])
         form = ChallengeForm(chall, request.POST)
         results = chall.set_played(chall_user, form.get_response())
         form.check_self_boxes()
@@ -69,15 +68,12 @@ def challenge(request, id):
         else:
             questions_and_answers = None
         return render_to_response('challenge/result.html',
-            {'challenge': chall, 'challenge_user': chall_user, 'points': results['points'], 'form' : form,  'questions_and_answers' : questions_and_answers},
+            {'challenge': chall, 'challenge_user': chall_user,
+            'points': results['points'], 'form' : form,  'questions_and_answers' : questions_and_answers},
             context_instance=RequestContext(request))
-    else:
-        form = ChallengeForm(chall)
 
-    seconds_left = chall.time_for_user(chall_user)
-    return render_to_response('challenge/challenge.html',
-            {'challenge': chall, 'form': form, 'challenge_user': chall_user, 'seconds_left': seconds_left},
-            context_instance=RequestContext(request))
+challenge = login_required(ChallengeView.as_view())
+
 
 @login_required
 def launch(request, to_id):
@@ -115,7 +111,6 @@ def launch(request, to_id):
         return do_result(request, message=_('Successfully challenged'))
     else:
         return do_result(request, _('This user cannot be challenged.'))
-
 
 @login_required
 def accept(request, id):
