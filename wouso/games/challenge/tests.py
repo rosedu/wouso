@@ -3,11 +3,13 @@ import unittest
 from datetime import datetime,timedelta
 from mock import patch
 
+from django.core.urlresolvers import reverse
+from django.test.client import Client
 from django.contrib.auth.models import User
 from wouso.core.qpool.models import Question, Answer, Category
 from wouso.core.tests import WousoTest
 from wouso.games.challenge.models import ChallengeUser, Challenge, ChallengeGame
-from wouso.core.user.models import Player
+from wouso.core.user.models import Player, Race
 from wouso.core import scoring
 from wouso.core.scoring.models import Formula
 
@@ -306,3 +308,28 @@ class TestChallengeCache(WousoTest):
 
 # TODO: add page tests (views) for challenge run
 
+class TestChallengeViews(WousoTest):
+    def setUp(self):
+        super(TestChallengeViews, self).setUp()
+        self.ch_player1 = self._get_player(1)
+        self.ch_player2 = self._get_player(2)
+        race = Race.objects.create(name='testrace', can_play=True)
+        self.ch_player1.race = race
+        self.ch_player2.race = race
+        self.ch_player1.save()
+        self.ch_player2.save()
+        self.ch_player1 = self.ch_player1.get_extension(ChallengeUser)
+        self.ch_player2 = self.ch_player2.get_extension(ChallengeUser)
+        scoring.setup_scoring()
+
+    def test_challenge_index(self):
+        Challenge.create(user_from=self.ch_player1, user_to=self.ch_player2,
+                        ignore_questions=True)
+        Challenge.create(user_from=self.ch_player2, user_to=self.ch_player1,
+                        ignore_questions=True)
+        c = Client()
+        c.login(username='testuser1', password='test')
+        response = c.get(reverse('challenge_index_view'))
+        #Test if both challenges are displayed
+        self.assertFalse(response.content.find('testuser1</a> vs') == -1)
+        self.assertFalse(response.content.find('testuser2</a> vs') == -1)
