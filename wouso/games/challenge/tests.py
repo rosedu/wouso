@@ -333,3 +333,21 @@ class TestChallengeViews(WousoTest):
         #Test if both challenges are displayed
         self.assertFalse(response.content.find('testuser1</a> vs') == -1)
         self.assertFalse(response.content.find('testuser2</a> vs') == -1)
+    
+    def test_challenge_display(self):
+        category = Category.add('challenge')
+        question1 = Question.objects.create(text='question1', answer_type='F',
+                                           category=category, active=True)
+        answer1 = Answer.objects.create(text='first answer', correct=True, question=question1)
+        question2 = Question.objects.create(text='question2', answer_type='F',
+                                           category=category, active=True)
+        answer2 = Answer.objects.create(text='second answer', correct=True, question=question2)
+        ch = Challenge.create(user_from=self.ch_player1, user_to=self.ch_player2,
+                        ignore_questions=True)
+        ch.questions.add(question1)
+        ch.questions.add(question2)
+        c = Client()
+        c.login(username='testuser1', password='test')
+        response = c.get(reverse('view_challenge', args=[1]))
+        self.assertFalse(response.content.find('first answer') == -1)
+        self.assertFalse(response.content.find('second answer') == -1)
