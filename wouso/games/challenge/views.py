@@ -37,16 +37,16 @@ def do_result(request, error='', message=''):
 
 class ChallengeView(View):
     def get(self, request, **kwargs):
-        chall_user = self.request.user.get_profile().get_extension(ChallengeUser)
-        chall = get_object_or_404(Challenge, pk=self.kwargs['id'])
+        chall_user = request.user.get_profile().get_extension(ChallengeUser)
+        chall = get_object_or_404(Challenge, pk=kwargs['id'])
         try:
             participant = chall.participant_for_player(chall_user)
         except:
             raise Http404
 
         #Check if the player has accepted the challenge before playing it
-        if chall.status != 'A':
-            return do_result(request, _('You did not accept the challenge!'))
+        if chall.status == 'L':
+            return do_result(request, _('The challenge was not accepted!'))
 
         if participant.played:
             return do_result(request, _('You have already submitted this challenge'\
@@ -61,8 +61,8 @@ class ChallengeView(View):
                 context_instance=RequestContext(request))
 
     def post(self, request, **kwargs):
-        chall_user = self.request.user.get_profile().get_extension(ChallengeUser)
-        chall = get_object_or_404(Challenge, pk=self.kwargs['id'])
+        chall_user = request.user.get_profile().get_extension(ChallengeUser)
+        chall = get_object_or_404(Challenge, pk=kwargs['id'])
         form = ChallengeForm(chall, request.POST)
         results = chall.set_played(chall_user, form.get_response())
         form.check_self_boxes()
