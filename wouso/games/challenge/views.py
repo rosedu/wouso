@@ -44,6 +44,10 @@ class ChallengeView(View):
         except:
             raise Http404
 
+        #Check if the player has accepted the challenge before playing it
+        if chall.status != 'A':
+            return do_result(request, _('You did not accept the challenge!'))
+
         if participant.played:
             return do_result(request, _('You have already submitted this challenge'\
                                        ' and scored %.2f points') % participant.score)
