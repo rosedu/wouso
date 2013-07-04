@@ -49,6 +49,10 @@ class ChallengeView(DetailView):
         if chall.status == 'L':
             return do_result(request, _('The challenge was not accepted!'))
 
+        #Check if the challenge was refused
+        if chall.status == 'R':
+            return do_result(request, _('The challenge was refused!'))
+
         if participant.played:
             return do_result(request, _('You have already submitted this challenge'\
                                        ' and scored %.2f points') % participant.score)
@@ -67,6 +71,7 @@ class ChallengeView(DetailView):
         form = ChallengeForm(chall, request.POST)
         results = chall.set_played(chall_user, form.get_response())
         form.check_self_boxes()
+
         if results.get('results', False):
             results['results'] = form.get_results_in_order(results['results'])
             questions_and_answers = zip(form.visible_fields(), results['results'])

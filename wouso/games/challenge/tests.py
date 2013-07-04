@@ -346,7 +346,7 @@ class TestChallengeViews(WousoTest):
         self.assertContains(response, 'testuser1</a> vs')
         self.assertContains(response, 'testuser2</a> vs')
     
-    def test_challenge_display(self):
+    def test_challenge_display_get(self):
         c = Client()
         c.login(username='testuser1', password='test')
         response = c.get(reverse('view_challenge', args=[1]))
