@@ -2,7 +2,7 @@ from django.conf.urls.defaults import *
 
 urlpatterns = patterns('wouso.games.challenge.views',
     url(r'^$', 'index', name='challenge_index_view'),
-    url(r'^(?P<pk>\d+)/$', 'challenge', name='view_challenge'),
+    url(r'^(?P<id>\d+)/$', 'challenge', name='view_challenge'),
     url(r'^launch/(?P<to_id>\d+)/$', 'launch', name='challenge_launch'),
     url(r'^refuse/(?P<id>\d+)/$', 'refuse', name='challenge_refuse'),
     url(r'^accept/(?P<id>\d+)/$', 'accept', name='challenge_accept'),

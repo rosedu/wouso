@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
-from django.views.generic import DetailView
+from django.views.generic import View
 from wouso.core.config.models import Setting, BoolSetting
 from wouso.core.user.models import Player
 from wouso.games.challenge.models import ChallengeException
@@ -35,41 +35,42 @@ def do_result(request, error='', message=''):
         {'error': error, 'message': message},
         context_instance=RequestContext(request))
 
-class ChallengeView(DetailView):
-    model = Challenge
-    def get(self, request, **kwargs):
-        chall_user = request.user.get_profile().get_extension(ChallengeUser)
-        chall = self.get_object()
+class ChallengeView(View):
+    def dispatch(self, request, *args, **kwargs):
+        self.chall_user = request.user.get_profile().get_extension(ChallengeUser)
+        self.chall = get_object_or_404(Challenge, pk=kwargs['id'])
         try:
-            participant = chall.participant_for_player(chall_user)
+            self.participant = self.chall.participant_for_player(self.chall_user)
         except:
             raise Http404
 
         #Check if the player has accepted the challenge before playing it
-        if chall.status == 'L':
-            return do_result(request, _('The challenge was not accepted!'))
+        if self.chall.status == 'L':
+            return do_result(request, _('The challenge was not accepted yet!'))
 
-        #Check if the challenge was refused
-        if chall.status == 'R':
+        #Check if the self.challenge was refused
+        if self.chall.status == 'R':
             return do_result(request, _('The challenge was refused!'))
 
-        if participant.played:
+        if self.participant.played:
             return do_result(request, _('You have already submitted this challenge'\
-                                       ' and scored %.2f points') % participant.score)
-        if not chall.is_started_for_user(chall_user):
-            chall.set_start(chall_user)
-        form = ChallengeForm(chall)
-        seconds_left = chall.time_for_user(chall_user)
+                                       ' and scored %.2f points') % self.participant.score)
+
+        return super(ChallengeView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        if not self.chall.is_started_for_user(self.chall_user):
+            self.chall.set_start(self.chall_user)
+        form = ChallengeForm(self.chall)
+        seconds_left = self.chall.time_for_user(self.chall_user)
         return render_to_response('challenge/challenge.html',
-                {'challenge': chall, 'form': form, 'challenge_user': chall_user,
+                {'challenge': self.chall, 'form': form, 'challenge_user': self.chall_user,
                 'seconds_left': seconds_left},
                 context_instance=RequestContext(request))
 
     def post(self, request, **kwargs):
-        chall_user = request.user.get_profile().get_extension(ChallengeUser)
-        chall = self.get_object()
-        form = ChallengeForm(chall, request.POST)
-        results = chall.set_played(chall_user, form.get_response())
+        form = ChallengeForm(self.chall, request.POST)
+        results = self.chall.set_played(self.chall_user, form.get_response())
         form.check_self_boxes()
 
         if results.get('results', False):
@@ -78,7 +79,7 @@ class ChallengeView(DetailView):
         else:
             questions_and_answers = None
         return render_to_response('challenge/result.html',
-            {'challenge': chall, 'challenge_user': chall_user,
+            {'challenge': self.chall, 'challenge_user': self.chall_user,
             'points': results['points'], 'form' : form,  'questions_and_answers' : questions_and_answers},
             context_instance=RequestContext(request))
 
