@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
-from django.views.generic import View
+from django.views.generic import DetailView
 from wouso.core.config.models import Setting, BoolSetting
 from wouso.core.user.models import Player
 from wouso.games.challenge.models import ChallengeException
@@ -35,10 +35,11 @@ def do_result(request, error='', message=''):
         {'error': error, 'message': message},
         context_instance=RequestContext(request))
 
-class ChallengeView(View):
+class ChallengeView(DetailView):
+    model = Challenge
     def get(self, request, **kwargs):
         chall_user = request.user.get_profile().get_extension(ChallengeUser)
-        chall = get_object_or_404(Challenge, pk=kwargs['id'])
+        chall = self.get_object()
         try:
             participant = chall.participant_for_player(chall_user)
         except:
@@ -62,7 +63,7 @@ class ChallengeView(View):
 
     def post(self, request, **kwargs):
         chall_user = request.user.get_profile().get_extension(ChallengeUser)
-        chall = get_object_or_404(Challenge, pk=kwargs['id'])
+        chall = self.get_object()
         form = ChallengeForm(chall, request.POST)
         results = chall.set_played(chall_user, form.get_response())
         form.check_self_boxes()
