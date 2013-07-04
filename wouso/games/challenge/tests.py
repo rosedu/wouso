@@ -322,32 +322,41 @@ class TestChallengeViews(WousoTest):
         self.ch_player2 = self.ch_player2.get_extension(ChallengeUser)
         scoring.setup_scoring()
 
-    def test_challenge_index(self):
-        Challenge.create(user_from=self.ch_player1, user_to=self.ch_player2,
+        self.category = Category.add('challenge')
+        self.question1 = Question.objects.create(text='question1', answer_type='F',
+                                                 category=self.category, active=True)
+        self.answer1 = Answer.objects.create(text='first answer', correct=True,
+                                             question=self.question1)
+        self.question2 = Question.objects.create(text='question2', answer_type='F',
+                                                 category=self.category, active=True)
+        self.answer2 = Answer.objects.create(text='second answer', correct=True,
+                                             question=self.question2)
+        self.ch = Challenge.create(user_from=self.ch_player1, user_to=self.ch_player2,
                         ignore_questions=True)
+        self.ch.questions.add(self.question1)
+        self.ch.questions.add(self.question2)
+
+    def test_challenge_index(self):
         Challenge.create(user_from=self.ch_player2, user_to=self.ch_player1,
                         ignore_questions=True)
         c = Client()
         c.login(username='testuser1', password='test')
         response = c.get(reverse('challenge_index_view'))
         #Test if both challenges are displayed
-        self.assertFalse(response.content.find('testuser1</a> vs') == -1)
-        self.assertFalse(response.content.find('testuser2</a> vs') == -1)
+        self.assertContains(response, 'testuser1</a> vs')
+        self.assertContains(response, 'testuser2</a> vs')
     
     def test_challenge_display(self):
-        category = Category.add('challenge')
-        question1 = Question.objects.create(text='question1', answer_type='F',
-                                           category=category, active=True)
-        answer1 = Answer.objects.create(text='first answer', correct=True, question=question1)
-        question2 = Question.objects.create(text='question2', answer_type='F',
-                                           category=category, active=True)
-        answer2 = Answer.objects.create(text='second answer', correct=True, question=question2)
-        ch = Challenge.create(user_from=self.ch_player1, user_to=self.ch_player2,
-                        ignore_questions=True)
-        ch.questions.add(question1)
-        ch.questions.add(question2)
         c = Client()
         c.login(username='testuser1', password='test')
         response = c.get(reverse('view_challenge', args=[1]))
-        self.assertFalse(response.content.find('first answer') == -1)
-        self.assertFalse(response.content.find('second answer') == -1)
+
+        #Challenge is not accepted, display message
+        self.assertContains(response, 'The challenge was not accepted!')
+
+        #Challenge is accepted, display the challenge
+        self.ch.status = 'A'
+        self.ch.save()
+        response = c.get(reverse('view_challenge', args=[1]))
+        self.assertContains(response, 'first answer')
+        self.assertContains(response, 'second answer')
