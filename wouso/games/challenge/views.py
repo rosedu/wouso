@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
+from django.views.generic import ListView
 from wouso.core.config.models import Setting, BoolSetting
 from wouso.core.user.models import Player
 from wouso.games.challenge.models import ChallengeException
@@ -210,18 +211,30 @@ def sidebar_widget(request):
     if not challs:
         return ''
 
-    return render_to_string('challenge/sidebar.html', {'challenges': challs, 'challenge': ChallengeGame,  'chall_user': chall_user})
+    return render_to_string('challenge/sidebar.html', {'challenges': challs,
+                            'challenge': ChallengeGame,  'chall_user': chall_user})
 
-def history(request, playerid):
-    player = get_object_or_404(ChallengeUser, pk=playerid)
+class HistoryView(ListView):
+    model = Participant
+    template_name = 'challenge/history.html'
+    context_object_name = 'challenges'
 
-    challs = [p.challenge for p in Participant.objects.filter(user=player)]
-    challs = sorted(challs, key=lambda c: c.date)
+    def dispatch(self, request, *args, **kwargs):
+        self.player = get_object_or_404(ChallengeUser, pk=kwargs['playerid'])
+        return super(HistoryView, self).dispatch(request, *args, **kwargs)
 
-    return render_to_response('challenge/history.html', {'challplayer': player, 'challenges': challs},
-                              context_instance=RequestContext(request))
+    def get_queryset(self):
+        challenges = [p.challenge for p in self.model.objects.filter(user=self.player)]
+        challenges = sorted(challenges, key=lambda c: c.date)
+        return challenges
+    
+    def get_context_data(self, **kwargs):
+        context = super(HistoryView, self).get_context_data(**kwargs)
+        context.update({'challplayer': self.player})
+        return context
 
-
+history = HistoryView.as_view()
+    
 @login_required
 def challenge_player(request):
     if request.method == 'POST':
