@@ -4,7 +4,7 @@ from datetime import datetime,timedelta
 from mock import patch
 
 from django.core.urlresolvers import reverse
-from django.test.client import Client
+from django.test.client import Client, RequestFactory
 from django.contrib.auth.models import User
 from wouso.core.qpool.models import Question, Answer, Category
 from wouso.core.tests import WousoTest
@@ -12,6 +12,7 @@ from wouso.games.challenge.models import ChallengeUser, Challenge, ChallengeGame
 from wouso.core.user.models import Player, Race
 from wouso.core import scoring
 from wouso.core.scoring.models import Formula
+from wouso.games.challenge.views import challenge_random
 
 Challenge.LIMIT = 5
 
@@ -313,9 +314,11 @@ class TestChallengeViews(WousoTest):
         super(TestChallengeViews, self).setUp()
         self.ch_player1 = self._get_player(1)
         self.ch_player2 = self._get_player(2)
-        race = Race.objects.create(name='testrace', can_play=True)
+        race = Race.objects.create(name=u'testrace', can_play=True)
         self.ch_player1.race = race
         self.ch_player2.race = race
+        self.ch_player1.points = 100
+        self.ch_player2.points = 100
         self.ch_player1.save()
         self.ch_player2.save()
         self.ch_player1 = self.ch_player1.get_extension(ChallengeUser)
@@ -413,3 +416,20 @@ class TestChallengeViews(WousoTest):
         self.assertContains(response, 'testuser1</a> vs.')
         self.assertContains(response, 'Result:')
         self.assertContains(response, 'Pending [A]')
+
+    def test_random_challenge(self):
+        # Add 3 more questions because when the player is challenged
+        # ignore_questions is set to False and the challenge needs 5 questions
+        question3 = Question.objects.create(text='question3', answer_type='F',
+                                                 category=self.category, active=True)
+        question4 = Question.objects.create(text='question4', answer_type='F',
+                                                 category=self.category, active=True)
+        question5 = Question.objects.create(text='question5', answer_type='F',
+                                                 category=self.category, active=True)
+        fact = RequestFactory()
+        request = fact.get(reverse('challenge_random'))
+        request.user = self.ch_player2.user
+        request.session = {}
+        response = challenge_random(request)
+        challenge = Challenge.objects.filter(user_from__user__user__username='testuser2')
+        self.assertNotEqual(len(challenge), 0)
