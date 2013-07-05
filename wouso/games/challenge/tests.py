@@ -405,3 +405,12 @@ class TestChallengeViews(WousoTest):
         data = {u'answer_1': [u'1'], 'answer_2': [u'1']}
         response = self.c.post(reverse('view_challenge', args=[1]), data)
         self.assertContains(response, 'The challenge was refused')
+
+    def test_challenge_history(self):
+        self.ch.status = 'A'
+        self.ch.save()
+        response = self.c.get(reverse('challenge_history', args=[1])) 
+        print response.content
+        self.assertContains(response, 'testuser1</a> vs.')
+        self.assertContains(response, 'Result:')
+        self.assertContains(response, 'Pending [A]')
