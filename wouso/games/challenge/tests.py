@@ -3,11 +3,13 @@ import unittest
 from datetime import datetime,timedelta
 from mock import patch
 
+from django.core.urlresolvers import reverse
+from django.test.client import Client
 from django.contrib.auth.models import User
 from wouso.core.qpool.models import Question, Answer, Category
 from wouso.core.tests import WousoTest
 from wouso.games.challenge.models import ChallengeUser, Challenge, ChallengeGame
-from wouso.core.user.models import Player
+from wouso.core.user.models import Player, Race
 from wouso.core import scoring
 from wouso.core.scoring.models import Formula
 
@@ -306,3 +308,100 @@ class TestChallengeCache(WousoTest):
 
 # TODO: add page tests (views) for challenge run
 
+class TestChallengeViews(WousoTest):
+    def setUp(self):
+        super(TestChallengeViews, self).setUp()
+        self.ch_player1 = self._get_player(1)
+        self.ch_player2 = self._get_player(2)
+        race = Race.objects.create(name='testrace', can_play=True)
+        self.ch_player1.race = race
+        self.ch_player2.race = race
+        self.ch_player1.save()
+        self.ch_player2.save()
+        self.ch_player1 = self.ch_player1.get_extension(ChallengeUser)
+        self.ch_player2 = self.ch_player2.get_extension(ChallengeUser)
+        scoring.setup_scoring()
+
+        self.category = Category.add('challenge')
+        self.question1 = Question.objects.create(text='question1', answer_type='F',
+                                                 category=self.category, active=True)
+        self.answer1 = Answer.objects.create(text='first answer', correct=True,
+                                             question=self.question1)
+        self.question2 = Question.objects.create(text='question2', answer_type='F',
+                                                 category=self.category, active=True)
+        self.answer2 = Answer.objects.create(text='second answer', correct=True,
+                                             question=self.question2)
+        self.ch = Challenge.create(user_from=self.ch_player1, user_to=self.ch_player2,
+                        ignore_questions=True)
+        self.ch.questions.add(self.question1)
+        self.ch.questions.add(self.question2)
+
+        self.c = Client()
+        self.c.login(username='testuser1', password='test')
+
+    def test_challenge_index(self):
+        Challenge.create(user_from=self.ch_player2, user_to=self.ch_player1,
+                        ignore_questions=True)
+        response = self.c.get(reverse('challenge_index_view'))
+        # Test if both challenges are displayed
+        self.assertContains(response, 'testuser1</a> vs')
+        self.assertContains(response, 'testuser2</a> vs')
+    
+    def test_challenge_is_not_runnable_when_it_is_not_accepted(self):
+        # Challenge is launched but not accepted
+        self.ch.status = 'L'
+        self.ch.save()
+        response = self.c.get(reverse('view_challenge', args=[1]))
+        self.assertContains(response, 'The challenge was not accepted')
+
+    def test_challenge_is_not_runnable_when_it_is_refused(self):
+        # Challenge is refused
+        self.ch.status = 'R'
+        self.ch.save()
+        response = self.c.get(reverse('view_challenge', args=[1]))
+        self.assertContains(response, 'The challenge was refused')
+
+    def test_challenge_is_not_runnable_more_than_once(self):
+        self.ch.status = 'A'
+        self.ch.save()
+        participant = self.ch.participant_for_player(self.ch_player1)
+        participant.played = True
+        participant.score = 200
+        participant.save()
+        response = self.c.get(reverse('view_challenge', args=[1]))
+        self.assertContains(response, 'You have already submitted this challenge')
+    
+    def test_challenge_is_runnable(self):
+        # Challenge is accepted, display the challenge
+        self.ch.status = 'A'
+        self.ch.save()
+        response = self.c.get(reverse('view_challenge', args=[1]))
+        self.assertContains(response, 'first answer')
+        self.assertContains(response, 'second answer')
+
+    def test_challenge_can_be_submitted_only_once(self):
+        self.ch.status = 'A'
+        self.ch.save()
+        # Run the challenge
+        response = self.c.get(reverse('view_challenge', args=[1])) 
+        # Submit the challenge
+        data = {u'answer_1': [u'1'], 'answer_2': [u'1']}
+        response = self.c.post(reverse('view_challenge', args=[1]), data)
+        self.assertContains(response, 'You scored')
+        # Try to submit it again
+        response = self.c.post(reverse('view_challenge', args=[1]), data)
+        self.assertContains(response, 'You have already submitted')
+
+    def test_challenge_cannot_be_submitted_when_it_is_not_accepted(self):
+        self.ch.status = 'L'
+        self.ch.save()
+        data = {u'answer_1': [u'1'], 'answer_2': [u'1']}
+        response = self.c.post(reverse('view_challenge', args=[1]), data)
+        self.assertContains(response, 'The challenge was not accepted')
+
+    def test_challenge_cannot_be_submitted_when_it_is_refused(self):
+        self.ch.status = 'R'
+        self.ch.save()
+        data = {u'answer_1': [u'1'], 'answer_2': [u'1']}
+        response = self.c.post(reverse('view_challenge', args=[1]), data)
+        self.assertContains(response, 'The challenge was refused')
