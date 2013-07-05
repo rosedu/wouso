@@ -109,6 +109,18 @@ class ChallengeUser(Player):
     def get_lost_challenges(self):
         return self.get_all_challenges().exclude(winner=self)
 
+    def get_random_opponent(self):
+        players = ChallengeUser.objects.exclude(user = self.user)
+        players = players.exclude(race__can_play=False)
+        players = [p for p in players if self.can_challenge(p)]
+        no_players = len(players)
+        if not no_players:
+            return False
+        # selects the user to be challenged
+        import random
+        i = random.randrange(0, no_players)
+        return players[i]
+
 Player.register_extension('challenge', ChallengeUser)
 
 class Participant(models.Model):

@@ -253,24 +253,15 @@ def challenge_random(request):
     if setting:
         messages.error(request, _('Random challenge disabled'))
         return redirect('challenge_index_view')
+
     current_player = request.user.get_profile().get_extension(ChallengeUser)
+    player = current_player.get_random_opponent()
 
-    # selects challengeable players
-    players = ChallengeUser.objects.exclude(user = current_player.user)
-    players = players.exclude(race__can_play=False)
-    players = [p for p in players if current_player.can_challenge(p)]
-
-    if not players:
+    if not player:
         messages.error(request, _('There is no one you can challenge now.'))
         return redirect('challenge_index_view')
 
-    no_players = len(players)
-
-    # selects the user to be challenged
-    import random
-    i = random.randrange(0, no_players)
-
-    return launch(request, players[i].id)
+    return launch(request, player.id)
 
 @login_required
 def detailed_challenge_stats(request, target_id, player_id=None):
