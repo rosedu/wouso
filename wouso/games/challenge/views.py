@@ -44,11 +44,11 @@ class ChallengeView(View):
         except:
             raise Http404
 
-        #Check if the player has accepted the challenge before playing it
+        # Check if the player has accepted the challenge before playing it
         if self.chall.status == 'L':
             return do_result(request, _('The challenge was not accepted yet!'))
 
-        #Check if the self.challenge was refused
+        # Check if the self.challenge was refused
         if self.chall.status == 'R':
             return do_result(request, _('The challenge was refused!'))
 
