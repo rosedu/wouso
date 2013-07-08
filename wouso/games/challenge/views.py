@@ -268,22 +268,31 @@ def challenge_random(request):
 
     return launch(request, player.id)
 
-@login_required
-def detailed_challenge_stats(request, target_id, player_id=None):
-    """ Statistics for one pair of users, current_player and target_id """
-    if player_id and request.user.get_profile().in_staff_group():
-        current_player = get_object_or_404(Player, pk=player_id).get_extension(ChallengeUser)
-    else:
-        current_player = request.user.get_profile().get_extension(ChallengeUser)
+class DetailedChallengeStats(ListView):
+    template_name = 'challenge/statistics_detail.html'
+    context_object_name = 'chall_total'
 
-    target_user = get_object_or_404(ChallengeUser, user__id=target_id)
-    chall_total = current_player.get_related_challenges(target_user)
+    def dispatch(self, request, *args, **kwargs):
+        if 'player_id' in kwargs.keys() and request.user.get_profile().in_staff_group():
+            self.current_player = get_object_or_404(Player, pk=kwargs['player_id'])
+            self.current_player = self.current_player.get_extension(ChallengeUser)
+        else:
+            self.current_player = request.user.get_profile().get_extension(ChallengeUser)
 
-    return render_to_response('challenge/statistics_detail.html',
-            {'current_player' : current_player, 'target_player' : target_user,
-                'chall_total' : chall_total,
-                'opponent' : target_user},
-            context_instance=RequestContext(request))
+        self.target_user = get_object_or_404(ChallengeUser, user__id=kwargs['target_id'])
+        return super(DetailedChallengeStats, self).dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return self.current_player.get_related_challenges(self.target_user)
+
+    def get_context_data(self, **kwargs):
+        context = super(DetailedChallengeStats, self).get_context_data(**kwargs)
+        context.update({'current_player': self.current_player,
+                       'target_player': self.target_user,
+                       'opponent': self.target_user})
+        return context
+
+detailed_challenge_stats = login_required(DetailedChallengeStats.as_view())
 
 @login_required
 def challenge_stats(request, player_id=None):
