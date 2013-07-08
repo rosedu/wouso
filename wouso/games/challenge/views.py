@@ -277,14 +277,7 @@ def detailed_challenge_stats(request, target_id, player_id=None):
         current_player = request.user.get_profile().get_extension(ChallengeUser)
 
     target_user = get_object_or_404(ChallengeUser, user__id=target_id)
-
-    from django.db.models import Q
-
-    chall_total = Challenge.objects.filter(Q(user_from__user = current_player) |
-            Q(user_to__user = current_player)).exclude(status=u'L')
-
-    chall_total = chall_total.filter(Q(user_from__user=target_user) |
-            Q(user_to__user=target_user)).order_by('-date')
+    chall_total = current_player.get_related_challenges(target_user)
 
     return render_to_response('challenge/statistics_detail.html',
             {'current_player' : current_player, 'target_player' : target_user,

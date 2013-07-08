@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_noop, ugettext as _
 from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404
 from wouso.core.user.models import Player
 from wouso.core.magic.manager import InsufficientAmount
 from wouso.core.qpool.models import Question
@@ -120,6 +121,15 @@ class ChallengeUser(Player):
         import random
         i = random.randrange(0, no_players)
         return players[i]
+
+    def get_related_challenges(self, target_user):
+        # Gets the challenges between self and target_user
+        from django.db.models import Q
+        chall_total = Challenge.objects.filter(Q(user_from__user = self) |
+                Q(user_to__user = self)).exclude(status=u'L')
+        chall_total = chall_total.filter(Q(user_from__user=target_user) |
+                Q(user_to__user=target_user)).order_by('-date')
+        return chall_total
 
 Player.register_extension('challenge', ChallengeUser)
 
