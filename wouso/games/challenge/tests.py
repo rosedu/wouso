@@ -433,7 +433,7 @@ class TestChallengeViews(WousoTest):
         challenge = Challenge.objects.filter(user_from__user__user__username='testuser2')
         self.assertNotEqual(len(challenge), 0)
 
-    def test_detailed_challenge_stats(self):
+    def test_detailed_challenge_stats_view(self):
         self.ch.status = 'A'
         self.ch.save()
 
@@ -451,3 +451,15 @@ class TestChallengeViews(WousoTest):
         self.assertContains(response, '200')
         self.assertContains(response, '300')
         self.assertContains(response, '50')
+
+    def test_challenge_stats_view(self):
+        self.ch.status = 'A'
+        self.ch.save()
+        self.ch.user_from.seconds_took = 100
+        self.ch.user_from.save()
+        response = self.c.get(reverse('challenge_stats', args=[1]))
+        self.assertContains(response, 'Challenges - testuser1')
+        self.assertContains(response, 'Challenges played:  1')
+        self.assertContains(response, 'Challenges sent:  1')
+        self.assertContains(response, 'testuser2')
+        self.assertContains(response, 'Average time taken:  100.0 s')
