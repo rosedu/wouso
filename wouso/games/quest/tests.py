@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.test import Client
 from django.test.client import RequestFactory
+from django.core.urlresolvers import reverse
 import json
 from wouso.core import scoring
 from wouso.core.qpool.models import Question, Answer, Category
@@ -136,7 +137,7 @@ class QuestTestCase(WousoTest):
 
         admin = User.objects.create_superuser('admin', 'admin@myemail.com', 'admin')
         fact = RequestFactory()
-        request = fact.get('/cpanel/games/quest/register/1')
+        request = fact.get(reverse('register_results', args=[1]))
         request.user = admin
         
         #get initial points

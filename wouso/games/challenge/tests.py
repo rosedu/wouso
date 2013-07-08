@@ -2,7 +2,6 @@ import json
 import unittest
 from datetime import datetime,timedelta
 from mock import patch
-
 from django.core.urlresolvers import reverse
 from django.test.client import Client, RequestFactory
 from django.contrib.auth.models import User
@@ -314,11 +313,17 @@ class TestChallengeViews(WousoTest):
         super(TestChallengeViews, self).setUp()
         self.ch_player1 = self._get_player(1)
         self.ch_player2 = self._get_player(2)
+<<<<<<< HEAD
         race = Race.objects.create(name=u'testrace', can_play=True)
         self.ch_player1.race = race
         self.ch_player2.race = race
         self.ch_player1.points = 100
         self.ch_player2.points = 100
+=======
+        race = Race.objects.create(name='testrace', can_play=True)
+        self.ch_player1.race = race
+        self.ch_player2.race = race
+>>>>>>> 4eed2c93bc960ffc44e3cfc6181f3d91ef21e3de
         self.ch_player1.save()
         self.ch_player2.save()
         self.ch_player1 = self.ch_player1.get_extension(ChallengeUser)
