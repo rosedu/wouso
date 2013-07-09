@@ -221,7 +221,6 @@ def sidebar_widget(request):
                             'challenge': ChallengeGame,  'chall_user': chall_user})
 
 class HistoryView(ListView):
-    model = Participant
     template_name = 'challenge/history.html'
     context_object_name = 'challenges'
 
@@ -230,7 +229,7 @@ class HistoryView(ListView):
         return super(HistoryView, self).dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        challenges = [p.challenge for p in self.model.objects.filter(user=self.player)]
+        challenges = [p.challenge for p in Participant.objects.filter(user=self.player)]
         challenges = sorted(challenges, key=lambda c: c.date)
         return challenges
     

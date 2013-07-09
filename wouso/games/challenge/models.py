@@ -111,7 +111,7 @@ class ChallengeUser(Player):
         return self.get_all_challenges().exclude(winner=self)
 
     def get_random_opponent(self):
-        players = ChallengeUser.objects.exclude(user = self.user)
+        players = ChallengeUser.objects.exclude(user=self.user)
         players = players.exclude(race__can_play=False)
         players = [p for p in players if self.can_challenge(p)]
         no_players = len(players)
@@ -125,8 +125,8 @@ class ChallengeUser(Player):
     def get_related_challenges(self, target_user):
         # Gets the challenges between self and target_user
         from django.db.models import Q
-        chall_total = Challenge.objects.filter(Q(user_from__user = self) |
-                Q(user_to__user = self)).exclude(status=u'L')
+        chall_total = Challenge.objects.filter(Q(user_from__user=self) |
+                Q(user_to__user=self)).exclude(status=u'L')
         chall_total = chall_total.filter(Q(user_from__user=target_user) |
                 Q(user_to__user=target_user)).order_by('-date')
         return chall_total
