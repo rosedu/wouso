@@ -433,7 +433,7 @@ class TestChallengeViews(WousoTest):
         challenge = Challenge.objects.filter(user_from__user__user__username='testuser2')
         self.assertNotEqual(len(challenge), 0)
 
-    def test_detailed_challenge_stats_view(self):
+    def test_detailed_challenge_stats_view_mine(self):
         self.ch.status = 'A'
         self.ch.save()
 
@@ -445,8 +445,29 @@ class TestChallengeViews(WousoTest):
         self.ch.user_to.seconds_took = 50
         self.ch.user_to.save()
 
-        response = self.c.get(reverse('detailed_challenge_stats', args=[2]))
+        response = self.c.get(reverse('detailed_challenge_stats_mine', args=[2]))
         self.assertContains(response, 'testuser1 - testuser2')
+        self.assertContains(response, '100')
+        self.assertContains(response, '200')
+        self.assertContains(response, '300')
+        self.assertContains(response, '50')
+
+    def test_detailed_challenge_stats_view(self):
+        admin = User.objects.create_superuser('admin', 'admin@myemail.com', 'admin')
+        self.c.login(username='admin', password='admin')
+        self.ch.status = 'A'
+        self.ch.save()
+
+        self.ch.user_from.seconds_took = 100
+        self.ch.user_from.score = 200
+        self.ch.user_from.save()
+
+        self.ch.user_to.score = 300
+        self.ch.user_to.seconds_took = 50
+        self.ch.user_to.save()
+
+        response = self.c.get(reverse('detailed_challenge_stats', args=[2, 1]))
+        self.assertContains(response, 'testuser2 - testuser1')
         self.assertContains(response, '100')
         self.assertContains(response, '200')
         self.assertContains(response, '300')
