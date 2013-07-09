@@ -224,11 +224,8 @@ class HistoryView(ListView):
     template_name = 'challenge/history.html'
     context_object_name = 'challenges'
 
-    def dispatch(self, request, *args, **kwargs):
-        self.player = get_object_or_404(ChallengeUser, pk=kwargs['playerid'])
-        return super(HistoryView, self).dispatch(request, *args, **kwargs)
-
     def get_queryset(self):
+        self.player = get_object_or_404(ChallengeUser, pk=self.kwargs['playerid'])
         challenges = [p.challenge for p in Participant.objects.filter(user=self.player)]
         challenges = sorted(challenges, key=lambda c: c.date)
         return challenges
