@@ -10,6 +10,7 @@ from django.views.generic import View, ListView
 from django.db.models import Avg, Q
 from wouso.core.config.models import Setting, BoolSetting
 from wouso.core.user.models import Player
+from wouso.core.decorators import staff_required
 from wouso.games.challenge.models import ChallengeException
 from models import ChallengeUser, ChallengeGame, Challenge, Participant
 from forms import ChallengeForm
@@ -269,27 +270,29 @@ class DetailedChallengeStatsView(ListView):
     template_name = 'challenge/statistics_detail.html'
     context_object_name = 'chall_total'
 
-    def dispatch(self, request, *args, **kwargs):
-        if 'player_id' in kwargs.keys() and request.user.get_profile().in_staff_group():
-            self.current_player = get_object_or_404(Player, pk=kwargs['player_id'])
-            self.current_player = self.current_player.get_extension(ChallengeUser)
-        else:
-            self.current_player = request.user.get_profile().get_extension(ChallengeUser)
-
-        self.target_user = get_object_or_404(ChallengeUser, user__id=kwargs['target_id'])
-        return super(DetailedChallengeStatsView, self).dispatch(request, *args, **kwargs)
+    def get_player(self):
+        current_player = get_object_or_404(Player, pk=self.kwargs['player_id'])
+        current_player = current_player.get_extension(ChallengeUser)
+        return current_player
 
     def get_queryset(self):
-        return self.current_player.get_related_challenges(self.target_user)
+        self.target_user = get_object_or_404(ChallengeUser, user__id=self.kwargs['target_id'])
+        return self.get_player().get_related_challenges(self.target_user)
 
     def get_context_data(self, **kwargs):
         context = super(DetailedChallengeStatsView, self).get_context_data(**kwargs)
-        context.update({'current_player': self.current_player,
+        context.update({'current_player': self.get_player(),
                        'target_player': self.target_user,
                        'opponent': self.target_user})
         return context
 
-detailed_challenge_stats = login_required(DetailedChallengeStatsView.as_view())
+detailed_challenge_stats = staff_required(DetailedChallengeStatsView.as_view())
+
+class DetailedChallengeStatsViewMine(DetailedChallengeStatsView):
+    def get_player(self):
+        return self.request.user.get_profile().get_extension(ChallengeUser)
+
+detailed_challenge_stats_mine = login_required(DetailedChallengeStatsViewMine.as_view())
 
 class ChallengeStatsView(ListView):
     """ Statistics for one user """
