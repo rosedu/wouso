@@ -271,8 +271,12 @@ class DetailedChallengeStatsView(ListView):
     context_object_name = 'chall_total'
 
     def get_player(self):
-        current_player = get_object_or_404(Player, pk=self.kwargs['player_id'])
-        current_player = current_player.get_extension(ChallengeUser)
+        if 'player_id' in self.kwargs.keys() and self.request.user.get_profile().in_staff_group():
+            current_player = get_object_or_404(Player, pk=self.kwargs['player_id'])
+            current_player = current_player.get_extension(ChallengeUser)
+        else:
+            current_player = self.request.user.get_profile().get_extension(ChallengeUser)
+
         return current_player
 
     def get_queryset(self):
@@ -286,79 +290,22 @@ class DetailedChallengeStatsView(ListView):
                        'opponent': self.target_user})
         return context
 
-detailed_challenge_stats = staff_required(DetailedChallengeStatsView.as_view())
+detailed_challenge_stats = login_required(DetailedChallengeStatsView.as_view())
 
-class DetailedChallengeStatsViewMine(DetailedChallengeStatsView):
-    def get_player(self):
-        return self.request.user.get_profile().get_extension(ChallengeUser)
-
-detailed_challenge_stats_mine = login_required(DetailedChallengeStatsViewMine.as_view())
-
-class ChallengeStatsView(ListView):
+class ChallengeStatsView(View):
     """ Statistics for one user """
-    template_name = 'challenge/statistics.html'
-    context_object_name = 'opponents' 
 
-    def dispatch(self, request, *args, **kwargs):
-        if 'player_id' in kwargs.keys() and request.user.get_profile().in_staff_group():
-            self.current_player = get_object_or_404(Player, pk=kwargs['player_id'])
-            self.current_player = self.current_player.get_extension(ChallengeUser)
+    def get_player(self):
+        if 'player_id' in self.kwargs.keys() and self.request.user.get_profile().in_staff_group():
+            current_player = get_object_or_404(Player, pk=self.kwargs['player_id'])
+            current_player = current_player.get_extension(ChallengeUser)
         else:
-            self.current_player = request.user.get_profile().get_extension(ChallengeUser)
+            current_player = self.request.user.get_profile().get_extension(ChallengeUser)
 
-        self.chall_total = Challenge.objects.filter(Q(user_from__user=self.current_player) |
-                Q(user_to__user=self.current_player)).exclude(status=u'L')
-        self.chall_sent = self.chall_total.filter(user_from__user=self.current_player)
-        self.chall_rec = self.chall_total.filter(user_to__user=self.current_player)
-        self.chall_won = self.chall_total.filter(winner=self.current_player)
+        return current_player
 
-        self.n_chall_sent = self.chall_sent.count()
-        self.n_chall_rec = self.chall_rec.count()
-        self.n_chall_played = self.chall_sent.count() + self.chall_rec.count()
-        self.n_chall_won = self.chall_won.count()
-        self.n_chall_ref = self.chall_total.filter(status=u'R').count()
-        self.all_participation = Participant.objects.filter(user = self.current_player)
-        return super(ChallengeStatsView, self).dispatch(request, *args, **kwargs)
-
-    def get_queryset(self):
-        opponents_from = list(set(map(lambda x : x.user_to.user, self.chall_sent)))
-        opponents_to = list(set(map(lambda x : x.user_from.user, self.chall_rec)))
-        opponents = list(set(opponents_from + opponents_to))
-
-        result = []
-        for op in opponents:
-            chall_against_op = self.chall_total.filter(Q(user_to__user=op) |
-                    Q(user_from__user=op))
-            won = chall_against_op.filter(Q(status=u'P') & Q(winner=self.current_player)).count()
-            lost = chall_against_op.filter(Q(status=u'P') & Q(winner=op)).count()
-            draw = chall_against_op.filter(Q(status=u'D')).count()
-            refused = chall_against_op.filter(Q(status=u'R')).count()
-            total = won + lost + draw + refused
-            result.append((op, won, lost, draw, refused, total))
-
-        # Sort results by 'total'
-        result = sorted(result, key=lambda by: by[5], reverse=True)
-        return result
-
-    def get_context_data(self, **kwargs):
-        context = super(ChallengeStatsView, self).get_context_data(**kwargs)
-        average_time = self.all_participation.aggregate(Avg('seconds_took'))['seconds_took__avg']
-        average_score = self.all_participation.aggregate(Avg('score'))['score__avg']
-
-        if average_time == None : average_time = 0
-        if average_score == None : average_score = 0
-
-        win_percentage = 0
-        if self.n_chall_played > 0:
-            win_percentage = float(self.n_chall_won) / self.n_chall_played * 100
-        # Pretty print the float for the template
-        win_percentage = '%.1f' % win_percentage
-
-        context.update({'n_chall_played': self.n_chall_played, 'n_chall_won': self.n_chall_won,
-            'n_chall_sent': self.n_chall_sent, 'n_chall_rec': self.n_chall_rec,
-            'n_chall_ref': self.n_chall_ref, 'current_player': self.current_player,
-            'average_time': average_time, 'average_score': average_score,
-            'win_percentage': win_percentage})
-        return context
+    def get(self, request, *args, **kwargs):
+        return render_to_response('challenge/statistics.html', self.get_player().get_stats(),
+                                  context_instance=RequestContext(request))
 
 challenge_stats = login_required(ChallengeStatsView.as_view())
