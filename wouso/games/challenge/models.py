@@ -114,12 +114,11 @@ class ChallengeUser(Player):
         players = ChallengeUser.objects.exclude(user=self.user)
         players = players.exclude(race__can_play=False)
         players = [p for p in players if self.can_challenge(p)]
-        no_players = len(players)
-        if not no_players:
+        if not players:
             return False
         # selects the user to be challenged
         import random
-        i = random.randrange(0, no_players)
+        i = random.randrange(0, len(players))
         return players[i]
 
     def get_related_challenges(self, target_user):
