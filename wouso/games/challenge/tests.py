@@ -11,7 +11,7 @@ from wouso.games.challenge.models import ChallengeUser, Challenge, ChallengeGame
 from wouso.core.user.models import Player, Race
 from wouso.core import scoring
 from wouso.core.scoring.models import Formula
-from wouso.games.challenge.views import challenge_random
+from wouso.games.challenge.views import challenge_random, launch
 
 Challenge.LIMIT = 5
 
@@ -430,6 +430,8 @@ class TestChallengeViews(WousoTest):
         request.user = self.ch_player2.user
         request.session = {}
         response = challenge_random(request)
+        self.assertEqual(response.status_code, 302)
+        launch(request, 1)
         challenge = Challenge.objects.filter(user_from__user__user__username='testuser2')
         self.assertNotEqual(len(challenge), 0)
 

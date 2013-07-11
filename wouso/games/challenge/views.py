@@ -264,7 +264,7 @@ def challenge_random(request):
         messages.error(request, _('There is no one you can challenge now.'))
         return redirect('challenge_index_view')
 
-    return launch(request, player.id)
+    return redirect('challenge_launch', player.id)
 
 class DetailedChallengeStatsView(ListView):
     template_name = 'challenge/statistics_detail.html'
