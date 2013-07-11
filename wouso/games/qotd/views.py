@@ -47,14 +47,17 @@ class QotdView(View):
                 context_instance=RequestContext(request))
 
     def post(self, request, *args, **kwargs):
-        form = QotdForm(self.qotd, request.POST)
-        if form.is_valid():
-            choice = int(form.cleaned_data['answers'])
-            QotdGame.answered(self.qotd_user, self.qotd, choice)
-            extra = request.GET.urlencode()
-            if extra:
-                extra = '?' + extra
-            return HttpResponseRedirect(reverse('games.qotd.views.done') + extra)
+        if self.qotd is None:
+            form = None
+        else:
+            form = QotdForm(self.qotd, request.POST)
+            if form.is_valid():
+                choice = int(form.cleaned_data['answers'])
+                QotdGame.answered(self.qotd_user, self.qotd, choice)
+                extra = request.GET.urlencode()
+                if extra:
+                    extra = '?' + extra
+                return HttpResponseRedirect(reverse('games.qotd.views.done') + extra)
 
         return render_to_response('qotd/index.html',
                 {'question': self.qotd, 'form': form},
