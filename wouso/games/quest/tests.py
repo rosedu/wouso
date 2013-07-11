@@ -199,8 +199,6 @@ class TestQuestViews(WousoTest):
         # 'testuser2' appears only in overall gods and quest result table
         self.assertContains(response, '>testuser2<', count=2)
 
-
-
 class FinalQuestTestCase(WousoTest):
     def test_final_bonus(self):
         u1 = self._get_player(1).get_extension(QuestUser)

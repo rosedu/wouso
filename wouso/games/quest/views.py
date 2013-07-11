@@ -4,6 +4,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.db.models import Sum
+from django.views.generic import ListView
 from wouso.core.user.models import Player
 from wouso.core.scoring.models import History
 from models import QuestGame, QuestUser, Quest, QuestResult
@@ -62,26 +63,30 @@ def sidebar_widget(request):
              'quest_progress': quest_progress,
              })
 
-def history(request):
-    """
-    Return passed quests info
-    """
-    quests = Quest.objects.all().order_by('-end')
 
-    def quest_points(user):
+class HistoryView(ListView):
+    template_name = 'quest/history.html'
+    context_object_name = 'history'
+
+    def quest_points(self, user):
         try:
             return int(History.objects.filter(game=QuestGame.get_instance(),
                 user=user).aggregate(points=Sum('amount'))['points'])
         except:
             return 0
 
-    users = list(Player.objects.exclude(race__can_play=False).filter(
-        id__in=QuestResult.objects.values_list('user')))
-    users.sort(lambda b, a: quest_points(a) - quest_points(b))
-    gods = users[:10]
+    def get_queryset(self):
+        return Quest.objects.all().order_by('-end')
 
-    return render_to_response('quest/history.html',
-                    {'history': quests, 'gods': gods},
-                    context_instance=RequestContext(request)
-    )
+    def get_context_data(self, **kwargs):
+        context = super(HistoryView, self).get_context_data(**kwargs)
 
+        users = list(Player.objects.exclude(race__can_play=False).filter(
+            id__in=QuestResult.objects.values_list('user')))
+        users.sort(lambda b, a: self.quest_points(a) - self.quest_points(b))
+        gods = users[:10]
+
+        context.update({'gods': gods})
+        return context
+
+history = HistoryView.as_view()
