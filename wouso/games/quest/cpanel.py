@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.conf import settings
+from django.views.generic import ListView
 
 from wouso.core import scoring
 from wouso.core.qpool import get_questions_with_category
@@ -15,17 +16,20 @@ from models import Quest, QuestUser, FinalQuest, QuestGame
 from forms import QuestCpanel
 
 
-@permission_required('quest.change_quest')
-def quest_home(request):
-    quests = Quest.objects.all()
-    final = QuestGame.get_final()
+class QuestHomeView(ListView):
+    model = Quest
+    template_name = 'quest/cpanel_home.html'
+    context_object_name = 'quests'
 
-    return render_to_response('quest/cpanel_home.html',
-                              {'quests': quests,
-                               'final': final,
-                               'final_checker': settings.FINAL_QUEST_CHECKER_PATH,
-                               'module': 'quest'},
-                              context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        context = super(QuestHomeView, self).get_context_data(**kwargs)
+        final = QuestGame.get_final()
+        context.update({'final': final,
+                        'final_checker': settings.FINAL_QUEST_CHECKER_PATH,
+                        'module': 'quest'})
+        return context
+
+quest_home = permission_required('quest.change_quest')(QuestHomeView.as_view())
 
 @permission_required('quest.change_quest')
 def quest_edit(request, id=None):
