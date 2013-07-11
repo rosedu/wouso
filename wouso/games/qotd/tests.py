@@ -167,8 +167,6 @@ class TestQotdViews(WousoTest):
         super(TestQotdViews, self).setUp()
         self.super_user = self._get_superuser()
         self.qotd_user = self._get_player(1)
-        self.qotd_user.points = 100
-        self.qotd_user.save()
         self.qotd_user = self.qotd_user.get_extension(QotdUser)
         scoring.setup_scoring()
 
@@ -177,9 +175,23 @@ class TestQotdViews(WousoTest):
         self.c = Client()
         self.c.login(username='testuser1', password='test')
         
-    def test_qotd_get(self):
+    def test_qotd_index(self):
         response = self.c.get(reverse('qotd_index_view'))
         self.assertContains(response, 'a 1')
         self.assertContains(response, 'a 0')
         self.assertContains(response, 'a 2')
         self.assertContains(response, 'a 3')
+
+    def test_qotd_index_submit(self):
+        self.assertFalse(self.qotd_user.last_answered)
+        data = {u'answers': [u'2']}
+        self.c.post(reverse('qotd_index_view'), data)
+        q_user= QotdUser.objects.get(user__username='testuser1')
+        initial_last_answered = q_user.last_answered
+        self.assertTrue(initial_last_answered)
+
+        # Test that qotd cannot be submitted more than once
+        self.c.post(reverse('qotd_index_view'), data)
+        q_user = QotdUser.objects.get(user__username='testuser1')
+        final_last_answered = q_user.last_answered
+        self.assertEqual(initial_last_answered, final_last_answered)
