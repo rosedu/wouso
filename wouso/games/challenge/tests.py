@@ -2,9 +2,8 @@ import json
 import unittest
 from datetime import datetime,timedelta
 from mock import patch
-
 from django.core.urlresolvers import reverse
-from django.test.client import Client
+from django.test.client import Client, RequestFactory
 from django.contrib.auth.models import User
 from wouso.core.qpool.models import Question, Answer, Category
 from wouso.core.tests import WousoTest
@@ -12,6 +11,7 @@ from wouso.games.challenge.models import ChallengeUser, Challenge, ChallengeGame
 from wouso.core.user.models import Player, Race
 from wouso.core import scoring
 from wouso.core.scoring.models import Formula
+from wouso.games.challenge.views import challenge_random, launch
 
 Challenge.LIMIT = 5
 
@@ -313,9 +313,11 @@ class TestChallengeViews(WousoTest):
         super(TestChallengeViews, self).setUp()
         self.ch_player1 = self._get_player(1)
         self.ch_player2 = self._get_player(2)
-        race = Race.objects.create(name='testrace', can_play=True)
+        race = Race.objects.create(name=u'testrace', can_play=True)
         self.ch_player1.race = race
         self.ch_player2.race = race
+        self.ch_player1.points = 100
+        self.ch_player2.points = 100
         self.ch_player1.save()
         self.ch_player2.save()
         self.ch_player1 = self.ch_player1.get_extension(ChallengeUser)
@@ -405,3 +407,96 @@ class TestChallengeViews(WousoTest):
         data = {u'answer_1': [u'1'], 'answer_2': [u'1']}
         response = self.c.post(reverse('view_challenge', args=[1]), data)
         self.assertContains(response, 'The challenge was refused')
+
+    def test_challenge_history(self):
+        self.ch.status = 'A'
+        self.ch.save()
+        response = self.c.get(reverse('challenge_history', args=[1])) 
+        self.assertContains(response, 'testuser1</a> vs.')
+        self.assertContains(response, 'Result:')
+        self.assertContains(response, 'Pending [A]')
+
+    def test_random_challenge(self):
+        # Add 3 more questions because when the player is challenged
+        # ignore_questions is set to False and the challenge needs 5 questions
+        question3 = Question.objects.create(text='question3', answer_type='F',
+                                                 category=self.category, active=True)
+        question4 = Question.objects.create(text='question4', answer_type='F',
+                                                 category=self.category, active=True)
+        question5 = Question.objects.create(text='question5', answer_type='F',
+                                                 category=self.category, active=True)
+        fact = RequestFactory()
+        request = fact.get(reverse('challenge_random'))
+        request.user = self.ch_player2.user
+        request.session = {}
+        response = challenge_random(request)
+        self.assertEqual(response.status_code, 302)
+        launch(request, 1)
+        challenge = Challenge.objects.filter(user_from__user__user__username='testuser2')
+        self.assertNotEqual(len(challenge), 0)
+
+    def test_detailed_challenge_stats_view_mine(self):
+        self.ch.status = 'A'
+        self.ch.save()
+
+        self.ch.user_from.seconds_took = 100
+        self.ch.user_from.score = 200
+        self.ch.user_from.save()
+
+        self.ch.user_to.score = 300
+        self.ch.user_to.seconds_took = 50
+        self.ch.user_to.save()
+
+        response = self.c.get(reverse('detailed_challenge_stats', args=[2]))
+        self.assertContains(response, 'testuser1 - testuser2')
+        self.assertContains(response, '100')
+        self.assertContains(response, '200')
+        self.assertContains(response, '300')
+        self.assertContains(response, '50')
+
+    def test_detailed_challenge_stats_view(self):
+        admin = User.objects.create_superuser('admin', 'admin@myemail.com', 'admin')
+        self.c.login(username='admin', password='admin')
+        self.ch.status = 'A'
+        self.ch.save()
+
+        self.ch.user_from.seconds_took = 100
+        self.ch.user_from.score = 200
+        self.ch.user_from.save()
+
+        self.ch.user_to.score = 300
+        self.ch.user_to.seconds_took = 50
+        self.ch.user_to.save()
+
+        response = self.c.get(reverse('detailed_challenge_stats', args=[2, 1]))
+        self.assertContains(response, 'testuser2 - testuser1')
+        self.assertContains(response, '100')
+        self.assertContains(response, '200')
+        self.assertContains(response, '300')
+        self.assertContains(response, '50')
+
+    def test_challenge_stats_view_mine(self):
+        self.ch.status = 'A'
+        self.ch.save()
+        self.ch.user_from.seconds_took = 100
+        self.ch.user_from.save()
+        response = self.c.get(reverse('challenge_stats'))
+        self.assertContains(response, 'Challenges - testuser1')
+        self.assertContains(response, 'Challenges played:  1')
+        self.assertContains(response, 'Challenges sent:  1')
+        self.assertContains(response, 'testuser2')
+        self.assertContains(response, 'Average time taken:  100.0 s')
+
+    def test_challenge_stats_view(self):
+        admin = User.objects.create_superuser('admin', 'admin@myemail.com', 'admin')
+        self.c.login(username='admin', password='admin')
+
+        self.ch.status = 'A'
+        self.ch.save()
+        self.ch.user_to.seconds_took = 100
+        self.ch.user_to.save()
+        response = self.c.get(reverse('challenge_stats', args=[2]))
+        self.assertContains(response, 'Challenges - testuser2')
+        self.assertContains(response, 'Challenges played:  1')
+        self.assertContains(response, 'Challenges sent:  0')
+        self.assertContains(response, 'testuser1')

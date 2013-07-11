@@ -4,9 +4,10 @@ from random import shuffle
 import pickle as pk
 import sys
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, Avg
 from django.utils.translation import ugettext_noop, ugettext as _
 from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404
 from wouso.core.user.models import Player
 from wouso.core.magic.manager import InsufficientAmount
 from wouso.core.qpool.models import Question
@@ -108,6 +109,76 @@ class ChallengeUser(Player):
 
     def get_lost_challenges(self):
         return self.get_all_challenges().exclude(winner=self)
+
+    def get_random_opponent(self):
+        players = ChallengeUser.objects.exclude(user=self.user)
+        players = players.exclude(race__can_play=False)
+        players = [p for p in players if self.can_challenge(p)]
+        if not players:
+            return False
+        # selects the user to be challenged
+        import random
+        i = random.randrange(0, len(players))
+        return players[i]
+
+    def get_related_challenges(self, target_user):
+        # Gets the challenges between self and target_user
+        chall_total = Challenge.objects.filter(Q(user_from__user=self) |
+                Q(user_to__user=self)).exclude(status=u'L')
+        chall_total = chall_total.filter(Q(user_from__user=target_user) |
+                Q(user_to__user=target_user)).order_by('-date')
+        return chall_total
+
+    def get_stats(self):
+        chall_total = Challenge.objects.filter(Q(user_from__user=self) |
+                Q(user_to__user=self)).exclude(status=u'L')
+        chall_sent = chall_total.filter(user_from__user=self)
+        chall_rec = chall_total.filter(user_to__user=self)
+        chall_won = chall_total.filter(winner=self)
+
+        n_chall_sent = chall_sent.count()
+        n_chall_rec = chall_rec.count()
+        n_chall_played = chall_sent.count() + chall_rec.count()
+        n_chall_won = chall_won.count()
+        n_chall_ref = chall_total.filter(status=u'R').count()
+        all_participation = Participant.objects.filter(user=self)
+
+        opponents_from = list(set(map(lambda x : x.user_to.user, chall_sent)))
+        opponents_to = list(set(map(lambda x : x.user_from.user, chall_rec)))
+        opponents = list(set(opponents_from + opponents_to))
+
+        result = []
+        for op in opponents:
+            chall_against_op = chall_total.filter(Q(user_to__user=op) |
+                    Q(user_from__user=op))
+            won = chall_against_op.filter(Q(status=u'P') & Q(winner=self)).count()
+            lost = chall_against_op.filter(Q(status=u'P') & Q(winner=op)).count()
+            draw = chall_against_op.filter(Q(status=u'D')).count()
+            refused = chall_against_op.filter(Q(status=u'R')).count()
+            total = won + lost + draw + refused
+            result.append((op, won, lost, draw, refused, total))
+
+        # Sort results by 'total'
+        result = sorted(result, key=lambda by: by[5], reverse=True)
+
+        average_time = all_participation.aggregate(Avg('seconds_took'))['seconds_took__avg']
+        average_score = all_participation.aggregate(Avg('score'))['score__avg']
+
+        if average_time == None : average_time = 0
+        if average_score == None : average_score = 0
+
+        win_percentage = 0
+        if n_chall_played > 0:
+            win_percentage = float(n_chall_won) / n_chall_played * 100
+        # Pretty print the float for the template
+        win_percentage = '%.1f' % win_percentage
+
+        stats = dict(n_chall_played=n_chall_played, n_chall_won=n_chall_won,
+                     n_chall_sent=n_chall_sent, n_chall_rec=n_chall_rec,
+                     n_chall_ref=n_chall_ref, current_player=self,
+                     average_time=average_time, average_score=average_score,
+                     win_percentage=win_percentage, opponents=result)
+        return stats
 
 Player.register_extension('challenge', ChallengeUser)
 
