@@ -153,18 +153,20 @@ class QuestTestCase(WousoTest):
 
 class TestQuestViews(WousoTest):
     def setUp(self):
+        super(TestQuestViews, self).setUp()
         self.admin = self._get_superuser()
         self.c = Client()
         self.c.login(username='admin', password='admin')
         now = datetime.datetime.now()
         Quest.objects.create(start=now-timedelta(days=2), end=now-timedelta(days=1),
                              title='Quest no. 1')
-        Quest.objects.create(start=now, end=now + timedelta(days=1),
+        self.q = Quest.objects.create(start=now, end=now + timedelta(days=1),
                              title='Quest no. 2')
         Quest.objects.create(start=now+timedelta(days=1), end=now + timedelta(days=2),
                              title='Quest no. 3')
         FinalQuest.objects.create(start=now, end=now+timedelta(days=1),
                                   title='Final Quest')
+        scoring.setup_scoring()
 
     def test_quest_home_view(self):
         response = self.c.get(reverse('quest_home'))
@@ -172,6 +174,32 @@ class TestQuestViews(WousoTest):
         self.assertContains(response, 'Quest no. 2')
         self.assertContains(response, 'Quest no. 3')
         self.assertContains(response, 'Final Quest')
+
+    def test_history_view(self):
+        questuser1 = self._get_player(1).get_extension(QuestUser)
+        questuser2 = self._get_player(2).get_extension(QuestUser)
+        category = Category.add('quest')
+        question1 = Question.objects.create(text='question1', answer_type='F',
+                                           category=category, active=True)
+        answer1 = Answer.objects.create(text='first answer', correct=True, question=question1)
+        self.q.questions.add(question1)
+        questuser1.current_quest = self.q
+        questuser2.current_quest = self.q
+        self.q.check_answer(questuser1, 'first answer')
+        self.q.check_answer(questuser2, 'first answer')
+        
+        c = Client()
+        c.login(username='testuser1', password='test')
+        response = c.get(reverse('quest_history'))
+
+        # 'testuser1' appears once in overall gods section,
+        # once in quest result table and once because he is logged in
+        self.assertContains(response, '>testuser1<', count=3)
+
+        # 'testuser2' appears only in overall gods and quest result table
+        self.assertContains(response, '>testuser2<', count=2)
+
+
 
 class FinalQuestTestCase(WousoTest):
     def test_final_bonus(self):
