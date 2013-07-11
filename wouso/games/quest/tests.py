@@ -213,8 +213,8 @@ class FinalQuestTestCase(WousoTest):
         admin = User.objects.create_superuser('admin', 'admin@myemail.com', 'admin')
         c.login(username='admin', password='admin')
         response = c.get('/cpanel/games/quest/final/results/')
-        self.assertFalse(response.content.find('testuser1') == -1)
-        self.assertFalse(response.content.find('testuser2') == -1)
+        self.assertContains(response, 'testuser1')
+        self.assertContains(response, 'testuser2')
 
 
 # API tests
