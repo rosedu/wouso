@@ -6,12 +6,24 @@ from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
-from django.views.generic import View
+from django.views.generic import View, ListView, TemplateView
+from django.db.models import Avg, Q
 from wouso.core.config.models import Setting, BoolSetting
 from wouso.core.user.models import Player
+from wouso.core.decorators import staff_required
 from wouso.games.challenge.models import ChallengeException
 from models import ChallengeUser, ChallengeGame, Challenge, Participant
 from forms import ChallengeForm
+
+class PlayerViewMixin():
+    def get_player(self):
+        if 'player_id' in self.kwargs.keys() and self.request.user.get_profile().in_staff_group():
+            current_player = get_object_or_404(Player, pk=self.kwargs['player_id'])
+            current_player = current_player.get_extension(ChallengeUser)
+        else:
+            current_player = self.request.user.get_profile().get_extension(ChallengeUser)
+
+        return current_player
 
 @login_required
 def index(request):
@@ -216,18 +228,26 @@ def sidebar_widget(request):
     if not challs:
         return ''
 
-    return render_to_string('challenge/sidebar.html', {'challenges': challs, 'challenge': ChallengeGame,  'chall_user': chall_user})
+    return render_to_string('challenge/sidebar.html', {'challenges': challs,
+                            'challenge': ChallengeGame,  'chall_user': chall_user})
 
-def history(request, playerid):
-    player = get_object_or_404(ChallengeUser, pk=playerid)
+class HistoryView(ListView):
+    template_name = 'challenge/history.html'
+    context_object_name = 'challenges'
 
-    challs = [p.challenge for p in Participant.objects.filter(user=player)]
-    challs = sorted(challs, key=lambda c: c.date)
+    def get_queryset(self):
+        self.player = get_object_or_404(ChallengeUser, pk=self.kwargs['playerid'])
+        challenges = [p.challenge for p in Participant.objects.filter(user=self.player)]
+        challenges = sorted(challenges, key=lambda c: c.date)
+        return challenges
+    
+    def get_context_data(self, **kwargs):
+        context = super(HistoryView, self).get_context_data(**kwargs)
+        context.update({'challplayer': self.player})
+        return context
 
-    return render_to_response('challenge/history.html', {'challplayer': player, 'challenges': challs},
-                              context_instance=RequestContext(request))
-
-
+history = HistoryView.as_view()
+    
 @login_required
 def challenge_player(request):
     if request.method == 'POST':
@@ -246,108 +266,40 @@ def challenge_random(request):
     if setting:
         messages.error(request, _('Random challenge disabled'))
         return redirect('challenge_index_view')
+
     current_player = request.user.get_profile().get_extension(ChallengeUser)
+    player = current_player.get_random_opponent()
 
-    # selects challengeable players
-    players = ChallengeUser.objects.exclude(user = current_player.user)
-    players = players.exclude(race__can_play=False)
-    players = [p for p in players if current_player.can_challenge(p)]
-
-    if not players:
+    if not player:
         messages.error(request, _('There is no one you can challenge now.'))
         return redirect('challenge_index_view')
 
-    no_players = len(players)
+    return redirect('challenge_launch', player.id)
 
-    # selects the user to be challenged
-    import random
-    i = random.randrange(0, no_players)
+class DetailedChallengeStatsView(ListView, PlayerViewMixin):
+    template_name = 'challenge/statistics_detail.html'
+    context_object_name = 'chall_total'
 
-    return launch(request, players[i].id)
+    def get_queryset(self):
+        self.target_user = get_object_or_404(ChallengeUser, user__id=self.kwargs['target_id'])
+        return self.get_player().get_related_challenges(self.target_user)
 
-@login_required
-def detailed_challenge_stats(request, target_id, player_id=None):
-    """ Statistics for one pair of users, current_player and target_id """
-    if player_id and request.user.get_profile().in_staff_group():
-        current_player = get_object_or_404(Player, pk=player_id).get_extension(ChallengeUser)
-    else:
-        current_player = request.user.get_profile().get_extension(ChallengeUser)
+    def get_context_data(self, **kwargs):
+        context = super(DetailedChallengeStatsView, self).get_context_data(**kwargs)
+        context.update({'current_player': self.get_player(),
+                       'target_player': self.target_user,
+                       'opponent': self.target_user})
+        return context
 
-    target_user = get_object_or_404(ChallengeUser, user__id=target_id)
+detailed_challenge_stats = login_required(DetailedChallengeStatsView.as_view())
 
-    from django.db.models import Q
-
-    chall_total = Challenge.objects.filter(Q(user_from__user = current_player) |
-            Q(user_to__user = current_player)).exclude(status=u'L')
-
-    chall_total = chall_total.filter(Q(user_from__user=target_user) |
-            Q(user_to__user=target_user)).order_by('-date')
-
-    return render_to_response('challenge/statistics_detail.html',
-            {'current_player' : current_player, 'target_player' : target_user,
-                'chall_total' : chall_total,
-                'opponent' : target_user},
-            context_instance=RequestContext(request))
-
-@login_required
-def challenge_stats(request, player_id=None):
+class ChallengeStatsView(TemplateView, PlayerViewMixin):
     """ Statistics for one user """
-    if player_id and request.user.get_profile().in_staff_group():
-        current_player = get_object_or_404(Player, pk=player_id).get_extension(ChallengeUser)
-    else:
-        current_player = request.user.get_profile().get_extension(ChallengeUser)
+    template_name = 'challenge/statistics.html'
 
-    from django.db.models import Avg, Q
+    def get_context_data(self, **kwargs):
+        context = super(ChallengeStatsView, self).get_context_data(**kwargs)
+        context.update(self.get_player().get_stats())
+        return context
 
-    chall_total = Challenge.objects.filter(Q(user_from__user=current_player) |
-            Q(user_to__user=current_player)).exclude(status=u'L')
-    chall_sent = chall_total.filter(user_from__user=current_player)
-    chall_rec = chall_total.filter(user_to__user=current_player)
-    chall_won = chall_total.filter(winner=current_player)
-
-    n_chall_sent = chall_sent.count()
-    n_chall_rec = chall_rec.count()
-    n_chall_played = chall_sent.count() + chall_rec.count()
-    n_chall_won = chall_won.count()
-    n_chall_ref = chall_total.filter(status=u'R').count()
-    all_participation = Participant.objects.filter(user = current_player)
-
-    opponents_from = list(set(map(lambda x : x.user_to.user, chall_sent)))
-    opponents_to = list(set(map(lambda x : x.user_from.user, chall_rec)))
-    opponents = list(set(opponents_from + opponents_to))
-
-    result = []
-
-    for op in opponents:
-        chall_against_op = chall_total.filter(Q(user_to__user=op) |
-                Q(user_from__user=op))
-        won = chall_against_op.filter(Q(status=u'P') & Q(winner=current_player)).count()
-        lost = chall_against_op.filter(Q(status=u'P') & Q(winner=op)).count()
-        draw = chall_against_op.filter(Q(status=u'D')).count()
-        refused = chall_against_op.filter(Q(status=u'R')).count()
-        total = won + lost + draw + refused
-        result.append((op, won, lost, draw, refused, total))
-
-    result.sort(key=lambda by:by[5], reverse=True) #sort by total
-
-    average_time = all_participation.aggregate(Avg('seconds_took'))['seconds_took__avg']
-    average_score = all_participation.aggregate(Avg('score'))['score__avg']
-
-    if average_time == None : average_time = 0
-    if average_score == None : average_score = 0
-
-    win_percentage = 0
-    if n_chall_played > 0:
-        win_percentage = float(n_chall_won) / n_chall_played * 100
-
-    #pretty print the float for the template
-    win_percentage = '%.1f' % win_percentage
-
-    return render_to_response('challenge/statistics.html',
-        {'n_chall_played' : n_chall_played, 'n_chall_won' : n_chall_won,
-            'n_chall_sent' : n_chall_sent, 'n_chall_rec' : n_chall_rec,
-            'n_chall_ref' : n_chall_ref, 'win_percentage' : win_percentage,
-            'average_time' : average_time, 'average_score' : average_score,
-            'current_player' : current_player, 'opponents' : result
-            },
-        context_instance=RequestContext(request))
+challenge_stats = login_required(ChallengeStatsView.as_view())

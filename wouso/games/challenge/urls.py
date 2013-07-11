@@ -11,12 +11,14 @@ urlpatterns = patterns('wouso.games.challenge.views',
 
     url(r'^use_artifact/$', 'use_one_more', name='challenge_onemore'),
 
-    url(r'^history/(?P<playerid>\d+)/$', 'history', name='chellenge_history'),
+    url(r'^history/(?P<playerid>\d+)/$', 'history', name='challenge_history'),
 
     url(r'^playerchallenge/$', 'challenge_player', name='challenge_player'),
     url(r'^randomchallenge/$', 'challenge_random', name='challenge_random'),
     url(r'^stats/$', 'challenge_stats', name='challenge_stats'),
     url(r'^stats/player=(?P<player_id>\d+)/$', 'challenge_stats', name='challenge_stats'),
-    url(r'^stats/target=(?P<target_id>\d+)/', 'detailed_challenge_stats', name='detailed_challenge_stats'),
-    url(r'^stats/player=(?P<player_id>\d+)/target=(?P<target_id>\d+)/', 'detailed_challenge_stats', name='detailed_challenge_stats'),
+    url(r'^stats/target=(?P<target_id>\d+)/', 'detailed_challenge_stats',
+        name='detailed_challenge_stats'),
+    url(r'^stats/player=(?P<player_id>\d+)/target=(?P<target_id>\d+)/', 'detailed_challenge_stats',
+        name='detailed_challenge_stats'),
 )
