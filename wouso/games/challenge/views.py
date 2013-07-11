@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
-from django.views.generic import View, ListView
+from django.views.generic import View, ListView, TemplateView
 from django.db.models import Avg, Q
 from wouso.core.config.models import Setting, BoolSetting
 from wouso.core.user.models import Player
@@ -293,11 +293,13 @@ class DetailedChallengeStatsView(ListView, PlayerViewMixin):
 
 detailed_challenge_stats = login_required(DetailedChallengeStatsView.as_view())
 
-class ChallengeStatsView(View, PlayerViewMixin):
+class ChallengeStatsView(TemplateView, PlayerViewMixin):
     """ Statistics for one user """
+    template_name = 'challenge/statistics.html'
 
-    def get(self, request, *args, **kwargs):
-        return render_to_response('challenge/statistics.html', self.get_player().get_stats(),
-                                  context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        context = super(ChallengeStatsView, self).get_context_data(**kwargs)
+        context.update(self.get_player().get_stats())
+        return context
 
 challenge_stats = login_required(ChallengeStatsView.as_view())
