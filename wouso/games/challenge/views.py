@@ -15,6 +15,16 @@ from wouso.games.challenge.models import ChallengeException
 from models import ChallengeUser, ChallengeGame, Challenge, Participant
 from forms import ChallengeForm
 
+class PlayerViewMixin():
+    def get_player(self):
+        if 'player_id' in self.kwargs.keys() and self.request.user.get_profile().in_staff_group():
+            current_player = get_object_or_404(Player, pk=self.kwargs['player_id'])
+            current_player = current_player.get_extension(ChallengeUser)
+        else:
+            current_player = self.request.user.get_profile().get_extension(ChallengeUser)
+
+        return current_player
+
 @login_required
 def index(request):
     """ Shows all challenges related to the current user """
@@ -266,18 +276,9 @@ def challenge_random(request):
 
     return redirect('challenge_launch', player.id)
 
-class DetailedChallengeStatsView(ListView):
+class DetailedChallengeStatsView(ListView, PlayerViewMixin):
     template_name = 'challenge/statistics_detail.html'
     context_object_name = 'chall_total'
-
-    def get_player(self):
-        if 'player_id' in self.kwargs.keys() and self.request.user.get_profile().in_staff_group():
-            current_player = get_object_or_404(Player, pk=self.kwargs['player_id'])
-            current_player = current_player.get_extension(ChallengeUser)
-        else:
-            current_player = self.request.user.get_profile().get_extension(ChallengeUser)
-
-        return current_player
 
     def get_queryset(self):
         self.target_user = get_object_or_404(ChallengeUser, user__id=self.kwargs['target_id'])
@@ -292,17 +293,8 @@ class DetailedChallengeStatsView(ListView):
 
 detailed_challenge_stats = login_required(DetailedChallengeStatsView.as_view())
 
-class ChallengeStatsView(View):
+class ChallengeStatsView(View, PlayerViewMixin):
     """ Statistics for one user """
-
-    def get_player(self):
-        if 'player_id' in self.kwargs.keys() and self.request.user.get_profile().in_staff_group():
-            current_player = get_object_or_404(Player, pk=self.kwargs['player_id'])
-            current_player = current_player.get_extension(ChallengeUser)
-        else:
-            current_player = self.request.user.get_profile().get_extension(ChallengeUser)
-
-        return current_player
 
     def get(self, request, *args, **kwargs):
         return render_to_response('challenge/statistics.html', self.get_player().get_stats(),
