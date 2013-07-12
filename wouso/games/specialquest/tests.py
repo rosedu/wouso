@@ -1,12 +1,30 @@
-"""
-This file demonstrates two different styles of tests (one doctest and one
-unittest). These will both pass when you run "manage.py test".
-
-Replace these with more appropriate tests for your application.
-"""
+from datetime import datetime, timedelta
 from django.contrib.auth.models import User
 from django.test import TestCase
-from models import SpecialQuestUser, SpecialQuestGroup, SpecialQuestGame
+from django.test.client import Client
+from django.core.urlresolvers import reverse
+from models import SpecialQuestUser, SpecialQuestGroup, SpecialQuestGame, SpecialQuestTask
+from wouso.core.tests import WousoTest
+
+class TestSpecialQuestView(WousoTest):
+    def setUp(self):
+        self.user = self._get_player(1).get_extension(SpecialQuestUser)
+        self.admin = self._get_superuser()
+        start = datetime.now()
+        end = start + timedelta(days=1)
+        self.special_quest1= SpecialQuestTask.objects.create(start_date=start, end_date=end,
+                                                             name='special_quest1', value=400)
+        self.special_quest2= SpecialQuestTask.objects.create(start_date=start, end_date=end,
+                                                             name='special_quest2', value=800)
+        self.c = Client()
+
+    def test_cpanel_home_view(self):
+        self.c.login(username='admin', password='admin')
+        response = self.c.get(reverse('specialquest_home'))
+        self.assertContains(response, '400')
+        self.assertContains(response, '800')
+        self.assertContains(response, 'special_quest1')
+        self.assertContains(response, 'special_quest2')
 
 class SpecialquestTest(TestCase):
     def setUp(self):
