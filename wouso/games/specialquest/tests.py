@@ -72,6 +72,7 @@ class TestSpecialQuestView(WousoTest):
         self.c.get(reverse('specialquest_accept', args=[new_group.id]))
         user2 = User.objects.get(username='testuser2').get_profile().get_extension(SpecialQuestUser)
         self.assertEqual(user2.group.name, 'Special Group no. 1')
+        self.assertEqual(len(new_group.members), 2)
 
 class SpecialquestTest(TestCase):
     def setUp(self):
