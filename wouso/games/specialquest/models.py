@@ -83,7 +83,6 @@ class SpecialQuestTask(models.Model):
     def __unicode__(self):
         return unicode(self.name)
 
-
 class SpecialQuestUser(Player):
     group = models.ForeignKey('SpecialQuestGroup', blank=True, default=None, null=True)
     done_tasks = models.ManyToManyField(SpecialQuestTask, blank=True, default=None, null=True,
@@ -114,6 +113,10 @@ class SpecialQuestUser(Player):
     def invitations(self):
         return self.invitation_set.all()
 
+    def add_to_group(self, group):
+        self.group = group
+        self.save()
+        group.players.add(self.user.get_profile())
 
 class SpecialQuestGame(Game):
     """ Each game must extend Game """
