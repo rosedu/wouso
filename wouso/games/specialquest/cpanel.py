@@ -6,19 +6,23 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext_noop
+from django.views.generic import ListView
 from wouso.core.user.models import Player
 from wouso.core import scoring, signals
 from models import SpecialQuestTask, SpecialQuestUser, SpecialQuestGame, SpecialQuestGroup
 from forms import TaskForm
 
-@permission_required('specialquest.change_specialquestuser')
-def home(request):
-    tasks = SpecialQuestTask.objects.all()
+class HomeView(ListView):
+    model = SpecialQuestTask
+    template_name = 'specialquest/cpanel_home.html'
+    context_object_name = 'tasks'
 
-    return render_to_response('specialquest/cpanel_home.html',
-                              {'tasks': tasks,
-                               'module': 'specialquest'},
-                              context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        context = super(HomeView, self).get_context_data(**kwargs)
+        context.update({'module': 'specialquest'})
+        return context
+
+home = permission_required('specialquest.change_specialquestuser')(HomeView.as_view())
 
 @permission_required('specialquest.change_specialquestuser')
 def groups(request):
