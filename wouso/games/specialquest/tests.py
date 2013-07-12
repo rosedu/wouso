@@ -26,6 +26,12 @@ class TestSpecialQuestView(WousoTest):
         self.assertContains(response, 'special_quest1')
         self.assertContains(response, 'special_quest2')
 
+    def test_cpanel_home_view_has_restricted_access(self):
+        self.c.login(username='testuser1', password='test')
+        response = self.c.get(reverse('specialquest_home'))
+        # Check if user has been redirected
+        self.assertEqual(response.status_code, 302)
+
 class SpecialquestTest(TestCase):
     def setUp(self):
         self.user = User.objects.create(username='_test')
