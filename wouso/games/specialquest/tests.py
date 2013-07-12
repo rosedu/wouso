@@ -44,6 +44,26 @@ class TestSpecialQuestView(WousoTest):
         # Check if user has been redirected
         self.assertEqual(response.status_code, 302)
 
+    def test_cpanel_group_delete(self):
+        new_group = SpecialQuestGroup.create(head=self.user, name='Special Group no. 1')
+        user2 = self._get_player(2).get_extension(SpecialQuestUser)
+        user3 = self._get_player(3).get_extension(SpecialQuestUser)
+        new_group.players.add(user2, user3)
+        user2.group = new_group
+        user3.group = new_group
+        user2.save()
+        user3.save()
+        self.c.login(username='admin', password='admin')
+        self.c.get(reverse('specialquest_cpanel_group_delete', args=[new_group.pk]))
+
+        # Check if the group is deleted
+        self.assertEqual(len(SpecialQuestGroup.objects.all()), 0)
+
+        # Check if the users don't belong to the deleted group
+        users = User.objects.filter(username__contains='testuser')
+        for user in users:
+            specialquest_user = user.get_profile().get_extension(SpecialQuestUser)
+            self.assertFalse(specialquest_user.group)
 
 class SpecialquestTest(TestCase):
     def setUp(self):
