@@ -167,13 +167,7 @@ def group_active_toggle(request, group):
 @permission_required('specialquest.change_specialquestuser')
 def group_delete(request, group):
     group = get_object_or_404(SpecialQuestGroup, id=group)
-
-    for p in group.members:
-        p.group = None
-        p.save()
-
-    group.delete()
-
+    group.destroy()
     return redirect('specialquest_cpanel_groups')
 
 

@@ -86,6 +86,15 @@ class PlayerGroup(models.Model):
         res = self.players.filter(last_seen__gte=oldest)
         return res
 
+    def destroy(self):
+        """
+        Delete the group and free its members
+        """
+        for p in self.members:
+            p.group = None
+            p.save()
+        self.delete()
+
     def __unicode__(self):
         return self.name if self.title == '' else self.title
 
