@@ -32,6 +32,19 @@ class TestSpecialQuestView(WousoTest):
         # Check if user has been redirected
         self.assertEqual(response.status_code, 302)
 
+    def test_cpanel_groups_view(self):
+        self.c.login(username='admin', password='admin')
+        new_group = SpecialQuestGroup.create(head=self.user, name='Special Group no. 1')
+        response = self.c.get(reverse('specialquest_cpanel_groups'))
+        self.assertContains(response, 'Special Group no. 1')
+
+    def test_cpanel_home_view_has_restricted_access(self):
+        self.c.login(username='testuser1', password='test')
+        response = self.c.get(reverse('specialquest_cpanel_groups'))
+        # Check if user has been redirected
+        self.assertEqual(response.status_code, 302)
+
+
 class SpecialquestTest(TestCase):
     def setUp(self):
         self.user = User.objects.create(username='_test')
