@@ -24,14 +24,17 @@ class HomeView(ListView):
 
 home = permission_required('specialquest.change_specialquestuser')(HomeView.as_view())
 
-@permission_required('specialquest.change_specialquestuser')
-def groups(request):
-    groups = SpecialQuestGroup.objects.all()
+class GroupsView(ListView):
+    model = SpecialQuestGroup
+    template_name = 'specialquest/cpanel_groups.html'
+    context_object_name = 'groups'
 
-    return render_to_response('specialquest/cpanel_groups.html',
-                              {'groups': groups,
-                               'module': 'specialquest'},
-                              context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        context = super(GroupsView, self).get_context_data(**kwargs)
+        context.update({'module': 'specialquest'})
+        return context
+
+groups = permission_required('specialquest.change_specialquestuser')(GroupsView.as_view())
 
 @permission_required('specialquest.change_specialquestuser')
 def edit(request, id=None):
