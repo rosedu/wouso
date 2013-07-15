@@ -1,7 +1,7 @@
 from django import forms
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template.context import RequestContext
-from django.views.generic import ListView
+from django.views.generic import View, ListView
 
 from models import WorkshopGame, Semigroup, Schedule, DAY_CHOICES, Answer
 from wouso.core.decorators import staff_required
@@ -41,24 +41,33 @@ def workshop_home(request, **kwargs):
                         context_instance=RequestContext(request)
     )
 
-@staff_required
-def add_group(request):
-    if request.method == 'POST':
+
+class AddGroupView(View):
+    def get(self, request, *args, **kwargs):
+        form = AGForm()
+        return render_to_response('workshop/cpanel/addgroup.html',
+                            {'module': 'workshop',
+                             'form': form,
+                             },
+                            context_instance=RequestContext(request)
+        )
+
+    def post(self, request, *args, **kwargs):
         form = AGForm(request.POST)
         if form.is_valid():
             sg = form.save()
             sg.owner = WorkshopGame.get_instance()
             sg.save()
             return redirect('ws_edit_spot', day=sg.day, hour=sg.hour)
-    else:
-        form = AGForm()
 
-    return render_to_response('workshop/cpanel/addgroup.html',
-                        {'module': 'workshop',
-                         'form': form,
-                         },
-                        context_instance=RequestContext(request)
-    )
+        return render_to_response('workshop/cpanel/addgroup.html',
+                            {'module': 'workshop',
+                             'form': form,
+                             },
+                            context_instance=RequestContext(request)
+        )
+
+add_group = staff_required(AddGroupView.as_view())
 
 @staff_required
 def edit_group(request, semigroup):
