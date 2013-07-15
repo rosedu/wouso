@@ -1,6 +1,8 @@
 from datetime import datetime
 from django.contrib.auth.models import User
 from django.test import TestCase
+from django.test.client import Client
+from django.core.urlresolvers import reverse
 from models import *
 from wouso.core.tests import WousoTest
 
@@ -116,3 +118,34 @@ class TestAssessment(WousoTest):
         self.assertEqual(a1.reviewer_grade, 200)
         self.assertEqual(a1.final_grade, 69)
         self.assertEqual(a1.reviews_grade, 3)
+
+class TestWorkshopViews(WousoTest):
+    def setUp(self):
+        super(TestWorkshopViews, self).setUp()
+        self.admin = self._get_superuser()
+        self.c = Client()
+        self.c.login(username='admin', password='admin')
+
+    def test_add_group_view_get(self):
+        response = self.c.get(reverse('ws_add_group'))
+        self.assertContains(response, 'Name:')
+        self.assertContains(response, 'Day:')
+        self.assertContains(response, 'Hour:')
+        self.assertContains(response, 'Room:')
+
+    def test_add_group_view_post(self):
+        data = {u'room': u'ef108',
+                u'name': u'semigroup_test',
+                u'hour': u'10',
+                u'day': u'1'}
+        response = self.c.post(reverse('ws_add_group'), data)
+
+        # Check if it redirects
+        self.assertEqual(response.status_code, 302)
+
+        # Check if it creates a semigroup
+        self.assertTrue(Semigroup.objects.all())
+        
+        # Check if duplicates are created
+        response = self.c.post(reverse('ws_add_group'), data)
+        self.assertEqual(len(Semigroup.objects.all()), 1)
