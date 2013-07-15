@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
-from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
@@ -30,10 +29,7 @@ class QotdView(View):
 
         if self.qotd_user.has_answered:
             self.qotd_user.reset_question()
-            extra = request.GET.urlencode()
-            if extra:
-                extra = '?' + extra
-            return HttpResponseRedirect(reverse('games.qotd.views.history') + extra)
+            return redirect('games.qotd.views.history')
 
         return super(QotdView, self).dispatch(request, *args, **kwargs)
 
@@ -54,10 +50,7 @@ class QotdView(View):
             if form.is_valid():
                 choice = int(form.cleaned_data['answers'])
                 QotdGame.answered(self.qotd_user, self.qotd, choice)
-                extra = request.GET.urlencode()
-                if extra:
-                    extra = '?' + extra
-                return HttpResponseRedirect(reverse('games.qotd.views.done') + extra)
+                return redirect('games.qotd.views.done')
 
         return render_to_response('qotd/index.html',
                 {'question': self.qotd, 'form': form},
