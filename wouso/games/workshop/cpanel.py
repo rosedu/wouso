@@ -69,28 +69,36 @@ class AddGroupView(View):
 
 add_group = staff_required(AddGroupView.as_view())
 
-@staff_required
-def edit_group(request, semigroup):
-    semigroup = get_object_or_404(Semigroup, pk=semigroup)
+class EditGroupView(View):
+    def get(self, request, *args, **kwargs):
+        semigroup = get_object_or_404(Semigroup, pk=kwargs['semigroup'])
+        form = AGForm(instance=semigroup)
+        return render_to_response('workshop/cpanel/editgroup.html',
+                            {'module': 'workshop',
+                             'form': form,
+                             'instance': semigroup,
+                             },
+                            context_instance=RequestContext(request)
+        )
 
-    if request.method == 'POST':
+    def post(self, request, *args, **kwargs):
+        semigroup = get_object_or_404(Semigroup, pk=kwargs['semigroup'])
         form = AGForm(request.POST, instance=semigroup)
         if form.is_valid():
             sg = form.save()
             sg.owner = WorkshopGame.get_instance()
             sg.save()
             return redirect('ws_edit_spot', day=sg.day, hour=sg.hour)
-    else:
-        form = AGForm(instance=semigroup)
 
-    return render_to_response('workshop/cpanel/editgroup.html',
-                        {'module': 'workshop',
-                         'form': form,
-                         'instance': semigroup,
-                         },
-                        context_instance=RequestContext(request)
-    )
+        return render_to_response('workshop/cpanel/editgroup.html',
+                            {'module': 'workshop',
+                             'form': form,
+                             'instance': semigroup,
+                             },
+                            context_instance=RequestContext(request)
+        )
 
+edit_group = staff_required(EditGroupView.as_view())
 
 @staff_required
 def edit_spot(request, day, hour):
