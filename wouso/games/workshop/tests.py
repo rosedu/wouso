@@ -149,3 +149,23 @@ class TestWorkshopViews(WousoTest):
         # Check if duplicates are created
         response = self.c.post(reverse('ws_add_group'), data)
         self.assertEqual(len(Semigroup.objects.all()), 1)
+
+    def test_edit_group_view_get(self):
+        sg = Semigroup.objects.create(day=u'1', hour=u'10', name=u'semigroup_test')
+        response = self.c.get(reverse('ws_edit_group', args=[sg.pk]))
+        self.assertContains(response, 'Name:')
+        self.assertContains(response, 'value="semigroup_test"')
+
+    def test_edit_group_view_post(self):
+        sg = Semigroup.objects.create(day=u'1', hour=u'10', name=u'semigroup_test')
+        self.assertEqual(sg.room, u'eg306')
+        data = {u'room': u'ef108',
+                u'name': u'semigroup_test',
+                u'hour': u'10',
+                u'day': u'1'}
+        response = self.c.post(reverse('ws_edit_group', args=[sg.pk]), data)
+        sg = Semigroup.objects.get(name=u'semigroup_test')
+        self.assertEqual(sg.room, u'ef108')
+
+        # Check if user is redirected
+        self.assertEqual(response.status_code, 302)
