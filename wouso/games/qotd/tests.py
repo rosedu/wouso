@@ -1,13 +1,14 @@
 import json
 import logging
 import django.test
+from django.core.urlresolvers import reverse
+from django.test.client import Client
 from django.contrib.auth.models import User
 from models import *
 from wouso.core.tests import WousoTest
 from wouso.core.user.models import Player
 from wouso.core import scoring
 from wouso.core.qpool.models import Question, Schedule, Tag, Category
-
 
 class QotdTestCase(WousoTest):
     def setUp(self):
@@ -160,3 +161,37 @@ class ApiTest(WousoTest):
 
         self.assertTrue(data['success'])
         self.assertFalse(data['correct'])
+
+class TestQotdViews(WousoTest):
+    def setUp(self):
+        super(TestQotdViews, self).setUp()
+        self.super_user = self._get_superuser()
+        self.qotd_user = self._get_player(1)
+        self.qotd_user = self.qotd_user.get_extension(QotdUser)
+        scoring.setup_scoring()
+
+        self.question = _make_question_for_today(self.super_user, 'question1')
+
+        self.c = Client()
+        self.c.login(username='testuser1', password='test')
+        
+    def test_qotd_index(self):
+        response = self.c.get(reverse('qotd_index_view'))
+        self.assertContains(response, 'a 1')
+        self.assertContains(response, 'a 0')
+        self.assertContains(response, 'a 2')
+        self.assertContains(response, 'a 3')
+
+    def test_qotd_index_submit(self):
+        self.assertFalse(self.qotd_user.last_answered)
+        data = {u'answers': [u'2']}
+        self.c.post(reverse('qotd_index_view'), data)
+        q_user= QotdUser.objects.get(user__username='testuser1')
+        initial_last_answered = q_user.last_answered
+        self.assertTrue(initial_last_answered)
+
+        # Test that qotd cannot be submitted more than once
+        self.c.post(reverse('qotd_index_view'), data)
+        q_user = QotdUser.objects.get(user__username='testuser1')
+        final_last_answered = q_user.last_answered
+        self.assertEqual(initial_last_answered, final_last_answered)
