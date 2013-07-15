@@ -169,3 +169,25 @@ class TestWorkshopViews(WousoTest):
 
         # Check if user is redirected
         self.assertEqual(response.status_code, 302)
+
+    def test_schedule_change_view_get(self):
+        sch = Schedule.objects.create(name='schedule_test')
+        # Get the response for editing a schedule URL:'schedule/edit/(?P<schedule>\d+)/'
+        response = self.c.get(reverse('ws_schedule_change', args=[sch.pk]))
+        self.assertContains(response, 'Name:')
+        self.assertContains(response, 'value="schedule_test"')
+
+        # Get the response for adding a schedule URL:'schedule/add/'
+        response = self.c.get(reverse('ws_schedule_change'))
+        self.assertContains(response, 'Name:')
+
+    def test_schedule_change_view_post(self):
+        today = datetime.today()
+        sch = Schedule.objects.create(name='schedule_test')
+        data = {u'name': u'schedule_new_name',
+                u'start_date': today.date(),
+                u'end_date': today.date(),
+                u'count': 5}
+        response = self.c.post(reverse('ws_schedule_change', args=[sch.pk]), data)
+        sch = Schedule.objects.get(pk=sch.pk)
+        self.assertEqual(sch.name, 'schedule_new_name')
