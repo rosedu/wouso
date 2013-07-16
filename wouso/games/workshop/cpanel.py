@@ -329,11 +329,17 @@ def workshop_grade_assessment(request, assessment):
                          context_instance=RequestContext(request)
     )
 
+class AddWorkshopView(View):
+    def get(self, request, *args, **kwargs):
+        form = WAForm()
+        return render_to_response('workshop/cpanel/workshop_add.html',
+                            {'module': 'workshop', 'form': form, 'info': WorkshopGame, 'error': '',
+                             'page': 'workshops'},
+                            context_instance=RequestContext(request)
+        )
 
-@staff_required
-def workshop_add(request):
-    error = ''
-    if request.method == 'POST':
+    def post(self, request, *args, **kwargs):
+        error = ''
         form = WAForm(request.POST)
         if form.is_valid():
             error = WorkshopGame.create_workshop(semigroup=form.cleaned_data['semigroup'],
@@ -342,15 +348,15 @@ def workshop_add(request):
             )
             if not error:
                 return redirect('ws_workshops')
-    else:
-        form = WAForm()
 
-    return render_to_response('workshop/cpanel/workshop_add.html',
-                        {'module': 'workshop', 'form': form, 'info': WorkshopGame, 'error': error,
-                         'page': 'workshops'},
-                        context_instance=RequestContext(request)
-    )
+        return render_to_response('workshop/cpanel/workshop_add.html',
+                            {'module': 'workshop', 'form': form, 'info': WorkshopGame, 'error': error,
+                             'page': 'workshops'},
+                            context_instance=RequestContext(request)
+        )
 
+
+workshop_add = staff_required(AddWorkshopView.as_view())
 
 @staff_required
 def workshop_edit(request, workshop):
