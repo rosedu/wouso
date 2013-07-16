@@ -211,3 +211,10 @@ class TestWorkshopViews(WousoTest):
         workshops = Workshop.objects.all()
         self.assertEqual(response.status_code, 302)
         self.assertEqual(len(workshops), 1)
+
+        # Check view without selecting a semigroup
+        data = {u'semigroup': u'',
+                u'date': today.date(),
+                u'question_count': u'5'}
+        response = self.c.post(reverse('ws_add_workshop'), data)
+        self.assertContains(response, 'This field is required')
