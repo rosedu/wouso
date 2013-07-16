@@ -191,3 +191,23 @@ class TestWorkshopViews(WousoTest):
         response = self.c.post(reverse('ws_schedule_change', args=[sch.pk]), data)
         sch = Schedule.objects.get(pk=sch.pk)
         self.assertEqual(sch.name, 'schedule_new_name')
+
+    def test_workshop_add_view_get(self):
+        response = self.c.get(reverse('ws_add_workshop'))
+        self.assertContains(response, 'Semigroup:')
+        self.assertContains(response, 'Date:')
+        self.assertContains(response, 'Question count:')
+
+    def test_workshop_add_view_post(self):
+        sg = Semigroup.objects.create(day=u'1', hour=u'10', name=u'semigroup_test')
+        workshops = Workshop.objects.all()
+        self.assertFalse(workshops)
+
+        today = datetime.today()
+        data = {u'semigroup': u'1',
+                u'date': today.date(),
+                u'question_count': u'5'}
+        response = self.c.post(reverse('ws_add_workshop'), data)
+        workshops = Workshop.objects.all()
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(workshops), 1)
