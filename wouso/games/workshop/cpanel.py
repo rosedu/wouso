@@ -433,10 +433,7 @@ def reset_reviews(request, workshop, assessment):
     Remove all non expected reviews given to this assessment
     """
     assessment = get_object_or_404(Assessment, pk=assessment)
-    for a in assessment.answer_set.all():
-        for r in a.review_set.all():
-            if r.reviewer not in list(assessment.reviewers.all()) and not r.reviewer.in_staff_group():
-                r.delete()
+    assessment.remove_non_expected_reviews()
 
     return redirect('ws_reviewers_map', workshop=assessment.workshop.id)
 
