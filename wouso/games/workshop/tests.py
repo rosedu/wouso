@@ -103,10 +103,21 @@ class TestAssessment(WousoTest):
 
         r12 = Review.objects.create(answer=ans2, reviewer=p1, answer_grade=7)
         self.assertEqual(a2.reviews_grade, 7)
-
+        
         ar = Review.objects.create(answer=ans2, reviewer=p2, answer_grade=8)
         self.assertEqual(a2.reviews_grade, 7) # ignores reviews from non-reviewers
         ar.delete()
+
+        # Check the reset_reviews view
+        admin = self._get_superuser()
+        c = Client()
+        c.login(username='admin', password='admin')
+        # Create non expected review
+        ar = Review.objects.create(answer=ans2, reviewer=p2, answer_grade=8)
+        initial_reviews = len(Review.objects.all())
+        response = c.get(reverse('ws_reset_assessment_reviews', args=[1, 2]))
+        final_reviews = len(Review.objects.all())
+        self.assertTrue(final_reviews < initial_reviews)
 
         ans1.grade = 10
         ans1.save()
