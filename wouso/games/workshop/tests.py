@@ -118,6 +118,7 @@ class TestAssessment(WousoTest):
         response = c.get(reverse('ws_reset_assessment_reviews', args=[1, 2]))
         final_reviews = len(Review.objects.all())
         self.assertTrue(final_reviews < initial_reviews)
+        self.assertEqual(response.status_code, 302)
 
         ans1.grade = 10
         ans1.save()
