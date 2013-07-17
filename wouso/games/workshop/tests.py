@@ -230,3 +230,14 @@ class TestWorkshopViews(WousoTest):
                 u'question_count': u'5'}
         response = self.c.post(reverse('ws_add_workshop'), data)
         self.assertContains(response, 'This field is required')
+
+    def test_gradebook_view(self):
+        sg = Semigroup.objects.create(day=u'1', hour=u'10', name=u'semigroup_test')
+        pl1 = self._get_player(1)
+        pl2 = self._get_player(2)
+        sg.players.add(pl1, pl2)
+
+        response = self.c.get(reverse('ws_gradebook', args=[sg.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'testuser1')
+        self.assertContains(response, 'testuser2')
