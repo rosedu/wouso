@@ -1,12 +1,16 @@
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.db import IntegrityError
 from django.test import TestCase
+from django.test.client import Client
 from wouso.core import scoring
 from wouso.core.magic.templatetags.artifacts import artifact, spell_due, artifact_full
 from wouso.core.scoring.models import Coin, Formula
 from wouso.core.tests import WousoTest
 from wouso.core.user.models import Player
+from wouso.core.magic.models import Spell
+from wouso.interface.activity.models import Activity
 from models import *
 from manager import MagicManager
 
@@ -209,3 +213,25 @@ class TemplatetagsTest(WousoTest):
 
         player = self._get_player()
         self.assertTrue(artifact_full(player.level))
+
+class TestMagicViews(WousoTest):
+    def setUp(self):
+        self.p1 = self._get_player(1)
+        self.p2 = self._get_player(2)
+        self.spell_1 = Spell.objects.create(name='spell1', title='Spell no. 1')
+        self.spell_2 = Spell.objects.create(name='spell2', title='Spell no. 2')
+        self.c = Client()
+        self.c.login(username='testuser1', password='test')
+        self.activity = Activity.objects.create(user_from=self.p1, user_to=self.p2,
+                                                action='gold-won')
+
+    def test_bazaar_view(self):
+        response = self.c.get(reverse('bazaar_home'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Bazaar')
+        self.assertContains(response, 'Exchange')
+        self.assertContains(response, 'Rate')
+        self.assertContains(response, 'testuser1')
+        self.assertContains(response, 'testuser2')
+        self.assertContains(response, 'Spell no. 1')
+        self.assertContains(response, 'Spell no. 2')
