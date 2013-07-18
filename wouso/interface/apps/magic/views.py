@@ -1,12 +1,14 @@
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core.urlresolvers import reverse
 from django.db.models import Count, Q
 from django.http import Http404, HttpResponseRedirect
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.translation import ugettext as _, ugettext_noop
+from django.views.generic import ListView
 from exceptions import ValueError
 from wouso.core.config.models import BoolSetting
 from wouso.core.scoring.sm import InvalidFormula
@@ -15,45 +17,46 @@ from wouso.core.magic.models import Spell, SpellHistory, PlayerSpellDue, Artifac
 from wouso.core import scoring, signals
 from wouso.interface.activity.models import Activity
 
-# marche
-def bazaar(request, message='', error=''):
-    player = request.user.get_profile() if request.user.is_authenticated() else None
-    spells = Spell.objects.all().order_by('-available', 'level_required')
+class BazaarView(ListView):
+    template_name = 'magic/bazaar.html'
+    context_object_name = 'activity'
+    paginate_by = 40
 
-    # Disable exchange for real
-    exchange_disabled = BoolSetting.get('disable-Bazaar-Exchange').get_value()
-    try:
-        rate = scoring.calculate('gold-points-rate', gold=1)['points']
-        rate2 = round(1/scoring.calculate('points-gold-rate', points=1)['gold'])
-    except InvalidFormula:
-        rate, rate2 = 1, 1
-    rate_text = _('Rate: 1 gold = {rate} points, 1 gold = {rate2} points').format(rate=rate, rate2=rate2)
+    def get_queryset(self):
+        activity_list = Activity.objects.filter(Q(action='spell-buy') | Q(action='earned-ach') | 
+                            Q(action__contains='gold') | Q(action='cast')).order_by('-timestamp')
+        return activity_list
 
-    cast_spells = PlayerSpellDue.objects.filter(source=player).all()
-    unseen_count = cast_spells.filter(seen=False).count()
+    def get_context_data(self, **kwargs):
+        context = super(BazaarView, self).get_context_data(**kwargs)
+        player = self.request.user.get_profile() if self.request.user.is_authenticated() else None
+        spells = Spell.objects.all().order_by('-available', 'level_required')
 
-    # TODO: think of smth better
-    cast_spells.update(seen=True)
+        # Disable exchange for real
+        exchange_disabled = BoolSetting.get('disable-Bazaar-Exchange').get_value()
+        try:
+            rate = scoring.calculate('gold-points-rate', gold=1)['points']
+            rate2 = round(1/scoring.calculate('points-gold-rate', points=1)['gold'])
+        except InvalidFormula:
+            rate, rate2 = 1, 1
+        rate_text = _('Rate: 1 gold = {rate} points, 1 gold = {rate2} points').format(rate=rate,
+                                                                                      rate2=rate2)
 
-    # get all significant magic activity
-    activity_list = Activity.objects.filter(Q(action='spell-buy') | Q(action='earned-ach') | Q(action__contains='gold') | Q(action='cast')).order_by('-timestamp')
+        cast_spells = PlayerSpellDue.objects.filter(source=player).all()
+        unseen_count = cast_spells.filter(seen=False).count()
 
-    paginator = Paginator(activity_list, 40)
-    try:
-        activity = paginator.page(1)
-    except (EmptyPage, InvalidPage):
-        activity = paginator.page(paginator.num_pages)
+        # TODO: think of smth better
+        cast_spells.update(seen=True)
 
-    return render_to_response('magic/bazaar.html', {'spells': spells,
-                              'activity': activity,
-                              'rate': rate, 'rate_text': rate_text,
-                              'cast': cast_spells,
-                              'unseen_count': unseen_count,
-                              'theowner': player,
-                              'message': message,
-                              'exchange_disabled': exchange_disabled,
-                              'error': error},
-                              context_instance=RequestContext(request))
+        context.update({'spells': spells,
+                        'rate': rate, 'rate_text': rate_text,
+                        'cast': cast_spells,
+                        'unseen_count': unseen_count,
+                        'theowner': player,
+                        'exchange_disabled': exchange_disabled})
+        return context
+
+bazaar = BazaarView.as_view()
 
 @login_required
 def bazaar_exchange(request):
@@ -130,8 +133,12 @@ def bazaar_buy(request, spell):
         SpellHistory.bought(player, spell)
         message = _("Successfully aquired")
 
-    return bazaar(request, message=message, error=error)
+    if error:
+        messages.error(request, error)
+    if message:
+        messages.success(request, message)
 
+    return redirect('bazaar_home')
 
 @login_required
 def magic_cast(request, destination=None, spell=None):
