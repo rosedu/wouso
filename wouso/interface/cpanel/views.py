@@ -16,6 +16,7 @@ from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_noop
 from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext as _
+from django.views.generic import UpdateView
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
@@ -97,19 +98,20 @@ def formulas(request):
                               },
                               context_instance=RequestContext(request))
 
-@permission_required('config.change_setting')
-def edit_formula(request, id):
-    formula = get_object_or_404(Formula, pk=id)
-    if request.method == "POST":
-        form = FormulaForm(data=request.POST, instance=formula)
-        if form.is_valid():
-            form.save()
-            return redirect('formulas')
-    else:
-        form = FormulaForm(instance=formula)
-    return render_to_response('cpanel/edit_formula.html',
-                              {'form': form},
-                              context_instance = RequestContext(request))
+class EditFormulaView(UpdateView):
+    template_name = 'cpanel/edit_formula.html'
+    form_class = FormulaForm
+    model = Formula
+    pk_url_kwarg = 'id'
+
+    def get_success_url(self):
+        return reverse('formulas')
+    
+    def form_valid(self, form):
+        form.save()
+        return super(EditFormulaView, self).form_valid(form)
+
+edit_formula = permission_required('config.change_setting')(EditFormulaView.as_view())
 
 @permission_required('config.change_setting')
 def formula_delete(request, id):
