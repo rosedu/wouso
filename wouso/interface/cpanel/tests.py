@@ -49,3 +49,11 @@ class CpanelViewsTest(WousoTest):
         self.assertEqual(updated_formula.name, 'test_formula2')
         self.assertEqual(updated_formula.definition, 'points=4321')
         self.assertEqual(updated_formula.description, 'Second formula of the game')
+
+    def test_add_formula_view_get(self):
+        response = self.client.get(reverse('add_formula'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Add Formula')
+        self.assertContains(response, 'Name:')
+        self.assertContains(response, 'Definition:')
+        self.assertContains(response, 'Description:')
