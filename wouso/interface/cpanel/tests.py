@@ -57,3 +57,22 @@ class CpanelViewsTest(WousoTest):
         self.assertContains(response, 'Name:')
         self.assertContains(response, 'Definition:')
         self.assertContains(response, 'Description:')
+
+    def test_add_formula_view_post(self):
+        # Check the view with a valid form
+        data = {'name': 'test_formula1', 'definition': 'points=4321',
+                'description': 'Test Formula'}
+        response = self.client.post(reverse('add_formula'), data)
+        self.assertEqual(response.status_code, 302)
+        formulas = Formula.objects.all()
+        self.assertEqual(len(formulas), 1)
+        formula = formulas[0]
+        self.assertEqual(formula.name, 'test_formula1')
+        self.assertEqual(formula.definition, 'points=4321')
+        self.assertEqual(formula.description, 'Test Formula')
+
+        # Check the view with an invalid form
+        data = {}
+        response = self.client.post(reverse('add_formula'), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'This field is required')
