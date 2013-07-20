@@ -30,6 +30,17 @@ class CpanelViewsTest(WousoTest):
         self.client = Client()
         self.client.login(username='admin', password='admin')
 
+    def test_formulas_view(self):
+        Formula.objects.create(name='test_formula1', definition='points=1234',
+                               description='First formula of the game')
+        Formula.objects.create(name='test_formula2', definition='points=1234',
+                               description='Second formula of the game')
+        response = self.client.get(reverse('formulas'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'test_formula1')
+        self.assertContains(response, 'test_formula2')
+        self.assertContains(response, 'points=1234', 2)
+
     def test_edit_formula_view_get(self):
         formula = Formula.objects.create(name='test_formula1', definition='points=1234',
                                          description='First formula of the game')
