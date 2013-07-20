@@ -134,3 +134,28 @@ class CpanelViewsTest(WousoTest):
         spell = Spell.objects.get(pk=spell.pk)
         self.assertEqual(spell.name, 'updated_spell')
         self.assertEqual(spell.title, 'Spell was updated')
+
+    def test_add_spell_get(self):
+        response = self.client.get(reverse('add_spell'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Add Spell')
+
+    def test_add_spell_post(self):
+        # Check the view with a valid form
+        data = {'name': 'spell1', 'title': 'Spell no. 1',
+                'percents': 80, 'level_required': 4, 'price': 40,
+                'type': 'o', 'due_days': 5}
+        response = self.client.post(reverse('add_spell'), data)
+        self.assertEqual(response.status_code, 302)
+        spells = Spell.objects.all()
+        self.assertEqual(len(spells), 1)
+        spell = spells[0]
+        self.assertEqual(spell.name, 'spell1')
+        self.assertEqual(spell.title, 'Spell no. 1')
+        self.assertEqual(spell.level_required, 4)
+
+        # Check the view with an invalid form
+        data = {}
+        response = self.client.post(reverse('add_spell'), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'This field is required')
