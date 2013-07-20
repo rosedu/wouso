@@ -16,7 +16,7 @@ from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_noop
 from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext as _
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, CreateView
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
@@ -106,10 +106,6 @@ class EditFormulaView(UpdateView):
 
     def get_success_url(self):
         return reverse('formulas')
-    
-    def form_valid(self, form):
-        form.save()
-        return super(EditFormulaView, self).form_valid(form)
 
 edit_formula = permission_required('config.change_setting')(EditFormulaView.as_view())
 
@@ -122,19 +118,14 @@ def formula_delete(request, id):
         go_back = reverse('wouso.interface.cpanel.views.formulas')
     return HttpResponseRedirect(go_back)
 
-@permission_required('config.change_setting')
-def add_formula(request):
-    form = FormulaForm()
-    if request.method == "POST":
-        formula = FormulaForm(data = request.POST)
-        if formula.is_valid():
-            formula.save()
-            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.formulas'))
-        else:
-            form = formula
-    return render_to_response('cpanel/add_formula.html',
-                              {'form': form},
-                              context_instance=RequestContext(request))
+class AddFormulaView(CreateView):
+    template_name = 'cpanel/add_formula.html'
+    form_class = FormulaForm
+
+    def get_success_url(self):
+        return reverse('add_formula')
+
+add_formula = permission_required('config.change_setting')(AddFormulaView.as_view())
 
 @permission_required('config.change_setting')
 def spells(request):
