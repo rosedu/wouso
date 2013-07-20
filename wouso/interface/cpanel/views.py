@@ -8,7 +8,7 @@ from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django import forms
 from django.http import  HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, redirect
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.conf import settings
@@ -98,16 +98,16 @@ def formulas(request):
                               },
                               context_instance=RequestContext(request))
 
+
 class EditFormulaView(UpdateView):
     template_name = 'cpanel/edit_formula.html'
     form_class = FormulaForm
     model = Formula
     pk_url_kwarg = 'id'
-
-    def get_success_url(self):
-        return reverse('formulas')
+    success_url = reverse_lazy('formulas')
 
 edit_formula = permission_required('config.change_setting')(EditFormulaView.as_view())
+
 
 @permission_required('config.change_setting')
 def formula_delete(request, id):
@@ -118,14 +118,14 @@ def formula_delete(request, id):
         go_back = reverse('wouso.interface.cpanel.views.formulas')
     return HttpResponseRedirect(go_back)
 
+
 class AddFormulaView(CreateView):
     template_name = 'cpanel/add_formula.html'
     form_class = FormulaForm
-
-    def get_success_url(self):
-        return reverse('add_formula')
+    success_url = reverse_lazy('add_formula')
 
 add_formula = permission_required('config.change_setting')(AddFormulaView.as_view())
+
 
 class SpellsView(ListView):
     model = Spell
@@ -140,17 +140,15 @@ class SpellsView(ListView):
 
 spells = permission_required('config.change_setting')(SpellsView.as_view())
 
-@permission_required('config.change_setting')
-def edit_spell(request, id):
-    spell = get_object_or_404(Spell, pk=id)
-    if request.method == "POST":
-        form = SpellForm(data = request.POST, instance = spell, files=request.FILES)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.spells'))
-    else:
-        form = SpellForm(instance=spell)
-    return render_to_response('cpanel/edit_spell.html', {'form':form, 'module': 'spells'}, context_instance=RequestContext(request))
+
+class EditSpellView(UpdateView):
+    template_name = 'cpanel/edit_spell.html'
+    model = Spell
+    pk_url_kwarg = 'id'
+    form_class = SpellForm
+    success_url = reverse_lazy('spells')
+
+edit_spell = permission_required('config.change_setting')(EditSpellView.as_view())
 
 
 @permission_required('config.change_setting')
