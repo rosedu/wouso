@@ -37,3 +37,15 @@ class CpanelViewsTest(WousoTest):
         self.assertContains(response, 'value="test_formula1"')
         self.assertContains(response, 'value="points=1234"')
         self.assertContains(response, 'First formula of the game')
+
+    def test_edit_formula_view_post(self):
+        formula = Formula.objects.create(name='test_formula1', definition='points=1234',
+                                         description='First formula of the game')
+        data = {'name': 'test_formula2', 'definition': 'points=4321',
+                'description': 'Second formula of the game'}
+        response = self.client.post(reverse('edit_formula', args=[formula.pk]), data)
+        self.assertEqual(response.status_code, 302)
+        updated_formula = Formula.objects.get(pk=formula.pk)
+        self.assertEqual(updated_formula.name, 'test_formula2')
+        self.assertEqual(updated_formula.definition, 'points=4321')
+        self.assertEqual(updated_formula.description, 'Second formula of the game')
