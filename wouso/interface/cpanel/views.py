@@ -155,17 +155,17 @@ class EditSpellView(UpdateView):
 edit_spell = permission_required('config.change_setting')(EditSpellView.as_view())
 
 
-@permission_required('config.change_setting')
-def add_spell(request):
-    form = SpellForm()
-    if request.method == "POST":
-        spell = SpellForm(data=request.POST, files=request.FILES)
-        if spell.is_valid():
-            spell.save()
-            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.spells'))
-        else:
-            form = spell
-    return render_to_response('cpanel/add_spell.html', {'form': form, 'module': 'spells'}, context_instance=RequestContext(request))
+class AddSpellView(CreateView):
+    template_name = 'cpanel/add_spell.html'
+    form_class = SpellForm
+    success_url = reverse_lazy('add_spell')
+
+    def get_context_data(self, **kwargs):
+        context = super(AddSpellView, self).get_context_data(**kwargs)
+        context.update({'module': 'spells'})
+        return context
+
+add_spell = permission_required('config.change_setting')(AddSpellView.as_view())
 
 
 @permission_required('config.change_setting')
