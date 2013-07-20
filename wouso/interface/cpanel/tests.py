@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 from wouso.core.scoring.models import Formula
 from wouso.core.tests import WousoTest
+from wouso.core.magic.models import Spell, SpellHistory
 
 class addPlayerTestCase(TestCase):
     def setUp(self):
@@ -76,3 +77,23 @@ class CpanelViewsTest(WousoTest):
         response = self.client.post(reverse('add_formula'), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'This field is required')
+
+    def test_spells_view(self):
+        spell1 = Spell.objects.create(name='spell1', title='Spell no. 1')
+        spell2 = Spell.objects.create(name='spell2', title='Spell no. 2')
+        spell3 = Spell.objects.create(name='spell3', title='Spell no. 3')
+        user1 = self._get_player(1)
+        user2 = self._get_player(2)
+        SpellHistory.objects.create(type='b', user_from=user1, spell=spell1)
+        SpellHistory.objects.create(type='b', user_from=user1, spell=spell2)
+        SpellHistory.objects.create(type='b', user_from=user2, spell=spell1)
+        SpellHistory.objects.create(type='u', user_from=user2, user_to=user1,
+                                    spell=spell1)
+        response = self.client.get(reverse('spells'))
+        self.assertContains(response, 'Spell no. 1')
+        self.assertContains(response, 'Spell no. 2')
+        self.assertContains(response, 'Spell no. 3')
+        self.assertContains(response, 'Spell History')
+        self.assertContains(response, '<td> 1 </td>', 3)
+        self.assertContains(response, '<td> 2 </td>')
+        self.assertContains(response, '<td> 3 </td>')
