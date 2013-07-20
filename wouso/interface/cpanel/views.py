@@ -16,7 +16,7 @@ from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_noop
 from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext as _
-from django.views.generic import UpdateView, CreateView
+from django.views.generic import UpdateView, CreateView, ListView
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
@@ -127,28 +127,18 @@ class AddFormulaView(CreateView):
 
 add_formula = permission_required('config.change_setting')(AddFormulaView.as_view())
 
-@permission_required('config.change_setting')
-def spells(request):
-    spells = Spell.objects.all()
-    spells_bought = 0
-    spells_used = 0
-    spells_expired = 0
-    spells_cleaned = 0
-    for p in spells:
-        spells_bought = spells_bought + p.history_bought()
-        spells_used = spells_used + p.history_used()
-        spells_expired = spells_expired + p.history_expired()
-        spells_cleaned = spells_cleaned + p.history_cleaned()
-    return render_to_response('cpanel/spells_home.html',
-                              {'spells' : spells,
-                               'spells_bought' : spells_bought,
-                               'spells_used' : spells_used,
-                               'spells_expired' : spells_expired,
-                               'spells_cleaned' : spells_cleaned,
-                               'module': 'spells',
-                              },
-                              context_instance=RequestContext(request))
+class SpellsView(ListView):
+    model = Spell
+    template_name = 'cpanel/spells_home.html'
+    context_object_name = 'spells'
+    
+    def get_context_data(self, **kwargs):
+        context = super(SpellsView, self).get_context_data(**kwargs)
+        summary = Spell.get_spells_summary()
+        context.update(summary, module='spells')
+        return context
 
+spells = permission_required('config.change_setting')(SpellsView.as_view())
 
 @permission_required('config.change_setting')
 def edit_spell(request, id):
