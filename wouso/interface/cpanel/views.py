@@ -90,13 +90,12 @@ def dashboard(request):
                                },
                               context_instance=RequestContext(request))
 
-@permission_required('config.change_setting')
-def formulas(request):
-    formulas = Formula.objects.all()
-    return render_to_response('cpanel/formulas_home.html',
-                              {'formulas': formulas
-                              },
-                              context_instance=RequestContext(request))
+class FormulasView(ListView):
+    model = Formula
+    template_name = 'cpanel/formulas_home.html'
+    context_object_name = 'formulas'
+
+formulas = permission_required('config.change_setting')(FormulasView.as_view())
 
 
 class EditFormulaView(UpdateView):
