@@ -148,6 +148,11 @@ class EditSpellView(UpdateView):
     form_class = SpellForm
     success_url = reverse_lazy('spells')
 
+    def get_context_data(self, **kwargs):
+        context = super(EditSpellView, self).get_context_data(**kwargs)
+        context.update({'module': 'spells'})
+        return context
+
 edit_spell = permission_required('config.change_setting')(EditSpellView.as_view())
 
 
