@@ -174,3 +174,25 @@ class CpanelViewsTest(WousoTest):
         self.assertContains(response, 'Text for question2')
         self.assertContains(response, 'tag1')
         self.assertContains(response, 'tag2')
+
+    def test_qpool_tag_questions_view_post(self):
+        tag1 = Tag.objects.create(name='tag1', active=True)
+        tag2 = Tag.objects.create(name='tag2', active=True)
+        q1 = Question.objects.create(text='Text for question1')
+        q1.tags.add(tag1)
+        q1.save()
+        q2 = Question.objects.create(text='Text for question2')
+
+        # Check the view with a valid form
+        data = {'tag': [str(tag2.pk)], 'questions': [str(q1.pk), str(q2.pk)]}
+        response = self.client.post(reverse('tag_questions'), data)
+        self.assertContains(response, 'Successfully tagged 2 question(s)')
+        tag1 = Tag.objects.get(name='tag1')
+        self.assertEqual(len(tag1.question_set.all()), 1)
+        tag2 = Tag.objects.get(name='tag2')
+        self.assertEqual(len(tag2.question_set.all()), 2)
+
+        # Check the view with an invalid form
+        data = {}
+        response = self.client.post(reverse('tag_questions'), data)
+        self.assertContains(response, 'This field is required')
