@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from wouso.core.scoring.models import Formula
 from wouso.core.tests import WousoTest
 from wouso.core.magic.models import Spell, SpellHistory
+from wouso.core.qpool.models import Question, Tag
 
 class addPlayerTestCase(TestCase):
     def setUp(self):
@@ -159,3 +160,17 @@ class CpanelViewsTest(WousoTest):
         response = self.client.post(reverse('add_spell'), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'This field is required')
+
+    def test_qpool_tag_questions_view_get(self):
+        tag1 = Tag.objects.create(name='tag1', active=True)
+        tag2 = Tag.objects.create(name='tag2', active=True)
+        q1 = Question.objects.create(text='Text for question1')
+        q1.tags.add(tag1)
+        q1.save()
+        q2 = Question.objects.create(text='Text for question2')
+        response = self.client.get(reverse('tag_questions'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Text for question1')
+        self.assertContains(response, 'Text for question2')
+        self.assertContains(response, 'tag1')
+        self.assertContains(response, 'tag2')
