@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 from wouso.core.scoring.models import Formula
 from wouso.core.tests import WousoTest
-from wouso.core.magic.models import Spell, SpellHistory
+from wouso.core.magic.models import Spell, SpellHistory, ArtifactGroup, Artifact
 from wouso.core.qpool.models import Question, Tag
 
 class addPlayerTestCase(TestCase):
@@ -229,3 +229,13 @@ class CpanelViewsTest(WousoTest):
         response = self.client.post(reverse('qpool_edit_tag', args=[tag1.pk]), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'This field is required')
+
+    def test_artifact_home_view(self):
+        art_group = ArtifactGroup.objects.create(name='Default')
+        artifact1 = Artifact.objects.create(name='artifact_test_1', group=art_group)
+        artifact2 = Artifact.objects.create(name='artifact_test_2', group=art_group)
+        response = self.client.get(reverse('artifact_home'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Artifacts')
+        self.assertContains(response, 'artifact_test_1')
+        self.assertContains(response, 'artifact_test_2')
