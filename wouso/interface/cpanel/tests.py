@@ -196,3 +196,12 @@ class CpanelViewsTest(WousoTest):
         data = {}
         response = self.client.post(reverse('tag_questions'), data)
         self.assertContains(response, 'This field is required')
+
+    def test_qpool_managetags_view(self):
+        tag1 = Tag.objects.create(name='tag1', active=True)
+        tag2 = Tag.objects.create(name='tag2', active=True)
+        response = self.client.get(reverse('qpool_manage_tags'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'tag1')
+        self.assertContains(response, 'tag2')
+        self.assertContains(response, 'Manage Tags')
