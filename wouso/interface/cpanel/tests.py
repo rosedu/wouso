@@ -205,3 +205,27 @@ class CpanelViewsTest(WousoTest):
         self.assertContains(response, 'tag1')
         self.assertContains(response, 'tag2')
         self.assertContains(response, 'Manage Tags')
+
+    def test_qpool_edit_tag_view_get(self):
+        tag1 = Tag.objects.create(name='tag1', active=True)
+        response = self.client.get(reverse('qpool_edit_tag', args=[tag1.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Edit Tag')
+        self.assertContains(response, 'tag1')
+
+    def test_qpool_edit_tag_view_post(self):
+        tag1 = Tag.objects.create(name='tag1', active=True)
+        
+        # Check the view with a valid form
+        data = {'name': 'tag_updated', 'active': True}
+        response = self.client.post(reverse('qpool_edit_tag', args=[tag1.pk]), data)
+        self.assertEqual(response.status_code, 302)
+        tag = Tag.objects.get(pk=tag1.pk)
+        self.assertEqual(tag.name, 'tag_updated')
+        self.assertTrue(tag.active)
+        
+        # Check the view with an invalid form
+        data = {}
+        response = self.client.post(reverse('qpool_edit_tag', args=[tag1.pk]), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'This field is required')
