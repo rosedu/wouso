@@ -544,17 +544,14 @@ def qpool_add_tag(request):
             context_instance=RequestContext(request))
 
 
-@permission_required('config.change_setting')
-def qpool_edit_tag(request, tag):
-    tag_obj = get_object_or_404(Tag, pk=tag)
-    if request.method == "POST":
-        form = AddTagForm(data = request.POST, instance = tag_obj)
-        if form.is_valid():
-            form.save()
-            return redirect('qpool_manage_tags')
-    else:
-        form = AddTagForm(instance=tag_obj)
-    return render_to_response('cpanel/qpool_edit_tag.html', {'form':form, 'tags': tag_obj}, context_instance=RequestContext(request))
+class QPoolEditTag(UpdateView):
+    template_name = 'cpanel/qpool_edit_tag.html'
+    model = Tag
+    pk_url_kwarg = 'tag'
+    form_class = AddTagForm
+    success_url = reverse_lazy('qpool_manage_tags')
+
+qpool_edit_tag = permission_required('config.change_setting')(QPoolEditTag.as_view())
 
 
 @permission_required('config.change_setting')
