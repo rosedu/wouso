@@ -628,24 +628,28 @@ def artifactset(request, id):
                               context_instance=RequestContext(request))
 
 
-@permission_required('config.change_setting')
-def artifact_home(request, group=None):
-    if group is None:
-        group = 'Default'
+class ArtifactHomeView(ListView):
+    template_name = 'cpanel/artifact_home.html'
+    context_object_name = 'artifacts'
 
-    group = get_object_or_404(ArtifactGroup, name=group)
-    artifacts = group.artifact_set.all()
-    modifiers = God.get_all_modifiers()
+    def get_queryset(self):
+        if 'group' not in self.kwargs.keys():
+            group = 'Default'
+        else:
+            group = self.kwargs['group']
+        self.group = get_object_or_404(ArtifactGroup, name=group)
+        artifacts = self.group.artifact_set.all()
+        return artifacts
 
-    return render_to_response('cpanel/artifact_home.html',
-                              {'groups': ArtifactGroup.objects.all(),
-                               'artifacts': artifacts,
-                               'module': 'artifacts',
-                               'group': group,
-                               'modifiers': modifiers,
-                               },
-                              context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        context = super(ArtifactHomeView, self).get_context_data(**kwargs)
+        modifiers = God.get_all_modifiers()
+        groups = ArtifactGroup.objects.all()
+        context.update({'groups': groups, 'module': 'artifacts',
+                        'group': self.group, 'modifiers': modifiers})
+        return context
 
+artifact_home = permission_required('config.change_setting')(ArtifactHomeView.as_view())
 
 
 @permission_required('config.change_setting')
