@@ -239,3 +239,25 @@ class CpanelViewsTest(WousoTest):
         self.assertContains(response, 'Artifacts')
         self.assertContains(response, 'artifact_test_1')
         self.assertContains(response, 'artifact_test_2')
+
+    def test_add_player_view_get(self):
+        response =  self.client.get(reverse('add_player'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Add Player')
+        self.assertContains(response, 'Username')
+        self.assertContains(response, 'Password')
+
+    def test_add_player_view_post(self):
+        # Check the view with a valid form
+        number_of_players = len(User.objects.all())
+        data = {'username': 'test1', 'password': 'test'}
+        response = self.client.post(reverse('add_player'), data)
+        self.assertEqual(response.status_code, 302)
+        number_of_players_after_post = len(User.objects.all())
+        self.assertTrue(number_of_players_after_post > number_of_players)
+
+        # Check the view with an invalid form
+        data = {}
+        response = self.client.post(reverse('add_player'), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'This field is required')
