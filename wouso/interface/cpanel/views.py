@@ -520,14 +520,13 @@ class QPoolTagQuestionsView(FormView):
 qpool_tag_questions = permission_required('config.change_setting')(QPoolTagQuestionsView.as_view())
 
 
-@permission_required('config.change_setting')
-def qpool_managetags(request):
-    tags = Tag.objects.all().order_by('category')
+class QPoolManageTagsView(ListView):
+    template_name = 'cpanel/qpool_managetags.html'
+    context_object_name = 'tags'
+    def get_queryset(self):
+        return Tag.objects.all().order_by('category')
 
-    return render_to_response('cpanel/qpool_managetags.html',
-                            {'tags': tags},
-                            context_instance=RequestContext(request)
-    )
+qpool_managetags = permission_required('config.change_setting')(QPoolManageTagsView.as_view())
 
 
 @permission_required('config.change_setting')
