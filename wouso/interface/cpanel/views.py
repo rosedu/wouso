@@ -16,7 +16,7 @@ from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_noop
 from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext as _
-from django.views.generic import UpdateView, CreateView, ListView
+from django.views.generic import UpdateView, CreateView, ListView, FormView
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
@@ -34,7 +34,7 @@ from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.utils.import_questions import import_from_file
 from wouso.middleware.impersonation import ImpersonateMiddleware
 from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, AnswerForm, EditReportForm
-from forms import FormulaForm
+from forms import FormulaForm, TagForm
 
 @staff_required
 def dashboard(request):
@@ -502,31 +502,22 @@ def qpool_import_from_upload(request):
                               context_instance=RequestContext(request))
 
 
-@permission_required('config.change_setting')
-def qpool_tag_questions(request):
-    class TagForm(forms.Form):
-        questions = forms.MultipleChoiceField(choices=[(q.pk, q.text) for q in Question.objects.all()])
-        tag = forms.ChoiceField(choices=[(t.pk, t.name) for t in Tag.objects.all().exclude(name__in=['qotd', 'quest', 'challenge'])])
+class QPoolTagQuestionsView(FormView):
+    template_name = 'cpanel/tag_questions.html'
+    form_class = TagForm
+    
+    def form_valid(self, form):
+        q_pks = form.cleaned_data['questions']
+        tag_pk =  form.cleaned_data['tag']
+        tag = Tag.objects.get(pk=tag_pk)
+        for pk in q_pks:
+            q = Question.objects.get(pk=pk)
+            q.tags.add(tag)
+            q.save()
+        return render_to_response('cpanel/tagged.html',
+                {'nr': len(q_pks)}, context_instance=RequestContext(self.request))
 
-    if request.method == 'POST':
-        form = TagForm(request.POST)
-        if form.is_valid():
-            q_pks = form.cleaned_data['questions']
-            tag_pk =  form.cleaned_data['tag']
-            tag = Tag.objects.get(pk=tag_pk)
-            for pk in q_pks:
-                q = Question.objects.get(pk=pk)
-                q.tags.add(tag)
-                q.save()
-            return render_to_response('cpanel/tagged.html',
-                    {'nr': len(q_pks)},
-                context_instance=RequestContext(request))
-    else:
-        form = TagForm()
-
-    return render_to_response('cpanel/tag_questions.html',
-            {'form': form},
-        context_instance=RequestContext(request))
+qpool_tag_questions = permission_required('config.change_setting')(QPoolTagQuestionsView.as_view())
 
 
 @permission_required('config.change_setting')
