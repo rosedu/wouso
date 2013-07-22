@@ -779,32 +779,30 @@ def players(request):
     return render_to_response('cpanel/players.html', dict(players=all), context_instance=RequestContext(request))
 
 
-@permission_required('config.change_setting')
-def add_player(request):
-    form = UserForm()
-    if request.method == "POST":
-        user = UserForm(data = request.POST)
-        if user.is_valid():
-            user.instance.set_password(request.POST['password'])
-            user.save()
-            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.players'))
-        else:
-            form = user
-    return render_to_response('cpanel/add_player.html', {'form': form}, context_instance=RequestContext(request))
+class AddPlayerView(CreateView):
+    template_name = 'cpanel/add_player.html'
+    form_class = UserForm
+    success_url = reverse_lazy('all_players')
+
+    def form_valid(self, form):
+        form.instance.set_password(self.request.POST['password'])
+        return super(AddPlayerView, self).form_valid(form)
+
+add_player = permission_required('config.change_setting')(AddPlayerView.as_view())
 
 
 @permission_required('config.change_setting')
 def edit_player(request, user_id):
     user = get_object_or_404(User, pk=user_id)
     if request.method == "POST":
-        form = UserForm(data = request.POST, instance = user)
+        form = UserForm(data=request.POST, instance=user)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.players'))
     else:
         form = UserForm(instance=user)
         form.fields['password'].widget.attrs['readonly'] = True
-    return render_to_response('cpanel/edit_player.html', {'form':form}, context_instance=RequestContext(request))
+    return render_to_response('cpanel/edit_player.html', {'form': form}, context_instance=RequestContext(request))
 
 
 @staff_required
