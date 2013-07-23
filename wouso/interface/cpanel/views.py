@@ -791,18 +791,19 @@ class AddPlayerView(CreateView):
 add_player = permission_required('config.change_setting')(AddPlayerView.as_view())
 
 
-@permission_required('config.change_setting')
-def edit_player(request, user_id):
-    user = get_object_or_404(User, pk=user_id)
-    if request.method == "POST":
-        form = UserForm(data=request.POST, instance=user)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.players'))
-    else:
-        form = UserForm(instance=user)
+class EditPlayerView(UpdateView):
+    template_name = 'cpanel/edit_player.html'
+    model = User
+    pk_url_kwarg = 'user_id'
+    form_class = UserForm
+    success_url = reverse_lazy('all_players')
+
+    def get_form(self, form_class):
+        form = form_class(**self.get_form_kwargs())
         form.fields['password'].widget.attrs['readonly'] = True
-    return render_to_response('cpanel/edit_player.html', {'form': form}, context_instance=RequestContext(request))
+        return form
+
+edit_player = permission_required('config.change_setting')(EditPlayerView.as_view())
 
 
 @staff_required
