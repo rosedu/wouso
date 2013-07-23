@@ -6,6 +6,7 @@ from wouso.core.scoring.models import Formula
 from wouso.core.tests import WousoTest
 from wouso.core.magic.models import Spell, SpellHistory, ArtifactGroup, Artifact
 from wouso.core.qpool.models import Question, Tag
+from wouso.core.user.models import Race, PlayerGroup
 
 class addPlayerTestCase(TestCase):
     def setUp(self):
@@ -286,3 +287,16 @@ class CpanelViewsTest(WousoTest):
         response = self.client.post(reverse('edit_player', args=[p1.pk]), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'This field is required')
+
+    def test_races_groups_view(self):
+        r1 = Race.objects.create(name='Race_test_1', can_play=True)
+        r2 = Race.objects.create(name='Race_test_2', can_play=False)
+        PlayerGroup.objects.create(name='PlayerGroup_test_1', parent=r1)
+        PlayerGroup.objects.create(name='PlayerGroup_test_2', parent=None)
+        response = self.client.get(reverse('races_groups'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Races and groups')
+        self.assertContains(response, 'Race_test_1')
+        self.assertContains(response, 'Race_test_2')
+        self.assertContains(response, 'PlayerGroup_test_1')
+        self.assertNotContains(response, 'PlayerGroup_test_2')
