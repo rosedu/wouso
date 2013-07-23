@@ -855,11 +855,12 @@ def infraction_clear(request, user_id, infraction_id):
     return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.infraction_history', args=(user_id,)))
 
 
-@permission_required('config.change_setting')
-def races_groups(request):
-    return render_to_response('cpanel/races_groups.html', {'races': Race.objects.all()},
-        context_instance=RequestContext(request)
-    )
+class RacesGroupsView(ListView):
+    template_name = 'cpanel/races_groups.html'
+    model = Race
+    context_object_name = 'races'
+
+races_groups = permission_required('config.change_setting')(RacesGroupsView.as_view())
 
 
 @permission_required('superuser')
