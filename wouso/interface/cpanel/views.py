@@ -908,16 +908,14 @@ def the_bell(request):
     return redirect('dashboard')
 
 
-@staff_required
-def reports(request, page=0):
-    """
-    This page shows the reports
-    """
+class ReportsView(ListView):
+    template_name = 'cpanel/reports.html'
+    context_object_name = 'reports'
 
-    return render_to_response('cpanel/reports.html',
-                    {'reports': Report.objects.all().order_by('-timestamp')},
-                    context_instance=RequestContext(request)
-    )
+    def get_queryset(self):
+        return Report.objects.all().order_by('-timestamp')
+
+reports = staff_required(ReportsView.as_view())
 
 
 @staff_required
