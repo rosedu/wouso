@@ -918,20 +918,14 @@ class ReportsView(ListView):
 reports = staff_required(ReportsView.as_view())
 
 
-@staff_required
-def edit_report(request, id):
-    report = get_object_or_404(Report, pk=id)
+class EditReportView(UpdateView):
+    template_name = 'cpanel/edit_report.html'
+    model = Report
+    pk_url_kwarg = 'id'
+    form_class = EditReportForm
+    success_url = reverse_lazy('reports')
 
-    if request.method == "POST":
-        form = EditReportForm(data = request.POST, instance=report)
-        if form.is_valid():
-            form.save()
-        return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.reports'))
-    else:
-        reportForm = EditReportForm(instance = report)
-        return render_to_response('cpanel/edit_report.html',
-                        {'report': report, 'form': reportForm, 'id': id},
-                        context_instance=RequestContext(request))
+edit_report = staff_required(EditReportView.as_view())
 
 
 @staff_required
