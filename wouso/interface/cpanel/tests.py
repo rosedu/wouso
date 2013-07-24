@@ -1,4 +1,5 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from django.test.client import Client
 from django.test import TestCase
 from django.core.urlresolvers import reverse
@@ -300,3 +301,20 @@ class CpanelViewsTest(WousoTest):
         self.assertContains(response, 'Race_test_2')
         self.assertContains(response, 'PlayerGroup_test_1')
         self.assertNotContains(response, 'PlayerGroup_test_2')
+
+    def test_roles_view(self):
+        user = User.objects.create(username='testuser1', password='test')
+        group = Group.objects.create(name='Group_test')
+        content_type = ContentType.objects.create(name='ctype_test')
+        perm = Permission.objects.create(name='perm_test', content_type=content_type)
+        group.permissions.add(perm)
+        user.groups.add(group)
+        response = self.client.get(reverse('roles'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Roles')
+        self.assertContains(response, 'Group_test')
+        self.assertContains(response, 'perm_test')
+        self.assertContains(response, 'ctype_test')
+
+        # Check if the user is counted
+        self.assertContains(response, '<td>1</td>')
