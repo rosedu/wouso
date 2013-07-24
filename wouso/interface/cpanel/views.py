@@ -863,13 +863,12 @@ class RacesGroupsView(ListView):
 races_groups = permission_required('config.change_setting')(RacesGroupsView.as_view())
 
 
-@permission_required('superuser')
-def roles(request):
-    roles = Group.objects.all()
+class RolesView(ListView):
+    template_name = 'cpanel/roles.html'
+    model = Group
+    context_object_name = 'roles'
 
-    return render_to_response('cpanel/roles.html', {'roles': roles},
-                              context_instance=RequestContext(request)
-    )
+roles = permission_required('superuser')(RolesView.as_view())
 
 
 @permission_required('superuser')
