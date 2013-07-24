@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.test.client import Client
@@ -8,6 +9,7 @@ from wouso.core.tests import WousoTest
 from wouso.core.magic.models import Spell, SpellHistory, ArtifactGroup, Artifact
 from wouso.core.qpool.models import Question, Tag
 from wouso.core.user.models import Race, PlayerGroup
+from wouso.core.security.models import Report
 
 class addPlayerTestCase(TestCase):
     def setUp(self):
@@ -318,3 +320,13 @@ class CpanelViewsTest(WousoTest):
 
         # Check if the user is counted
         self.assertContains(response, '<td>1</td>')
+
+    def test_reports_view(self):
+        p1 = self._get_player(1)
+        p2 = self._get_player(2)
+        Report.objects.create(user_from=p1, user_to=p2, timestamp=datetime.now())
+        response = self.client.get(reverse('reports'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Reports')
+        self.assertContains(response, 'testuser1')
+        self.assertContains(response, 'testuser2')
