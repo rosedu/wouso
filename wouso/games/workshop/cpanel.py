@@ -1,7 +1,7 @@
 from django import forms
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template.context import RequestContext
-from django.views.generic import View, ListView, UpdateView
+from django.views.generic import View, ListView, UpdateView, CreateView
 
 from models import WorkshopGame, Semigroup, Schedule, DAY_CHOICES, Answer
 from wouso.core.decorators import staff_required
@@ -42,30 +42,20 @@ def workshop_home(request, **kwargs):
     )
 
 
-class AddGroupView(View):
-    def get(self, request, *args, **kwargs):
-        form = AGForm()
-        return render_to_response('workshop/cpanel/addgroup.html',
-                            {'module': 'workshop',
-                             'form': form,
-                             },
-                            context_instance=RequestContext(request)
-        )
+class AddGroupView(CreateView):
+    template_name = 'workshop/cpanel/addgroup.html'
+    form_class = AGForm
 
-    def post(self, request, *args, **kwargs):
-        form = AGForm(request.POST)
-        if form.is_valid():
-            sg = form.save()
-            sg.owner = WorkshopGame.get_instance()
-            sg.save()
-            return redirect('ws_edit_spot', day=sg.day, hour=sg.hour)
+    def form_valid(self, form):
+        sg = form.save()
+        sg.owner = WorkshopGame.get_instance()
+        sg.save()
+        return redirect('ws_edit_spot', day=sg.day, hour=sg.hour)
 
-        return render_to_response('workshop/cpanel/addgroup.html',
-                            {'module': 'workshop',
-                             'form': form,
-                             },
-                            context_instance=RequestContext(request)
-        )
+    def get_context_data(self, **kwargs):
+        context = super(AddGroupView, self).get_context_data(**kwargs)
+        context.update({'module': 'workshop'})
+        return context
 
 add_group = staff_required(AddGroupView.as_view())
 
