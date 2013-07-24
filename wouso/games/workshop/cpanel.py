@@ -1,7 +1,7 @@
 from django import forms
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template.context import RequestContext
-from django.views.generic import View, ListView
+from django.views.generic import View, ListView, UpdateView
 
 from models import WorkshopGame, Semigroup, Schedule, DAY_CHOICES, Answer
 from wouso.core.decorators import staff_required
@@ -69,34 +69,22 @@ class AddGroupView(View):
 
 add_group = staff_required(AddGroupView.as_view())
 
-class EditGroupView(View):
-    def get(self, request, *args, **kwargs):
-        semigroup = get_object_or_404(Semigroup, pk=kwargs['semigroup'])
-        form = AGForm(instance=semigroup)
-        return render_to_response('workshop/cpanel/editgroup.html',
-                            {'module': 'workshop',
-                             'form': form,
-                             'instance': semigroup,
-                             },
-                            context_instance=RequestContext(request)
-        )
+class EditGroupView(UpdateView):
+    template_name = 'workshop/cpanel/editgroup.html'
+    model = Semigroup
+    pk_url_kwarg = 'semigroup'
+    form_class = AGForm
 
-    def post(self, request, *args, **kwargs):
-        semigroup = get_object_or_404(Semigroup, pk=kwargs['semigroup'])
-        form = AGForm(request.POST, instance=semigroup)
-        if form.is_valid():
-            sg = form.save()
-            sg.owner = WorkshopGame.get_instance()
-            sg.save()
-            return redirect('ws_edit_spot', day=sg.day, hour=sg.hour)
+    def form_valid(self, form):
+        sg = form.save()
+        sg.owner = WorkshopGame.get_instance()
+        sg.save()
+        return redirect('ws_edit_spot', day=sg.day, hour=sg.hour)
 
-        return render_to_response('workshop/cpanel/editgroup.html',
-                            {'module': 'workshop',
-                             'form': form,
-                             'instance': semigroup,
-                             },
-                            context_instance=RequestContext(request)
-        )
+    def get_context_data(self, **kwargs):
+        context = super(EditGroupView, self).get_context_data(**kwargs)
+        context.update({'module': 'workshop', 'instance': self.get_object()})
+        return context
 
 edit_group = staff_required(EditGroupView.as_view())
 
