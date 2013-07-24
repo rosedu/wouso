@@ -330,3 +330,22 @@ class CpanelViewsTest(WousoTest):
         self.assertContains(response, 'Reports')
         self.assertContains(response, 'testuser1')
         self.assertContains(response, 'testuser2')
+
+    def test_edit_report_view(self):
+        # Check the GET method
+        p1 = self._get_player(1)
+        p2 = self._get_player(2)
+        report = Report.objects.create(user_from=p1, user_to=p2, timestamp=datetime.now())
+        response = self.client.get(reverse('edit_report', args=[report.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Edit Report')
+        self.assertContains(response, 'testuser1')
+        self.assertContains(response, 'testuser2')
+
+        # Check the POST method
+        self.assertEqual(report.status, 'R')
+        data = {'dibs': '', 'status': 'I', 'extra': ''}
+        response = self.client.post(reverse('edit_report', args=[report.pk]), data)
+        self.assertEqual(response.status_code, 302)
+        report_updated = Report.objects.get(pk=report.pk)
+        self.assertEqual(report_updated. status, 'I')
