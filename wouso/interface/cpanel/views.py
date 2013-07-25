@@ -102,7 +102,6 @@ class EditFormulaView(UpdateView):
     template_name = 'cpanel/edit_formula.html'
     form_class = FormulaForm
     model = Formula
-    pk_url_kwarg = 'id'
     success_url = reverse_lazy('formulas')
 
 edit_formula = permission_required('config.change_setting')(EditFormulaView.as_view())
@@ -143,7 +142,6 @@ spells = permission_required('config.change_setting')(SpellsView.as_view())
 class EditSpellView(UpdateView):
     template_name = 'cpanel/edit_spell.html'
     model = Spell
-    pk_url_kwarg = 'id'
     form_class = SpellForm
     success_url = reverse_lazy('spells')
 
@@ -547,7 +545,6 @@ def qpool_add_tag(request):
 class QPoolEditTag(UpdateView):
     template_name = 'cpanel/qpool_edit_tag.html'
     model = Tag
-    pk_url_kwarg = 'tag'
     form_class = AddTagForm
     success_url = reverse_lazy('qpool_manage_tags')
 
@@ -794,7 +791,6 @@ add_player = permission_required('config.change_setting')(AddPlayerView.as_view(
 class EditPlayerView(UpdateView):
     template_name = 'cpanel/edit_player.html'
     model = User
-    pk_url_kwarg = 'user_id'
     form_class = UserForm
     success_url = reverse_lazy('all_players')
 
@@ -921,7 +917,6 @@ reports = staff_required(ReportsView.as_view())
 class EditReportView(UpdateView):
     template_name = 'cpanel/edit_report.html'
     model = Report
-    pk_url_kwarg = 'id'
     form_class = EditReportForm
     success_url = reverse_lazy('reports')
 

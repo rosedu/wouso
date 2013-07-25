@@ -25,7 +25,7 @@ upat = [
     url(r'^qpool/qpool_remove_all/(?P<cat>\w+)/$', 'wouso.interface.cpanel.views.qpool_remove_all', name='remove_all'),
     url(r'^qpool/manage_tags/$', 'wouso.interface.cpanel.views.qpool_managetags', name='qpool_manage_tags'),
     url(r'^qpool/newtag/$','wouso.interface.cpanel.views.qpool_add_tag', name='qpool_add_tag'),
-    url(r'^qpool/edit_tag/(?P<tag>\d+)/$', 'wouso.interface.cpanel.views.qpool_edit_tag', name='qpool_edit_tag'),
+    url(r'^qpool/edit_tag/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.qpool_edit_tag', name='qpool_edit_tag'),
     url(r'^qpool/del_tag/(?P<tag>\d+)/$', 'wouso.interface.cpanel.views.qpool_delete_tag', name='qpool_del_tag'),
     url(r'^qpool/set_tag/$', 'wouso.interface.cpanel.views.qpool_settag', name='qpool_set_tag'),
     url(r'^qpool/action/$', 'wouso.interface.cpanel.views.qpool_actions', name='qpool_actions'),
@@ -39,12 +39,12 @@ upat = [
     url(r'^artifact/(?P<group>\w+)/$', 'wouso.interface.cpanel.views.artifact_home', name='artifact_home'),
 
     url(r'^spells/$','wouso.interface.cpanel.views.spells', name='spells'),
-    url(r'^edit_spell/(?P<id>\d+)$','wouso.interface.cpanel.views.edit_spell',name='edit_spell'),
+    url(r'^edit_spell/(?P<pk>\d+)$','wouso.interface.cpanel.views.edit_spell',name='edit_spell'),
     url(r'^add_spell/$', 'wouso.interface.cpanel.views.add_spell',name='add_spell'),
     url(r'^spells/del/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.spell_delete', name='spell_dell'),
 
     url(r'^formulas/$','wouso.interface.cpanel.views.formulas',name='formulas'),
-    url(r'^edit_formula/(?P<id>\d+)/$','wouso.interface.cpanel.views.edit_formula',name='edit_formula'),
+    url(r'^edit_formula/(?P<pk>\d+)/$','wouso.interface.cpanel.views.edit_formula',name='edit_formula'),
     url(r'^formulas/del/(?P<id>\d+)/$','wouso.interface.cpanel.views.formula_delete',name='formula_del'),
     url(r'^add_formula/$','wouso.interface.cpanel.views.add_formula',name='add_formula'),
 
@@ -54,7 +54,7 @@ upat = [
     url(r'^players/$', 'wouso.interface.cpanel.views.players', name='all_players'),
     url(r'^player/(?P<player_id>\d+)/bonus/$', 'wouso.interface.cpanel.views.bonus', name='bonus'),
     url(r'^add_player/$', 'wouso.interface.cpanel.views.add_player', name='add_player'),
-    url(r'^edit_player/(?P<user_id>\d+)/$', 'wouso.interface.cpanel.views.edit_player', name='edit_player'),
+    url(r'^edit_player/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.edit_player', name='edit_player'),
     url(r'^infractions/(?P<user_id>\d+)/$', 'wouso.interface.cpanel.views.infraction_history', name='infraction_history'),
     url(r'^infractions_clear/(?P<user_id>\d+)/(?P<infraction_id>\d+)/$', 'wouso.interface.cpanel.views.infraction_clear', name='infraction_clear'),
     url(r'^infractions_recheck/$', 'wouso.interface.cpanel.views.infraction_recheck', name='infraction_recheck'),
@@ -69,7 +69,7 @@ upat = [
     url(r'^tools/clear-cache/$', 'wouso.interface.cpanel.views.clear_cache', name='clear_cache'),
 
     url(r'^reports/$', 'wouso.interface.cpanel.views.reports', name='reports'),
-    url(r'^reports/edit/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.edit_report', name='edit_report'),
+    url(r'^reports/edit/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.edit_report', name='edit_report'),
 
     url(r'^system_message/group/(?P<group>\d+)/$', 'wouso.interface.cpanel.views.system_message_group', name='system_message_group'),
 
