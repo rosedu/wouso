@@ -68,25 +68,12 @@ class HistoryView(ListView):
     template_name = 'quest/history.html'
     context_object_name = 'history'
 
-    def quest_points(self, user):
-        try:
-            return int(History.objects.filter(game=QuestGame.get_instance(),
-                user=user).aggregate(points=Sum('amount'))['points'])
-        except:
-            return 0
-
     def get_queryset(self):
         return Quest.objects.all().order_by('-end')
 
     def get_context_data(self, **kwargs):
         context = super(HistoryView, self).get_context_data(**kwargs)
-
-        users = list(Player.objects.exclude(race__can_play=False).filter(
-            id__in=QuestResult.objects.values_list('user')))
-        users.sort(lambda b, a: self.quest_points(a) - self.quest_points(b))
-        gods = users[:10]
-
-        context.update({'gods': gods})
+        context.update({'gods': Player.get_quest_gods()})
         return context
 
 history = HistoryView.as_view()
