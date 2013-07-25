@@ -124,41 +124,30 @@ def schedule(request):
                         context_instance=RequestContext(request)
     )
 
+class ScheduleChangeView(UpdateView):
+    template_name = 'workshop/cpanel/schedule_change.html'
+    model = Schedule
+    pk_url_kwarg = 'schedule'
+    form_class = SCForm
 
-class ScheduleChangeView(View):
-    def dispatch(self, request, *args, **kwargs):
-        if 'schedule' in kwargs.keys():
-            self.schedule = get_object_or_404(Schedule, pk=kwargs['schedule'])
+    def get_object(self, queryset=None):
+        if 'schedule' in self.kwargs.keys():
+            schedule = get_object_or_404(Schedule, pk=self.kwargs['schedule'])
         else:
-            self.schedule = None
-        return super(ScheduleChangeView, self).dispatch(request, *args, **kwargs)
+            schedule = None
+        return schedule
 
-    def get(self, request, *args, **kwargs):
-        form = SCForm(instance=self.schedule)
+    def form_valid(self, form):
+        sc = form.save()
+        sc.category = WorkshopGame.get_question_category()
+        sc.save()
+        return redirect('ws_schedule')
 
-        return render_to_response('workshop/cpanel/schedule_change.html',
-                            {'module': 'workshop',
-                             'form': form,
-                             'instance': self.schedule,
-                             'page': 'schedule'},
-                            context_instance=RequestContext(request)
-        )
-
-    def post(self, request, *args, **kwargs):
-        form = SCForm(request.POST, instance=self.schedule)
-        if form.is_valid():
-            sc = form.save()
-            sc.category = WorkshopGame.get_question_category()
-            sc.save()
-            return redirect('ws_schedule')
-
-        return render_to_response('workshop/cpanel/schedule_change.html',
-                            {'module': 'workshop',
-                             'form': form,
-                             'instance': self.schedule,
-                             'page': 'schedule'},
-                            context_instance=RequestContext(request)
-        )
+    def get_context_data(self, **kwargs):
+        context = super(ScheduleChangeView, self).get_context_data(**kwargs)
+        context.update({'module': 'workshop', 'instance': self.get_object(),
+                       'page': 'schedule'})
+        return context
 
 schedule_change = staff_required(ScheduleChangeView.as_view())
 
