@@ -124,44 +124,45 @@ class AddFormulaView(CreateView):
 
 add_formula = permission_required('config.change_setting')(AddFormulaView.as_view())
 
+class ModuleViewMixin(object):
+    module = 'undefined'
 
-class SpellsView(ListView):
+    def get_context_data(self, **kwargs):
+        context = super(ModuleViewMixin, self).get_context_data(**kwargs)
+        context.update(dict(module=self.module))
+        return context
+
+
+class SpellsView(ModuleViewMixin, ListView):
     model = Spell
     template_name = 'cpanel/spells_home.html'
     context_object_name = 'spells'
+    module = 'spells'
     
     def get_context_data(self, **kwargs):
         context = super(SpellsView, self).get_context_data(**kwargs)
         summary = Spell.get_spells_summary()
-        context.update(summary, module='spells')
+        context.update(summary)
         return context
 
 spells = permission_required('config.change_setting')(SpellsView.as_view())
 
 
-class EditSpellView(UpdateView):
+class EditSpellView(ModuleViewMixin, UpdateView):
     template_name = 'cpanel/edit_spell.html'
     model = Spell
     form_class = SpellForm
     success_url = reverse_lazy('spells')
-
-    def get_context_data(self, **kwargs):
-        context = super(EditSpellView, self).get_context_data(**kwargs)
-        context.update({'module': 'spells'})
-        return context
+    module = 'spells'
 
 edit_spell = permission_required('config.change_setting')(EditSpellView.as_view())
 
 
-class AddSpellView(CreateView):
+class AddSpellView(ModuleViewMixin, CreateView):
     template_name = 'cpanel/add_spell.html'
     form_class = SpellForm
     success_url = reverse_lazy('add_spell')
-
-    def get_context_data(self, **kwargs):
-        context = super(AddSpellView, self).get_context_data(**kwargs)
-        context.update({'module': 'spells'})
-        return context
+    module = 'spells'
 
 add_spell = permission_required('config.change_setting')(AddSpellView.as_view())
 
