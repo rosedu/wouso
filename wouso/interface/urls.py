@@ -77,6 +77,9 @@ urlpatterns = patterns('',
     # Static: not in a real deployment
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
+
+    # django-social-auth
+    url(r'', include('social_auth.urls')),
 )
 
 # API only when we have piston
