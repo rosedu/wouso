@@ -269,7 +269,7 @@ DISPLAY_NAME = '{first_name} {last_name}'
 #    }
 # }
 
-# django-social-auth settings
+# django-social-auth settings (to be completed)
 FACEBOOK_APP_ID = ''
 FACEBOOK_API_SECRET = ''
 TWITTER_CONSUMER_KEY = ''
