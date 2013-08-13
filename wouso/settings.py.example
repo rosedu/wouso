@@ -96,9 +96,13 @@ MIDDLEWARE_CLASSES = [
     'wouso.middleware.Seen',
     'wouso.middleware.DebugExceptionMiddleware',
     'wouso.middleware.ImpersonateMiddleware',
+    'social_auth.middleware.SocialAuthExceptionMiddleware',
 ]
 AUTHENTICATION_BACKENDS = (
     #'wouso.middleware.ldap_connection.LDAPBackend',
+    'social_auth.backends.twitter.TwitterBackend',
+    'social_auth.backends.google.GoogleOAuth2Backend',
+    'social_auth.backends.facebook.FacebookBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -153,11 +157,14 @@ INSTALLED_APPS = [
     'wouso.interface.apps.pages',
     'wouso.interface.apps.statistics',
     'wouso.interface.apps.messaging',
+    # django-social-auth
+    'social_auth',
 ]
 
 # Authentication settings
 LOGIN_URL = '/user/login/'
 LOGIN_REDIRECT_URL = '/hub/'
+LOGIN_ERROR_URL = '/'
 
 AUTH_PROFILE_MODULE = 'user.Player'
 
@@ -262,6 +269,10 @@ DISPLAY_NAME = '{first_name} {last_name}'
 #        'LOCATION': 'unique-snowflake'
 #    }
 # }
+
+# django-social-auth settings
+FACEBOOK_APP_ID = '436740719774590'
+FACEBOOK_API_SECRET = 'bb9af1852a2e10e5d811f52cd011f652'
 
 # PLEASE LEAVE THIS ON THE LAST LINES OF THIS FILE
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
