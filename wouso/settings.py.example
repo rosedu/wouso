@@ -101,7 +101,6 @@ MIDDLEWARE_CLASSES = [
 AUTHENTICATION_BACKENDS = (
     #'wouso.middleware.ldap_connection.LDAPBackend',
     'social_auth.backends.twitter.TwitterBackend',
-    'social_auth.backends.google.GoogleOAuth2Backend',
     'social_auth.backends.facebook.FacebookBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
@@ -271,8 +270,10 @@ DISPLAY_NAME = '{first_name} {last_name}'
 # }
 
 # django-social-auth settings
-FACEBOOK_APP_ID = '436740719774590'
-FACEBOOK_API_SECRET = 'bb9af1852a2e10e5d811f52cd011f652'
+FACEBOOK_APP_ID = ''
+FACEBOOK_API_SECRET = ''
+TWITTER_CONSUMER_KEY = ''
+TWITTER_CONSUMER_SECRET = ''
 
 # PLEASE LEAVE THIS ON THE LAST LINES OF THIS FILE
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
