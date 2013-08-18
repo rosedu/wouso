@@ -47,9 +47,7 @@ def setup_accept(request, group_id):
         error = _('You are already in a group, cannot accept the invitation')
         return index(request, error)
 
-    user.group = group
-    user.save()
-    group.players.add(request.user.get_profile())
+    user.add_to_group(group)
 
     return HttpResponseRedirect(reverse('specialquest_index_view'))
 
