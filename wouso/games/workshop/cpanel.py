@@ -1,7 +1,7 @@
 from django import forms
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template.context import RequestContext
-from django.views.generic import ListView
+from django.views.generic import View, ListView, UpdateView, CreateView
 
 from models import WorkshopGame, Semigroup, Schedule, DAY_CHOICES, Answer
 from wouso.core.decorators import staff_required
@@ -41,47 +41,42 @@ def workshop_home(request, **kwargs):
                         context_instance=RequestContext(request)
     )
 
-@staff_required
-def add_group(request):
-    if request.method == 'POST':
-        form = AGForm(request.POST)
-        if form.is_valid():
-            sg = form.save()
-            sg.owner = WorkshopGame.get_instance()
-            sg.save()
-            return redirect('ws_edit_spot', day=sg.day, hour=sg.hour)
-    else:
-        form = AGForm()
 
-    return render_to_response('workshop/cpanel/addgroup.html',
-                        {'module': 'workshop',
-                         'form': form,
-                         },
-                        context_instance=RequestContext(request)
-    )
+class AddGroupView(CreateView):
+    template_name = 'workshop/cpanel/addgroup.html'
+    form_class = AGForm
 
-@staff_required
-def edit_group(request, semigroup):
-    semigroup = get_object_or_404(Semigroup, pk=semigroup)
+    def form_valid(self, form):
+        sg = form.save()
+        sg.owner = WorkshopGame.get_instance()
+        sg.save()
+        return redirect('ws_edit_spot', day=sg.day, hour=sg.hour)
 
-    if request.method == 'POST':
-        form = AGForm(request.POST, instance=semigroup)
-        if form.is_valid():
-            sg = form.save()
-            sg.owner = WorkshopGame.get_instance()
-            sg.save()
-            return redirect('ws_edit_spot', day=sg.day, hour=sg.hour)
-    else:
-        form = AGForm(instance=semigroup)
+    def get_context_data(self, **kwargs):
+        context = super(AddGroupView, self).get_context_data(**kwargs)
+        context.update({'module': 'workshop'})
+        return context
 
-    return render_to_response('workshop/cpanel/editgroup.html',
-                        {'module': 'workshop',
-                         'form': form,
-                         'instance': semigroup,
-                         },
-                        context_instance=RequestContext(request)
-    )
+add_group = staff_required(AddGroupView.as_view())
 
+class EditGroupView(UpdateView):
+    template_name = 'workshop/cpanel/editgroup.html'
+    model = Semigroup
+    pk_url_kwarg = 'semigroup'
+    form_class = AGForm
+
+    def form_valid(self, form):
+        sg = form.save()
+        sg.owner = WorkshopGame.get_instance()
+        sg.save()
+        return redirect('ws_edit_spot', day=sg.day, hour=sg.hour)
+
+    def get_context_data(self, **kwargs):
+        context = super(EditGroupView, self).get_context_data(**kwargs)
+        context.update({'module': 'workshop', 'instance': self.get_object()})
+        return context
+
+edit_group = staff_required(EditGroupView.as_view())
 
 @staff_required
 def edit_spot(request, day, hour):
@@ -129,29 +124,32 @@ def schedule(request):
                         context_instance=RequestContext(request)
     )
 
-@staff_required
-def schedule_change(request, schedule=None):
-    if schedule:
-        schedule = get_object_or_404(Schedule, pk=schedule)
+class ScheduleChangeView(UpdateView):
+    template_name = 'workshop/cpanel/schedule_change.html'
+    model = Schedule
+    pk_url_kwarg = 'schedule'
+    form_class = SCForm
 
-    if request.method == 'POST':
-        form = SCForm(request.POST, instance=schedule)
-        if form.is_valid():
-            sc = form.save()
-            sc.category = WorkshopGame.get_question_category()
-            sc.save()
-            return redirect('ws_schedule')
-    else:
-        form = SCForm(instance=schedule)
+    def get_object(self, queryset=None):
+        if 'schedule' in self.kwargs.keys():
+            schedule = get_object_or_404(Schedule, pk=self.kwargs['schedule'])
+        else:
+            schedule = None
+        return schedule
 
-    return render_to_response('workshop/cpanel/schedule_change.html',
-                        {'module': 'workshop',
-                         'form': form,
-                         'instance': schedule,
-                         'page': 'schedule'},
-                        context_instance=RequestContext(request)
-    )
+    def form_valid(self, form):
+        sc = form.save()
+        sc.category = WorkshopGame.get_question_category()
+        sc.save()
+        return redirect('ws_schedule')
 
+    def get_context_data(self, **kwargs):
+        context = super(ScheduleChangeView, self).get_context_data(**kwargs)
+        context.update({'module': 'workshop', 'instance': self.get_object(),
+                       'page': 'schedule'})
+        return context
+
+schedule_change = staff_required(ScheduleChangeView.as_view())
 
 class WorkshopList(ListView):
     model = Workshop
@@ -298,11 +296,17 @@ def workshop_grade_assessment(request, assessment):
                          context_instance=RequestContext(request)
     )
 
+class AddWorkshopView(View):
+    def get(self, request, *args, **kwargs):
+        form = WAForm()
+        return render_to_response('workshop/cpanel/workshop_add.html',
+                            {'module': 'workshop', 'form': form, 'info': WorkshopGame, 'error': '',
+                             'page': 'workshops'},
+                            context_instance=RequestContext(request)
+        )
 
-@staff_required
-def workshop_add(request):
-    error = ''
-    if request.method == 'POST':
+    def post(self, request, *args, **kwargs):
+        error = ''
         form = WAForm(request.POST)
         if form.is_valid():
             error = WorkshopGame.create_workshop(semigroup=form.cleaned_data['semigroup'],
@@ -311,15 +315,15 @@ def workshop_add(request):
             )
             if not error:
                 return redirect('ws_workshops')
-    else:
-        form = WAForm()
 
-    return render_to_response('workshop/cpanel/workshop_add.html',
-                        {'module': 'workshop', 'form': form, 'info': WorkshopGame, 'error': error,
-                         'page': 'workshops'},
-                        context_instance=RequestContext(request)
-    )
+        return render_to_response('workshop/cpanel/workshop_add.html',
+                            {'module': 'workshop', 'form': form, 'info': WorkshopGame, 'error': error,
+                             'page': 'workshops'},
+                            context_instance=RequestContext(request)
+        )
 
+
+workshop_add = staff_required(AddWorkshopView.as_view())
 
 @staff_required
 def workshop_edit(request, workshop):
@@ -396,23 +400,25 @@ def reset_reviews(request, workshop, assessment):
     Remove all non expected reviews given to this assessment
     """
     assessment = get_object_or_404(Assessment, pk=assessment)
-    for a in assessment.answer_set.all():
-        for r in a.review_set.all():
-            if r.reviewer not in list(assessment.reviewers.all()) and not r.reviewer.in_staff_group():
-                r.delete()
+    assessment.remove_non_expected_reviews()
 
     return redirect('ws_reviewers_map', workshop=assessment.workshop.id)
 
-
-@staff_required
-def gradebook(request, semigroup):
+class GradebookView(ListView):
     """
     List all students and grades
     """
-    semigroup = get_object_or_404(Semigroup, pk=semigroup)
-    players = semigroup.players.all().order_by('user__last_name', 'user__first_name')
+    template_name = 'workshop/cpanel/gradebook.html'
+    context_object_name = 'players'
 
-    return render_to_response('workshop/cpanel/gradebook.html',
-                        {'module': 'workshop', 'page': 'workshops', 'semigroup': semigroup, 'players': players},
-                        context_instance=RequestContext(request)
-    )
+    def get_queryset(self):
+        self.semigroup = get_object_or_404(Semigroup, pk=self.kwargs['semigroup'])
+        players = self.semigroup.players.all().order_by('user__last_name', 'user__first_name')
+        return players
+
+    def get_context_data(self, **kwargs):
+        context = super(GradebookView, self).get_context_data(**kwargs)
+        context.update({'module': 'workshop', 'page': 'workshops', 'semigroup': self.semigroup})
+        return context
+
+gradebook = staff_required(GradebookView.as_view())
