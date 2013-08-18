@@ -308,6 +308,12 @@ class Assessment(models.Model):
 
         return True
 
+    def remove_non_expected_reviews(self):
+        for a in self.answer_set.all():
+            for r in a.review_set.all():
+                if r.reviewer not in list(self.reviewers.all()) and not r.reviewer.in_staff_group():
+                    r.delete()
+
     __unicode__ = lambda self: u"#%d" % self.id
 
 
