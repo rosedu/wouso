@@ -97,8 +97,12 @@ class QuestUser(Player):
             self.save()
 
     def register_quest_result(self):
+        """
+        Create a QuestResult entry for the QuestUser's current quest
+        """
         if not self.finished:
-            qr, created = QuestResult.objects.get_or_create(user=self, quest=self.current_quest, level=self.current_level)
+            qr, created = QuestResult.objects.get_or_create(user=self,
+                          quest=self.current_quest, level=self.current_level)
 
     def set_current(self, quest):
         self.started_time = datetime.datetime.now()
@@ -273,6 +277,16 @@ class Quest(models.Model):
         for i, r in enumerate(self.top_results()):
             player = r.user.get_extension(Player)
             scoring.score(player, QuestGame, 'quest-finish-bonus', position=i + 1, external_id=self.id)
+
+    def register(self):
+        """
+        Register the result of all the users who attempted this quest
+        """
+        if not self.is_active:
+            for user in self.questuser_set.all():
+                user.register_quest_result()
+            self.registered = True
+            self.save()
 
     def __unicode__(self):
         return "%s - %s %s" % (self.start, self.end, self.title)

@@ -255,6 +255,21 @@ class Player(models.Model):
         """
         cls.EXTENSIONS[attr] = ext_cls
 
+    @classmethod
+    def get_quest_gods(cls):
+        from wouso.core.scoring.models import History
+        from wouso.games.quest.models import QuestGame, QuestResult
+
+        def quest_points(user):
+            return int(History.objects.filter(game=QuestGame.get_instance(),
+                user=user).aggregate(points=Sum('amount'))['points'] or 0)
+
+        users = list(cls.objects.exclude(race__can_play=False).filter(
+            id__in=QuestResult.objects.values_list('user')))
+        users.sort(lambda b, a: quest_points(a) - quest_points(b))
+        gods = users[:10]
+        return gods
+
     @property
     def race_name(self):
         return self._race_name()
