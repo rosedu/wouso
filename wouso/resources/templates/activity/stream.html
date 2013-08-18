@@ -2,7 +2,7 @@
 {% load i18n %}
 
 <ul class="activity-stream">
-    {% for ac in activity.object_list %}
+    {% for ac in activity %}
         <li class="activity-line">
             <div class="activity-source">
                 <a href="{{ ac.get_game_absolute_url }}" title="{% trans ac.game_name %}">{% trans ac.game_name %}</a>

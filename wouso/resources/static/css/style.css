@@ -400,10 +400,10 @@ div.second {
     text-align: center;
     vertical-align: middle;
 }
-.ok {
+.ok, .success {
     color: green;
 }
-.wrong, .red, .red * {
+.wrong, .red, .red *, .error {
     color: red;
 }
 #poweredby a{
