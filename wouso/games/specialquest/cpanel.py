@@ -6,28 +6,35 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext_noop
+from django.views.generic import ListView
 from wouso.core.user.models import Player
 from wouso.core import scoring, signals
 from models import SpecialQuestTask, SpecialQuestUser, SpecialQuestGame, SpecialQuestGroup
 from forms import TaskForm
 
-@permission_required('specialquest.change_specialquestuser')
-def home(request):
-    tasks = SpecialQuestTask.objects.all()
+class HomeView(ListView):
+    model = SpecialQuestTask
+    template_name = 'specialquest/cpanel_home.html'
+    context_object_name = 'tasks'
 
-    return render_to_response('specialquest/cpanel_home.html',
-                              {'tasks': tasks,
-                               'module': 'specialquest'},
-                              context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        context = super(HomeView, self).get_context_data(**kwargs)
+        context.update({'module': 'specialquest'})
+        return context
 
-@permission_required('specialquest.change_specialquestuser')
-def groups(request):
-    groups = SpecialQuestGroup.objects.all()
+home = permission_required('specialquest.change_specialquestuser')(HomeView.as_view())
 
-    return render_to_response('specialquest/cpanel_groups.html',
-                              {'groups': groups,
-                               'module': 'specialquest'},
-                              context_instance=RequestContext(request))
+class GroupsView(ListView):
+    model = SpecialQuestGroup
+    template_name = 'specialquest/cpanel_groups.html'
+    context_object_name = 'groups'
+
+    def get_context_data(self, **kwargs):
+        context = super(GroupsView, self).get_context_data(**kwargs)
+        context.update({'module': 'specialquest'})
+        return context
+
+groups = permission_required('specialquest.change_specialquestuser')(GroupsView.as_view())
 
 @permission_required('specialquest.change_specialquestuser')
 def edit(request, id=None):
@@ -160,13 +167,7 @@ def group_active_toggle(request, group):
 @permission_required('specialquest.change_specialquestuser')
 def group_delete(request, group):
     group = get_object_or_404(SpecialQuestGroup, id=group)
-
-    for p in group.members:
-        p.group = None
-        p.save()
-
-    group.delete()
-
+    group.destroy()
     return redirect('specialquest_cpanel_groups')
 
 
