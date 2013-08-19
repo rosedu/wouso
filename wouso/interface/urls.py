@@ -77,9 +77,6 @@ urlpatterns = patterns('',
     # Static: not in a real deployment
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
-
-    # django-social-auth
-    url(r'', include('social_auth.urls')),
 )
 
 # API only when we have piston
@@ -114,4 +111,14 @@ else:
         url('', include('django_socketio.urls')),
         # Chat
         url(r'^chat/', include('wouso.interface.chat.urls')),
+    )
+
+try:
+    import imp
+    imp.find_module('social_auth')
+except ImportError:
+    pass
+else:
+    urlpatterns += patterns('',
+        url(r'', include('social_auth.urls')),
     )
