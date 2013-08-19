@@ -626,9 +626,10 @@ def artifactset(request, id):
                               context_instance=RequestContext(request))
 
 
-class ArtifactHomeView(ListView):
+class ArtifactHomeView(ModuleViewMixin, ListView):
     template_name = 'cpanel/artifact_home.html'
     context_object_name = 'artifacts'
+    module = 'artifacts'
 
     def get_queryset(self):
         if 'group' not in self.kwargs.keys():
@@ -643,8 +644,7 @@ class ArtifactHomeView(ListView):
         context = super(ArtifactHomeView, self).get_context_data(**kwargs)
         modifiers = God.get_all_modifiers()
         groups = ArtifactGroup.objects.all()
-        context.update({'groups': groups, 'module': 'artifacts',
-                        'group': self.group, 'modifiers': modifiers})
+        context.update({'groups': groups, 'group': self.group, 'modifiers': modifiers})
         return context
 
 artifact_home = permission_required('config.change_setting')(ArtifactHomeView.as_view())
