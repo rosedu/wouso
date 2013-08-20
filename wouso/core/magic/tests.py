@@ -252,3 +252,9 @@ class TestMagicViews(WousoTest):
         self.assertContains(response, _('Insufficient points'))
         response = self.c.get(reverse('bazaar_exchange'))
         self.assertContains(response, _('Expected post'))
+
+    def test_magic_cast_error_message(self):
+        data = {'days': 10, 'spell': 1}
+        self.p1.magic.add_spell(self.spell_1)
+        response = self.c.post(reverse('magic_cast', args=[2]), data)
+        self.assertContains(response, _('Invalid number of days'))
