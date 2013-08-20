@@ -98,9 +98,13 @@ def bazaar_exchange(request):
     else:
         error = _('Expected post')
 
+    if error:
+        messages.error(request, error)
+    if message:
+        messages.success(request, message)
+
     return render_to_response('magic/bazaar_buy.html',
-                {'error': error,
-                'message': message, 'tab': 'exchange'},
+                {'tab': 'exchange'},
                 context_instance=RequestContext(request))
 
 @login_required
