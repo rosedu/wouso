@@ -176,8 +176,11 @@ def magic_cast(request, destination=None, spell=None):
 
                 error = _('Cast failed:') + ' ' + error
 
+    if error:
+        messages.error(request, error)
+
     return render_to_response('profile/cast.html',
-                              {'destination': destination, 'error': error},
+                              {'destination': destination},
                               context_instance=RequestContext(request))
 
 
