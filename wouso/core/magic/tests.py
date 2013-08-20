@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.db import IntegrityError
 from django.test import TestCase
 from django.test.client import Client
+from django.utils.translation import ugettext as _
 from wouso.core import scoring
 from wouso.core.magic.templatetags.artifacts import artifact, spell_due, artifact_full
 from wouso.core.scoring.models import Coin, Formula
@@ -216,14 +217,18 @@ class TemplatetagsTest(WousoTest):
 
 class TestMagicViews(WousoTest):
     def setUp(self):
+        super(TestMagicViews, self).setUp()
         self.p1 = self._get_player(1)
         self.p2 = self._get_player(2)
+        self.p1.points = 500
+        self.p1.save()
         self.spell_1 = Spell.objects.create(name='spell1', title='Spell no. 1')
         self.spell_2 = Spell.objects.create(name='spell2', title='Spell no. 2')
         self.c = Client()
         self.c.login(username='testuser1', password='test')
         self.activity = Activity.objects.create(user_from=self.p1, user_to=self.p2,
                                                 action='gold-won')
+        scoring.setup_scoring()
 
     def test_bazaar_view(self):
         response = self.c.get(reverse('bazaar_home'))
@@ -235,3 +240,15 @@ class TestMagicViews(WousoTest):
         self.assertContains(response, 'testuser2')
         self.assertContains(response, 'Spell no. 1')
         self.assertContains(response, 'Spell no. 2')
+
+    def test_bazaar_exchange_success_message(self):
+        data = {'points': 10}
+        response = self.c.post(reverse('bazaar_exchange'), data)
+        self.assertContains(response, _('Converted successfully'))
+        
+    def test_bazaar_exchange_error_message(self):
+        data = {'points': 1000}
+        response = self.c.post(reverse('bazaar_exchange'), data)
+        self.assertContains(response, _('Insufficient points'))
+        response = self.c.get(reverse('bazaar_exchange'))
+        self.assertContains(response, _('Expected post'))
