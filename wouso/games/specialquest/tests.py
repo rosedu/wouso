@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
-from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext as _
 from models import SpecialQuestUser, SpecialQuestGroup, SpecialQuestGame, SpecialQuestTask
 from wouso.core.tests import WousoTest
 
@@ -73,6 +74,12 @@ class TestSpecialQuestView(WousoTest):
         user2 = User.objects.get(username='testuser2').get_profile().get_extension(SpecialQuestUser)
         self.assertEqual(user2.group.name, 'Special Group no. 1')
         self.assertEqual(len(new_group.members), 2)
+
+    def test_setup_create_error_message(self):
+        new_group = SpecialQuestGroup.create(head=self.user, name='Special Group no. 1')
+        self.c.login(username='testuser1', password='test')
+        response = self.c.get(reverse('specialquest_create'))
+        self.assertContains(response, _('You already have a group'))
 
 class SpecialquestTest(TestCase):
     def setUp(self):
