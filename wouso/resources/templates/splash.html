@@ -32,13 +32,15 @@
                 {% endautoescape %}
 			</p>
 
-            <a href="{% url socialauth_begin 'facebook' %}" class="zocial facebook">
-                Log in with Facebook
-            </a>
+            {% if config_social_auth %}
+                <a href="{% url socialauth_begin 'facebook' %}" class="zocial facebook">
+                    Log in with Facebook
+                </a>
 
-            <a href="{% url socialauth_begin 'twitter' %}" class="zocial twitter">
-                Log in with Twitter
-            </a>
+                <a href="{% url socialauth_begin 'twitter' %}" class="zocial twitter">
+                    Log in with Twitter
+                </a>
+            {% endif %}
 
             <ul class="messages">
                 {% for message in messages %}

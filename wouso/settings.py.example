@@ -277,10 +277,10 @@ DISPLAY_NAME = '{first_name} {last_name}'
 # }
 
 # django-social-auth settings (to be completed)
-FACEBOOK_APP_ID = '436740719774590'
-FACEBOOK_API_SECRET = 'bb9af1852a2e10e5d811f52cd011f652'
-TWITTER_CONSUMER_KEY = 'ZtD5vMGMMOTVwiddDoTEGA'
-TWITTER_CONSUMER_SECRET = 'u6Mo8APe7a2jHnUgHGs0P88kWJNv9drDSYssR8'
+FACEBOOK_APP_ID = ''
+FACEBOOK_API_SECRET = ''
+TWITTER_CONSUMER_KEY = ''
+TWITTER_CONSUMER_SECRET = ''
 
 # PLEASE LEAVE THIS ON THE LAST LINES OF THIS FILE
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
