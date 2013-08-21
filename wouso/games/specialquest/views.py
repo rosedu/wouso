@@ -1,10 +1,11 @@
 from django.http import  HttpResponseRedirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
-from django.contrib.auth.decorators import login_required
 from datetime import date
 from wouso.core.user.models import Player
 from models import SpecialQuestUser, SpecialQuestTask, SpecialQuestGame, SpecialQuestGroup, Invitation
@@ -70,7 +71,7 @@ def setup_leave(request):
 def setup_create(request):
     user = request.user.get_profile().get_extension(SpecialQuestUser)
     group = user.group
-    error, message = '', ''
+    error = ''
     if group is not None:
         error = _('You already have a group')
     else:
@@ -86,7 +87,8 @@ def setup_create(request):
                     group = SpecialQuestGroup.create(head=user, name=name)
                     return HttpResponseRedirect(reverse('specialquest_index_view'))
 
-    return render_to_response('specialquest/create.html', dict(error=error), context_instance=RequestContext(request))
+    messages.error(request, error)
+    return render_to_response('specialquest/create.html', context_instance=RequestContext(request))
 
 @login_required
 def setup_invite(request, user_id):
