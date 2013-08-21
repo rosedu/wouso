@@ -350,3 +350,15 @@ class CpanelViewsTest(WousoTest):
         self.assertEqual(response.status_code, 302)
         report_updated = Report.objects.get(pk=report.pk)
         self.assertEqual(report_updated. status, 'I')
+
+    def test_system_message_group_message_display(self):
+        pg = PlayerGroup.objects.create(name='PlayerGroup_1')
+        data = {'text': 'sample message'}
+
+        # Message is displayed when the method is POST
+        response = self.client.post(reverse('system_message_group', args=[pg.pk]), data)
+        self.assertContains(response, 'Message sent!')
+
+        # Message is not displayed when the method is GET
+        response = self.client.get(reverse('system_message_group', args=[pg.pk]))
+        self.assertNotContains(response, 'Message sent!')
