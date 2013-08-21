@@ -87,7 +87,8 @@ def setup_create(request):
                     group = SpecialQuestGroup.create(head=user, name=name)
                     return HttpResponseRedirect(reverse('specialquest_index_view'))
 
-    messages.error(request, error)
+    if error:
+        messages.error(request, error)
     return render_to_response('specialquest/create.html', context_instance=RequestContext(request))
 
 @login_required
@@ -106,7 +107,12 @@ def setup_invite(request, user_id):
             Invitation.objects.create(group=user.group, to=to_user)
             message = _("Invitation sent")
 
-    return render_to_response('specialquest/invite.html', dict(error=error, message=message, to_user=to_user, squser=user),
+    if error:
+        messages.error(request, error)
+    if message:
+        messages.success(request, message)
+
+    return render_to_response('specialquest/invite.html', dict(to_user=to_user, squser=user),
                               context_instance=RequestContext(request))
 
 @login_required
