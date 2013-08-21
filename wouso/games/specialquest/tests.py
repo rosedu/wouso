@@ -5,8 +5,9 @@ from django.test import TestCase
 from django.test.client import Client
 from django.utils.html import escape
 from django.utils.translation import ugettext as _
-from models import SpecialQuestUser, SpecialQuestGroup, SpecialQuestGame, SpecialQuestTask
 from wouso.core.tests import WousoTest
+from wouso.core import scoring
+from models import SpecialQuestUser, SpecialQuestGroup, SpecialQuestGame, SpecialQuestTask
 
 class TestSpecialQuestView(WousoTest):
     def setUp(self):
@@ -87,6 +88,12 @@ class TestSpecialQuestView(WousoTest):
         self.c.login(username='testuser1', password='test')
         response = self.c.get(reverse('specialquest_invite', args=[user2.pk]))
         self.assertContains(response, escape(_('You don\'t have a group')))
+
+    def test_manage_player_error_messages(self):
+        self.c.login(username='admin', password='admin')
+        data = {'points': 'string_invalid'}
+        response = self.c.post(reverse('specialquest_manage', args=[self.user.pk]), data)
+        self.assertContains(response, 'Invalid amount')
 
 class SpecialquestTest(TestCase):
     def setUp(self):
