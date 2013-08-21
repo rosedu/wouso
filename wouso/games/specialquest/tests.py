@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
+from django.utils.html import escape
 from django.utils.translation import ugettext as _
 from models import SpecialQuestUser, SpecialQuestGroup, SpecialQuestGame, SpecialQuestTask
 from wouso.core.tests import WousoTest
@@ -80,6 +81,12 @@ class TestSpecialQuestView(WousoTest):
         self.c.login(username='testuser1', password='test')
         response = self.c.get(reverse('specialquest_create'))
         self.assertContains(response, _('You already have a group'))
+
+    def test_setup_invite_error_message(self):
+        user2 = self._get_player(2).get_extension(SpecialQuestUser)
+        self.c.login(username='testuser1', password='test')
+        response = self.c.get(reverse('specialquest_invite', args=[user2.pk]))
+        self.assertContains(response, escape(_('You don\'t have a group')))
 
 class SpecialquestTest(TestCase):
     def setUp(self):
