@@ -932,12 +932,10 @@ def system_message_group(request, group):
         text = request.POST['text']
         for p in group.players.all():
             Message.send(sender=None, receiver=p, subject="System message", text=text)
-        message = 'Message sent!'
-    else:
-        message = ''
+        messages.success(request, 'Message sent!')
 
     return render_to_response('cpanel/system_message_group.html',
-                        {'group': group, 'message': message},
+                        {'group': group},
                         context_instance=RequestContext(request))
 
 
