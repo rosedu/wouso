@@ -371,6 +371,11 @@ class CpanelViewsTest(WousoTest):
 
     def test_customization_view_post(self):
         data = {'title': 'Custom test title'}
+        
+        # POST data
         response = self.client.post(reverse('customization'), data)
+
+        # Check if data has been updated
+        response = self.client.get(reverse('customization'))
         self.assertContains(response, 'Custom test title', status_code=200)
         self.assertEqual(response.context['module'], 'custom')

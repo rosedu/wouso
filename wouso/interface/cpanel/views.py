@@ -1,22 +1,21 @@
 import datetime
+from django import forms
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import models as auth
 from django.contrib.auth.decorators import  permission_required
+from django.contrib.auth.models import User, Group
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
-from django import forms
-from django.http import  HttpResponseRedirect, HttpResponse
-from django.shortcuts import get_object_or_404, redirect
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.shortcuts import render_to_response
+from django.http import  HttpResponseRedirect, HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render, render_to_response
 from django.template import RequestContext
-from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_noop
-from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext as _
-from django.views.generic import UpdateView, CreateView, ListView, FormView
+from django.views.generic import View, UpdateView, CreateView, ListView, FormView, TemplateView
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
@@ -31,8 +30,8 @@ from wouso.games.challenge.models import Challenge, Participant
 from wouso.interface.apps.messaging.models import Message
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
-from wouso.utils.import_questions import import_from_file
 from wouso.middleware.impersonation import ImpersonateMiddleware
+from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, AnswerForm, EditReportForm
 from forms import FormulaForm, TagForm
 
@@ -180,24 +179,30 @@ def spell_delete(request, id):
     return HttpResponseRedirect(go_back)
 
 
-@permission_required('config.change_setting')
-def customization(request):
-    if not request.user.is_superuser:
-        return HttpResponseRedirect(reverse('dashboard'))
+class CustomizationView(ModuleViewMixin, TemplateView):
+    template_name = 'cpanel/customization.html'
+    module = 'custom'
 
-    customization = Customization()
-    switchboard = Switchboard()
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return redirect('dashboard')
+        self.customization = Customization()
+        self.switchboard = Switchboard()
+        return super(CustomizationView, self).dispatch(request, *args, **kwargs)
 
-    if request.method == "POST":
-        for group in (customization, switchboard):
+    def post(self, request, *args, **kwargs):
+        for group in (self.customization, self.switchboard):
             for s in group.props():
                 val = request.POST.get(s.name, '')
                 s.set_value(val)
+        return redirect('customization')
 
-    return render_to_response('cpanel/customization.html',
-                              {'settings': (customization, switchboard),
-                               'module': 'custom'},
-                              context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        context = super(CustomizationView, self).get_context_data(**kwargs)
+        context.update(dict(settings=(self.customization, self.switchboard)))
+        return context
+
+customization = permission_required('config.change_setting')(CustomizationView.as_view())
 
 
 @permission_required('config.change_setting')
