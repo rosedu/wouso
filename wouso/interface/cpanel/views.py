@@ -205,20 +205,24 @@ class CustomizationView(ModuleViewMixin, TemplateView):
 customization = permission_required('config.change_setting')(CustomizationView.as_view())
 
 
-@permission_required('config.change_setting')
-def games(request):
-    switchboard = GamesSwitchboard()
+class GamesView(ModuleViewMixin, TemplateView):
+    template_name = 'cpanel/customization.html'
+    module = 'games'
 
-    if request.method == "POST":
-        for group in (switchboard,):
-            for s in group.props():
-                val = request.POST.get(s.name, '')
-                s.set_value(val)
+    def post(self, request, *args, **kwargs):
+        switchboard = GamesSwitchboard()
+        for s in switchboard.props():
+            val = request.POST.get(s.name, '')
+            s.set_value(val)
+        return redirect('games_home')
 
-    return render_to_response('cpanel/customization.html',
-                              {'settings': (switchboard,),
-                               'module': 'games'},
-                              context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        context = super(GamesView, self).get_context_data(**kwargs)
+        switchboard = GamesSwitchboard()
+        context.update(dict(settings=(switchboard,)))
+        return context
+
+games = permission_required('config.change_setting')(GamesView.as_view())
 
 
 @permission_required('config.change_setting')
