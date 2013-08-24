@@ -379,3 +379,7 @@ class CpanelViewsTest(WousoTest):
         response = self.client.get(reverse('customization'))
         self.assertContains(response, 'Custom test title', status_code=200)
         self.assertEqual(response.context['module'], 'custom')
+
+    def test_games_view_get(self):
+        response = self.client.get(reverse('games_home'))
+        self.assertContains(response, 'Disable games', status_code=200)
