@@ -362,3 +362,15 @@ class CpanelViewsTest(WousoTest):
         # Message is not displayed when the method is GET
         response = self.client.get(reverse('system_message_group', args=[pg.pk]))
         self.assertNotContains(response, 'Message sent!')
+
+    def test_customization_view_get(self):
+        response = self.client.get(reverse('customization'))
+        self.assertContains(response, 'Customizations', status_code=200)
+        self.assertContains(response, 'Disable features', status_code=200)
+        self.assertEqual(response.context['module'], 'custom')
+
+    def test_customization_view_post(self):
+        data = {'title': 'Custom test title'}
+        response = self.client.post(reverse('customization'), data)
+        self.assertContains(response, 'Custom test title', status_code=200)
+        self.assertEqual(response.context['module'], 'custom')
