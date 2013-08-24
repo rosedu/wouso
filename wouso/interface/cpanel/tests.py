@@ -383,3 +383,11 @@ class CpanelViewsTest(WousoTest):
     def test_games_view_get(self):
         response = self.client.get(reverse('games_home'))
         self.assertContains(response, 'Disable games', status_code=200)
+        self.assertEqual(response.context['module'], 'games')
+
+    def test_games_view_post(self):
+        data = {'disable-WorkshopGame': 'True'}
+        response = self.client.post(reverse('games_home'), data)
+        response = self.client.get(reverse('games_home'))
+        self.assertContains(response, 'id="disable-WorkshopGame" checked')
+        self.assertEqual(response.context['module'], 'games')
