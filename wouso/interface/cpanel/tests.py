@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from wouso.core.scoring.models import Formula
 from wouso.core.tests import WousoTest
 from wouso.core.magic.models import Spell, SpellHistory, ArtifactGroup, Artifact
-from wouso.core.qpool.models import Question, Tag
+from wouso.core.qpool.models import Category, Tag, Question
 from wouso.core.user.models import Race, PlayerGroup
 from wouso.core.security.models import Report
 
@@ -391,3 +391,10 @@ class CpanelViewsTest(WousoTest):
         response = self.client.get(reverse('games_home'))
         self.assertContains(response, 'id="disable-WorkshopGame" checked')
         self.assertEqual(response.context['module'], 'games')
+
+    def test_qpool_importer_view(self):
+        response = self.client.get(reverse('importer'))
+        chall_cat = Category.objects.get(name='challenge')
+        self.assertContains(response, 'Select input file', status_code=200)
+        self.assertTrue(chall_cat in response.context['categories'])
+        self.assertEqual(response.context['module'], 'qpool')
