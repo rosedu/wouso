@@ -225,6 +225,7 @@ class GamesView(ModuleViewMixin, TemplateView):
 games = permission_required('config.change_setting')(GamesView.as_view())
 
 
+
 @permission_required('config.change_setting')
 def qpool_home(request, cat='qotd', page=u'1', tag=None):
     categories = Category.objects.all()
@@ -302,7 +303,7 @@ def qpool_new(request, cat=None):
     form = QuestionForm()
     categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
     if request.method == "POST":
-        question = QuestionForm(data = request.POST)
+        question = QuestionForm(data=request.POST)
         if question.is_valid():
             newq = question.save()
             return redirect('qpool_home', cat=newq.category.name)
@@ -470,16 +471,18 @@ def qpool_set_active_categories(request):
     )
 
 
-@permission_required('config.change_setting')
-def qpool_importer(request):
-    categories = Category.objects.all().exclude(name='proposed')
-    tags = Tag.objects.all().exclude(name__in=['qotd', 'challenge', 'quest'])
+class QpoolImporterView(ModuleViewMixin, TemplateView):
+    template_name = 'cpanel/importer.html'
+    module = 'qpool'
 
-    return render_to_response('cpanel/importer.html',
-                           {'categories': categories,
-                            'tags': tags,
-                            'module': 'qpool'},
-                           context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        categories = Category.objects.all().exclude(name='proposed')
+        tags = Tag.objects.all().exclude(name__in=['qotd', 'challenge', 'quest'])
+        context = super(QpoolImporterView, self).get_context_data(**kwargs)
+        context.update(dict(categories=categories, tags=tags))
+        return context
+
+qpool_importer = permission_required('config.change_setting')(QpoolImporterView.as_view())
 
 
 @permission_required('config.change_setting')
