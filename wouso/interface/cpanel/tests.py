@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from wouso.core.scoring.models import Formula
 from wouso.core.tests import WousoTest
 from wouso.core.magic.models import Spell, SpellHistory, ArtifactGroup, Artifact
-from wouso.core.qpool.models import Category, Tag, Question
+from wouso.core.qpool.models import Category, Tag, Question, Answer
 from wouso.core.user.models import Race, PlayerGroup
 from wouso.core.security.models import Report
 
@@ -397,4 +397,23 @@ class CpanelViewsTest(WousoTest):
         chall_cat = Category.objects.get(name='challenge')
         self.assertContains(response, 'Select input file', status_code=200)
         self.assertTrue(chall_cat in response.context['categories'])
+        self.assertEqual(response.context['module'], 'qpool')
+
+    def test_qpool_add_answer_view_get(self):
+        q1 = Question.objects.create(text='Question 1')
+        a1 = Answer.objects.create(text='Answer 1', question=q1, correct=True)
+        a2 = Answer.objects.create(text='Answer 2', question=q1, correct=False)
+        response = self.client.get(reverse('add_answer', args=[q1.pk]))
+        self.assertContains(response, 'Question 1')
+        self.assertContains(response, 'Answer 1')
+        self.assertContains(response, 'Answer 2')
+        self.assertEqual(response.context['module'], 'qpool')
+
+    def test_qpool_add_answer_view_post(self):
+        q1 = Question.objects.create(text='Question 1')
+        data = {'new_answer_text': 'First Answer',
+                'new_answer_correct': 'on'}
+        self.client.post(reverse('add_answer', args=[q1.pk]), data)
+        response = self.client.get(reverse('add_answer', args=[q1.pk]))
+        self.assertContains(response, 'First Answer')
         self.assertEqual(response.context['module'], 'qpool')
