@@ -318,33 +318,29 @@ def qpool_new(request, cat=None):
     )
 
 
+class QPoolAddAnswerView(ModuleViewMixin, UpdateView):
+    template_name = 'cpanel/add_answer.html'
+    model = Question
+    form_class = AnswerForm
+    module = 'qpool'
+
+    def get_form_kwargs(self):
+        kwargs = {
+                  'data': self.request.POST,
+                  'instance': self.object
+                 }
+        return kwargs
+
+    def form_valid(self, form):
+        form.save(id=self.object)
+        return redirect('question_edit', id=self.object.id)
+
+qpool_add_answer = permission_required('config.change_setting')(QPoolAddAnswerView.as_view())
+
+
 @permission_required('config.change_setting')
-def qpool_add_answer(request, id):
-    form = AnswerForm()
+def qpool_edit(request, id):
     question = get_object_or_404(Question, pk=id)
-    if request.method == 'POST':
-        answer = AnswerForm(request.POST, instance=question)
-        if answer.is_valid():
-            answer.save(id=question)
-            return redirect('question_edit', id=question.id)
-        else:
-            form = answer
-
-    return render_to_response('cpanel/add_answer.html',
-            {'form': form,
-             'question': question,
-             'module': 'qpool'},
-            context_instance=RequestContext(request)
-    )
-
-
-@permission_required('config.change_setting')
-def qpool_edit(request, id=None):
-    if id is not None:
-        question = get_object_or_404(Question, pk=id)
-    else:
-        return qpool_new(request)
-
     categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
 
     if request.method == 'POST':
@@ -544,7 +540,7 @@ qpool_managetags = permission_required('config.change_setting')(QPoolManageTagsV
 def qpool_add_tag(request):
     form = AddTagForm()
     if request.method == "POST":
-        tag = AddTagForm(data = request.POST)
+        tag = AddTagForm(data=request.POST)
         if tag.is_valid():
             tag.save()
             return redirect('qpool_manage_tags')
