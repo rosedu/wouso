@@ -419,8 +419,16 @@ class CpanelViewsTest(WousoTest):
         self.assertEqual(response.context['module'], 'qpool')
 
     def test_qpool_new_view_get(self):
+        Category.objects.create(name='sample_category')
         response = self.client.get(reverse('question_new'))
         self.assertContains(response, 'Add question', status_code=200)
         self.assertContains(response, 'Text:')
         self.assertContains(response, 'Category:')
+        self.assertContains(response, 'sample_category')
         self.assertEqual(response.context['module'], 'qpool')
+
+    def test_qpool_new_view_post(self):
+        data = {'text': 'sample text for test question',
+                'category': 'sample_category'}
+        response = self.client.post(reverse('question_new'), data)
+        self.assertTrue(Question.objects.get(text='sample text for test question'))
