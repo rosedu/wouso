@@ -404,7 +404,7 @@ class CpanelViewsTest(WousoTest):
         a1 = Answer.objects.create(text='Answer 1', question=q1, correct=True)
         a2 = Answer.objects.create(text='Answer 2', question=q1, correct=False)
         response = self.client.get(reverse('add_answer', args=[q1.pk]))
-        self.assertContains(response, 'Question 1')
+        self.assertContains(response, 'Question 1', status_code=200)
         self.assertContains(response, 'Answer 1')
         self.assertContains(response, 'Answer 2')
         self.assertEqual(response.context['module'], 'qpool')
@@ -416,4 +416,11 @@ class CpanelViewsTest(WousoTest):
         self.client.post(reverse('add_answer', args=[q1.pk]), data)
         response = self.client.get(reverse('add_answer', args=[q1.pk]))
         self.assertContains(response, 'First Answer')
+        self.assertEqual(response.context['module'], 'qpool')
+
+    def test_qpool_new_view_get(self):
+        response = self.client.get(reverse('question_new'))
+        self.assertContains(response, 'Add question', status_code=200)
+        self.assertContains(response, 'Text:')
+        self.assertContains(response, 'Category:')
         self.assertEqual(response.context['module'], 'qpool')
