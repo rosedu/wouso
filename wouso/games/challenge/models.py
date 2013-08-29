@@ -767,7 +767,7 @@ class ChallengeGame(Game):
             # check if there isn't another challenge launched
             if Challenge.exist_last_day(date.today(), request.user.get_profile(), player):
                 return '<span class="button">%s</span>' % _('Challenged')
-            return '<a class="button ajaxify" href="%s">%s</a>' % (url, _('Challenge!'))
+            return '<a class="button" href="%s">%s</a>' % (url, _('Challenge!'))
         return ''
 
     @classmethod
