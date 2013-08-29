@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, Http404
+from django.http import Http404
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
@@ -149,7 +149,7 @@ def accept(request, id):
     if (chall.user_to.user == user_to and chall.is_launched()) or \
         request.user.is_superuser:
             chall.accept()
-            return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
+            return redirect('challenge_index_view')
 
     messages.error(request, _('Challenge cannot be accepted.'))
     return redirect('challenge_index_view')
@@ -174,7 +174,7 @@ def cancel(request, id):
     user_from = request.user.get_profile().get_extension(ChallengeUser)
     if chall.user_from.user == user_from and chall.is_launched():
         chall.cancel()
-        return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
+        return redirect('challenge_index_view')
 
     messages.error(request, _('You cannot cancel this challenge.'))
     return redirect('challenge_index_view')
@@ -197,7 +197,7 @@ def setplayed(request, id):
         chall.user_from.score = 0
 
     chall.played()
-    return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
+    return redirect('challenge_index_view')
 
 @login_required
 def use_one_more(request):
