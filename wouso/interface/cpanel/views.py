@@ -298,24 +298,25 @@ def qpool_home(request, cat='qotd', page=u'1', tag=None):
                               context_instance=RequestContext(request))
 
 
-@permission_required('config.change_setting')
-def qpool_new(request, cat=None):
-    form = QuestionForm()
-    categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
-    if request.method == "POST":
-        question = QuestionForm(data=request.POST)
-        if question.is_valid():
-            newq = question.save()
-            return redirect('qpool_home', cat=newq.category.name)
-        else:
-            form = question
+class QPoolNewView(ModuleViewMixin, FormView):
+    template_name = 'cpanel/qpool_new.html'
+    form_class = QuestionForm
+    module = 'qpool'
 
-    return render_to_response('cpanel/qpool_new.html',
-            {'form': form,
-             'module': 'qpool',
-             'categs': categs},
-            context_instance=RequestContext(request)
-    )
+    def get_form_kwargs(self):
+        return dict(data=self.request.POST)
+
+    def form_valid(self, form):
+        new_question = form.save()
+        return redirect('qpool_home', cat=new_question.category.name)
+
+    def get_context_data(self, **kwargs):
+        context = super(QPoolNewView, self).get_context_data(**kwargs)
+        categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
+        context.update(dict(categs=categs))
+        return context
+
+qpool_new = permission_required('config.change_setting')(QPoolNewView.as_view())
 
 
 class QPoolAddAnswerView(ModuleViewMixin, UpdateView):
@@ -350,7 +351,7 @@ def qpool_edit(request, id):
             if newq.endorsed_by is None:
                 newq.endorsed_by = request.user
                 newq.save()
-            return redirect('qpool_home', cat = newq.category.name)
+            return redirect('qpool_home', cat=newq.category.name)
         else:
             print "nevalid"
     else:
