@@ -34,8 +34,7 @@ def index(request):
     played = ChallengeGame.get_played(chall_user)[:10]
 
     if not chall_user.is_eligible():
-        messages.error(request, 'Your race can\'t play. Go home')
-        return render(request, 'challenge/message.html')
+        messages.error(request, _('Your race can\'t play. Go home'))
 
     return render_to_response('challenge/index.html',
             {'challenges': challs, 'played': played, 'challuser': chall_user, 'challenge': ChallengeGame},
@@ -53,17 +52,17 @@ class ChallengeView(View):
         # Check if the player has accepted the challenge before playing it
         if self.chall.status == 'L':
             messages.error(request, _('The challenge was not accepted yet!'))
-            return render(request, 'challenge/message.html')
+            return redirect('challenge_index_view')
 
         # Check if the self.challenge was refused
         if self.chall.status == 'R':
             messages.error(request, _('The challenge was refused!'))
-            return render(request, 'challenge/message.html')
+            return redirect('challenge_index_view')
 
         if self.participant.played:
             messages.error(request, _('You have already submitted this challenge'\
                                        ' and scored %.2f points') % self.participant.score)
-            return render(request, 'challenge/message.html')
+            return redirect('challenge_index_view')
 
         return super(ChallengeView, self).dispatch(request, *args, **kwargs)
 
@@ -103,20 +102,20 @@ def launch(request, to_id):
     user_from = request.user.get_profile().get_extension(ChallengeUser)
 
     if ChallengeGame.disabled():
-        messages.error(request, 'Provocarile sunt dezactivate')
-        return render(request, 'challenge/message.html')
+        messages.error(request, _('Provocarile sunt dezactivate'))
+        return redirect('challenge_index_view')
 
     if (not user_to.is_eligible()) or (not user_from.is_eligible()):
         messages.error(request, _('Sorry, challenge failed.'))
-        return render(request, 'challenge/message.html')
+        return redirect('challenge_index_view')
 
     if not user_from.can_launch():
         messages.error(request, _('You cannot launch another challenge today.'))
-        return render(request, 'challenge/message.html')
+        return redirect('challenge_index_view')
 
     if not user_from.has_enough_points():
         messages.error(request, _('You need at least 30 points to launch a challenge'))
-        return render(request, 'challenge/message.html')
+        return redirect('challenge_index_view')
 
     if user_from.can_challenge(user_to):
         try:
@@ -124,7 +123,7 @@ def launch(request, to_id):
         except ChallengeException as e:
             # Some error occurred during question fetch. Clean up, and display error
             messages.error(request, e.message)
-            return render(request, 'challenge/message.html')
+            return redirect('challenge_index_view')
         #Checking if user_to is stored in session
         PREFIX = "_user:"
         action_msg = "multiple-login"
@@ -133,16 +132,16 @@ def launch(request, to_id):
             addActivity.send(sender=None, user_to=user_to, user_from=user_from, action=action_msg,
                              game=None, public=False)
         messages.success(request, _('Successfully challenged'))
-        return render(request, 'challenge/message.html')
+        return redirect('challenge_index_view')
     else:
         messages.error(request, _('This user cannot be challenged.'))
-        return render(request, 'challenge/message.html')
+        return redirect('challenge_index_view')
 
 @login_required
 def accept(request, id):
     if ChallengeGame.disabled():
-        messages.error(request, 'Provocarile sunt dezactivate')
-        return render(request, 'challenge/message.html')
+        messages.error(request, _('Provocarile sunt dezactivate'))
+        return redirect('challenge_index_view')
 
     chall = get_object_or_404(Challenge, pk=id)
 
@@ -153,7 +152,7 @@ def accept(request, id):
             return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
 
     messages.error(request, _('Challenge cannot be accepted.'))
-    return render(request, 'challenge/message.html')
+    return redirect('challenge_index_view')
 
 @login_required
 def refuse(request, id):
@@ -163,10 +162,10 @@ def refuse(request, id):
     if (chall.user_to.user == user_to and chall.is_launched()) or \
         request.user.is_superuser:
             chall.refuse()
-            return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
+            return redirect('challenge_index_view')
 
     messages.error(request, _('You cannot refuse this challenge.'))
-    return render(request, 'challenge/message.html')
+    return redirect('challenge_index_view')
 
 @login_required
 def cancel(request, id):
@@ -178,7 +177,7 @@ def cancel(request, id):
         return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
 
     messages.error(request, _('You cannot cancel this challenge.'))
-    return render(request, 'challenge/message.html')
+    return redirect('challenge_index_view')
 
 @login_required
 def setplayed(request, id):
@@ -208,8 +207,8 @@ def use_one_more(request):
         challuser.do_one_more()
     else:
         messages.error(request, _('You don\'t have the artifact'))
-        return render(request, 'challenge/message.html')
-    return HttpResponseRedirect(reverse('wouso.games.challenge.views.index'))
+
+    return redirect('challenge_index_view')
 
 def header_link(request):
     profile = request.user.get_profile()
