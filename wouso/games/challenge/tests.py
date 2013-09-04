@@ -511,3 +511,18 @@ class TestChallengeViews(WousoTest):
         self.c.login(username='testuser2', password='test')
         response = self.c.get(reverse('player_profile', args=[self.ch_player1.pk]))
         self.assertContains(response, _('Challenge!'))
+
+    def test_admin_button_challenges(self):
+        admin = self._get_superuser()
+        url = reverse('challenge_stats', args=[self.ch_player2.pk])
+
+        # Button is not displayed for normal users
+        response = self.c.get(reverse('player_profile', args=[self.ch_player2.pk]))
+        self.assertNotContains(response,
+                    '<a class="button" href="%s">%s</a>' % (url, _('Challenges')))
+
+        # Button is displayed for super users
+        self.c.login(username=admin.username, password='admin')
+        response = self.c.get(reverse('player_profile', args=[self.ch_player2.pk]))
+        self.assertContains(response,
+                    '<a class="button" href="%s">%s</a>' % (url, _('Challenges')))
