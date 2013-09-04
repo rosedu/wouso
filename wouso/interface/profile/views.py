@@ -1,6 +1,7 @@
+from datetime import date
+from hashlib import md5
 from django import forms
 from django.core.exceptions import ValidationError
-from hashlib import md5
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core import serializers
@@ -9,12 +10,12 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.html import strip_tags
 from wouso.core.god import God
-from wouso.core.user.models import Player, PlayerGroup, Race
-from wouso.core.scoring.models import History
 from wouso.core.magic.models import Spell, PlayerSpellDue
+from wouso.core.scoring.models import History
+from wouso.core.user.models import Player, PlayerGroup, Race
+from wouso.games.challenge.models import Challenge
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, GroupHistory, NewHistory, ObjectHistory
-from wouso.core.game import get_games
 
 
 @login_required
@@ -85,12 +86,6 @@ def user_profile(request, id, page=u'1'):
     except (EmptyPage, InvalidPage):
         activity = paginator.page(paginator.num_pages)
 
-    profile_actions = ''
-    profile_superuser_actions = ''
-    for g in get_games():
-        profile_actions += g.get_profile_actions(request, profile)
-        profile_superuser_actions += g.get_profile_superuser_actions(request, profile)
-
         # some hackish introspection
         if hasattr(g, 'user_model'):
             model = getattr(g, 'user_model')
@@ -102,13 +97,15 @@ def user_profile(request, id, page=u'1'):
     else:
         message=''
 
+    challenge_launched_recently = Challenge.exist_last_day(date.today(),
+                                        request.user.get_profile(), profile)
+
     return render_to_response('profile/profile.html',
                               {'profile': profile,
                                'activity': activity,
                                'top': top_user,
                                'scoring': history,
-                               'profile_actions': profile_actions,
-                               'profile_superuser_actions': profile_superuser_actions,
+                               'challenge_launched_recently': challenge_launched_recently,
                                'message': message, },
                               context_instance=RequestContext(request))
 

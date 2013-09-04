@@ -54,7 +54,13 @@
             <a class="button button-min" href="{% url set_profile %}" title="{% trans 'Set your profile' %}">S</a>
         {% endif %}
 
-        {% autoescape off %}{{ profile_actions }}{% endautoescape %}
+        {% ifnotequal user.get_profile.id profile.id %}
+            {% if challenge_launched_recently %}
+                <span class="button">{% trans 'Challenged' %}</span>
+            {% else %}
+                <a class="button" href="{% url challenge_launch player.id %}">{% trans 'Challenge!' %}</a>
+            {% endif %}
+        {% endifnotequal %}
         <a class="button" href="{% url report_player profile.id%}">Report</a>
     </div>
 
@@ -79,7 +85,7 @@
     {% if user.is_superuser %}
     <div class="actions">
         <span class="button-list">Admin:</span>
-        {% autoescape off %}{{ profile_superuser_actions }}{% endautoescape %}
+        <a class="button" href="{% url challenge_stats profile.id %}">{% trans 'Challenges' %}</a>
         <a class="button button-min" href="{% url admin:auth_user_change profile.user.id %}">✍</a>
         <a class="button" href="{% url impersonate profile.id %}">Impersonate</a>
     </div>
