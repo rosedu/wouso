@@ -58,9 +58,21 @@
             {% if challenge_launched_recently %}
                 <span class="button">{% trans 'Challenged' %}</span>
             {% else %}
-                <a class="button" href="{% url challenge_launch player.id %}">{% trans 'Challenge!' %}</a>
+                <a class="button" href="{% url challenge_launch profile.id %}">{% trans 'Challenge!' %}</a>
             {% endif %}
         {% endifnotequal %}
+
+        {% if specialquest_button.MATE %}
+            <span class="button">{% trans 'Special mate' %}</span>
+        {% elif specialquest_button.OTHER %}
+            <span class="button">{% trans 'Other group' %}</span>
+        {% elif specialquest_button.ALREADY_INVITED %}
+            <span class="button">{% trans 'Invited' %}</span>
+        {% elif specialquest_button.INVITE %}
+            <a href="{% url specialquest_invite profile.id %}"
+               title="{% trans 'Invite in my Special Quest group' %}">{% trans 'Invite' %}</a>
+        {% endif %}
+
         <a class="button" href="{% url report_player profile.id%}">Report</a>
     </div>
 
@@ -85,6 +97,7 @@
     {% if user.is_superuser %}
     <div class="actions">
         <span class="button-list">Admin:</span>
+        <a class="button" href="{% url specialquest_manage profile.id %}">Special quest</a>
         <a class="button" href="{% url challenge_stats profile.id %}">{% trans 'Challenges' %}</a>
         <a class="button button-min" href="{% url admin:auth_user_change profile.user.id %}">✍</a>
         <a class="button" href="{% url impersonate profile.id %}">Impersonate</a>
