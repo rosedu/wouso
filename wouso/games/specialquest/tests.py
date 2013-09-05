@@ -9,7 +9,7 @@ from wouso.core.tests import WousoTest
 from wouso.core import scoring
 from models import SpecialQuestUser, SpecialQuestGroup, SpecialQuestGame, SpecialQuestTask
 
-class TestSpecialQuestView(WousoTest):
+class TestSpecialQuestViews(WousoTest):
     def setUp(self):
         self.user = self._get_player(1).get_extension(SpecialQuestUser)
         self.admin = self._get_superuser()
@@ -94,6 +94,26 @@ class TestSpecialQuestView(WousoTest):
         data = {'points': 'string_invalid'}
         response = self.c.post(reverse('specialquest_manage', args=[self.user.pk]), data)
         self.assertContains(response, 'Invalid amount')
+
+    def test_profile_page_button(self):
+        self.c.login(username='testuser1', password='test')
+        new_group = SpecialQuestGroup.create(head=self.user, name='Special Group no. 1')
+        user2 = self._get_player(2).get_extension(SpecialQuestUser)
+        # Button 'Invite' is displayed
+        response = self.c.get(reverse('player_profile', args=[user2.pk]))
+        self.assertContains(response, 'Invite in my Special Quest group')
+        
+        # Button 'Special mate' is displayed
+        user2.group = new_group
+        user2.save()
+        new_group.players.add(user2)
+        response = self.c.get(reverse('player_profile', args=[user2.pk]))
+        self.assertContains(response, 'Special mate')
+
+    def test_profile_page_super_button(self):
+        self.c.login(username='admin', password='admin')
+        response = self.c.get(reverse('player_profile', args=[self.user.pk]))
+        self.assertContains(response, 'Special quest')
 
 class SpecialquestTest(TestCase):
     def setUp(self):
