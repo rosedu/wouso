@@ -14,6 +14,7 @@ from wouso.core.magic.models import Spell, PlayerSpellDue
 from wouso.core.scoring.models import History
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.games.challenge.models import Challenge
+from wouso.games.specialquest.models import SpecialQuestGame
 from wouso.interface.activity.models import Activity
 from wouso.interface.top.models import TopUser, GroupHistory, NewHistory, ObjectHistory
 
@@ -99,6 +100,7 @@ def user_profile(request, id, page=u'1'):
 
     challenge_launched_recently = Challenge.exist_last_day(date.today(),
                                         request.user.get_profile(), profile)
+    specialquest_button = SpecialQuestGame.get_specialquest_user_button(request, profile)
 
     return render_to_response('profile/profile.html',
                               {'profile': profile,
@@ -106,7 +108,8 @@ def user_profile(request, id, page=u'1'):
                                'top': top_user,
                                'scoring': history,
                                'challenge_launched_recently': challenge_launched_recently,
-                               'message': message, },
+                               'specialquest_button': specialquest_button,
+                               'message': message},
                               context_instance=RequestContext(request))
 
 @login_required
