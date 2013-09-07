@@ -40,6 +40,10 @@
                 <a href="{% url socialauth_begin 'twitter' %}" class="zocial twitter">
                     Log in with Twitter
                 </a>
+
+                <a href="{% url socialauth_begin 'google-oauth2' %}" class="zocial google">
+                    Log in with Google
+                </a>
             {% endif %}
 
             <ul class="messages">

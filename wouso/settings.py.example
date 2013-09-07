@@ -251,8 +251,9 @@ if SOCIAL_AUTH_ENABLED:
         INSTALLED_APPS += ['social_auth']
         LOGIN_ERROR_URL = '/'
         AUTHENTICATION_BACKENDS = ('social_auth.backends.twitter.TwitterBackend',
-                                   'social_auth.backends.facebook.FacebookBackend',) + \
-                                  AUTHENTICATION_BACKENDS
+                                   'social_auth.backends.facebook.FacebookBackend',
+                                   'social_auth.backends.google.GoogleOAuth2Backend',) + \
+                                   AUTHENTICATION_BACKENDS
         MIDDLEWARE_CLASSES.append('social_auth.middleware.SocialAuthExceptionMiddleware')
 
 
@@ -281,6 +282,8 @@ FACEBOOK_APP_ID = ''
 FACEBOOK_API_SECRET = ''
 TWITTER_CONSUMER_KEY = ''
 TWITTER_CONSUMER_SECRET = ''
+GOOGLE_OAUTH2_CLIENT_ID = ''
+GOOGLE_OAUTH2_CLIENT_SECRET = ''
 
 # PLEASE LEAVE THIS ON THE LAST LINES OF THIS FILE
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
