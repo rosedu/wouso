@@ -64,7 +64,7 @@ def login_view(request):
             request.session.__setitem__(PREFIX+user.username, datetime.datetime.now())
             request.session.set_expiry(MAX_TIME)
             login(request, user)
-            signals.addActivity.send(sender=None, user_from=user.get_profile(), action="login", game=None, public=False)
+
             if request.POST.get('next'):
                 return HttpResponseRedirect(request.POST.get('next'))
             return redirect(settings.LOGIN_REDIRECT_URL)
