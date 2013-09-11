@@ -1,15 +1,16 @@
 from datetime import datetime
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
-from django.test.client import Client
-from django.test import TestCase
 from django.core.urlresolvers import reverse
-from wouso.core.scoring.models import Formula
-from wouso.core.tests import WousoTest
+from django.test import TestCase
+from django.test.client import Client
 from wouso.core.magic.models import Spell, SpellHistory, ArtifactGroup, Artifact
 from wouso.core.qpool.models import Category, Tag, Question, Answer
-from wouso.core.user.models import Race, PlayerGroup
+from wouso.core.scoring.models import Formula
 from wouso.core.security.models import Report
+from wouso.core.tests import WousoTest
+from wouso.core.user.models import Race, PlayerGroup
+from wouso.games.quest.models import Quest
 
 class addPlayerTestCase(TestCase):
     def setUp(self):
@@ -432,3 +433,26 @@ class CpanelViewsTest(WousoTest):
                 'category': 'sample_category'}
         response = self.client.post(reverse('question_new'), data)
         self.assertTrue(Question.objects.get(text='sample text for test question'))
+
+    def test_dashboard_view(self):
+        # Create dummy objects
+        race = Race.objects.create(name='Race_test_1', can_play=True)
+
+        for i in range(5):
+            Question.objects.create(text='Question number %d' % i)
+            Quest.objects.create(start=datetime.now(), end=datetime.now())
+
+        for i in range(6):
+            player = User.objects.create(username='Student%d' % i, password='test').get_profile()
+            player.race = race
+            player.save()
+            ArtifactGroup.objects.create(name='ArtifactGroup%d' % i)
+
+        response = self.client.get(reverse('dashboard'))
+
+        # Check if the required information is displayed
+        self.assertContains(response, '6 users can play')
+        self.assertContains(response, '5 total questions')
+        self.assertContains(response, 'No quest active. Total: 5')
+        self.assertContains(response, 'ArtifactGroup3')
+        self.assertEqual(response.context['module'], 'home')
