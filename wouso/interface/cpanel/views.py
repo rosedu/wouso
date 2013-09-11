@@ -35,59 +35,72 @@ from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, AnswerForm, EditReportForm
 from forms import FormulaForm, TagForm
 
-@staff_required
-def dashboard(request):
-    from wouso.games.quest.models import Quest, QuestGame
-    from django import get_version
-    from wouso.settings import WOUSO_VERSION, DATABASES
-    from wouso.core.config.models import Setting
+class ModuleViewMixin(object):
+    module = 'undefined'
 
-    database = DATABASES['default'].copy()
-    database_engine = database['ENGINE'].split('.')[-1]
-    database_name = database['NAME']
-    future_questions = Schedule.objects.filter(day__gte=datetime.datetime.now())
-    nr_future_questions = len(future_questions)
+    def get_context_data(self, **kwargs):
+        context = super(ModuleViewMixin, self).get_context_data(**kwargs)
+        context.update(dict(module=self.module))
+        return context
 
-    questions = Question.objects.all()
-    nr_questions = len(questions)
-    active_quest = QuestGame().get_current()
-    total_quests = Quest.objects.all().count()
 
-    # artifacts
-    artifact_groups = ArtifactGroup.objects.all()
+class DashboardView(ModuleViewMixin, TemplateView):
+    template_name = 'cpanel/index.html'
+    module = 'home'
 
-    # admins
-    staff_group, new = auth.Group.objects.get_or_create(name='Staff')
+    def get_context_data(self, **kwargs):
+        from wouso.games.quest.models import Quest, QuestGame
+        from django import get_version
+        from wouso.settings import WOUSO_VERSION, DATABASES
+        from wouso.core.config.models import Setting
 
-    # wousocron last_run
-    last_run = Setting.get('wousocron_lastrun').get_value()
-    if last_run == "":
-        last_run="wousocron was never run"
+        database = DATABASES['default'].copy()
+        database_engine = database['ENGINE'].split('.')[-1]
+        database_name = database['NAME']
 
-    # online members
-    oldest = datetime.datetime.now() - datetime.timedelta(minutes = 10)
-    online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
+        future_questions = Schedule.objects.filter(day__gte=datetime.datetime.now())
+        nr_future_questions = len(future_questions)
+        questions = Question.objects.all()
+        nr_questions = len(questions)
+        active_quest = QuestGame().get_current()
+        total_quests = Quest.objects.all().count()
 
-    # number of players which can play
-    cp_number = Player.objects.filter(race__can_play=True).count()
+        # artifacts
+        artifact_groups = ArtifactGroup.objects.all()
 
-    return render_to_response('cpanel/index.html',
-                              {'nr_future_questions' : nr_future_questions,
-                               'nr_questions' : nr_questions,
-                               'active_quest': active_quest,
-                               'total_quests': total_quests,
-                               'module': 'home',
-                               'artifact_groups': artifact_groups,
-                               'django_version': get_version(),
-                               'wouso_version': WOUSO_VERSION,
-                               'database_engine': database_engine,
-                               'database_name': database_name,
-                               'staff': staff_group,
-                               'last_run': last_run,
-                               'online_users': online_last10,
-                               'cp_number': cp_number,
-                               },
-                              context_instance=RequestContext(request))
+        # admins
+        staff_group, new = auth.Group.objects.get_or_create(name='Staff')
+
+        # wousocron last_run
+        last_run = Setting.get('wousocron_lastrun').get_value()
+        if last_run == "":
+            last_run="wousocron was never run"
+
+        # online members
+        oldest = datetime.datetime.now() - datetime.timedelta(minutes = 10)
+        online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
+
+        # number of players which can play
+        cp_number = Player.objects.filter(race__can_play=True).count()
+
+        context = super(DashboardView, self).get_context_data(**kwargs)
+        context.update({'nr_future_questions' : nr_future_questions,
+                       'nr_questions' : nr_questions,
+                       'active_quest': active_quest,
+                       'total_quests': total_quests,
+                       'artifact_groups': artifact_groups,
+                       'django_version': get_version(),
+                       'wouso_version': WOUSO_VERSION,
+                       'database_engine': database_engine,
+                       'database_name': database_name,
+                       'staff': staff_group,
+                       'last_run': last_run,
+                       'online_users': online_last10,
+                       'cp_number': cp_number})
+        return context
+
+dashboard = staff_required(DashboardView.as_view())
+
 
 class FormulasView(ListView):
     model = Formula
@@ -122,14 +135,6 @@ class AddFormulaView(CreateView):
     success_url = reverse_lazy('add_formula')
 
 add_formula = permission_required('config.change_setting')(AddFormulaView.as_view())
-
-class ModuleViewMixin(object):
-    module = 'undefined'
-
-    def get_context_data(self, **kwargs):
-        context = super(ModuleViewMixin, self).get_context_data(**kwargs)
-        context.update(dict(module=self.module))
-        return context
 
 
 class SpellsView(ModuleViewMixin, ListView):
