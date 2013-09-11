@@ -110,6 +110,22 @@ class Spell(Modifier):
     def history_expired(self):
         return self.spellhistory_set.filter(type='e').count()
 
+    @classmethod
+    def get_spells_summary(cls):
+        """
+        Returns a dictionary which contains a summary
+        of the bought, used, cleaned and expired spells
+        """
+        summary = dict(spells_bought=0, spells_used=0,
+                       spells_expired=0, spells_cleaned=0)
+        for p in cls.objects.all():
+            summary['spells_bought'] += p.history_bought()
+            summary['spells_used'] += p.history_used()
+            summary['spells_expired'] += p.history_expired()
+            summary['spells_cleaned'] += p.history_cleaned()
+
+        return summary
+
     def __unicode__(self):
         if self.title:
             return self.title

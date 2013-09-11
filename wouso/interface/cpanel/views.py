@@ -1,21 +1,21 @@
 import datetime
+from django import forms
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import models as auth
 from django.contrib.auth.decorators import  permission_required
+from django.contrib.auth.models import User, Group
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
-from django import forms
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import  HttpResponseRedirect, HttpResponse
-from django.shortcuts import get_object_or_404, redirect
-from django.core.urlresolvers import reverse
-from django.shortcuts import render_to_response
+from django.shortcuts import get_object_or_404, redirect, render, render_to_response
 from django.template import RequestContext
-from django.conf import settings
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_noop
-from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext as _
+from django.views.generic import View, UpdateView, CreateView, ListView, FormView, TemplateView
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
@@ -30,86 +30,94 @@ from wouso.games.challenge.models import Challenge, Participant
 from wouso.interface.apps.messaging.models import Message
 from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
-from wouso.utils.import_questions import import_from_file
 from wouso.middleware.impersonation import ImpersonateMiddleware
+from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, AnswerForm, EditReportForm
-from forms import FormulaForm
+from forms import FormulaForm, TagForm
 
-@staff_required
-def dashboard(request):
-    from wouso.games.quest.models import Quest, QuestGame
-    from django import get_version
-    from wouso.settings import WOUSO_VERSION, DATABASES
-    from wouso.core.config.models import Setting
+class ModuleViewMixin(object):
+    module = 'undefined'
 
-    database = DATABASES['default'].copy()
-    database_engine = database['ENGINE'].split('.')[-1]
-    database_name = database['NAME']
-    future_questions = Schedule.objects.filter(day__gte=datetime.datetime.now())
-    nr_future_questions = len(future_questions)
+    def get_context_data(self, **kwargs):
+        context = super(ModuleViewMixin, self).get_context_data(**kwargs)
+        context.update(dict(module=self.module))
+        return context
 
-    questions = Question.objects.all()
-    nr_questions = len(questions)
-    active_quest = QuestGame().get_current()
-    total_quests = Quest.objects.all().count()
 
-    # artifacts
-    artifact_groups = ArtifactGroup.objects.all()
+class DashboardView(ModuleViewMixin, TemplateView):
+    template_name = 'cpanel/index.html'
+    module = 'home'
 
-    # admins
-    staff_group, new = auth.Group.objects.get_or_create(name='Staff')
+    def get_context_data(self, **kwargs):
+        from wouso.games.quest.models import Quest, QuestGame
+        from django import get_version
+        from wouso.settings import WOUSO_VERSION, DATABASES
+        from wouso.core.config.models import Setting
 
-    # wousocron last_run
-    last_run = Setting.get('wousocron_lastrun').get_value()
-    if last_run == "":
-        last_run="wousocron was never run"
+        database = DATABASES['default'].copy()
+        database_engine = database['ENGINE'].split('.')[-1]
+        database_name = database['NAME']
 
-    # online members
-    oldest = datetime.datetime.now() - datetime.timedelta(minutes = 10)
-    online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
+        future_questions = Schedule.objects.filter(day__gte=datetime.datetime.now())
+        nr_future_questions = len(future_questions)
+        questions = Question.objects.all()
+        nr_questions = len(questions)
+        active_quest = QuestGame().get_current()
+        total_quests = Quest.objects.all().count()
 
-    # number of players which can play
-    cp_number = Player.objects.filter(race__can_play=True).count()
+        # artifacts
+        artifact_groups = ArtifactGroup.objects.all()
 
-    return render_to_response('cpanel/index.html',
-                              {'nr_future_questions' : nr_future_questions,
-                               'nr_questions' : nr_questions,
-                               'active_quest': active_quest,
-                               'total_quests': total_quests,
-                               'module': 'home',
-                               'artifact_groups': artifact_groups,
-                               'django_version': get_version(),
-                               'wouso_version': WOUSO_VERSION,
-                               'database_engine': database_engine,
-                               'database_name': database_name,
-                               'staff': staff_group,
-                               'last_run': last_run,
-                               'online_users': online_last10,
-                               'cp_number': cp_number,
-                               },
-                              context_instance=RequestContext(request))
+        # admins
+        staff_group, new = auth.Group.objects.get_or_create(name='Staff')
 
-@permission_required('config.change_setting')
-def formulas(request):
-    formulas = Formula.objects.all()
-    return render_to_response('cpanel/formulas_home.html',
-                              {'formulas': formulas
-                              },
-                              context_instance=RequestContext(request))
+        # wousocron last_run
+        last_run = Setting.get('wousocron_lastrun').get_value()
+        if last_run == "":
+            last_run="wousocron was never run"
 
-@permission_required('config.change_setting')
-def edit_formula(request, id):
-    formula = get_object_or_404(Formula, pk=id)
-    if request.method == "POST":
-        form = FormulaForm(data=request.POST, instance=formula)
-        if form.is_valid():
-            form.save()
-            return redirect('formulas')
-    else:
-        form = FormulaForm(instance=formula)
-    return render_to_response('cpanel/edit_formula.html',
-                              {'form': form},
-                              context_instance = RequestContext(request))
+        # online members
+        oldest = datetime.datetime.now() - datetime.timedelta(minutes = 10)
+        online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
+
+        # number of players which can play
+        cp_number = Player.objects.filter(race__can_play=True).count()
+
+        context = super(DashboardView, self).get_context_data(**kwargs)
+        context.update({'nr_future_questions' : nr_future_questions,
+                       'nr_questions' : nr_questions,
+                       'active_quest': active_quest,
+                       'total_quests': total_quests,
+                       'artifact_groups': artifact_groups,
+                       'django_version': get_version(),
+                       'wouso_version': WOUSO_VERSION,
+                       'database_engine': database_engine,
+                       'database_name': database_name,
+                       'staff': staff_group,
+                       'last_run': last_run,
+                       'online_users': online_last10,
+                       'cp_number': cp_number})
+        return context
+
+dashboard = staff_required(DashboardView.as_view())
+
+
+class FormulasView(ListView):
+    model = Formula
+    template_name = 'cpanel/formulas_home.html'
+    context_object_name = 'formulas'
+
+formulas = permission_required('config.change_setting')(FormulasView.as_view())
+
+
+class EditFormulaView(UpdateView):
+    template_name = 'cpanel/edit_formula.html'
+    form_class = FormulaForm
+    model = Formula
+    success_url = reverse_lazy('formulas')
+
+edit_formula = permission_required('config.change_setting')(EditFormulaView.as_view())
+
 
 @permission_required('config.change_setting')
 def formula_delete(request, id):
@@ -120,67 +128,47 @@ def formula_delete(request, id):
         go_back = reverse('wouso.interface.cpanel.views.formulas')
     return HttpResponseRedirect(go_back)
 
-@permission_required('config.change_setting')
-def add_formula(request):
-    form = FormulaForm()
-    if request.method == "POST":
-        formula = FormulaForm(data = request.POST)
-        if formula.is_valid():
-            formula.save()
-            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.formulas'))
-        else:
-            form = formula
-    return render_to_response('cpanel/add_formula.html',
-                              {'form': form},
-                              context_instance=RequestContext(request))
 
-@permission_required('config.change_setting')
-def spells(request):
-    spells = Spell.objects.all()
-    spells_bought = 0
-    spells_used = 0
-    spells_expired = 0
-    spells_cleaned = 0
-    for p in spells:
-        spells_bought = spells_bought + p.history_bought()
-        spells_used = spells_used + p.history_used()
-        spells_expired = spells_expired + p.history_expired()
-        spells_cleaned = spells_cleaned + p.history_cleaned()
-    return render_to_response('cpanel/spells_home.html',
-                              {'spells' : spells,
-                               'spells_bought' : spells_bought,
-                               'spells_used' : spells_used,
-                               'spells_expired' : spells_expired,
-                               'spells_cleaned' : spells_cleaned,
-                               'module': 'spells',
-                              },
-                              context_instance=RequestContext(request))
+class AddFormulaView(CreateView):
+    template_name = 'cpanel/add_formula.html'
+    form_class = FormulaForm
+    success_url = reverse_lazy('add_formula')
+
+add_formula = permission_required('config.change_setting')(AddFormulaView.as_view())
 
 
-@permission_required('config.change_setting')
-def edit_spell(request, id):
-    spell = get_object_or_404(Spell, pk=id)
-    if request.method == "POST":
-        form = SpellForm(data = request.POST, instance = spell, files=request.FILES)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.spells'))
-    else:
-        form = SpellForm(instance=spell)
-    return render_to_response('cpanel/edit_spell.html', {'form':form, 'module': 'spells'}, context_instance=RequestContext(request))
+class SpellsView(ModuleViewMixin, ListView):
+    model = Spell
+    template_name = 'cpanel/spells_home.html'
+    context_object_name = 'spells'
+    module = 'spells'
+    
+    def get_context_data(self, **kwargs):
+        context = super(SpellsView, self).get_context_data(**kwargs)
+        summary = Spell.get_spells_summary()
+        context.update(summary)
+        return context
+
+spells = permission_required('config.change_setting')(SpellsView.as_view())
 
 
-@permission_required('config.change_setting')
-def add_spell(request):
-    form = SpellForm()
-    if request.method == "POST":
-        spell = SpellForm(data=request.POST, files=request.FILES)
-        if spell.is_valid():
-            spell.save()
-            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.spells'))
-        else:
-            form = spell
-    return render_to_response('cpanel/add_spell.html', {'form': form, 'module': 'spells'}, context_instance=RequestContext(request))
+class EditSpellView(ModuleViewMixin, UpdateView):
+    template_name = 'cpanel/edit_spell.html'
+    model = Spell
+    form_class = SpellForm
+    success_url = reverse_lazy('spells')
+    module = 'spells'
+
+edit_spell = permission_required('config.change_setting')(EditSpellView.as_view())
+
+
+class AddSpellView(ModuleViewMixin, CreateView):
+    template_name = 'cpanel/add_spell.html'
+    form_class = SpellForm
+    success_url = reverse_lazy('add_spell')
+    module = 'spells'
+
+add_spell = permission_required('config.change_setting')(AddSpellView.as_view())
 
 
 @permission_required('config.change_setting')
@@ -196,40 +184,51 @@ def spell_delete(request, id):
     return HttpResponseRedirect(go_back)
 
 
-@permission_required('config.change_setting')
-def customization(request):
-    if not request.user.is_superuser:
-        return HttpResponseRedirect(reverse('dashboard'))
+class CustomizationView(ModuleViewMixin, TemplateView):
+    template_name = 'cpanel/customization.html'
+    module = 'custom'
 
-    customization = Customization()
-    switchboard = Switchboard()
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            return redirect('dashboard')
+        self.customization = Customization()
+        self.switchboard = Switchboard()
+        return super(CustomizationView, self).dispatch(request, *args, **kwargs)
 
-    if request.method == "POST":
-        for group in (customization, switchboard):
+    def post(self, request, *args, **kwargs):
+        for group in (self.customization, self.switchboard):
             for s in group.props():
                 val = request.POST.get(s.name, '')
                 s.set_value(val)
+        return redirect('customization')
 
-    return render_to_response('cpanel/customization.html',
-                              {'settings': (customization, switchboard),
-                               'module': 'custom'},
-                              context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        context = super(CustomizationView, self).get_context_data(**kwargs)
+        context.update(dict(settings=(self.customization, self.switchboard)))
+        return context
+
+customization = permission_required('config.change_setting')(CustomizationView.as_view())
 
 
-@permission_required('config.change_setting')
-def games(request):
-    switchboard = GamesSwitchboard()
+class GamesView(ModuleViewMixin, TemplateView):
+    template_name = 'cpanel/customization.html'
+    module = 'games'
 
-    if request.method == "POST":
-        for group in (switchboard,):
-            for s in group.props():
-                val = request.POST.get(s.name, '')
-                s.set_value(val)
+    def post(self, request, *args, **kwargs):
+        switchboard = GamesSwitchboard()
+        for s in switchboard.props():
+            val = request.POST.get(s.name, '')
+            s.set_value(val)
+        return redirect('games_home')
 
-    return render_to_response('cpanel/customization.html',
-                              {'settings': (switchboard,),
-                               'module': 'games'},
-                              context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        context = super(GamesView, self).get_context_data(**kwargs)
+        switchboard = GamesSwitchboard()
+        context.update(dict(settings=(switchboard,)))
+        return context
+
+games = permission_required('config.change_setting')(GamesView.as_view())
+
 
 
 @permission_required('config.change_setting')
@@ -304,53 +303,50 @@ def qpool_home(request, cat='qotd', page=u'1', tag=None):
                               context_instance=RequestContext(request))
 
 
+class QPoolNewView(ModuleViewMixin, FormView):
+    template_name = 'cpanel/qpool_new.html'
+    form_class = QuestionForm
+    module = 'qpool'
+
+    def get_form_kwargs(self):
+        return dict(data=self.request.POST)
+
+    def form_valid(self, form):
+        new_question = form.save()
+        return redirect('qpool_home', cat=new_question.category.name)
+
+    def get_context_data(self, **kwargs):
+        context = super(QPoolNewView, self).get_context_data(**kwargs)
+        categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
+        context.update(dict(categs=categs))
+        return context
+
+qpool_new = permission_required('config.change_setting')(QPoolNewView.as_view())
+
+
+class QPoolAddAnswerView(ModuleViewMixin, UpdateView):
+    template_name = 'cpanel/add_answer.html'
+    model = Question
+    form_class = AnswerForm
+    module = 'qpool'
+
+    def get_form_kwargs(self):
+        kwargs = {
+                  'data': self.request.POST,
+                  'instance': self.object
+                 }
+        return kwargs
+
+    def form_valid(self, form):
+        form.save(id=self.object)
+        return redirect('question_edit', id=self.object.id)
+
+qpool_add_answer = permission_required('config.change_setting')(QPoolAddAnswerView.as_view())
+
+
 @permission_required('config.change_setting')
-def qpool_new(request, cat=None):
-    form = QuestionForm()
-    categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
-    if request.method == "POST":
-        question = QuestionForm(data = request.POST)
-        if question.is_valid():
-            newq = question.save()
-            return redirect('qpool_home', cat=newq.category.name)
-        else:
-            form = question
-
-    return render_to_response('cpanel/qpool_new.html',
-            {'form': form,
-             'module': 'qpool',
-             'categs': categs},
-            context_instance=RequestContext(request)
-    )
-
-
-@permission_required('config.change_setting')
-def qpool_add_answer(request, id):
-    form = AnswerForm()
+def qpool_edit(request, id):
     question = get_object_or_404(Question, pk=id)
-    if request.method == 'POST':
-        answer = AnswerForm(request.POST, instance=question)
-        if answer.is_valid():
-            answer.save(id=question)
-            return redirect('question_edit', id=question.id)
-        else:
-            form = answer
-
-    return render_to_response('cpanel/add_answer.html',
-            {'form': form,
-             'question': question,
-             'module': 'qpool'},
-            context_instance=RequestContext(request)
-    )
-
-
-@permission_required('config.change_setting')
-def qpool_edit(request, id=None):
-    if id is not None:
-        question = get_object_or_404(Question, pk=id)
-    else:
-        return qpool_new(request)
-
     categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
 
     if request.method == 'POST':
@@ -360,7 +356,7 @@ def qpool_edit(request, id=None):
             if newq.endorsed_by is None:
                 newq.endorsed_by = request.user
                 newq.save()
-            return redirect('qpool_home', cat = newq.category.name)
+            return redirect('qpool_home', cat=newq.category.name)
         else:
             print "nevalid"
     else:
@@ -477,16 +473,18 @@ def qpool_set_active_categories(request):
     )
 
 
-@permission_required('config.change_setting')
-def qpool_importer(request):
-    categories = Category.objects.all().exclude(name='proposed')
-    tags = Tag.objects.all().exclude(name__in=['qotd', 'challenge', 'quest'])
+class QpoolImporterView(ModuleViewMixin, TemplateView):
+    template_name = 'cpanel/importer.html'
+    module = 'qpool'
 
-    return render_to_response('cpanel/importer.html',
-                           {'categories': categories,
-                            'tags': tags,
-                            'module': 'qpool'},
-                           context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        categories = Category.objects.all().exclude(name='proposed')
+        tags = Tag.objects.all().exclude(name__in=['qotd', 'challenge', 'quest'])
+        context = super(QpoolImporterView, self).get_context_data(**kwargs)
+        context.update(dict(categories=categories, tags=tags))
+        return context
+
+qpool_importer = permission_required('config.change_setting')(QpoolImporterView.as_view())
 
 
 @permission_required('config.change_setting')
@@ -517,48 +515,38 @@ def qpool_import_from_upload(request):
                               context_instance=RequestContext(request))
 
 
-@permission_required('config.change_setting')
-def qpool_tag_questions(request):
-    class TagForm(forms.Form):
-        questions = forms.MultipleChoiceField(choices=[(q.pk, q.text) for q in Question.objects.all()])
-        tag = forms.ChoiceField(choices=[(t.pk, t.name) for t in Tag.objects.all().exclude(name__in=['qotd', 'quest', 'challenge'])])
+class QPoolTagQuestionsView(FormView):
+    template_name = 'cpanel/tag_questions.html'
+    form_class = TagForm
+    
+    def form_valid(self, form):
+        q_pks = form.cleaned_data['questions']
+        tag_pk =  form.cleaned_data['tag']
+        tag = Tag.objects.get(pk=tag_pk)
+        for pk in q_pks:
+            q = Question.objects.get(pk=pk)
+            q.tags.add(tag)
+            q.save()
+        return render_to_response('cpanel/tagged.html',
+                {'nr': len(q_pks)}, context_instance=RequestContext(self.request))
 
-    if request.method == 'POST':
-        form = TagForm(request.POST)
-        if form.is_valid():
-            q_pks = form.cleaned_data['questions']
-            tag_pk =  form.cleaned_data['tag']
-            tag = Tag.objects.get(pk=tag_pk)
-            for pk in q_pks:
-                q = Question.objects.get(pk=pk)
-                q.tags.add(tag)
-                q.save()
-            return render_to_response('cpanel/tagged.html',
-                    {'nr': len(q_pks)},
-                context_instance=RequestContext(request))
-    else:
-        form = TagForm()
-
-    return render_to_response('cpanel/tag_questions.html',
-            {'form': form},
-        context_instance=RequestContext(request))
+qpool_tag_questions = permission_required('config.change_setting')(QPoolTagQuestionsView.as_view())
 
 
-@permission_required('config.change_setting')
-def qpool_managetags(request):
-    tags = Tag.objects.all().order_by('category')
+class QPoolManageTagsView(ListView):
+    template_name = 'cpanel/qpool_managetags.html'
+    context_object_name = 'tags'
+    def get_queryset(self):
+        return Tag.objects.all().order_by('category')
 
-    return render_to_response('cpanel/qpool_managetags.html',
-                            {'tags': tags},
-                            context_instance=RequestContext(request)
-    )
+qpool_managetags = permission_required('config.change_setting')(QPoolManageTagsView.as_view())
 
 
 @permission_required('config.change_setting')
 def qpool_add_tag(request):
     form = AddTagForm()
     if request.method == "POST":
-        tag = AddTagForm(data = request.POST)
+        tag = AddTagForm(data=request.POST)
         if tag.is_valid():
             tag.save()
             return redirect('qpool_manage_tags')
@@ -569,17 +557,13 @@ def qpool_add_tag(request):
             context_instance=RequestContext(request))
 
 
-@permission_required('config.change_setting')
-def qpool_edit_tag(request, tag):
-    tag_obj = get_object_or_404(Tag, pk=tag)
-    if request.method == "POST":
-        form = AddTagForm(data = request.POST, instance = tag_obj)
-        if form.is_valid():
-            form.save()
-            return redirect('qpool_manage_tags')
-    else:
-        form = AddTagForm(instance=tag_obj)
-    return render_to_response('cpanel/qpool_edit_tag.html', {'form':form, 'tags': tag_obj}, context_instance=RequestContext(request))
+class QPoolEditTag(UpdateView):
+    template_name = 'cpanel/qpool_edit_tag.html'
+    model = Tag
+    form_class = AddTagForm
+    success_url = reverse_lazy('qpool_manage_tags')
+
+qpool_edit_tag = permission_required('config.change_setting')(QPoolEditTag.as_view())
 
 
 @permission_required('config.change_setting')
@@ -656,24 +640,28 @@ def artifactset(request, id):
                               context_instance=RequestContext(request))
 
 
-@permission_required('config.change_setting')
-def artifact_home(request, group=None):
-    if group is None:
-        group = 'Default'
+class ArtifactHomeView(ModuleViewMixin, ListView):
+    template_name = 'cpanel/artifact_home.html'
+    context_object_name = 'artifacts'
+    module = 'artifacts'
 
-    group = get_object_or_404(ArtifactGroup, name=group)
-    artifacts = group.artifact_set.all()
-    modifiers = God.get_all_modifiers()
+    def get_queryset(self):
+        if 'group' not in self.kwargs.keys():
+            group = 'Default'
+        else:
+            group = self.kwargs['group']
+        self.group = get_object_or_404(ArtifactGroup, name=group)
+        artifacts = self.group.artifact_set.all()
+        return artifacts
 
-    return render_to_response('cpanel/artifact_home.html',
-                              {'groups': ArtifactGroup.objects.all(),
-                               'artifacts': artifacts,
-                               'module': 'artifacts',
-                               'group': group,
-                               'modifiers': modifiers,
-                               },
-                              context_instance=RequestContext(request))
+    def get_context_data(self, **kwargs):
+        context = super(ArtifactHomeView, self).get_context_data(**kwargs)
+        modifiers = God.get_all_modifiers()
+        groups = ArtifactGroup.objects.all()
+        context.update({'groups': groups, 'group': self.group, 'modifiers': modifiers})
+        return context
 
+artifact_home = permission_required('config.change_setting')(ArtifactHomeView.as_view())
 
 
 @permission_required('config.change_setting')
@@ -803,32 +791,30 @@ def players(request):
     return render_to_response('cpanel/players.html', dict(players=all), context_instance=RequestContext(request))
 
 
-@permission_required('config.change_setting')
-def add_player(request):
-    form = UserForm()
-    if request.method == "POST":
-        user = UserForm(data = request.POST)
-        if user.is_valid():
-            user.instance.set_password(request.POST['password'])
-            user.save()
-            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.players'))
-        else:
-            form = user
-    return render_to_response('cpanel/add_player.html', {'form': form}, context_instance=RequestContext(request))
+class AddPlayerView(CreateView):
+    template_name = 'cpanel/add_player.html'
+    form_class = UserForm
+    success_url = reverse_lazy('all_players')
+
+    def form_valid(self, form):
+        form.instance.set_password(self.request.POST['password'])
+        return super(AddPlayerView, self).form_valid(form)
+
+add_player = permission_required('config.change_setting')(AddPlayerView.as_view())
 
 
-@permission_required('config.change_setting')
-def edit_player(request, user_id):
-    user = get_object_or_404(User, pk=user_id)
-    if request.method == "POST":
-        form = UserForm(data = request.POST, instance = user)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.players'))
-    else:
-        form = UserForm(instance=user)
+class EditPlayerView(UpdateView):
+    template_name = 'cpanel/edit_player.html'
+    model = User
+    form_class = UserForm
+    success_url = reverse_lazy('all_players')
+
+    def get_form(self, form_class):
+        form = form_class(**self.get_form_kwargs())
         form.fields['password'].widget.attrs['readonly'] = True
-    return render_to_response('cpanel/edit_player.html', {'form':form}, context_instance=RequestContext(request))
+        return form
+
+edit_player = permission_required('config.change_setting')(EditPlayerView.as_view())
 
 
 @staff_required
@@ -880,20 +866,20 @@ def infraction_clear(request, user_id, infraction_id):
     return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.infraction_history', args=(user_id,)))
 
 
-@permission_required('config.change_setting')
-def races_groups(request):
-    return render_to_response('cpanel/races_groups.html', {'races': Race.objects.all()},
-        context_instance=RequestContext(request)
-    )
+class RacesGroupsView(ListView):
+    template_name = 'cpanel/races_groups.html'
+    model = Race
+    context_object_name = 'races'
+
+races_groups = permission_required('config.change_setting')(RacesGroupsView.as_view())
 
 
-@permission_required('superuser')
-def roles(request):
-    roles = Group.objects.all()
+class RolesView(ListView):
+    template_name = 'cpanel/roles.html'
+    model = Group
+    context_object_name = 'roles'
 
-    return render_to_response('cpanel/roles.html', {'roles': roles},
-                              context_instance=RequestContext(request)
-    )
+roles = permission_required('superuser')(RolesView.as_view())
 
 
 @permission_required('superuser')
@@ -933,32 +919,23 @@ def the_bell(request):
     return redirect('dashboard')
 
 
-@staff_required
-def reports(request, page=0):
-    """
-    This page shows the reports
-    """
+class ReportsView(ListView):
+    template_name = 'cpanel/reports.html'
+    context_object_name = 'reports'
 
-    return render_to_response('cpanel/reports.html',
-                    {'reports': Report.objects.all().order_by('-timestamp')},
-                    context_instance=RequestContext(request)
-    )
+    def get_queryset(self):
+        return Report.objects.all().order_by('-timestamp')
+
+reports = staff_required(ReportsView.as_view())
 
 
-@staff_required
-def edit_report(request, id):
-    report = get_object_or_404(Report, pk=id)
+class EditReportView(UpdateView):
+    template_name = 'cpanel/edit_report.html'
+    model = Report
+    form_class = EditReportForm
+    success_url = reverse_lazy('reports')
 
-    if request.method == "POST":
-        form = EditReportForm(data = request.POST, instance=report)
-        if form.is_valid():
-            form.save()
-        return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.reports'))
-    else:
-        reportForm = EditReportForm(instance = report)
-        return render_to_response('cpanel/edit_report.html',
-                        {'report': report, 'form': reportForm, 'id': id},
-                        context_instance=RequestContext(request))
+edit_report = staff_required(EditReportView.as_view())
 
 
 @staff_required
@@ -969,12 +946,10 @@ def system_message_group(request, group):
         text = request.POST['text']
         for p in group.players.all():
             Message.send(sender=None, receiver=p, subject="System message", text=text)
-        message = 'Message sent!'
-    else:
-        message = ''
+        messages.success(request, 'Message sent!')
 
     return render_to_response('cpanel/system_message_group.html',
-                        {'group': group, 'message': message},
+                        {'group': group},
                         context_instance=RequestContext(request))
 
 

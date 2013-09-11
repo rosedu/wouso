@@ -135,7 +135,13 @@
     </div>
 
     <div id="content-cp">
-        <div id="ajax-message">{%  if message %}<p class="ok">{{ message }}</p>{% endif %}{% if error %}<p class="wrong">{{ error }}</p>{% endif %}</div>
+        <div id="ajax-message">
+            {% if messages %}
+                {% for message in messages %}
+                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
         <div class="section">
         {% block content %}
             <h2>{% block sectiontitle %}Dashboard{% endblock %}</h2>
