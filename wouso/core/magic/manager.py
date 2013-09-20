@@ -194,7 +194,7 @@ class MagicManager(object):
 
         # Post-cast God action (there are specific modifiers, such as clean-spells
         # that are implemented in God
-        God.post_cast(psdue)
+        signals.postCast.send(sender=None, psdue=psdue)
         return None
 
     def mass_cast(self, spell, destination, due):

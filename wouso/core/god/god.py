@@ -1,4 +1,5 @@
 from django.utils.translation import ugettext as _
+from wouso.core import signals
 from wouso.core.magic.models import Artifact, ArtifactGroup, SpellHistory, NoArtifactLevel
 from wouso.core.game import get_games
 
@@ -170,46 +171,6 @@ class DefaultGod:
                 return False, 'Something wrong'
         return True, None
 
-    def post_cast(self, psdue):
-        """ Execute action after a spell is cast. This is used to implement specific spells
-        such as 'clean any existing spell' cast.
-
-        Returns True if action has been taken, False if not.
-        """
-        # Log usage to SpellHistory
-        SpellHistory.used(psdue.source, psdue.spell, psdue.player)
-        # Special actions
-        if psdue.spell.name == 'dispell':
-            for psd in psdue.player.magic.spells:
-                self.post_expire(psd)
-                psd.delete()
-            return True
-        if psdue.spell.name == 'cure':
-            for psd in psdue.player.magic.spells.filter(spell__type='n'):
-                self.post_expire(psd)
-                psd.delete()
-            # also delete itself
-            psdue.delete()
-            return True
-        if psdue.spell.name == 'steal':
-            psdue.player.steal_points(psdue.source, psdue.spell.percents)
-            psdue.delete()
-            return True
-
-        if psdue.spell.name == 'top-disguise':
-            psdue.player.points = 1.0 * psdue.player.points * psdue.player.magic.modifier_percents('top-disguise') / 100
-            psdue.player.save()
-        return False
-
-    def post_expire(self, psdue):
-        """
-         Execute an action right before a spell expires
-        """
-        from wouso.core import scoring
-        if psdue.spell.name == 'top-disguise':
-            psdue.player.points = scoring.real_points(psdue.player)
-            psdue.player.save()
-
     def user_is_eligible(self, player, game=None):
         if game is not None:
             game = str(game.__name__)
@@ -257,3 +218,59 @@ def spell_cleanup(spell,destination,spell_name):
     # in order to apply this new spell, cancel existing, sign contrary, spells
     existing.delete()
     return True
+
+# Define the receivers for postCast and postExpire signals
+def post_cast(sender, **kwargs):
+    """ Execute action after a spell is cast. This is used to implement specific spells
+    such as 'clean any existing spell' cast.
+
+    Returns True if action has been taken, False if not.
+    """
+
+    try:
+        psdue = kwargs['psdue']
+    except:
+        return
+
+    # Log usage to SpellHistory
+    SpellHistory.used(psdue.source, psdue.spell, psdue.player)
+    # Special actions
+    if psdue.spell.name == 'dispell':
+        for psd in psdue.player.magic.spells:
+            signals.postExpire.send(sender=None, psdue=psd)
+            psd.delete()
+        return True
+    if psdue.spell.name == 'cure':
+        for psd in psdue.player.magic.spells.filter(spell__type='n'):
+            signals.postExpire.send(sender=None, psdue=psd)
+            psd.delete()
+        # also delete itself
+        psdue.delete()
+        return True
+    if psdue.spell.name == 'steal':
+        psdue.player.steal_points(psdue.source, psdue.spell.percents)
+        psdue.delete()
+        return True
+
+    if psdue.spell.name == 'top-disguise':
+        psdue.player.points = 1.0 * psdue.player.points * psdue.player.magic.modifier_percents('top-disguise') / 100
+        psdue.player.save()
+    return False
+
+def post_expire(sender, **kwargs):
+    """
+     Execute an action right before a spell expires
+    """
+
+    try:
+        psdue = kwargs['psdue']
+    except:
+        return
+
+    from wouso.core import scoring
+    if psdue.spell.name == 'top-disguise':
+        psdue.player.points = scoring.real_points(psdue.player)
+        psdue.player.save()
+
+signals.postCast.connect(post_cast)
+signals.postExpire.connect(post_expire)
