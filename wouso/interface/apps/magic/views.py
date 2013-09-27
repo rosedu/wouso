@@ -131,7 +131,7 @@ def bazaar_buy(request, spell):
                         action=action_msg,
                         public=False)
         SpellHistory.bought(player, spell)
-        message = _("Successfully aquired")
+        message = _("Successfully acquired")
 
     if error:
         messages.error(request, error)

@@ -22,12 +22,12 @@
 {% for p in spells %}
 <tr>
     <td>{% artifact p %}</td>
-    <td> {{ p.name }}</td>
-  <td> {{ p.title}}</td>
-  <td> {{ p.type }}</td>
-	<td> {{ p.mass }}</td>
-	<td> {{ p.price }}</td>
-	<td> {{ p.due_days }}</td>
+    <td> {{ p.name }} </td>
+  <td> {{ p.title}} </td>
+  <td> {{ p.type }} </td>
+	<td> {{ p.mass }} </td>
+	<td> {{ p.price }} </td>
+	<td> {{ p.due_days }} </td>
 	<td><a class="button" href="{% url edit_spell p.id %}">Edit</a></td>
 	<td><a class="button" href="{% url spell_dell p.id %}" onclick="return confirm('Realy?');">Delete</a></td>
 </tr>
@@ -48,19 +48,19 @@
 </tr>
 {% for p in spells %}
 <tr><td> {{ p.name }} </td>
-    <td> {{ p.history_bought }}  </td>
-    <td> {{ p.history_used }}  </td>
-    <td> {{ p.history_cleaned }}  </td>
+    <td> {{ p.history_bought }} </td>
+    <td> {{ p.history_used }} </td>
+    <td> {{ p.history_cleaned }} </td>
     <td> {{ p.history_expired }} </td>
 </tr>
 {% endfor %}
 <tr></tr>
 <tr></tr>
 <tr><td><b>Total</b></td>
-    <td> {{ spells_bought }}</td>
-    <td> {{ spells_used }}</td>
-    <td> {{ spells_cleaned }}</td>
-    <td> {{ spells_expired }}</td>
+    <td> {{ spells_bought }} </td>
+    <td> {{ spells_used }} </td>
+    <td> {{ spells_cleaned }} </td>
+    <td> {{ spells_expired }} </td>
 </tr>
 </table>
 {% endblock %}

@@ -137,3 +137,9 @@ class EditReportForm(forms.ModelForm):
         self.fields['dibs'].label = "Dibs"
         self.fields['status'].label = "Status"
         self.fields['extra'].label = "Observations"
+
+class TagForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(TagForm, self).__init__(*args, **kwargs)
+        self.fields['questions'] = forms.MultipleChoiceField(choices=[(q.pk, q.text) for q in Question.objects.all()])
+        self.fields['tag'] = forms.ChoiceField(choices=[(t.pk, t.name) for t in Tag.objects.all().exclude(name__in=['qotd', 'quest', 'challenge'])])
