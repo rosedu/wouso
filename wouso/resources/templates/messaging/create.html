@@ -8,7 +8,7 @@
 
 <h2>{% trans 'Create message' %}</h2>
 
-<form id="msg" onsubmit="messagingSubmit();" method="post" action="{% url create %}">
+<form id="msg" onsubmit="messagingSubmit();" method="post" action="{% url create %}" data-ajax="false">
     <table>
     <tr><td>To:</td><td valign="top">
             {% if to %}

@@ -30,12 +30,12 @@ function switchtab() {
 
 function tabToURL(tab_name, url) {
     $("#" + tab_name).bind('custom',
-                    function() {
-                        $.ajax({
-                            url: url,
-                            success: function(data) {
-                                $("#" + tab_name).html(data)
-                            }
-                        })
-                    });
+        function() {
+            $.ajax({
+                url: url,
+                success: function(data) {
+                    $("#" + tab_name).html(data)
+                }
+            })
+        });
 }
