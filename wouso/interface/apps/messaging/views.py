@@ -59,7 +59,7 @@ def create(request, to=None, reply_to=None):
                             form.cleaned_data['to'],
                             form.cleaned_data['subject'],
                             form.cleaned_data['text'],
-                            reply_to=form.cleaned_data['reply_to'],
+                            reply_to=reply_to.id if reply_to else None,
             )
             if m is None:
                 return HttpResponseRedirect(reverse('messaging'))
