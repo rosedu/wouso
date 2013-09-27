@@ -76,7 +76,6 @@ def create(request, to=None, reply_to=None):
 @login_required
 def message(request, mid):
     message = get_object_or_404(Message, pk=mid)
-
     me = request.user.get_profile().get_extension(MessagingUser)
 
     if message.sender == me or message.receiver == me:
@@ -88,10 +87,16 @@ def message(request, mid):
                                   context_instance=RequestContext(request))
     raise Http404
 
+
 @login_required
 def delete(request, id):
     message = get_object_or_404(Message, pk=id)
-    message.delete()
+    me = request.user.get_profile().get_extension(MessagingUser)
+
+    if message.sender == me or message.receiver == me:
+        message.delete()
+    else:
+        raise Http404
     go_back = request.META.get('HTTP_REFERER', None)
     if not go_back:
         go_back = reverse('wouso.interface.messaging.views.home')
