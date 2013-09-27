@@ -28,7 +28,7 @@ Basic information:
 
         {
             "api_version": "1",
-            "title": "World of USO v4 - piranha",
+            "title": "World of USO",
             "authenticated": false
         }
 
