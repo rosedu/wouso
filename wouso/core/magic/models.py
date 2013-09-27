@@ -6,6 +6,7 @@ from django.db import models
 from django.utils.translation import ugettext as _
 from django.conf import settings
 from wouso.core.common import App, Item, CachedItem
+from wouso.core import signals
 
 class Modifier(models.Model):
     """ Basic model for all the magic.
@@ -258,6 +259,5 @@ class Bazaar(App):
         for s in spells:
             SpellHistory.expired(s.player, s.spell)
 
-            from wouso.core.god import God
-            God.post_expire(psdue=s)
+            signals.postExpire.send(sender=None, psdue=s)
             s.delete()

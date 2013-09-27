@@ -151,7 +151,7 @@ def magic_cast(request, destination=None, spell=None):
 
     error = ''
 
-    if Bazaar.disabled():
+    if Bazaar.disabled() or BoolSetting.get('disable-Magic').get_value():
         error = _("Magic is disabled")
     elif request.method == 'POST':
         spell = get_object_or_404(Spell, pk=request.POST.get('spell', 0))

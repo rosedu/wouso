@@ -3,6 +3,8 @@ from django.dispatch import Signal
 addActivity = Signal()
 addedActivity = Signal()
 messageSignal = Signal()
+postCast = Signal()
+postExpire = Signal()
 
 def add_activity(player, text, **kwargs):
     """ Simplified addActivity signal.
