@@ -462,6 +462,28 @@ Messages
      * all
      * sent
      * recv
+    Each message contains the subject, text, date, sender and receiver (both names and ids) and reply_to id.
+
+    The `reply_to` parameter refers to another message (not an user), for conversations. If it's null, then the message
+    is the first in a conversation.
+
+    **Example response**:
+     .. sourcecode:: javascript
+
+        [
+            {
+                "from": "Gică Popescu",
+                "from_id": 2,
+                "to": "admin",
+                "to_id": 1,
+                "id": 4,
+                "subject": "Re: Ce faci măi?",
+                "date": "2013-09-27T18:02:47.364",
+                "text": "bine facem",
+                "read": false,
+                "reply_to": 3
+            }
+        ]
 
 .. http:post:: /api/messages/send/
 
@@ -469,7 +491,7 @@ Messages
      * receiver (*mandatory, id or username)
      * text (*mandatory)
      * subject
-     * reply_to (id of the message to reply_to)
+     * reply_to (id of the message to reply_to, not of the sender)
 
 .. http:post:: /api/messages/(action)/(msg_id)/
 

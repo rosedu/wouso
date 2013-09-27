@@ -64,7 +64,7 @@ class OnlineUsers(BaseHandler):
 
         if type == 'list':
             return [u.nickname for u in online_last10]
-        # default, more info
+            # default, more info
         return [{'nickname': u.nickname, 'first_name': u.user.first_name, 'last_name': u.user.last_name,
                  'id': u.id, 'last_seen': u.last_seen} for u in online_last10]
 
@@ -129,7 +129,7 @@ class InfoHandler(BaseHandler):
             'title': player.level.title,
             'image': player.level.image,
             'id': player.level.id,
-        } if player.level else {}
+            } if player.level else {}
 
         group = player.group
         gold = player.coins['gold'] if 'gold' in player.coins.keys() else 0
@@ -151,7 +151,7 @@ class InfoHandler(BaseHandler):
                 'level': level,
                 'level_progress': God.get_level_progress(player),
                 'rank': topuser.position,
-        }
+                }
 
 
 class ChangeNickname(BaseHandler):
@@ -199,7 +199,7 @@ class BazaarHandler(BaseHandler):
     allowed_methods = ('GET',)
     object_name = 'spells'
     fields = ('name', 'title', 'description', 'available', 'due_days', 'type', 'mass', 'level_required', 'image_url',
-            'price', 'id')
+              'price', 'id')
 
     def get_queryset(self, user=None):
         return Spell.objects.all()
@@ -251,7 +251,7 @@ class BazaarBuy(BaseHandler):
         else:
             player.magic.add_spell(spell)
             scoring.score(player, None, 'buy-spell', external_id=spell.id,
-                price=spell.price)
+                          price=spell.price)
             SpellHistory.bought(player, spell)
             return {'success': True}
 
@@ -290,6 +290,19 @@ class BazaarExchange(BaseHandler):
 class Messages(BaseHandler):
     LIMIT = 100
 
+    def to_dict(self, m):
+        """
+        :param m: Message instance
+        :return: dictionary
+        """
+        return {'id': m.id, 'date': m.timestamp,
+                'from': unicode(m.sender), 'from_id': m.sender_id,
+                'to': unicode(m.receiver), 'to_id': m.receiver_id,
+                'text': m.text,
+                'subject': m.subject, 'reply_to': m.reply_to.id if m.reply_to else None,
+                'read': m.read
+        }
+
     def read(self, request, type='all'):
         player = request.user.get_profile()
         msguser = player.get_extension(MessagingUser)
@@ -301,9 +314,7 @@ class Messages(BaseHandler):
             qs = Message.objects.filter(receiver=msguser).exclude(archived=True)[:self.LIMIT]
         else:
             return []
-        return [{'id': m.id, 'date': m.timestamp, 'from':unicode(m.sender), 'to':unicode(m.receiver), 'text': m.text,
-                 'subject': m.subject, 'reply_to': m.reply_to.id if m.reply_to else None,
-                 'read': m.read}    for m in qs]
+        return [self.to_dict(m) for m in qs]
 
 class MessagesSender(BaseHandler):
     allowed_methods = ('POST',)
@@ -484,7 +495,7 @@ class GroupHandler(BaseHandler):
                 'rank': gh.position,
                 'activity': '%sactivity/%s' % (fp, q),
                 'evolution': '%sevolution/%s' % (fp, q),
-            }
+                }
         elif type == 'activity':
             qs = Activity.get_group_activiy(group)
             return [dict(user_from=unicode(a.user_from), user_to=unicode(a.user_to), message=a.message, date=a.timestamp) for a in qs]
@@ -514,7 +525,7 @@ class RacesHandler(BaseHandler):
 class MembersMixin(object):
     def to_dict(self, player):
         return dict(first_name=player.user.first_name, last_name=player.user.last_name, id=player.id, points=player.points,
-                             level=player.level_no, avatar=player_avatar(player), display_name=unicode(player))
+                    level=player.level_no, avatar=player_avatar(player), display_name=unicode(player))
 
 
 class RaceMembersHandler(BaseHandler, MembersMixin):
