@@ -82,6 +82,11 @@ def context(request):
         settings_dict['config_chat_host'] = settings.SOCKETIO_HOST
         settings_dict['config_chat_port'] = settings.SOCKETIO_PORT
 
+    if settings.SOCIAL_AUTH_ENABLED:
+        settings_dict['config_social_auth'] = True
+    else:
+        settings_dict['config_social_auth'] = False
+
     for k, v in settings_dict.iteritems():
         if k.startswith('config_disable'):
             try:

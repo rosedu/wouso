@@ -1,8 +1,10 @@
-from django.test import TestCase
-from django.db.models.query import QuerySet
 from django.contrib.auth.models import User
-from wouso.core.game.models import Game
+from django.core.urlresolvers import reverse
+from django.db.models.query import QuerySet
+from django.test import TestCase
+from django.test.client import Client
 from wouso.core import scoring, signals
+from wouso.core.game.models import Game
 from wouso.core.tests import WousoTest
 from wouso.core.user.models import Player
 
@@ -169,14 +171,17 @@ class ScoringFirstLogin(WousoTest):
 
         self.assertEqual(player.points, 0)
 
-        # this won't work, since the activity is sent in our custom view
-        #self.client.login(username=player.user.username, password='test')
-        # using this instead
-        signals.addActivity.send(sender=None, user_from=player, action="login", game = None, public=False)
-
+        # Test if the player gets the start points
+        client = Client()
+        credentials = {'username': player.user.username, 'password': 'test'}
+        self.client.post(reverse('login_view'), credentials)
         player = Player.objects.get(pk=player.pk)
         self.assertEqual(player.points, 10)
 
+        # Test that the start points are given only once
+        self.client.post(reverse('login_view'), credentials)
+        player = Player.objects.get(pk=player.pk)
+        self.assertEqual(player.points, 10)
 
 class ScoringTestFunctions(TestCase):
     def test_fibbonaci_formula(self):

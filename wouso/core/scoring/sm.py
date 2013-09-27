@@ -3,6 +3,7 @@ import logging
 from django.utils.translation import ugettext_noop
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.auth.signals import user_logged_in
 from wouso.core import signals
 from wouso.core.user.models import Player
 from wouso.core.scoring.models import Coin, Formula, History
@@ -268,9 +269,9 @@ def sync_all_user_points():
 
 def first_login_check(sender, **kwargs):
     """ Callback function for addActivity signal """
-    action = kwargs.get('action', None)
-    player = kwargs['user_from']
-    if action != 'login':
+    try:
+        player = kwargs['user'].get_profile()
+    except:
         return
 
     if player.activity_from.count() == 0:
@@ -288,4 +289,4 @@ def first_login_check(sender, **kwargs):
         except InvalidFormula:
             logging.error('Formula start points is missing')
 
-signals.addActivity.connect(first_login_check)
+user_logged_in.connect(first_login_check)

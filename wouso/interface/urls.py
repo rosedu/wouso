@@ -112,3 +112,13 @@ else:
         # Chat
         url(r'^chat/', include('wouso.interface.chat.urls')),
     )
+
+try:
+    import imp
+    imp.find_module('social_auth')
+except ImportError:
+    pass
+else:
+    urlpatterns += patterns('',
+        url(r'', include('social_auth.urls')),
+    )

@@ -4,8 +4,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>{{config_title}}</title>
     <LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/splash.css" />
+    <LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/zocial.css" />
     <LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/themes/{{ config_theme }}/styles.css" />
 </head>
+
 <body>
 	<div id="floater"></div>
 	<div id="centered">
@@ -29,8 +31,27 @@
                 {{config_intro}}
                 {% endautoescape %}
 			</p>
-		</div>
 
+            {% if config_social_auth %}
+                <a href="{% url socialauth_begin 'facebook' %}" class="zocial facebook">
+                    Log in with Facebook
+                </a>
+
+                <a href="{% url socialauth_begin 'twitter' %}" class="zocial twitter">
+                    Log in with Twitter
+                </a>
+
+                <a href="{% url socialauth_begin 'google-oauth2' %}" class="zocial google">
+                    Log in with Google
+                </a>
+            {% endif %}
+
+            <ul class="messages">
+                {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+		</div>
 	</div>
 
 	<div id="bottom">

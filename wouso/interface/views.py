@@ -59,12 +59,12 @@ def login_view(request):
             MAX_TIME = 48*60*60 #48h in seconds
             #Remove entries older than 48h
             for i in request.session.keys():
-                if PREFIX in i and (request.session.get(i) + datetime.timedelta(minutes = 2*24*60)) < datetime.datetime.now():
+                if PREFIX in i and (request.session.get(i) + datetime.timedelta(minutes=2*24*60)) < datetime.datetime.now():
                     request.session.__delitem__(i)
             request.session.__setitem__(PREFIX+user.username, datetime.datetime.now())
             request.session.set_expiry(MAX_TIME)
             login(request, user)
-            signals.addActivity.send(sender=None, user_from=user.get_profile(), action="login", game = None, public=False)
+
             if request.POST.get('next'):
                 return HttpResponseRedirect(request.POST.get('next'))
             return redirect(settings.LOGIN_REDIRECT_URL)
@@ -109,7 +109,7 @@ def homepage(request, page=u'1'):
 
     profile = request.user.get_profile()
     # gather users online in the last ten minutes
-    oldest = datetime.datetime.now() - datetime.timedelta(minutes = 10)
+    oldest = datetime.datetime.now() - datetime.timedelta(minutes=10)
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
     activity = get_wall(page)
 
@@ -285,7 +285,7 @@ def seen_24h(request):
     """
     Display all players seen in the last 24h
     """
-    oldest = datetime.datetime.now() - datetime.timedelta(minutes = 3600)
+    oldest = datetime.datetime.now() - datetime.timedelta(minutes=3600)
     online_last24h = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
 
     return render_to_response('activity/seen24h.html', {'seen_players': online_last24h}, context_instance=RequestContext(request))

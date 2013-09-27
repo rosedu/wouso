@@ -179,6 +179,7 @@ OAUTH_AUTH_VIEW = 'wouso.interface.api.views.oauth_auth_view'
 C2DM_AUTH_TOKEN = '' # Change this to a ClientLogin token from Google
 
 API_ENABLED = True
+SOCIAL_AUTH_ENABLED = True
 
 # Conditional installed apps
 import imp
@@ -241,6 +242,19 @@ else:
         INTERNAL_IPS = ('127.0.0.1',)
         DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS': False}
 
+if SOCIAL_AUTH_ENABLED:
+    try:
+        imp.find_module('social_auth')
+    except ImportError:
+        pass
+    else:
+        INSTALLED_APPS += ['social_auth']
+        LOGIN_ERROR_URL = '/'
+        AUTHENTICATION_BACKENDS = ('social_auth.backends.twitter.TwitterBackend',
+                                   'social_auth.backends.facebook.FacebookBackend',
+                                   'social_auth.backends.google.GoogleOAuth2Backend',) + \
+                                   AUTHENTICATION_BACKENDS
+        MIDDLEWARE_CLASSES.append('social_auth.middleware.SocialAuthExceptionMiddleware')
 
 
 # the probability of getting bonus points for correctly answered qotd
@@ -262,6 +276,14 @@ DISPLAY_NAME = '{first_name} {last_name}'
 #        'LOCATION': 'unique-snowflake'
 #    }
 # }
+
+# django-social-auth settings (to be completed)
+FACEBOOK_APP_ID = ''
+FACEBOOK_API_SECRET = ''
+TWITTER_CONSUMER_KEY = ''
+TWITTER_CONSUMER_SECRET = ''
+GOOGLE_OAUTH2_CLIENT_ID = ''
+GOOGLE_OAUTH2_CLIENT_SECRET = ''
 
 # PLEASE LEAVE THIS ON THE LAST LINES OF THIS FILE
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
