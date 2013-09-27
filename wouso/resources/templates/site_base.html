@@ -1,6 +1,7 @@
 {% load user %}
 {% load artifacts %}
 {% load i18n %}
+{% load chat %}
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -25,9 +26,10 @@
     <script type="text/javascript" src="{{ basepath }}/static/js/format.item.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery.timers.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/ajaxify.js"></script>
-    {% if not config_disable_chat  %}
-        {% include 'chat/setup.html' %}
+    {% if not config_disable_contactbox %}
+    <script type="text/javascript" src="{{ basepath }}/static/js/contactbox.js"></script>
     {% endif %}
+    {% chat_scripts %}
     <script type="text/javascript">
         var url_base = '{{ basepath }}';
     </script>
