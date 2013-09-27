@@ -2,9 +2,10 @@ import json
 import unittest
 from datetime import datetime,timedelta
 from mock import patch
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test.client import Client, RequestFactory
-from django.contrib.auth.models import User
+from django.utils.translation import ugettext as _
 from wouso.core.qpool.models import Question, Answer, Category
 from wouso.core.tests import WousoTest
 from wouso.games.challenge.models import ChallengeUser, Challenge, ChallengeGame
@@ -353,15 +354,15 @@ class TestChallengeViews(WousoTest):
         # Challenge is launched but not accepted
         self.ch.status = 'L'
         self.ch.save()
-        response = self.c.get(reverse('view_challenge', args=[1]))
-        self.assertContains(response, 'The challenge was not accepted')
+        response = self.c.get(reverse('view_challenge', args=[1]), follow=True)
+        self.assertContains(response, _('The challenge was not accepted'))
 
     def test_challenge_is_not_runnable_when_it_is_refused(self):
         # Challenge is refused
         self.ch.status = 'R'
         self.ch.save()
-        response = self.c.get(reverse('view_challenge', args=[1]))
-        self.assertContains(response, 'The challenge was refused')
+        response = self.c.get(reverse('view_challenge', args=[1]), follow=True)
+        self.assertContains(response, _('The challenge was refused'))
 
     def test_challenge_is_not_runnable_more_than_once(self):
         self.ch.status = 'A'
@@ -370,8 +371,8 @@ class TestChallengeViews(WousoTest):
         participant.played = True
         participant.score = 200
         participant.save()
-        response = self.c.get(reverse('view_challenge', args=[1]))
-        self.assertContains(response, 'You have already submitted this challenge')
+        response = self.c.get(reverse('view_challenge', args=[1]), follow=True)
+        self.assertContains(response, _('You have already submitted this challenge'))
     
     def test_challenge_is_runnable(self):
         # Challenge is accepted, display the challenge
@@ -391,21 +392,21 @@ class TestChallengeViews(WousoTest):
         response = self.c.post(reverse('view_challenge', args=[1]), data)
         self.assertContains(response, 'You scored')
         # Try to submit it again
-        response = self.c.post(reverse('view_challenge', args=[1]), data)
+        response = self.c.post(reverse('view_challenge', args=[1]), data, follow=True)
         self.assertContains(response, 'You have already submitted')
 
     def test_challenge_cannot_be_submitted_when_it_is_not_accepted(self):
         self.ch.status = 'L'
         self.ch.save()
         data = {u'answer_1': [u'1'], 'answer_2': [u'1']}
-        response = self.c.post(reverse('view_challenge', args=[1]), data)
+        response = self.c.post(reverse('view_challenge', args=[1]), data, follow=True)
         self.assertContains(response, 'The challenge was not accepted')
 
     def test_challenge_cannot_be_submitted_when_it_is_refused(self):
         self.ch.status = 'R'
         self.ch.save()
         data = {u'answer_1': [u'1'], 'answer_2': [u'1']}
-        response = self.c.post(reverse('view_challenge', args=[1]), data)
+        response = self.c.post(reverse('view_challenge', args=[1]), data, follow=True)
         self.assertContains(response, 'The challenge was refused')
 
     def test_challenge_history(self):
@@ -425,13 +426,8 @@ class TestChallengeViews(WousoTest):
                                                  category=self.category, active=True)
         question5 = Question.objects.create(text='question5', answer_type='F',
                                                  category=self.category, active=True)
-        fact = RequestFactory()
-        request = fact.get(reverse('challenge_random'))
-        request.user = self.ch_player2.user
-        request.session = {}
-        response = challenge_random(request)
-        self.assertEqual(response.status_code, 302)
-        launch(request, 1)
+        self.c.login(username='testuser2', password='test')
+        response = self.c.get(reverse('challenge_random'), follow=True)
         challenge = Challenge.objects.filter(user_from__user__user__username='testuser2')
         self.assertNotEqual(len(challenge), 0)
 
@@ -500,3 +496,33 @@ class TestChallengeViews(WousoTest):
         self.assertContains(response, 'Challenges played:  1')
         self.assertContains(response, 'Challenges sent:  0')
         self.assertContains(response, 'testuser1')
+
+    def test_challenge_button_display(self):
+        response = self.c.get(reverse('player_profile', args=[self.ch_player1.pk]))
+
+        # Button is not displayed for the user who is making the request
+        self.assertNotContains(response, _('Challenge!'))
+
+        # Button is deactivated when a challenge is already launched
+        response = self.c.get(reverse('player_profile', args=[self.ch_player2.pk]))
+        self.assertContains(response, _('Challenged'))
+
+        # Button is displayed for a different user
+        self.c.login(username='testuser2', password='test')
+        response = self.c.get(reverse('player_profile', args=[self.ch_player1.pk]))
+        self.assertContains(response, _('Challenge!'))
+
+    def test_admin_button_challenges(self):
+        admin = self._get_superuser()
+        url = reverse('challenge_stats', args=[self.ch_player2.pk])
+
+        # Button is not displayed for normal users
+        response = self.c.get(reverse('player_profile', args=[self.ch_player2.pk]))
+        self.assertNotContains(response,
+                    '<a class="button" href="%s">%s</a>' % (url, _('Challenges')))
+
+        # Button is displayed for super users
+        self.c.login(username=admin.username, password='admin')
+        response = self.c.get(reverse('player_profile', args=[self.ch_player2.pk]))
+        self.assertContains(response,
+                    '<a class="button" href="%s">%s</a>' % (url, _('Challenges')))

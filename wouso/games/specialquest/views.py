@@ -1,10 +1,11 @@
 from django.http import  HttpResponseRedirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
-from django.contrib.auth.decorators import login_required
 from datetime import date
 from wouso.core.user.models import Player
 from models import SpecialQuestUser, SpecialQuestTask, SpecialQuestGame, SpecialQuestGroup, Invitation
@@ -70,7 +71,7 @@ def setup_leave(request):
 def setup_create(request):
     user = request.user.get_profile().get_extension(SpecialQuestUser)
     group = user.group
-    error, message = '', ''
+    error = ''
     if group is not None:
         error = _('You already have a group')
     else:
@@ -86,7 +87,9 @@ def setup_create(request):
                     group = SpecialQuestGroup.create(head=user, name=name)
                     return HttpResponseRedirect(reverse('specialquest_index_view'))
 
-    return render_to_response('specialquest/create.html', dict(error=error), context_instance=RequestContext(request))
+    if error:
+        messages.error(request, error)
+    return render_to_response('specialquest/create.html', context_instance=RequestContext(request))
 
 @login_required
 def setup_invite(request, user_id):
@@ -104,7 +107,12 @@ def setup_invite(request, user_id):
             Invitation.objects.create(group=user.group, to=to_user)
             message = _("Invitation sent")
 
-    return render_to_response('specialquest/invite.html', dict(error=error, message=message, to_user=to_user, squser=user),
+    if error:
+        messages.error(request, error)
+    if message:
+        messages.success(request, message)
+
+    return render_to_response('specialquest/invite.html', dict(to_user=to_user, squser=user),
                               context_instance=RequestContext(request))
 
 @login_required
