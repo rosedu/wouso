@@ -8,6 +8,7 @@ from piston.utils import rc
 from django.db.models.query_utils import Q
 from django.db.models.aggregates import Sum
 
+from wouso.core.config.models import Setting
 from wouso.core.scoring.models import Coin
 from wouso.core.user.templatetags.user import player_avatar
 from wouso.core.game import get_games
@@ -22,6 +23,8 @@ from wouso.interface.api.c2dm.models import register_device
 from wouso.interface.apps.messaging.models import Message, MessagingUser
 from wouso.interface.top.models import TopUser, GroupHistory
 
+from . import API_VERSION
+
 def get_fullpath(request):
     base = 'http://%s' % request.get_host()
     fullpath = request.get_full_path()
@@ -35,16 +38,10 @@ class ApiRoot(BaseHandler):
     allowed_methods = ('GET',)
 
     def read(self, request):
-        base = 'http://%s' % request.get_host()
-        fullpath = request.get_full_path()
-        if '?' in fullpath:
-            query = fullpath[fullpath.rindex('?'):]
-        else:
-            query = ''
-
         api = {
-            'Info': '%s/api/info/%s' % (base, query),
-            'Notifications': '%s/api/notifications/all/%s' % (base, query),
+            'api_version': API_VERSION,
+            'title': Setting.get('title').get_value(),
+            'authenticated': request.user.is_authenticated()
         }
         return api
 

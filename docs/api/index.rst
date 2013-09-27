@@ -7,12 +7,30 @@ Wouso API's documentation
 =========================
 
 The wouso API is a REST web service using OAuth v1.0 authentication, allowing your application to interact with a
-wouso instance. A testing server is available at: http://wouso-next.rosedu.org/api/ .
+wouso instance.
 
 A demo python library interfacing with the api is available here: http://github.com/rosedu/wouso-extras .
 
+Wouso API-enabled instances
+---------------------------
+The updated list of wouso instances is available at: http://wouso.cs.pub.ro/instances.json . You need an user account
+on the instance in order to use its api.
+
 Basic information:
 ------------------
+
+.. http:get:: /api/
+
+    Api information.
+
+    **Example response**:
+     .. sourcecode:: http
+
+        {
+            "api_version": "1",
+            "title": "World of USO v4 - piranha",
+            "authenticated": false
+        }
 
 .. http:get:: /api/info/online/
 
