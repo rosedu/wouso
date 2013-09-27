@@ -1,5 +1,6 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response
+from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from models import  GrandChallengeGame, GrandChallengeUser
 from wouso.interface import render_string
@@ -14,19 +15,12 @@ def index(request):
     played = gc_user.get_played()
 
     if not gc_user in GrandChallengeGame.base_query():
-        return do_result(request, error='Ne pare rau, nu participi in turneu ')
+        messages.error(request, _('Ne pare rau, nu participi in turneu'))
+        return render(request, 'grandchallenge/message.html')
 
     return render_to_response('grandchallenge/index.html',
             {'active': active, 'played': played, 'gcuser': gc_user, 'gc': GrandChallengeGame},
             context_instance=RequestContext(request))
-
-
-@login_required
-def do_result(request, error='', message=''):
-    return render_to_response('grandchallenge/message.html',
-        {'error': error, 'message': message},
-        context_instance=RequestContext(request))
-
 
 def sidebar_widget(request):
     gc = GrandChallengeGame

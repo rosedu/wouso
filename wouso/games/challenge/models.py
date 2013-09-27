@@ -761,21 +761,6 @@ class ChallengeGame(Game):
         return None
 
     @classmethod
-    def get_profile_actions(kls, request, player):
-        url = reverse('wouso.games.challenge.views.launch', args=(player.id,))
-        if request.user.get_profile().id != player.id:
-            # check if there isn't another challenge launched
-            if Challenge.exist_last_day(date.today(), request.user.get_profile(), player):
-                return '<span class="button">%s</span>' % _('Challenged')
-            return '<a class="button ajaxify" href="%s">%s</a>' % (url, _('Challenge!'))
-        return ''
-
-    @classmethod
-    def get_profile_superuser_actions(kls, request, player):
-        url = reverse('challenge_stats', args=(player.id,))
-        return '<a class="button" href="%s">%s</a>' % (url, _('Challenges'))
-
-    @classmethod
     def management_task(cls, now=None, stdout=sys.stdout):
         now = now if now else datetime.now()
         today = now.date()
