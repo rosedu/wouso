@@ -94,9 +94,13 @@ function messagingView(id) {
         container = $('#message');
 
     $.ajax({
-        url: url_base + '/m/view/' + id + '/',
+        url: url_base + 'm/view/' + id + '/',
         success: function(data) {
             container.html(data);
+        },
+        error: function(data) {
+            console.log('eroare');
+            console.log(JSON.stringify(data));
         }
     });
     return false;
