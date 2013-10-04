@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
+from wouso.core.ui import register_header_link
 from wouso.core.user.models import Player
 from wouso.interface.apps.messaging.models import Message, MessagingUser, MessageApp
 from wouso.interface.apps.messaging.forms import ComposeForm
@@ -103,8 +104,12 @@ def delete(request, id):
     return HttpResponseRedirect(go_back)
 
 
-def header_link(request):
+def header_link(context):
     # TODO refactor this lame thing
-    count = MessageApp.get_unread_count(request)
+    user = context.get('user', None)
+    if not user or not user.is_authenticated():
+        return dict(text=_('Messages'))
+    count = MessageApp.get_unread_for_user(user)
     url = reverse('messaging')
     return dict(link=url, count=count, text=_('Messages'))
+register_header_link('messaging', header_link)

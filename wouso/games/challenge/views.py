@@ -8,7 +8,7 @@ from django.shortcuts import render, render_to_response, get_object_or_404, redi
 from django.template import RequestContext
 from django.views.generic import View, ListView, TemplateView
 from wouso.core.config.models import Setting, BoolSetting
-from wouso.core.ui import register_sidebar_block
+from wouso.core.ui import register_sidebar_block, register_header_link
 from wouso.core.user.models import Player
 from wouso.core.decorators import staff_required
 from wouso.games.challenge.models import ChallengeException
@@ -211,8 +211,11 @@ def use_one_more(request):
 
     return redirect('challenge_index_view')
 
-def header_link(request):
-    profile = request.user.get_profile()
+def header_link(context):
+    user = context.get('user', None)
+    if not user or not user.is_authenticated():
+        return dict(text=_('Challenges'))
+    profile = user.get_profile()
     if profile:
         chall_user = profile.get_extension(ChallengeUser)
         challs = ChallengeGame.get_active(chall_user)
@@ -227,6 +230,8 @@ def header_link(request):
     url = reverse('wouso.games.challenge.views.index')
 
     return dict(link=url, count=count, text=_('Challenges'))
+register_header_link('challenges', header_link)
+
 
 def sidebar_widget(context):
     user = context.get('user', None)
@@ -240,8 +245,8 @@ def sidebar_widget(context):
         return ''
     return render_to_string('challenge/sidebar.html', {'challenges': challs,
                             'challenge': ChallengeGame,  'chall_user': chall_user, 'id': 'challenge'})
-
 register_sidebar_block('challenge', sidebar_widget)
+
 
 class HistoryView(ListView):
     template_name = 'challenge/history.html'

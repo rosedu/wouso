@@ -11,40 +11,6 @@ from wouso.interface import get_static_pages, detect_mobile, mobile_browser
 from wouso.settings import FORCE_SCRIPT_NAME
 from . import set_theme
 
-
-def header_footer(request):
-    """ Generate header and footer bar contents.
-    """
-    try:
-        reverse('homepage')
-    except NoReverseMatch:
-        return {}
-    #TODO ordering, using config
-
-    def header_generator():
-        for game in get_games():
-            h = game.get_header_link(request)
-            if h:
-                yield h, game.get_instance().verbose_name
-        for game in [Message, Bazaar, Chat]:
-            h = game.get_header_link(request)
-            if h:
-                yield h, game.__name__
-
-    def footer_generator():
-        for game in get_games():
-            f = game.get_footer_link(request)
-            if f:
-                yield f
-        for s in get_static_pages():
-            yield s
-        for a in get_apps():
-            f = a.get_footer_link(request)
-            if f:
-                yield f
-
-    return {'header': header_generator, 'heads': header_generator, 'footer': footer_generator}
-
 def context(request):
     """ Make all configuration settings available as config_name
     and also define some game context

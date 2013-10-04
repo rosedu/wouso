@@ -15,13 +15,31 @@ class BlockLibrary(object):
     def add(self, key, callback):
         self.parts[key] = callback
 
-_block_library = None
+_libraries = {}
+def get_library(library):
+    global _libraries
+    if not _libraries.get(library, None):
+        _libraries[library] = BlockLibrary()
+    return _libraries[library]
+
 def get_sidebar():
-    global _block_library
-    if _block_library is None:
-        _block_library = BlockLibrary()
-    return _block_library
+    return get_library('sidebar')
+
+def get_header():
+    return get_library('header')
+
+def get_footer():
+    return get_library('footer')
+
+def register_block(library, name, callback):
+    lib = get_library(library)
+    lib.add(name, callback)
 
 def register_sidebar_block(name, callback):
-    lib = get_sidebar()
-    lib.add(name, callback)
+    return register_block('sidebar', name, callback)
+
+def register_header_link(name, callback):
+    return register_block('header', name, callback)
+
+def register_footer_link(name, callback):
+    return register_block('footer', name, callback)

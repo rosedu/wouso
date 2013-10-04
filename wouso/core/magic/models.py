@@ -7,6 +7,8 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 from wouso.core.common import App, Item, CachedItem
 from wouso.core import signals
+from wouso.core.ui import register_header_link
+
 
 class Modifier(models.Model):
     """ Basic model for all the magic.
@@ -239,11 +241,12 @@ class PlayerSpellDue(models.Model):
 
 class Bazaar(App):
     @classmethod
-    def get_header_link(kls, request):
-        if kls.disabled():
+    def get_header_link(kls, context):
+        user = context.get('user', None)
+        if kls.disabled() or not user:
             return None
         url = reverse('bazaar_home')
-        player = request.user.get_profile() if request.user.is_authenticated() else None
+        player = user.get_profile() if user.is_authenticated() else None
         if player:
             count = PlayerSpellDue.objects.filter(player=player, seen=False).count()
         else:
@@ -261,3 +264,5 @@ class Bazaar(App):
 
             signals.postExpire.send(sender=None, psdue=s)
             s.delete()
+
+register_header_link('bazaar', Bazaar.get_header_link)

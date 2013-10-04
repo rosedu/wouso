@@ -111,7 +111,7 @@
 
     <div id="footer">
         {% block footer %}
-        <div id="footer_links">{% autoescape off %}{{ footer|join:" | " }}{% endautoescape %}
+        <div id="footer_links">{% render_footer %}
         <br/>
         <span id="poweredby">
         <br />{% trans 'Powered by:' %}<br />

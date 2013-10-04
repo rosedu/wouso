@@ -41,12 +41,14 @@ class App:
         """ Return dictionary containing (link, text, count) for the content
         to be displayed in the page header.
         Called in interface.context_processors.header """
+        # DEPRECATED
         return None
 
     @classmethod
     def get_footer_link(kls, request):
         """ Return html content to be displayed in the footer
         Called in interface.context_processors.footer """
+        # DEPRECATED
         return None
 
     @classmethod

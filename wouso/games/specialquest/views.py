@@ -7,7 +7,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from datetime import date
-from wouso.core.ui import register_sidebar_block
+from wouso.core.ui import register_sidebar_block, register_header_link
 from wouso.core.user.models import Player
 from models import SpecialQuestUser, SpecialQuestTask, SpecialQuestGame, SpecialQuestGroup, Invitation
 
@@ -136,9 +136,12 @@ def sidebar_widget(context):
     return render_to_string('specialquest/sidebar.html', {'not_done': count, 'id': 'specialquest'})
 register_sidebar_block('specialquest', sidebar_widget)
 
-@login_required
-def header_link(request):
-    profile = request.user.get_profile()
+
+def header_link(context):
+    user = context.get('user', None)
+    if not user or not user.is_authenticated():
+        return None
+    profile = user.get_profile()
     if SpecialQuestGame.disabled():
         return None
     if profile:
@@ -149,3 +152,4 @@ def header_link(request):
     url = reverse('wouso.games.specialquest.views.index')
 
     return dict(link=url, count=count, text=_('Special'))
+register_header_link('specialquest', header_link)

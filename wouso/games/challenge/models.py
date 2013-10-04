@@ -747,13 +747,6 @@ class ChallengeGame(Game):
         ]
 
     @classmethod
-    def get_header_link(kls, request):
-        if not request.user.is_anonymous():
-            from views import header_link
-            return header_link(request)
-        return dict(text=_('Challenges'), link='')
-
-    @classmethod
     def management_task(cls, now=None, stdout=sys.stdout):
         now = now if now else datetime.now()
         today = now.date()
