@@ -98,7 +98,7 @@ class Workshop(models.Model):
     )
     semigroup = models.ForeignKey(Semigroup)
     date = models.DateField(default=datetime.today)
-    title = models.CharField(max_length=128, default='')
+    title = models.CharField(max_length=128, default='', blank=True)
     start_at = models.DateTimeField(blank=True, null=True)
     active_until = models.DateTimeField(blank=True, null=True)
     status = models.IntegerField(choices=STATUSES, default=0)
