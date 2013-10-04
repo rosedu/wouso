@@ -323,16 +323,24 @@ class MessagesSender(BaseHandler):
         attrs = self.flatten_dict(request.POST)
         sender = request.user.get_profile()
 
-        if 'receiver' not in attrs.keys():
-            return {'success': False, 'error': 'Missing receiver'}
-
         try:
-            if attrs['receiver'].isdigit():
-                receiver = Player.objects.get(pk=attrs['receiver'])
-            else:
-                receiver = Player.objects.get(user__username=attrs['receiver'])
-        except Player.DoesNotExist:
-            return {'success': False, 'error': 'Invalid receiver'}
+            reply_to = Message.objects.get(pk=attrs['reply_to'])
+            receiver = reply_to.sender
+        except (KeyError, Message.DoesNotExist):
+            reply_to = None
+            receiver = None
+
+        if not reply_to and 'receiver' not in attrs.keys():
+            return {'success': False, 'error': 'Missing receiver or reply_to'}
+
+        if not receiver:
+            try:
+                if attrs['receiver'].isdigit():
+                    receiver = Player.objects.get(pk=attrs['receiver'])
+                else:
+                    receiver = Player.objects.get(user__username=attrs['receiver'])
+            except Player.DoesNotExist:
+                return {'success': False, 'error': 'Invalid receiver'}
 
         if 'text' not in attrs.keys():
             return {'success': False, 'error': 'Missing text'}
@@ -340,14 +348,9 @@ class MessagesSender(BaseHandler):
         if 'subject' not in attrs.keys():
             attrs['subject'] = ''
 
-        try:
-            reply_to = Message.objects.get(pk=attrs['reply_to'])
-        except (KeyError, Message.DoesNotExist):
-            reply_to = None
-
         Message.send(sender, receiver, attrs['subject'], attrs['text'], reply_to=reply_to)
-
         return {'success': True}
+
 
 class MessagesAction(BaseHandler):
     allowed_methods = ('POST', )
