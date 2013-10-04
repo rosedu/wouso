@@ -45,27 +45,6 @@ def header_footer(request):
 
     return {'header': header_generator, 'heads': header_generator, 'footer': footer_generator}
 
-
-def sidebar(request):
-    """ For each registered game, get a widget to be displayed in sidebar
-    @remark This design needs to be analysed.
-    @todo ordering, using config
-
-    Returns a 'sidebar' list containing html boxes.
-    """
-    def sidebar_generator():
-        for game in get_games() + list(get_apps()):
-            try:
-                w = game.get_sidebar_widget(request)
-            except Exception as e:
-                logging.exception(e)
-                w = None
-            if w:
-                yield w
-
-    return {'sidebar': sidebar_generator}
-
-
 def context(request):
     """ Make all configuration settings available as config_name
     and also define some game context
