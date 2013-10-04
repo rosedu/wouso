@@ -108,6 +108,7 @@ class Workshop(models.Model):
     )
     semigroup = models.ForeignKey(Semigroup)
     date = models.DateField(default=datetime.today)
+    title = models.CharField(max_length=128, default='')
     start_at = models.DateTimeField(blank=True, null=True)
     active_until = models.DateTimeField(blank=True, null=True)
     status = models.IntegerField(choices=STATUSES, default=0)
@@ -200,7 +201,7 @@ class Workshop(models.Model):
         return reduce(lambda b, a: b and a.integrity, self.assessment_set.all(), True)
 
     def __unicode__(self):
-        return u"#%d - on %s" % (self.pk, self.date)
+        return u"%s - %s [#%d]" % (self.title, self.date, self.pk)
 
 
 class Assessment(models.Model):
