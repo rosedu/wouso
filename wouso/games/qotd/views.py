@@ -94,7 +94,7 @@ def history(request):
 def sidebar_widget(context):
     # TODO: nothing should happen in the sidebar_widget
     user = context.get('user', None)
-    if not user:
+    if not user or not user.is_authenticated():
         return ''
     qotd = QotdGame.get_for_today()
     qotd_user = user.get_profile().get_extension(QotdUser)
