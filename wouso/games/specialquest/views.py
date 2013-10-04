@@ -125,7 +125,7 @@ def view_group(request, group_id):
 
 def sidebar_widget(context):
     user = context.get('user', None)
-    if SpecialQuestGame.disabled() or not user:
+    if SpecialQuestGame.disabled() or not user or not user.is_authenticated():
         return ''
     user = user.get_profile().get_extension(SpecialQuestUser)
     count = len(user.active_tasks)

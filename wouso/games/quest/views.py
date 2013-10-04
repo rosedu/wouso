@@ -46,7 +46,7 @@ def sidebar_widget(context):
     user = context.get('user', None)
     quest = QuestGame.get_current()
 
-    if quest is None or user is None:
+    if quest is None or user is None or not user.is_authenticated():
        return ''
 
     quest_user = user.get_profile().get_extension(QuestUser)

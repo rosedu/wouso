@@ -26,7 +26,7 @@ def index(request):
 def sidebar_widget(context):
     user = context.get('user', None)
     gc = GrandChallengeGame
-    if gc.disabled() or not user:
+    if gc.disabled() or not user or not user.is_authenticated():
         return ''
     gc_user = user.get_profile().get_extension(GrandChallengeUser)
     return render_string('grandchallenge/sidebar.html', {'gc': gc, 'gcuser': gc_user, 'id': 'grandchallenge'})
