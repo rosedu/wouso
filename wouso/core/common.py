@@ -27,6 +27,7 @@ class App:
     def get_sidebar_widget(kls, request):
         """ Return the sidebar widget, for current HttpRequest request.
         This is called in interface.context_processors.sidebar """
+        # DEPRECATED
         return None
 
     @classmethod
