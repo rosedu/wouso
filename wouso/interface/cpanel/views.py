@@ -16,7 +16,9 @@ from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_noop
 from django.utils.translation import ugettext as _
 from django.views.generic import View, UpdateView, CreateView, ListView, FormView, TemplateView
+from wouso.core.config.models import Setting
 from wouso.core.decorators import staff_required
+from wouso.core.ui import get_sidebar
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
 from wouso.core.qpool.models import Schedule, Question, Tag, Category, Answer
@@ -206,8 +208,24 @@ class CustomizationView(ModuleViewMixin, TemplateView):
         context = super(CustomizationView, self).get_context_data(**kwargs)
         context.update(dict(settings=(self.customization, self.switchboard)))
         return context
-
 customization = permission_required('config.change_setting')(CustomizationView.as_view())
+
+
+class DisplayView(ModuleViewMixin, TemplateView):
+    template_name = 'cpanel/display.html'
+    module = 'display'
+
+    def get_context_data(self, **kwargs):
+        s = get_sidebar()
+        sidebar_order = Setting.get('sidebar-order').get_value() or ','.join(s.get_blocks())
+        return {'display': sidebar_order}
+
+    def post(self, request):
+        data = request.POST['display']
+        blocks = ','.join([b.strip() for b in data.split(',') if b.strip()])
+        Setting.get('sidebar-order').set_value(blocks)
+        return redirect('cpanel_display')
+display = permission_required('config.change_setting')(DisplayView.as_view())
 
 
 class GamesView(ModuleViewMixin, TemplateView):

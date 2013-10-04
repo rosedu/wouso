@@ -4,6 +4,7 @@ from wouso.interface.cpanel import get_cpanel_games
 upat = [
     url(r'^$', 'wouso.interface.cpanel.views.dashboard', name='dashboard'),
     url(r'^customization/$', 'wouso.interface.cpanel.views.customization', name='customization'),
+    url(r'^display/$', 'wouso.interface.cpanel.views.display', name='cpanel_display'),
 
     url(r'^qpool/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
     url(r'^qpool/(?P<page>\d+)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
