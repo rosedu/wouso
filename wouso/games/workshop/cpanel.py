@@ -311,6 +311,7 @@ class AddWorkshopView(View):
         if form.is_valid():
             error = WorkshopGame.create_workshop(semigroup=form.cleaned_data['semigroup'],
                                     date=form.cleaned_data['date'],
+                                    title=form.cleaned_data['tile'],
                                     question_count=form.cleaned_data['question_count']
             )
             if not error:

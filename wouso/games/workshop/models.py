@@ -458,7 +458,7 @@ class WorkshopGame(Game):
             return None
 
     @classmethod
-    def create_workshop(cls, semigroup, date, question_count=4):
+    def create_workshop(cls, semigroup, date, title, question_count=4):
         """
          Creates an workshop instance.
 
@@ -472,7 +472,7 @@ class WorkshopGame(Game):
         if cls.get_workshop(semigroup, date):
             return _("Workshop already exists for group at date")
 
-        Workshop.objects.create(semigroup=semigroup, date=date, question_count=question_count)
+        Workshop.objects.create(semigroup=semigroup, date=date, question_count=question_count, title=title)
 
         return False
 
