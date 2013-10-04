@@ -88,16 +88,6 @@ class Semigroup(PlayerGroup):
         except IndexError:
             return None
 
-    @classmethod
-    def get_by_day_and_hour(cls, day, hour):
-        """
-         Returns a list of groups in that time span
-        """
-        qs = cls.objects.filter(day=day, hour=hour)
-        if qs.count():
-            return list(qs)
-
-        return [cls.objects.get_or_create(day=0, hour=0, name='default', owner=WorkshopGame.get_instance())[0]]
 
 class Workshop(models.Model):
     STATUSES = (
@@ -401,7 +391,18 @@ class WorkshopGame(Game):
         """ Return the semigroups list having a laboratory right now.
         """
         day, hour = cls.get_spot(timestamp)
-        return Semigroup.get_by_day_and_hour(day, hour)
+        return cls.get_by_day_and_hour(day, hour)
+
+    @classmethod
+    def get_by_day_and_hour(cls, day, hour):
+        """
+         Returns a list of groups in that time span
+        """
+        qs = Semigroup.objects.filter(day=day, hour=hour)
+        if qs.count():
+            return list(qs)
+
+        return [Semigroup.objects.get_or_create(day=0, hour=0, name='default', owner=cls.get_instance())[0]]
 
     @classmethod
     def get_question_pool(cls, timestamp=None):

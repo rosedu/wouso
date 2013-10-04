@@ -1,7 +1,7 @@
 # coding=utf-8
 from django import template
 from django.db.models import Sum
-from wouso.games.workshop.models import Semigroup, Review, ROOM_DEFAULT
+from wouso.games.workshop.models import Review, ROOM_DEFAULT, WorkshopGame
 
 register = template.Library()
 
@@ -17,7 +17,7 @@ def semigroup(sg):
 
 @register.simple_tag
 def get_schedule(day, hour):
-   return '<br/> '.join([semigroup(s) for s in Semigroup.get_by_day_and_hour(day, hour)])
+   return '<br/> '.join([semigroup(s) for s in WorkshopGame.get_by_day_and_hour(day, hour)])
 
 
 @register.simple_tag
