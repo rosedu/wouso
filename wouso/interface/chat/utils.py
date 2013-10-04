@@ -1,7 +1,6 @@
 import array
 import random
 from datetime import datetime
-from django_socketio import broadcast_channel, NoSocket
 from wouso.core.user.models import Player
 from wouso.interface.activity.models import Activity
 from wouso.core.signals import addedActivity
@@ -145,6 +144,7 @@ def broadcast_activity_handler(sender, **kwargs):
     """ Callback function for addedActivity signal
     It receives the activity newly added and sends it to global chat
     """
+    from django_socketio import broadcast_channel, NoSocket
     a = kwargs.get('activity', None)
     if not a or not a.public:
         return

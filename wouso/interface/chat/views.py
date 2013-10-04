@@ -8,7 +8,7 @@ from django.utils import simplejson
 
 from wouso.core.config.models import BoolSetting
 from models import *
-from wouso.interface.chat.utils import  change_text, get_author, serve_message, some_old_message, add_message, create_message
+from wouso.interface.chat.utils import get_author, serve_message, some_old_message, add_message, create_message
 
 @login_required
 def index(request):
