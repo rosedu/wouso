@@ -97,7 +97,7 @@ def calculate_definition(definition, formula=None, **params):
                 result = 0
             ret[coin] = result
     except Exception as e:
-        logging.exception(e)
+        #logging.exception(e)
         raise FormulaParsingError(formula)
     return ret
 
