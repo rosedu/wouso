@@ -149,13 +149,6 @@ class SpecialQuestGame(Game):
         return [{'name': 'Specialquest Staff', 'permissions': ['change_specialquestuser']}]
 
     @classmethod
-    def get_header_link(kls, request):
-        if not request.user.is_anonymous():
-            from views import header_link
-            return header_link(request)
-        return dict(text=_('Special'), link='')
-
-    @classmethod
     def get_formulas(kls):
         fs = []
         quest_game = kls.get_instance()

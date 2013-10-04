@@ -244,7 +244,7 @@ class Bazaar(App):
     def get_header_link(kls, context):
         user = context.get('user', None)
         if kls.disabled() or not user:
-            return None
+            return {}
         url = reverse('bazaar_home')
         player = user.get_profile() if user.is_authenticated() else None
         if player:
