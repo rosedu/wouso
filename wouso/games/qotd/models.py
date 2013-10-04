@@ -135,13 +135,6 @@ class QotdGame(Game):
         return fs
 
     @classmethod
-    def get_sidebar_widget(kls, request):
-        if not request.user.is_anonymous():
-            from views import sidebar_widget
-            return sidebar_widget(request)
-        return None
-
-    @classmethod
     def get_api(kls):
         from api import QotdHandler
         return {r'^qotd/today/$': QotdHandler}

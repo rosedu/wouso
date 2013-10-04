@@ -7,6 +7,7 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 from wouso.core.game.models import Game
 from wouso.core.qpool.models import Tag, Question, Category
+from wouso.core.ui import register_sidebar_block
 from wouso.core.user.models import PlayerGroup, Player
 from wouso.interface.apps.messaging.models import Message
 
@@ -527,10 +528,11 @@ class WorkshopGame(Game):
         return Category.objects.get_or_create(name='workshop')[0]
 
     @classmethod
-    def get_sidebar_widget(cls, request):
-        if request.user.is_anonymous():
+    def get_sidebar_widget(cls, context):
+        user = context.get('user', None)
+        if not user or user.is_anonymous():
             return ''
-        player = request.user.get_profile()
+        player = user.get_profile()
         ws_player = player.get_extension(WorkshopPlayer)
         semigroups = cls.get_semigroups()
         workshop = cls.get_for_player_now(player)
@@ -541,4 +543,7 @@ class WorkshopGame(Game):
         sm = ws_player.semigroup in semigroups
 
         return render_to_string('workshop/sidebar.html',
-                {'semigroups': semigroups, 'workshop': workshop, 'semigroup_member': sm, 'assessment': assessment})
+                {'semigroups': semigroups, 'workshop': workshop, 'semigroup_member': sm, 'assessment': assessment,
+                 'id': 'workshop'})
+
+register_sidebar_block('workshop', WorkshopGame.get_sidebar_widget)

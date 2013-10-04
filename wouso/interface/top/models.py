@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from wouso.core.common import App
 from wouso.core.config.models import BoolSetting, Setting
 from wouso.core.scoring import Coin
+from wouso.core.ui import register_sidebar_block
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.games.challenge.models import ChallengeUser
 
@@ -231,10 +232,11 @@ class History(models.Model): # TODO: deprecate (maybe), check if NewHistory cove
 
 class Top(App):
     @classmethod
-    def get_sidebar_widget(kls, request):
+    def get_sidebar_widget(kls, context):
         top5 = TopUser.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
         top5 = top5.order_by('-points')[:10]
-        is_top = request.get_full_path().startswith('/top/')
+        #is_top = request.get_full_path().startswith('/top/')
+        is_top = context.get('top', False)
         return render_to_string('top/sidebar.html',
             {'topusers': top5,
              'is_top': is_top,
@@ -334,6 +336,7 @@ class Top(App):
         coin = Coin.get(coin)
         return NewHistory.get_obj_position(user, relative_to=coin)
 
+register_sidebar_block('top', Top.get_sidebar_widget)
 #def user_post_save(sender, instance, **kwargs):
 #    profile = instance.get_profile()
 #    profile.get_extension(TopUser)

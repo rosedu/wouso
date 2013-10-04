@@ -345,13 +345,6 @@ class QuestGame(Game):
         return fs
 
     @classmethod
-    def get_sidebar_widget(kls, request):
-        if not request.user.is_anonymous():
-            from views import sidebar_widget
-            return sidebar_widget(request)
-        return None
-
-    @classmethod
     def get_api(kls):
         from api import QuestAdminHandler, QuestAdminUserHandler
         return {r'^quest/admin/$': QuestAdminHandler,

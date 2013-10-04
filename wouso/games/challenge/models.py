@@ -754,13 +754,6 @@ class ChallengeGame(Game):
         return dict(text=_('Challenges'), link='')
 
     @classmethod
-    def get_sidebar_widget(kls, request):
-        if not request.user.is_anonymous():
-            from views import sidebar_widget
-            return sidebar_widget(request)
-        return None
-
-    @classmethod
     def management_task(cls, now=None, stdout=sys.stdout):
         now = now if now else datetime.now()
         today = now.date()

@@ -392,10 +392,3 @@ class GrandChallengeGame(Game):
             cls.set_current_round(round.round_number)
         logging.debug('Played round %s' % round.round_number)
         return round
-
-    @classmethod
-    def get_sidebar_widget(kls, request):
-        if not request.user.is_anonymous():
-            from views import sidebar_widget
-            return sidebar_widget(request)
-        return None

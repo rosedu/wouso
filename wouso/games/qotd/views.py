@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 from django.contrib import messages
-from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, redirect
@@ -9,6 +8,7 @@ from django.template.loader import render_to_string
 from django.views.generic import View
 from models import QotdUser, QotdGame
 from forms import QotdForm
+from wouso.core.ui import register_sidebar_block
 
 class QotdView(View):
     def dispatch(self, request, *args, **kwargs):
@@ -91,10 +91,13 @@ def history(request):
     return render_to_response('qotd/history.html', {'history': QotdGame.get_history()}, context_instance=RequestContext(request))
 
 
-def sidebar_widget(request):
+def sidebar_widget(context):
     # TODO: nothing should happen in the sidebar_widget
+    user = context.get('user', None)
+    if not user:
+        return ''
     qotd = QotdGame.get_for_today()
-    qotd_user = request.user.get_profile().get_extension(QotdUser)
+    qotd_user = user.get_profile().get_extension(QotdUser)
 
     if not qotd_user.has_question:
         qotd_user.set_question(qotd)
@@ -106,4 +109,6 @@ def sidebar_widget(request):
         qotd_user.reset_question()
         if time_passed > timedelta(seconds=120): # two minutes
             return ''
-    return render_to_string('qotd/sidebar.html', {'question': qotd, 'quser': qotd_user, 'qotd': QotdGame})
+    return render_to_string('qotd/sidebar.html', {'question': qotd, 'quser': qotd_user, 'qotd': QotdGame, 'id': 'qotd'})
+
+register_sidebar_block('qotd', sidebar_widget)

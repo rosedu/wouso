@@ -149,13 +149,6 @@ class SpecialQuestGame(Game):
         return [{'name': 'Specialquest Staff', 'permissions': ['change_specialquestuser']}]
 
     @classmethod
-    def get_sidebar_widget(kls, request):
-        if not request.user.is_anonymous():
-            from views import sidebar_widget
-            return sidebar_widget(request)
-        return None
-
-    @classmethod
     def get_header_link(kls, request):
         if not request.user.is_anonymous():
             from views import header_link

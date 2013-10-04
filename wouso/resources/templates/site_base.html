@@ -1,4 +1,5 @@
 {% load user %}
+{% load ui %}
 {% load artifacts %}
 {% load i18n %}
 {% load chat %}
@@ -83,11 +84,8 @@
     <div class="spacer-search"></div>
 
     <div id="sidebar">
-        {% block sidebar %}
-        {% for w in sidebar %}
-            {{ w }}
-        {% endfor %}
-        {% endblock %}
+        {% render_sidebar %}
+
         {% if last10 %}
             <div class="widget">
                 <h2>{% trans 'Online players' %}</h2>
