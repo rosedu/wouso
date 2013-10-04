@@ -2,7 +2,7 @@
  * Format Item - Autocomplete functionality.
  */
 
-var url_base = '/';
+//var url_base = '/';
 
 function setAutocomplete(id) {
     $(document).ready(function() {
