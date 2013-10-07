@@ -139,11 +139,9 @@ register_sidebar_block('specialquest', sidebar_widget)
 
 def header_link(context):
     user = context.get('user', None)
-    if not user or not user.is_authenticated():
-        return None
+    if not user or not user.is_authenticated() or SpecialQuestGame.disabled():
+        return {}
     profile = user.get_profile()
-    if SpecialQuestGame.disabled():
-        return None
     if profile:
         user = profile.get_extension(SpecialQuestUser)
         count = len(user.active_tasks)
