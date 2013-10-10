@@ -47,7 +47,14 @@ class ChallengeUser(Player):
         """ Check if the user has 30 points to challenge
         """
         REQ_POINTS = 30
-        return self.points >= REQ_POINTS
+        return self.points >= 30
+
+    def in_same_division(self, user):
+        from wouso.interface.top.models import TopUser
+        position_diff = abs(self.get_extension(TopUser).position - user.get_extension(TopUser).position)
+        if position_diff <= 20:
+          return True
+        return False
 
     def can_challenge(self, user):
         """ Check if the target user is available.
@@ -91,6 +98,9 @@ class ChallengeUser(Player):
         if not self.can_launch():
             raise ChallengeException('Player cannot launch')
 
+        if not self.in_same_division(destination):
+            raise ChallengeException('You are not in the same division')
+
         if not self.can_challenge(destination):
             raise ChallengeException('Player cannot launch against this opponent')
 
@@ -111,9 +121,9 @@ class ChallengeUser(Player):
         return self.get_all_challenges().exclude(winner=self)
 
     def get_random_opponent(self):
-        players = ChallengeUser.objects.exclude(user=self.user)
+        players = Player.objects.exclude(user=self.user)
         players = players.exclude(race__can_play=False)
-        players = [p for p in players if self.can_challenge(p)]
+        players = [p for p in players if self.can_challenge(p) and self.in_same_division(p)]
         if not players:
             return False
         # selects the user to be challenged
