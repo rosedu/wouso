@@ -47,7 +47,14 @@ class ChallengeUser(Player):
         """ Check if the user has 30 points to challenge
         """
         REQ_POINTS = 30
-        return self.points >= REQ_POINTS
+        return self.points >= 30
+
+    def in_same_division(self, user):
+        from wouso.interface.top.models import TopUser
+        position_diff = abs(self.get_extension(TopUser).position - user.get_extension(TopUser).position)
+        if position_diff <= 20:
+          return True
+        return False
 
     def in_same_division(self, user):
         from wouso.interface.top.models import TopUser

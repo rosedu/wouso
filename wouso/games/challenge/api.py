@@ -42,7 +42,7 @@ class ChallengeLaunch(BaseHandler):
         except Player.DoesNotExist:
             return rc.NOT_FOUND
 
-        challuser2 = player2.get_extension(ChallengeUser)
+        challuser2 = player2.get_extension(ChallengeUser) 
 
         try:
             chall = challuser.launch_against(challuser2)
