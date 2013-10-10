@@ -25,7 +25,7 @@ class ChallengeLaunch(BaseHandler):
         challuser = player.get_extension(ChallengeUser)
 
         if player_id == '0':
-            player_id = challuser.get_random_opponent().id 
+            player_id = challuser.get_random_opponent().id
         
         try:
             player2 = Player.objects.get(pk=player_id)
