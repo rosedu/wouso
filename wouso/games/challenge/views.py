@@ -115,8 +115,12 @@ def launch(request, to_id):
         return redirect('challenge_index_view')
 
     if not user_from.in_same_division(user_to):
+<<<<<<< HEAD
         messages.error(request, _('You are not in the same division'))
         return redirect('challenge_index_view')
+=======
+        return do_result(request, _('You are not in the same division'))
+>>>>>>> Implemented divisions feature, fixed get_random_opponent function that challenged only 2,3 distinct random players
 
     if not user_from.has_enough_points():
         messages.error(request, _('You need at least 30 points to launch a challenge'))
