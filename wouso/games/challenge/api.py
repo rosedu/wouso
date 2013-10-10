@@ -36,20 +36,13 @@ class ChallengeLaunch(BaseHandler):
     def read(self, request, player_id):
         player = request.user.get_profile()
         challuser = player.get_extension(ChallengeUser)
-<<<<<<< HEAD
 
-        if player_id == '0':
-            player_id = challuser.get_random_opponent().id
-        
-=======
- 
->>>>>>> Created handler for random challenge
         try:
             player2 = Player.objects.get(pk=player_id)
         except Player.DoesNotExist:
             return rc.NOT_FOUND
 
-        challuser2 = player2.get_extension(ChallengeUser)
+        challuser2 = player2.get_extension(ChallengeUser) 
 
         try:
             chall = challuser.launch_against(challuser2)
