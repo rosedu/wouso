@@ -230,10 +230,13 @@ class DefaultGod:
             from wouso.interface.top.models import TopUser
             from wouso.games.challenge.models import Challenge
 
+            position_diff = abs(player_from.get_extension(TopUser).position - player_to.get_extension(TopUser).position)
+            if position_diff > 20:
+              return False
+
             lastch = Challenge.last_between(player_from, player_to)
             if lastch:
                 elapsed_days = (datetime.now() - lastch.date).days
-                position_diff = abs(player_from.get_extension(TopUser).position - player_to.get_extension(TopUser).position)
                 rule = ceil(position_diff * 0.1)
                 if rule > 7:
                     rule = 7 # nu bloca mai mult de 7 zile

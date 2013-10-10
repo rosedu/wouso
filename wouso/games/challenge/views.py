@@ -115,6 +115,9 @@ def launch(request, to_id):
     if not user_from.can_launch():
         return do_result(request, _('You cannot launch another challenge today.'))
 
+    if not user_from.in_same_division(user_to):
+        return do_result(request, _('You are not in the same division'))
+
     if not user_from.has_enough_points():
         return do_result(request, _('You need at least 30 points to launch a challenge'))
 
