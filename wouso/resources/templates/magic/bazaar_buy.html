@@ -4,9 +4,6 @@
 {% block title %}{% trans 'Bazaar' %}{% endblock %}
 
 {% block content %}
-    <div class="wrong error">{{ error }}</div>
-    <div class="ok message">{{ message }}</div>
-
     <a href="{% url bazaar_home %}#{{tab}}">{% trans 'Bazaar' %}</a>
 {% endblock %}
 

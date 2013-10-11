@@ -1,0 +1,17 @@
+{% extends 'cpanel/index.html' %}
+
+{% block sectiontitle %}Display{% endblock %}
+
+{% block sectioncontent %}
+
+<form method="post" action="">
+    <label for="display">
+        Sidebar blocks order:
+    </label>
+    <input id="display" name="display" value="{{ display }}" size="100"/>
+    <br/>
+    <button type="submit">Save</button>
+{% csrf_token %}
+</form>
+
+{% endblock %}

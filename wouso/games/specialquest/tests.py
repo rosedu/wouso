@@ -1,12 +1,15 @@
 from datetime import datetime, timedelta
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
-from django.core.urlresolvers import reverse
-from models import SpecialQuestUser, SpecialQuestGroup, SpecialQuestGame, SpecialQuestTask
+from django.utils.html import escape
+from django.utils.translation import ugettext as _
 from wouso.core.tests import WousoTest
+from wouso.core import scoring
+from models import SpecialQuestUser, SpecialQuestGroup, SpecialQuestGame, SpecialQuestTask
 
-class TestSpecialQuestView(WousoTest):
+class TestSpecialQuestViews(WousoTest):
     def setUp(self):
         self.user = self._get_player(1).get_extension(SpecialQuestUser)
         self.admin = self._get_superuser()
@@ -73,6 +76,44 @@ class TestSpecialQuestView(WousoTest):
         user2 = User.objects.get(username='testuser2').get_profile().get_extension(SpecialQuestUser)
         self.assertEqual(user2.group.name, 'Special Group no. 1')
         self.assertEqual(len(new_group.members), 2)
+
+    def test_setup_create_error_message(self):
+        new_group = SpecialQuestGroup.create(head=self.user, name='Special Group no. 1')
+        self.c.login(username='testuser1', password='test')
+        response = self.c.get(reverse('specialquest_create'))
+        self.assertContains(response, _('You already have a group'))
+
+    def test_setup_invite_error_message(self):
+        user2 = self._get_player(2).get_extension(SpecialQuestUser)
+        self.c.login(username='testuser1', password='test')
+        response = self.c.get(reverse('specialquest_invite', args=[user2.pk]))
+        self.assertContains(response, escape(_('You don\'t have a group')))
+
+    def test_manage_player_error_messages(self):
+        self.c.login(username='admin', password='admin')
+        data = {'points': 'string_invalid'}
+        response = self.c.post(reverse('specialquest_manage', args=[self.user.pk]), data)
+        self.assertContains(response, 'Invalid amount')
+
+    def test_profile_page_button(self):
+        self.c.login(username='testuser1', password='test')
+        new_group = SpecialQuestGroup.create(head=self.user, name='Special Group no. 1')
+        user2 = self._get_player(2).get_extension(SpecialQuestUser)
+        # Button 'Invite' is displayed
+        response = self.c.get(reverse('player_profile', args=[user2.pk]))
+        self.assertContains(response, 'Invite in my Special Quest group')
+        
+        # Button 'Special mate' is displayed
+        user2.group = new_group
+        user2.save()
+        new_group.players.add(user2)
+        response = self.c.get(reverse('player_profile', args=[user2.pk]))
+        self.assertContains(response, 'Special mate')
+
+    def test_profile_page_super_button(self):
+        self.c.login(username='admin', password='admin')
+        response = self.c.get(reverse('player_profile', args=[self.user.pk]))
+        self.assertContains(response, 'Special quest')
 
 class SpecialquestTest(TestCase):
     def setUp(self):

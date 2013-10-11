@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
+from wouso.core.ui import register_header_link
 from wouso.core.user.models import Player
 from wouso.interface.apps.messaging.models import Message, MessagingUser, MessageApp
 from wouso.interface.apps.messaging.forms import ComposeForm
@@ -59,7 +60,7 @@ def create(request, to=None, reply_to=None):
                             form.cleaned_data['to'],
                             form.cleaned_data['subject'],
                             form.cleaned_data['text'],
-                            reply_to=form.cleaned_data['reply_to'],
+                            reply_to=reply_to.id if reply_to else None,
             )
             if m is None:
                 return HttpResponseRedirect(reverse('messaging'))
@@ -76,7 +77,6 @@ def create(request, to=None, reply_to=None):
 @login_required
 def message(request, mid):
     message = get_object_or_404(Message, pk=mid)
-
     me = request.user.get_profile().get_extension(MessagingUser)
 
     if message.sender == me or message.receiver == me:
@@ -88,18 +88,28 @@ def message(request, mid):
                                   context_instance=RequestContext(request))
     raise Http404
 
+
 @login_required
 def delete(request, id):
     message = get_object_or_404(Message, pk=id)
-    message.delete()
+    me = request.user.get_profile().get_extension(MessagingUser)
+
+    if message.sender == me or message.receiver == me:
+        message.delete()
+    else:
+        raise Http404
     go_back = request.META.get('HTTP_REFERER', None)
     if not go_back:
         go_back = reverse('wouso.interface.messaging.views.home')
     return HttpResponseRedirect(go_back)
 
 
-def header_link(request):
+def header_link(context):
     # TODO refactor this lame thing
-    count = MessageApp.get_unread_count(request)
+    user = context.get('user', None)
+    if not user or not user.is_authenticated():
+        return dict(text=_('Messages'))
+    count = MessageApp.get_unread_for_user(user)
     url = reverse('messaging')
     return dict(link=url, count=count, text=_('Messages'))
+register_header_link('messaging', header_link)

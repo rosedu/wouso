@@ -8,12 +8,13 @@ from django.template import RequestContext
 from django.utils.translation import ugettext as _
 import json
 from wouso.core.decorators import staff_required
+from wouso.core.ui import register_footer_link
 from wouso.games.challenge.models import Challenge
 from wouso.games.qotd.models import QotdUser
 from wouso.core.user.models import Player
 from wouso.games.quest.models import Quest, QuestGame
 from wouso.interface.activity.models import Activity
-
+from models import Statistics
 
 def stats(request):
 
@@ -96,8 +97,11 @@ def stats(request):
 
 
 def footer_link(request):
+    if Statistics.disabled():
+        return ''
     link = '<a id="page-special-statistics" href="'+ reverse('wouso.interface.apps.statistics.views.stats') +'">' + _('Live stats') + '</a>'
     return link
+register_footer_link('statistics', footer_link)
 
 
 @staff_required

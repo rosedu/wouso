@@ -12,6 +12,7 @@ from wouso.core.tests import WousoTest
 from wouso.interface.chat.views import roomexist
 from wouso.interface.chat.models import ChatUser, ChatRoom, ChatMessage
 from wouso.core.user.models import User
+from django.conf import settings
 
 class ChatTestCase(WousoTest):
     """
@@ -148,3 +149,6 @@ class ChatTestCase(WousoTest):
         all_message = ChatMessage.objects.filter(dest_room=room)
         all_message = all_message[len(all_message)-50:] if len(all_message) > 50 else all_message
         self.assertEqual(len(log.content), len(all_message))
+
+if not settings.CHAT_ENABLED:
+    del ChatTestCase

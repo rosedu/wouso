@@ -1,6 +1,8 @@
 {% load user %}
+{% load ui %}
 {% load artifacts %}
 {% load i18n %}
+{% load chat %}
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -25,9 +27,10 @@
     <script type="text/javascript" src="{{ basepath }}/static/js/format.item.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery.timers.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/ajaxify.js"></script>
-    {% if not config_disable_chat  %}
-        {% include 'chat/setup.html' %}
+    {% if not config_disable_contactbox %}
+    <script type="text/javascript" src="{{ basepath }}/static/js/contactbox.js"></script>
     {% endif %}
+    {% chat_scripts %}
     <script type="text/javascript">
         var url_base = '{{ basepath }}';
     </script>
@@ -81,11 +84,8 @@
     <div class="spacer-search"></div>
 
     <div id="sidebar">
-        {% block sidebar %}
-        {% for w in sidebar %}
-            {{ w }}
-        {% endfor %}
-        {% endblock %}
+        {% render_sidebar %}
+
         {% if last10 %}
             <div class="widget">
                 <h2>{% trans 'Online players' %}</h2>
@@ -98,13 +98,10 @@
 
     <div id="content">
     <div id="ajax-message">
-        {%  if message %}<p class="ok">{{ message }}</p>{% endif %}{% if error %}<p class="wrong">{{ error }}</p>{% endif %}
         {% if messages %}
-        <ul class="messages">
             {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
             {% endfor %}
-        </ul>
         {% endif %}
     </div>
     {% block content %}
@@ -114,7 +111,7 @@
 
     <div id="footer">
         {% block footer %}
-        <div id="footer_links">{% autoescape off %}{{ footer|join:" | " }}{% endautoescape %}
+        <div id="footer_links">{% render_footer %}
         <br/>
         <span id="poweredby">
         <br />{% trans 'Powered by:' %}<br />

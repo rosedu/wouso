@@ -82,7 +82,7 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $("#to_input").autocomplete("/instantsearch/", { minChars:3, matchSubset:1, matchContains:1, cacheLength:10, formatItem:formatItem, onItemSelect:selectItemMessaging, selectOnly:1 });
+        $("#to_input").autocomplete("{{basepath}}/instantsearch/", { minChars:3, matchSubset:1, matchContains:1, cacheLength:10, formatItem:formatItem, onItemSelect:selectItemMessaging, selectOnly:1 });
     });
 </script>
 

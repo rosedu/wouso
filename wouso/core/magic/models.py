@@ -6,6 +6,9 @@ from django.db import models
 from django.utils.translation import ugettext as _
 from django.conf import settings
 from wouso.core.common import App, Item, CachedItem
+from wouso.core import signals
+from wouso.core.ui import register_header_link
+
 
 class Modifier(models.Model):
     """ Basic model for all the magic.
@@ -109,6 +112,22 @@ class Spell(Modifier):
 
     def history_expired(self):
         return self.spellhistory_set.filter(type='e').count()
+
+    @classmethod
+    def get_spells_summary(cls):
+        """
+        Returns a dictionary which contains a summary
+        of the bought, used, cleaned and expired spells
+        """
+        summary = dict(spells_bought=0, spells_used=0,
+                       spells_expired=0, spells_cleaned=0)
+        for p in cls.objects.all():
+            summary['spells_bought'] += p.history_bought()
+            summary['spells_used'] += p.history_used()
+            summary['spells_expired'] += p.history_expired()
+            summary['spells_cleaned'] += p.history_cleaned()
+
+        return summary
 
     def __unicode__(self):
         if self.title:
@@ -222,11 +241,12 @@ class PlayerSpellDue(models.Model):
 
 class Bazaar(App):
     @classmethod
-    def get_header_link(kls, request):
-        if kls.disabled():
-            return None
+    def get_header_link(kls, context):
+        user = context.get('user', None)
+        if kls.disabled() or not user:
+            return {}
         url = reverse('bazaar_home')
-        player = request.user.get_profile() if request.user.is_authenticated() else None
+        player = user.get_profile() if user.is_authenticated() else None
         if player:
             count = PlayerSpellDue.objects.filter(player=player, seen=False).count()
         else:
@@ -242,6 +262,7 @@ class Bazaar(App):
         for s in spells:
             SpellHistory.expired(s.player, s.spell)
 
-            from wouso.core.god import God
-            God.post_expire(psdue=s)
+            signals.postExpire.send(sender=None, psdue=s)
             s.delete()
+
+register_header_link('bazaar', Bazaar.get_header_link)

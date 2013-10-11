@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block title %}{% trans 'Workshop' %} - {{ user.get_profile }}{% endblock %}
-{% block sectiontitle %}{% trans 'Workshop' %} #{{ workshop.pk }}{% endblock %}
+{% block sectiontitle %}{% trans 'Workshop' %} {{ workshop.title }}{% endblock %}
 
 {% block scripts %}
 {{ block.super }}

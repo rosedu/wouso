@@ -2,7 +2,7 @@
  * Format Item - Autocomplete functionality.
  */
 
-var url_base = '/';
+//var url_base = '/';
 
 function setAutocomplete(id) {
     $(document).ready(function() {
@@ -97,6 +97,10 @@ function messagingView(id) {
         url: url_base + '/m/view/' + id + '/',
         success: function(data) {
             container.html(data);
+        },
+        error: function(data) {
+            console.log('eroare');
+            console.log(JSON.stringify(data));
         }
     });
     return false;

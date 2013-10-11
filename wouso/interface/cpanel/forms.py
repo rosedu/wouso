@@ -6,17 +6,17 @@ from wouso.core.scoring.models import Formula
 from wouso.core.security.models import Report
 
 class QuestionForm(forms.Form):
-    text = forms.CharField(max_length=500, widget=forms.Textarea)
+    text = forms.CharField(max_length=2000, widget=forms.Textarea)
     active = forms.BooleanField(required=False)
     schedule = forms.DateField(required=False, input_formats=['%d.%m.%Y','%Y-%m-%d'], help_text='dd.mm.yyyy')
-    category = forms.CharField(max_length=50, required=False)
+    category = forms.CharField(max_length=100, required=False)
 
     def __init__(self, data=None, instance=None, users=True):
         super(QuestionForm, self).__init__(data)
         if data is not None:
             for i in filter(lambda a: a.startswith('answer_'), data.keys()):
                 i = int(i[7:])
-                self.fields['answer_%d' % i] = forms.CharField(max_length=100,
+                self.fields['answer_%d' % i] = forms.CharField(max_length=500,
                                         widget=forms.Textarea, required=False)
                 self.fields['correct_%d' % i] = forms.BooleanField(required=False)
 
@@ -137,3 +137,9 @@ class EditReportForm(forms.ModelForm):
         self.fields['dibs'].label = "Dibs"
         self.fields['status'].label = "Status"
         self.fields['extra'].label = "Observations"
+
+class TagForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(TagForm, self).__init__(*args, **kwargs)
+        self.fields['questions'] = forms.MultipleChoiceField(choices=[(q.pk, q.text) for q in Question.objects.all()])
+        self.fields['tag'] = forms.ChoiceField(choices=[(t.pk, t.name) for t in Tag.objects.all().exclude(name__in=['qotd', 'quest', 'challenge'])])

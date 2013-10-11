@@ -116,8 +116,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
     'django.contrib.messages.context_processors.messages',
 
-    'wouso.interface.context_processors.sidebar',
-    'wouso.interface.context_processors.header_footer',
     'wouso.interface.context_processors.context',
 )
 

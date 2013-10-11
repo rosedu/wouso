@@ -7,6 +7,7 @@ from django.utils.translation import ugettext as _
 from django.conf import settings
 from wouso.core.game.models import Game
 from wouso.core.qpool.models import Tag, Question, Category
+from wouso.core.ui import register_sidebar_block
 from wouso.core.user.models import PlayerGroup, Player
 from wouso.interface.apps.messaging.models import Message
 
@@ -88,16 +89,6 @@ class Semigroup(PlayerGroup):
         except IndexError:
             return None
 
-    @classmethod
-    def get_by_day_and_hour(cls, day, hour):
-        """
-         Returns a list of groups in that time span
-        """
-        qs = cls.objects.filter(day=day, hour=hour)
-        if qs.count():
-            return list(qs)
-
-        return [cls.objects.get_or_create(day=0, hour=0, name='default', owner=WorkshopGame.get_instance())[0]]
 
 class Workshop(models.Model):
     STATUSES = (
@@ -108,6 +99,7 @@ class Workshop(models.Model):
     )
     semigroup = models.ForeignKey(Semigroup)
     date = models.DateField(default=datetime.today)
+    title = models.CharField(max_length=128, default='', blank=True)
     start_at = models.DateTimeField(blank=True, null=True)
     active_until = models.DateTimeField(blank=True, null=True)
     status = models.IntegerField(choices=STATUSES, default=0)
@@ -200,7 +192,7 @@ class Workshop(models.Model):
         return reduce(lambda b, a: b and a.integrity, self.assessment_set.all(), True)
 
     def __unicode__(self):
-        return u"#%d - on %s" % (self.pk, self.date)
+        return u"%s - %s [#%d]" % (self.title, self.date, self.pk)
 
 
 class Assessment(models.Model):
@@ -400,7 +392,18 @@ class WorkshopGame(Game):
         """ Return the semigroups list having a laboratory right now.
         """
         day, hour = cls.get_spot(timestamp)
-        return Semigroup.get_by_day_and_hour(day, hour)
+        return cls.get_by_day_and_hour(day, hour)
+
+    @classmethod
+    def get_by_day_and_hour(cls, day, hour):
+        """
+         Returns a list of groups in that time span
+        """
+        qs = Semigroup.objects.filter(day=day, hour=hour)
+        if qs.count():
+            return list(qs)
+
+        return [Semigroup.objects.get_or_create(day=0, hour=0, name='default', owner=cls.get_instance())[0]]
 
     @classmethod
     def get_question_pool(cls, timestamp=None):
@@ -456,7 +459,7 @@ class WorkshopGame(Game):
             return None
 
     @classmethod
-    def create_workshop(cls, semigroup, date, question_count=4):
+    def create_workshop(cls, semigroup, date, title, question_count=4):
         """
          Creates an workshop instance.
 
@@ -470,7 +473,7 @@ class WorkshopGame(Game):
         if cls.get_workshop(semigroup, date):
             return _("Workshop already exists for group at date")
 
-        Workshop.objects.create(semigroup=semigroup, date=date, question_count=question_count)
+        Workshop.objects.create(semigroup=semigroup, date=date, question_count=question_count, title=title)
 
         return False
 
@@ -525,10 +528,11 @@ class WorkshopGame(Game):
         return Category.objects.get_or_create(name='workshop')[0]
 
     @classmethod
-    def get_sidebar_widget(cls, request):
-        if request.user.is_anonymous():
+    def get_sidebar_widget(cls, context):
+        user = context.get('user', None)
+        if not user or user.is_anonymous():
             return ''
-        player = request.user.get_profile()
+        player = user.get_profile()
         ws_player = player.get_extension(WorkshopPlayer)
         semigroups = cls.get_semigroups()
         workshop = cls.get_for_player_now(player)
@@ -539,4 +543,7 @@ class WorkshopGame(Game):
         sm = ws_player.semigroup in semigroups
 
         return render_to_string('workshop/sidebar.html',
-                {'semigroups': semigroups, 'workshop': workshop, 'semigroup_member': sm, 'assessment': assessment})
+                {'semigroups': semigroups, 'workshop': workshop, 'semigroup_member': sm, 'assessment': assessment,
+                 'id': 'workshop'})
+
+register_sidebar_block('workshop', WorkshopGame.get_sidebar_widget)

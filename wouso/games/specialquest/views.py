@@ -1,11 +1,13 @@
 from django.http import  HttpResponseRedirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
-from django.contrib.auth.decorators import login_required
 from datetime import date
+from wouso.core.ui import register_sidebar_block, register_header_link
 from wouso.core.user.models import Player
 from models import SpecialQuestUser, SpecialQuestTask, SpecialQuestGame, SpecialQuestGroup, Invitation
 
@@ -70,7 +72,7 @@ def setup_leave(request):
 def setup_create(request):
     user = request.user.get_profile().get_extension(SpecialQuestUser)
     group = user.group
-    error, message = '', ''
+    error = ''
     if group is not None:
         error = _('You already have a group')
     else:
@@ -86,7 +88,9 @@ def setup_create(request):
                     group = SpecialQuestGroup.create(head=user, name=name)
                     return HttpResponseRedirect(reverse('specialquest_index_view'))
 
-    return render_to_response('specialquest/create.html', dict(error=error), context_instance=RequestContext(request))
+    if error:
+        messages.error(request, error)
+    return render_to_response('specialquest/create.html', context_instance=RequestContext(request))
 
 @login_required
 def setup_invite(request, user_id):
@@ -104,7 +108,12 @@ def setup_invite(request, user_id):
             Invitation.objects.create(group=user.group, to=to_user)
             message = _("Invitation sent")
 
-    return render_to_response('specialquest/invite.html', dict(error=error, message=message, to_user=to_user, squser=user),
+    if error:
+        messages.error(request, error)
+    if message:
+        messages.success(request, message)
+
+    return render_to_response('specialquest/invite.html', dict(to_user=to_user, squser=user),
                               context_instance=RequestContext(request))
 
 @login_required
@@ -113,23 +122,26 @@ def view_group(request, group_id):
 
     return render_to_response('specialquest/group.html', dict(sqgroup=group), context_instance=RequestContext(request))
 
-@login_required
-def sidebar_widget(request):
-    if SpecialQuestGame.disabled():
+
+def sidebar_widget(context):
+    user = context.get('user', None)
+    if SpecialQuestGame.disabled() or not user or not user.is_authenticated():
         return ''
-    user = request.user.get_profile().get_extension(SpecialQuestUser)
+    user = user.get_profile().get_extension(SpecialQuestUser)
     count = len(user.active_tasks)
 
     if not count:
         return ''
 
-    return render_to_string('specialquest/sidebar.html', {'not_done': count})
+    return render_to_string('specialquest/sidebar.html', {'not_done': count, 'id': 'specialquest'})
+register_sidebar_block('specialquest', sidebar_widget)
 
-@login_required
-def header_link(request):
-    profile = request.user.get_profile()
-    if SpecialQuestGame.disabled():
-        return None
+
+def header_link(context):
+    user = context.get('user', None)
+    if not user or not user.is_authenticated() or SpecialQuestGame.disabled():
+        return {}
+    profile = user.get_profile()
     if profile:
         user = profile.get_extension(SpecialQuestUser)
         count = len(user.active_tasks)
@@ -138,3 +150,4 @@ def header_link(request):
     url = reverse('wouso.games.specialquest.views.index')
 
     return dict(link=url, count=count, text=_('Special'))
+register_header_link('specialquest', header_link)

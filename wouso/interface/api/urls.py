@@ -30,7 +30,8 @@ ad = {'authentication': [#simple,
 notifications_resource = Resource(handler=NotificationsHandler, **ad)
 
 urlpatterns += patterns('',
-    url(r'^$', Resource(handler=ApiRoot, **ad)),
+    #url(r'^$', Resource(handler=ApiRoot, **ad)),
+    url(r'^$', Resource(handler=ApiRoot)), # no authentication for basic info
     url(r'^notifications/register/$', Resource(handler=NotificationsRegister, **ad)),
     url(r'^notifications/devices/$', Resource(handler=NotificationsDevices, **ad)),
     url(r'^notifications/(?P<type>[^/]+)/$', notifications_resource),

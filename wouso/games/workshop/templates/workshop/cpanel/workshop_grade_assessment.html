@@ -3,7 +3,7 @@
 {% load user %}
 {% load i18n %}
 
-{% block sectiontitle %}Workshop #{{ assessment.workshop.id }}{% endblock %}
+{% block sectiontitle %}Workshop {{ assessment.workshop.title }}{% endblock %}
 
 {% block tabcontent %}
 <h4>Grade assessment #{{ assessment.id }} {{ assessment.player }} [{{ assessment.player.group.name }}]</h4>

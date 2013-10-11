@@ -5,6 +5,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.db.models import Sum
 from django.views.generic import ListView
+from wouso.core.ui import register_sidebar_block
 from wouso.core.user.models import Player
 from wouso.core.scoring.models import History
 from models import QuestGame, QuestUser, Quest, QuestResult
@@ -41,13 +42,14 @@ def index(request):
             {'quest': quest, 'progress': quest_user, 'form': form, 'error': error},
             context_instance=RequestContext(request))
 
-def sidebar_widget(request):
+def sidebar_widget(context):
+    user = context.get('user', None)
     quest = QuestGame.get_current()
 
-    if quest is None:
+    if quest is None or user is None or not user.is_authenticated():
        return ''
 
-    quest_user = request.user.get_profile().get_extension(QuestUser)
+    quest_user = user.get_profile().get_extension(QuestUser)
     if not quest_user.started:
         quest_progress = None
     else:
@@ -61,8 +63,9 @@ def sidebar_widget(request):
     return render_to_string('quest/sidebar.html',
             {'quest': quest, 'quser': quest_user,
              'quest_progress': quest_progress,
+             'id': 'quest'
              })
-
+register_sidebar_block('quest', sidebar_widget)
 
 class HistoryView(ListView):
     template_name = 'quest/history.html'

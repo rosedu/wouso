@@ -81,7 +81,7 @@ edit_group = staff_required(EditGroupView.as_view())
 @staff_required
 def edit_spot(request, day, hour):
     day, hour = int(day), int(hour)
-    sgs = Semigroup.get_by_day_and_hour(day, hour)
+    sgs = WorkshopGame.get_by_day_and_hour(day, hour)
 
     if not sgs:
         return redirect('ws_add_group')
@@ -311,6 +311,7 @@ class AddWorkshopView(View):
         if form.is_valid():
             error = WorkshopGame.create_workshop(semigroup=form.cleaned_data['semigroup'],
                                     date=form.cleaned_data['date'],
+                                    title=form.cleaned_data['title'],
                                     question_count=form.cleaned_data['question_count']
             )
             if not error:

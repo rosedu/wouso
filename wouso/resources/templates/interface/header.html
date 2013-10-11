@@ -1,5 +1,6 @@
 {% load user %}
 {% load i18n %}
+{% load ui %}
 <script type="text/javascript">
     function remove_storage(){
         firstFreeChat = 1;
@@ -51,9 +52,5 @@
 {% endif %}
 
 <div id="menu">
-    {% for f in header %}
-    <span id="head-{{ f.1 }}"><a href="{{ f.0.link }}">{{ f.0.text }}</a>
-        {% if f.0.count %}<sup class="unread-count">{{ f.0.count }}</sup>{% endif %}
-    </span>
-    {% endfor %}
+    {% render_header %}
 </div>

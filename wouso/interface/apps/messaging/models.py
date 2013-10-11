@@ -100,19 +100,16 @@ class Message(models.Model):
         signals.messageSignal.send(sender=None, user_from=sender, user_to=receiver, message='', action='message', game=None)
         return None
 
-    @classmethod
-    def get_header_link(kls, request):
-        if not request.user.is_anonymous():
-            from wouso.interface.apps.messaging.views import header_link
-            return header_link(request)
-        return dict(text=_('Messages'), link='')
-
 
 class MessageApp(App):
 
     @classmethod
-    def get_unread_count(kls, request):
+    def get_unread_count(cls, request):
         if not request.user.get_profile():
             return -1
-        msg_user = request.user.get_profile().get_extension(MessagingUser)
+        return cls.get_unread_for_user(request.user)
+
+    @classmethod
+    def get_unread_for_user(cls, user):
+        msg_user = user.get_profile().get_extension(MessagingUser)
         return msg_user.received.filter(read=False).count()

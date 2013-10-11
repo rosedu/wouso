@@ -13,7 +13,7 @@
 {% if not workshop %}
     {% trans 'No current workshop' %}
 {% else %}
-<h4>{% trans 'Current workshop' %} #{{ workshop.id }}</h4>
+<h4>{% trans 'Current workshop' %} {{ workshop.title }}</h4>
 <p>
     {% if assessment.answered %}
         {% trans 'Already answered' %}.

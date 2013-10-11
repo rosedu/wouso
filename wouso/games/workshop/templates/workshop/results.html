@@ -3,7 +3,7 @@
 {% load workshop %}
 
 {% block title %}{% trans 'Workshop' %}{% endblock %}
-{% block sectiontitle %}{% trans 'Results for workshop' %} #{{ workshop.pk }} (ass #{{assessment.pk}}){% endblock %}
+{% block sectiontitle %}{% trans 'Results for workshop' %} {{ workshop.title }} (ass #{{assessment.pk}}){% endblock %}
 
 {% block sectioncontent %}
 

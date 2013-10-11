@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block title %}{% trans 'Workshop' %}{% endblock %}
-{% block sectiontitle %}{% trans 'Reviews for workshop' %} #{{ workshop.pk }}{% endblock %}
+{% block sectiontitle %}{% trans 'Reviews for workshop' %} {{ workshop.title }}{% endblock %}
 
 {% block sectioncontent %}
 <form action="" method="post">

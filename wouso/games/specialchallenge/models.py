@@ -5,6 +5,7 @@ from django.utils.translation import ugettext as _
 from wouso.core.game import Game
 from wouso.core.qpool import register_category
 from wouso.core.qpool.models import Question, Category
+from wouso.core.ui import register_sidebar_block
 from wouso.core.user.models import Player
 from wouso.games.challenge.models import Challenge, ChallengeManager
 
@@ -110,7 +111,7 @@ class SpecialChallengeGame(Game):
         return Category.objects.get(name=cls.QPOOL_CATEGORY)
 
     @classmethod
-    def get_sidebar_widget(kls, request):
+    def get_sidebar_widget(kls, context):
         if kls.disabled():
             return ''
         return render_to_string('specialchallenge/sidebar.html', {})
@@ -120,3 +121,4 @@ class SpecialChallengeGame(Game):
         return SpecialChallengeManager(challenge)
 
 register_category(SpecialChallengeGame.QPOOL_CATEGORY, SpecialChallengeGame)
+register_sidebar_block('specialchallenge', SpecialChallengeGame.get_sidebar_widget)

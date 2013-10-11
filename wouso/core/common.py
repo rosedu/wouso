@@ -27,6 +27,7 @@ class App:
     def get_sidebar_widget(kls, request):
         """ Return the sidebar widget, for current HttpRequest request.
         This is called in interface.context_processors.sidebar """
+        # DEPRECATED
         return None
 
     @classmethod
@@ -40,12 +41,14 @@ class App:
         """ Return dictionary containing (link, text, count) for the content
         to be displayed in the page header.
         Called in interface.context_processors.header """
+        # DEPRECATED
         return None
 
     @classmethod
     def get_footer_link(kls, request):
         """ Return html content to be displayed in the footer
         Called in interface.context_processors.footer """
+        # DEPRECATED
         return None
 
     @classmethod

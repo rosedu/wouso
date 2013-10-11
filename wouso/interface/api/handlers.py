@@ -8,6 +8,7 @@ from piston.utils import rc
 from django.db.models.query_utils import Q
 from django.db.models.aggregates import Sum
 
+from wouso.core.config.models import Setting
 from wouso.core.scoring.models import Coin
 from wouso.core.user.templatetags.user import player_avatar
 from wouso.core.game import get_games
@@ -22,6 +23,8 @@ from wouso.interface.api.c2dm.models import register_device
 from wouso.interface.apps.messaging.models import Message, MessagingUser
 from wouso.interface.top.models import TopUser, GroupHistory
 
+from . import API_VERSION
+
 def get_fullpath(request):
     base = 'http://%s' % request.get_host()
     fullpath = request.get_full_path()
@@ -35,16 +38,10 @@ class ApiRoot(BaseHandler):
     allowed_methods = ('GET',)
 
     def read(self, request):
-        base = 'http://%s' % request.get_host()
-        fullpath = request.get_full_path()
-        if '?' in fullpath:
-            query = fullpath[fullpath.rindex('?'):]
-        else:
-            query = ''
-
         api = {
-            'Info': '%s/api/info/%s' % (base, query),
-            'Notifications': '%s/api/notifications/all/%s' % (base, query),
+            'api_version': API_VERSION,
+            'title': Setting.get('title').get_value(),
+            'authenticated': request.user.is_authenticated()
         }
         return api
 
@@ -67,7 +64,7 @@ class OnlineUsers(BaseHandler):
 
         if type == 'list':
             return [u.nickname for u in online_last10]
-        # default, more info
+            # default, more info
         return [{'nickname': u.nickname, 'first_name': u.user.first_name, 'last_name': u.user.last_name,
                  'id': u.id, 'last_seen': u.last_seen} for u in online_last10]
 
@@ -132,7 +129,7 @@ class InfoHandler(BaseHandler):
             'title': player.level.title,
             'image': player.level.image,
             'id': player.level.id,
-        } if player.level else {}
+            } if player.level else {}
 
         group = player.group
         gold = player.coins['gold'] if 'gold' in player.coins.keys() else 0
@@ -154,7 +151,7 @@ class InfoHandler(BaseHandler):
                 'level': level,
                 'level_progress': God.get_level_progress(player),
                 'rank': topuser.position,
-        }
+                }
 
 
 class ChangeNickname(BaseHandler):
@@ -202,7 +199,7 @@ class BazaarHandler(BaseHandler):
     allowed_methods = ('GET',)
     object_name = 'spells'
     fields = ('name', 'title', 'description', 'available', 'due_days', 'type', 'mass', 'level_required', 'image_url',
-            'price', 'id')
+              'price', 'id')
 
     def get_queryset(self, user=None):
         return Spell.objects.all()
@@ -254,7 +251,7 @@ class BazaarBuy(BaseHandler):
         else:
             player.magic.add_spell(spell)
             scoring.score(player, None, 'buy-spell', external_id=spell.id,
-                price=spell.price)
+                          price=spell.price)
             SpellHistory.bought(player, spell)
             return {'success': True}
 
@@ -293,6 +290,19 @@ class BazaarExchange(BaseHandler):
 class Messages(BaseHandler):
     LIMIT = 100
 
+    def to_dict(self, m):
+        """
+        :param m: Message instance
+        :return: dictionary
+        """
+        return {'id': m.id, 'date': m.timestamp,
+                'from': unicode(m.sender), 'from_id': m.sender_id,
+                'to': unicode(m.receiver), 'to_id': m.receiver_id,
+                'text': m.text,
+                'subject': m.subject, 'reply_to': m.reply_to.id if m.reply_to else None,
+                'read': m.read
+        }
+
     def read(self, request, type='all'):
         player = request.user.get_profile()
         msguser = player.get_extension(MessagingUser)
@@ -304,9 +314,7 @@ class Messages(BaseHandler):
             qs = Message.objects.filter(receiver=msguser).exclude(archived=True)[:self.LIMIT]
         else:
             return []
-        return [{'id': m.id, 'date': m.timestamp, 'from':unicode(m.sender), 'to':unicode(m.receiver), 'text': m.text,
-                 'subject': m.subject, 'reply_to': m.reply_to.id if m.reply_to else None,
-                 'read': m.read}    for m in qs]
+        return [self.to_dict(m) for m in qs]
 
 class MessagesSender(BaseHandler):
     allowed_methods = ('POST',)
@@ -315,16 +323,24 @@ class MessagesSender(BaseHandler):
         attrs = self.flatten_dict(request.POST)
         sender = request.user.get_profile()
 
-        if 'receiver' not in attrs.keys():
-            return {'success': False, 'error': 'Missing receiver'}
-
         try:
-            if attrs['receiver'].isdigit():
-                receiver = Player.objects.get(pk=attrs['receiver'])
-            else:
-                receiver = Player.objects.get(user__username=attrs['receiver'])
-        except Player.DoesNotExist:
-            return {'success': False, 'error': 'Invalid receiver'}
+            reply_to = Message.objects.get(pk=attrs['reply_to'])
+            receiver = reply_to.sender
+        except (KeyError, Message.DoesNotExist):
+            reply_to = None
+            receiver = None
+
+        if not reply_to and 'receiver' not in attrs.keys():
+            return {'success': False, 'error': 'Missing receiver or reply_to'}
+
+        if not receiver:
+            try:
+                if attrs['receiver'].isdigit():
+                    receiver = Player.objects.get(pk=attrs['receiver'])
+                else:
+                    receiver = Player.objects.get(user__username=attrs['receiver'])
+            except Player.DoesNotExist:
+                return {'success': False, 'error': 'Invalid receiver'}
 
         if 'text' not in attrs.keys():
             return {'success': False, 'error': 'Missing text'}
@@ -332,14 +348,9 @@ class MessagesSender(BaseHandler):
         if 'subject' not in attrs.keys():
             attrs['subject'] = ''
 
-        try:
-            reply_to = Message.objects.get(pk=attrs['reply_to'])
-        except (KeyError, Message.DoesNotExist):
-            reply_to = None
-
         Message.send(sender, receiver, attrs['subject'], attrs['text'], reply_to=reply_to)
-
         return {'success': True}
+
 
 class MessagesAction(BaseHandler):
     allowed_methods = ('POST', )
@@ -487,7 +498,7 @@ class GroupHandler(BaseHandler):
                 'rank': gh.position,
                 'activity': '%sactivity/%s' % (fp, q),
                 'evolution': '%sevolution/%s' % (fp, q),
-            }
+                }
         elif type == 'activity':
             qs = Activity.get_group_activiy(group)
             return [dict(user_from=unicode(a.user_from), user_to=unicode(a.user_to), message=a.message, date=a.timestamp) for a in qs]
@@ -517,7 +528,7 @@ class RacesHandler(BaseHandler):
 class MembersMixin(object):
     def to_dict(self, player):
         return dict(first_name=player.user.first_name, last_name=player.user.last_name, id=player.id, points=player.points,
-                             level=player.level_no, avatar=player_avatar(player), display_name=unicode(player))
+                    level=player.level_no, avatar=player_avatar(player), display_name=unicode(player))
 
 
 class RaceMembersHandler(BaseHandler, MembersMixin):

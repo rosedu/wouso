@@ -1,8 +1,11 @@
+from django.utils.translation import ugettext as _
+from django.core.urlresolvers import reverse
+from wouso.core.ui import register_footer_link
 from wouso.interface.apps.qproposal.forms import QuestionForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from wouso.core.qpool.models import Question, Tag, Answer, Category
-
+from models import Qproposal
 
 def propose(request):
 
@@ -46,3 +49,10 @@ def propose(request):
     return render_to_response('qproposal/propose.html',
                            {'form': form},
                            context_instance=RequestContext(request))
+
+def footer_link(context):
+    if Qproposal.disabled():
+        return ''
+    url = reverse('propose')
+    return '<a href="%s">' % url + _('Propose question') + '</a>'
+register_footer_link('qproposal', footer_link)

@@ -98,9 +98,13 @@ def bazaar_exchange(request):
     else:
         error = _('Expected post')
 
+    if error:
+        messages.error(request, error)
+    if message:
+        messages.success(request, message)
+
     return render_to_response('magic/bazaar_buy.html',
-                {'error': error,
-                'message': message, 'tab': 'exchange'},
+                {'tab': 'exchange'},
                 context_instance=RequestContext(request))
 
 @login_required
@@ -131,7 +135,7 @@ def bazaar_buy(request, spell):
                         action=action_msg,
                         public=False)
         SpellHistory.bought(player, spell)
-        message = _("Successfully aquired")
+        message = _("Successfully acquired")
 
     if error:
         messages.error(request, error)
@@ -147,7 +151,7 @@ def magic_cast(request, destination=None, spell=None):
 
     error = ''
 
-    if Bazaar.disabled():
+    if Bazaar.disabled() or BoolSetting.get('disable-Magic').get_value():
         error = _("Magic is disabled")
     elif request.method == 'POST':
         spell = get_object_or_404(Spell, pk=request.POST.get('spell', 0))
@@ -172,8 +176,11 @@ def magic_cast(request, destination=None, spell=None):
 
                 error = _('Cast failed:') + ' ' + error
 
+    if error:
+        messages.error(request, error)
+
     return render_to_response('profile/cast.html',
-                              {'destination': destination, 'error': error},
+                              {'destination': destination},
                               context_instance=RequestContext(request))
 
 

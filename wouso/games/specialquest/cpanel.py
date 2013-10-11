@@ -1,4 +1,5 @@
 # views for wouso cpanel
+from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import get_object_or_404, redirect
 from django.http import HttpResponseRedirect
@@ -105,8 +106,13 @@ def manage_player(request, player_id):
     bonuses = scoring.History.objects.filter(user=player, formula__name='bonus-gold').order_by('-timestamp')
     penalties = scoring.History.objects.filter(user=player, formula__name='penalty-points').order_by('-timestamp')
 
+    if error:
+        messages.error(request, error)
+    if messages:
+        messages.success(request, message)
+
     return render_to_response('specialquest/cpanel_manage.html',
-                    dict(mplayer=player, tasks_not_done=tasks_not_done, message=message, error=error,
+                    dict(mplayer=player, tasks_not_done=tasks_not_done,
                          bonuses=bonuses, penalties=penalties),
                     context_instance=RequestContext(request))
 

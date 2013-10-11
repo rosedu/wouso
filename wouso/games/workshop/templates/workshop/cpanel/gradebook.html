@@ -13,7 +13,7 @@
     <tr>
         <th colspan="2">Student</th>
         {% for w in semigroup.workshop_set.all %}
-        <th>#{{ w.id }}</th>
+        <th>{{ w.title }}</th>
         {% endfor %}
     </tr>
     {% for p in players %}
