@@ -36,7 +36,7 @@ class ChallengeLaunch(BaseHandler):
         except ChallengeException as e:
             return {'success': False, 'error': unicode(e)}
 
-        return {'success': True, 'challenge': chall}
+        return {'success': True, 'challenge': dict(id=chall.id)}
 
 
 class ChallengeHandler(BaseHandler):
