@@ -51,8 +51,8 @@ class LDAPBackend:
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
-            first_name = data['givenName'][0].decode('unicode_escape').encode('iso8859-2').decode('utf8')
-            last_name = data['sn'][0].decode('unicode_escape').encode('iso8859-2').decode('utf8')
+            first_name = data['givenName'][0].decode('utf8')
+            last_name = data['sn'][0].decode('utf8')
             user = User(username=username, first_name=first_name, last_name=last_name, email=data['mail'][0])
             user.is_staff = False
             user.is_superuser = False
