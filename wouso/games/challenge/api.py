@@ -3,7 +3,6 @@ from piston.utils import rc
 from wouso.core.user.models import Player
 from models import ChallengeUser, ChallengeGame, ChallengeException, Challenge
 
-
 class ChallengesHandler(BaseHandler):
     methods_allowed = ('GET',)
 
@@ -16,6 +15,20 @@ class ChallengesHandler(BaseHandler):
             user_to=unicode(c.user_to.user),
             user_to_id=c.user_to.user.id) for c in ChallengeGame.get_active(challuser)]
 
+class ChallengeGetRandom(BaseHandler):
+    methods_allowed = ('GET',)
+
+    def read(self, request):
+        challuser = (request.user.get_profile()).get_extension(ChallengeUser)
+        player_id = challuser.get_random_opponent().id
+        player2 = Player.objects.get(pk=player_id)
+        challuser2 = player2.get_extension(ChallengeUser)
+        try:
+            chall = challuser.launch_against(challuser2)
+        except ChallengeException as e:
+            return {'succes': False, 'error': unicode(e)}
+        return {'succes': True, 'challenge': chall}  
+
 
 class ChallengeLaunch(BaseHandler):
     methods_allowed = ('GET',)
@@ -23,10 +36,7 @@ class ChallengeLaunch(BaseHandler):
     def read(self, request, player_id):
         player = request.user.get_profile()
         challuser = player.get_extension(ChallengeUser)
-
-        if player_id == '0':
-            player_id = challuser.get_random_opponent().id 
-        
+ 
         try:
             player2 = Player.objects.get(pk=player_id)
         except Player.DoesNotExist:
