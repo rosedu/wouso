@@ -29,14 +29,13 @@ class ChallengeGetRandom(BaseHandler):
             return {'succes': False, 'error': unicode(e)}
         return {'succes': True, 'challenge': chall}  
 
-
 class ChallengeLaunch(BaseHandler):
     methods_allowed = ('GET',)
 
     def read(self, request, player_id):
         player = request.user.get_profile()
         challuser = player.get_extension(ChallengeUser)
- 
+
         try:
             player2 = Player.objects.get(pk=player_id)
         except Player.DoesNotExist:
