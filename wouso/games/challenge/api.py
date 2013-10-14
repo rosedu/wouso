@@ -27,7 +27,7 @@ class ChallengeGetRandom(BaseHandler):
             chall = challuser.launch_against(challuser2)
         except ChallengeException as e:
             return {'succes': False, 'error': unicode(e)}
-        return {'succes': True, 'challenge': chall}  
+        return {'succes': True, 'challenge': chall}
 
 
 class ChallengeLaunch(BaseHandler):
