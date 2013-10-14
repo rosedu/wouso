@@ -101,6 +101,7 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
 
             state = 'question'
             q = {}
+            file_tags = None
             answers = []
             nr_correct = 0
             q_saved = False
