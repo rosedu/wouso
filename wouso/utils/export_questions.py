@@ -18,6 +18,7 @@ def export_to_file(file):
 
         for question in Question.objects.all():
             f.write('? ' + question.text + '\n')
+            f.write(u'tags: %s\n' % ' '.join(t.name for t in question.tags.all()))
 
             for answer in question.answers.all():
                 if answer.correct is False:
