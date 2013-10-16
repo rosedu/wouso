@@ -20,9 +20,9 @@ class ChallengeGetRandom(BaseHandler):
 
     def read(self, request):
         challuser = (request.user.get_profile()).get_extension(ChallengeUser)
-        player_id = challuser.get_random_opponent().id
-        player2 = Player.objects.get(pk=player_id)
-        challuser2 = player2.get_extension(ChallengeUser)
+        challuser2 = challuser.get_random_opponent()
+        if not challuser2:
+            return {'succes': False, 'error': 'No random opponent found'} 
         try:
             chall = challuser.launch_against(challuser2)
         except ChallengeException as e:
