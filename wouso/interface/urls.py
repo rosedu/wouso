@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
-
+from wouso.games.challenge.api import ChallengeGetRandom
 from django.contrib import admin
 admin.autodiscover()
 
@@ -65,6 +65,9 @@ urlpatterns = patterns('',
 
     # Games
     url(r'^g/', include('wouso.games.urls')),
+    
+    # Random Challenge
+    url(r'^api/challenge/get/random/$', 'wouso.games.challenge.api.ChallengeGetRandom.read', name='random_challenge'),
 
     # The future
     url(r'^ui/', 'wouso.interface.views.ui', name='ui'),

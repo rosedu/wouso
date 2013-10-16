@@ -793,9 +793,10 @@ class ChallengeGame(Game):
 
     @classmethod
     def get_api(kls):
-        from api import ChallengesHandler, ChallengeLaunch, ChallengeHandler
+        from api import ChallengesHandler, ChallengeLaunch, ChallengeHandler, ChallengeGetRandom
 
         return {r'^challenge/list/$': ChallengesHandler,
+                r'^challenge/random/$': ChallengeGetRandom,
                 r'^challenge/launch/(?P<player_id>\d+)/$': ChallengeLaunch,
                 r'^challenge/(?P<challenge_id>\d+)/$': ChallengeHandler,
                 r'^challenge/(?P<challenge_id>\d+)/(?P<action>refuse|cancel|accept)/$': ChallengeHandler,
