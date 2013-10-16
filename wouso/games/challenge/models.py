@@ -63,20 +63,6 @@ class ChallengeUser(Player):
           return True
         return False
 
-    def in_same_division(self, user):
-        from wouso.interface.top.models import TopUser
-        position_diff = abs(self.get_extension(TopUser).position - user.get_extension(TopUser).position)
-        if position_diff <= 20:
-          return True
-        return False
-
-    def in_same_division(self, user):
-        from wouso.interface.top.models import TopUser
-        position_diff = abs(self.get_extension(TopUser).position - user.get_extension(TopUser).position)
-        if position_diff <= 20:
-          return True
-        return False
-
     def can_challenge(self, user):
         """ Check if the target user is available.
         """

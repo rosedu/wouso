@@ -20,14 +20,24 @@ class ChallengeGetRandom(BaseHandler):
 
     def read(self, request):
         challuser = (request.user.get_profile()).get_extension(ChallengeUser)
+<<<<<<< HEAD
         challuser2 = challuser.get_random_opponent()
         if not challuser2:
             return {'succes': False, 'error': 'No random opponent found'} 
+=======
+        player_id = challuser.get_random_opponent().id
+        player2 = Player.objects.get(pk=player_id)
+        challuser2 = player2.get_extension(ChallengeUser)
+>>>>>>> b5a85ccfb75ba9eac91763e7a3ff9fe345bf6e35
         try:
             chall = challuser.launch_against(challuser2)
         except ChallengeException as e:
             return {'succes': False, 'error': unicode(e)}
+<<<<<<< HEAD
         return {'succes': True, 'challenge': dict(id=chall.id)}
+=======
+        return {'succes': True, 'challenge': dict(id=chall.id)}  
+>>>>>>> b5a85ccfb75ba9eac91763e7a3ff9fe345bf6e35
 
 class ChallengeLaunch(BaseHandler):
     methods_allowed = ('GET',)
@@ -35,7 +45,7 @@ class ChallengeLaunch(BaseHandler):
     def read(self, request, player_id):
         player = request.user.get_profile()
         challuser = player.get_extension(ChallengeUser)
-
+ 
         try:
             player2 = Player.objects.get(pk=player_id)
         except Player.DoesNotExist:
