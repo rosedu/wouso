@@ -64,7 +64,7 @@ urlpatterns = patterns('',
 
     # Games
     url(r'^g/', include('wouso.games.urls')),
-    
+
     # The future
     url(r'^ui/', 'wouso.interface.views.ui', name='ui'),
 
