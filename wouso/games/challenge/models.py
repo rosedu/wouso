@@ -124,8 +124,6 @@ class ChallengeUser(Player):
         players = ChallengeUser.objects.exclude(user=self.user)
         players = players.exclude(race__can_play=False)
         players = [p for p in players if self.can_challenge(p) and self.in_same_division(p)]
-        print ".........................................."
-        print len(players)
         if not players:
             return False
         # selects the user to be challenged
