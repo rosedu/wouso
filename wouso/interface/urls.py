@@ -1,6 +1,5 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
-
 from django.contrib import admin
 admin.autodiscover()
 
@@ -65,7 +64,7 @@ urlpatterns = patterns('',
 
     # Games
     url(r'^g/', include('wouso.games.urls')),
-
+    
     # The future
     url(r'^ui/', 'wouso.interface.views.ui', name='ui'),
 
