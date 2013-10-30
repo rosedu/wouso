@@ -64,4 +64,5 @@ def context(request):
     if request.GET.get('ajax', False):
         settings_dict['base_template'] = 'interface/ajax_message.html'
 
+    settings_dict['static_pages'] = get_static_pages()
     return settings_dict

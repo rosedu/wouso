@@ -3,9 +3,14 @@
 {% block title %}{{block.super}} > {{staticpage.title}}{% endblock %}
 
 {% block content %}
+<div class="section">
     <h2>{{staticpage.title}}</h2>
+
+    <div class="section-content">
     {% autoescape off %}
     {{staticpage.html_contents}}
     {% endautoescape %}
+    </div>
+</div>
 {% endblock %}
 
