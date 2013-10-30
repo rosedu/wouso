@@ -11,17 +11,20 @@
 {% endblock %}
 
 {% block content %}
+<div class="section">
 <div class="profile {% if group.parent %}group-{{ group.parent.name.lower }}{% endif %} group-{{ group.name.lower }}">
     <div class="points">
         <div class="points-big">{{ group.live_points}}</div>
         <div class="rank">{% if top.disabled %}-{% else %}{% trans 'rank' %}: {{ top.position }}{% endif %}</div>
     </div>
 
+    <div id="profile-info">
     <h2>{{ group }} {% if group.title != '' %}<small>[{{ group.name }}]</small>{% endif %}</h2>
-    <h3>{% trans 'Group' %}
+    <p>{% trans 'Group' %}
         {% if group.parent %}{% trans 'part of' %} {% player_race group.parent %}{% endif %}
-    </h3>
-    <h4>{{ group.players.count }} {% trans 'members' %}</h4>
+    </p>
+    <p>{{ group.players.count }} {% trans 'members' %}</p>
+    </div>
 
     {% if user.is_superuser %}
     <div class="actions">
@@ -32,7 +35,9 @@
 
     <div class="second">
     </div>
+    </div>
 
+    <div class="section-content">
     <ul class="tabs">
         <li><a href="#tab-1">{% trans 'Top users' %}</a></li>
         <li><a href="#tab-2">{% trans 'Activity' %}</a></li>
@@ -60,7 +65,7 @@
         {% endif %}
         </div>
 
-        <ol class="top">
+        <ol class="top top-left">
             {% for u in top_users %}
             <li>{% player u %}
                 <span class="points w50">{{ u.points }}</span>
@@ -118,5 +123,6 @@
             </script>
         </div>
     </div>
+</div>
 </div>
 {% endblock %}
