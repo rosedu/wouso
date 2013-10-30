@@ -9,12 +9,14 @@
 {% block title %}{% trans 'Messaging' %}{% endblock %}
 
 {% block content %}
+<div class="section">
 
+<h2>{% trans 'Messages' %}</h2>
+
+<div class="section-content">
 <div class="actions">
 <a href="{% url create %}">{% trans 'Compose' %}</a>
 </div>
-
-<h2>{% trans 'Messages' %}</h2>
 
 <ul class="tabs">
         <li><a href="#rec"  class="no-redir">{% trans 'Received' %}</a></li>
@@ -85,5 +87,7 @@
         tabToURL("all", "{% url quiet_home box="all" quiet='q' %}")
         $('#rec').trigger('custom')
     </script>
+</div>
+</div>
 </div>
 {% endblock %}
