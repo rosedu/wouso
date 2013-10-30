@@ -11,14 +11,17 @@
 {% endblock %}
 
 {% block content %}
-<div class="profile race-{{ race.name.lower }} race-{{ race.id }}">
+<div class="section">
+<div class="profile group-{{ race.name.lower }} race-{{ race.id }}">
     <div class="points pull-right">
-        <div class="points-big">{{ race.points}} points</div>
+        <h1 class="points-big">{{ race.points}} points</h1>
     </div>
 
+    <div id="profile-info">
     <h2>{{ race }} {% if race.title != '' %}<small>[{{ race.name }}]</small>{% endif %}</h2>
 
-    <h4>{{ race.player_set.count }} {% trans 'members' %}, {{ race.children.count }} groups</h4>
+    <p>{{ race.player_set.count }} {% trans 'members' %}, {{ race.children.count }} groups</p>
+    </div>
 
     {% if user.is_superuser %}
     <div class="actions">
@@ -29,7 +32,9 @@
 
     <div class="second">
     </div>
+    </div>
 
+    <div class="section-content">
     <ul class="tabs">
         <li><a href="#tab-1">{% trans 'Top users' %}</a></li>
         <li><a href="#tab-2">{% trans 'Activity' %}</a></li>
@@ -49,7 +54,7 @@
         {% endif %}
         </div>
 
-        <ol class="top">
+        <ol class="top top-left">
             {% for u in top_users %}
             <li>{% player u %}
                 <span class="points w50">{{ u.points }}</span>
@@ -104,5 +109,6 @@
             </script>
         </div>
     </div>
+    </div><!-- section-content -->
 </div>
 {% endblock %}
