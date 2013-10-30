@@ -31,10 +31,10 @@ def render_header(context):
         data = s.get_block(block, context)
         if not data:
             continue
-        content += '<span id="head-%s"><a href="%s">%s</a>' % (block, data.get('link', ''), data.get('text', ''))
+        content += '<span id="head-%s"><a href="%s">%s' % (block, data.get('link', ''), data.get('text', ''))
         if data.get('count', 0):
             content += '<sup class="unread-count">%s</sup>' % data.get('count')
-        content += '</span> '
+        content += '</a></span> '
     return content
 
 @register.simple_tag(takes_context=True)
