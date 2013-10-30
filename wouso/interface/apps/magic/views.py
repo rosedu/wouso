@@ -39,7 +39,7 @@ class BazaarView(ListView):
             rate2 = round(1/scoring.calculate('points-gold-rate', points=1)['gold'])
         except InvalidFormula:
             rate, rate2 = 1, 1
-        rate_text = _('Rate: 1 gold = {rate} points, 1 gold = {rate2} points').format(rate=rate,
+        rate_text = _('Rate: 1 gold = {rate} points, {rate2} points = 1 gold').format(rate=rate,
                                                                                       rate2=rate2)
 
         cast_spells = PlayerSpellDue.objects.filter(source=player).all()
