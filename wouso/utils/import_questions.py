@@ -11,14 +11,14 @@ def init():
     setup_environ(settings)
 
 
-def add(question, answers, category=None, tags=[]):
+def add(question, answers, category=None, tags=None, file_tags=None):
     ''' question is a dict with the following keys: text, endorsed_by, answer_type
     [, proposed_by, active, type, code]
     answers is a list of dicts with the following keys: text, correct [, explanation]
     '''
 
     # imports valid only after init()
-    from wouso.core.qpool.models import Question, Answer
+    from wouso.core.qpool.models import Question, Answer, Tag, Category
 
     #print question
     #for a in answers:
@@ -28,8 +28,19 @@ def add(question, answers, category=None, tags=[]):
     q = Question(**question)
     q.save()
 
-    if len(tags) > 0:
+    if tags:
         for tag in tags:
+            q.tags.add(tag)
+        q.save()
+
+    if file_tags:
+        for tag_name in file_tags:
+            tag, created = Tag.objects.get_or_create(name=tag_name)
+            if created:
+                tag.save()
+                if category is not None:
+                    category.tag_set.add(tag)
+                    category.save()
             q.tags.add(tag)
         q.save()
 
@@ -45,7 +56,7 @@ def add(question, answers, category=None, tags=[]):
     return q
 
 
-def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=None, tags=[], all_active=False):
+def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=None, tags=None, all_active=False):
     # read file and parse contents
     a_saved = True
     q_saved = True
@@ -90,6 +101,7 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
 
             state = 'question'
             q = {}
+            file_tags = None
             answers = []
             nr_correct = 0
             q_saved = False
@@ -97,6 +109,9 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
 
             q['text'] = ' '.join(s[1:])
 
+        elif line.startswith('tags: '):
+            tags_line = line.split('tags: ')[1]
+            file_tags = tags_line.split()
 
         elif line[0] == '-' or line[0] == '+':
             if not a_saved:
@@ -143,7 +158,7 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
             q['answer_type'] = 'R'
         else:
             q['answer_type'] = 'C'
-        add(q, answers, category, tags)
+        add(q, answers, category, tags, file_tags)
         nr_imported += 1
 
     return nr_imported
