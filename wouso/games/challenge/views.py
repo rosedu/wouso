@@ -42,6 +42,7 @@ def index(request):
             context_instance=RequestContext(request))
 
 class ChallengeView(View):
+    lock = False
     def dispatch(self, request, *args, **kwargs):
         self.chall_user = request.user.get_profile().get_extension(ChallengeUser)
         self.chall = get_object_or_404(Challenge, pk=kwargs['id'])
@@ -96,6 +97,11 @@ challenge = login_required(ChallengeView.as_view())
 
 @login_required
 def launch(request, to_id):
+    if ChallengeView.lock is False:
+        ChallengeView.lock = True
+    else:
+        return redirect('challenge_index_view')
+
     user_to = get_object_or_404(Player, pk=to_id)
 
     user_to = user_to.get_extension(ChallengeUser)
@@ -104,22 +110,27 @@ def launch(request, to_id):
 
     if ChallengeGame.disabled():
         messages.error(request, _('Provocarile sunt dezactivate'))
+        ChallengeView.lock = False
         return redirect('challenge_index_view')
 
     if (not user_to.is_eligible()) or (not user_from.is_eligible()):
         messages.error(request, _('Sorry, challenge failed.'))
+        ChallengeView.lock = False
         return redirect('challenge_index_view')
 
     if not user_from.can_launch():
         messages.error(request, _('You cannot launch another challenge today.'))
+        ChallengeView.lock = False
         return redirect('challenge_index_view')
 
     if not user_from.in_same_division(user_to):
         messages.error(request, _('You are not in the same division'))
+        ChallengeView.lock = False
         return redirect('challenge_index_view')
 
     if not user_from.has_enough_points():
         messages.error(request, _('You need at least 30 points to launch a challenge'))
+        ChallengeView.lock = False
         return redirect('challenge_index_view')
 
     if user_from.can_challenge(user_to):
@@ -128,6 +139,7 @@ def launch(request, to_id):
         except ChallengeException as e:
             # Some error occurred during question fetch. Clean up, and display error
             messages.error(request, e.message)
+            ChallengeView.lock = False
             return redirect('challenge_index_view')
         #Checking if user_to is stored in session
         PREFIX = "_user:"
@@ -137,9 +149,11 @@ def launch(request, to_id):
             addActivity.send(sender=None, user_to=user_to, user_from=user_from, action=action_msg,
                              game=None, public=False)
         messages.success(request, _('Successfully challenged'))
+        ChallengeView.lock = False
         return redirect('challenge_index_view')
     else:
         messages.error(request, _('This user cannot be challenged.'))
+        ChallengeView.lock = False
         return redirect('challenge_index_view')
 
 @login_required
