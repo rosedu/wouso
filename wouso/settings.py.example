@@ -98,6 +98,7 @@ MIDDLEWARE_CLASSES = [
     'wouso.middleware.ImpersonateMiddleware',
 ]
 AUTHENTICATION_BACKENDS = (
+    'social.backends.clef.ClefOAuth2',
     #'wouso.middleware.ldap_connection.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
@@ -116,6 +117,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
     'django.contrib.messages.context_processors.messages',
 
+    'social.apps.django_app.context_processors.backends',
+    'social.apps.django_app.context_processors.login_redirect',
+
     'wouso.interface.context_processors.context',
 )
 
@@ -127,6 +131,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
+
+    social.apps.django_app.default',
+
     # WoUSO specific
     'wouso.core.config',
     'wouso.core.user',
@@ -156,6 +163,9 @@ INSTALLED_APPS = [
 # Authentication settings
 LOGIN_URL = '/user/login/'
 LOGIN_REDIRECT_URL = '/hub/'
+
+SOCIAL_AUTH_CLEF_KEY = '77a376cfcc467fb23a2a6e7156f36f94'
+SOCIAL_AUTH_CLEF_SECRET = 'afd676fe8fb07a00513b02941b4cee5d'
 
 AUTH_PROFILE_MODULE = 'user.Player'
 

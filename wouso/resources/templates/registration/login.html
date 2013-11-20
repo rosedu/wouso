@@ -41,6 +41,9 @@ button {
 </td></tr>
 </table>
 
+{% load url from future %}
+<a href="{% url 'social:begin' "clef" %}">Log in with your Phone</a>
+
 <input type="hidden" name="next" value="{{ next }}" />
 {% csrf_token %}
 </form>

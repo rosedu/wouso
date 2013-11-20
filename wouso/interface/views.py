@@ -70,7 +70,6 @@ def login_view(request):
             return redirect(settings.LOGIN_REDIRECT_URL)
     return HttpResponseRedirect("/")
 
-
 def logout_view(request):
     """
      This is used to save data in session after logout

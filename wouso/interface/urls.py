@@ -76,6 +76,8 @@ urlpatterns = patterns('',
     # Static: not in a real deployment
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
+    
+    url('', include('social.apps.django_app.urls', namespace='social')),
 )
 
 # API only when we have piston
