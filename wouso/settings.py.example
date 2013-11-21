@@ -132,7 +132,7 @@ INSTALLED_APPS = [
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
 
-    social.apps.django_app.default',
+    'social.apps.django_app.default',
 
     # WoUSO specific
     'wouso.core.config',
