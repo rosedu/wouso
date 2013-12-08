@@ -1,22 +1,42 @@
 World of USO
 ============
 
-World of USO is a quiz game with questions from USO course, 1st year,
-ACS.
+World of USO is a quiz game framework. It has been used since 2007 as a
+support game for the Introduction to Operating Systems class (USO) for
+the 1st year of study at the Faculty of Automatic Control and Computers,
+University POLITEHNICA of Bucharest.
 
 
-Installing
-----------
+Requirements
+------------
 
-1. Install Python >= 2.7 and virtualenv; activate the virtualenv::
+The following packages need to be installed::
+  * python2.7
+  * python-pip
+  * python-django
+  * python-dev
+  * python-virtualenv
+  * libldap2-dev
+  * libsasl2-dev
 
+
+Installing WoUSO
+----------------
+
+0. Fork/Clone the WoUSO repository from GitHub.
+
+1. Browse to the Git repository and activate the virtualenv::
+
+    cd $PATH_TO_WOUSO_REPOSITORY
     virtualenv -p python2.7 sandbox
     echo '*' > sandbox/.gitignore
     . sandbox/bin/activate
 
-2. Install dependencies::
+`$PATH_TO_WOUSO_REPOSITORY` is the location of the clone of the WoUSO
+repository.
 
-    (on Ubuntu) sudo apt-get install python-dev libldap2-dev libsasl2-dev
+2. Install pip requirements::
+
     pip install -r requirements-pip       # optional, the same command with: requirements-extra
 
 3. Install `django-piston` (by hand, because of a weird bug_)::
@@ -27,7 +47,7 @@ Installing
 
 .. _bug: https://bitbucket.org/jespern/django-piston/issue/173/attributeerror-module-object-has-no
 
-4. Go to `wouso` folder, run everything from there::
+4. Go to `wouso` subfolder, run everything from there::
 
     cd wouso
 
