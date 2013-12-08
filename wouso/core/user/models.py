@@ -112,6 +112,9 @@ class Player(models.Model):
 
     level_no = models.IntegerField(default=1, blank=True, null=True)
 
+    # The maximum reached level by the user
+    max_level = models.IntegerField(default=0, blank=False, null=False)
+
     last_seen = models.DateTimeField(null=True, blank=True)
 
     # artifacts available for using
