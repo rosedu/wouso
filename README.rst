@@ -6,6 +6,22 @@ support game for the Introduction to Operating Systems class (USO) for
 the 1st year of study at the Faculty of Automatic Control and Computers,
 University POLITEHNICA of Bucharest.
 
+Hacking on WoUSO
+----------------
+
+Make sure you have [Vagrant](http://www.vagrantup.com/), then run
+`vagrant up`.
+
+You can now find a deployed version of WoUSO at
+[http://localhost:8000](http://localhost:8000).
+
+All the code is shared with the VM, which you can access with `vagrant ssh`.
+From there you can find the project files and interact with the django
+project as usual.
+
+
+If you prefer to set up a local copy (not in the VM), read along.
+
 
 Requirements
 ------------

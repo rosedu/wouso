@@ -20,3 +20,4 @@ instance
 /docs/api/_build/
 *.log
 nohup.out
+.vagrant
