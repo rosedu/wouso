@@ -17,6 +17,7 @@ from models import ChallengeUser, ChallengeGame, Challenge, Participant
 from forms import ChallengeForm
 import os
 import fcntl
+import logging
 
 class PlayerViewMixin():
     def get_player(self):
@@ -121,44 +122,53 @@ class NamedFileLock:
 
 challengeLock = NamedFileLock("/tmp/wouso_challenge_launch_lock")
 
+#import logging
+#logger = logging.
+
 @login_required
 def launch(request, to_id):
     lock = challengeLock.lock()
-     
+    logging.info("Locked.")
+
     user_to = get_object_or_404(Player, pk=to_id)
-
     user_to = user_to.get_extension(ChallengeUser)
-
     user_from = request.user.get_profile().get_extension(ChallengeUser)
+
 
     if ChallengeGame.disabled():
         messages.error(request, _('Provocarile sunt dezactivate'))
+        logging.info("Ready to unlock (disabled).")
         lock.unlock()
         return redirect('challenge_index_view')
 
     if (not user_to.is_eligible()) or (not user_from.is_eligible()):
         messages.error(request, _('Sorry, challenge failed.'))
+        logging.info("Ready to unlock (is eligible).")
         lock.unlock()
         return redirect('challenge_index_view')
 
     if not user_from.can_launch():
         messages.error(request, _('You cannot launch another challenge today.'))
+        logging.info("Ready to unlock (cannot launch today).")
         lock.unlock()
         return redirect('challenge_index_view')
 
     if not user_from.in_same_division(user_to):
         messages.error(request, _('You are not in the same division'))
+        logging.info("Ready to unlock (not in same divission).")
         lock.unlock()
         return redirect('challenge_index_view')
 
     if not user_from.has_enough_points():
         messages.error(request, _('You need at least 30 points to launch a challenge'))
+        logging.info("Ready to unlock (not enough points).")
         lock.unlock()
         return redirect('challenge_index_view')
 
     if user_from.can_challenge(user_to):
         try:
             chall = Challenge.create(user_from=user_from, user_to=user_to)
+            logging.info("Created challenge: %s" %(chall))
         except ChallengeException as e:
             # Some error occurred during question fetch. Clean up, and display error
             messages.error(request, e.message)
@@ -172,11 +182,12 @@ def launch(request, to_id):
             addActivity.send(sender=None, user_to=user_to, user_from=user_from, action=action_msg,
                              game=None, public=False)
         messages.success(request, _('Successfully challenged'))
-        chall.save()
+        logging.info("Ready to unlock (save).")
         lock.unlock()
         return redirect('challenge_index_view')
     else:
         messages.error(request, _('This user cannot be challenged.'))
+        logging.info("Ready to unlock (no user challenge).")
         lock.unlock()
         return redirect('challenge_index_view')
 
