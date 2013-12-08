@@ -1,0 +1,30 @@
+server {
+	listen 80;
+
+	server_name localhost localhost:8000;
+
+	access_log /var/log/nginx/wouso.log;
+
+
+	location /static {
+		alias /home/vagrant/wouso/wouso/resources/static/;
+	}
+
+	location /media/admin {
+		alias /home/vagrant/pybox/lib/python2.7/dist-packages/django/contrib/admin/media/;
+	}
+
+	location /admin-media {
+		alias /home/vagrant/pybox/lib/python2.7/dist-packages/django/contrib/admin/media/;
+	}
+
+	location / {
+		include /etc/nginx/fastcgi_params;
+		#fastcgi_split_path_info ^(/2013)(.*)$;
+		fastcgi_param PATH_INFO $fastcgi_path_info;
+		fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+		proxy_read_timeout 900;
+		fastcgi_pass unix:/tmp/fcgi.sock;
+	}
+}
+

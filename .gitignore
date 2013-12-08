@@ -18,3 +18,6 @@ build/
 /pip-log.txt
 instance
 /docs/api/_build/
+*.log
+nohup.out
+.vagrant

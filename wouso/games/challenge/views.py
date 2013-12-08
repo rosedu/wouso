@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.views.generic import View, ListView, TemplateView
+from django.conf import settings
 from wouso.core.config.models import Setting, BoolSetting
 from wouso.core.ui import register_sidebar_block, register_header_link
 from wouso.core.user.models import Player
@@ -14,6 +15,8 @@ from wouso.core.decorators import staff_required
 from wouso.games.challenge.models import ChallengeException
 from models import ChallengeUser, ChallengeGame, Challenge, Participant
 from forms import ChallengeForm
+import os
+import fcntl
 
 class PlayerViewMixin():
     def get_player(self):
@@ -42,7 +45,6 @@ def index(request):
             context_instance=RequestContext(request))
 
 class ChallengeView(View):
-    lock = False
     def dispatch(self, request, *args, **kwargs):
         self.chall_user = request.user.get_profile().get_extension(ChallengeUser)
         self.chall = get_object_or_404(Challenge, pk=kwargs['id'])
@@ -95,13 +97,34 @@ class ChallengeView(View):
 
 challenge = login_required(ChallengeView.as_view())
 
+class FileLock:
+    def __init__(self, filename):
+        handle = open(filename, 'w')
+        self.handle = handle
+        fcntl.flock(handle, fcntl.LOCK_EX)
+
+    def unlock(self):
+        fcntl.flock(self.handle, fcntl.LOCK_UN)
+        self.handle.close()
+        self.handle = None
+
+    def __del__(self):
+        if self.handle != None:
+            self.unlock()
+
+class NamedFileLock:
+    def __init__(self, filename):
+        self.filename = filename
+    
+    def lock(self):
+        return FileLock(self.filename)
+
+challengeLock = NamedFileLock("/tmp/wouso_challenge_launch_lock")
+
 @login_required
 def launch(request, to_id):
-    if ChallengeView.lock is False:
-        ChallengeView.lock = True
-    else:
-        return redirect('challenge_index_view')
-
+    lock = challengeLock.lock()
+     
     user_to = get_object_or_404(Player, pk=to_id)
 
     user_to = user_to.get_extension(ChallengeUser)
@@ -110,27 +133,27 @@ def launch(request, to_id):
 
     if ChallengeGame.disabled():
         messages.error(request, _('Provocarile sunt dezactivate'))
-        ChallengeView.lock = False
+        lock.unlock()
         return redirect('challenge_index_view')
 
     if (not user_to.is_eligible()) or (not user_from.is_eligible()):
         messages.error(request, _('Sorry, challenge failed.'))
-        ChallengeView.lock = False
+        lock.unlock()
         return redirect('challenge_index_view')
 
     if not user_from.can_launch():
         messages.error(request, _('You cannot launch another challenge today.'))
-        ChallengeView.lock = False
+        lock.unlock()
         return redirect('challenge_index_view')
 
     if not user_from.in_same_division(user_to):
         messages.error(request, _('You are not in the same division'))
-        ChallengeView.lock = False
+        lock.unlock()
         return redirect('challenge_index_view')
 
     if not user_from.has_enough_points():
         messages.error(request, _('You need at least 30 points to launch a challenge'))
-        ChallengeView.lock = False
+        lock.unlock()
         return redirect('challenge_index_view')
 
     if user_from.can_challenge(user_to):
@@ -139,7 +162,7 @@ def launch(request, to_id):
         except ChallengeException as e:
             # Some error occurred during question fetch. Clean up, and display error
             messages.error(request, e.message)
-            ChallengeView.lock = False
+            lock.unlock()
             return redirect('challenge_index_view')
         #Checking if user_to is stored in session
         PREFIX = "_user:"
@@ -149,11 +172,12 @@ def launch(request, to_id):
             addActivity.send(sender=None, user_to=user_to, user_from=user_from, action=action_msg,
                              game=None, public=False)
         messages.success(request, _('Successfully challenged'))
-        ChallengeView.lock = False
+        chall.save()
+        lock.unlock()
         return redirect('challenge_index_view')
     else:
         messages.error(request, _('This user cannot be challenged.'))
-        ChallengeView.lock = False
+        lock.unlock()
         return redirect('challenge_index_view')
 
 @login_required
