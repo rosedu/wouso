@@ -74,6 +74,7 @@ class QuestUser(Player):
             self.finish_quest()
             scoring.score(self, QuestGame, quest.get_formula('quest-finish-ok'), external_id=quest.id)
         self.save()
+        self.user.get_profile().save()
         return self.current_level
 
     def finish_quest(self):
