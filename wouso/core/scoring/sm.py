@@ -165,9 +165,17 @@ def update_points(player, game):
         else:
 
             amount = calculate('level-gold', level=level)
+            # Check if the user has previously reached this level
+            if level > player.max_level:
+                # Update the maximum reached level
+                player.max_level = level
+                # Offer the corresponding amount of gold
+                score(player, None, 'level-gold', external_id=level, level=level)
+            else:
+                # The user should not receive additional gold
+                amount['gold'] = 0
             signal_msg = ugettext_noop("upgraded to level {level} and received {amount} gold")
             action_msg = 'gold-won'
-            score(player, None, 'level-gold', external_id=level, level=level)
             signals.addActivity.send(sender=None, user_from=player,
                     user_to=player, message=signal_msg,
                                 arguments=dict(level=level, amount=amount['gold']),
