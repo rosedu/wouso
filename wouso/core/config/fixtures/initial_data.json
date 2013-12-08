@@ -91,7 +91,7 @@
         }
     }, 
     {
-        "pk": "disable-reported-user-SecutiryRule", 
+        "pk": "disable-reported-user-SecurityRule",
         "model": "config.setting", 
         "fields": {
             "value": ""
