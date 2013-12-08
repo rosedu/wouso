@@ -16,6 +16,7 @@ from wouso.core.game.models import Game
 from wouso.core import scoring, signals
 from wouso.core.god import God
 from wouso.interface.apps.messaging.models import Message
+import logging
 
 
 class ChallengeException(Exception):
@@ -35,6 +36,7 @@ class ChallengeUser(Player):
         now = datetime.now()
         today_start = datetime.combine(now, time())
         today_end = datetime.combine(now, time(23, 59, 59))
+        logging.info("today_start: %s, today_end: %s, self.last_launched: %s" % (today_start, today_end, self.last_launched))
         if not self.last_launched:
             return True
         if today_start <= self.last_launched <= today_end:
@@ -62,8 +64,10 @@ class ChallengeUser(Player):
         user = user.get_extension(ChallengeUser)
         if self.user == user.user:
             # Cannot challenge myself
+            logging.info("User cannot challenge because it is the same user.")
             return False
         if user.magic.has_modifier('challenge-cannot-be-challenged'):
+            logging.info("User cannot challenge due to magic modifier.")
             return False
         return God.user_can_interact_with(self, user, game=ChallengeGame)
 
@@ -107,6 +111,7 @@ class ChallengeUser(Player):
         return Challenge.create(user_from=self, user_to=destination)
 
     def set_last_launched(self, value):
+        logging.info("set last launched of %s to %s" %(hex(id(self)), value))
         self.last_launched = value
         self.save()
 
