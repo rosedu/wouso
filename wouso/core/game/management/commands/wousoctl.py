@@ -31,6 +31,12 @@ class Command(BaseCommand):
             default=False,
             help='Setup the current instance, including a syncdb.'
         ),
+        make_option('--noinput',
+            action='store_true',
+            dest='noinput',
+            default=False,
+            help='Don\'t ask for input'
+        ),
         make_option('--load',
             action='store',
             dest='load',
@@ -71,7 +77,10 @@ class Command(BaseCommand):
                 self.stdout.write('OK.\n')
 
         elif options['setup']:
-            call_command('syncdb')
+            if options['noinput']:
+                call_command('syncdb', interactive=False)
+            else:
+                call_command('syncdb')
 
             self.stdout.write('Setting up scoring...')
             setup_scoring()
