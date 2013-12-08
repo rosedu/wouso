@@ -11,6 +11,7 @@ Requirements
 ------------
 
 The following packages need to be installed::
+
   * python2.7
   * python-pip
   * python-django
