@@ -18,6 +18,19 @@ from forms import ChallengeForm
 import os
 import fcntl
 import logging
+from django.db import transaction
+
+@transaction.commit_manually
+def flush_transaction():
+    """ Flush the current transaction so we don't read stale data
+
+    Use in long running processes to make sure fresh data is read from
+    the database.  This is a problem with MySQL and the default
+    transaction mode.  You can fix it by setting
+    "transaction-isolation = READ-COMMITTED" in my.cnf or by calling
+    this function at the appropriate moment
+    """
+    transaction.commit()
 
 class PlayerViewMixin():
     def get_player(self):
@@ -125,11 +138,14 @@ challengeLock = NamedFileLock("/tmp/wouso_challenge_launch_lock")
 #import logging
 #logger = logging.
 
+# http://stackoverflow.com/questions/3346124/how-do-i-force-django-to-ignore-any-caches-and-reload-data
+
 @login_required
 def launch(request, to_id):
     lock = challengeLock.lock()
     logging.info("Locked.")
 
+    flush_transaction()
     user_to = get_object_or_404(Player, pk=to_id)
     user_to = user_to.get_extension(ChallengeUser)
     user_from = request.user.get_profile().get_extension(ChallengeUser)
