@@ -66,7 +66,7 @@ class QuestUser(Player):
         """
         Pass current level. Increment current level and score.
         """
-        if self.current_quest != quest:
+        if self.current_quest.id != quest.id:
             return None
         scoring.score(self, QuestGame, quest.get_formula('quest-ok'), level=(self.current_level + 1), external_id=quest.id)
         self.current_level += 1
@@ -161,7 +161,7 @@ class Quest(models.Model):
         return final > 0
 
     def is_answerable(self):
-        return self.type == TYPE_CLASSIC
+        return self.type == TYPE_CLASSIC or self.type == TYPE_CHECKER
 
     @property
     def count(self):
@@ -209,7 +209,7 @@ class Quest(models.Model):
         return "Active"
 
     def check_answer(self, user, answer):
-        if user.current_quest != self:
+        if user.current_quest.id != self.id:
             user.register_quest_result()
             user.set_current(self)
             return False
