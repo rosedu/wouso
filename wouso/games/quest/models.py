@@ -161,7 +161,7 @@ class Quest(models.Model):
         return final > 0
 
     def is_answerable(self):
-        return self.type == TYPE_CLASSIC
+        return self.type == TYPE_CLASSIC or self.type == TYPE_CHECKER
 
     @property
     def count(self):
