@@ -788,27 +788,31 @@ def stafftoggle(request, id):
 
     return HttpResponseRedirect(reverse('player_profile', args=(id,)))
 
+class PlayersView(ListView):
+    template_name = 'cpanel/players.html'
+    queryset = Player.objects.all().order_by('-user__date_joined')
+    context_object_name = 'players'
+    paginate_by = 50
 
-@permission_required('config.change_setting')
-def players(request):
-    from wouso.interface.activity.models import Activity
-    def qotdc(self):
-        return History.objects.filter(user=self, game__name='QotdGame').count()
-    def ac(self):
-        return Activity.get_player_activity(self).count()
-    def cc(self):
-        return History.objects.filter(user=self, game__name='ChallengeGame').count()
-    def inf(self):
-        return History.user_coins(user=self)['penalty']
+    def dispatch(self, request, *args, **kwargs):
+        from wouso.interface.activity.models import Activity
+        def qotdc(self):
+            return History.objects.filter(user=self, game__name='QotdGame').count()
+        def ac(self):
+            return Activity.get_player_activity(self).count()
+        def cc(self):
+            return History.objects.filter(user=self, game__name='ChallengeGame').count()
+        def inf(self):
+            return History.user_coins(user=self)['penalty']
 
-    Player.qotd_count = qotdc
-    Player.activity_count = ac
-    Player.chall_count = cc
-    Player.infraction_points = inf
-    all = Player.objects.all().order_by('-user__date_joined')
+        Player.qotd_count = qotdc
+        Player.activity_count = ac
+        Player.chall_count = cc
+        Player.infraction_points = inf
 
-    return render_to_response('cpanel/players.html', dict(players=all), context_instance=RequestContext(request))
+        return super(PlayersView, self).dispatch(request, *args, **kwargs) 
 
+players = permission_required('config.change_setting')(PlayersView.as_view())
 
 class AddPlayerView(CreateView):
     template_name = 'cpanel/add_player.html'
