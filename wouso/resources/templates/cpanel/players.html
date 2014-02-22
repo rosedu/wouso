@@ -17,7 +17,8 @@
 	<th>Edit</th>
 </tr>
 {% for p in players %}
-<tr><td>{% player p %}</td>
+<tr>
+    <td>{% player p %}</td>
     <td>{% coin_amount p.points %}</td>
     <td>{{ p.race }}</td>
     <td>{{ p.activity_count }}</td>
@@ -32,7 +33,10 @@
         {% endif %}
 
     </td>
-    <td><a class="button" href="{% url edit_player p.user_id %}">Edit</a></td>
+    <td>
+      <a class="button" href="{% url edit_player p.user_id %}">Edit</a>
+      <a class="button" href="{% url details_player p.pk %}">Details</a>
+    </td>
 </tr>
 {% endfor %}
 </table>

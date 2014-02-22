@@ -16,7 +16,7 @@ from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_noop
 from django.utils.translation import ugettext as _
 from django.views.generic import UpdateView, CreateView, ListView, FormView, \
-    TemplateView
+    TemplateView, DetailView
 from wouso.core.config.models import Setting
 from wouso.core.decorators import staff_required
 from wouso.core.ui import get_sidebar
@@ -907,6 +907,14 @@ edit_player = permission_required('config.change_setting')(
     EditPlayerView.as_view())
 
 
+class DetailsPlayerView(DetailView):
+    template_name = 'cpanel/player_details.html'
+    model = User
+
+
+details_player = staff_required(DetailsPlayerView.as_view())
+
+
 @staff_required
 def infraction_history(request, user_id):
     user = get_object_or_404(User, pk=user_id)
@@ -1113,7 +1121,7 @@ def bonus(request, player_id):
                                  amount=amount, coin=coin,
                                  reason=form.cleaned_data['reason'])
                 messages.info(request, 'Successfully given bonus')
-            return redirect('player_profile', id=player.id)
+            return redirect('details_player', pk=player.id)
     else:
         form = BonusForm()
 

@@ -1,0 +1,19 @@
+{% extends 'cpanel/index.html' %}
+
+{% load user %}
+
+{% block sectiontitle %}Player info{% endblock %}
+
+{% block sectioncontent %}
+{% with object.get_profile as player %}
+<h2>Player: {{ player.full_name }}</h2>
+
+<div class="actions">
+    <a class="button" href="{% url group_set player.id %}">Groups</a>
+    <a class="button" href="{% url bonus player.id %}">Bonus</a>
+    <a class="button" href="{% url impersonate player.id %}">Impersonate...</a>
+</div>
+
+<a class="button" href="{% url all_players %}">Back to list</a>
+{% endwith %}
+{% endblock %}

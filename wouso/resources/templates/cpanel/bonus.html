@@ -24,4 +24,8 @@
             <li>{{ penalty.timestamp }} - {{ penalty.amount }} {{ penalty.coin }} by {% player penalty.external_id %}</li>
         {% endfor %}
     </ul>
+
+
+<a class="button" href="{% url details_player target_player.pk %}">Back to user</a>
+
 {% endblock %}

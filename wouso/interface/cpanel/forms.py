@@ -5,6 +5,7 @@ from wouso.core.magic.models import Spell
 from wouso.core.scoring.models import Formula
 from wouso.core.security.models import Report
 
+
 class QuestionForm(forms.Form):
     text = forms.CharField(max_length=2000, widget=forms.Textarea)
     active = forms.BooleanField(required=False)
@@ -104,6 +105,7 @@ class AnswerForm(forms.Form):
         a.correct = data['new_answer_correct']
         a.save()
 
+
 class TagsForm(forms.Form):
     def __init__(self, data=None, instance=None, tags=[]):
         super(TagsForm, self).__init__(data)
@@ -111,23 +113,28 @@ class TagsForm(forms.Form):
         for tag in tags:
             self.fields['%s' % tag.name] = forms.BooleanField(initial=tag.active, required=True)
 
+
 class AddTagForm(forms.ModelForm):
     class Meta:
         model = Tag
+
 
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
         exclude = ['last_login', 'date_joined', 'groups', 'user_permissions', 'is_staff', 'is_superuser']
 
+
 class SpellForm(forms.ModelForm):
     class Meta:
         model = Spell
 
+
 class FormulaForm(forms.ModelForm):
     class Meta:
         model = Formula
-        
+
+
 class EditReportForm(forms.ModelForm):
     class Meta:
         model = Report
@@ -137,6 +144,7 @@ class EditReportForm(forms.ModelForm):
         self.fields['dibs'].label = "Dibs"
         self.fields['status'].label = "Status"
         self.fields['extra'].label = "Observations"
+
 
 class TagForm(forms.Form):
     def __init__(self, *args, **kwargs):
