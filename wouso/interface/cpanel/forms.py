@@ -4,6 +4,7 @@ from wouso.core.qpool.models import Question, Answer, Schedule, Category, Tag
 from wouso.core.magic.models import Spell
 from wouso.core.scoring.models import Formula
 from wouso.core.security.models import Report
+from wouso.core.user.models import Race, PlayerGroup
 
 
 class QuestionForm(forms.Form):
@@ -122,7 +123,8 @@ class AddTagForm(forms.ModelForm):
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
-        exclude = ['last_login', 'date_joined', 'groups', 'user_permissions', 'is_staff', 'is_superuser']
+        exclude = ['last_login', 'date_joined', 'groups', 'user_permissions',
+                   'is_staff', 'is_superuser']
 
 
 class SpellForm(forms.ModelForm):
@@ -138,7 +140,8 @@ class FormulaForm(forms.ModelForm):
 class EditReportForm(forms.ModelForm):
     class Meta:
         model = Report
-        exclude = ['user_to', 'user_from', 'text', 'timestamp' ] 
+        exclude = ['user_to', 'user_from', 'text', 'timestamp']
+
     def __init__(self, *args, **kwargs):
         super(EditReportForm, self).__init__(*args, **kwargs)
         self.fields['dibs'].label = "Dibs"
@@ -158,3 +161,15 @@ class RoleForm(forms.ModelForm):
         model = Group
 
 
+
+
+class RaceForm(forms.ModelForm):
+    class Meta:
+        model = Race
+        exclude = ['artifacts']
+
+
+class PlayerGroupForm(forms.ModelForm):
+    class Meta:
+        model = PlayerGroup
+        exclude = ['artifacts', 'owner']

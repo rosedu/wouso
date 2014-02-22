@@ -37,7 +37,7 @@ from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.middleware.impersonation import ImpersonateMiddleware
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, \
-AnswerForm, EditReportForm, RoleForm
+    AnswerForm, EditReportForm, RaceForm, PlayerGroupForm, RoleForm
 from forms import FormulaForm, TagForm
 
 
@@ -972,13 +972,47 @@ def infraction_clear(request, user_id, infraction_id):
 
 
 class RacesGroupsView(ListView):
-    template_name = 'cpanel/races_groups.html'
+    template_name = 'cpanel/races/all.html'
     model = Race
     context_object_name = 'races'
 
+    def get_context_data(self, **kwargs):
+        context = super(RacesGroupsView, self).get_context_data(**kwargs)
+        context.update({
+            'orphan_groups': PlayerGroup.objects.filter(parent=None, owner=None)
+        })
+        return context
+
+
+class RacesAdd(CreateView):
+
+    model = Race
+    template_name = 'cpanel/races/create.html'
+    form_class = RaceForm
+
+    def get_success_url(self):
+        return reverse('races_groups')
+
+
+class GroupsAdd(CreateView):
+
+    model = PlayerGroup
+    template_name = 'cpanel/races/group_create.html'
+    form_class = PlayerGroupForm
+
+    def get_success_url(self):
+        return reverse('races_groups')
+
 
 races_groups = permission_required('config.change_setting')(
-    RacesGroupsView.as_view())
+    RacesGroupsView.as_view()
+)
+races_add = permission_required('config.change_setting')(
+    RacesAdd.as_view()
+)
+group_add = permission_required('config.change_setting')(
+    GroupsAdd.as_view()
+)
 
 
 class RolesView(ListView):

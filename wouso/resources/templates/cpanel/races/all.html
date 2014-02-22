@@ -18,7 +18,17 @@
         </ul>
     </li>
     {% endfor %}
+    <li>Orphans
+      <ul>
+        {% for g in orphan_groups %}
+          <li>
+              {{ g }} <a href="{% url admin:user_playergroup_change g.id %}">✍</a>
+              <a href="{% url system_message_group g.id %}">Message</a>
+          </li>
+        {% endfor %}
+      </ul>
+    </li>
 </ul>
-<a class="button" href="{% url admin:user_race_add %}">Add race</a>
-<a class="button" href="{% url admin:user_playergroup_add %}">Add player group</a>
+<a class="button" href="{% url races_add %}">Add race</a>
+<a class="button" href="{% url group_add %}">Add group</a>
 {% endblock %}
