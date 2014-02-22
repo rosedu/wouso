@@ -1028,6 +1028,9 @@ class RoleAdd(CreateView):
     template_name = 'cpanel/roles_add.html'
     model = Group
     form_class = RoleForm
+
+    def get_success_url(self):
+        return reverse('roles')
     
 roles_create = permission_required('superuser')(RoleAdd.as_view())
 
