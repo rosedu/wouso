@@ -5,16 +5,16 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core import serializers
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core.urlresolvers import reverse
 from django.db.models import Q
-from django.views.decorators.csrf import csrf_exempt
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
-from wouso.core import signals
+from django.views.decorators.csrf import csrf_exempt
 
+from wouso.core import signals
 from wouso.interface import logger, detect_mobile
 from wouso.interface.apps.pages.models import NewsItem
 from wouso.core.game import get_games
