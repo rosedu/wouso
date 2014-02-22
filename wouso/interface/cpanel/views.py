@@ -3,19 +3,20 @@ from django import forms
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import models as auth
-from django.contrib.auth.decorators import  permission_required
+from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import User, Group
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.http import  HttpResponseRedirect, HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render, render_to_response
+from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render_to_response
 from django.template import RequestContext
 from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_noop
 from django.utils.translation import ugettext as _
-from django.views.generic import View, UpdateView, CreateView, ListView, FormView, TemplateView
+from django.views.generic import UpdateView, CreateView, ListView, FormView, \
+    TemplateView
 from wouso.core.config.models import Setting
 from wouso.core.decorators import staff_required
 from wouso.core.ui import get_sidebar
@@ -30,12 +31,15 @@ from wouso.core.signals import addActivity, add_activity
 from wouso.core.security.models import Report
 from wouso.games.challenge.models import Challenge, Participant
 from wouso.interface.apps.messaging.models import Message
-from wouso.interface.cpanel.models import Customization, Switchboard, GamesSwitchboard
+from wouso.interface.cpanel.models import Customization, Switchboard, \
+    GamesSwitchboard
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.middleware.impersonation import ImpersonateMiddleware
 from wouso.utils.import_questions import import_from_file
-from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, AnswerForm, EditReportForm
+from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, \
+    AnswerForm, EditReportForm
 from forms import FormulaForm, TagForm
+
 
 class ModuleViewMixin(object):
     module = 'undefined'
@@ -60,7 +64,8 @@ class DashboardView(ModuleViewMixin, TemplateView):
         database_engine = database['ENGINE'].split('.')[-1]
         database_name = database['NAME']
 
-        future_questions = Schedule.objects.filter(day__gte=datetime.datetime.now())
+        future_questions = Schedule.objects.filter(
+            day__gte=datetime.datetime.now())
         nr_future_questions = len(future_questions)
         questions = Question.objects.all()
         nr_questions = len(questions)
@@ -76,30 +81,32 @@ class DashboardView(ModuleViewMixin, TemplateView):
         # wousocron last_run
         last_run = Setting.get('wousocron_lastrun').get_value()
         if last_run == "":
-            last_run="wousocron was never run"
+            last_run = "wousocron was never run"
 
         # online members
-        oldest = datetime.datetime.now() - datetime.timedelta(minutes = 10)
-        online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
+        oldest = datetime.datetime.now() - datetime.timedelta(minutes=10)
+        online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by(
+            '-last_seen')
 
         # number of players which can play
         cp_number = Player.objects.filter(race__can_play=True).count()
 
         context = super(DashboardView, self).get_context_data(**kwargs)
-        context.update({'nr_future_questions' : nr_future_questions,
-                       'nr_questions' : nr_questions,
-                       'active_quest': active_quest,
-                       'total_quests': total_quests,
-                       'artifact_groups': artifact_groups,
-                       'django_version': get_version(),
-                       'wouso_version': WOUSO_VERSION,
-                       'database_engine': database_engine,
-                       'database_name': database_name,
-                       'staff': staff_group,
-                       'last_run': last_run,
-                       'online_users': online_last10,
-                       'cp_number': cp_number})
+        context.update({'nr_future_questions': nr_future_questions,
+                        'nr_questions': nr_questions,
+                        'active_quest': active_quest,
+                        'total_quests': total_quests,
+                        'artifact_groups': artifact_groups,
+                        'django_version': get_version(),
+                        'wouso_version': WOUSO_VERSION,
+                        'database_engine': database_engine,
+                        'database_name': database_name,
+                        'staff': staff_group,
+                        'last_run': last_run,
+                        'online_users': online_last10,
+                        'cp_number': cp_number})
         return context
+
 
 dashboard = staff_required(DashboardView.as_view())
 
@@ -108,6 +115,7 @@ class FormulasView(ListView):
     model = Formula
     template_name = 'cpanel/formulas_home.html'
     context_object_name = 'formulas'
+
 
 formulas = permission_required('config.change_setting')(FormulasView.as_view())
 
@@ -118,7 +126,9 @@ class EditFormulaView(UpdateView):
     model = Formula
     success_url = reverse_lazy('formulas')
 
-edit_formula = permission_required('config.change_setting')(EditFormulaView.as_view())
+
+edit_formula = permission_required('config.change_setting')(
+    EditFormulaView.as_view())
 
 
 @permission_required('config.change_setting')
@@ -136,7 +146,9 @@ class AddFormulaView(CreateView):
     form_class = FormulaForm
     success_url = reverse_lazy('add_formula')
 
-add_formula = permission_required('config.change_setting')(AddFormulaView.as_view())
+
+add_formula = permission_required('config.change_setting')(
+    AddFormulaView.as_view())
 
 
 class SpellsView(ModuleViewMixin, ListView):
@@ -144,12 +156,13 @@ class SpellsView(ModuleViewMixin, ListView):
     template_name = 'cpanel/spells_home.html'
     context_object_name = 'spells'
     module = 'spells'
-    
+
     def get_context_data(self, **kwargs):
         context = super(SpellsView, self).get_context_data(**kwargs)
         summary = Spell.get_spells_summary()
         context.update(summary)
         return context
+
 
 spells = permission_required('config.change_setting')(SpellsView.as_view())
 
@@ -161,7 +174,9 @@ class EditSpellView(ModuleViewMixin, UpdateView):
     success_url = reverse_lazy('spells')
     module = 'spells'
 
-edit_spell = permission_required('config.change_setting')(EditSpellView.as_view())
+
+edit_spell = permission_required('config.change_setting')(
+    EditSpellView.as_view())
 
 
 class AddSpellView(ModuleViewMixin, CreateView):
@@ -169,6 +184,7 @@ class AddSpellView(ModuleViewMixin, CreateView):
     form_class = SpellForm
     success_url = reverse_lazy('add_spell')
     module = 'spells'
+
 
 add_spell = permission_required('config.change_setting')(AddSpellView.as_view())
 
@@ -208,7 +224,10 @@ class CustomizationView(ModuleViewMixin, TemplateView):
         context = super(CustomizationView, self).get_context_data(**kwargs)
         context.update(dict(settings=(self.customization, self.switchboard)))
         return context
-customization = permission_required('config.change_setting')(CustomizationView.as_view())
+
+
+customization = permission_required('config.change_setting')(
+    CustomizationView.as_view())
 
 
 class DisplayView(ModuleViewMixin, TemplateView):
@@ -217,7 +236,8 @@ class DisplayView(ModuleViewMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         s = get_sidebar()
-        sidebar_order = Setting.get('sidebar-order').get_value() or ','.join(s.get_blocks())
+        sidebar_order = Setting.get('sidebar-order').get_value() or ','.join(
+            s.get_blocks())
         return {'display': sidebar_order}
 
     def post(self, request):
@@ -225,6 +245,8 @@ class DisplayView(ModuleViewMixin, TemplateView):
         blocks = ','.join([b.strip() for b in data.split(',') if b.strip()])
         Setting.get('sidebar-order').set_value(blocks)
         return redirect('cpanel_display')
+
+
 display = permission_required('config.change_setting')(DisplayView.as_view())
 
 
@@ -245,16 +267,16 @@ class GamesView(ModuleViewMixin, TemplateView):
         context.update(dict(settings=(switchboard,)))
         return context
 
-games = permission_required('config.change_setting')(GamesView.as_view())
 
+games = permission_required('config.change_setting')(GamesView.as_view())
 
 
 @permission_required('config.change_setting')
 def qpool_home(request, cat='qotd', page=u'1', tag=None):
     categories = Category.objects.all()
 
-
-    qs = get_questions_with_category(str(cat), active_only=False, endorsed_only=False)
+    qs = get_questions_with_category(str(cat), active_only=False,
+                                     endorsed_only=False)
     if tag:
         tag = get_object_or_404(Tag, pk=tag, category__name=cat)
         qs = qs.filter(tags=tag)
@@ -339,6 +361,7 @@ class QPoolNewView(ModuleViewMixin, FormView):
         context.update(dict(categs=categs))
         return context
 
+
 qpool_new = permission_required('config.change_setting')(QPoolNewView.as_view())
 
 
@@ -350,16 +373,18 @@ class QPoolAddAnswerView(ModuleViewMixin, UpdateView):
 
     def get_form_kwargs(self):
         kwargs = {
-                  'data': self.request.POST,
-                  'instance': self.object
-                 }
+            'data': self.request.POST,
+            'instance': self.object
+        }
         return kwargs
 
     def form_valid(self, form):
         form.save(id=self.object)
         return redirect('question_edit', id=self.object.id)
 
-qpool_add_answer = permission_required('config.change_setting')(QPoolAddAnswerView.as_view())
+
+qpool_add_answer = permission_required('config.change_setting')(
+    QPoolAddAnswerView.as_view())
 
 
 @permission_required('config.change_setting')
@@ -386,7 +411,7 @@ def qpool_edit(request, id):
 
         form = QuestionForm(instance=question, users=show_users)
 
-    return render_to_response( 'cpanel/qpool_edit.html',
+    return render_to_response('cpanel/qpool_edit.html',
                               {'question': question,
                                'form': form,
                                'module': 'qpool',
@@ -416,7 +441,8 @@ def question_switch(request, id):
                     amount = CHALLENGE_GOLD
                 elif tag.name == 'quest':
                     amount = QUEST_GOLD
-            scoring.score(player, None, 'bonus-gold', external_id=staff_user.id, gold=amount)
+            scoring.score(player, None, 'bonus-gold', external_id=staff_user.id,
+                          gold=amount)
 
     # regular activation of question
     else:
@@ -486,8 +512,8 @@ def qpool_set_active_categories(request):
 
     form = TagsForm(tags=tags)
     return render_to_response('cpanel/qpool_setactivetags.html',
-                        {'form': form, 'tags': tags},
-                        context_instance=RequestContext(request)
+                              {'form': form, 'tags': tags},
+                              context_instance=RequestContext(request)
     )
 
 
@@ -497,12 +523,15 @@ class QpoolImporterView(ModuleViewMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         categories = Category.objects.all().exclude(name='proposed')
-        tags = Tag.objects.all().exclude(name__in=['qotd', 'challenge', 'quest'])
+        tags = Tag.objects.all().exclude(
+            name__in=['qotd', 'challenge', 'quest'])
         context = super(QpoolImporterView, self).get_context_data(**kwargs)
         context.update(dict(categories=categories, tags=tags))
         return context
 
-qpool_importer = permission_required('config.change_setting')(QpoolImporterView.as_view())
+
+qpool_importer = permission_required('config.change_setting')(
+    QpoolImporterView.as_view())
 
 
 @permission_required('config.change_setting')
@@ -527,37 +556,46 @@ def qpool_import_from_upload(request):
     if not infile:
         return redirect('importer')
 
-
-    nr = import_from_file(infile, proposed_by=request.user, endorsed_by=endorsed_by, category=category, tags=tags, all_active=all_active)
-    return render_to_response('cpanel/imported.html', {'module': 'qpool', 'nr': nr, 'category': category},
+    nr = import_from_file(infile, proposed_by=request.user,
+                          endorsed_by=endorsed_by, category=category, tags=tags,
+                          all_active=all_active)
+    return render_to_response('cpanel/imported.html',
+                              {'module': 'qpool', 'nr': nr,
+                               'category': category},
                               context_instance=RequestContext(request))
 
 
 class QPoolTagQuestionsView(FormView):
     template_name = 'cpanel/tag_questions.html'
     form_class = TagForm
-    
+
     def form_valid(self, form):
         q_pks = form.cleaned_data['questions']
-        tag_pk =  form.cleaned_data['tag']
+        tag_pk = form.cleaned_data['tag']
         tag = Tag.objects.get(pk=tag_pk)
         for pk in q_pks:
             q = Question.objects.get(pk=pk)
             q.tags.add(tag)
             q.save()
         return render_to_response('cpanel/tagged.html',
-                {'nr': len(q_pks)}, context_instance=RequestContext(self.request))
+                                  {'nr': len(q_pks)},
+                                  context_instance=RequestContext(self.request))
 
-qpool_tag_questions = permission_required('config.change_setting')(QPoolTagQuestionsView.as_view())
+
+qpool_tag_questions = permission_required('config.change_setting')(
+    QPoolTagQuestionsView.as_view())
 
 
 class QPoolManageTagsView(ListView):
     template_name = 'cpanel/qpool_managetags.html'
     context_object_name = 'tags'
+
     def get_queryset(self):
         return Tag.objects.all().order_by('category')
 
-qpool_managetags = permission_required('config.change_setting')(QPoolManageTagsView.as_view())
+
+qpool_managetags = permission_required('config.change_setting')(
+    QPoolManageTagsView.as_view())
 
 
 @permission_required('config.change_setting')
@@ -571,8 +609,8 @@ def qpool_add_tag(request):
         else:
             form = tag
     return render_to_response('cpanel/qpool_add_tag.html',
-            {'form': form},
-            context_instance=RequestContext(request))
+                              {'form': form},
+                              context_instance=RequestContext(request))
 
 
 class QPoolEditTag(UpdateView):
@@ -581,7 +619,9 @@ class QPoolEditTag(UpdateView):
     form_class = AddTagForm
     success_url = reverse_lazy('qpool_manage_tags')
 
-qpool_edit_tag = permission_required('config.change_setting')(QPoolEditTag.as_view())
+
+qpool_edit_tag = permission_required('config.change_setting')(
+    QPoolEditTag.as_view())
 
 
 @permission_required('config.change_setting')
@@ -607,6 +647,7 @@ def qpool_settag(request):
 
     return redirect(redir)
 
+
 @permission_required('config.change_setting')
 def qpool_actions(request):
     action = request.GET.get('action', None)
@@ -626,11 +667,14 @@ def qpool_actions(request):
 
     return redirect(redir)
 
+
 @permission_required('config.change_setting')
 def qpool_export(request, cat):
     category = get_object_or_404(Category, name=cat)
     response = HttpResponse(mimetype='text/txt')
-    response['Content-Disposition'] = 'attachment; filename=question_%s_export.txt' % slugify(category.name)
+    response[
+        'Content-Disposition'] = 'attachment; filename=question_%s_export.txt' % slugify(
+        category.name)
 
     for q in category.question_set.all():
         response.write(u'? %s\n' % q.text)
@@ -641,6 +685,7 @@ def qpool_export(request, cat):
 
     return response
 
+
 # End qpool
 
 @permission_required('config.change_setting')
@@ -649,7 +694,8 @@ def artifactset(request, id):
     artifacts = Artifact.objects.all()
 
     if request.method == "POST":
-        artifact = get_object_or_404(Artifact, pk=request.POST.get('artifact', 0))
+        artifact = get_object_or_404(Artifact,
+                                     pk=request.POST.get('artifact', 0))
         amount = int(request.POST.get('amount', 1))
         profile.magic.give_modifier(artifact.name, amount)
 
@@ -677,10 +723,13 @@ class ArtifactHomeView(ModuleViewMixin, ListView):
         context = super(ArtifactHomeView, self).get_context_data(**kwargs)
         modifiers = God.get_all_modifiers()
         groups = ArtifactGroup.objects.all()
-        context.update({'groups': groups, 'group': self.group, 'modifiers': modifiers})
+        context.update(
+            {'groups': groups, 'group': self.group, 'modifiers': modifiers})
         return context
 
-artifact_home = permission_required('config.change_setting')(ArtifactHomeView.as_view())
+
+artifact_home = permission_required('config.change_setting')(
+    ArtifactHomeView.as_view())
 
 
 @permission_required('config.change_setting')
@@ -711,14 +760,14 @@ def artifact_edit(request, id=None):
             if image:
                 instance.image = image
                 instance.save()
-            return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.artifact_home'))
+            return HttpResponseRedirect(
+                reverse('wouso.interface.cpanel.views.artifact_home'))
     else:
         form = AForm(instance=instance)
 
     return render_to_response('cpanel/artifact_edit.html',
-                            {'form': form, 'instance': instance},
+                              {'form': form, 'instance': instance},
                               context_instance=RequestContext(request))
-
 
 
 @permission_required('config.change_setting')
@@ -744,15 +793,19 @@ def groupset(request, id):
         def render_option(self, selected_choices, option_value, option_label):
             group = Race.objects.get(pk=option_value)
             option_label = u'%s [%s]' % (group, group.name)
-            return super(GSelect, self).render_option(selected_choices, option_value, option_label)
+            return super(GSelect, self).render_option(selected_choices,
+                                                      option_value,
+                                                      option_label)
 
     class GForm(ModelForm):
         class Meta:
             model = Player
             fields = ('race',)
 
-        group = forms.ChoiceField(choices=[(0, '')] + [(p.id, u"%s [%s]" % (p, p.name)) for p in PlayerGroup.objects.filter(owner=None)],
-                                initial=profile.group.id if profile.group else '')
+        group = forms.ChoiceField(
+            choices=[(0, '')] + [(p.id, u"%s [%s]" % (p, p.name)) for p in
+                                 PlayerGroup.objects.filter(owner=None)],
+            initial=profile.group.id if profile.group else '')
 
     if request.method == 'POST':
         form = GForm(request.POST, instance=profile)
@@ -763,7 +816,8 @@ def groupset(request, id):
                 profile.group.players.remove(profile)
             # Then update, if any
             if form.cleaned_data['group'] != '0':
-                new_group = get_object_or_404(PlayerGroup, pk=form.cleaned_data['group'])
+                new_group = get_object_or_404(PlayerGroup,
+                                              pk=form.cleaned_data['group'])
                 new_group.players.add(profile)
     else:
         form = GForm(instance=profile)
@@ -788,6 +842,7 @@ def stafftoggle(request, id):
 
     return HttpResponseRedirect(reverse('player_profile', args=(id,)))
 
+
 class PlayersView(ListView):
     template_name = 'cpanel/players.html'
     queryset = Player.objects.all().order_by('-user__date_joined')
@@ -796,12 +851,18 @@ class PlayersView(ListView):
 
     def dispatch(self, request, *args, **kwargs):
         from wouso.interface.activity.models import Activity
+
         def qotdc(self):
-            return History.objects.filter(user=self, game__name='QotdGame').count()
+            return History.objects.filter(user=self,
+                                          game__name='QotdGame').count()
+
         def ac(self):
             return Activity.get_player_activity(self).count()
+
         def cc(self):
-            return History.objects.filter(user=self, game__name='ChallengeGame').count()
+            return History.objects.filter(user=self,
+                                          game__name='ChallengeGame').count()
+
         def inf(self):
             return History.user_coins(user=self)['penalty']
 
@@ -810,9 +871,11 @@ class PlayersView(ListView):
         Player.chall_count = cc
         Player.infraction_points = inf
 
-        return super(PlayersView, self).dispatch(request, *args, **kwargs) 
+        return super(PlayersView, self).dispatch(request, *args, **kwargs)
+
 
 players = permission_required('config.change_setting')(PlayersView.as_view())
+
 
 class AddPlayerView(CreateView):
     template_name = 'cpanel/add_player.html'
@@ -823,7 +886,9 @@ class AddPlayerView(CreateView):
         form.instance.set_password(self.request.POST['password'])
         return super(AddPlayerView, self).form_valid(form)
 
-add_player = permission_required('config.change_setting')(AddPlayerView.as_view())
+
+add_player = permission_required('config.change_setting')(
+    AddPlayerView.as_view())
 
 
 class EditPlayerView(UpdateView):
@@ -837,22 +902,26 @@ class EditPlayerView(UpdateView):
         form.fields['password'].widget.attrs['readonly'] = True
         return form
 
-edit_player = permission_required('config.change_setting')(EditPlayerView.as_view())
+
+edit_player = permission_required('config.change_setting')(
+    EditPlayerView.as_view())
 
 
 @staff_required
 def infraction_history(request, user_id):
     user = get_object_or_404(User, pk=user_id)
-    inf_list = History.objects.filter(user=user, coin__name='penalty').order_by('-timestamp')
+    inf_list = History.objects.filter(user=user, coin__name='penalty').order_by(
+        '-timestamp')
     infractions = {}
     for i in inf_list:
-        if i.formula.name=="chall-was-set-up-infraction":
+        if i.formula.name == "chall-was-set-up-infraction":
             list = infractions.setdefault(i.formula.name, [])
-            list.append( (i, Challenge.objects.get(pk=i.external_id)) )
+            list.append((i, Challenge.objects.get(pk=i.external_id)))
 
     return render_to_response('cpanel/view_infractions.html',
-            {'infractions':infractions, 'p':user.player_related.get()},
-            context_instance=RequestContext(request))
+                              {'infractions': infractions,
+                               'p': user.player_related.get()},
+                              context_instance=RequestContext(request))
 
 
 @staff_required
@@ -862,31 +931,36 @@ def infraction_recheck(request):
         The view should allow for other infraction additions. """
     try:
         inf_list = History.objects.filter(coin__name='penalty',
-                formula__name='chall-was-set-up-infraction').delete()
+                                          formula__name='chall-was-set-up-infraction').delete()
     except:
         pass
 
-    all_participants = Participant.objects.filter(seconds_took__lt=15).exclude(seconds_took=None)
+    all_participants = Participant.objects.filter(seconds_took__lt=15).exclude(
+        seconds_took=None)
     formula = Formula.objects.get(name='chall-was-set-up-infraction')
     for p in all_participants:
         id = None
         if p.user_from.count():
-            if p.user_from.all()[0].status == 'P' and p.user_from.all()[0].winner.id != p.user.id:
+            if p.user_from.all()[0].status == 'P' and p.user_from.all()[
+                0].winner.id != p.user.id:
                 user = p.user.player_ptr
                 id = p.user_from.all()[0].id
         if p.user_to.count():
-            if p.user_to.all()[0].status == 'P' and p.user_to.all()[0].winner.id != p.user.id:
+            if p.user_to.all()[0].status == 'P' and p.user_to.all()[
+                0].winner.id != p.user.id:
                 user = p.user.player_ptr
                 id = p.user_to.all()[0].id
         if id:
-           scoring.score(user=user, game=None, formula=formula, external_id=id)
+            scoring.score(user=user, game=None, formula=formula, external_id=id)
     return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.players'))
 
 
 @staff_required
 def infraction_clear(request, user_id, infraction_id):
     History.objects.get(pk=infraction_id).delete()
-    return HttpResponseRedirect(reverse('wouso.interface.cpanel.views.infraction_history', args=(user_id,)))
+    return HttpResponseRedirect(
+        reverse('wouso.interface.cpanel.views.infraction_history',
+                args=(user_id,)))
 
 
 class RacesGroupsView(ListView):
@@ -894,13 +968,16 @@ class RacesGroupsView(ListView):
     model = Race
     context_object_name = 'races'
 
-races_groups = permission_required('config.change_setting')(RacesGroupsView.as_view())
+
+races_groups = permission_required('config.change_setting')(
+    RacesGroupsView.as_view())
 
 
 class RolesView(ListView):
     template_name = 'cpanel/roles.html'
     model = Group
     context_object_name = 'roles'
+
 
 roles = permission_required('superuser')(RolesView.as_view())
 
@@ -949,6 +1026,7 @@ class ReportsView(ListView):
     def get_queryset(self):
         return Report.objects.all().order_by('-timestamp')
 
+
 reports = staff_required(ReportsView.as_view())
 
 
@@ -957,6 +1035,7 @@ class EditReportView(UpdateView):
     model = Report
     form_class = EditReportForm
     success_url = reverse_lazy('reports')
+
 
 edit_report = staff_required(EditReportView.as_view())
 
@@ -968,12 +1047,13 @@ def system_message_group(request, group):
     if request.method == 'POST':
         text = request.POST['text']
         for p in group.players.all():
-            Message.send(sender=None, receiver=p, subject="System message", text=text)
+            Message.send(sender=None, receiver=p, subject="System message",
+                         text=text)
         messages.success(request, 'Message sent!')
 
     return render_to_response('cpanel/system_message_group.html',
-                        {'group': group},
-                        context_instance=RequestContext(request))
+                              {'group': group},
+                              context_instance=RequestContext(request))
 
 
 @permission_required('superuser')
@@ -995,7 +1075,8 @@ def clear_cache(request):
         cache.clear()
         return redirect('dashboard')
     else:
-        return render_to_response('cpanel/clear_cache.html', {}, context_instance=RequestContext(request))
+        return render_to_response('cpanel/clear_cache.html', {},
+                                  context_instance=RequestContext(request))
 
 
 class BonusForm(forms.Form):
@@ -1017,22 +1098,34 @@ def bonus(request, player_id):
     if request.method == 'POST':
         form = BonusForm(request.POST)
         if form.is_valid():
-            coin, amount = form.cleaned_data['coin'], form.cleaned_data['amount']
+            coin, amount = form.cleaned_data['coin'], form.cleaned_data[
+                'amount']
             formula = Formula.get('bonus-%s' % coin.name)
             if formula is None:
                 messages.error(request, 'No such formula, bonus-%s' % coin.name)
             else:
-                scoring.score(player, None, formula, external_id=request.user.get_profile().id, **{coin.name: amount})
+                scoring.score(player, None, formula,
+                              external_id=request.user.get_profile().id,
+                              **{coin.name: amount})
                 if form.cleaned_data['reason']:
-                    add_activity(player, _('received {amount} {coin} bonus for {reason}'), amount=amount, coin=coin, reason=form.cleaned_data['reason'])
+                    add_activity(player, _(
+                        'received {amount} {coin} bonus for {reason}'),
+                                 amount=amount, coin=coin,
+                                 reason=form.cleaned_data['reason'])
                 messages.info(request, 'Successfully given bonus')
             return redirect('player_profile', id=player.id)
     else:
         form = BonusForm()
 
-    bonuses = scoring.History.objects.filter(user=player, formula__name__startswith='bonus-').order_by('-timestamp')
-    penalties = scoring.History.objects.filter(user=player, formula__name__startswith='penalty-').order_by('-timestamp')
+    bonuses = scoring.History.objects.filter(user=player,
+                                             formula__name__startswith='bonus-').order_by(
+        '-timestamp')
+    penalties = scoring.History.objects.filter(user=player,
+                                               formula__name__startswith='penalty-').order_by(
+        '-timestamp')
 
-    return render_to_response('cpanel/bonus.html', {'target_player': player, 'form': form, 'bonuses': bonuses, 'penalties': penalties},
-        context_instance=RequestContext(request)
+    return render_to_response('cpanel/bonus.html',
+                              {'target_player': player, 'form': form,
+                               'bonuses': bonuses, 'penalties': penalties},
+                              context_instance=RequestContext(request)
     )
