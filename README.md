@@ -29,9 +29,9 @@ In case of MySQL support:
 
 ## Installing WoUSO
 
-0. Fork/Clone the WoUSO repository from GitHub.
+1. Fork/Clone the WoUSO repository from GitHub.
 
-1. Browse to the Git repository and activate the virtualenv:
+2. Browse to the Git repository and activate the virtualenv:
 
         cd $PATH_TO_WOUSO_REPOSITORY
         virtualenv -p python2.7 sandbox
@@ -41,29 +41,29 @@ In case of MySQL support:
     `$PATH_TO_WOUSO_REPOSITORY` is the location of the clone of the WoUSO
 repository.
 
-2. Install pip requirements while in the `$PATH_TO_WOUSO_REPOSITORY` folder:
+3. Install pip requirements while in the `$PATH_TO_WOUSO_REPOSITORY` folder:
 
         pip install -r requirements-pip
         pip install -r requirements-extra
 
-3. Install `django-piston` for WoUSO REST API (by hand, because of a [weird bug](https://bitbucket.org/jespern/django-piston/issue/173/attributeerror-module-object-has-no)):
+4. Install `django-piston` for WoUSO REST API (by hand, because of a [weird bug](https://bitbucket.org/jespern/django-piston/issue/173/attributeerror-module-object-has-no)):
 
         curl 'https://pypi.python.org/packages/source/d/django-piston/django-piston-0.2.3.tar.gz' | tar xzf -
         cd django-piston-0.2.3; python setup.py install
         cd ..; rm -r django-piston-0.2.3
 
 
-4. Go to `wouso` subfolder, run everything from there:
+5. Go to `wouso` subfolder, run everything from there:
 
         cd wouso/
 
-5. Create initial settings. First make a copy of example settings:
+6. Create initial settings. First make a copy of example settings:
 
         cp settings.py.example settings.py
 
     and edit the new file (`settings.py`). You may want to update the `DATABASES` setting.
 
-6. Updating Database Settings for MySQL
+7. Updating Database Settings for MySQL
 
     In case you want to use a MySQL database, you must have the MySQL server and client packages installed. MySQL support in Python is required you can use `pip`:
 
@@ -88,11 +88,11 @@ repository.
             }
         }
 
-6. Create database tables and load initial data:
+8. Create database tables and load initial data:
 
         ./manage.py wousoctl --setup
 
-7. Run the server:
+9. Run the server:
 
         ./manage.py runserver
 
@@ -103,7 +103,7 @@ repository.
 
 If you want to leave the virtualenv, run
 
-        deactivate
+    deactivate
 
 
 ## Development best practices
