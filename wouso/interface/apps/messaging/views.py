@@ -29,17 +29,16 @@ def home(request, quiet=None, box=None):
 
     # working here
     messages  = messages.order_by('-timestamp')
-    paginator = Paginator(messages, 20)
+    paginator = Paginator(messages, 1)
     page = request.GET.get('page')
-
+    print page
     try:
         messages = paginator.page(page)
     except PageNotAnInteger:
         # If page is not an integer, deliver first page.
         messages = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        messages = paginator.page(paginator.num_pages)
+    except EmptyPage: 
+        messages = paginator.page(1)
 
     if quiet is not None:
         template = 'messaging/message.html'
