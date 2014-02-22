@@ -82,7 +82,6 @@ class PlayerCacheTest(WousoTest):
         self.assertEqual(c.points, p.points)
 
 
-
 class PlayerCreateTest(WousoTest):
     """ Test that creating a player with diacritics in name, won't break the site
     """

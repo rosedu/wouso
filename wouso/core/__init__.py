@@ -1,9 +1,16 @@
 import warnings
-from functools import wraps
 import logging
+from functools import wraps
+
+from django.contrib import messages
+from django.contrib.auth import logout
+from django.contrib.auth.signals import user_logged_in
+from django.shortcuts import redirect
+from django.utils.translation import ugettext as _
+
+from wouso.core.config.models import BoolSetting
 
 logger = logging.getLogger('core')
-
 
 def deprecated(message):
     """ Mark function as deprecated.
@@ -20,3 +27,11 @@ def deprecated(message):
             return func(*args, **kwargs)
         return wrapper
     return decorator
+
+def block_if_not_staff(sender, user, request, **kwargs):
+    only_staff = BoolSetting.get('disable_login').get_value()
+    if only_staff and not user.is_staff:
+        messages.error(request, _('Only staff members can log in'))
+        logout(request)
+
+user_logged_in.connect(block_if_not_staff)
