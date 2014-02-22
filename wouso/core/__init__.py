@@ -2,7 +2,6 @@ import warnings
 import logging
 from functools import wraps
 
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.signals import user_logged_in
