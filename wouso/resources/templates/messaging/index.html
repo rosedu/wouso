@@ -82,7 +82,7 @@
     <div id="message"></div>
 
     <script language="javascript" type="text/javascript">
-        tabToURL("rec", "{% url quiet_home box='rec' quiet='q' %}")
+        tabToURL("rec", "{% url quiet_home box="rec" quiet='q' %}")
         tabToURL("sent", "{% url quiet_home box="sent" quiet='q' %}")
         tabToURL("all", "{% url quiet_home box="all" quiet='q' %}")
         $('#rec').trigger('custom')

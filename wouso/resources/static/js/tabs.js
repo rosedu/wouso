@@ -1,6 +1,7 @@
 /* global reference */
 var active_tab = '#rec';
 
+
 $(document).ready(function() {
 
     //When page loads...
@@ -28,10 +29,40 @@ function switchtab() {
     return false;
 }
 
+$.urlParam = function(name, url){
+    if(!url) {
+        url = window.location.href;
+    }
+    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(url);
+    if (!results) {
+        return 0;
+    }
+
+    return results[1] || 0;
+}
+
+/**
+ * Executes when the user wants to load
+ * newer or older messages
+ * */
+function getMessages(e, pageNumber, url) {
+
+    $.ajax({
+        data: {'page':pageNumber},
+        url: url,
+        success: function(data) {
+            $(active_tab).html(data)
+        }
+    });
+
+    e.preventDefault();
+}
+
 function tabToURL(tab_name, url) {
     $("#" + tab_name).bind('custom',
         function() {
             $.ajax({
+                data: {'page':$.urlParam('page')},
                 url: url,
                 success: function(data) {
                     $("#" + tab_name).html(data)
