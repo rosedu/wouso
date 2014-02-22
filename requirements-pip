@@ -1,5 +1,5 @@
 # Usage: pip install -r requirements-pip
-Django==1.4
+Django==1.4.2
 Pillow==1.7.7
 -e git://github.com/clef/python-social-auth.git@master#egg=python-social-auth
 South==0.8.4
