@@ -10,10 +10,10 @@ from wouso.core.ui import register_header_link
 from wouso.core.user.models import Player
 from wouso.interface.apps.messaging.models import Message, MessagingUser, MessageApp
 from wouso.interface.apps.messaging.forms import ComposeForm
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 @login_required
-def home(request, quiet=None, box=None, page=u'0'):
+def home(request, quiet=None, box=None):
 
     profile = request.user.get_profile()
     msg_user = profile.get_extension(MessagingUser)
@@ -27,7 +27,19 @@ def home(request, quiet=None, box=None, page=u'0'):
     else:
         messages = Message.objects.none()
 
-    messages = messages.order_by('-timestamp')[:100] # Temporary fix until we introduce archive and trash (do not actually delete for auditing)
+    # working here
+    messages  = messages.order_by('-timestamp')
+    paginator = Paginator(messages, 20)
+    page = request.GET.get('page')
+
+    try:
+        messages = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        messages = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        messages = paginator.page(paginator.num_pages)
 
     if quiet is not None:
         template = 'messaging/message.html'
