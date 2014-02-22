@@ -1,0 +1,30 @@
+{% extends 'workshop/cpanel/index.html' %}
+
+{% block tabcontent %}
+<h2>Workshop: {{ object.title }}</h2>
+<p class="lead">Semigroup: {{ object.semigroup }}</p>
+<dd>
+  <dt>Status:</dt>
+  <dd>{{ object.get_status_display }}</dd>
+  <dt>Date:</dt>
+  <dd>{{ object.date }}</dd>
+  <dt>Active:</dt>
+  <dd>{{ object.start_at }} - {{ object.active_until }}</dd>
+</dd>
+
+{% with object as w %}
+  <a class="button" href="{% url ws_edit_workshop w.id %}">✍edit</a>
+  {% if not w.start_at %}
+  <a class="button" href="{% url ws_start w.id %}">Start</a>
+  {% endif %}
+  {% if w.is_started and w.is_active %}
+  <a class="button" href="{% url ws_stop w.id %}">Stop</a>
+  {% endif %}
+  {% if w.is_started and w.is_passed %}
+  <a class="button" onclick="return confirm('are you sure?');" href="{% url ws_mark_for_review w.id %}">Mark for review</a><br/>
+  {% endif %}
+  {% if w.is_reviewable %}
+  <a class="button" onclick="return confirm('are you sure?');" href="{% url ws_mark_for_grading w.id %}">Mark for grading</a><br/>
+  {% endif %}
+{% endwith %}
+{% endblock %}

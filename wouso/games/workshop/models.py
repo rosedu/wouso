@@ -482,11 +482,11 @@ class WorkshopGame(Game):
         #    return _("No questions for this date")
 
         if cls.get_workshop(semigroup, date):
-            return _("Workshop already exists for group at date")
+            raise ValueError(_("Workshop already exists for group at date"))
 
-        Workshop.objects.create(semigroup=semigroup, date=date, question_count=question_count, title=title)
-
-        return False
+        return Workshop.objects.create(semigroup=semigroup, date=date,
+                                       question_count=question_count,
+                                       title=title)
 
     @classmethod
     def start_reviewing(cls, workshop):

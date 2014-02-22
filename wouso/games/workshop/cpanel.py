@@ -1,12 +1,14 @@
 from django import forms
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.template.context import RequestContext
-from django.views.generic import View, ListView, UpdateView, CreateView
+from django.views.generic import View, ListView, UpdateView, CreateView, \
+    DetailView
 
 from models import WorkshopGame, Semigroup, Schedule, DAY_CHOICES, Answer
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player
 from wouso.games.workshop.models import Workshop, Assessment, Review
+
 
 class SCForm(forms.ModelForm):
     class Meta:
@@ -63,6 +65,7 @@ class AddGroupView(CreateView):
         return context
 
 add_group = staff_required(AddGroupView.as_view())
+
 
 class EditGroupView(UpdateView):
     template_name = 'workshop/cpanel/editgroup.html'
@@ -129,6 +132,7 @@ def schedule(request):
                         context_instance=RequestContext(request)
     )
 
+
 class ScheduleChangeView(UpdateView):
     template_name = 'workshop/cpanel/schedule_change.html'
     model = Schedule
@@ -156,6 +160,7 @@ class ScheduleChangeView(UpdateView):
 
 schedule_change = staff_required(ScheduleChangeView.as_view())
 
+
 class WorkshopList(ListView):
     model = Workshop
     template_name = 'workshop/cpanel/workshops.html'
@@ -174,18 +179,6 @@ class WorkshopList(ListView):
 
 workshops = staff_required(WorkshopList.as_view())
 
-#@staff_required
-#def workshops_old(request):
-#    workshops = Workshop.objects.all().order_by('-active_until')
-#    return render_to_response('workshop/cpanel/workshops.html',
-#                        {'module': 'workshop',
-#                         'workshops': workshops,
-#                         'page': 'workshops',
-#                         'info': WorkshopGame,
-#                         'integrity_check': request.GET.get('integrity_check', False),
-#                         },
-#                        context_instance=RequestContext(request)
-#    )
 
 @staff_required
 def workshop_mark4review(request, workshop):
@@ -195,6 +188,7 @@ def workshop_mark4review(request, workshop):
         WorkshopGame.start_reviewing(workshop)
 
     return redirect('ws_workshops')
+
 
 @staff_required
 def workshop_mark4grading(request, workshop):
@@ -301,31 +295,42 @@ def workshop_grade_assessment(request, assessment):
                          context_instance=RequestContext(request)
     )
 
+
 class AddWorkshopView(View):
+
     def get(self, request, *args, **kwargs):
         form = WAForm()
-        return render_to_response('workshop/cpanel/workshop_add.html',
-                            {'module': 'workshop', 'form': form, 'info': WorkshopGame, 'error': '',
-                             'page': 'workshops'},
-                            context_instance=RequestContext(request)
+        return render_to_response(
+            'workshop/cpanel/workshop_add.html',
+            {'module': 'workshop',
+             'form': form,
+             'info': WorkshopGame,
+             'error': '',
+             'page': 'workshops'},
+            context_instance=RequestContext(request),
         )
 
     def post(self, request, *args, **kwargs):
         error = ''
         form = WAForm(request.POST)
         if form.is_valid():
-            error = WorkshopGame.create_workshop(semigroup=form.cleaned_data['semigroup'],
-                                    date=form.cleaned_data['date'],
-                                    title=form.cleaned_data['title'],
-                                    question_count=form.cleaned_data['question_count']
-            )
-            if not error:
-                return redirect('ws_workshops')
+            try:
+                workshop = WorkshopGame.create_workshop(
+                    semigroup=form.cleaned_data['semigroup'],
+                    date=form.cleaned_data['date'],
+                    title=form.cleaned_data['title'],
+                    question_count=form.cleaned_data['question_count']
+                )
+            except ValueError as e:
+                error = str(e)
+            else:
+                return redirect('ws_status', pk=workshop.pk)
 
-        return render_to_response('workshop/cpanel/workshop_add.html',
-                            {'module': 'workshop', 'form': form, 'info': WorkshopGame, 'error': error,
-                             'page': 'workshops'},
-                            context_instance=RequestContext(request)
+        return render_to_response(
+            'workshop/cpanel/workshop_add.html',
+            {'module': 'workshop', 'form': form, 'info': WorkshopGame,
+             'error': error, 'page': 'workshops'},
+            context_instance=RequestContext(request)
         )
 
 
@@ -359,14 +364,14 @@ def workshop_edit(request, workshop):
 def workshop_start(request, workshop):
     workshop = get_object_or_404(Workshop, pk=workshop)
     workshop.start() # set start_at and active_until
-    return redirect('ws_workshops')
+    return redirect('ws_status', pk=workshop.pk)
 
 
 @staff_required
 def workshop_stop(request, workshop):
     workshop = get_object_or_404(Workshop, pk=workshop)
     workshop.stop() # set active_until
-    return redirect('ws_workshops')
+    return redirect('ws_status', pk=workshop.pk)
 
 
 @staff_required
@@ -446,3 +451,14 @@ def semigroups(request):
         },
         context_instance=RequestContext(request)
     )
+
+
+class WorkshopStatus(DetailView):
+    """
+    Show a status page and allow start, stop and edit actions for a workshop.
+    """
+    model = Workshop
+    template_name = 'workshop/cpanel/workshop_status.html'
+
+
+workshop_status = staff_required(WorkshopStatus.as_view())
