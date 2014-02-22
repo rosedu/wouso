@@ -31,7 +31,7 @@ def home(request, quiet=None, box=None):
     messages  = messages.order_by('-timestamp')
     paginator = Paginator(messages, 1)
     page = request.GET.get('page')
-    print page
+
     try:
         messages = paginator.page(page)
     except PageNotAnInteger:
