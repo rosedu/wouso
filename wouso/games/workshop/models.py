@@ -68,13 +68,18 @@ class Semigroup(PlayerGroup):
     class Meta:
         unique_together = ('day', 'hour', 'room')
     day = models.IntegerField(choices=DAY_CHOICES)
-    hour = models.IntegerField(choices=zip(range(MIN_HOUR, MAX_HOUR, 2), range(MIN_HOUR, MAX_HOUR, 2)))
-    room = models.CharField(max_length=5, default=ROOM_DEFAULT, choices=ROOM_CHOICES, blank=True)
-    assistant = models.ForeignKey(Player, blank=True, null=True)
+    hour = models.IntegerField(choices=zip(range(MIN_HOUR, MAX_HOUR, 2),
+                                           range(MIN_HOUR, MAX_HOUR, 2)))
+    room = models.CharField(max_length=5, default=ROOM_DEFAULT,
+                            choices=ROOM_CHOICES, blank=True)
+    assistant = models.ForeignKey(Player, blank=True, null=True,
+                                  related_name='semigroups')
 
     @property
     def info(self):
-        return "spot: %s %d:00 room: %s" % (self.get_day_display(), self.hour, self.get_room_display())
+        return "spot: %s %d:00 room: %s" % (
+            self.get_day_display(), self.hour, self.get_room_display()
+        )
 
     def add_player(self, player):
         """ Add player to semigroup, remove it from any other semigroups.

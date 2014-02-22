@@ -289,7 +289,7 @@ class Player(models.Model):
         perm = Permission.objects.get(codename=permission)
         users = User.objects.filter(Q(groups__permissions=perm) |
                                     Q(user_permissions=perm)).distinct()
-        return users
+        return Player.objects.filter(user__in=users)
 
     @property
     def race_name(self):

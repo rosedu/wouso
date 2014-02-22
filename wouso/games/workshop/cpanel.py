@@ -410,6 +410,7 @@ def reset_reviews(request, workshop, assessment):
 
     return redirect('ws_reviewers_map', workshop=assessment.workshop.id)
 
+
 class GradebookView(ListView):
     """
     List all students and grades
@@ -424,7 +425,24 @@ class GradebookView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(GradebookView, self).get_context_data(**kwargs)
-        context.update({'module': 'workshop', 'page': 'workshops', 'semigroup': self.semigroup})
+        context.update({'module': 'workshop', 'page': 'semigroups', 'semigroup': self.semigroup})
         return context
 
 gradebook = staff_required(GradebookView.as_view())
+
+
+
+@staff_required
+def semigroups(request):
+    player = request.user.get_profile()
+
+    return render_to_response(
+        'workshop/cpanel/semigroups.html',
+        {
+            'my_semigroups': player.semigroups.all(),
+            'all_semigroups': Semigroup.objects.all(),
+            'page': 'semigroups',
+            'module': 'workshop',
+        },
+        context_instance=RequestContext(request)
+    )

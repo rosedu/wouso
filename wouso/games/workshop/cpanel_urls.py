@@ -28,4 +28,5 @@ urlpatterns = patterns('wouso.games.workshop.cpanel',
     url(r'^grade/assessment/(?P<assessment>\d+)/$', 'workshop_grade_assessment', name='ws_grade_assessment'),
 
     url(r'^gradebook/(?P<semigroup>\d+)/$', 'gradebook', name='ws_gradebook'),
+    url(r'^semigroups/$', 'semigroups', name='ws_semigroups'),
 )
