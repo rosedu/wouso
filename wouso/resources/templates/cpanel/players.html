@@ -4,6 +4,11 @@
 {% block sectiontitle %}Players{% endblock %}
 
 {% block sectioncontent %}
+<form action="{% url manage_fwd %}" method="post">
+    {% player_input 'player' %}
+    {% csrf_token %}
+    <button type="submit">Manage player</button>
+</form>
 
 <table>
 <tr>

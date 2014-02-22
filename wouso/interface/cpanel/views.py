@@ -1145,3 +1145,10 @@ def bonus(request, player_id):
                                'bonuses': bonuses, 'penalties': penalties},
                               context_instance=RequestContext(request)
     )
+
+
+def fwd(request):
+    if request.method == 'POST':
+        player = get_object_or_404(Player, pk=request.POST.get('player'))
+        return redirect('details_player', pk=player.pk)
+    return redirect('all_players')
