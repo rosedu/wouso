@@ -29,7 +29,7 @@ def home(request, quiet=None, box=None):
 
     # working here
     messages  = messages.order_by('-timestamp')
-    paginator = Paginator(messages, 1)
+    paginator = Paginator(messages, 20)
     page = request.GET.get('page')
 
     try:
