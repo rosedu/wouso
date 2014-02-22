@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-APPS="config qpool pages"
+APPS="models config qpool pages"
 
 for app in $APPS
 do
