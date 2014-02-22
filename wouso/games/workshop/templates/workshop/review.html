@@ -24,44 +24,56 @@
 
                     <ul class="spaced">
                     {% for r in a.review_set.all %}
-                        <li>
                         {% if r.reviewer == user.get_profile and r.workshop.is_reviewable %}
-                            <table>
-                                <tr>
-                                    <td >{% trans 'Grade' %}:<br/>
-                                        <input type="radio" {% if r.answer_grade == 0 %}checked="checked"{% endif %} name="grade_{{a.id}}" id="input_grade_{{ a.id }}0" value="0" /><label class="checkbox" for="input_grade_{{ a.id }}0">0</label>
-                                        <input type="radio" {% if r.answer_grade == 1 %}checked="checked"{% endif %} name="grade_{{a.id}}" id="input_grade_{{ a.id }}1" value="1" /><label class="checkbox" for="input_grade_{{ a.id }}1">1</label>
-                                        <input type="radio" {% if r.answer_grade == 2 %}checked="checked"{% endif %} name="grade_{{a.id}}" id="input_grade_{{ a.id }}2" value="2" /><label class="checkbox" for="input_grade_{{ a.id }}2">2</label>
-                                    </td>
-                                    <td>
-                                        {% trans 'Feedback:' %}
-                                        <br/>
-                                        <textarea name="feedback_{{ a.id }}" rows="4" cols="60">{{ r.feedback }}</textarea><br/>
-                                    </td>
-                                </tr>
-                            </table>
+                            <li>
+                                <table>
+                                    <tr>
+                                        <td >{% trans 'Grade' %}:<br/>
+                                            <input type="radio" {% if r.answer_grade == 0 %}checked="checked"{% endif %} name="grade_{{a.id}}" id="input_grade_{{ a.id }}0" value="0" /><label class="checkbox" for="input_grade_{{ a.id }}0">0</label>
+                                            <input type="radio" {% if r.answer_grade == 1 %}checked="checked"{% endif %} name="grade_{{a.id}}" id="input_grade_{{ a.id }}1" value="1" /><label class="checkbox" for="input_grade_{{ a.id }}1">1</label>
+                                            <input type="radio" {% if r.answer_grade == 2 %}checked="checked"{% endif %} name="grade_{{a.id}}" id="input_grade_{{ a.id }}2" value="2" /><label class="checkbox" for="input_grade_{{ a.id }}2">2</label>
+                                        </td>
+                                        <td>
+                                            {% trans 'Feedback:' %}
+                                            <br/>
+                                            <textarea name="feedback_{{ a.id }}" rows="4" cols="60">{{ r.feedback }}</textarea><br/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </li>
                         {% else %}
                             {% if r.reviewer == user.get_profile %}
-                                {{ r.reviewer }}:
-                                <tt>{{ r.feedback }}</tt>
+                                <li>
+                                    {{ r.reviewer }}:
+                                    <tt>{{ r.feedback }}</tt>
+                                </li>
                             {% else %}
                                 {% if r.reviewer.in_staff_group %}
-                                    <span class="red">{% trans 'Assistant' %}:
-                                    <tt>{{ r.feedback }}</tt>
-                                    </span>
+                                    <li>
+                                        <span class="red">{% trans 'Assistant' %}:
+                                        <tt>{{ r.feedback }}</tt>
+                                        </span>
+                                    </li>
                                 {% else %}
-                                    {% trans 'Anonymous' %}{{ forloop.counter }}:
-                                    <tt>{{ r.feedback }}</tt>
+                                    {% if not r.workshop.is_reviewable %}
+                                        <li>
+                                            {% trans 'Anonymous' %}{{ forloop.counter }}:
+                                            <tt>{{ r.feedback }}</tt>
+                                        </li>
+                                    {% endif %}
                                 {% endif %}
                             {% endif %}
 
                             {% if not r.reviewer.in_staff_group %}
-                                <br/>
-                                <em>{% trans 'grade:' %}</em> <strong>{{ r.answer_grade }}</strong>,
-                                <em class="red">{% trans 'review grade:' %} <strong>{{ r.review_grade }}</strong></em>
+                                {% if not r.workshop.is_reviewable %}
+                                    <li>
+                                        <br/>
+                                        <em>{% trans 'grade:' %}</em> <strong>{{ r.answer_grade }}</strong>,
+                                        <em class="red">{% trans 'review grade:' %} <strong>{{ r.review_grade }}</strong></em>
+                                    </li>
+                                {% endif %}
                             {% endif %}
                         {% endif %}
-                        </li>
                     {% endfor %}
                     </ul>
                     {% if user.get_profile not in a.reviewers %}
