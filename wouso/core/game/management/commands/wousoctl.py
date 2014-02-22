@@ -81,6 +81,7 @@ class Command(BaseCommand):
                 call_command('syncdb', interactive=False)
             else:
                 call_command('syncdb')
+            call_command('migrate')
 
             self.stdout.write('Setting up scoring...')
             setup_scoring()
