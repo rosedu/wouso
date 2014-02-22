@@ -1,0 +1,15 @@
+{% extends 'cpanel/index.html' %}
+{% load user %}
+
+{% block sectiontitle %}Role add{% endblock %}
+
+{% block sectioncontent %}
+
+<form method="post">
+<table>
+{{ form.as_table }}
+</table>
+<button type="submit">Add role</button>
+</form>
+
+{% endblock %}

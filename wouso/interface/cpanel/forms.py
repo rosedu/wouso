@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from wouso.core.qpool.models import Question, Answer, Schedule, Category, Tag
 from wouso.core.magic.models import Spell
 from wouso.core.scoring.models import Formula
@@ -151,3 +151,10 @@ class TagForm(forms.Form):
         super(TagForm, self).__init__(*args, **kwargs)
         self.fields['questions'] = forms.MultipleChoiceField(choices=[(q.pk, q.text) for q in Question.objects.all()])
         self.fields['tag'] = forms.ChoiceField(choices=[(t.pk, t.name) for t in Tag.objects.all().exclude(name__in=['qotd', 'quest', 'challenge'])])
+
+
+class RoleForm(forms.ModelForm):
+    class Meta:
+        model = Group
+
+

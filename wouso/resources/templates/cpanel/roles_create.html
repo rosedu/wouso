@@ -1,0 +1,15 @@
+{% extends 'cpanel/index.html' %}
+{% load user %}
+
+{% block sectiontitle %}Role Create: {{ role }}{% endblock %}
+
+{% block sectioncontent %}
+
+<h3>Rol</h3>
+
+<form action="" method="post">
+   {% player_input 'name' role.name %}
+   {% csrf_token %}
+   <button type="submit">Add</button>
+</form>
+{% endblock %}

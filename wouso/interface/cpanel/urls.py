@@ -65,6 +65,8 @@ upat = [
     url(r'^roles/$', 'wouso.interface.cpanel.views.roles', name='roles'),
     url(r'^roles/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.roles_update', name='roles_update'),
     url(r'^roles/(?P<id>\d+)/kick/player=(?P<player_id>\d+)/$', 'wouso.interface.cpanel.views.roles_update_kick', name='roles_update_kick'),
+    url(r'^roles_create$', 'wouso.interface.cpanel.views.roles_create',
+name='roles_create'),
 
     # misc
     url(r'^bell/$', 'wouso.interface.cpanel.views.the_bell', name='the_bell'),
