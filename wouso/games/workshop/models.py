@@ -31,6 +31,7 @@ ROOM_DEFAULT = 'eg306'
 
 MIN_HOUR, MAX_HOUR = 8, 20
 
+
 class Schedule(Tag):
     """ Schedule qpool tags per date intervals.
     TODO: move it to qpool
@@ -69,6 +70,7 @@ class Semigroup(PlayerGroup):
     day = models.IntegerField(choices=DAY_CHOICES)
     hour = models.IntegerField(choices=zip(range(MIN_HOUR, MAX_HOUR, 2), range(MIN_HOUR, MAX_HOUR, 2)))
     room = models.CharField(max_length=5, default=ROOM_DEFAULT, choices=ROOM_CHOICES, blank=True)
+    assistant = models.ForeignKey(Player, blank=True, null=True)
 
     @property
     def info(self):

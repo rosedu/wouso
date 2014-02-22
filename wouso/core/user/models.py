@@ -41,6 +41,7 @@ class Race(models.Model):
     def __unicode__(self):
         return self.name if not self.title else self.title
 
+
 class PlayerGroup(models.Model):
     """ Group players together """
     # The group owner. If null, it belongs to the core game.
