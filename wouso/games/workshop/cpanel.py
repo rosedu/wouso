@@ -17,7 +17,12 @@ class SCForm(forms.ModelForm):
 class AGForm(forms.ModelForm):
     class Meta:
         model = Semigroup
-        fields = ('name', 'day', 'hour', 'room')
+        fields = ('name', 'day', 'hour', 'room', 'assistant')
+
+    def __init__(self, **kwargs):
+        super(AGForm, self).__init__(**kwargs)
+        self.fields['assistant'].queryset = Player.get_by_permission('change_semigroup')
+
 
 class WAForm(forms.ModelForm):
     class Meta:

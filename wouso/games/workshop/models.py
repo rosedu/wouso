@@ -377,6 +377,10 @@ class WorkshopGame(Game):
         super(WorkshopGame, self).__init__(*args, **kwargs)
 
     @classmethod
+    def get_staff_and_permissions(cls):
+        return [{'name': 'Workshop Staff', 'permissions': ['change_semigroup']}]
+
+    @classmethod
     def default_room(cls):
         return ROOM_DEFAULT
 

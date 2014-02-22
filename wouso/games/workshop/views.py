@@ -5,6 +5,7 @@ from django.template.context import RequestContext
 from django.utils.translation import ugettext as _
 from models import WorkshopGame, Semigroup, Workshop, Review
 
+
 @login_required
 def index(request, extra_context=None):
     player = request.user.get_profile()

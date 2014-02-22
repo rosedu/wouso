@@ -3,8 +3,8 @@ import logging
 from md5 import md5
 from datetime import datetime, timedelta
 from django.db import models
-from django.db.models import Sum
-from django.contrib.auth.models import User, Group
+from django.db.models import Sum, Q
+from django.contrib.auth.models import User, Permission
 from django.conf import settings
 from wouso.core.decorators import cached_method, drop_cache
 from wouso.core.game.models import Game
@@ -13,6 +13,7 @@ from wouso.core.god import God
 from wouso.core.magic.models import  Spell
 
 from .. import deprecated
+
 
 class Race(models.Model):
     """ Groups a large set of players together and it's used extensively for 'can_play' checks.
@@ -282,6 +283,13 @@ class Player(models.Model):
         users.sort(lambda b, a: quest_points(a) - quest_points(b))
         gods = users[:10]
         return gods
+
+    @classmethod
+    def get_by_permission(cls, permission):
+        perm = Permission.objects.get(codename=permission)
+        users = User.objects.filter(Q(groups__permissions=perm) |
+                                    Q(user_permissions=perm)).distinct()
+        return users
 
     @property
     def race_name(self):
