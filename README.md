@@ -75,7 +75,7 @@ repository.
         create user 'wouso'@'localhost' identified by 'some_pass';
         grant all privileges on wouso.* to 'wouso'@'localhost';
 
-    The approapriate database configuration in the `settings.py` file will then look like this:
+    The appropriate database configuration in the `settings.py` file will then look like this:
 
         DATABASES = {
             'default': {
