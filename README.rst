@@ -79,3 +79,11 @@ repository.
 7. Run the server::
 
     ./manage.py runserver
+
+
+Development best practices
+--------------------------
+
+After pulling new code from server, run migration:
+
+    ./manage.py migrate
