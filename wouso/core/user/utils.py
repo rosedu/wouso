@@ -1,7 +1,7 @@
 from django.contrib.auth.models import Group, Permission
 from wouso.core.config.models import Setting
-from models import Race
 from wouso.core.game import get_games
+from models import Race
 
 def setup_user_groups():
     # Assistants group, 'Staff'
@@ -15,7 +15,6 @@ def setup_user_groups():
     others.save()
     default_race = Setting.get('default_race')
     default_race.set_value(str(others.pk))
-
 
 def setup_staff_groups():
     for g in get_games():
