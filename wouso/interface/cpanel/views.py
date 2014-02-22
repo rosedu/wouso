@@ -37,7 +37,7 @@ from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.middleware.impersonation import ImpersonateMiddleware
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, \
-    AnswerForm, EditReportForm
+AnswerForm, EditReportForm, RoleForm
 from forms import FormulaForm, TagForm
 
 
@@ -988,6 +988,14 @@ class RolesView(ListView):
 
 
 roles = permission_required('superuser')(RolesView.as_view())
+
+
+class RoleAdd(CreateView):
+    template_name = 'cpanel/roles_add.html'
+    model = Group
+    form_class = RoleForm
+    
+roles_create = permission_required('superuser')(RoleAdd.as_view())
 
 
 @permission_required('superuser')
