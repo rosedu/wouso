@@ -35,10 +35,10 @@ $.urlParam = function(name, url){
     }
     var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(url);
     if (!results) {
-        return 0;
+        return 1;
     }
 
-    return results[1] || 0;
+    return results[1] || 1;
 }
 
 /**
