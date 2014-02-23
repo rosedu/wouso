@@ -1,9 +1,6 @@
 # World of USO
 
-World of USO is a quiz game framework. It has been used since 2007 as a
-support game for the Introduction to Operating Systems class (USO) by
-1st year students at the Faculty of Automatic Control and Computers,
-University POLITEHNICA of Bucharest.
+World of USO is a quiz game framework. It has been used since 2007 as a support game for the Introduction to Operating Systems class (USO) by 1st year students at the Faculty of Automatic Control and Computers, University POLITEHNICA of Bucharest.
 
 
 ## Requirements
@@ -38,8 +35,7 @@ In case of MySQL support:
         echo '*' > sandbox/.gitignore
         . sandbox/bin/activate
 
-    `$PATH_TO_WOUSO_REPOSITORY` is the location of the clone of the WoUSO
-repository.
+    `$PATH_TO_WOUSO_REPOSITORY` is the location of the clone of the WoUSO repository.
 
 3. Install pip requirements while in the `$PATH_TO_WOUSO_REPOSITORY` folder:
 
@@ -90,6 +86,8 @@ repository.
 
         ./manage.py wousoctl --setup
 
+    You will be requested for an username and password for the administrative user. You will use those to first login into World of USO and use full priviliges for administrative actions.
+
 9. Run the server:
 
         ./manage.py runserver
@@ -98,27 +96,36 @@ repository.
 
         ./manage.py runserver 0.0.0.0:8000
 
+    You can now point your browser to an URL such as `http://localhost:8000` or `http://<IP>:8000/` (where `<IP>` is the IP address of the host where you installed World of USO).
+
 
 If you want to leave the virtualenv, run
 
     deactivate
 
 
-## Development best practices
+### Development Virtual Machine
+
+In case you run into issues when installing/configuring World of USO or you just want a quick development/testing environment, you can grab the [development VM](https://github.com/rosedu/wouso/wiki/Development-VM).
+
+
+### Using Vagrant
+
+You may create a development environment using [Vagrant](http://www.vagrantup.com/). Make sure Vagrant is installed, then run
+
+    vagrant up
+
+You can now find a deployed version of WoUSO at [http://localhost:8000](http://localhost:8000).
+
+All code is shared with the VM, which you can access using
+
+    vagrant ssh
+
+From there you can find the project files and interact with the django project as usual.
+
+
+## Development Best Practices
 
 After pulling new code from server, run migration:
 
     ./manage.py migrate
-
-
-## Hacking on WoUSO Using Vagrant
-
-Make sure you have [Vagrant](http://www.vagrantup.com/), then run
-`vagrant up`.
-
-You can now find a deployed version of WoUSO at
-[http://localhost:8000](http://localhost:8000).
-
-All the code is shared with the VM, which you can access with `vagrant ssh`.
-From there you can find the project files and interact with the django
-project as usual.
