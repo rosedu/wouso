@@ -37,7 +37,7 @@ def home(request, quiet=None, box=None):
     except PageNotAnInteger:
         # If page is not an integer, deliver first page.
         messages = paginator.page(1)
-    except EmptyPage: 
+    except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         messages = paginator.page(paginator.num_pages)
 
