@@ -29,17 +29,7 @@ function switchtab() {
     return false;
 }
 
-$.urlParam = function(name, url){
-    if(!url) {
-        url = window.location.href;
-    }
-    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(url);
-    if (!results) {
-        return 0;
-    }
 
-    return results[1] || 0;
-}
 
 /**
  * Executes when the user wants to load
@@ -62,7 +52,7 @@ function tabToURL(tab_name, url) {
     $("#" + tab_name).bind('custom',
         function() {
             $.ajax({
-                data: {'page':$.urlParam('page')},
+                data: {'page':1},
                 url: url,
                 success: function(data) {
                     $("#" + tab_name).html(data)
