@@ -26,5 +26,7 @@
   {% if w.is_reviewable %}
   <a class="button" onclick="return confirm('are you sure?');" href="{% url ws_mark_for_grading w.id %}">Mark for grading</a><br/>
   {% endif %}
+
+  <a class="button btn-danger" href="{% url ws_delete w.id %}">Delete workshop</a>
 {% endwith %}
 {% endblock %}

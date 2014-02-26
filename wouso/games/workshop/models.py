@@ -29,7 +29,7 @@ ROOM_CHOICES = (
 
 ROOM_DEFAULT = 'eg306'
 
-MIN_HOUR, MAX_HOUR = 8, 20
+MIN_HOUR, MAX_HOUR = 8, 22
 
 
 class Schedule(Tag):

@@ -359,6 +359,11 @@ def workshop_edit(request, workshop):
                         context_instance=RequestContext(request)
     )
 
+@staff_required
+def workshop_delete(request, workshop):
+    workshop = get_object_or_404(Workshop, pk=workshop)
+    workshop.delete()
+    return redirect('ws_workshops')
 
 @staff_required
 def workshop_start(request, workshop):
