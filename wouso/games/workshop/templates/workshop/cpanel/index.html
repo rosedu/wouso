@@ -25,20 +25,13 @@
         <div class="subgroups">
         {% block information %}
             {% if info %}
-        <p>
-        Current spot: {{ info.get_spot }}<br/>
-        Current group: {{ info.get_semigroups|join:", " }}<br/>
-        Current qpool: {{ info.get_question_pool.count }}<br/>
-        Default room: {{ info.default_room }}<br/>
-        </p>{% endif %}
-        {% if semigroups %}
-            <strong>Semigroups:</strong>
-            <ul>
-                {% for s in semigroups %}
-                <li>{{ s }} <a href="{% url ws_edit_group s.id %}">✍</a> <a href="{% url ws_gradebook s.id %}">grades</a></li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+            <p>
+            Current spot: {{ info.get_spot }}<br/>
+            Current group: {{ info.get_semigroups|join:", " }}<br/>
+            Current qpool: {{ info.get_question_pool.count }}<br/>
+            Default room: {{ info.default_room }}<br/>
+            </p>
+            {% endif %}
         {% endblock %}
         </div>
 
