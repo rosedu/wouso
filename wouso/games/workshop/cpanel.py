@@ -4,7 +4,8 @@ from django.template.context import RequestContext
 from django.views.generic import View, ListView, UpdateView, CreateView, \
     DetailView
 
-from models import WorkshopGame, Semigroup, Schedule, DAY_CHOICES, Answer
+from models import WorkshopGame, Semigroup, Schedule, DAY_CHOICES, Answer, \
+    MIN_HOUR, MAX_HOUR
 from wouso.core.decorators import staff_required
 from wouso.core.user.models import Player
 from wouso.games.workshop.models import Workshop, Assessment, Review
@@ -43,7 +44,7 @@ def workshop_home(request, **kwargs):
                         {'module': 'workshop',
                          'days': DAY_CHOICES,
                          'semigroups': Semigroup.objects.all().order_by('name'),
-                         'hours': range(8, 22, 2),
+                         'hours': range(MIN_HOUR, MAX_HOUR + 2, 2),
                          'info': WorkshopGame},
                         context_instance=RequestContext(request)
     )
