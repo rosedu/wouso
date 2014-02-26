@@ -39,7 +39,10 @@
           <td>{{ s.name }}</td>
           <td>{{ s.players.count }}</td>
           <td>{{ s.info }}, {{ s.assistant }}</td>
-          <td><a href="{% url ws_gradebook semigroup=s.pk %}">Details</a></td>
+          <td>
+            <a href="{% url ws_gradebook semigroup=s.pk %}">Details</a>
+            <a href="{% url ws_edit_group semigroup=s.pk %}">Edit</a>
+          </td>
         </tr>
         {% endfor %}
       </tbody>
