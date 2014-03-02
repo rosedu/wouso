@@ -14,20 +14,6 @@ function reload_header() {
     })
 }
 
-/* reload activity */
-function reload_activity() {
-    $.ajax({
-        url: url_base + '/ajax/do/activity/',
-        success: function(data) {
-            $('#wall').html(data);
-        },
-        error: function(data) {
-            /* pass */
-        }
-    })
-}
-
-
 $(document).ready(function (){
     /* button links */
     $('.ajaxify').bind('click', function () {

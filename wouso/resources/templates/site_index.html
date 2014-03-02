@@ -3,11 +3,6 @@
 {% load artifacts %}
 {% load i18n %}
 {% block scripts %}
-<script type="text/javascript" language="JavaScript">
-    $(document).ready(function (){
-        $(document).everyTime(15000, reload_activity);
-    });
-</script>
 {% endblock %}
 {% block content %}
     {% if is_homepage %}
