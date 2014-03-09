@@ -7,11 +7,11 @@
 
 <ul>
     {% for r in races %}
-    <li>{{ r }} {% if r.can_play %}[can play]{% endif %}<a href="{% url admin:user_race_change r.id %}">✍</a>
+    <li>{{ r }} {% if r.can_play %}[can play]{% endif %}<a href="{% url races_update r.id %}">✍</a>
         <ul>
             {% for g in r.children %}
             <li>
-                {{ g }} <a href="{% url admin:user_playergroup_change g.id %}">✍</a>
+                {{ g }} <a href="{% url group_update g.id %}">✍</a>
                 <a href="{% url system_message_group g.id %}">Message</a>
             </li>
             {% endfor %}
@@ -22,7 +22,7 @@
       <ul>
         {% for g in orphan_groups %}
           <li>
-              {{ g }} <a href="{% url admin:user_playergroup_change g.id %}">✍</a>
+              {{ g }} <a href="{% url group_update g.id %}">✍</a>
               <a href="{% url system_message_group g.id %}">Message</a>
           </li>
         {% endfor %}
