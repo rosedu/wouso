@@ -306,7 +306,7 @@ class CpanelViewsTest(WousoTest):
         r3 = Race.objects.create(name='Race_test_3', can_play=True)
         PlayerGroup.objects.create(name='PlayerGroup_test_1', parent=r1)
         PlayerGroup.objects.create(name='PlayerGroup_test_2', parent=None)
-	PlayerGroup.objects.create(name='PlayerGroup_test_3', parent=r3)
+        PlayerGroup.objects.create(name='PlayerGroup_test_3', parent=r3)
         r3.delete()
         response = self.client.get(reverse('races_groups'))
         self.assertEqual(response.status_code, 200)
