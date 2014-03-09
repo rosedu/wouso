@@ -161,6 +161,10 @@ class RoleForm(forms.ModelForm):
         model = Group
 
 
+class UpdateRaceForm(forms.ModelForm):
+    class Meta:
+        model = Race
+        exclude = ['artifacts']
 
 
 class RaceForm(forms.ModelForm):
@@ -170,6 +174,11 @@ class RaceForm(forms.ModelForm):
 
 
 class PlayerGroupForm(forms.ModelForm):
+    class Meta:
+        model = PlayerGroup
+        exclude = ['artifacts', 'owner']
+
+class UpdatePlayerGroupForm(forms.ModelForm):
     class Meta:
         model = PlayerGroup
         exclude = ['artifacts', 'owner']
