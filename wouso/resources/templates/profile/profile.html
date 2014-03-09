@@ -96,7 +96,6 @@
     <div class="actions">
         <span class="button-list">Admin:</span>
         <a class="button" href="{% url specialquest_manage profile.id %}">Special quest</a>
-        <a class="button" href="{% url challenge_stats profile.id %}">{% trans 'Challenges' %}</a>
         <a class="button button-min" href="{% url admin:auth_user_change profile.user.id %}">✍</a>
         <a class="button" href="{% url impersonate profile.id %}">Impersonate</a>
     </div>
