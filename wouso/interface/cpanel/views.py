@@ -37,7 +37,7 @@ from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.middleware.impersonation import ImpersonateMiddleware
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, \
-    AnswerForm, EditReportForm, RaceForm, PlayerGroupForm, RoleForm
+    AnswerForm, EditReportForm, RaceForm, UpdateRaceForm, PlayerGroupForm, UpdatePlayerGroupForm, RoleForm
 from forms import FormulaForm, TagForm
 
 
@@ -993,6 +993,13 @@ class RacesAdd(CreateView):
     def get_success_url(self):
         return reverse('races_groups')
 
+class RacesUpdate(UpdateView):
+    model = Race
+    template_name = 'cpanel/races/update.html'
+    form_class = UpdateRaceForm
+
+    def get_success_url(self):
+        return reverse('races_groups')
 
 class GroupsAdd(CreateView):
 
@@ -1003,6 +1010,17 @@ class GroupsAdd(CreateView):
     def get_success_url(self):
         return reverse('races_groups')
 
+class GroupsUpdate(UpdateView):
+    model = PlayerGroup
+    template_name = 'cpanel/races/group_update.html'
+    form_class = UpdatePlayerGroupForm
+
+    def get_success_url(self):
+        return reverse('races_groups')
+
+races_update = permission_required('config.change_setting')(
+    RacesUpdate.as_view()
+)
 
 races_groups = permission_required('config.change_setting')(
     RacesGroupsView.as_view()
@@ -1012,6 +1030,10 @@ races_add = permission_required('config.change_setting')(
 )
 group_add = permission_required('config.change_setting')(
     GroupsAdd.as_view()
+)
+
+group_update = permission_required('config.change_settings')(
+    GroupsUpdate.as_view()
 )
 
 
