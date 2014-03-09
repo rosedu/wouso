@@ -294,13 +294,20 @@ class CpanelViewsTest(WousoTest):
         self.assertContains(response, 'This field is required')
 
     def test_races_groups_view(self):
+        """ Test adds races and groups and verifies the
+        following situations: 
+        - any added race is displayed
+        - a group with no parent is displayed
+        - when a race is deleted, all contained groups 
+        are also deleted
+        """
         r1 = Race.objects.create(name='Race_test_1', can_play=True)
         r2 = Race.objects.create(name='Race_test_2', can_play=False)
-	r3 = Race.objects.create(name='Race_test_3', can_play=True)
+        r3 = Race.objects.create(name='Race_test_3', can_play=True)
         PlayerGroup.objects.create(name='PlayerGroup_test_1', parent=r1)
         PlayerGroup.objects.create(name='PlayerGroup_test_2', parent=None)
 	PlayerGroup.objects.create(name='PlayerGroup_test_3', parent=r3)
-	r3.delete()
+        r3.delete()
         response = self.client.get(reverse('races_groups'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Races and groups')
@@ -308,8 +315,8 @@ class CpanelViewsTest(WousoTest):
         self.assertContains(response, 'Race_test_2')
         self.assertContains(response, 'PlayerGroup_test_1')
         self.assertContains(response, 'PlayerGroup_test_2')
-	self.assertNotContains(response, 'Race_test_3')
-	self.assertNotContains(response, 'PlayerGroup_test_3')
+        self.assertNotContains(response, 'Race_test_3')
+        self.assertNotContains(response, 'PlayerGroup_test_3')
 
     def test_roles_view(self):
         user = User.objects.create(username='testuser1', password='test')
