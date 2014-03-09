@@ -304,7 +304,7 @@ class CpanelViewsTest(WousoTest):
         self.assertContains(response, 'Race_test_1')
         self.assertContains(response, 'Race_test_2')
         self.assertContains(response, 'PlayerGroup_test_1')
-        self.assertNotContains(response, 'PlayerGroup_test_2')
+        self.assertContains(response, 'PlayerGroup_test_2')
 
     def test_roles_view(self):
         user = User.objects.create(username='testuser1', password='test')
