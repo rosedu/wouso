@@ -32,16 +32,6 @@ class BazaarView(ListView):
         player = self.request.user.get_profile() if self.request.user.is_authenticated() else None
         spells = Spell.objects.all().order_by('-available', 'level_required')
 
-        # Disable exchange for real
-        exchange_disabled = BoolSetting.get('disable-Bazaar-Exchange').get_value()
-        try:
-            rate = scoring.calculate('gold-points-rate', gold=1)['points']
-            rate2 = round(1/scoring.calculate('points-gold-rate', points=1)['gold'])
-        except InvalidFormula:
-            rate, rate2 = 1, 1
-        rate_text = _('Rate: 1 gold = {rate} points, {rate2} points = 1 gold').format(rate=rate,
-                                                                                      rate2=rate2)
-
         cast_spells = PlayerSpellDue.objects.filter(source=player).all()
         unseen_count = cast_spells.filter(seen=False).count()
 
@@ -52,8 +42,7 @@ class BazaarView(ListView):
                         'rate': rate, 'rate_text': rate_text,
                         'cast': cast_spells,
                         'unseen_count': unseen_count,
-                        'theowner': player,
-                        'exchange_disabled': exchange_disabled})
+                        'theowner': player})
         return context
 
 bazaar = BazaarView.as_view()
