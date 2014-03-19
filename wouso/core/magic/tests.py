@@ -234,24 +234,11 @@ class TestMagicViews(WousoTest):
         response = self.c.get(reverse('bazaar_home'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Bazaar')
-        self.assertContains(response, 'Exchange')
         self.assertContains(response, 'Rate')
         self.assertContains(response, 'testuser1')
         self.assertContains(response, 'testuser2')
         self.assertContains(response, 'Spell no. 1')
         self.assertContains(response, 'Spell no. 2')
-
-    def test_bazaar_exchange_success_message(self):
-        data = {'points': 10}
-        response = self.c.post(reverse('bazaar_exchange'), data)
-        self.assertContains(response, _('Converted successfully'))
-        
-    def test_bazaar_exchange_error_message(self):
-        data = {'points': 1000}
-        response = self.c.post(reverse('bazaar_exchange'), data)
-        self.assertContains(response, _('Insufficient points'))
-        response = self.c.get(reverse('bazaar_exchange'))
-        self.assertContains(response, _('Expected post'))
 
     def test_magic_cast_error_message(self):
         data = {'days': 10, 'spell': 1}
