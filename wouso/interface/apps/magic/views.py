@@ -58,56 +58,6 @@ class BazaarView(ListView):
 
 bazaar = BazaarView.as_view()
 
-@login_required
-def bazaar_exchange(request):
-    gold_rate = scoring.calculate('gold-points-rate', gold=1)['points']
-    points_rate = scoring.calculate('points-gold-rate', points=1)['gold']
-
-    player = request.user.get_profile()
-    message, error = '', ''
-    if BoolSetting.get('disable-Bazaar-Exchange').get_value():
-        error = _("Exchange is disabled")
-    elif request.method == 'POST':
-        try:
-            points = float(request.POST.get('points', 0))
-            gold = round(float(request.POST.get('gold', 0)))
-        except:
-            error = _('Invalid amounts')
-        else:
-            if points != 0:
-                gold = points_rate * points
-                if gold > 0:
-                    if player.points < points:
-                        error = _('Insufficient points')
-                    else:
-                        points = round(gold) / points_rate
-                        scoring.score(player, None, 'points-gold-rate', points=points)
-                        message = _('Converted successfully')
-                else:
-                    error = _('Insufficient points')
-            # other way around
-            elif gold != 0:
-                points = gold_rate * gold
-                if player.coins['gold'] < gold:
-                    error = _('Insufficient gold')
-                else:
-                    scoring.score(player, None, 'gold-points-rate', gold=gold)
-                    message = _('Converted successfully')
-            else:
-                error = _('Unknown action')
-    else:
-        error = _('Expected post')
-
-    if error:
-        messages.error(request, error)
-    if message:
-        messages.success(request, message)
-
-    return render_to_response('magic/bazaar_buy.html',
-                {'tab': 'exchange'},
-                context_instance=RequestContext(request))
-
-@login_required
 def bazaar_buy(request, spell):
     spell = get_object_or_404(Spell, pk=spell)
 
