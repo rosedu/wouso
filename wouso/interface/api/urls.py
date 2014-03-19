@@ -46,7 +46,6 @@ urlpatterns += patterns('',
     url(r'^bazaar/$', Resource(handler=BazaarHandler, **ad)),
     url(r'^bazaar/inventory/$', Resource(handler=BazaarInventoryHandler, **ad)),
     url(r'^bazaar/buy/$', Resource(handler=BazaarBuy, **ad)),
-    url(r'^bazaar/exchange/(?P<coin>gold|points)/(?P<tocoin>gold|points)/$', Resource(handler=BazaarExchange, **ad)),
 
     url(r'^search/(?P<query>[^/]+)/$', Resource(handler=Search, **ad)),
     url(r'^messages/(?P<type>all|sent|recv)/$', Resource(handler=Messages, **ad)),
