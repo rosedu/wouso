@@ -46,6 +46,7 @@ class BazaarView(ListView):
 
 bazaar = BazaarView.as_view()
 
+@login_required
 def bazaar_buy(request, spell):
     spell = get_object_or_404(Spell, pk=spell)
 
