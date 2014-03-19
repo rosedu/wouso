@@ -39,7 +39,6 @@ class BazaarView(ListView):
         cast_spells.update(seen=True)
 
         context.update({'spells': spells,
-                        'rate': rate, 'rate_text': rate_text,
                         'cast': cast_spells,
                         'unseen_count': unseen_count,
                         'theowner': player})
