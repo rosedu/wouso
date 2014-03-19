@@ -234,7 +234,6 @@ class TestMagicViews(WousoTest):
         response = self.c.get(reverse('bazaar_home'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Bazaar')
-        self.assertContains(response, 'Rate')
         self.assertContains(response, 'testuser1')
         self.assertContains(response, 'testuser2')
         self.assertContains(response, 'Spell no. 1')
