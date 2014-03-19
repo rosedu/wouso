@@ -960,32 +960,6 @@ msgstr "Da"
 msgid "earned {artifact}"
 msgstr "a dobândit {artifact}"
 
-#: interface/apps/magic/views.py:29
-msgid "Rate: 1 gold = {rate} points, 1 gold = {rate2} points"
-msgstr "Rata cumpărare: 1 aur = {rate} puncte; vânzare: 1 aur = {rate2} puncte"
-
-#: interface/apps/magic/views.py:54
-msgid "Exchange is disabled"
-msgstr "Schimbul este dezactivat"
-
-#: interface/apps/magic/views.py:60
-msgid "Invalid amounts"
-msgstr "Cantități necorespunzătoare"
-
-#: interface/apps/magic/views.py:66
-#: interface/apps/magic/views.py:72
-msgid "Insufficient points"
-msgstr "Puncte insuficiente"
-
-#: interface/apps/magic/views.py:70
-#: interface/apps/magic/views.py:80
-msgid "Converted successfully"
-msgstr "Convertire realizată cu succes"
-
-#: interface/apps/magic/views.py:77
-msgid "Insufficient gold"
-msgstr "Aur insuficient"
-
 #: interface/apps/magic/views.py:82
 msgid "Unknown action"
 msgstr "Acțiune necunoscută"
@@ -993,10 +967,6 @@ msgstr "Acțiune necunoscută"
 #: interface/apps/magic/views.py:84
 msgid "Expected post"
 msgstr "Se aștepta formular POST"
-
-#: interface/apps/magic/views.py:98
-msgid "Insufficient gold amount"
-msgstr "Cantitate de aur insuficientă"
 
 #: interface/apps/magic/views.py:100
 msgid "Spell is not available"
@@ -1181,11 +1151,6 @@ msgstr "Niciun achievement primit."
 msgid "Players"
 msgstr "Jucători"
 
-#: resources/templates/magic/bazaar.html:19
-#: resources/templates/magic/bazaar.html:74
-#: resources/templates/magic/bazaar.html:82
-msgid "Exchange"
-msgstr "Schimb"
 
 #: resources/templates/magic/bazaar.html:21
 msgid "Summary"
@@ -1212,10 +1177,6 @@ msgstr "Nivel %(level)s necesar"
 #: resources/templates/magic/bazaar.html:61
 msgid "Nothing"
 msgstr "Nimic"
-
-#: resources/templates/magic/bazaar.html:70
-msgid "Exchange points for gold or gold for points"
-msgstr "Schimbă punctele pe aur sau aurul pe puncte"
 
 #: resources/templates/magic/bazaar.html:72
 #: resources/templates/profile/groups.html:21
