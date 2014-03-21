@@ -142,6 +142,25 @@ class SpellTestCase(WousoTest):
 
         self.assertFalse(PlayerSpellDue.get_expired(datetime.today()))
 
+    def test_dispell(self):
+        """
+         Test if dispell works on a player
+        """
+        player = self._get_player()
+
+        pos_spell = Spell.objects.create(name='positive-test-spell', available=True, price=10, type='p')
+        neg_spell = Spell.objects.create(name='negative-test-spell', available=True, price=10, type='n')
+        dispell = Spell.objects.create(name='dispell', available=True, price=20, type='o')
+
+        player.magic.add_spell(dispell)
+
+        obs = PlayerSpellDue.objects.create(player=player, source=player, spell=pos_spell, due=datetime.now() + timedelta(days=1))
+        obs = PlayerSpellDue.objects.create(player=player, source=player, spell=neg_spell, due=datetime.now() + timedelta(days=1))
+        self.assertTrue(player.magic.spells) # Check if there is an active spell on player
+
+        player.magic.cast_spell(dispell, player, datetime.now())
+        self.assertFalse(player.magic.spells) # No spells should be active on player after dispell
+
     def test_cure(self):
         """
          Test if cure works on a player
