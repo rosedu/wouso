@@ -24,10 +24,6 @@
         <a id="head-cpanel" href="{% url dashboard %}">CPanel</a>
         {% endif %}
 
-        {% if not config_disable_chat %}
-        <a id="head-chat" href="{% url chat_home %}">Chat</a>
-        {% endif %}
-
         <a id="head-logout" href="{% url logout_view %}" onclick="remove_storage()">{% trans "Logout" %} &raquo;</a>
     {% else %}
     {% trans 'Anonimous' %}, <a href="{% url login_view %}">{% trans "Login" %} &raquo;</a>
