@@ -110,6 +110,4 @@ except ImportError:
 else:
     urlpatterns += patterns('',
         url('', include('django_socketio.urls')),
-        # Chat
-        url(r'^chat/', include('wouso.interface.chat.urls')),
     )
