@@ -1,9 +1,0 @@
-{# Loaded only when chat is enabled. Does not have access to requestcontext!!! #}
-
-{% load socketio_tags %}
-{% socketio %}
-<script type="text/javascript" src="{{ basepath }}/static/js/chatbox.js"></script>
-<script type="text/javascript">
-    var chat_host = '{{ chat_host }}';
-    var chat_port='{{ chat_port }}';
-</script>
