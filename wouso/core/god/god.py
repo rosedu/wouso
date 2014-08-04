@@ -123,7 +123,7 @@ class DefaultGod:
     def get_artifact_for_modifier(self, modifier, player):
         """ Return the race-specific artifact object for given modifier """
         try:
-            return Artifact.objects.get(group=None, name=modifier)
+            return Artifact.objects.get(name=modifier)
         except Artifact.DoesNotExist:
             return None
 
