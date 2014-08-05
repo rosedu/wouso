@@ -48,7 +48,7 @@ def context(request):
             settings_dict['config_theme'] = theme
             set_theme(theme)
     else:
-        set_theme(settings_dict['config_theme'])
+        set_theme(settings_dict.get('config_theme', None))
 
     # shorthand user.get_profile
     settings_dict['player'] = request.user.get_profile() if request.user.is_authenticated() else None
