@@ -670,8 +670,8 @@ class DefaultChallengeManager(ChallengeManager):
             #Check for spell evade
             if self.challenge.user_lost.user.magic.has_modifier('challenge-evade'):
                 random.seed()
-                if random.random() < 0.33:
-                    #He's lucky,no penalty,return warranty
+                if random.random() < 0.20:
+                    #He's lucky, no penalty, return warranty
                     scoring.score(self.challenge.user_lost.user, ChallengeGame, 'chall-warranty-return', external_id=self.challenge.id)
                     Message.send(sender=None, receiver=self.challenge.user_lost.user, subject="Challenge evaded", text="You have just evaded losing points in a challenge")
 
