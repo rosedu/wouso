@@ -29,8 +29,7 @@ class Switchboard(ConfigGroup):
 
     def props(self):
         p = []
-        for a in ('Qproposal', 'Top', 'Magic', 'Bazaar', 'Bazaar-Exchange', 'Contactbox', 'Statistics',
-                  'Challenge-Top', 'Top-Pyramid'):
+        for a in ('Qproposal', 'Top', 'Magic', 'Bazaar', 'Bazaar-Exchange', 'Statistics', 'Challenge-Top', 'Top-Pyramid'):
             p.append(BoolSetting.get('disable-%s' % a))
 
         p.append(BoolSetting.get('disable_login'))

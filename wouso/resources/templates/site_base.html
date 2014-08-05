@@ -18,16 +18,12 @@
         {% endif %}
         {% block css %}{% endblock %}
     </style>
-    <link  rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/contactbox.css">
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery.autocomplete.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/format.item.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery.timers.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/ajaxify.js"></script>
-    {% if not config_disable_contactbox %}
-    <script type="text/javascript" src="{{ basepath }}/static/js/contactbox.js"></script>
-    {% endif %}
 
     {% if config_enable_header_autoreload %}
     <script type="text/javascript">
@@ -42,10 +38,6 @@
 </HEAD>
 
 <BODY>
-	{% block contactbox %}
-		{% include 'interface/contactbox.html' %}
-	{% endblock %}
-
     <div id="container">
 	{% block header %}
     <div id="header">

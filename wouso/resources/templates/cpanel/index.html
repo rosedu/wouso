@@ -8,14 +8,12 @@
     <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <TITLE>{% block title %}WoUSO Control Panel{% endblock %}</TITLE>
     <LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/style.css" />
-    <link  rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/contactbox.css">
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery.autocomplete.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/format.item.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery.timers.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/ajaxify.js"></script>
-    <script type="text/javascript" src="{{ basepath }}/static/js/contactbox.js"></script>
     <script type="text/javascript">
         var url_base = '{{ basepath }}';
     </script>
@@ -48,9 +46,6 @@
 </HEAD>
 
 <body>
-{% block contactbox %}
-{% include 'interface/contactbox.html' %}
-{% endblock %}
 
 <div id="container">
     {% block header %}
