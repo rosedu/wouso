@@ -11,6 +11,7 @@ from wouso.core.scoring.models import Coin, Formula
 from wouso.core.tests import WousoTest
 from wouso.core.user.models import Player
 from wouso.core.magic.models import Spell
+from wouso.games.challenge.models import ChallengeUser
 from wouso.interface.activity.models import Activity
 from models import *
 from manager import MagicManager
@@ -217,6 +218,29 @@ class SpellTestCase(WousoTest):
         player = Player.objects.get(pk=player.pk)
 
         self.assertEqual(player.points, 10)
+
+    def test_paralyze(self):
+        """
+         Test if Paralyze spell works
+        """
+
+        Formula.add('chall-warranty')
+
+        player = self._get_player()
+        chall_user = player.get_extension(ChallengeUser)
+
+        # Check if player can launch before spell is cast
+        self.assertTrue(chall_user.can_launch())
+
+        # Create and add spell to user
+        paralyze = Spell.objects.create(name='challenge-cannot-challenge', available=True, price=10, percents=100, type='n')
+        obs = PlayerSpellDue.objects.create(player=chall_user, source=chall_user, spell=paralyze, due=datetime.now() + timedelta(days=1))
+
+        # Check if player has the modifier
+        self.assertTrue(chall_user.magic.has_modifier('challenge-cannot-challenge'))
+
+        # Player should not be able to launch challenge with Paralyze on
+        self.assertFalse(chall_user.can_launch())
 
 
 class TemplatetagsTest(WousoTest):

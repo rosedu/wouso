@@ -37,11 +37,11 @@ class ChallengeUser(Player):
         today_start = datetime.combine(now, time())
         today_end = datetime.combine(now, time(23, 59, 59))
         logging.info("today_start: %s, today_end: %s, self.last_launched: %s" % (today_start, today_end, self.last_launched))
+        if self.magic.has_modifier('challenge-cannot-challenge'):
+            return False
         if not self.last_launched:
             return True
         if today_start <= self.last_launched <= today_end:
-            return False
-        if self.magic.has_modifier('challenge-cannot-challenge'):
             return False
         return True
 
