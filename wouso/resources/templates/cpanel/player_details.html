@@ -9,6 +9,7 @@
 <h2>Player: {{ player.full_name }}</h2>
 
 <div class="actions">
+    <a class="button" href="{% url artifact_set player.id %}">Artifacts</a>
     <a class="button" href="{% url group_set player.id %}">Groups</a>
     <a class="button" href="{% url bonus player.id %}">Bonus</a>
     <a class="button" href="{% url impersonate player.id %}">Impersonate...</a>
