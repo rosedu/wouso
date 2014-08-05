@@ -29,7 +29,7 @@ class Switchboard(ConfigGroup):
 
     def props(self):
         p = []
-        for a in ('Qproposal', 'Top', 'Magic', 'Chat', 'Private-Chat', 'Bazaar', 'Bazaar-Exchange', 'Contactbox', 'Chat-Archive', 'Statistics',
+        for a in ('Qproposal', 'Top', 'Magic', 'Bazaar', 'Bazaar-Exchange', 'Contactbox', 'Statistics',
                   'Challenge-Top', 'Top-Pyramid'):
             p.append(BoolSetting.get('disable-%s' % a))
 

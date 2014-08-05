@@ -2,7 +2,6 @@
 {% load ui %}
 {% load artifacts %}
 {% load i18n %}
-{% load chat %}
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
                       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -19,7 +18,6 @@
         {% endif %}
         {% block css %}{% endblock %}
     </style>
-    <link  rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/chatbox.css">
     <link  rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/contactbox.css">
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery-ui.min.js"></script>
@@ -30,10 +28,6 @@
     {% if not config_disable_contactbox %}
     <script type="text/javascript" src="{{ basepath }}/static/js/contactbox.js"></script>
     {% endif %}
-    {% chat_scripts %}
-    <script type="text/javascript">
-        var url_base = '{{ basepath }}';
-    </script>
 
     {% if config_enable_header_autoreload %}
     <script type="text/javascript">
@@ -120,7 +114,6 @@
     </div>
 
     <div id="PrivatebarUsers"></div>
-    <div id="PrivateChatBoxes"></div>
 
     {% autoescape off %}
     {{ config_hidden_footer }}

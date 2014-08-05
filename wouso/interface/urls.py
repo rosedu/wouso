@@ -64,7 +64,7 @@ urlpatterns = patterns('',
 
     # Games
     url(r'^g/', include('wouso.games.urls')),
-    
+
     # The future
     url(r'^ui/', 'wouso.interface.views.ui', name='ui'),
 
@@ -76,7 +76,7 @@ urlpatterns = patterns('',
     # Static: not in a real deployment
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
-    
+
     url('', include('social.apps.django_app.urls', namespace='social')),
 )
 
@@ -110,6 +110,4 @@ except ImportError:
 else:
     urlpatterns += patterns('',
         url('', include('django_socketio.urls')),
-        # Chat
-        url(r'^chat/', include('wouso.interface.chat.urls')),
     )
