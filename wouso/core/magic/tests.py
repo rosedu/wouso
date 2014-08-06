@@ -16,6 +16,7 @@ from wouso.interface.activity.models import Activity
 from models import *
 from manager import MagicManager
 
+
 class ManagerTestCase(WousoTest):
     """ Test the core.magic.manager.Manager helper.
     """
@@ -223,7 +224,6 @@ class SpellTestCase(WousoTest):
         """
          Test if Paralyze spell works
         """
-
         Formula.add('chall-warranty')
 
         player = self._get_player()
@@ -272,6 +272,37 @@ class SpellTestCase(WousoTest):
         # Losing player should have initial points + chall-lost points
         self.assertEqual(player.points, 10 + points)
 
+    def test_charge(self):
+        """
+         Test for Charge spell
+        """
+        initial_points = 10
+
+        player = self._get_player()
+        player2 = self._get_player(2)
+        chall_user = player.get_extension(ChallengeUser)
+
+        scoring.setup_scoring()
+        Coin.add('points')
+        scoring.score_simple(chall_user, 'points', initial_points)
+        self.assertEqual(player.points, initial_points)
+
+        # Points won before Charge is applied
+        chall = Challenge.create(user_from=chall_user, user_to=player2, ignore_questions=True)
+        chall.set_won_by_player(chall_user)
+        points_no_charge = player.points
+
+        # Apply Charge
+        charge = Spell.objects.create(name='challenge-affect-scoring', available=True, price=10, percents=33, type='p')
+        obs = PlayerSpellDue.objects.create(player=chall_user, source=chall_user, spell=charge, due=datetime.now() + timedelta(days=1))
+        self.assertTrue(chall_user.magic.has_modifier('challenge-affect-scoring'))
+
+        player.points = initial_points
+        chall = Challenge.create(user_from=chall_user, user_to=player2, ignore_questions=True)
+        chall.set_won_by_player(chall_user)
+
+        # Player should have 33% more points with charge applied
+        self.assertEqual(player.points, points_no_charge + 0.33 * (points_no_charge - initial_points))
 
 class TemplatetagsTest(WousoTest):
     def test_spell_due(self):
