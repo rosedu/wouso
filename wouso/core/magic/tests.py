@@ -11,7 +11,7 @@ from wouso.core.scoring.models import Coin, Formula
 from wouso.core.tests import WousoTest
 from wouso.core.user.models import Player
 from wouso.core.magic.models import Spell
-from wouso.games.challenge.models import ChallengeUser
+from wouso.games.challenge.models import Challenge, ChallengeUser
 from wouso.interface.activity.models import Activity
 from models import *
 from manager import MagicManager
@@ -241,6 +241,38 @@ class SpellTestCase(WousoTest):
 
         # Player should not be able to launch challenge with Paralyze on
         self.assertFalse(chall_user.can_launch())
+
+    def test_charge(self):
+        """
+         Test for Charge spell
+        """
+        initial_points = 10
+
+        player = self._get_player()
+        player2 = self._get_player(2)
+        chall_user = player.get_extension(ChallengeUser)
+
+        scoring.setup_scoring()
+        Coin.add('points')
+        scoring.score_simple(chall_user, 'points', initial_points)
+        self.assertEqual(player.points, initial_points)
+
+        # Points won before Charge is applied
+        chall = Challenge.create(user_from=chall_user, user_to=player2, ignore_questions=True)
+        chall.set_won_by_player(chall_user)
+        points_no_charge = player.points
+
+        # Apply Charge
+        charge = Spell.objects.create(name='challenge-affect-scoring', available=True, price=10, percents=33, type='p')
+        obs = PlayerSpellDue.objects.create(player=chall_user, source=chall_user, spell=charge, due=datetime.now() + timedelta(days=1))
+        self.assertTrue(chall_user.magic.has_modifier('challenge-affect-scoring'))
+
+        player.points = initial_points
+        chall = Challenge.create(user_from=chall_user, user_to=player2, ignore_questions=True)
+        chall.set_won_by_player(chall_user)
+
+        # Player should have 33% more points with charge applied
+        self.assertEqual(player.points, points_no_charge + 0.33 * (points_no_charge - initial_points))
 
 
 class TemplatetagsTest(WousoTest):
