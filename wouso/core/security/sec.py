@@ -4,6 +4,7 @@ from wouso.core.common import App
 from wouso.core.scoring.models import Coin, Formula
 from wouso.core.scoring import score
 
+
 class SecurityInspector:
     """ Global check function dispatcher """
     @classmethod
@@ -83,11 +84,11 @@ class Security(App):
         rules = filter(lambda x : x[2]==action, cls.SECURITY_RULES)
         for rule in rules:
             # check if rule is not disabled
-            if not BoolSetting.objects.get(pk__startswith='disable-%s' % rule[0]).get_value():
+            if BoolSetting.objects.filter(pk__startswith='disable-%s' % rule[0]) == []:
                 (guilty, player, external_id) = SecurityInspector.check(rule[0], **kwargs)
                 if guilty:
-                    formula = Formula.get('%s-infraction' % rule[0], 'general-infraction')
-                    cls.penalise(player, formula, external_id)
+                   formula = Formula.get('%s-infraction' % rule[0], 'general-infraction')
+                   cls.penalise(player, formula, external_id)
 
 def do_security_check(sender, **kwargs):
     Security.activity_handler(sender, **kwargs)
