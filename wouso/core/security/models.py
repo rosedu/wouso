@@ -33,6 +33,7 @@ class Report(models.Model):
         self.save()
     def __unicode__(self):
         return self.user_from.__unicode__() + " on " + self.user_to.__unicode__() + ":" + self.text[:20] 
+
 def add_report(user_from, user_to, text):
     report = Report(user_from=user_from.get_profile().get_extension(Player), user_to=user_to.get_profile().get_extension(Player), text=text, timestamp=datetime.now())
     report.save()
