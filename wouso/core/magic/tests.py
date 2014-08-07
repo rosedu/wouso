@@ -11,7 +11,7 @@ from wouso.core.scoring.models import Coin, Formula
 from wouso.core.tests import WousoTest
 from wouso.core.user.models import Player
 from wouso.core.magic.models import Spell
-from wouso.games.challenge.models import ChallengeUser
+from wouso.games.challenge.models import Challenge, ChallengeUser, ChallengeGame
 from wouso.interface.activity.models import Activity
 from models import *
 from manager import MagicManager
@@ -241,6 +241,36 @@ class SpellTestCase(WousoTest):
 
         # Player should not be able to launch challenge with Paralyze on
         self.assertFalse(chall_user.can_launch())
+
+    def test_evade(self):
+        """
+         Test for Evade spell
+        """
+        player = self._get_player()
+        player2 = self._get_player(2)
+
+        scoring.setup_scoring()
+        Coin.add('points')
+        scoring.score_simple(player, 'points', 10)
+        self.assertEqual(player.points, 10)
+
+        # Create and apply evade
+        evade = Spell.objects.create(name='challenge-evade', available=True, price=25, percents=100, type='p')
+        obs = PlayerSpellDue.objects.create(player=player, source=player, spell=evade, due=datetime.now() + timedelta(days=1))
+        self.assertTrue(player.magic.has_modifier('challenge-evade'))
+
+        # Create challenge and make first player lose it
+        chall = Challenge.create(user_from=player2, user_to=player, ignore_questions=True)
+        chall.set_won_by_player(player2)
+
+        # Get 'chall-lost' definition. By default you still win 2 points when losing a challenge
+        formulas = ChallengeGame.get_formulas()
+        definition = formulas[1]['definition'] # this will be 'points=XX'
+        index = definition.find('=') + 1 # get position of '='
+        points = int(definition[index:]) # get XX (nr of points won when losing challenge)
+
+        # Losing player should have initial points + chall-lost points
+        self.assertEqual(player.points, 10 + points)
 
 
 class TemplatetagsTest(WousoTest):

@@ -613,7 +613,7 @@ class DefaultChallengeManager(ChallengeManager):
     def handle_result(self):
         if self.challenge.status == 'D':
             action_msg = "chall-draw"
-            signal_msg = ugettext_noop('draw result between {user_to} and {user_from}:\n{extra}')
+            signal_msg = ugettext_noop('draw result between {user_from} and {user_to}:\n{extra}')
             signals.addActivity.send(sender=None, user_from=self.challenge.user_to.user, \
                                      user_to=self.challenge.user_from.user, \
                                      message=signal_msg, \
