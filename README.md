@@ -76,6 +76,7 @@ In case of MySQL support:
         create database wouso default character set utf8 default collate utf8_general_ci;
         create user 'wouso'@'localhost' identified by 'some_pass';
         grant all privileges on wouso.* to 'wouso'@'localhost';
+        flush privileges;
 
     The appropriate database configuration in the `settings.py` file will then look like this:
 
