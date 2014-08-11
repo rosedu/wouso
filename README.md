@@ -67,7 +67,7 @@ In case of MySQL support:
 
     and edit the new file (`settings.py`). You may want to update the `DATABASES` setting (see next step).
 
-7. (optional) In case you want to use a MySQL database, you must have the MySQL server and client packages installed. MySQL support in Python is required you can use `pip`:
+7. (optional) In case you want to use a MySQL database, you must have the MySQL server and client packages installed. For MySQL support in Python you can use `pip`:
 
         pip install MySQL-python
 
