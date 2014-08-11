@@ -2,6 +2,8 @@ from django.conf.urls.defaults import *
 from wouso.interface.cpanel import get_cpanel_games
 
 upat = [
+    url(r'^player/(?P<id>\d+)/$', 'wouso.interface.profile.views.user_profile', name='player_profile'),
+
     url(r'^$', 'wouso.interface.cpanel.views.dashboard', name='dashboard'),
     url(r'^customization/$', 'wouso.interface.cpanel.views.customization', name='customization'),
     url(r'^display/$', 'wouso.interface.cpanel.views.display', name='cpanel_display'),
