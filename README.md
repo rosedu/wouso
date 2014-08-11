@@ -65,7 +65,7 @@ In case of MySQL support:
 
         cp settings.py.example settings.py
 
-    and edit the new file (`settings.py`). You may want to update the `DATABASES` setting.
+    and edit the new file (`settings.py`). You may want to update the `DATABASES` setting (see next step).
 
 7. (optional) In case you want to use a MySQL database, you must have the MySQL server and client packages installed. MySQL support in Python is required you can use `pip`:
 
