@@ -37,6 +37,14 @@ In case of MySQL support:
 
     `$PATH_TO_WOUSO_REPOSITORY` is the location of the clone of the WoUSO repository.
 
+    In case you do something wrong in the virtualenv, you may exit it using
+
+        deactivate
+
+    and you may then remove the `sandbox` folder:
+
+        rm -r sandbox
+
 3. Install pip requirements while in the `$PATH_TO_WOUSO_REPOSITORY` folder:
 
         pip install -r requirements-pip
