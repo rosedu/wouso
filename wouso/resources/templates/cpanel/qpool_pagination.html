@@ -1,3 +1,4 @@
+{% ifequal page.obj.num_pages 1 %}
 <div class="pagination">
     <span class="step-links">
         Page:
@@ -18,3 +19,4 @@
         {% endif %}
     </span>
 </div>
+{% endifequal %}
