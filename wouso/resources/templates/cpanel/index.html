@@ -64,9 +64,7 @@
                 {% if user.real_user %}
                    Impersonated by {{ user.real_user }} <a href="{% url impersonate_clear %}">clear</a>
                 {% endif %}
-                {{ user.get_profile }}
                 <a id="head-home" href="{% url homepage %}">Game</a>&nbsp;
-                <a id="head-cpanel" href="{% url dashboard %}">CPanel</a>&nbsp;
                 <a id="head-logout" href="{% url logout_view %}">{% trans "Logout" %} &raquo;</a>
             </div>
         </div>
@@ -74,8 +72,17 @@
     {% endblock %}
 
     <div class="spacer-search"></div>
+    <div class="cpanel-profile">
+        <a href="{% url player_profile player.id %}">
+            <img src="{% player_avatar player %}" class="avatar avatar-med float-right" />
+        </a>
 
-    <div id="sidebar">
+        <div class="cpanel-player-info">
+            <strong>{% player player %}</strong>
+        </div>
+    </div>
+<div>
+    <div id="sidebar" style="margin-top: -50px">
         {% block sidebar %}
             <div class="widget-top"></div>
             <div class="widget-middle">
@@ -98,7 +105,7 @@
                 <div class="widget-content">
                     <ul class="menu">
                         <li class="games"><a href="{% url games_home %}">Games</a></li>
-                        <li class="formulas"><a href={% url formulas %}>Formulas</a></li>
+                        <li class="formulas"><a href="{% url formulas %}">Formulas</a></li>
                         <li class="empty"></li>
                         {% cpanel_games %}
                     </ul>
@@ -134,12 +141,12 @@
             <div class="widget-bottom"></div>
             {% endblock %}
     </div>
-
+</div>
     <div id="content-cp">
         <div id="ajax-message">
             {% if messages %}
                 {% for message in messages %}
-                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                    <p>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
                 {% endfor %}
             {% endif %}
         </div>
@@ -223,6 +230,7 @@
     {% autoescape off %}
     {{ config_hidden_footer }}
     {% endautoescape %}
+    </div>
 </div>
 </body>
 </html>
