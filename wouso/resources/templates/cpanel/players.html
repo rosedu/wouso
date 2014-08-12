@@ -43,6 +43,8 @@
       <a class="button" href="{% url details_player p.pk %}">Details</a>
     </td>
 </tr>
+    {% empty %}
+        <td colspan="0" class="empty">No spells yet. Please use the Add new player button to add new players.</td>
 {% endfor %}
 </table>
 

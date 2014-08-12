@@ -26,6 +26,8 @@
             {% endif %}
         </td>
     </tr>
+    {% empty %}
+        <td colspan="0" class="empty">No challenges have been played yet.</td>
     {% endfor %}
 </table>
 {% else %}
