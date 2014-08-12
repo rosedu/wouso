@@ -907,14 +907,6 @@ manage_player = permission_required('config.change_setting')(
     ManagePlayerView.as_view())
 
 
-class DetailsPlayerView(DetailView):
-    template_name = 'cpanel/player_details.html'
-    model = User
-
-
-details_player = staff_required(DetailsPlayerView.as_view())
-
-
 @staff_required
 def infraction_history(request, user_id):
     user = get_object_or_404(User, pk=user_id)
@@ -1166,7 +1158,7 @@ def bonus(request, player_id):
                                  amount=amount, coin=coin,
                                  reason=form.cleaned_data['reason'])
                 messages.info(request, 'Successfully given bonus')
-            return redirect('details_player', pk=player.id)
+            return redirect('manage_player', pk=player.id)
     else:
         form = BonusForm()
 
@@ -1187,5 +1179,5 @@ def bonus(request, player_id):
 def fwd(request):
     if request.method == 'POST':
         player = get_object_or_404(Player, pk=request.POST.get('player'))
-        return redirect('details_player', pk=player.pk)
+        return redirect('manage_player', pk=player.pk)
     return redirect('all_players')
