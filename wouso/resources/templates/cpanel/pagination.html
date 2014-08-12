@@ -7,7 +7,7 @@
         {% endif %}
 
         {% for p in paginator.page_range %}
-            <li {% if p == page_obj.number %}class="active"{% endif %}><a href="?page={{ p }}">{{ p }}</a></li>
+            <li> {% if p == page_obj.number %}class="active"{% endif %}><a href="?page={{ p }}">{{ p }}</a></li>
         {% endfor %}
 
         {% if page_obj.has_next %}
