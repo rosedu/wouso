@@ -891,8 +891,8 @@ add_player = permission_required('config.change_setting')(
     AddPlayerView.as_view())
 
 
-class EditPlayerView(UpdateView):
-    template_name = 'cpanel/edit_player.html'
+class ManagePlayerView(UpdateView):
+    template_name = 'cpanel/manage_player.html'
     model = User
     form_class = UserForm
     success_url = reverse_lazy('all_players')
@@ -903,8 +903,8 @@ class EditPlayerView(UpdateView):
         return form
 
 
-edit_player = permission_required('config.change_setting')(
-    EditPlayerView.as_view())
+manage_player = permission_required('config.change_setting')(
+    ManagePlayerView.as_view())
 
 
 class DetailsPlayerView(DetailView):
