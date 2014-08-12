@@ -72,13 +72,16 @@
     {% endblock %}
 
     <div class="spacer-search"></div>
-    <div class="second">
-        <a href="{% url player_profile player.id %}"><img src="{% player_avatar player %}" class="avatar avatar-med float-right" /></a>
+    <div class="cpanel-profile">
+        <a href="{% url player_profile player.id %}">
+            <img src="{% player_avatar player %}" class="avatar avatar-med float-right" />
+        </a>
 
-        <div class="header-player-info">
+        <div class="cpanel-player-info">
             <strong>{% player player %}</strong>
         </div>
     </div>
+    <div class="container" style="  "></div>
 <div>
     <div id="sidebar" style="margin-top: -50px">
         {% block sidebar %}
