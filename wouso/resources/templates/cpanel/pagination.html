@@ -1,3 +1,4 @@
+{% ifequal page.obj.num_pages 1 %}
 <div class="pagination">
     <ul>
         {% if page_obj.has_previous %}
@@ -7,7 +8,7 @@
         {% endif %}
 
         {% for p in paginator.page_range %}
-            <li> {% if p == page_obj.number %}class="active"{% endif %}><a href="?page={{ p }}">{{ p }}</a></li>
+            <li {% if p == page_obj.number %}class="active"{% endif %}><a href="?page={{ p }}">{{ p }}</a></li>
         {% endfor %}
 
         {% if page_obj.has_next %}
@@ -17,3 +18,4 @@
         {% endif %}
     </ul>
 </div>
+{% endifequal %}
