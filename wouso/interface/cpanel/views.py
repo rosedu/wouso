@@ -1060,18 +1060,6 @@ def roles_update_kick(request, id, player_id):
     return redirect('roles_update', id=group.id)
 
 
-@staff_required
-def the_bell(request):
-    """
-    Press the bell: add an phony activity
-    """
-    player = request.user.get_profile()
-    message = ugettext_noop('pressed the bell')
-    addActivity.send(sender=None, user_from=player, game=None, message=message)
-
-    return redirect('dashboard')
-
-
 class ReportsView(ListView):
     template_name = 'cpanel/reports.html'
     context_object_name = 'reports'
