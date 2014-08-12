@@ -123,6 +123,9 @@ class AddTagForm(forms.ModelForm):
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
+        widgets = {
+            'password': forms.PasswordInput(),
+        }
         exclude = ['last_login', 'date_joined', 'groups', 'user_permissions',
                    'is_staff', 'is_superuser']
 
