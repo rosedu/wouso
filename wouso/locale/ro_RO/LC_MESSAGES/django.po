@@ -1032,10 +1032,6 @@ msgstr "Propune întrebare"
 msgid "Live stats"
 msgstr "Statistici live"
 
-#: interface/cpanel/views.py:833
-msgid "pressed the bell"
-msgstr "a sunat clopoțelul"
-
 #: resources/templates/mobile_base.html:31
 #: resources/templates/cpanel/index.html:67
 #: resources/templates/interface/header.html:27

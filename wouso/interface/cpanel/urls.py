@@ -75,7 +75,6 @@ upat = [
 name='roles_create'),
 
     # misc
-    url(r'^bell/$', 'wouso.interface.cpanel.views.the_bell', name='the_bell'),
     url(r'^tools/clear-cache/$', 'wouso.interface.cpanel.views.clear_cache', name='clear_cache'),
 
     url(r'^reports/$', 'wouso.interface.cpanel.views.reports', name='reports'),
