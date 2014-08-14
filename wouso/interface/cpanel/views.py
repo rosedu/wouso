@@ -901,7 +901,6 @@ class ManagePlayerView(UpdateView):
 
     def get_form(self, form_class):
         form = form_class(**self.get_form_kwargs())
-        form.fields['password'].widget.attrs['readonly'] = True
         return form
 
 
