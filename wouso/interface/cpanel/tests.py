@@ -23,7 +23,8 @@ class addPlayerTestCase(TestCase):
         self.client = Client()
         self.client.login(username='_test1', password='secret')
         User.objects.get(pk=1).is_staff
-        resp = self.client.post('/cpanel/add_player/', {'username': '_test2', 'password': 'secret'})
+        resp = self.client.post('/cpanel/add_player/',
+                                {'username': '_test2', 'password': 'secret', 'confirm_password': 'secret'})
         new_number = len(User.objects.all())
 
         self.assertEqual(resp.status_code, 302)
@@ -256,7 +257,7 @@ class CpanelViewsTest(WousoTest):
     def test_add_player_view_post(self):
         # Check the view with a valid form
         number_of_players = len(User.objects.all())
-        data = {'username': 'test1', 'password': 'test'}
+        data = {'username': 'test1', 'password': 'test', 'confirm_password': 'test'}
         response = self.client.post(reverse('add_player'), data)
         self.assertEqual(response.status_code, 302)
         number_of_players_after_post = len(User.objects.all())
@@ -281,7 +282,8 @@ class CpanelViewsTest(WousoTest):
         p1 = self._get_player(1)
 
         # Check the view with a valid form
-        data = {'username': 'testuser_updated', 'password': p1.user.password}
+<<<<<<< HEAD
+        data = {'username': 'testuser_updated', 'password': p1.user.password, 'confirm_password': p1.user.password}
         response = self.client.post(reverse('manage_player', args=[p1.pk]), data)
         self.assertEqual(response.status_code, 302)
         p1 = User.objects.get(pk=p1.pk)
