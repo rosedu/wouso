@@ -11,7 +11,7 @@ from wouso.interface.apps.pages.models import StaticPage, NewsItem
 class QuestionForm(forms.Form):
     text = forms.CharField(max_length=2000, widget=forms.Textarea)
     active = forms.BooleanField(required=False)
-    schedule = forms.DateField(required=False, input_formats=['%d.%m.%Y','%Y-%m-%d'], help_text='dd.mm.yyyy')
+    schedule = forms.DateField(required=False, input_formats=['%d.%m.%Y', '%Y-%m-%d'], help_text='dd.mm.yyyy')
     category = forms.CharField(max_length=100, required=False)
 
     def __init__(self, data=None, instance=None, users=True):
@@ -20,14 +20,15 @@ class QuestionForm(forms.Form):
             for i in filter(lambda a: a.startswith('answer_'), data.keys()):
                 i = int(i[7:])
                 self.fields['answer_%d' % i] = forms.CharField(max_length=500,
-                                        widget=forms.Textarea, required=False)
+                                                               widget=forms.Textarea, required=False)
                 self.fields['correct_%d' % i] = forms.BooleanField(required=False)
 
         alltags = instance.category.tag_set.all() if instance and instance.category else []
         self.fields['tags'] = forms.MultipleChoiceField(
-                        choices=[(tag.name, tag.name) for tag in alltags],
-                        widget=forms.SelectMultiple, required=False,
-                        initial=[t.name for t in instance.tags.all()] if instance else {})
+            choices=[(tag.name, tag.name) for tag in alltags],
+            widget=forms.SelectMultiple, required=False,
+            initial=[t.name for t in instance.tags.all()] if instance else {}
+        )
         self.instance = instance
         if users:
             self.fields['endorsed_by'] = forms.ModelChoiceField(queryset=User.objects.all(), required=False,
@@ -97,7 +98,7 @@ class AnswerForm(forms.Form):
         super(AnswerForm, self).__init__(data)
 
         self.fields['new_answer_text'] = forms.CharField(max_length=100,
-                                        widget=forms.Textarea, required=False)
+                                                         widget=forms.Textarea, required=False)
         self.fields['new_answer_correct'] = forms.BooleanField(required=False)
 
     def save(self, id=None):
@@ -109,7 +110,8 @@ class AnswerForm(forms.Form):
 
 
 class TagsForm(forms.Form):
-    def __init__(self, data=None, instance=None, tags=[]):
+    def __init__(self, data=None, instance=None, tags=None):
+        if not tags: tags = []
         super(TagsForm, self).__init__(data)
 
         for tag in tags:
@@ -178,7 +180,8 @@ class TagForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(TagForm, self).__init__(*args, **kwargs)
         self.fields['questions'] = forms.MultipleChoiceField(choices=[(q.pk, q.text) for q in Question.objects.all()])
-        self.fields['tag'] = forms.ChoiceField(choices=[(t.pk, t.name) for t in Tag.objects.all().exclude(name__in=['qotd', 'quest', 'challenge'])])
+        self.fields['tag'] = forms.ChoiceField(choices=[(t.pk, t.name) for t in Tag.objects.all()
+                                               .exclude(name__in=['qotd', 'quest', 'challenge'])])
 
 
 class RoleForm(forms.ModelForm):
