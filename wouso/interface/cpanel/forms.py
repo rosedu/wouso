@@ -122,6 +122,20 @@ class AddTagForm(forms.ModelForm):
 
 
 class UserForm(forms.ModelForm):
+    confirm_password = forms.CharField(widget=forms.PasswordInput())
+
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        self.fields.keyOrder = [
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+            'password',
+            'confirm_password',
+            'is_active',
+        ]
+
     class Meta:
         model = User
         widgets = {
@@ -129,6 +143,13 @@ class UserForm(forms.ModelForm):
         }
         exclude = ['last_login', 'date_joined', 'groups', 'user_permissions',
                    'is_staff', 'is_superuser']
+
+    def clean(self):
+        password1 = self.cleaned_data.get('password')
+        password2 = self.cleaned_data.get('confirm_password')
+        if password1 != password2:
+            raise forms.ValidationError("Passwords don't match")
+        return self.cleaned_data
 
 
 class SpellForm(forms.ModelForm):
