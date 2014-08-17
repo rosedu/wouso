@@ -1119,6 +1119,20 @@ edit_static_page = permission_required('config.change_setting')(
     EditStaticPageView.as_view())
 
 
+@permission_required('config.change_setting')
+def del_static_page(request, pk):
+    print id
+    page = get_object_or_404(StaticPage, pk=pk)
+
+    page.delete()
+
+    go_back = request.META.get('HTTP_REFERER', None)
+    if not go_back:
+        go_back = reverse('wouso.interface.cpanel.views.static_pages')
+
+    return HttpResponseRedirect(go_back)
+
+
 class NewsView(ListView):
     template_name = 'cpanel/news.html'
     model = NewsItem

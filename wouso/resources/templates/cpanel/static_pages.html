@@ -19,6 +19,7 @@
         <td>{{ p.hidden }}</td>
         <td>
             <a class="button" href="{% url edit_static_page p.pk %}">Edit</a>
+            <a class="button" href="{% url del_static_page p.pk %}">Delete</a>
         </td>
     </tr>
     {% endfor %}
