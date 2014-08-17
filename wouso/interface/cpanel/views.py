@@ -1098,12 +1098,24 @@ static_pages = staff_required(StaticPagesView.as_view())
 
 class AddStaticPageView(ModuleViewMixin, CreateView):
     template_name = 'cpanel/add_static_page.html'
+    model = StaticPage
     form_class = StaticPageForm
     success_url = reverse_lazy('static_pages')
 
 
 add_static_page = permission_required('config.change_setting')(
     AddStaticPageView.as_view())
+
+
+class EditStaticPageView(UpdateView):
+    template_name = 'cpanel/edit_static_page.html'
+    model = StaticPage
+    form_class = StaticPageForm
+    success_url = reverse_lazy('static_pages')
+
+
+edit_static_page = permission_required('config.change_setting')(
+    EditStaticPageView.as_view())
 
 
 @staff_required

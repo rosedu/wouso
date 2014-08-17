@@ -86,7 +86,8 @@ name='roles_create'),
     url(r'^impersonate/clear/$', 'wouso.interface.cpanel.views.clean_impersonation', name='impersonate_clear'),
 
     url(r'^static_pages/$', 'wouso.interface.cpanel.views.static_pages', name='static_pages'),
-    url(r'^static_pages/add_static_page/$', 'wouso.interface.cpanel.views.add_static_page', name='add_static_page'),
+    url(r'^add_static_page/$', 'wouso.interface.cpanel.views.add_static_page', name='add_static_page'),
+    url(r'^edit_static_page/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.edit_static_page', name='edit_static_page'),
 ]
 
 for g in get_cpanel_games():
