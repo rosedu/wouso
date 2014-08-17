@@ -1033,7 +1033,8 @@ class RoleAdd(CreateView):
 
     def get_success_url(self):
         return reverse('roles')
-    
+
+
 roles_create = permission_required('superuser')(RoleAdd.as_view())
 
 
@@ -1125,6 +1126,19 @@ class NewsView(ListView):
 
 
 news = permission_required('config.change_setting')(NewsView.as_view())
+
+
+class AddNewsView(ModuleViewMixin, CreateView):
+    template_name = "cpanel/add_news.html"
+    model = NewsItem
+    form_class = NewsForm
+
+    def get_success_url(self):
+        return reverse('news')
+
+
+add_news = permission_required('config.change_setting')(
+    AddNewsView.as_view())
 
 
 @staff_required
