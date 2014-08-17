@@ -5,7 +5,7 @@ from wouso.core.magic.models import Spell
 from wouso.core.scoring.models import Formula
 from wouso.core.security.models import Report
 from wouso.core.user.models import Race, PlayerGroup
-from wouso.interface.apps.pages.models import StaticPage
+from wouso.interface.apps.pages.models import StaticPage, NewsItem
 
 
 class QuestionForm(forms.Form):
@@ -180,3 +180,8 @@ class PlayerGroupForm(forms.ModelForm):
 class StaticPageForm(forms.ModelForm):
     class Meta:
         model = StaticPage
+
+
+class NewsForm(forms.ModelForm):
+    class Meta:
+        model = NewsItem

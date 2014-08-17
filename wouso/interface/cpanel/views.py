@@ -31,7 +31,7 @@ from wouso.core.signals import addActivity, add_activity
 from wouso.core.security.models import Report
 from wouso.games.challenge.models import Challenge, Participant
 from wouso.interface.apps.messaging.models import Message
-from wouso.interface.apps.pages.models import StaticPage
+from wouso.interface.apps.pages.models import StaticPage, NewsItem
 from wouso.interface.cpanel.models import Customization, Switchboard, \
     GamesSwitchboard
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
@@ -39,7 +39,7 @@ from wouso.middleware.impersonation import ImpersonateMiddleware
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, \
     AnswerForm, EditReportForm, RaceForm, PlayerGroupForm, RoleForm, \
-    StaticPageForm
+    StaticPageForm, NewsForm
 from forms import FormulaForm, TagForm
 
 
@@ -1116,6 +1116,15 @@ class EditStaticPageView(UpdateView):
 
 edit_static_page = permission_required('config.change_setting')(
     EditStaticPageView.as_view())
+
+
+class NewsView(ListView):
+    template_name = 'cpanel/news.html'
+    model = NewsItem
+    context_object_name = 'news'
+
+
+news = permission_required('config.change_setting')(NewsView.as_view())
 
 
 @staff_required
