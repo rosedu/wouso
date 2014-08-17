@@ -124,7 +124,6 @@
                         Shortcuts
                         <li class="pages"><a href="{% url static_pages %}">Static Pages</a></li>
                         <li class="news"><a href="{% url news %}">News</a></li>
-                        <li class="static"><a href="{% url admin:pages_newsitem_changelist %}" target="blank">News</a></li>
                         {% if user.is_staff or user.is_superuser %}
                         <li><a href="{% url admin:activity_activity_changelist %}">Activity Monitor</a></li>
                         <li><a href="{% url admin:index %}"><em>Django Admin »</em></a></li>

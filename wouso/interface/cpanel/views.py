@@ -1141,6 +1141,17 @@ add_news = permission_required('config.change_setting')(
     AddNewsView.as_view())
 
 
+class EditNewsView(UpdateView):
+    template_name = "cpanel/edit_news.html"
+    model = NewsItem
+    form_class = NewsForm
+    success_url = reverse_lazy('news')
+
+
+edit_news = permission_required('config.change_setting')(
+    EditNewsView.as_view())
+
+
 @staff_required
 def system_message_group(request, group):
     group = get_object_or_404(PlayerGroup, pk=group)

@@ -17,6 +17,9 @@
         <td>{{ n.title }}</td>
         <td>{{ n.author }}</td>
         <td>{{ n.date_pub }}</td>
+        <td>
+            <a class="button" href="{% url edit_news n.pk %}">Edit</a>
+        </td>
     </tr>
     {% empty %}
         <td colspan="0">No news items.</td>
