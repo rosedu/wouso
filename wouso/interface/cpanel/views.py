@@ -31,6 +31,7 @@ from wouso.core.signals import addActivity, add_activity
 from wouso.core.security.models import Report
 from wouso.games.challenge.models import Challenge, Participant
 from wouso.interface.apps.messaging.models import Message
+from wouso.interface.apps.pages.models import StaticPage
 from wouso.interface.cpanel.models import Customization, Switchboard, \
     GamesSwitchboard
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
@@ -1084,8 +1085,10 @@ edit_report = staff_required(EditReportView.as_view())
 class StaticPagesView(ListView):
     template_name = 'cpanel/static_pages.html'
     context_object_name= 'static_pages'
+    model = StaticPage
 
 static_pages = staff_required(StaticPagesView.as_view())
+
 
 @staff_required
 def system_message_group(request, group):
