@@ -5,6 +5,7 @@ from wouso.core.magic.models import Spell
 from wouso.core.scoring.models import Formula
 from wouso.core.security.models import Report
 from wouso.core.user.models import Race, PlayerGroup
+from wouso.interface.apps.pages.models import StaticPage
 
 
 class QuestionForm(forms.Form):
@@ -164,8 +165,6 @@ class RoleForm(forms.ModelForm):
         model = Group
 
 
-
-
 class RaceForm(forms.ModelForm):
     class Meta:
         model = Race
@@ -176,3 +175,8 @@ class PlayerGroupForm(forms.ModelForm):
     class Meta:
         model = PlayerGroup
         exclude = ['artifacts', 'owner']
+
+
+class StaticPageForm(forms.ModelForm):
+    class Meta:
+        model = StaticPage

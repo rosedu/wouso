@@ -14,9 +14,9 @@
     <tr>
         <td>{{ p.name }}</td>
         <td>
-            <a class="button" href="{% url add_static_page %}">Add static page</a>
         </td>
     </tr>
     {% endfor %}
 </table>
+    <a class="button" href="{% url add_static_page %}">Add static page</a>
 {% endblock %}

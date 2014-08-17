@@ -38,7 +38,8 @@ from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.middleware.impersonation import ImpersonateMiddleware
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, \
-    AnswerForm, EditReportForm, RaceForm, PlayerGroupForm, RoleForm
+    AnswerForm, EditReportForm, RaceForm, PlayerGroupForm, RoleForm, \
+    StaticPageForm
 from forms import FormulaForm, TagForm
 
 
@@ -1097,7 +1098,7 @@ static_pages = staff_required(StaticPagesView.as_view())
 
 class AddStaticPageView(ModuleViewMixin, CreateView):
     template_name = 'cpanel/add_static_page.html'
-    form_class = AddStaticPageForm
+    form_class = StaticPageForm
     success_url = reverse_lazy('static_pages')
 
 
