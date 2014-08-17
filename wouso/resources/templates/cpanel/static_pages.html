@@ -7,12 +7,16 @@
 {% block sectioncontent %}
 <table>
     <tr>
-        <th>Static Page</th>
+        <th>Name</th>
+        <th>Title</th>
+        <th>Hidden</th>
         <th>Manage</th>
     </tr>
     {% for p in pages %}
     <tr>
         <td>{{ p.name }}</td>
+        <td>{{ p.title }}</td>
+        <td>{{ p.hidden }}</td>
         <td>
             <a class="button" href="{% url edit_static_page p.pk %}">Edit</a>
         </td>
