@@ -19,6 +19,7 @@
         <td>{{ n.date_pub }}</td>
         <td>
             <a class="button" href="{% url edit_news n.pk %}">Edit</a>
+            <a class="button" href="{% url del_news n.pk %}">Delete</a>
         </td>
     </tr>
     {% empty %}

@@ -1121,7 +1121,6 @@ edit_static_page = permission_required('config.change_setting')(
 
 @permission_required('config.change_setting')
 def del_static_page(request, pk):
-    print id
     page = get_object_or_404(StaticPage, pk=pk)
 
     page.delete()
@@ -1164,6 +1163,19 @@ class EditNewsView(UpdateView):
 
 edit_news = permission_required('config.change_setting')(
     EditNewsView.as_view())
+
+
+@permission_required('config.change_setting')
+def del_news(request, pk):
+    news = get_object_or_404(NewsItem, pk=pk)
+
+    news.delete()
+
+    go_back = request.META.get('HTTP_REFERER', None)
+    if not go_back:
+        go_back = reverse('wouso.interface.cpanel.views.news')
+
+    return HttpResponseRedirect(go_back)
 
 
 @staff_required

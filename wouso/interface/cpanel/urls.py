@@ -93,6 +93,7 @@ name='roles_create'),
     url(r'^news/$', 'wouso.interface.cpanel.views.news', name='news'),
     url(r'^add_news/$', 'wouso.interface.cpanel.views.add_news', name='add_news'),
     url(r'^edit_news/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.edit_news', name='edit_news'),
+    url(r'^del_news/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.del_news', name='del_news'),
 ]
 
 for g in get_cpanel_games():
