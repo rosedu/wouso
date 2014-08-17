@@ -8,14 +8,14 @@
 <table>
     <tr>
         <th>Static Page</th>
-        <th>Add</th>
-        <th>Edit</th>
+        <th>Manage</th>
     </tr>
     {% for p in pages %}
     <tr>
         <td>{{ p.name }}</td>
-        <td></td>
-        <td></td>
+        <td>
+            <a class="button" href="{% url add_static_page %}">Add static page</a>
+        </td>
     </tr>
     {% endfor %}
 </table>
