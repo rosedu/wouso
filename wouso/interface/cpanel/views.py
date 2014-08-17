@@ -1081,6 +1081,12 @@ class EditReportView(UpdateView):
 edit_report = staff_required(EditReportView.as_view())
 
 
+class StaticPagesView(ListView):
+    template_name = 'cpanel/static_pages.html'
+    context_object_name= 'static_pages'
+
+static_pages = staff_required(StaticPagesView.as_view())
+
 @staff_required
 def system_message_group(request, group):
     group = get_object_or_404(PlayerGroup, pk=group)
