@@ -1095,6 +1095,16 @@ class StaticPagesView(ListView):
 static_pages = staff_required(StaticPagesView.as_view())
 
 
+class AddStaticPageView(ModuleViewMixin, CreateView):
+    template_name = 'cpanel/add_static_page.html'
+    form_class = AddStaticPageForm
+    success_url = reverse_lazy('static_pages')
+
+
+add_static_page = permission_required('config.change_setting')(
+    AddStaticPageView.as_view())
+
+
 @staff_required
 def system_message_group(request, group):
     group = get_object_or_404(PlayerGroup, pk=group)
