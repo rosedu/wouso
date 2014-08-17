@@ -5,4 +5,18 @@
 {% block sectiontitle %}Static Pages{% endblock %}
 
 {% block sectioncontent %}
+<table>
+    <tr>
+        <th>Static Page</th>
+        <th>Add</th>
+        <th>Edit</th>
+    </tr>
+    {% for p in pages %}
+    <tr>
+        <td>{{ p.name }}</td>
+        <td></td>
+        <td></td>
+    </tr>
+    {% endfor %}
+</table>
 {% endblock %}

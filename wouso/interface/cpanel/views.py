@@ -1084,8 +1084,13 @@ edit_report = staff_required(EditReportView.as_view())
 
 class StaticPagesView(ListView):
     template_name = 'cpanel/static_pages.html'
-    context_object_name= 'static_pages'
     model = StaticPage
+
+    def get_context_data(self, **kwargs):
+        context = super(StaticPagesView, self).get_context_data(**kwargs)
+        context['pages'] = StaticPage.objects.all()
+        return context
+
 
 static_pages = staff_required(StaticPagesView.as_view())
 
