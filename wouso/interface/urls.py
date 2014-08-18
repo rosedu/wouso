@@ -89,25 +89,3 @@ except (ImportError, AssertionError):
     urlpatterns += patterns('wouso.interface.views', url(r'^api/', 'no_api'))
 else:
     urlpatterns += patterns('', url(r'^api/', include('wouso.interface.api.urls')))
-
-# Specific urls with import logic - soft dependencies
-try:
-    import imp
-    imp.find_module('django_qunit')
-except ImportError:
-    pass
-else:
-    urlpatterns += patterns('',
-        url(r'^qunit/', include('django_qunit.urls'))
-	)
-
-try:
-    import imp
-    imp.find_module('django_socketio')
-
-except ImportError:
-    pass
-else:
-    urlpatterns += patterns('',
-        url('', include('django_socketio.urls')),
-    )
