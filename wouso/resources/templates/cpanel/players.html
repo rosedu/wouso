@@ -7,7 +7,7 @@
 <form action="{% url manage_fwd %}" method="post">
     {% player_input 'player' %}
     {% csrf_token %}
-    <button type="submit">Manage player</button>
+    <button type="submit">Search</button>
 </form>
 
 <table>
@@ -19,7 +19,7 @@
     <th>Qotd#</th>
     <th>Ch#</th>
     <th>Infraction</th>
-	<th>Edit</th>
+	<th>Manage</th>
 </tr>
 {% for p in players %}
 <tr>
@@ -30,17 +30,15 @@
     <td>{{ p.qotd_count }}</td>
     <td>{{ p.chall_count }}</td>
     <td>{% if p.infraction_points %}
-            <a class="button" href="{% url infraction_history p.user_id %}">
-                {{ p.infraction_points }}
-            </a>
+        <a class="button" href="{% url infraction_history p.user_id %}">
+            {{ p.infraction_points }}
+        </a>
         {% else %}
             {{ p.infraction_points }}
         {% endif %}
-
     </td>
     <td>
-      <a class="button" href="{% url edit_player p.user_id %}">Edit</a>
-      <a class="button" href="{% url details_player p.pk %}">Details</a>
+        <a class="button" href="{% url manage_player p.user_id %}">Manage Player</a>
     </td>
 </tr>
     {% empty %}
