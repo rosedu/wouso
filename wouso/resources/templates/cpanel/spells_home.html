@@ -31,6 +31,8 @@
 	<td><a class="button" href="{% url edit_spell p.id %}">Edit</a></td>
 	<td><a class="button" href="{% url spell_dell p.id %}" onclick="return confirm('Realy?');">Delete</a></td>
 </tr>
+    {% empty %}
+        <td colspan="0" class="empty">No spells yet. Please use the Add new spell button to add new spells.</td>
 {% endfor %}
 </table>
 
@@ -54,6 +56,7 @@
     <td> {{ p.history_expired }} </td>
 </tr>
 {% endfor %}
+
 <tr></tr>
 <tr></tr>
 <tr><td><b>Total</b></td>
