@@ -33,14 +33,7 @@
         "fields": {
             "value": "World of USO e un joc simplu realizat pentru studen\u021bii cursului de USO (Utilizarea Sistemelor de Operare) din Facultatea de Automatic\u0103 \u0219i Calculatoare a Universit\u0103\u021bii Politehnica Bucure\u0219ti.\r\n\r\nWorld of USO are 3 p\u0103r\u021bi: Question of the Day, Challenge \u0219i The Quest"
         }
-    }, 
-    {
-        "pk": "disable-Chat", 
-        "model": "config.setting", 
-        "fields": {
-            "value": ""
-        }
-    }, 
+    },
     {
         "pk": "disable-Qproposal", 
         "model": "config.setting", 
