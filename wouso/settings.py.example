@@ -214,32 +214,6 @@ else:
 
 AVATAR_DEFAULT = 'monsterid'
 
-BASE_PATH = os.path.dirname(__file__)
-QUNIT_TEST_DIRECTORY = os.path.join(BASE_PATH, 'qunit_tests')
-
-try:
-    import django_qunit
-except ImportError:
-    pass
-else:
-    INSTALLED_APPS += ['django_qunit']
-
-try:
-    imp.find_module('django_socketio')
-except ImportError:
-    CHAT_ENABLED = False
-else:
-    INSTALLED_APPS += [
-        'django.contrib.contenttypes',
-        'django.contrib.sessions',
-        'django.contrib.staticfiles',
-        'django_socketio',
-        'wouso.interface.chat',
-        ]
-    CHAT_ENABLED = True
-    SOCKETIO_HOST = ''
-    SOCKETIO_PORT = '8000'
-
 try:
     imp.find_module('debug_toolbar')
 except ImportError:
