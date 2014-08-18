@@ -126,25 +126,13 @@ class AddTagForm(forms.ModelForm):
 class UserForm(forms.ModelForm):
     confirm_password = forms.CharField(widget=forms.PasswordInput())
 
-    def __init__(self, *args, **kwargs):
-        super(UserForm, self).__init__(*args, **kwargs)
-        self.fields.keyOrder = [
-            'username',
-            'first_name',
-            'last_name',
-            'email',
-            'password',
-            'confirm_password',
-            'is_active',
-        ]
-
     class Meta:
         model = User
         widgets = {
             'password': forms.PasswordInput(),
         }
-        exclude = ['last_login', 'date_joined', 'groups', 'user_permissions',
-                   'is_staff', 'is_superuser']
+        fields = ['username', 'first_name', 'last_name', 'email',
+              'password', 'confirm_password', 'is_active']
 
     def clean(self):
         password1 = self.cleaned_data.get('password')
