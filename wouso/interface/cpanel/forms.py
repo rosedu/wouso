@@ -132,7 +132,7 @@ class UserForm(forms.ModelForm):
             'password': forms.PasswordInput(),
         }
         fields = ['username', 'first_name', 'last_name', 'email',
-              'password', 'confirm_password', 'is_active']
+                  'password', 'confirm_password', 'is_active']
 
     def clean(self):
         password1 = self.cleaned_data.get('password')
