@@ -11,8 +11,8 @@
 <tr>
     <th></th>
 	<th>Name</th>
-  <th>Title</th>
-  <th>Type</th>
+    <th>Title</th>
+    <th>Type</th>
 	<th>Mass</th>
 	<th>Price</th>
 	<th>Due Days</th>
@@ -23,14 +23,16 @@
 <tr>
     <td>{% artifact p %}</td>
     <td> {{ p.name }} </td>
-  <td> {{ p.title}} </td>
-  <td> {{ p.type }} </td>
+    <td> {{ p.title}} </td>
+    <td> {{ p.type }} </td>
 	<td> {{ p.mass }} </td>
 	<td> {{ p.price }} </td>
 	<td> {{ p.due_days }} </td>
 	<td><a class="button" href="{% url edit_spell p.id %}">Edit</a></td>
 	<td><a class="button" href="{% url spell_dell p.id %}" onclick="return confirm('Realy?');">Delete</a></td>
 </tr>
+    {% empty %}
+        <td colspan="0" class="empty">No spells yet. Please use the Add new spell button to add new spells.</td>
 {% endfor %}
 </table>
 
@@ -40,23 +42,29 @@
 <h3>Spell History</h3>
 <table>
 <tr>
-  <th>Name</th>
-  <th>Bought</th>
-  <th>Used</th>
-  <th>Cleaned</th>
-  <th>Expired</th>
+    <th>Name</th>
+    <th>Mass</th>
+    <th>Bought</th>
+    <th>Used</th>
+    <th>Cleaned</th>
+    <th>Expired</th>
 </tr>
 {% for p in spells %}
-<tr><td> {{ p.name }} </td>
+<tr>
+    <td> {{ p.name }} </td>
+    <td> {{ p.mass }} </td>
     <td> {{ p.history_bought }} </td>
     <td> {{ p.history_used }} </td>
     <td> {{ p.history_cleaned }} </td>
     <td> {{ p.history_expired }} </td>
 </tr>
 {% endfor %}
+
 <tr></tr>
 <tr></tr>
-<tr><td><b>Total</b></td>
+<tr>
+    <td><b>Total</b></td>
+    <td></td>
     <td> {{ spells_bought }} </td>
     <td> {{ spells_used }} </td>
     <td> {{ spells_cleaned }} </td>

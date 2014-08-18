@@ -334,6 +334,21 @@ span.button-list {
     vertical-align: top;
 }
 /* cpanel */
+div.cpanel-profile {
+    color: #444;
+    text-align: right;
+    width: 275px;
+    margin-top: 16px;
+    padding-right: 5%;
+    float: right;
+    position: relative;
+    z-index:0;
+}
+div.cpanel-player-info {
+    position: relative;
+    padding-top: 5px;
+    padding-right: 8em;
+}
 fieldset label {
     float: left;
     min-width: 100px;
@@ -605,7 +620,6 @@ input.inline, label.inline {
 }
 .pagination li {
     float: left;
-    border: 1px solid #dddddd;
 }
 .pagination li a, .pagination li span {
     display: block;

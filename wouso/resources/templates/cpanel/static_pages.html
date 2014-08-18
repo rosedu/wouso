@@ -1,0 +1,28 @@
+{% extends 'cpanel/index.html' %}
+{% load user %}
+{% load artifacts %}
+
+{% block sectiontitle %}Static Pages{% endblock %}
+
+{% block sectioncontent %}
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Title</th>
+        <th>Hidden</th>
+        <th>Manage</th>
+    </tr>
+    {% for p in pages %}
+    <tr>
+        <td>{{ p.name }}</td>
+        <td>{{ p.title }}</td>
+        <td>{{ p.hidden }}</td>
+        <td>
+            <a class="button" href="{% url edit_static_page p.pk %}">Edit</a>
+            <a class="button" href="{% url del_static_page p.pk %}">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+    <a class="button" href="{% url add_static_page %}">Add static page</a>
+{% endblock %}

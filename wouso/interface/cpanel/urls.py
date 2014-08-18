@@ -56,12 +56,11 @@ upat = [
     url(r'^players/fwd/$', 'wouso.interface.cpanel.views.fwd', name='manage_fwd'),
     url(r'^player/(?P<player_id>\d+)/bonus/$', 'wouso.interface.cpanel.views.bonus', name='bonus'),
     url(r'^add_player/$', 'wouso.interface.cpanel.views.add_player', name='add_player'),
-    url(r'^edit_player/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.edit_player', name='edit_player'),
-    url(r'^info_player/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.details_player', name='details_player'),
+    url(r'^manage_player/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.manage_player', name='manage_player'),
     url(r'^infractions/(?P<user_id>\d+)/$', 'wouso.interface.cpanel.views.infraction_history', name='infraction_history'),
     url(r'^infractions_clear/(?P<user_id>\d+)/(?P<infraction_id>\d+)/$', 'wouso.interface.cpanel.views.infraction_clear', name='infraction_clear'),
     url(r'^infractions_recheck/$', 'wouso.interface.cpanel.views.infraction_recheck', name='infraction_recheck'),
-    url(r'^edit_player/(?P<user_id>\d+)/$', 'wouso.interface.cpanel.views.edit_player', name='edit_player'),
+    url(r'^manage_player/(?P<user_id>\d+)/$', 'wouso.interface.cpanel.views.manage_player', name='manage_player'),
     url(r'^races/all/$', 'wouso.interface.cpanel.views.races_groups',
         name='races_groups'),
     url(r'^races/add/$', 'wouso.interface.cpanel.views.races_add',
@@ -75,7 +74,6 @@ upat = [
 name='roles_create'),
 
     # misc
-    url(r'^bell/$', 'wouso.interface.cpanel.views.the_bell', name='the_bell'),
     url(r'^tools/clear-cache/$', 'wouso.interface.cpanel.views.clear_cache', name='clear_cache'),
 
     url(r'^reports/$', 'wouso.interface.cpanel.views.reports', name='reports'),
@@ -85,6 +83,16 @@ name='roles_create'),
 
     url(r'^impersonate/(?P<player_id>\d+)/$', 'wouso.interface.cpanel.views.impersonate', name='impersonate'),
     url(r'^impersonate/clear/$', 'wouso.interface.cpanel.views.clean_impersonation', name='impersonate_clear'),
+
+    url(r'^static_pages/$', 'wouso.interface.cpanel.views.static_pages', name='static_pages'),
+    url(r'^add_static_page/$', 'wouso.interface.cpanel.views.add_static_page', name='add_static_page'),
+    url(r'^edit_static_page/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.edit_static_page', name='edit_static_page'),
+    url(r'^del_static_page/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.del_static_page', name='del_static_page'),
+
+    url(r'^news/$', 'wouso.interface.cpanel.views.news', name='news'),
+    url(r'^add_news/$', 'wouso.interface.cpanel.views.add_news', name='add_news'),
+    url(r'^edit_news/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.edit_news', name='edit_news'),
+    url(r'^del_news/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.del_news', name='del_news'),
 ]
 
 for g in get_cpanel_games():

@@ -37,6 +37,14 @@ In case of MySQL support:
 
     `$PATH_TO_WOUSO_REPOSITORY` is the location of the clone of the WoUSO repository.
 
+    In case you do something wrong in the virtualenv, you may exit it using
+
+        deactivate
+
+    and you may then remove the `sandbox` folder:
+
+        rm -r sandbox
+
 3. Install pip requirements while in the `$PATH_TO_WOUSO_REPOSITORY` folder:
 
         pip install -r requirements-pip
@@ -57,9 +65,9 @@ In case of MySQL support:
 
         cp settings.py.example settings.py
 
-    and edit the new file (`settings.py`). You may want to update the `DATABASES` setting.
+    and edit the new file (`settings.py`). You may want to update the `DATABASES` setting (see next step).
 
-7. (optional) In case you want to use a MySQL database, you must have the MySQL server and client packages installed. MySQL support in Python is required you can use `pip`:
+7. (optional) In case you want to use a MySQL database, you must have the MySQL server and client packages installed. For MySQL support in Python you can use `pip`:
 
         pip install MySQL-python
 
@@ -68,6 +76,7 @@ In case of MySQL support:
         create database wouso default character set utf8 default collate utf8_general_ci;
         create user 'wouso'@'localhost' identified by 'some_pass';
         grant all privileges on wouso.* to 'wouso'@'localhost';
+        flush privileges;
 
     The appropriate database configuration in the `settings.py` file will then look like this:
 

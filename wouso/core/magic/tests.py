@@ -11,9 +11,11 @@ from wouso.core.scoring.models import Coin, Formula
 from wouso.core.tests import WousoTest
 from wouso.core.user.models import Player
 from wouso.core.magic.models import Spell
+from wouso.games.challenge.models import Challenge, ChallengeUser, ChallengeGame
 from wouso.interface.activity.models import Activity
 from models import *
 from manager import MagicManager
+
 
 class ManagerTestCase(WousoTest):
     """ Test the core.magic.manager.Manager helper.
@@ -218,6 +220,89 @@ class SpellTestCase(WousoTest):
 
         self.assertEqual(player.points, 10)
 
+    def test_paralyze(self):
+        """
+         Test if Paralyze spell works
+        """
+        Formula.add('chall-warranty')
+
+        player = self._get_player()
+        chall_user = player.get_extension(ChallengeUser)
+
+        # Check if player can launch before spell is cast
+        self.assertTrue(chall_user.can_launch())
+
+        # Create and add spell to user
+        paralyze = Spell.objects.create(name='challenge-cannot-challenge', available=True, price=10, percents=100, type='n')
+        obs = PlayerSpellDue.objects.create(player=chall_user, source=chall_user, spell=paralyze, due=datetime.now() + timedelta(days=1))
+
+        # Check if player has the modifier
+        self.assertTrue(chall_user.magic.has_modifier('challenge-cannot-challenge'))
+
+        # Player should not be able to launch challenge with Paralyze on
+        self.assertFalse(chall_user.can_launch())
+
+    def test_evade(self):
+        """
+         Test for Evade spell
+        """
+        player = self._get_player()
+        player2 = self._get_player(2)
+
+        scoring.setup_scoring()
+        Coin.add('points')
+        scoring.score_simple(player, 'points', 10)
+        self.assertEqual(player.points, 10)
+
+        # Create and apply evade
+        evade = Spell.objects.create(name='challenge-evade', available=True, price=25, percents=100, type='p')
+        obs = PlayerSpellDue.objects.create(player=player, source=player, spell=evade, due=datetime.now() + timedelta(days=1))
+        self.assertTrue(player.magic.has_modifier('challenge-evade'))
+
+        # Create challenge and make first player lose it
+        chall = Challenge.create(user_from=player2, user_to=player, ignore_questions=True)
+        chall.set_won_by_player(player2)
+
+        # Get 'chall-lost' definition. By default you still win 2 points when losing a challenge
+        formulas = ChallengeGame.get_formulas()
+        definition = formulas[1]['definition'] # this will be 'points=XX'
+        index = definition.find('=') + 1 # get position of '='
+        points = int(definition[index:]) # get XX (nr of points won when losing challenge)
+
+        # Losing player should have initial points + chall-lost points
+        self.assertEqual(player.points, 10 + points)
+
+    def test_charge(self):
+        """
+         Test for Charge spell
+        """
+        initial_points = 10
+
+        player = self._get_player()
+        player2 = self._get_player(2)
+        chall_user = player.get_extension(ChallengeUser)
+
+        scoring.setup_scoring()
+        Coin.add('points')
+        scoring.score_simple(chall_user, 'points', initial_points)
+        self.assertEqual(player.points, initial_points)
+
+        # Points won before Charge is applied
+        chall = Challenge.create(user_from=chall_user, user_to=player2, ignore_questions=True)
+        chall.set_won_by_player(chall_user)
+        points_no_charge = player.points
+
+        # Apply Charge
+        charge = Spell.objects.create(name='challenge-affect-scoring', available=True, price=10, percents=33, type='p')
+        obs = PlayerSpellDue.objects.create(player=chall_user, source=chall_user, spell=charge, due=datetime.now() + timedelta(days=1))
+        self.assertTrue(chall_user.magic.has_modifier('challenge-affect-scoring'))
+
+        player.points = initial_points
+        chall = Challenge.create(user_from=chall_user, user_to=player2, ignore_questions=True)
+        chall.set_won_by_player(chall_user)
+
+        # Player should have 33% more points with charge applied
+        self.assertEqual(player.points, points_no_charge + 0.33 * (points_no_charge - initial_points))
 
 class TemplatetagsTest(WousoTest):
     def test_spell_due(self):

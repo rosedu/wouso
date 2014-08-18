@@ -110,10 +110,6 @@ class TestSpecialQuestViews(WousoTest):
         response = self.c.get(reverse('player_profile', args=[user2.pk]))
         self.assertContains(response, 'Special mate')
 
-    def test_profile_page_super_button(self):
-        self.c.login(username='admin', password='admin')
-        response = self.c.get(reverse('player_profile', args=[self.user.pk]))
-        self.assertContains(response, 'Special quest')
 
 class SpecialquestTest(TestCase):
     def setUp(self):

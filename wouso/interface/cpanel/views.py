@@ -31,13 +31,15 @@ from wouso.core.signals import addActivity, add_activity
 from wouso.core.security.models import Report
 from wouso.games.challenge.models import Challenge, Participant
 from wouso.interface.apps.messaging.models import Message
+from wouso.interface.apps.pages.models import StaticPage, NewsItem
 from wouso.interface.cpanel.models import Customization, Switchboard, \
     GamesSwitchboard
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.middleware.impersonation import ImpersonateMiddleware
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, \
-    AnswerForm, EditReportForm, RaceForm, PlayerGroupForm, RoleForm
+    AnswerForm, EditReportForm, RaceForm, PlayerGroupForm, RoleForm, \
+    StaticPageForm, NewsForm
 from forms import FormulaForm, TagForm
 
 
@@ -891,8 +893,8 @@ add_player = permission_required('config.change_setting')(
     AddPlayerView.as_view())
 
 
-class EditPlayerView(UpdateView):
-    template_name = 'cpanel/edit_player.html'
+class ManagePlayerView(UpdateView):
+    template_name = 'cpanel/manage_player.html'
     model = User
     form_class = UserForm
     success_url = reverse_lazy('all_players')
@@ -903,16 +905,8 @@ class EditPlayerView(UpdateView):
         return form
 
 
-edit_player = permission_required('config.change_setting')(
-    EditPlayerView.as_view())
-
-
-class DetailsPlayerView(DetailView):
-    template_name = 'cpanel/player_details.html'
-    model = User
-
-
-details_player = staff_required(DetailsPlayerView.as_view())
+manage_player = permission_required('config.change_setting')(
+    ManagePlayerView.as_view())
 
 
 @staff_required
@@ -1031,7 +1025,8 @@ class RoleAdd(CreateView):
 
     def get_success_url(self):
         return reverse('roles')
-    
+
+
 roles_create = permission_required('superuser')(RoleAdd.as_view())
 
 
@@ -1060,18 +1055,6 @@ def roles_update_kick(request, id, player_id):
     return redirect('roles_update', id=group.id)
 
 
-@staff_required
-def the_bell(request):
-    """
-    Press the bell: add an phony activity
-    """
-    player = request.user.get_profile()
-    message = ugettext_noop('pressed the bell')
-    addActivity.send(sender=None, user_from=player, game=None, message=message)
-
-    return redirect('dashboard')
-
-
 class ReportsView(ListView):
     template_name = 'cpanel/reports.html'
     context_object_name = 'reports'
@@ -1091,6 +1074,100 @@ class EditReportView(UpdateView):
 
 
 edit_report = staff_required(EditReportView.as_view())
+
+
+class StaticPagesView(ListView):
+    template_name = 'cpanel/static_pages.html'
+    model = StaticPage
+
+    def get_context_data(self, **kwargs):
+        context = super(StaticPagesView, self).get_context_data(**kwargs)
+        context['pages'] = StaticPage.objects.all()
+        return context
+
+
+static_pages = staff_required(StaticPagesView.as_view())
+
+
+class AddStaticPageView(ModuleViewMixin, CreateView):
+    template_name = 'cpanel/add_static_page.html'
+    model = StaticPage
+    form_class = StaticPageForm
+    success_url = reverse_lazy('static_pages')
+
+
+add_static_page = permission_required('config.change_setting')(
+    AddStaticPageView.as_view())
+
+
+class EditStaticPageView(UpdateView):
+    template_name = 'cpanel/edit_static_page.html'
+    model = StaticPage
+    form_class = StaticPageForm
+    success_url = reverse_lazy('static_pages')
+
+
+edit_static_page = permission_required('config.change_setting')(
+    EditStaticPageView.as_view())
+
+
+@permission_required('config.change_setting')
+def del_static_page(request, pk):
+    page = get_object_or_404(StaticPage, pk=pk)
+
+    page.delete()
+
+    go_back = request.META.get('HTTP_REFERER', None)
+    if not go_back:
+        go_back = reverse('wouso.interface.cpanel.views.static_pages')
+
+    return HttpResponseRedirect(go_back)
+
+
+class NewsView(ListView):
+    template_name = 'cpanel/news.html'
+    model = NewsItem
+    context_object_name = 'news'
+
+
+news = permission_required('config.change_setting')(NewsView.as_view())
+
+
+class AddNewsView(ModuleViewMixin, CreateView):
+    template_name = "cpanel/add_news.html"
+    model = NewsItem
+    form_class = NewsForm
+
+    def get_success_url(self):
+        return reverse('news')
+
+
+add_news = permission_required('config.change_setting')(
+    AddNewsView.as_view())
+
+
+class EditNewsView(UpdateView):
+    template_name = "cpanel/edit_news.html"
+    model = NewsItem
+    form_class = NewsForm
+    success_url = reverse_lazy('news')
+
+
+edit_news = permission_required('config.change_setting')(
+    EditNewsView.as_view())
+
+
+@permission_required('config.change_setting')
+def del_news(request, pk):
+    news = get_object_or_404(NewsItem, pk=pk)
+
+    news.delete()
+
+    go_back = request.META.get('HTTP_REFERER', None)
+    if not go_back:
+        go_back = reverse('wouso.interface.cpanel.views.news')
+
+    return HttpResponseRedirect(go_back)
 
 
 @staff_required
@@ -1166,7 +1243,7 @@ def bonus(request, player_id):
                                  amount=amount, coin=coin,
                                  reason=form.cleaned_data['reason'])
                 messages.info(request, 'Successfully given bonus')
-            return redirect('details_player', pk=player.id)
+            return redirect('manage_player', pk=player.id)
     else:
         form = BonusForm()
 
@@ -1187,5 +1264,5 @@ def bonus(request, player_id):
 def fwd(request):
     if request.method == 'POST':
         player = get_object_or_404(Player, pk=request.POST.get('player'))
-        return redirect('details_player', pk=player.pk)
+        return redirect('manage_player', pk=player.pk)
     return redirect('all_players')

@@ -268,28 +268,28 @@ class CpanelViewsTest(WousoTest):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'This field is required')
 
-    def test_edit_player_view_get(self):
+    def test_manage_player_view_get(self):
         p1 = self._get_player(1)
-        response = self.client.get(reverse('edit_player', args=[p1.pk]))
+        response = self.client.get(reverse('manage_player', args=[p1.pk]))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Edit Player')
+        self.assertContains(response, 'Manage Player')
         self.assertContains(response, 'testuser1')
         self.assertContains(response, 'Username')
         self.assertContains(response, 'Password')
 
-    def test_edit_player_view_post(self):
+    def test_manage_player_view_post(self):
         p1 = self._get_player(1)
 
         # Check the view with a valid form
         data = {'username': 'testuser_updated', 'password': p1.user.password}
-        response = self.client.post(reverse('edit_player', args=[p1.pk]), data)
+        response = self.client.post(reverse('manage_player', args=[p1.pk]), data)
         self.assertEqual(response.status_code, 302)
         p1 = User.objects.get(pk=p1.pk)
         self.assertEqual(p1.username, 'testuser_updated')
 
         # Check the view with an invalid form
         data = {}
-        response = self.client.post(reverse('edit_player', args=[p1.pk]), data)
+        response = self.client.post(reverse('manage_player', args=[p1.pk]), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'This field is required')
 

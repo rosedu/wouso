@@ -1,0 +1,32 @@
+{% extends 'cpanel/index.html' %}
+{% load user %}
+
+{% block sectiontitle %}News{% endblock %}
+
+{% block sectioncontent %}
+
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Publication date</th>
+        <th>Manage</th>
+    </tr>
+    {% for n in news %}
+    <tr>
+        <td>{{ n.title }}</td>
+        <td>{{ n.author }}</td>
+        <td>{{ n.date_pub }}</td>
+        <td>
+            <a class="button" href="{% url edit_news n.pk %}">Edit</a>
+            <a class="button" href="{% url del_news n.pk %}">Delete</a>
+        </td>
+    </tr>
+    {% empty %}
+        <td colspan="0">No news items.</td>
+    {% endfor %}
+</table>
+
+<a class="button" href="{% url add_news %}">Add news item</a>
+
+{% endblock %}

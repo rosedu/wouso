@@ -55,9 +55,7 @@
                 {% if user.real_user %}
                    Impersonated by {{ user.real_user }} <a href="{% url impersonate_clear %}">clear</a>
                 {% endif %}
-                {{ user.get_profile }}
                 <a id="head-home" href="{% url homepage %}">Game</a>&nbsp;
-                <a id="head-cpanel" href="{% url dashboard %}">CPanel</a>&nbsp;
                 <a id="head-logout" href="{% url logout_view %}">{% trans "Logout" %} &raquo;</a>
             </div>
         </div>
@@ -65,8 +63,17 @@
     {% endblock %}
 
     <div class="spacer-search"></div>
+    <div class="cpanel-profile">
+        <a href="{% url player_profile player.id %}">
+            <img src="{% player_avatar player %}" class="avatar avatar-med float-right" />
+        </a>
 
-    <div id="sidebar">
+        <div class="cpanel-player-info">
+            <strong>{% player player %}</strong>
+        </div>
+    </div>
+<div>
+    <div id="sidebar" style="margin-top: -50px">
         {% block sidebar %}
             <div class="widget-top"></div>
             <div class="widget-middle">
@@ -87,7 +94,7 @@
                 <div class="widget-content">
                     <ul class="menu">
                         <li class="games"><a href="{% url games_home %}">Games</a></li>
-                        <li class="formulas"><a href={% url formulas %}>Formulas</a></li>
+                        <li class="formulas"><a href="{% url formulas %}">Formulas</a></li>
                         <li class="empty"></li>
                         {% cpanel_games %}
                     </ul>
@@ -104,9 +111,8 @@
                     {% endif %}
                     <ul class="menu">
                         Shortcuts
-
-                        <li class="static"><a href="{% url admin:pages_staticpage_changelist %}" target="blank">Static Pages</a></li>
-                        <li class="static"><a href="{% url admin:pages_newsitem_changelist %}" target="blank">News</a></li>
+                        <li class="pages"><a href="{% url static_pages %}">Static Pages</a></li>
+                        <li class="news"><a href="{% url news %}">News</a></li>
                         {% if user.is_staff or user.is_superuser %}
                         <li><a href="{% url admin:activity_activity_changelist %}">Activity Monitor</a></li>
                         <li><a href="{% url admin:index %}"><em>Django Admin »</em></a></li>
@@ -123,7 +129,7 @@
             <div class="widget-bottom"></div>
             {% endblock %}
     </div>
-
+</div>
     <div id="content-cp">
         <div id="ajax-message">
             {% if messages %}
@@ -188,7 +194,6 @@
             </table>
 
             <h3>Misc</h3>
-            <a href="{% url the_bell %}">Press the bell!</a>
             <a href="{% url clear_cache %}">Clear cache</a>
 
             {% endblock %}
@@ -202,7 +207,7 @@
     <div id="footer">
         <div id="footer-content">
         {% block footer %}
-        &copy; 2012 ROSEdu
+        &copy; 2007 - {% now "Y" %} ROSEdu
         {% endblock %}
         </div>
     </div>
@@ -212,6 +217,7 @@
     {% autoescape off %}
     {{ config_hidden_footer }}
     {% endautoescape %}
+    </div>
 </div>
 </body>
 </html>
