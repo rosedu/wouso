@@ -111,7 +111,7 @@ class AnswerForm(forms.Form):
 
 class TagsForm(forms.Form):
     def __init__(self, data=None, instance=None, tags=None):
-        if not tags: tags = []
+        tags = tags or []
         super(TagsForm, self).__init__(data)
 
         for tag in tags:
