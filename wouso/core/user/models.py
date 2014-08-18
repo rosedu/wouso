@@ -218,12 +218,6 @@ class Player(models.Model):
         """ Return a dictionary with: points_gained, points_left, next_level """
         return God.get_level_progress(self)
 
-    def steal_points(self, userto, amount):
-        # TODO (re)move it
-        from wouso.core import scoring
-        scoring.score(self, None, 'steal-points', external_id=userto.id, points=-amount)
-        scoring.score(userto, None, 'steal-points', external_id=self.id, points=amount)
-
     @property
     def avatar(self):
         return self._avatar()

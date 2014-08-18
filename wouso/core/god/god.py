@@ -28,8 +28,6 @@ class DefaultGod:
                 description='Give bonus gold to the poor people'),
             dict(name='bonus-points', definition='points={points}', owner=None,
                 description='Give bonus points'),
-            dict(name='steal-points', definition='points={points}', owner=None,
-                description='Steal points using spells'),
             dict(name='penalty-points', definition='points=-{points}', owner=None,
                 description='Take back points from user'),
             dict(name='level-gold', definition='gold=10*{level}', owner=None,
@@ -104,12 +102,11 @@ class DefaultGod:
     def get_all_modifiers(self):
         """ Fetch modifiers from games and also add system specific ones
         """
-        ms = ['dispell', # cancel all spells
-              'cure',   # delete all negative spells
+        ms = ['dispell',  # cancel all spells
+              'cure',  # delete all negative spells
               'curse',  # prevent cast of positive spells, or cure and dispell
-              'immunity', # prevent cast of any spells, or cure and dispell
-              'steal',  # allow users to steal points, one from another
-              'top-disguise', # allow showing another number of points in top
+              'immunity',  # prevent cast of any spells, or cure and dispell
+              'top-disguise',  # allow showing another number of points in top
         ]
         for g in get_games():
             ms.extend(g.get_modifiers())
@@ -156,12 +153,6 @@ class DefaultGod:
 
         if source.magic.has_modifier('curse'):
             return False, 'Player is cursed'
-
-        if (spell.name == 'steal') and (destination.points < spell.percents):
-            return False, 'Insufficient amount'
-
-        if (spell.name == 'steal') and (source == destination):
-            return False, 'Cannot steal from self'
 
         if spell.name == 'challenge-affect-scoring':
            if not spell_cleanup(spell, destination, spell.name):
@@ -240,15 +231,12 @@ def post_cast(sender, **kwargs):
             signals.postExpire.send(sender=None, psdue=psd)
             psd.delete()
         return True
+
     if psdue.spell.name == 'cure':
         for psd in psdue.player.magic.spells.filter(spell__type='n'):
             signals.postExpire.send(sender=None, psdue=psd)
             psd.delete()
         # also delete itself
-        psdue.delete()
-        return True
-    if psdue.spell.name == 'steal':
-        psdue.player.steal_points(psdue.source, psdue.spell.percents)
         psdue.delete()
         return True
 
