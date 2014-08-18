@@ -282,7 +282,6 @@ class CpanelViewsTest(WousoTest):
         p1 = self._get_player(1)
 
         # Check the view with a valid form
-<<<<<<< HEAD
         data = {'username': 'testuser_updated', 'password': p1.user.password, 'confirm_password': p1.user.password}
         response = self.client.post(reverse('manage_player', args=[p1.pk]), data)
         self.assertEqual(response.status_code, 302)
