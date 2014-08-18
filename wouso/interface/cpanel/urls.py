@@ -83,6 +83,16 @@ name='roles_create'),
 
     url(r'^impersonate/(?P<player_id>\d+)/$', 'wouso.interface.cpanel.views.impersonate', name='impersonate'),
     url(r'^impersonate/clear/$', 'wouso.interface.cpanel.views.clean_impersonation', name='impersonate_clear'),
+
+    url(r'^static_pages/$', 'wouso.interface.cpanel.views.static_pages', name='static_pages'),
+    url(r'^add_static_page/$', 'wouso.interface.cpanel.views.add_static_page', name='add_static_page'),
+    url(r'^edit_static_page/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.edit_static_page', name='edit_static_page'),
+    url(r'^del_static_page/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.del_static_page', name='del_static_page'),
+
+    url(r'^news/$', 'wouso.interface.cpanel.views.news', name='news'),
+    url(r'^add_news/$', 'wouso.interface.cpanel.views.add_news', name='add_news'),
+    url(r'^edit_news/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.edit_news', name='edit_news'),
+    url(r'^del_news/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.del_news', name='del_news'),
 ]
 
 for g in get_cpanel_games():
