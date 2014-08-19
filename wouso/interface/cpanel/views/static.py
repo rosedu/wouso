@@ -8,15 +8,6 @@ from wouso.interface.cpanel.forms import StaticPageForm, NewsForm
 from wouso.interface.apps.pages.models import StaticPage, NewsItem
 
 
-class ModuleViewMixin(object):
-    module = 'undefined'
-
-    def get_context_data(self, **kwargs):
-        context = super(ModuleViewMixin, self).get_context_data(**kwargs)
-        context.update(dict(module=self.module))
-        return context
-
-
 class StaticPagesView(ListView):
     template_name = 'cpanel/static_pages.html'
     model = StaticPage
@@ -30,7 +21,7 @@ class StaticPagesView(ListView):
 static_pages = staff_required(StaticPagesView.as_view())
 
 
-class AddStaticPageView(ModuleViewMixin, CreateView):
+class AddStaticPageView(CreateView):
     template_name = 'cpanel/add_static_page.html'
     model = StaticPage
     form_class = StaticPageForm
@@ -74,7 +65,7 @@ class NewsView(ListView):
 news = permission_required('config.change_setting')(NewsView.as_view())
 
 
-class AddNewsView(ModuleViewMixin, CreateView):
+class AddNewsView(CreateView):
     template_name = "cpanel/add_news.html"
     model = NewsItem
     form_class = NewsForm
