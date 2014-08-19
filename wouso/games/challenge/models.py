@@ -341,8 +341,8 @@ class Challenge(models.Model):
             self.user_from.score = 1
             self.user_to.score = 0
         else:
-            self.user_from.score = 1
-            self.user_to.score = 0
+            self.user_from.score = 0
+            self.user_to.score = 1
 
         self.user_from.played = True
         self.user_to.played = True
