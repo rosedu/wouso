@@ -101,6 +101,7 @@ class ArtifactTestCase(TestCase):
 
         self.assertTrue(artifact(noartifact))
 
+
 class SpellTestCase(WousoTest):
 
     def test_buy_spell(self):
@@ -304,6 +305,7 @@ class SpellTestCase(WousoTest):
         # Player should have 33% more points with charge applied
         self.assertEqual(player.points, points_no_charge + 0.33 * (points_no_charge - initial_points))
 
+
 class TemplatetagsTest(WousoTest):
     def test_spell_due(self):
         player = self._get_player()
@@ -318,6 +320,7 @@ class TemplatetagsTest(WousoTest):
 
         player = self._get_player()
         self.assertTrue(artifact_full(player.level))
+
 
 class TestMagicViews(WousoTest):
     def setUp(self):
