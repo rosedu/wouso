@@ -655,12 +655,12 @@ class DefaultChallengeManager(ChallengeManager):
             # eg. if user_won has all 3 spell applied (Charge, Weakness, Frenzy) the final percent will be 133%
 
             # Check winner for extra points spell Charge
-            if self.challenge.user_won.user.magic.has_modifier('challenge-affect-scoring-won-p'):
-                self.challenge.user_won.percents += self.challenge.user_won.user.magic.modifier_percents('challenge-affect-scoring-won-p') - 100
+            if self.challenge.user_won.user.magic.has_modifier('challenge-affect-scoring-won'):
+                self.challenge.user_won.percents += self.challenge.user_won.user.magic.modifier_percents('challenge-affect-scoring-won') - 100
 
             # Check winner for less points spell Weakness
-            if self.challenge.user_won.user.magic.has_modifier('challenge-affect-scoring-won-n'):
-                self.challenge.user_won.percents += self.challenge.user_won.user.magic.modifier_percents('challenge-affect-scoring-won-n') - 100
+            if self.challenge.user_won.user.magic.has_modifier('challenge-affect-scoring-lost'):
+                self.challenge.user_won.percents += self.challenge.user_won.user.magic.modifier_percents('challenge-affect-scoring-lost') - 100
 
             # Check winner for extra points spell Frenzy
             if self.challenge.user_won.user.magic.has_modifier('challenge-affect-scoring'):
@@ -754,7 +754,8 @@ class ChallengeGame(Game):
         )
         fs.append(dict(name='chall-warranty', definition='points=-3',
             owner=chall_game.game,
-            description='Points taken as a warranty for challenge'))
+            description='Points taken as a warranty for challenge')
+        )
         fs.append(dict(name='chall-warranty-frenzy', definition='points=-0.66 * 3',
             owner=chall_game.game,
             description='Extra points taken as a warranty if Frenzy spell is applied')
@@ -779,8 +780,8 @@ class ChallengeGame(Game):
                 'challenge-cannot-challenge', # reject outgoing challenges, negative
                 'challenge-always-lose', # lose regardless the result, negative
                 'challenge-affect-scoring', # affect scoring by positive and negative percent (Frenzy)
-                'challenge-affect-scoring-won-p', # affect scoring by positive percent for won challenges (Charge)
-                'challenge-affect-scoring-won-n' # affect scoring by negative percent for won challenges (Weakness)
+                'challenge-affect-scoring-won', # affect scoring by positive percent for won challenges (Charge)
+                'challenge-affect-scoring-lost' # affect scoring by negative percent for won challenges (Weakness)
                 'challenge-evade', # 33% chance player does not lose points in a challenge
         ]
 

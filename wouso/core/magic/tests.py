@@ -295,9 +295,9 @@ class SpellTestCase(WousoTest):
         points_no_weakness = player.points
 
         # Applying Weakness
-        weakness = Spell.objects.create(name='challenge-affect-scoring-won-n', available=True, price=10, percents=-66, type='n')
+        weakness = Spell.objects.create(name='challenge-affect-scoring-lost', available=True, price=10, percents=-66, type='n')
         obs = PlayerSpellDue.objects.create(player=chall_user, source=chall_user, spell=weakness, due=datetime.now() + timedelta(days=1))
-        self.assertTrue(chall_user.magic.has_modifier('challenge-affect-scoring-won-n'))
+        self.assertTrue(chall_user.magic.has_modifier('challenge-affect-scoring-lost'))
 
         player.points = initial_points
         chall = Challenge.create(user_from=chall_user, user_to=player2, ignore_questions=True)
@@ -327,9 +327,9 @@ class SpellTestCase(WousoTest):
         points_no_charge = player.points
 
         # Apply Charge
-        charge = Spell.objects.create(name='challenge-affect-scoring-won-p', available=True, price=10, percents=33, type='p')
+        charge = Spell.objects.create(name='challenge-affect-scoring-won', available=True, price=10, percents=33, type='p')
         obs = PlayerSpellDue.objects.create(player=chall_user, source=chall_user, spell=charge, due=datetime.now() + timedelta(days=1))
-        self.assertTrue(chall_user.magic.has_modifier('challenge-affect-scoring-won-p'))
+        self.assertTrue(chall_user.magic.has_modifier('challenge-affect-scoring-won'))
 
         player.points = initial_points
         chall = Challenge.create(user_from=chall_user, user_to=player2, ignore_questions=True)
