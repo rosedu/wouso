@@ -40,7 +40,7 @@ from wouso.middleware.impersonation import ImpersonateMiddleware
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, \
     AnswerForm, EditReportForm, RaceForm, PlayerGroupForm, RoleForm, \
-    StaticPageForm, NewsForm
+    StaticPageForm, NewsForm, BroadcastEmailForm, BonusForm
 from forms import FormulaForm, TagForm
 
 
@@ -1198,11 +1198,6 @@ def clear_cache(request):
                                   context_instance=RequestContext(request))
 
 
-class BroadcastEmailForm(forms.Form):
-    subject = forms.CharField(required=True)
-    message = forms.CharField(widget=forms.Textarea, required=False)
-
-
 @permission_required('config.change_setting')
 def broadcast_email(request):
     if request.method == 'POST':
@@ -1226,17 +1221,6 @@ def broadcast_email(request):
                               context_instance=RequestContext(request)
     )
 
-
-class BonusForm(forms.Form):
-    amount = forms.IntegerField(initial=0)
-    coin = forms.ModelChoiceField(queryset=Coin.objects.all())
-    reason = forms.CharField(required=False)
-
-    def clean_amount(self):
-        amount = self.cleaned_data.get('amount', None)
-        if not amount:
-            raise ValidationError('Invalid amount')
-        return amount
 
 
 @permission_required('config.change_setting')
