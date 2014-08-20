@@ -756,10 +756,6 @@ class ChallengeGame(Game):
             owner=chall_game.game,
             description='Points taken as a warranty for challenge')
         )
-        fs.append(dict(name='chall-warranty-frenzy', definition='points=-0.66 * 3',
-            owner=chall_game.game,
-            description='Extra points taken as a warranty if Frenzy spell is applied')
-        )
         fs.append(dict(name='chall-warranty-return', definition='points=3',
             owner=chall_game.game,
             description='Points given back as a warranty taken for challenge')
@@ -767,6 +763,16 @@ class ChallengeGame(Game):
         fs.append(dict(name='chall-timer',
             definition='tlimit=300 - 5 * ({level} - 1)', owner=chall_game.game,
             description='Seconds left for a user in challenge')
+        )
+        # Extract points taken as a warranty for further definition of a dictionary entry
+        for k in fs:
+            if k['name'] == 'chall-warranty':
+                index = k['definition'].find('=') + 2
+                ch_warr = k['definition'][index:]
+        # New dictionary entry for Frenzy spell
+        fs.append(dict(name='chall-warranty-frenzy', definition='points=-0.66 * '+ch_warr,
+            owner=chall_game.game,
+            description='Extra points taken as a warranty if Frenzy spell is applied')
         )
         return fs
 
