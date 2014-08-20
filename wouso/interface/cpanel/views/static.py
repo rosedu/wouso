@@ -6,9 +6,10 @@ from django.http import HttpResponseRedirect
 from wouso.core.decorators import staff_required
 from wouso.interface.cpanel.forms import StaticPageForm, NewsForm
 from wouso.interface.apps.pages.models import StaticPage, NewsItem
+from wouso.interface.cpanel.views import ModuleViewMixin
 
 
-class StaticPagesView(ListView):
+class StaticPagesView(ModuleViewMixin, ListView):
     template_name = 'cpanel/static_pages.html'
     model = StaticPage
 
@@ -56,7 +57,7 @@ def del_static_page(request, pk):
     return HttpResponseRedirect(go_back)
 
 
-class NewsView(ListView):
+class NewsView(ModuleViewMixin, ListView):
     template_name = 'cpanel/news.html'
     model = NewsItem
     context_object_name = 'news'

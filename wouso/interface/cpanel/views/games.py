@@ -30,22 +30,13 @@ from wouso.games.challenge.models import Challenge, Participant
 from wouso.interface.apps.messaging.models import Message
 from wouso.interface.cpanel.models import Customization, Switchboard, \
     GamesSwitchboard
+from wouso.interface.cpanel.views import ModuleViewMixin
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.middleware.impersonation import ImpersonateMiddleware
 from wouso.utils.import_questions import import_from_file
 from wouso.interface.cpanel.forms import FormulaForm, SpellForm, QuestionForm, \
     AnswerForm, TagsForm, AddTagForm, UserForm, RaceForm, PlayerGroupForm, \
     RoleForm, EditReportForm, TagForm
-
-
-
-class ModuleViewMixin(object):
-    module = 'undefined'
-
-    def get_context_data(self, **kwargs):
-        context = super(ModuleViewMixin, self).get_context_data(**kwargs)
-        context.update(dict(module=self.module))
-        return context
 
 
 class DashboardView(ModuleViewMixin, TemplateView):
