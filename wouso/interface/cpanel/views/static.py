@@ -12,6 +12,7 @@ from wouso.interface.cpanel.views import ModuleViewMixin
 class StaticPagesView(ModuleViewMixin, ListView):
     template_name = 'cpanel/static_pages.html'
     model = StaticPage
+    module = 'pages'
 
     def get_context_data(self, **kwargs):
         context = super(StaticPagesView, self).get_context_data(**kwargs)
@@ -60,6 +61,7 @@ def del_static_page(request, pk):
 class NewsView(ModuleViewMixin, ListView):
     template_name = 'cpanel/news.html'
     model = NewsItem
+    module = 'news'
     context_object_name = 'news'
 
 

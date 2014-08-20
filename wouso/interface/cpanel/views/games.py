@@ -100,8 +100,9 @@ class DashboardView(ModuleViewMixin, TemplateView):
 dashboard = staff_required(DashboardView.as_view())
 
 
-class FormulasView(ListView):
+class FormulasView(ModuleViewMixin, ListView):
     model = Formula
+    module = 'formulas'
     template_name = 'cpanel/formulas_home.html'
     context_object_name = 'formulas'
 
@@ -832,10 +833,11 @@ def stafftoggle(request, id):
     return HttpResponseRedirect(reverse('player_profile', args=(id,)))
 
 
-class PlayersView(ListView):
+class PlayersView(ModuleViewMixin, ListView):
     template_name = 'cpanel/players.html'
     queryset = Player.objects.all().order_by('-user__date_joined')
     context_object_name = 'players'
+    module = 'players'
     paginate_by = 50
 
     def dispatch(self, request, *args, **kwargs):
@@ -953,9 +955,10 @@ def infraction_clear(request, user_id, infraction_id):
                 args=(user_id,)))
 
 
-class RacesGroupsView(ListView):
+class RacesGroupsView(ModuleViewMixin, ListView):
     template_name = 'cpanel/races/all.html'
     model = Race
+    module = 'races'
     context_object_name = 'races'
 
     def get_context_data(self, **kwargs):
@@ -997,9 +1000,10 @@ group_add = permission_required('config.change_setting')(
 )
 
 
-class RolesView(ListView):
+class RolesView(ModuleViewMixin, ListView):
     template_name = 'cpanel/roles.html'
     model = Group
+    module = 'roles'
     context_object_name = 'roles'
 
 
@@ -1043,9 +1047,10 @@ def roles_update_kick(request, id, player_id):
     return redirect('roles_update', id=group.id)
 
 
-class ReportsView(ListView):
+class ReportsView(ModuleViewMixin, ListView):
     template_name = 'cpanel/reports.html'
     context_object_name = 'reports'
+    module = 'reports'
 
     def get_queryset(self):
         return Report.objects.all().order_by('-timestamp')
