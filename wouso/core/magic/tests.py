@@ -339,6 +339,62 @@ class SpellTestCase(WousoTest):
         self.assertEqual(player.points, points_no_charge + 0.33 * (points_no_charge - initial_points))
 
 
+    def test_frenzy(self):
+        """
+         Test for Frenzy Spell
+        """
+        initial_points = 100
+        player1 = self._get_player()
+        player2 = self._get_player(2)
+        chall_user = player1.get_extension(ChallengeUser)
+
+        scoring.setup_scoring()
+        Coin.add('points')
+
+        current_points, player1.points = initial_points, initial_points
+
+        # Get 'chall-lost' definition. By default you still win 2 points when losing a challenge
+        formulas = ChallengeGame.get_formulas()
+        definition = formulas[1]['definition'] # this will be 'points = X'
+        index = definition.find('=') + 1 # get position of '='
+        lose_points = int(definition[index:]) # get X (nr of points won when losing challenge)
+
+        # Points won before Frenzy is applied
+        chall = Challenge.create(user_from=chall_user, user_to=player2, ignore_questions=True)
+        chall.set_won_by_player(chall_user)
+        points_won_no_frenzy = player1.points - current_points
+
+        current_points, player1.points = initial_points, initial_points
+
+        # Points lost before Frenzy is applied
+        chall = Challenge.create(user_from=chall_user, user_to=player2, ignore_questions=True)
+        chall.set_won_by_player(player2)
+        points_lost_no_frenzy = current_points + lose_points - player1.points
+
+        # Apply Frenzy Spell
+        frenzy = Spell.objects.create(name='challenge-affect-scoring', available=True, price=30, percents=66, type='o')
+        obs = PlayerSpellDue.objects.create(player=chall_user, source=chall_user, spell=frenzy, due=datetime.now() + timedelta(days=1))
+        self.assertTrue(chall_user.magic.has_modifier('challenge-affect-scoring'))
+
+        current_points, player1.points = initial_points, initial_points
+
+        # Player should win 66% more points with Frenzy Spell applied
+        chall = Challenge.create(user_from=chall_user, user_to=player2, ignore_questions=True)
+        chall.set_won_by_player(chall_user)
+        points_won_frenzy = player1.points - current_points
+        # Used assertAlmostEqual and not assertEqual because test failed comparing the 10th decimal
+        self.assertAlmostEqual(points_won_frenzy, points_won_no_frenzy + 0.66 * points_won_no_frenzy)
+
+        current_points, player1.points = initial_points, initial_points
+
+        # Player should lose 66% more points with Frenzy Spell applied
+        chall = Challenge.create(user_from=chall_user, user_to=player2, ignore_questions=True)
+        chall.set_won_by_player(player2)
+        points_lost_frenzy = current_points + lose_points - player1.points
+        # Used assertAlmostEqual and not assertEqual because test failed comparing the 10th decimal
+        self.assertAlmostEqual(points_lost_frenzy, points_lost_no_frenzy + 0.66 * points_lost_no_frenzy)
+
+
 class TemplatetagsTest(WousoTest):
     def test_spell_due(self):
         player = self._get_player()
