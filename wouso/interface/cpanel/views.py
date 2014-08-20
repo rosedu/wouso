@@ -1,5 +1,6 @@
 import datetime
 from django import forms
+from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import models as auth
@@ -1202,13 +1203,16 @@ class BroadcastEmailForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea, required=False)
 
 
-
 @permission_required('config.change_setting')
 def broadcast_email(request):
     if request.method == 'POST':
         form = BroadcastEmailForm(request.POST)
         if form.is_valid():
-            return HttpResponseRedirect('dashboard')
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+            from_email = settings.EMAIL_HOST_USER
+            send_mail(subject, message, from_email, ['ivascu.gabriel59@gmail.com'])
+            return HttpResponseRedirect('..')
     else:
         form = BroadcastEmailForm
 
