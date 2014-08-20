@@ -64,7 +64,7 @@ urlpatterns = patterns('',
 
     # Games
     url(r'^g/', include('wouso.games.urls')),
-    
+
     # The future
     url(r'^ui/', 'wouso.interface.views.ui', name='ui'),
 
@@ -76,7 +76,7 @@ urlpatterns = patterns('',
     # Static: not in a real deployment
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',
         {'document_root': settings.MEDIA_ROOT}),
-    
+
     url('', include('social.apps.django_app.urls', namespace='social')),
 )
 
@@ -89,27 +89,3 @@ except (ImportError, AssertionError):
     urlpatterns += patterns('wouso.interface.views', url(r'^api/', 'no_api'))
 else:
     urlpatterns += patterns('', url(r'^api/', include('wouso.interface.api.urls')))
-
-# Specific urls with import logic - soft dependencies
-try:
-    import imp
-    imp.find_module('django_qunit')
-except ImportError:
-    pass
-else:
-    urlpatterns += patterns('',
-        url(r'^qunit/', include('django_qunit.urls'))
-	)
-
-try:
-    import imp
-    imp.find_module('django_socketio')
-
-except ImportError:
-    pass
-else:
-    urlpatterns += patterns('',
-        url('', include('django_socketio.urls')),
-        # Chat
-        url(r'^chat/', include('wouso.interface.chat.urls')),
-    )

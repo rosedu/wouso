@@ -8,18 +8,12 @@
     <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <TITLE>{% block title %}WoUSO Control Panel{% endblock %}</TITLE>
     <LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/style.css" />
-    <link  rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/chatbox.css">
-    <link  rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/contactbox.css">
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery.autocomplete.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/format.item.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery.timers.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/ajaxify.js"></script>
-    <script type="text/javascript" src="{{ basepath }}/static/js/contactbox.js"></script>
-    {% if not config_disable_private_chat and not config_disable_chat  %}
-    <script type="text/javascript" src="{{ basepath }}/static/js/chatbox.js"></script>
-    {% endif %}
     <script type="text/javascript">
         var url_base = '{{ basepath }}';
     </script>
@@ -52,9 +46,6 @@
 </HEAD>
 
 <body>
-{% block contactbox %}
-{% include 'interface/contactbox.html' %}
-{% endblock %}
 
 <div id="container">
     {% block header %}
@@ -90,12 +81,10 @@
                 <div class="widget-content">
                     <ul class="menu">
                         <li class="home"><a href="{% url dashboard %}">Dashboard</a></li>
-                        <li class="qpool"><a href="{% url qpool_home %}">Question Pool</a>
-                        </li>
+                        <li class="qpool"><a href="{% url qpool_home %}">Question Pool</a></li>
                         <ul class="submenu">
                             <li class="qpool_import"></li>
                         </ul>
-                        </li>
                         <li class="spells"><a href="{% url spells %}">Spells</a></li>
                         <li class="artifacts"><a href="{% url artifact_home %}">Artifacts</a></li>
                         <li><a href="{% url all_players %}">Players</a></li>
@@ -145,7 +134,7 @@
         <div id="ajax-message">
             {% if messages %}
                 {% for message in messages %}
-                    <p>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                    <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
                 {% endfor %}
             {% endif %}
         </div>
@@ -224,7 +213,6 @@
     </div>
 
     <div id="PrivatebarUsers"></div>
-    <div id="PrivateChatBoxes"></div>
 
     {% autoescape off %}
     {{ config_hidden_footer }}
