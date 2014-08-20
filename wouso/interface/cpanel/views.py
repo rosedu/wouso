@@ -1,6 +1,6 @@
 import datetime
 from django import forms
-from django.core.mail import send_mail
+from django.core.mail import send_mail, send_mass_mail
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import models as auth
@@ -1211,7 +1211,12 @@ def broadcast_email(request):
             subject = form.cleaned_data['subject']
             message = form.cleaned_data['message']
             from_email = settings.EMAIL_HOST_USER
-            send_mail(subject, message, from_email, ['ivascu.gabriel59@gmail.com'])
+            email_list = []
+            user_list = User.objects.all()
+            for u in user_list:
+                if u.email:
+                    email_list.append(u.email)
+            send_mail(subject, message, from_email, email_list)
             return HttpResponseRedirect('..')
     else:
         form = BroadcastEmailForm
