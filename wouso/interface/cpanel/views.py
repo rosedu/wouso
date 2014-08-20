@@ -969,7 +969,6 @@ class RacesGroupsView(ListView):
 
 
 class RacesAdd(CreateView):
-
     model = Race
     template_name = 'cpanel/races/create.html'
     form_class = RaceForm
@@ -979,7 +978,6 @@ class RacesAdd(CreateView):
 
 
 class GroupsAdd(CreateView):
-
     model = PlayerGroup
     template_name = 'cpanel/races/group_create.html'
     form_class = PlayerGroupForm
@@ -1188,6 +1186,7 @@ def clean_impersonation(request):
     ImpersonateMiddleware.clear(request)
     return redirect('homepage')
 
+
 @permission_required('superuser')
 def clear_cache(request):
     if request.method == 'POST':
@@ -1200,12 +1199,17 @@ def clear_cache(request):
 
 @permission_required('config.change_setting')
 def broadcast_email(request):
+    """
+     Sends an email to all users in the game
+    """
     if request.method == 'POST':
         form = BroadcastEmailForm(request.POST)
         if form.is_valid():
+            # Obtain form data
             subject = form.cleaned_data['subject']
             message = form.cleaned_data['message']
-            from_email = settings.EMAIL_HOST_USER
+            from_email = settings.EMAIL_HOST_USER  # taken from settings.py
+            # Create an email list with all users that have an email set
             email_list = []
             user_list = User.objects.all()
             for u in user_list:
@@ -1218,9 +1222,7 @@ def broadcast_email(request):
 
     return render_to_response('cpanel/broadcast.html',
                               {'form': form},
-                              context_instance=RequestContext(request)
-    )
-
+                              context_instance=RequestContext(request))
 
 
 @permission_required('config.change_setting')
