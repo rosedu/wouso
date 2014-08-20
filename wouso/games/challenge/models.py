@@ -636,12 +636,9 @@ class DefaultChallengeManager(ChallengeManager):
         if not self.challenge.SCORING:
             return
 
-        for u in (self.challenge.user_to, self.challenge.user_from):
-            # affect bonuses
-            if u.user.magic.has_modifier('challenge-affect-scoring'):
-                u.percents = u.user.magic.modifier_percents('challenge-affect-scoring')
-            else:
-                u.percents = 100
+        # Default percents for players
+        self.challenge.user_to.percents = 100
+        self.challenge.user_from.percents = 100
 
         if self.challenge.status == 'D':
             scoring.score(self.challenge.user_to.user, ChallengeGame, 'chall-draw', percents=self.challenge.user_to.percents)
@@ -654,8 +651,20 @@ class DefaultChallengeManager(ChallengeManager):
             winner_points = self.challenge.user_won.user.points
             loser_points = self.challenge.user_lost.user.points
 
-            if self.challenge.user_won.user.magic.has_modifier('challenge-affect-scoring-won'):
-                self.challenge.user_won.percents += self.challenge.user_won.user.magic.modifier_percents('challenge-affect-scoring-won')
+            # Add up all positive/negative spells percents to get the final percent for the winning user
+            # eg. if user_won has all 3 spell applied (Charge, Weakness, Frenzy) the final percent will be 133%
+
+            # Check winner for extra points spell Charge
+            if self.challenge.user_won.user.magic.has_modifier('challenge-affect-scoring-won-p'):
+                self.challenge.user_won.percents += self.challenge.user_won.user.magic.modifier_percents('challenge-affect-scoring-won-p') - 100
+
+            # Check winner for less points spell Weakness
+            if self.challenge.user_won.user.magic.has_modifier('challenge-affect-scoring-won-n'):
+                self.challenge.user_won.percents += self.challenge.user_won.user.magic.modifier_percents('challenge-affect-scoring-won-n') - 100
+
+            # Check winner for extra points spell Frenzy
+            if self.challenge.user_won.user.magic.has_modifier('challenge-affect-scoring'):
+                self.challenge.user_won.percents += self.challenge.user_won.user.magic.modifier_percents('challenge-affect-scoring') - 100
 
             if self.challenge.WARRANTY:
                 # warranty not affected by percents
@@ -667,7 +676,8 @@ class DefaultChallengeManager(ChallengeManager):
                           different_race=diff_race, different_class=diff_class,
                           winner_points=winner_points, loser_points=loser_points,
             )
-            #Check for spell evade
+
+            # Check for spell evade
             if self.challenge.user_lost.user.magic.has_modifier('challenge-evade'):
                 random.seed()
                 if random.random() < 0.20:
@@ -677,6 +687,12 @@ class DefaultChallengeManager(ChallengeManager):
 
             scoring.score(self.challenge.user_lost.user, ChallengeGame, 'chall-lost',
                           external_id=self.challenge.id, points=self.challenge.user_lost.score, points2=self.challenge.user_lost.score)
+
+            # Check the loser user for Frenzy spell. If applied, 66% extra points will be taken as warranty
+            if self.challenge.user_lost.user.magic.has_modifier('challenge-affect-scoring'):
+                scoring.score(self.challenge.user_lost.user, ChallengeGame, 'chall-warranty-frenzy',
+                              external_id=self.challenge.id, points=self.challenge.user_lost.score,
+                              points2=self.challenge.user_lost.score)
 
 
 class ChallengeGame(Game):
@@ -739,12 +755,18 @@ class ChallengeGame(Game):
         fs.append(dict(name='chall-warranty', definition='points=-3',
             owner=chall_game.game,
             description='Points taken as a warranty for challenge'))
+        fs.append(dict(name='chall-warranty-frenzy', definition='points=-0.66 * 3',
+            owner=chall_game.game,
+            description='Extra points taken as a warranty if Frenzy spell is applied')
+        )
         fs.append(dict(name='chall-warranty-return', definition='points=3',
             owner=chall_game.game,
-            description='Points given back as a warranty taken for challenge'))
+            description='Points given back as a warranty taken for challenge')
+        )
         fs.append(dict(name='chall-timer',
             definition='tlimit=300 - 5 * ({level} - 1)', owner=chall_game.game,
-            description='Seconds left for a user in challenge'))
+            description='Seconds left for a user in challenge')
+        )
         return fs
 
     @classmethod
@@ -756,9 +778,10 @@ class ChallengeGame(Game):
                 'challenge-cannot-be-challenged', # reject incoming challenges, negative
                 'challenge-cannot-challenge', # reject outgoing challenges, negative
                 'challenge-always-lose', # lose regardless the result, negative
-                'challenge-affect-scoring', # affect scoring by positive/negative percent
-                'challenge-affect-scoring-won', #affect scoring by positive/negative percent for win challenges
-                'challenge-evade', #33% chance player does not lose points in a challenge
+                'challenge-affect-scoring', # affect scoring by positive and negative percent (Frenzy)
+                'challenge-affect-scoring-won-p', # affect scoring by positive percent for won challenges (Charge)
+                'challenge-affect-scoring-won-n' # affect scoring by negative percent for won challenges (Weakness)
+                'challenge-evade', # 33% chance player does not lose points in a challenge
         ]
 
     @classmethod
