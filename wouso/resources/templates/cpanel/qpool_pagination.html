@@ -1,4 +1,4 @@
-{% ifequal page.obj.num_pages 1 %}
+{% if q_page.has_previous or q_page.has_next %}
 <div class="pagination">
     <span class="step-links">
         Page:
@@ -19,4 +19,5 @@
         {% endif %}
     </span>
 </div>
-{% endifequal %}
+{% else %}
+{% endif %}

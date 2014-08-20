@@ -1,4 +1,4 @@
-{% ifequal page.obj.num_pages 1 %}
+{% if q_page.has_previous or q_page.has_next %}
 <div class="pagination">
     <ul>
         {% if page_obj.has_previous %}
@@ -18,4 +18,5 @@
         {% endif %}
     </ul>
 </div>
-{% endifequal %}
+{% else %}
+{% endif %}
