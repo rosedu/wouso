@@ -1,13 +1,13 @@
 {% extends 'cpanel/index.html' %}
 {% load i18n %}
 {% load user %}
-{% block sectiontitle %}{% block title %}{% trans 'Bonus' %}{% endblock %}{% endblock %}
+{% block sectiontitle %}{% block title %}{% trans 'Broadcast email' %}{% endblock %}{% endblock %}
 
 {% block sectioncontent %}
     <h4>Broadcast email</h4>
     <form action="" method="post">
         {{ form.as_p }}
-        <button class="btn" type="submit">Bonus this player!</button>
+        <button class="btn" type="submit">Send mail</button>
         {% csrf_token %}
     </form>
 {% endblock %}
