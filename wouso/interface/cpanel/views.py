@@ -1210,11 +1210,8 @@ def broadcast_email(request):
             message = form.cleaned_data['message']
             from_email = settings.EMAIL_HOST_USER  # taken from settings.py
             # Create an email list with all users that have an email set
-            email_list = []
             user_list = User.objects.all()
-            for u in user_list:
-                if u.email:
-                    email_list.append(u.email)
+            email_list = [u.email for u in user_list if u.email]
             send_mail(subject, message, from_email, email_list)
             return HttpResponseRedirect('..')
     else:
