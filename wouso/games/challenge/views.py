@@ -60,6 +60,11 @@ def index(request):
 
 class ChallengeView(View):
     def dispatch(self, request, *args, **kwargs):
+        if request.is_ajax():
+            if request.POST.get('name'):
+                request.session['name'] = request.POST['name']
+                name = request.POST['name']
+
         self.chall_user = request.user.get_profile().get_extension(ChallengeUser)
         self.chall = get_object_or_404(Challenge, pk=kwargs['id'])
         try:
@@ -104,6 +109,7 @@ class ChallengeView(View):
             questions_and_answers = zip(form.visible_fields(), results['results'])
         else:
             questions_and_answers = None
+
         return render_to_response('challenge/result.html',
             {'challenge': self.chall, 'challenge_user': self.chall_user,
             'points': results['points'], 'form' : form,  'questions_and_answers' : questions_and_answers},
@@ -163,11 +169,11 @@ def launch(request, to_id):
         lock.unlock()
         return redirect('challenge_index_view')
 
-    if not user_from.can_launch():
-        messages.error(request, _('You cannot launch another challenge today.'))
-        logging.info("Ready to unlock (cannot launch today).")
-        lock.unlock()
-        return redirect('challenge_index_view')
+    # if not user_from.can_launch():
+    #     messages.error(request, _('You cannot launch another challenge today.'))
+    #     logging.info("Ready to unlock (cannot launch today).")
+    #     lock.unlock()
+    #     return redirect('challenge_index_view')
 
     if not user_from.in_same_division(user_to):
         messages.error(request, _('You are not in the same division'))
