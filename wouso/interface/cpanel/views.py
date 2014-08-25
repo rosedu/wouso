@@ -1057,8 +1057,12 @@ def roles_update_kick(request, id, player_id):
     return redirect('roles_update', id=group.id)
 
 
-class ReportsView(ListView):
+class ReportsView(ModuleViewMixin, TemplateView):
     template_name = 'cpanel/reports.html'
+    module = 'reports'
+    for q in QuestionReport.objects.all():
+        print q.name
+        print q.count
 
     def get_context_data(self, **kwargs):
         context = super(ReportsView, self).get_context_data(**kwargs)
