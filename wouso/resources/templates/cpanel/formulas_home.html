@@ -12,6 +12,7 @@
 <tr>
   <th>Name</th>
   <th>Formula</th>
+  <th>Description</th>
   <th>Owner</th>
   <th>Edit</th>
   <th>Delete</th>
@@ -19,6 +20,7 @@
 {% for p in formulas %}
 <tr><td> {{ p.name }}</td>
   <td> {{ p.definition }}</td>
+  <td> {{ p.description }} </td>
   <td> {{ p.owner }}</td>
   <td><a class="button" href="{% url edit_formula p.id %}">Edit</a></td>
   <td><a class="button" href="{% url formula_del p.id %}" onClick="return confirm('Realy?');">Delete</a></td>
