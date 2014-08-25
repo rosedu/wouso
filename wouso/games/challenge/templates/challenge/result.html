@@ -32,15 +32,14 @@
             }
         });
 
-        $('.somebutton').click(function(e) {
+        $('.flag').click(function(e) {
             e.preventDefault();
-            
+            var data = {"name":$(this).attr("name")};
             $.ajax({
                 url: '',
                 type: 'POST',
-                data: {'submit':true},
+                data: data,
                 success: function (result) {
-                    console.log(result);
                 },
                 error: function(result) {
                     console.log("error");
@@ -92,9 +91,8 @@
     {% for field, answer in questions_and_answers %}
         <li>
         <div class="question">
-        <button class="somebutton">F</button>
         {% autoescape off %}
-        {{ field.label }}
+        {{ field.label }}<button class="flag" style="float: right" name="{{field.label}}">F</button>
             <br/>
         <p>
             [ You checked {{ answer.0}} from {{answer.1}} correct answers]
