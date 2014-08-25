@@ -22,7 +22,8 @@ from wouso.core.decorators import staff_required
 from wouso.core.ui import get_sidebar
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
-from wouso.core.qpool.models import Schedule, Question, Tag, Category, Answer
+from wouso.core.qpool.models import Schedule, Question, Tag, Category, Answer, \
+    QuestionReport
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
 from wouso.core import scoring
@@ -1058,10 +1059,14 @@ def roles_update_kick(request, id, player_id):
 
 class ReportsView(ListView):
     template_name = 'cpanel/reports.html'
-    context_object_name = 'reports'
 
-    def get_queryset(self):
-        return Report.objects.all().order_by('-timestamp')
+    def get_context_data(self, **kwargs):
+        context = super(ReportsView, self).get_context_data(**kwargs)
+        context.update({
+            'reports': Report.objects.all().order_by('-timestamp'),
+            'questions': QuestionReport.objects.all().order_by('-count')
+        })
+        return context
 
 
 reports = staff_required(ReportsView.as_view())
