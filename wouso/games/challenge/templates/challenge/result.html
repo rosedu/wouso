@@ -1,10 +1,56 @@
 {% extends 'interface/section_base.html' %}
 {% load i18n %}
 {% load user %}
+{% block scripts %}
+<script>
+    $(function() {
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        $('.somebutton').click(function() {
+            $.ajax({
+                url: '',
+                type: 'POST',
+                data: {'submit':true},
+                success: function (result) {
+                    console.log(result);
+                },
+                error: function(result) {
+                    console.log("error");
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
+
 {% block title %}{% trans 'Challenge #' %}{{ challenge.id }}{% endblock %}
 {% block sectiontitle %}{% trans 'Challenge #' %}{{ challenge.id }} - {% trans 'Results' %}{% endblock %}
-
-
 
 
 {% block sectioncontent %}
@@ -44,6 +90,7 @@
     {% for field, answer in questions_and_answers %}
         <li>
         <div class="question">
+        <button class="somebutton">F</button>
         {% autoescape off %}
         {{ field.label }}
             <br/>
