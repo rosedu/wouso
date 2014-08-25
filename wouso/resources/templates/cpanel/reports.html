@@ -16,10 +16,10 @@
     </ul>
 
     <div class="tab_container">
+        <br/>
+        <br/>
     	<div id="player" class="tab_content">
     		<br/>
-            <br/>
-            <br/>
     		<table>
 				<tr>
 					<th>User from</th>
@@ -29,7 +29,7 @@
 					<th>Status</th>
 					<th>Timestamp</th>
 					<th>Edit</th>
-			</tr>
+			    </tr>
 			{% for r in reports %}
 			<tr>
 				<td>{{ r.user_from }}</td>
@@ -51,6 +51,27 @@
 			{% endfor %}
     		</table>
     	</div>
+
+        <div id="question" class="tab_content">
+            <br/>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Question</th>
+                    <th>Count</th>
+                    <th>Edit</th>
+                </tr>
+                {% for q in questions %}
+                <tr>
+                    <td>{{ q.id }}</td>
+                    <td>{{ q.name }}</td>
+                    <td>{{ q.count }}</td>
+                    <td><a class="button" href="{% url qpool_edit q.id %}">Edit</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
     </div>
 
 
