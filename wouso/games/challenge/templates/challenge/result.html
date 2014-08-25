@@ -32,7 +32,9 @@
             }
         });
 
-        $('.somebutton').click(function() {
+        $('.somebutton').click(function(e) {
+            e.preventDefault();
+            
             $.ajax({
                 url: '',
                 type: 'POST',
