@@ -3,35 +3,55 @@
 
 {% block sectiontitle %}Reports{% endblock %}
 
-{% block sectioncontent %}
-<table>
-<tr>
-    <th>User from</th>
-    <th>User to</th>
-    <th>Text</th>
-    <th>Dibs</th>
-    <th>Status</th>
-    <th>Timestamp</th>
-    <th>Edit</th>
-</tr>
-{% for r in reports %}
-<tr><td>{{ r.user_from }}</td>
-    <td>{{ r.user_to }}</td>
-    <td>{{ r.text|slice:"0:10" }}</td>
-    <td>{{ r.dibs }}</td>
-    <td>{% if r.status == "R" %}
-        Reported
-        {% else %}{% if r.status == "I" %}
-        Investigating
-        {% else %}{% if r.status == "S" %}
-        Resolved
-        {% else %}{% if r.status == "E" %}
-        Invalid
-        {% endif %}{% endif %}{% endif %}{% endif %}</td>
-    <td>{{ r.timestamp}}</td>
-    <td><a class="button" href="{% url edit_report r.id %}">Edit</a></td>
+{% block scripts %}
+    <script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
+{% endblock %}
 
-</tr>
-{% endfor %}
-</table>
+{% block sectioncontent %}
+
+    <ul class="tabs">
+        <li><a href="#player" id="player-click" class="no-redir">Report Player</a></li>
+        <li><a href="#question" id="question-click" class="no-redir">Report Question</a></li>
+    </ul>
+
+    <div class="tab_container">
+    	<div id="player" class="tab_content">
+    		<br/>
+            <br/>
+            <br/>
+    		<table>
+				<tr>
+					<th>User from</th>
+					<th>User to</th>
+					<th>Text</th>
+					<th>Dibs</th>
+					<th>Status</th>
+					<th>Timestamp</th>
+					<th>Edit</th>
+			</tr>
+			{% for r in reports %}
+			<tr>
+				<td>{{ r.user_from }}</td>
+				<td>{{ r.user_to }}</td>
+				<td>{{ r.text|slice:"0:10" }}</td>
+				<td>{{ r.dibs }}</td>
+				<td>{% if r.status == "R" %}
+					Reported
+					{% else %}{% if r.status == "I" %}
+					Investigating
+					{% else %}{% if r.status == "S" %}
+					Resolved
+					{% else %}{% if r.status == "E" %}
+					Invalid
+					{% endif %}{% endif %}{% endif %}{% endif %}</td>
+				<td>{{ r.timestamp}}</td>
+				<td><a class="button" href="{% url edit_report r.id %}">Edit</a></td>
+			</tr>
+			{% endfor %}
+    		</table>
+    	</div>
+    </div>
+
+
 {% endblock %}
