@@ -199,5 +199,9 @@ class QuestionReport(models.Model):
 
 def get_id_by_name(name):
     """
-     Get question's ID using it's name
+     Get question's ID from database using it's name
     """
+    reported_question = QuestionReport.objects.filter(name=name)[:1].get()
+    question_id = Question.objects.filter(text=name)[:1].get().id
+    reported_question.q_id = question_id
+
