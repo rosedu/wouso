@@ -1,17 +1,33 @@
 {% extends 'cpanel/index.html' %}
 {% load user %}
+{% load i18n %}
 
-{% block sectiontitle %}Races and groups{% endblock %}
+{% block sectiontitle %}
+Races and groups
+<a class="btn btn-primary pull-right" href="{% url races_add %}">
+    {% trans 'Add race ' %}<span class="glyphicon glyphicon-plus"></span>
+</a>
+<a class="btn btn-primary pull-right" href="{% url group_add %}">
+    {% trans 'Add group ' %}<span class="glyphicon glyphicon-plus"></span>
+</a>
+{% endblock %}
 
 {% block sectioncontent %}
-
+<div class="container-fluid">
 <ul>
     {% for r in races %}
-    <li>{{ r }} {% if r.can_play %}[can play]{% endif %}<a href="{% url admin:user_race_change r.id %}">✍</a>
+    <li>
+        {{ r }} {% if r.can_play %}[can play]{% endif %}
+        <a href="{% url admin:user_race_change r.id %}">
+            <span class="glyphicon glyphicon-edit"></span>
+        </a>
         <ul>
             {% for g in r.children %}
             <li>
-                {{ g }} <a href="{% url admin:user_playergroup_change g.id %}">✍</a>
+                {{ g }}
+                <a href="{% url admin:user_playergroup_change g.id %}">
+                    <span class="glyphicon glyphicon-edit"></span>
+                </a>
                 <a href="{% url system_message_group g.id %}">Message</a>
             </li>
             {% endfor %}
@@ -22,13 +38,13 @@
       <ul>
         {% for g in orphan_groups %}
           <li>
-              {{ g }} <a href="{% url admin:user_playergroup_change g.id %}">✍</a>
+              {{ g }}
+              <a href="{% url admin:user_playergroup_change g.id %}"><span class="glyphicon glyphicon-edit"></span></a>
               <a href="{% url system_message_group g.id %}">Message</a>
           </li>
         {% endfor %}
       </ul>
     </li>
 </ul>
-<a class="button" href="{% url races_add %}">Add race</a>
-<a class="button" href="{% url group_add %}">Add group</a>
+</div>
 {% endblock %}
