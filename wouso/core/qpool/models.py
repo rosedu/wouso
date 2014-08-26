@@ -179,6 +179,7 @@ class Schedule(models.Model):
 class QuestionReport(models.Model):
     name = models.CharField(max_length=2000)
     count = models.IntegerField(default=0)
+    q_id = models.IntegerField(default=0)
 
     @staticmethod
     def add(question):
@@ -194,3 +195,9 @@ class QuestionReport(models.Model):
         q.save()
 
         return q
+
+
+def get_id_by_name(name):
+    """
+     Get question's ID using it's name
+    """

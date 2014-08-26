@@ -23,7 +23,7 @@ from wouso.core.ui import get_sidebar
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
 from wouso.core.qpool.models import Schedule, Question, Tag, Category, Answer, \
-    QuestionReport
+    QuestionReport, get_id_by_name
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
 from wouso.core import scoring
@@ -981,7 +981,6 @@ class RacesGroupsView(ListView):
 
 
 class RacesAdd(CreateView):
-
     model = Race
     template_name = 'cpanel/races/create.html'
     form_class = RaceForm
@@ -991,7 +990,6 @@ class RacesAdd(CreateView):
 
 
 class GroupsAdd(CreateView):
-
     model = PlayerGroup
     template_name = 'cpanel/races/group_create.html'
     form_class = PlayerGroupForm
@@ -1057,23 +1055,15 @@ def roles_update_kick(request, id, player_id):
     return redirect('roles_update', id=group.id)
 
 
-class ReportsView(ModuleViewMixin, TemplateView):
-    template_name = 'cpanel/reports.html'
-    module = 'reports'
-    for q in QuestionReport.objects.all():
-        print q.name
-        print q.count
+@permission_required('config.change_setting')
+def reports_home(request):
+    reports = Report.objects.all().order_by('-timestamp')
+    questions = QuestionReport.objects.all().order_by('-count')
 
-    def get_context_data(self, **kwargs):
-        context = super(ReportsView, self).get_context_data(**kwargs)
-        context.update({
-            'reports': Report.objects.all().order_by('-timestamp'),
-            'questions': QuestionReport.objects.all().order_by('-count')
-        })
-        return context
-
-
-reports = staff_required(ReportsView.as_view())
+    return render_to_response('cpanel/reports.html',
+                              {'reports': reports,
+                               'questions': questions},
+                              context_instance=RequestContext(request))
 
 
 class EditReportView(UpdateView):

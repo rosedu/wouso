@@ -76,7 +76,7 @@ name='roles_create'),
     # misc
     url(r'^tools/clear-cache/$', 'wouso.interface.cpanel.views.clear_cache', name='clear_cache'),
 
-    url(r'^reports/$', 'wouso.interface.cpanel.views.reports', name='reports'),
+    url(r'^reports/$', 'wouso.interface.cpanel.views.reports_home', name='reports'),
     url(r'^reports/edit/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.edit_report', name='edit_report'),
 
     url(r'^system_message/group/(?P<group>\d+)/$', 'wouso.interface.cpanel.views.system_message_group', name='system_message_group'),

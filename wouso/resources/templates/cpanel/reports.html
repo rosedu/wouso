@@ -63,10 +63,9 @@
                 </tr>
                 {% for q in questions %}
                 <tr>
-                    <td>{{ q.id }}</td>
+                    <td></td>
                     <td>{{ q.name }}</td>
                     <td>{{ q.count }}</td>
-                    <td><a class="button" href="{% url qpool_edit q.id %}">Edit</a></td>
                 </tr>
                 {% endfor %}
             </table>
