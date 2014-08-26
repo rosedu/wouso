@@ -68,6 +68,7 @@
             <td>{{ q.q_id }}</td>
             <td>{{ q.name }}</td>
             <td align="right">{{ q.count }}</td>
+            <td><a class="button" href="{% url question_edit q.id %}">✍</a></td>
         </tr>
         {% endfor %}
         </table>
