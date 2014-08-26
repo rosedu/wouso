@@ -1060,7 +1060,11 @@ def reports_home(request):
     reports = Report.objects.all().order_by('-timestamp')
     questions = QuestionReport.objects.all().order_by('-count')
     for q in questions:
-        q.q_id = Question.objects.filter(text=q.name)[:1].get().id
+        try:
+            q.q_id = Question.objects.filter(text=q.name)[:1].get().id
+        except Question.DoesNotExist:
+            q.delete()
+            q.save()
 
     return render_to_response('cpanel/reports.html',
                               {'reports': reports,
