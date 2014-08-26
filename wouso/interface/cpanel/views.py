@@ -23,7 +23,7 @@ from wouso.core.ui import get_sidebar
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
 from wouso.core.qpool.models import Schedule, Question, Tag, Category, Answer, \
-    QuestionReport, get_id_by_name
+    QuestionReport
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
 from wouso.core import scoring
@@ -1059,6 +1059,8 @@ def roles_update_kick(request, id, player_id):
 def reports_home(request):
     reports = Report.objects.all().order_by('-timestamp')
     questions = QuestionReport.objects.all().order_by('-count')
+    for q in questions:
+        q.q_id = Question.objects.filter(text=q.name)[:1].get().id
 
     return render_to_response('cpanel/reports.html',
                               {'reports': reports,
