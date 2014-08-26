@@ -5,9 +5,16 @@
 {%  load i18n %}
 <html>
 <HEAD>
-    <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <TITLE>{% block title %}WoUSO Control Panel{% endblock %}</TITLE>
-    <LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/style.css" />
+    <!--<LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/style.css" />!-->
+    <!-- Bootstrap CSS !-->
+    <link href="{{ basepath }} /static/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <link href="{{ basepath }} /static/css/dashboard.css" rel="stylesheet">
+
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery.autocomplete.js"></script>
@@ -46,71 +53,56 @@
 </HEAD>
 
 <body>
-
-<div id="container">
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     {% block header %}
-    <div id="header-cp">
-        <div id="topbar">
-            <div class="first-line">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{% url dashboard %}">Control Panel</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
                 {% if user.real_user %}
-                   Impersonated by {{ user.real_user }} <a href="{% url impersonate_clear %}">clear</a>
+                    Impersonated by {{ user.real_user }} <li><a href="{% url impersonate_clear %}">clear</a></li>
                 {% endif %}
-                <a id="head-home" href="{% url homepage %}">Game</a>&nbsp;
-                <a id="head-logout" href="{% url logout_view %}">{% trans "Logout" %} &raquo;</a>
-            </div>
+                <li><a id="head-home" href="{% url homepage %}">Game</a></li>
+                <li><a id="head-logout" href="{% url logout_view %}">{% trans "Logout" %} <span class="glyphicon glyphicon-log-out"></span></a></li>
+            </ul>
         </div>
     </div>
     {% endblock %}
+</div>
 
-    <div class="spacer-search"></div>
-    <div class="cpanel-profile">
-        <a href="{% url player_profile player.id %}">
-            <img src="{% player_avatar player %}" class="avatar avatar-med float-right" />
-        </a>
-
-        <div class="cpanel-player-info">
-            <strong>{% player player %}</strong>
-        </div>
-    </div>
 <div>
-    <div id="sidebar" style="margin-top: -50px">
-        {% block sidebar %}
-            <div class="widget-top"></div>
-            <div class="widget-middle">
-                <h2>CPanel</h2>
-                <div class="widget-content">
-                    <ul class="menu">
-                        <li class="home"><a href="{% url dashboard %}">Dashboard</a></li>
+    <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-3 col-md-2 sidebar sidebar">
+                    <ul class="nav nav-sidebar">
+                        <h4 class="text-center">Title</h4>
+                        <li class="active home"><a href="{% url dashboard %}">Dashboard</a></li>
                         <li class="qpool"><a href="{% url qpool_home %}">Question Pool</a></li>
-                        <ul class="submenu">
-                            <li class="qpool_import"></li>
-                        </ul>
                         <li class="spells"><a href="{% url spells %}">Spells</a></li>
                         <li class="artifacts"><a href="{% url artifact_home %}">Artifacts</a></li>
                         <li><a href="{% url all_players %}">Players</a></li>
                         <li><a href="{% url races_groups %}">Races & groups</a></li>
                     </ul>
-                </div>
-                <div class="widget-content">
-                    <ul class="menu">
+                    <ul class="nav nav-sidebar">
+                        <h4 class="text-center">Title</h4>
                         <li class="games"><a href="{% url games_home %}">Games</a></li>
                         <li class="formulas"><a href="{% url formulas %}">Formulas</a></li>
                         <li class="empty"></li>
                         {% cpanel_games %}
                     </ul>
-                </div>
-                <div class="widget-content">
                     {% if user.is_staff or user.is_superuser %}
-                    <ul class="menu">
-                        Admin
+                    <ul class="nav nav-sidebar">
+                        <h4 class="text-center">Title</h4>
                         <li class="roles"><a href="{% url roles %}">Roles</a></li>
                         <li class="custom"><a href="{% url customization %}">Customization</a></li>
                         <li class="display"><a href="{% url cpanel_display %}">Display</a></li>
                         <li class="reports"><a href="{% url reports %}">Reports</a></li>
                     </ul>
                     {% endif %}
-                    <ul class="menu">
-                        Shortcuts
+                    <ul class="nav nav-sidebar">
+                        <h4 class="text-center">Title</h4>
                         <li class="pages"><a href="{% url static_pages %}">Static Pages</a></li>
                         <li class="news"><a href="{% url news %}">News</a></li>
                         {% if user.is_staff or user.is_superuser %}
@@ -119,15 +111,7 @@
                         {% endif %}
                     </ul>
                 </div>
-                <br/>
-                <div class="widget-content">
-                    {% block extra_sidebar %}
-                    {% endblock %}
-                    <div class="clearer spacer"></div>
-                </div>
             </div>
-            <div class="widget-bottom"></div>
-            {% endblock %}
     </div>
 </div>
     <div id="content-cp">
