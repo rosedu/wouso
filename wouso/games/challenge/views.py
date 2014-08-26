@@ -171,11 +171,11 @@ def launch(request, to_id):
         lock.unlock()
         return redirect('challenge_index_view')
 
-    # if not user_from.can_launch():
-    #     messages.error(request, _('You cannot launch another challenge today.'))
-    #     logging.info("Ready to unlock (cannot launch today).")
-    #     lock.unlock()
-    #     return redirect('challenge_index_view')
+    if not user_from.can_launch():
+        messages.error(request, _('You cannot launch another challenge today.'))
+        logging.info("Ready to unlock (cannot launch today).")
+        lock.unlock()
+        return redirect('challenge_index_view')
 
     if not user_from.in_same_division(user_to):
         messages.error(request, _('You are not in the same division'))
