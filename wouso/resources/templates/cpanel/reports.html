@@ -10,68 +10,69 @@
 
 {% block sectioncontent %}
 
-    <ul class="tabs">
-        <li><a href="#player" id="player-click" class="no-redir">Report Player</a></li>
-        <li><a href="#question" id="question-click" class="no-redir">Report Question</a></li>
-    </ul>
+<ul class="tabs">
+    <li><a href="#player" id="player-click" class="no-redir">Report Player</a></li>
+    <li><a href="#question" id="question-click" class="no-redir">Report Question</a></li>
+</ul>
 
-    <div class="tab_container">
+<div class="tab_container">
+    <br/>
+    <br/>
+    <div id="player" class="tab_content">
         <br/>
-        <br/>
-    	<div id="player" class="tab_content">
-    		<br/>
-    		<table>
-				<tr>
-					<th>User from</th>
-					<th>User to</th>
-					<th>Text</th>
-					<th>Dibs</th>
-					<th>Status</th>
-					<th>Timestamp</th>
-					<th>Edit</th>
-			    </tr>
-			{% for r in reports %}
-			<tr>
-				<td>{{ r.user_from }}</td>
-				<td>{{ r.user_to }}</td>
-				<td>{{ r.text|slice:"0:10" }}</td>
-				<td>{{ r.dibs }}</td>
-				<td>{% if r.status == "R" %}
-					Reported
-					{% else %}{% if r.status == "I" %}
-					Investigating
-					{% else %}{% if r.status == "S" %}
-					Resolved
-					{% else %}{% if r.status == "E" %}
-					Invalid
-					{% endif %}{% endif %}{% endif %}{% endif %}</td>
-				<td>{{ r.timestamp}}</td>
-				<td><a class="button" href="{% url edit_report r.id %}">Edit</a></td>
-			</tr>
-			{% endfor %}
-    		</table>
-    	</div>
-
-        <div id="question" class="tab_content">
-            <br/>
-            <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Question</th>
-                    <th>Count</th>
-                    <th>Edit</th>
-                </tr>
-                {% for q in questions %}
-                <tr>
-                    <td></td>
-                    <td>{{ q.name }}</td>
-                    <td>{{ q.count }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-
+        <table>
+            <tr>
+                <th>User from</th>
+                <th>User to</th>
+                <th>Text</th>
+                <th>Dibs</th>
+                <th>Status</th>
+                <th>Timestamp</th>
+                <th>Edit</th>
+            </tr>
+            {% for r in reports %}
+            <tr>
+                <td>{{ r.user_from }}</td>
+                <td>{{ r.user_to }}</td>
+                <td>{{ r.text|slice:"0:10" }}</td>
+                <td>{{ r.dibs }}</td>
+                <td>
+                    {% if r.status == "R" %}
+                    Reported
+                    {% else %}{% if r.status == "I" %}
+                    Investigating
+                    {% else %}{% if r.status == "S" %}
+                    Resolved
+                    {% else %}{% if r.status == "E" %}
+                    Invalid
+                    {% endif %}{% endif %}{% endif %}{% endif %}
+                </td>
+                <td>{{ r.timestamp}}</td>
+                <td><a class="button" href="{% url edit_report r.id %}">Edit</a></td>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
 
+    <div id="question" class="tab_content">
+        <br/>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Question</th>
+                <th>Count</th>
+                <th>Edit</th>
+            </tr>
+        {% for q in questions %}
+        <tr>
+            <td></td>
+            <td>{{ q.name }}</td>
+            <td>{{ q.count }}</td>
+        </tr>
+        {% endfor %}
+        </table>
+    </div>
+</div>
 
 {% endblock %}
+
