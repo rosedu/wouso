@@ -1,25 +1,27 @@
 {% extends 'cpanel/index.html' %}
 {% load user %}
+{% load i18n %}
 
 {% block sectiontitle %}Set groups{% endblock %}
 
 {% block sectioncontent %}
 
-<form method="post" action="">
-<input type="hidden" name="to" value="{{to.id}}" />
 
-    User: {% player to %}
-    Group: {{ to.group }}
-
+<form class="form-horizontal" method="post">
+    <input type="hidden" name="to" value="{{to.id}}"/>
+    <strong>User:</strong> {% player to %}
+    <!-- TODO: didn't know how to cancel auto new line before {% player to %} -->
+    <br/>
+    <strong>Group:</strong> {{ to.group }}
+    <br/>
     <p>Oxynia - CA, Zota - CB și Nifes - CC</p>
-<table>
-{{ form }}
-</table>
-
-<button type="submit">Save</button>
-{% csrf_token %}
+    <table>
+        {{ form }}
+    </table>
+    <button class="btn btn-primary" type="submit">{% trans 'Save ' %}</button>
+    {% csrf_token %}
 </form>
-
-<a class="button" href="{% url manage_player to.pk %}">Back to user</a>
+<br/>
+<a class="btn btn-primary" href="{% url manage_player to.pk %}">{% trans 'Back to user' %}</a>
 
 {% endblock %}
