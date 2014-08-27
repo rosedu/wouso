@@ -11,11 +11,18 @@
 
     <br/> <br/>
 
-    <a class="btn btn-primary" href="{% url ws_add_workshop %}"><strong>{% trans 'Add workshop' %}</strong></a>
+    <a class="btn btn-primary" href="{% url ws_add_workshop %}">
+        <strong>{% trans 'Add Workshop ' %}</strong>
+        <span class="glyphicon glyphicon-plus"></span>
+    </a>
 
-    <a class="btn btn-primary" href="{% url ws_edit_spot 0 0 %}">{% trans 'Edit default spot' %}</a>
+    <a class="btn btn-primary" href="{% url ws_add_group %}">
+        {% trans 'Add Semigroup ' %}<span class="glyphicon glyphicon-plus"></span>
+    </a>
 
-    <a class="btn btn-primary" href="{% url ws_add_group %}">{% trans 'Add semigroup' %}</a>
+    <a class="btn btn-success" href="{% url ws_edit_spot 0 0 %}">
+        {% trans 'Edit Default Spot ' %}<span class="glyphicon glyphicon-edit"></span>
+    </a>
 
     <hr/>
 
