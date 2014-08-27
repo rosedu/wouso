@@ -1,31 +1,46 @@
 {% extends 'cpanel/qpool_home.html' %}
 {% load i18n %}
 
-{% block sectiontitle %}Question pool &raquo; Manage Tags{% endblock %}
+
+{% block sectiontitle %}
+    Question pool &raquo; Manage Tags
+    <a class="btn btn-primary pull-right" href="{% url qpool_add_tag %}">
+        {% trans 'Add Tag ' %}<span class="glyphicon glyphicon-plus"></span>
+    </a>
+{% endblock %}
 
 {% block subsectioncontent %}
-<table>
-    <tr>
-        <th>Tag</th>
-        <th>Category</th>
-        <th>Questions</th>
-    </tr>
+    <div class="container-fluid">
+        <br/>
+        <table class="table table-bordered table-hover">
+            <tr>
+                <th>Tag</th>
+                <th>Category</th>
+                <th>Questions</th>
+                <th>Manage</th>
+            </tr>
+            {% for t in tags %}
+            <tr>
+                <td>{{ t }}</td>
+                <td>{{ t.category }}</td>
+                <td>{{ t.question_set.count }}</td>
+                <td><a class="btn btn-success" href="{% url qpool_edit_tag t.id %}">
+                        {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+                    </a> &nbsp; &nbsp;
+                    <a class="btn btn-danger" href="{% url qpool_del_tag t.id %}">
+                        {% trans 'Delete ' %}<span class="glyphicon glyphicon-remove"></span>
+                    </a> &nbsp; &nbsp;
+                    {% if t.category %}
+                    <a class="btn btn-warning" href="{% url qpool_home cat=t.category.name tag=t.id %}">
+                        {% trans 'Filter' %}
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 
-    {% for t in tags %}
-    <tr>
-        <td>{{ t }}</td>
-        <td>{{ t.category }}</td>
-        <td>{{ t.question_set.count }}</td>
-        <td><a class="button button-min" href="{% url qpool_edit_tag t.id %}">✍</a></td>
-        <td><a class="button button-min" href="{% url qpool_del_tag t.id %}">x</a></td>
-        {% if t.category %}
-        <td><a href="{% url qpool_home cat=t.category.name tag=t.id %}">filter</a></td>
-        {% endif %}
-    </tr>
-    {% endfor %}
-</table>
-
-<a class="button" href="{% url qpool_add_tag %}">Add tag</a>
 {% endblock %}
 
 {% block extra_sidebar %}
