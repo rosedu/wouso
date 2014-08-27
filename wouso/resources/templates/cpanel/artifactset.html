@@ -1,34 +1,56 @@
 {% extends 'cpanel/index.html' %}
+
 {% load user %}
 {% load artifacts %}
+{% load i18n %}
 
 {% block sectiontitle %}Set artifact{% endblock %}
 
 {% block sectioncontent %}
 
-<form method="post" action="">
-<input type="hidden" name="to" value="{{to.id}}" />User: {% player to %}
-artifact:
+
+<form class="form-horizontal" method="post">
+    <input type="hidden" name="to" value="{{to.id}}"/><strong>User:</strong> {% player to %}
+    <!-- TODO: didn't know how to cancel auto new line before {% player to %} -->
+    <br/>
+    <strong>Artifact:</strong>
     <select name="artifact">{% for a in artifacts %}<option value="{{a.id}}">{{a.title}}</option>{% endfor %}</select>
-amount:
+    <br/>
+    <strong>Amount:</strong>
     <input size="3" type="text" name="amount" value="1" />
-<div class="actions">
-    <button type="submit" class="default">Save</button>
-</div>
-{% csrf_token %}
+    <br/>
+    <button class="btn btn-primary" type="submit">{% trans 'Save ' %}</button>
+    {% csrf_token %}
 </form>
 
 {% if user.is_staff %}
 <!-- kind of an edit, TODO: write interface code -->
 
-<div class="spacer"></div>
-<h4>Existing</h4>
-<ul class="simple">
-{% for a in to.magic.artifact_amounts.all %}
-    <li>{% artifact a %} {{ a.artifact.title }} {{ a.amount }} <a href="{% url admin:magic_playerartifactamount_change a.id %}">✍</a></li>
-{% empty %}
-    <li class="empty">None</li>
-{% endfor %}
-</ul>
+
+<h4><strong>Artifacts existing:</strong></h4>
+
+<table style="width: 50%" class="table table-bordered table table-hover">
+    <tr>
+        <th>Title</th>
+        <th>Amount</th>
+        <th>Admin Edit</th>
+    </tr>
+    {% for a in to.magic.artifact_amounts.all %}
+    <tr>
+        <td>{{ a.artifact.title }}</td>
+        <td>{{ a.amount }}</td>
+        <td>
+            <a class="btn btn-success" href="{% url admin:magic_playerartifactamount_change a.id %}">
+                {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+            </a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="0" class="text-center">No artifacts yet.</td>
+    </tr>
+    {% endfor %}
+</table>
+
 {% endif %}
 {% endblock %}
