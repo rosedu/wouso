@@ -3,26 +3,28 @@
 {% load i18n %}
 
 
-{% block sectiontitle %}Workshop{% endblock %}
+{% block sectiontitle %}
+    Workshop
+
+    <div class="pull-right">
+        <a class="btn btn-primary" href="{% url ws_add_workshop %}">
+            <strong>{% trans 'Add Workshop ' %}</strong>
+            <span class="glyphicon glyphicon-plus"></span>
+        </a>
+
+        <a class="btn btn-primary" href="{% url ws_add_group %}">
+            {% trans 'Add Semigroup ' %}<span class="glyphicon glyphicon-plus"></span>
+        </a>
+
+        <a class="btn btn-success" href="{% url ws_edit_spot 0 0 %}">
+            {% trans 'Edit Default Spot ' %}<span class="glyphicon glyphicon-edit"></span>
+        </a>
+    </div>
+{% endblock %}
 
 {% block sectioncontent %}
 
     <strong>{% now "d. M. Y, H:i:s" %}</strong>
-
-    <br/> <br/>
-
-    <a class="btn btn-primary" href="{% url ws_add_workshop %}">
-        <strong>{% trans 'Add Workshop ' %}</strong>
-        <span class="glyphicon glyphicon-plus"></span>
-    </a>
-
-    <a class="btn btn-primary" href="{% url ws_add_group %}">
-        {% trans 'Add Semigroup ' %}<span class="glyphicon glyphicon-plus"></span>
-    </a>
-
-    <a class="btn btn-success" href="{% url ws_edit_spot 0 0 %}">
-        {% trans 'Edit Default Spot ' %}<span class="glyphicon glyphicon-edit"></span>
-    </a>
 
     <hr/>
 
@@ -42,28 +44,28 @@
         {% autoescape off %}{{ config_ws_cpanel_extra }}{% endautoescape %}
 
         <div class=" col-md-9">
-        <table class="table table-bordered table-condensed table-hover">
-            <tr>
-                <th><em>Hour/Day</em></th>
-                {% for d in days %}
-                <th><em>{{ d.1 }}</em></th>
+            <table class="table table-bordered table-condensed table-hover">
+                <tr>
+                    <th><em>Hour/Day</em></th>
+                    {% for d in days %}
+                    <th><em>{{ d.1 }}</em></th>
+                    {% endfor %}
+                </tr>
+                {% for h in hours %}
+                <tr>
+                    <td><em>{{ h }}:00</em></td>
+                    {% for d in days %}
+                    <td {% if d.0 == info.get_spot.0 %}{% if h == info.get_spot.1 %}
+                        class="red"{% endif %}{% endif %}>{% get_schedule d.0 h %}
+                        <br/>
+                        <a class="btn btn-success btn btn-xs" href="{% url ws_edit_spot d.0 h %}">
+                            {% trans 'edit spot' %} <span class="glyphicon glyphicon-edit"></span>
+                        </a>
+                    </td>
+                    {% endfor %}
+                </tr>
                 {% endfor %}
-            </tr>
-            {% for h in hours %}
-            <tr>
-                <td><em>{{ h }}:00</em></td>
-                {% for d in days %}
-                <td {% if d.0 == info.get_spot.0 %}{% if h == info.get_spot.1 %}
-                    class="red"{% endif %}{% endif %}>{% get_schedule d.0 h %}
-                    <br/>
-                    <a class="btn btn-success btn btn-xs" href="{% url ws_edit_spot d.0 h %}">
-                        {% trans 'edit spot' %} <span class="glyphicon glyphicon-edit"></span>
-                    </a>
-                </td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </table>
+            </table>
         </div>
 
         <div class="panel panel-default col-md-3">
