@@ -42,7 +42,7 @@
         {% autoescape off %}{{ config_ws_cpanel_extra }}{% endautoescape %}
 
         <div class=" col-md-9">
-        <table class="table table-bordered table table-striped">
+        <table class="table table-bordered table-condensed table-hover">
             <tr>
                 <th><em>Hour/Day</em></th>
                 {% for d in days %}
@@ -67,7 +67,7 @@
         </div>
 
         <div class="panel panel-default col-md-3">
-            <div class="panel panel-body">
+            <div class="panel-body">
                 {% block information %}
                 {% if info %}
                 <p>

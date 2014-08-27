@@ -16,7 +16,7 @@
 
         <strong>Spot:</strong>
         {% if semigroup.day %}day={{ semigroup.day }}, hour={{ semigroup.hour }}
-        <a class="btn btn-success btn btn-xs" href="{% url ws_edit_group semigroup.pk %}">
+        <a class="btn btn-success" href="{% url ws_edit_group semigroup.pk %}">
             {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
         </a>.
         {% else %}Any time where there isn't any other one.{% endif %}
@@ -33,7 +33,7 @@
         <hr/>
 
         <h4><strong>Students:</strong></h4>
-        <table class="table table-bordered table table-striped">
+        <table class="table table-bordered table-condensed table-hover">
             <tr>
                 <th>#</th>
                 <th>Player</th>
@@ -56,7 +56,7 @@
         <form class="horizontal-form" action="?semigroup={{semigroup.id}}" method="post">
             {% player_input 'player' semigroup.id %}
             {% csrf_token %}
-            <button class="btn btn-primary btn btn-sm" type="submit">
+            <button class="btn btn-primary" type="submit">
                 {% trans 'Add ' %}<span class="glyphicon glyphicon-plus"></span>
             </button>
         </form>

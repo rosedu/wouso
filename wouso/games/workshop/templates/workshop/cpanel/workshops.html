@@ -42,34 +42,30 @@
                     </td>
                     <td>
                         total: {{ w.assessment_set.count }}
-                        <br/> <br/>
-                        <a class="btn btn-warning btn btn-xs" href="{% url ws_view_assessments w.id %}">{% trans 'View ' %}</a>
+                        <a class="btn btn-warning" href="{% url ws_view_assessments w.id %}">{% trans 'View ' %}</a>
                     </td>
                     <td>
-                        <a class="btn btn-success btn btn-xs" href="{% url ws_edit_workshop w.id %}">
+                        <a class="btn btn-success" href="{% url ws_edit_workshop w.id %}">
                             {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
                         </a>
-                        <br/> <br/>
                         {% if not w.start_at %}
-                        <a class="btn btn-primary btn btn-xs" href="{% url ws_start w.id %}">
+                        <a class="btn btn-primary" href="{% url ws_start w.id %}">
                             {% trans 'Start ' %}<span class="glyphicon glyphicon-play"></span>
                         </a>
                         {% endif %}
                         {% if w.is_started and w.is_active %}
-                        <a class="btn btn-danger btn btn-xs" href="{% url ws_stop w.id %}">
+                        <a class="btn btn-danger" href="{% url ws_stop w.id %}">
                             {% trans 'Stop ' %}<span class="glyphicon glyphicon-stop"></span>
                         </a>
-                        <br/> <br/>
                         {% endif %}
                         {% if w.is_started and w.is_passed %}
-                        <a class="btn btn-warning btn btn-xs" onclick="return confirm('are you sure?');"
+                        <a class="btn btn-warning" onclick="return confirm('are you sure?');"
                            href="{% url ws_mark_for_review w.id %}">{% trans 'Mark for review ' %}
                            <span class="glyphicon glyphicon-pencil"></span>
                         </a>
-                        <br/> <br/>
                         {% endif %}
                         {% if w.is_reviewable %}
-                        <a class="btn btn-warning btn btn-xs" onclick="return confirm('are you sure?');"
+                        <a class="btn btn-warning" onclick="return confirm('are you sure?');"
                            href="{% url ws_mark_for_grading w.id %}">{% trans 'Mark for grading ' %}
                            <span class="glyphicon glyphicon-ok"></span>
                         </a>
@@ -102,11 +98,10 @@
                 </ul>
 
                 <h4>Actions:</h4>
-                <a class="btn btn-success btn btn-xs" href="{% url ws_edit_spot info.get_spot.0 info.get_spot.1 %}">
+                <a class="btn btn-success" href="{% url ws_edit_spot info.get_spot.0 info.get_spot.1 %}">
                     {% trans 'Edit Spot ' %}<span class="glyphicon glyphicon-edit"></span>
                 </a>
-                <br/> <br/>
-                <a class="btn btn-warning btn btn-xs" href="?integrity_check=1">
+                <a class="btn btn-warning" href="?integrity_check=1">
                     {% trans 'Integrity Check' %}
                 </a>
 

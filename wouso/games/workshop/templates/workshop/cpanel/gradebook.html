@@ -10,7 +10,7 @@
 {% block tabcontent %}
 
     <div class="container-fluid">
-        <table class="table table-bordered table table-striped">
+        <table class="table table-bordered table-condensed table-hover">
             <tr>
                 <th colspan="2">Student</th>
                 {% for w in semigroup.workshop_set.all %}
@@ -29,12 +29,12 @@
             <tr>
                 <td colspan="2"></td>
                 {% for w in semigroup.workshop_set.all %}
-                <td><a class="btn btn-warning btn btn-xs" href="{% url ws_reviewers_map w.id %}">{% trans 'View' %}</a></td>
+                <td><a class="btn btn-warning" href="{% url ws_reviewers_map w.id %}">{% trans 'View' %}</a></td>
                 {% endfor %}
             </tr>
         </table>
     </div>
 
-    <a class="btn btn-primary btn btn-sm" href="{% url ws_workshops %}">{% trans 'Back to Workshops' %}</a>
+    <a class="btn btn-primary" href="{% url ws_workshops %}">{% trans 'Back to Workshops' %}</a>
 
 {% endblock %}

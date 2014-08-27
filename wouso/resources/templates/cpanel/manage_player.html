@@ -3,31 +3,36 @@
 {% load user %}
 {% load i18n %}
 
-{% block sectiontitle %}Edit Player{% endblock %}
+{% block sectiontitle %}
+Manage player
+{% endblock %}
 
 {% block sectioncontent %}
 
 {% block buttons %}
 {% with object.get_profile as player %}
-<h3 class="page-header">Player: {{ player.full_name }}</h3>
-
-<h4>Manage: &NonBreakingSpace;
+<h3 class="page-header">Player: {{ player.full_name }}
+<div class="pull-right">
     <a class="btn btn-success" href="{% url artifact_set player.id %}">
-        {% trans 'Artifacts ' %}<span class="glyphicon glyphicon-edit"></span>
+        {% trans 'Artifacts ' %}
     </a>
     <a class="btn btn-success" href="{% url group_set player.id %}">
-        {% trans 'Groups ' %}<span class="glyphicon glyphicon-edit"></span>
+        {% trans 'Groups ' %}
     </a>
     <a class="btn btn-success" href="{% url bonus player.id %}">
-        {% trans 'Bonus ' %}<span class="glyphicon glyphicon-edit"></span>
+        {% trans 'Bonus ' %}
     </a>
     <a class="btn btn-success" href="{% url impersonate player.id %}">
-        {% trans 'Impersonate ' %}<span class="glyphicon glyphicon-edit"></span>
+        {% trans 'Impersonate ' %}
     </a>
     <a class="btn btn-success" href="{% url specialquest_manage player.id %}">
-        {% trans 'Special Quest ' %}<span class="glyphicon glyphicon-edit"></span>
+        {% trans 'Special Quest ' %}
     </a>
-</h4>
+    </div>
+</h3>
+
+
+<h4>Manage:</h4>
 {% endwith %}
 {% endblock %}
 

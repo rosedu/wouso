@@ -20,7 +20,7 @@
     <h4>{{ workshop.semigroup }}, {{workshop.date}}, {{ workshop.active_until|date:"H:m" }}</h4>
     <p>Assessments and reviewers:</p>
 
-<table>
+<table class="table table-hover table-bordered table-condensed">
     <tr>
         <th colspan="2">Student</th>
         <th>Ass Grade</th>
@@ -39,11 +39,11 @@
         <td><strong>{{ ass.final_grade }}</strong></td>
         <td>
             {% if workshop.is_gradable %}
-            <a class="button" href="{% url ws_grade_assessment ass.id %}" title="Review and grade"><strong>Grade</strong></a>
+            <a class="btn btn-primary" href="{% url ws_grade_assessment ass.id %}" title="Review and grade"><strong>Grade</strong></a>
             {% endif %}
 
-            <a class="button button-min" href="{% url ws_view_assessment workshop.id ass.id %}">view</a>
-            <a class="button button-min" href="{% url ws_reset_assessment_reviews workshop.id ass.id %}" onclick="return confirm('are you sure? an angry mob will kill you if you do this');">reset</a>
+            <a class="btn btn-success" href="{% url ws_view_assessment workshop.id ass.id %}">view</a>
+            <a class="btn btn-danger" href="{% url ws_reset_assessment_reviews workshop.id ass.id %}" onclick="return confirm('are you sure? an angry mob will kill you if you do this');">reset</a>
         </td>
         <td>{% if integrity_check %}{{ ass.integrity }}{% else %}-{% endif %}</td>
         <td valign="top" rowspan="2">
@@ -64,12 +64,12 @@
     {% endfor %}
 </table>
 
-    <a class="button" href="{% url ws_workshops %}">Workshops</a>
+    <a class="btn btn-primary" href="{% url ws_workshops %}">Workshops</a>
     {% if workshop.is_reviewable %}
-    <a class="button" onclick="return confirm('are you sure?');" href="{% url ws_mark_for_grading workshop.id %}">Mark for grading</a><br/>
+    <a class="btn btn-primary" onclick="return confirm('are you sure?');" href="{% url ws_mark_for_grading workshop.id %}">Mark for grading</a><br/>
     {% endif %}
     {% if workshop.is_gradable %}
-    <a class="button" href="{% url ws_update_grades workshop.id %}">Update grades</a>
+    <a class="btn btn-success" href="{% url ws_update_grades workshop.id %}">Update grades</a>
     {% endif %}
-    <a class="button" href="{% url ws_gradebook workshop.semigroup.id %}">Gradebook</a>
+    <a class="btn btn-primary" href="{% url ws_gradebook workshop.semigroup.id %}">Gradebook</a>
 {% endblock %}

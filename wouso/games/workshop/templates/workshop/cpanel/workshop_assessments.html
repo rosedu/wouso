@@ -30,9 +30,9 @@
             {% endfor %}
         </ol>
     {% if user.is_superuser %}
-<a class="button" href="{% url ws_edit_assessment workshop.id assessment.id %}">Edit</a>
+<a class="btn btn-success" href="{% url ws_edit_assessment workshop.id assessment.id %}">Edit</a>
     {% endif %}
-<a class="button" href="{% url ws_view_assessments workshop.id %}">All assessments</a>
+<a class="btn btn-primary" href="{% url ws_view_assessments workshop.id %}">All assessments</a>
 {% else %}
         <h3>Workshop #{{workshop.id}}</h3>
         <h4>{{ workshop.semigroup }}, {{workshop.date}}</h4>
@@ -48,7 +48,7 @@
         </ul>
 
         <p>Total: {{ workshop.assessment_set.all.count }}</p>
-        <a class="button" href="{% url ws_workshops %}">Workshops</a>
-        <a class="button" href="{% url ws_reviewers_map workshop.pk %}">Grades</a>
+        <a class="btn btn-primary" href="{% url ws_workshops %}">Workshops</a>
+        <a class="btn btn-primary" href="{% url ws_reviewers_map workshop.pk %}">Grades</a>
 {% endif %}
 {% endblock %}

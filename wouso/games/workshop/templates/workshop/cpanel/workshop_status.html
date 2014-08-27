@@ -1,5 +1,5 @@
 {% extends 'workshop/cpanel/index.html' %}
-
+{% load i18n %}
 {% block tabcontent %}
 <h2>Workshop: {{ object.title }}</h2>
 <p class="lead">Semigroup: {{ object.semigroup }}</p>
@@ -13,21 +13,25 @@
 </dd>
 
 {% with object as w %}
-  <a class="button" href="{% url ws_edit_workshop w.id %}">✍edit</a>
+  <a class="btn btn-success" href="{% url ws_edit_workshop w.id %}">
+      {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+  </a>
   {% if not w.start_at %}
-  <a class="button" href="{% url ws_start w.id %}">Start</a>
+  <a class="btn btn-primary" href="{% url ws_start w.id %}">
+    {% trans 'Start' %}>
+  </a>
   {% endif %}
   {% if w.is_started and w.is_active %}
-  <a class="button" href="{% url ws_stop w.id %}">Stop</a>
+  <a class="btn btn-danger" href="{% url ws_stop w.id %}">Stop</a>
   {% endif %}
   {% if w.is_started and w.is_passed %}
-  <a class="button" onclick="return confirm('are you sure?');" href="{% url ws_mark_for_review w.id %}">Mark for review</a><br/>
+  <a class="btn btn-primary" onclick="return confirm('are you sure?');" href="{% url ws_mark_for_review w.id %}">Mark for review</a><br/>
   {% endif %}
   {% if w.is_reviewable %}
-  <a class="button" onclick="return confirm('are you sure?');" href="{% url ws_mark_for_grading w.id %}">Mark for grading</a><br/>
+  <a class="btn btn-primary" onclick="return confirm('are you sure?');" href="{% url ws_mark_for_grading w.id %}">Mark for grading</a><br/>
   {% endif %}
 
-  <a class="button" href="{% url ws_view_assessments w.id %}">View assessments</a>
-  <a class="button btn-danger" href="{% url ws_delete w.id %}">Delete workshop</a>
+  <a class="btn btn-success" href="{% url ws_view_assessments w.id %}">View assessments</a>
+  <a class="btn btn-danger" href="{% url ws_delete w.id %}">Delete workshop</a>
 {% endwith %}
 {% endblock %}

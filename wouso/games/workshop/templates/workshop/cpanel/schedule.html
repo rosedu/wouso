@@ -7,10 +7,10 @@
 
 {% block tabcontent %}
 
-    <p> <a class="btn btn-primary btn btn-sm pull-right" href="{% url ws_schedule_change %}">
+    <p> <a class="btn btn-primary pull-right" href="{% url ws_schedule_change %}">
             {% trans 'Add Schedule ' %} <span class="glyphicon glyphicon-plus"></span>
         </a>
-        <a class="btn btn-warning btn btn-sm" href="{% url qpool_home cat=category.name %}">
+        <a class="btn btn-warning" href="{% url qpool_home cat=category.name %}">
             {% trans 'Go to question pool' %}
         </a>
     </p>
@@ -36,10 +36,10 @@
                     <td>{{ s.question_set.count }}</td>
                     <td>{{ s.count }}</td>
                     <td>{% if s.is_active %}{% trans 'Yes' %}{% endif %}</td>
-                    <td><a class="btn btn-success btn btn-xs" href="{% url ws_schedule_change s.id %}">
+                    <td><a class="btn btn-success" href="{% url ws_schedule_change s.id %}">
                             {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
                         </a>
-                        <a class="btn btn-warning btn btn-xs" href="{% url qpool_home cat='workshop' tag=s.id %}">Filter</a>
+                        <a class="btn btn-warning" href="{% url qpool_home cat='workshop' tag=s.id %}">Filter</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -47,7 +47,7 @@
         </div>
 
         <div class="panel panel-default col-md-3">
-            <div class="panel panel-body">
+            <div class="panel-body">
                 {% block information %}
                     <p>Use this feature to define Qpool tags for questions available in a predefined time span.</p>
                     <p>Then use Qpool normally to add/change/remove questions.</p>
