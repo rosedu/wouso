@@ -10,6 +10,9 @@
     <b>Timestamp: </b>{{ report.timestamp }}<br/><br/>
     <form name="edit_report" method="POST">{% csrf_token %}
     <b>{{ form.as_p }}</b>
-    <input type="submit" value="Submit" /> <a href = "{% url wouso.interface.cpanel.views.reports %}"> <input type = "button" value ="Cancel"/></a>
+    <input type="submit" class="btn btn-primary" value="Submit" />
+    <a href="{% url wouso.interface.cpanel.views.reports %}">
+        <input type="button" class="btn btn-warning" value ="Cancel"/>
+    </a>
     </form>
 {% endblock %}

@@ -2,65 +2,59 @@
 {% load i18n %}
 {% load artifacts %}
 
-{% block scripts %}
-    <!--<link rel="stylesheet" type="text/css" href="{{ baseurl }}/static/css/tabs.css" />!-->
-{% endblock %}
-
 {% block sectiontitle %}
     Artifacts <a class="btn btn-primary pull-right" href="{% url artifact_new %}">
     {% trans 'Add artifact ' %}<span class="glyphicon glyphicon-plus"></span></a>
 {% endblock %}
 
-{% block extra_sidebar %}
-{% endblock %}
-
 {% block sectioncontent %}
-
+<div class="container-fluid">
 <ul class="nav nav-tabs">
     {% for c in groups %}
         <li {% if group == c %}class="active"{% endif %}><a href="{% url artifact_home c.name %}">{{ c.name }}</a></li>
     {% endfor %}
 </ul>
 
-<div class="container-fluid">
-    <div class=" col-md-10">
-    <table class="table table-bordered table-hover table-condensed">
+{% block tabcontent %}
+<div class="col-md-8">
+<table class="table table-bordered table-hover">
+    <tr>
+        <th></th>
+        <th>Identifier</th>
+        <th>Title</th>
+        <th>Path</th>
+        <th>Manage</th>
+    </tr>
+    {% for a in artifacts %}
         <tr>
-            <th></th>
-            <th>Identifier</th>
-            <th>Title</th>
-            <th>Path</th>
-            <th>Manage</th>
+            <td>{% artifact a %}</td>
+            <td>{{ a.name }}</td>
+            <td>{{ a.title }}</td>
+            <td>{{ a.path }}</td>
+            <td nowrap>
+                <a class="btn btn-success" href="{% url artifact_edit a.id %}">
+                    {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+                </a>
+                <a class="btn btn-danger" href="{% url artifact_del a.id %}" onclick="return confirm('really?');">
+                    {% trans 'Delete ' %}<span class="glyphicon glyphicon-remove"></span>
+                </a>
+            </td>
         </tr>
-        {% for a in artifacts %}
-            <tr>
-                <td>{% artifact a %}</td>
-                <td>{{ a.name }}</td>
-                <td>{{ a.title }}</td>
-                <td>{{ a.path }}</td>
-                <td nowrap>
-                    <a class="btn btn-success" href="{% url artifact_edit a.id %}">
-                        {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
-                    </a>
-                    <a class="btn btn-danger" href="{% url artifact_del a.id %}" onclick="return confirm('really?');">
-                        {% trans 'Delete ' %}<span class="glyphicon glyphicon-remove"></span>
-                    </a>
-                </td>
-            </tr>
-        {% empty %}
-            <tr><td colspan="0">No artifacts added.</td></tr>
-        {% endfor %}
-    </table>
+    {% empty %}
+        <tr><td colspan="0">No artifacts added.</td></tr>
+    {% endfor %}
+</table>
+</div>
+<div class="panel panel-default col-md-3 col-md-offset-1">
+    <div class="panel-body">
+        <h3>Help</h3>
+        <p>To give/remove artifacts from users, use the artifact button on their profile page.</p>
+        <h3>Modifiers</h3>
+        <p>In game enabled modifiers:<br/>
+        {% for m in modifiers %}<em>{{ m }}</em><br/>{% endfor %}
+        </p>
     </div>
-    <div class="panel panel-primary col-md-2">
-        <div class="panel-body">
-            <h3>Help</h3>
-            <p>To give/remove artifacts from users, use the artifact button on their profile page.</p>
-            <h3>Modifiers</h3>
-            <p>In game enabled modifiers:<br/>
-            {% for m in modifiers %}<em>{{ m }}</em><br/>{% endfor %}
-            </p>
-        </div>
-    </div>
+</div>
+{% endblock %}
 </div>
 {% endblock %}
