@@ -33,7 +33,7 @@
             <td>{{ a.path }}</td>
             <td nowrap>
                 <a class="btn btn-success" href="{% url artifact_edit a.id %}">
-                    {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+                    <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                 </a>
                 <a class="btn btn-danger" href="{% url artifact_del a.id %}" onclick="return confirm('really?');">
                     {% trans 'Delete ' %}<span class="glyphicon glyphicon-remove"></span>

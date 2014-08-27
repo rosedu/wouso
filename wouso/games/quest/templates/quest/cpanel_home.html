@@ -42,7 +42,7 @@
                 <td>{{ q.get_formula }}</td>
                 <td>
                     <a href="{% url quest_edit q.id %}"  class="btn btn-success">
-                        {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+                        <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                     </a>
                     <a href="{% url quest_sort q.id %}" class="btn btn-info">
                         {% trans 'Sort ' %}<span class="glyphicon glyphicon-sort"></span>

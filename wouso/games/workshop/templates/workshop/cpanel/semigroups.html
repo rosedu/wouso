@@ -39,7 +39,7 @@
                 <td>
                     <a class="btn btn-primary" href="{% url ws_gradebook semigroup=s.pk %}">{% trans 'Details' %}</a>
                     <a class="btn btn-success " href="{% url ws_edit_group semigroup=s.pk %}">
-                        {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+                        <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                     </a>
                 </td>
             </tr>

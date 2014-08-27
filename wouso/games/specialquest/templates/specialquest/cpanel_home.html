@@ -33,7 +33,7 @@
             <td>{{ t.value }}</td>
             <td>
                 <a href="{% url specialquest_edit t.pk %}" class="btn btn-success">
-                    {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+                    <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                 </a>
                 <a href="{% url specialquest_delete t.pk %}" onclick="return confirm('really?');"
                         class="btn btn-danger">

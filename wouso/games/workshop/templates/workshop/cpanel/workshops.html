@@ -46,7 +46,7 @@
                     </td>
                     <td>
                         <a class="btn btn-success" href="{% url ws_edit_workshop w.id %}">
-                            {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+                            <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                         </a>
                         {% if not w.start_at %}
                         <a class="btn btn-primary" href="{% url ws_start w.id %}">

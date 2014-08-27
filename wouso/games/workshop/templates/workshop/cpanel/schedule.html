@@ -37,7 +37,7 @@
                     <td>{{ s.count }}</td>
                     <td>{% if s.is_active %}{% trans 'Yes' %}{% endif %}</td>
                     <td><a class="btn btn-success" href="{% url ws_schedule_change s.id %}">
-                            {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+                            <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                         </a>
                         <a class="btn btn-warning" href="{% url qpool_home cat='workshop' tag=s.id %}">Filter</a>
                     </td>

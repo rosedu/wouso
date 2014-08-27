@@ -17,7 +17,7 @@
         <strong>Spot:</strong>
         {% if semigroup.day %}day={{ semigroup.day }}, hour={{ semigroup.hour }}
         <a class="btn btn-success" href="{% url ws_edit_group semigroup.pk %}">
-            {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+            <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
         </a>.
         {% else %}Any time where there isn't any other one.{% endif %}
 

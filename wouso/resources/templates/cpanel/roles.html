@@ -27,7 +27,7 @@
         <td>{{ r.user_set.all.count }}</td>
         <td>
             <a href="{% url roles_update r.id %}" class="btn btn-success">
-                {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+                <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
             </a>
         </td>
     </tr>

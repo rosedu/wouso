@@ -35,7 +35,7 @@
 	<td> {{ p.due_days }} </td>
 	<td nowrap>
         <a class="btn btn-success" href="{% url edit_spell p.id %}">
-             {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+             <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
         </a>
         <a class="btn btn-danger" href="{% url spell_dell p.id %}" onclick="return confirm('Realy?');">
             {% trans 'Delete ' %}<span class="glyphicon glyphicon-remove"></span>

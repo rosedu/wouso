@@ -25,7 +25,7 @@
                 <td>{{ t.category }}</td>
                 <td>{{ t.question_set.count }}</td>
                 <td><a class="btn btn-success" href="{% url qpool_edit_tag t.id %}">
-                        {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+                        <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                     </a> &nbsp; &nbsp;
                     <a class="btn btn-danger" href="{% url qpool_del_tag t.id %}">
                         {% trans 'Delete ' %}<span class="glyphicon glyphicon-remove"></span>

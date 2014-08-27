@@ -24,7 +24,7 @@
         <td>{{ n.date_pub }}</td>
         <td>
             <a class="btn btn-success" href="{% url edit_news n.pk %}">
-                {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+                <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
             </a>
             <a class="btn btn-danger" href="{% url del_news n.pk %}">
                 {% trans 'Delete ' %}<span class="glyphicon glyphicon-remove"></span>

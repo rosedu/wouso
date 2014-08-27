@@ -136,7 +136,7 @@
                 {% endif %}
                 <td class="actions">
                     <a class="btn btn-success" href="{% url question_edit q.id%}">
-                        {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+                        <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                     </a> &nbsp; &nbsp;
                     <a class="btn btn-danger" href="{% url question_del q.id%}" onclick="return confirm('really?');">
                         {% trans 'Delete ' %}<span class="glyphicon glyphicon-remove"></span>

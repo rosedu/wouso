@@ -41,7 +41,7 @@
         <td>{{ a.amount }}</td>
         <td>
             <a class="btn btn-success" href="{% url admin:magic_playerartifactamount_change a.id %}">
-                {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+                <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
             </a>
         </td>
     </tr>
