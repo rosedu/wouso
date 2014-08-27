@@ -2,12 +2,12 @@
 {% load workshop %}
 
 {% block tabcontent %}
-    <form action="{% if instance %}{% url ws_schedule_change instance.pk %}{% else %}{% url ws_schedule_change %}{%endif%}"
-          method="post">
+    <form class=form-horizontal" method="post"
+          action="{% if instance %}{% url ws_schedule_change instance.pk %}{% else %}{% url ws_schedule_change %}{%endif%}">
         <table>
-        {{ form.as_table }}
+            {{ form.as_table }}
         </table>
         {% csrf_token %}
-        <button type="submit">Submit</button>
+        <button class="btn btn-primary" type="submit">Submit</button>
     </form>
 {% endblock %}
