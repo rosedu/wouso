@@ -9,8 +9,8 @@
             {{ form.as_table }}
         </table>
         {% csrf_token %}
-        <button class="btn btn-primary" type="submit">{% trans 'Add ' %}
-            <span class="glyphicon glyphicon-plus"></span>
+        <button class="btn btn-primary" type="submit">
+            <span class="glyphicon glyphicon-plus"></span>{% trans 'Add' %}
         </button>
     </form>
 

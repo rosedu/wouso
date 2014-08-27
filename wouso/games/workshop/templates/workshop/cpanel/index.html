@@ -8,12 +8,12 @@
 
     <div class="pull-right">
         <a class="btn btn-primary" href="{% url ws_add_workshop %}">
-            <strong>{% trans 'Add Workshop ' %}</strong>
             <span class="glyphicon glyphicon-plus"></span>
+            <strong>{% trans 'Add Workshop' %}</strong>
         </a>
 
         <a class="btn btn-primary" href="{% url ws_add_group %}">
-            {% trans 'Add Semigroup ' %}<span class="glyphicon glyphicon-plus"></span>
+            <span class="glyphicon glyphicon-plus"></span>{% trans 'Add Semigroup' %}
         </a>
 
         <a class="btn btn-success" href="{% url ws_edit_spot 0 0 %}">

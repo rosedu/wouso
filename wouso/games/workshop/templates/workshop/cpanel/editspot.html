@@ -57,7 +57,7 @@
             {% player_input 'player' semigroup.id %}
             {% csrf_token %}
             <button class="btn btn-primary" type="submit">
-                {% trans 'Add ' %}<span class="glyphicon glyphicon-plus"></span>
+                <span class="glyphicon glyphicon-plus"></span>{% trans 'Add' %}
             </button>
         </form>
 

@@ -3,13 +3,15 @@
 
 {% block sectiontitle %}
     Quests
-    <a class="btn btn-primary pull-right" href="{% url quest_new %}">
-        {% trans 'Add quest '%}<span class="glyphicon glyphicon-plus"></span>
+    <div class="pull-right">
+    <a class="btn btn-primary" href="{% url quest_new %}">
+        <span class="glyphicon glyphicon-plus"></span>{% trans 'Add quest'%}
     </a>
     {% if not final %}
-    <a class="btn btn-primary pull-right" href="{% url quest_create_finale %}">
-        {% trans 'Add final quest ' %}<span class="glyphicon glyphicon-plus"></span>
+    <a class="btn btn-primary" href="{% url quest_create_finale %}">
+        <span class="glyphicon glyphicon-plus"></span>{% trans 'Add final quest' %}
     </a>
+    </div>
     {% endif %}
 {% endblock %}
 

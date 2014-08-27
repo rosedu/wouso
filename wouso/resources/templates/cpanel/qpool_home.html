@@ -10,7 +10,7 @@
             <span class="glyphicon glyphicon-home"></span>
         </a>
         <a class="btn btn-primary" href="{% url question_new %}">
-            {% trans 'Add question ' %}<span class="glyphicon glyphicon-plus"></span>
+            <span class="glyphicon glyphicon-plus"></span>{% trans 'Add question' %}
         </a>
         <a class="btn btn-primary" href="{% url importer %}">{% trans 'Import file' %}</a>
         <a class="btn btn-success" href="{% url qpool_manage_tags %}">{% trans 'Manage tags' %}</a>
