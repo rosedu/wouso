@@ -1,38 +1,38 @@
 {% extends 'cpanel/index.html' %}
-
 {% load user %}
+
 {% block sectiontitle %}Challenges{% endblock %}
 
 {% block sectioncontent %}
-
+<div container="fluid">
 {% if challenges %}
-<table>
-    <th>From</th>
-    <th>To</th>
-    <th>Date</th>
-    <th>Status</th>
-    <th>Result</th> 
-    {% for challenge in challenges %}
-    <tr>
-        <td>{% player challenge.user_from.user %}</td>
-        <td>{% player challenge.user_to.user %}</td>
-        <td>{{ challenge.date }}</td>
-        <td>{{ challenge.get_status_display }}</td>
-        <td>
-            {% if challenge.winner %}
-                {{ challenge.winner }}
-            {% else %}
-                Pending
-            {% endif %}
-        </td>
-    </tr>
-    {% empty %}
-        <td colspan="0" class="empty">No challenges have been played yet.</td>
-    {% endfor %}
-</table>
+    <table class="table table-bordered table-condensed table-hover">
+        <th>From</th>
+        <th>To</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Result</th>
+        {% for challenge in challenges %}
+        <tr>
+            <td>{% player challenge.user_from.user %}</td>
+            <td>{% player challenge.user_to.user %}</td>
+            <td>{{ challenge.date }}</td>
+            <td>{{ challenge.get_status_display }}</td>
+            <td>
+                {% if challenge.winner %}
+                    {{ challenge.winner }}
+                {% else %}
+                    Pending
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+            <td colspan="0">No challenges have been played yet.</td>
+        {% endfor %}
+    </table>
 {% else %}
     <p>No Challenges to display</p>
 {% endif %}
-
 {% include 'cpanel/pagination.html' %}
+</div>
 {% endblock %}
