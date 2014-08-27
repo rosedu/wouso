@@ -19,15 +19,17 @@
 
     <hr/>
 
-<ul class="nav nav-tabs">
-    <li {% if not page %}class="active"{% endif %}><a href="{% url workshop_home %}">Timetable</a></li>
-    <li {% if page == 'schedule' %}class="active"{% endif %}><a href="{% url ws_schedule %}">Schedule</a></li>
-    <li {% if page == 'workshops' %}class="active"{% endif %}><a href="{% url ws_workshops %}">Workshops</a></li>
-    <li {% if page == 'semigroups' %}class="active"{% endif %}><a href="{% url ws_semigroups %}">Semigroups</a></li>
-</ul>
+    <div id="tab-1" class="container-fluid">
 
-<div id="tab-1" class="container-fluid">
+        <ul class="nav nav-tabs">
+            <li {% if not page %}class="active"{% endif %}><a href="{% url workshop_home %}">Timetable</a></li>
+            <li {% if page == 'schedule' %}class="active"{% endif %}><a href="{% url ws_schedule %}">Schedule</a></li>
+            <li {% if page == 'workshops' %}class="active"{% endif %}><a href="{% url ws_workshops %}">Workshops</a></li>
+            <li {% if page == 'semigroups' %}class="active"{% endif %}><a href="{% url ws_semigroups %}">Semigroups</a></li>
+        </ul>
+
         <br/>
+        
         {% block tabcontent %}
 
         {% autoescape off %}{{ config_ws_cpanel_extra }}{% endautoescape %}
