@@ -1,9 +1,10 @@
 {% extends 'cpanel/index.html' %}
 {% load user %}
 {% load artifacts %}
+{% load i18n %}
 
 <h1 class="page-header">{% block sectiontitle %}Spells
-    <a class="pull-right btn btn-primary" href="{% url add_spell %}">Add spell&nbsp;
+    <a class="pull-right btn btn-primary" href="{% url add_spell %}">{% trans 'Add spell ' %}
         <span class="glyphicon glyphicon-plus"></span></span>
     </a>    {% endblock %}
 </h1>
@@ -34,10 +35,10 @@
 	<td> {{ p.due_days }} </td>
 	<td nowrap>
         <a class="btn btn-success" href="{% url edit_spell p.id %}">
-             Edit&nbsp; <span class="glyphicon glyphicon-edit"></span>
+             {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
         </a>
         <a class="btn btn-danger" href="{% url spell_dell p.id %}" onclick="return confirm('Realy?');">
-            Delete&nbsp; <span class="glyphicon glyphicon-remove"></span>
+            {% trans 'Delete ' %}<span class="glyphicon glyphicon-remove"></span>
         </a>
     </td>
 </tr>
