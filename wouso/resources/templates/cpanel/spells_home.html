@@ -3,11 +3,11 @@
 {% load artifacts %}
 {% load i18n %}
 
-<h1 class="page-header">{% block sectiontitle %}Spells
+{% block sectiontitle %}Spells
     <a class="pull-right btn btn-primary" href="{% url add_spell %}">{% trans 'Add spell ' %}
         <span class="glyphicon glyphicon-plus"></span></span>
     </a>    {% endblock %}
-</h1>
+
 
 {% block sectioncontent %}
 
