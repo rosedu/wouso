@@ -6,12 +6,11 @@
     <!--<link rel="stylesheet" type="text/css" href="{{ baseurl }}/static/css/tabs.css" />!-->
 {% endblock %}
 
-<h1 class="page-header">
-    {% block sectiontitle %}
-        Artifacts <a class="btn btn-primary pull-right" href="{% url artifact_new %}">
-        {% trans 'Add artifact ' %}<span class="glyphicon glyphicon-plus"></span></a>
-    {% endblock %}
-</h1>
+{% block sectiontitle %}
+    Artifacts <a class="btn btn-primary pull-right" href="{% url artifact_new %}">
+    {% trans 'Add artifact ' %}<span class="glyphicon glyphicon-plus"></span></a>
+{% endblock %}
+
 {% block extra_sidebar %}
 {% endblock %}
 

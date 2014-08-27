@@ -2,12 +2,12 @@
 {% load i18n %}
 {% load user %}
 
-<h1 class="page-header">{% block sectiontitle %}
+{% block sectiontitle %}
     Formulas
     <a class="btn btn-primary pull-right" href="{% url add_formula %}">
         {% trans 'Add formulas ' %}<span class="glyphicon glyphicon-plus"></span>
     </a>
-{% endblock %}</h1>
+{% endblock %}
 
 {% block sectioncontent %}
 
