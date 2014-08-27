@@ -7,44 +7,44 @@
 
 {% block tabcontent %}
 
-    <table>
-      <tbody>
-        <tr>
-          <th>Name</th>
-          <th>Students</th>
-          <th>When</th>
-        </tr>
-      </tbody>
-      {% if my_semigroups %}
-      <tbody>
-        <tr>
-          <th colspan="3">Your semigroups</th>
-        </tr>
-        {% for s in my_semigroups %}
-        <tr>
-          <td>{{ s.name }}</td>
-          <td>{{ s.players.count }}</td>
-          <td>{{ s.info }}</td>
-          <td><a href="{% url ws_gradebook semigroup=s.pk %}">Grades</a></td>
-        </tr>
-        {% endfor %}
-      </tbody>
-      {% endif %}
-      <tbody>
-        <tr>
-          <th colspan="3">All semigroups</th>
-        </tr>
-        {% for s in all_semigroups %}
-        <tr>
-          <td>{{ s.name }}</td>
-          <td>{{ s.players.count }}</td>
-          <td>{{ s.info }}, {{ s.assistant }}</td>
-          <td>
-            <a href="{% url ws_gradebook semigroup=s.pk %}">Details</a>
-            <a href="{% url ws_edit_group semigroup=s.pk %}">Edit</a>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="container-fluid">
+        <table class="table table-bordered table table-striped">
+            <tr>
+                <th>Name</th>
+                <th>Students</th>
+                <th>When</th>
+                <th>Manage</th>
+            </tr>
+            {% if my_semigroups %}
+            <tr>
+                <th colspan="3">Your semigroups</th>
+            </tr>
+            {% for s in my_semigroups %}
+            <tr>
+                <td>{{ s.name }}</td>
+                <td>{{ s.players.count }}</td>
+                <td>{{ s.info }}</td>
+                <td><a class="btn btn-primary" href="{% url ws_gradebook semigroup=s.pk %}">{% trans 'Grades' %}</a></td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+            <tr>
+                <th colspan="3">All semigroups</th>
+            </tr>
+            {% for s in all_semigroups %}
+            <tr>
+                <td>{{ s.name }}</td>
+                <td>{{ s.players.count }}</td>
+                <td>{{ s.info }}, {{ s.assistant }}</td>
+                <td>
+                    <a class="btn btn-primary btn btn-xs" href="{% url ws_gradebook semigroup=s.pk %}">{% trans 'Details' %}</a>
+                    <a class="btn btn-success btn btn-xs" href="{% url ws_edit_group semigroup=s.pk %}">
+                        {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
 {% endblock %}
