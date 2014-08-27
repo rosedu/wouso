@@ -1,214 +1,238 @@
 {% extends 'cpanel/index.html' %}
 {% load i18n %}
-{% block scripts %}
-    <link rel="stylesheet" type="text/css" href="{{ baseurl }}/static/css/tabs.css" />
+
+
+
+{% block sectiontitle %}
+    Question pool
+    <div class="pull-right">
+        <a class="btn btn-primary" href="{% url qpool_home %}" title="Home">
+            <span class="glyphicon glyphicon-home"></span>
+        </a>
+        <a class="btn btn-primary" href="{% url question_new %}">
+            {% trans 'Add question ' %}<span class="glyphicon glyphicon-plus"></span>
+        </a>
+        <a class="btn btn-primary" href="{% url importer %}">{% trans 'Import file' %}</a>
+        <a class="btn btn-primary" href="{% url qpool_manage_tags %}">{% trans 'Manage tags' %}</a>
+    </div>
 {% endblock %}
 
-{% block sectiontitle %}Question pool{% endblock %}
-
 {% block sectioncontent %}
-<div class="actions">
-    <form method="get" action="">
-        <input class="big" type="text" name="q" value="{{ search_query }}" size="40" />
-        <button type="submit">{% trans 'Search'%}</button>
+    <form class="horizontal-form" method="get">
+        <input  type="text" name="q" value="{{ search_query }}" size="40"/>
+        <button class="btn btn-primary" type="submit">{% trans 'Search'%}</button>
     </form>
-</div>
-<div class="actions">
-    <a class="button button-min" href="{% url qpool_home %}" title="Home">⌂</a>
-    <a class="button" href="{% url question_new %}">{% trans 'Add question' %}</a>
-    <a class="button" href="{% url importer %}">{% trans 'Import file' %}</a>
-    <a class="button" href="{% url qpool_manage_tags %}">{% trans 'Manage tags' %}</a>
-</div>
-
-
-{% block subsectioncontent %}
-<ul class="tabs">
-    {% for c in categs %}
-    <li {% if cat == c.name %}class="active"{% endif %}><a href="{% url qpool_home c.name %}">{{ c.name|capfirst }}</a></li>
-    {% endfor %}
-</ul>
-
-<div class="tab_container">
-    <div id="tab-1" class="tab_content">
-        <div class="actions">
-            {% if cat == 'qotd' %}
-            <a class="button" href="{% url qotd_schedule %}" title="schedule active questions">Automatic schedule</a>
-            {% endif %}
-            {% if cat == 'challenge' %}
-            <a class="button" href="{% url set_active_categories %}">Set active tags</a>
-            {% endif %}
-            <a class="button" href="{% url qpool_export category.name %}">Export all</a>
-            <a class="button" href="{% url remove_all cat=cat %}" onclick="return confirm('Are you sure do you want to remove all questions in this category?');">Remove all</a>
-        </div>
-
-        <div class="subgroups">
-            {% block right-sidebar %}
-            <h3>Filters</h3>
-
-            <ul class="simple">
-                <li>Tags:</li>
-                {% for t in category.tag_set.all %}
-                <li>{% if t.id in tag_filters %}
-                    <strong><a href="?remtagfilter={{ t.id }}">{{ t }}</a></strong>
-                    {% else %}
-                    <a href="?addtagfilter={{ t.id }}">{{ t }}</a>
-                    {% endif %}
+    <hr/>
+    {% block subsectioncontent %}
+        <div class="container-fluid">
+            <ul class="nav nav-tabs">
+                {% for c in categs %}
+                <li {% if cat == c.name %}class="active"{% endif %}>
+                    <a href="{% url qpool_home c.name %}">{{ c.name|capfirst }}</a>
                 </li>
-                {% empty %}
-                <li><em>no tags</em></li>
                 {% endfor %}
-
-                <li>Properties:</li>
-                <li>{% if 'active' in prop_filters %}
-                    <strong><a href="?rempropfilter=active">active</a></strong>
-                    {% else %}
-                    <a href="?addpropfilter=active">active</a>
-                    {% endif %}
-                </li>
             </ul>
-
-            <hr size="1" noshade/>
-            <p>
-                View:
-                {% for p in perpage_options %}
-                {% if q_page.paginator.per_page == p %}
-                <strong>{{ p }}</strong>
-                {% else %}
-                <a href="?changeperpage={{ p }}">{{ p }}</a>
+            <br/>
+            <div id="tab-1">
+                {% if cat == 'qotd' %}
+                <a class="btn btn-primary" href="{% url qotd_schedule %}"
+                    title="schedule active questions">{% trans 'Automatic schedule' %}
+                </a>
                 {% endif %}
-                {% endfor %}
-            </p>
-            <p>Total: {{ q_page.paginator.count }}</p>
-            {% endblock %}
+                {% if cat == 'challenge' %}
+                <a class="btn btn-primary" href="{% url set_active_categories %}">
+                    {% trans 'Set active tags' %}
+                </a>
+                {% endif %}
+                <a class="btn btn-primary" href="{% url qpool_export category.name %}">
+                    {% trans 'Export all' %}
+                </a>
+                <a class="btn btn-primary" href="{% url remove_all cat=cat %}"
+                    onclick="return confirm('Are you sure do you want to remove all questions in this category?');">
+                    {% trans 'Remove all' %}
+                </a>
+
+                {% block right-sidebar %}
+                    <h3>Filters:</h3>
+                    <ul>
+                        <li class="list-unstyled"><b>Tags:</b></li>
+                        {% for t in category.tag_set.all %}
+                        <li>
+                            {% if t.id in tag_filters %}
+                            <strong><a href="?remtagfilter={{ t.id }}">{{ t }}</a></strong>
+                            {% else %}
+                            <a href="?addtagfilter={{ t.id }}">{{ t }}</a>
+                            {% endif %}
+                        </li>
+                        {% empty %}
+                        <li><em>no tags</em></li>
+                        {% endfor %}
+                        <li class="list-unstyled"><b>Properties:</b></li>
+                        <li>
+                            {% if 'active' in prop_filters %}
+                            <strong><a href="?rempropfilter=active">{% trans 'active' %}</a></strong>
+                            {% else %}
+                            <a href="?addpropfilter=active">{% trans 'active' %}</a>
+                            {% endif %}
+                        </li>
+                    </ul>
+                    <hr/>
+                    <p>
+                        <b>View:</b>
+                        {% for p in perpage_options %}
+                        {% if q_page.paginator.per_page == p %}
+                        <strong>{{ p }}</strong>
+                        {% else %}
+                        <a href="?changeperpage={{ p }}">{{ p }}</a>
+                        {% endif %}
+                        {% endfor %}
+                    </p>
+                    <p><b>Total:</b> {{ q_page.paginator.count }}</p>
+                {% endblock %}
+
+
+                <!-- MAIN QUESTION TABLE -->
+
+                {% include 'cpanel/qpool_pagination.html' %}
+
+                <b>Select:</b>
+                <a onclick='$(".question_select").attr("checked", true).change();' href="#">{% trans 'All' %}</a> /
+                <a onclick='$(".question_select").attr("checked", false).change();' href="#">{% trans 'None' %}</a>
+
+                <br/>
+
+                <b>Action:</b>
+
+                <select id="q_actions" disabled="true">
+                    <option selected value="">-- Select action --</option>
+                    <optgroup label="-- Add tag --" id="tag">
+                        {% for t in category.tag_set.all %}
+                        <option value="{{ t.id }}">{{ t }}</option>
+                        {% endfor %}
+                    </optgroup>
+                    <optgroup label="-- Actions --" id="actions">
+                        <option value="active"  >Set active</option>
+                        <option value="inactive">Set inactive</option>
+                    </optgroup>
+                </select>
+
+                <br/> <br/>
+
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <th colspan="2">#</th>
+                        <th>Question</th>
+                        {% if cat != 'proposed' %}
+                        <th>Active</th>
+                        {% else %}
+                        <th>Endorsed</th>
+                        {% endif %}
+                        {% if cat == 'qotd' %}
+                        <th>Day</th>
+                        {% endif %}
+                        <th>Actions</th>
+                    </tr>
+                    {% for q in q_page.object_list %}
+                    <tr id="qr_{{ q.id }}">
+                        <td><input type="checkbox" class="question_select" id="qs_{{ q.id }}"/></td>
+                        <td align="right">{{ q.id }}</td>
+                        <td>
+                            <span class="question_preview" onclick="$('#qc_{{q.id}}').toggle();">{{ q }}</span>
+                            <div id="qc_{{ q.id }}" class="hidden">
+                                {% for a in q.answers %}
+                                    {% if a.correct %}+{% else %}-{% endif %}{{ a.text }}<br/>
+                                {% endfor %}
+                            </div>
+                            <span class="points">{% if not q.is_valid %}<span class="wrong">Invalid</span>{% endif %}</span>
+                            {% if cat != 'proposed'%}
+                            <div class="second">{% if q.tags_nice %}tags: {{ q.tags_nice }}{% endif %}</div>
+                            {% else %}
+                            <div class="second"><p><b>Proposed by</b>: {{q.proposed_by}}</p>
+                                <p><b>Endorsed by</b>: {{q.endorsed_by}}</p>
+                                <p> <b>Tags</b>: {{ q.tag }}</p>
+                            </div>
+                            {% endif %}
+                        </td>
+                        {% if cat != 'proposed' %}
+                        <td>
+                            <a class="btn btn-warning" href="{% url switch_active q.id %}">{% if q.active %}
+                                <span class="ok">{% trans 'Yes' %}</span>
+                        {% else %}
+                                <span class="wrong">{% trans 'No' %}</span>
+                        {% endif %}
+                            </a>
+                        </td>
+                        {% else %}
+                        <td>
+                            <a class="btn btn-warning" href="{% url switch_active q.id %}">{% if q.endorsed_by %}
+                                <span class="ok">{% trans 'Yes' %}</span>
+                        {% else %}
+                                <span class="wrong">{% trans 'No' %}</span>
+                        {% endif %}
+                            </a>
+                        </td>
+                        {% endif %}
+                        {% if cat == 'qotd' %}
+                        <td {% if q.scheduled == today %}class="bold"{%endif%}>{{ q.scheduled }}</td>
+                        {% endif %}
+                        <td class="actions">
+                            <a class="btn btn-success" href="{% url question_edit q.id%}">
+                                {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+                            </a> &nbsp; &nbsp;
+                            <a class="btn btn-danger" href="{% url question_del q.id%}" onclick="return confirm('really?');">
+                                {% trans 'Delete ' %}<span class="glyphicon glyphicon-remove"></span>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan=3>No questions yet.</td></tr>
+                    {% endfor %}
+                </table>
+
+                {% include 'cpanel/qpool_pagination.html' %}
+
+                <script>
+
+                    function get_selection() {
+                        var selection = "";
+                        $('.question_select:checked').each(function () {
+                            selection += this.id.substring(3) + ',';
+                        });
+                        return selection;
+                    }
+
+                    $('.question_select').change(function () {
+                        var value = $(this).is(':checked');
+                        var id = this.id.substring(3);
+
+                        $('#qr_' + id).toggleClass('selected', value);
+
+                        if (get_selection() != '')
+                            $('#q_actions').attr('disabled', false);
+                        else
+                            $('#q_actions').attr('disabled', true);
+
+                    });
+
+                    $('#q_actions').change(function (option) {
+                        var selected = $("option:selected", this);
+                        var destination = '';
+                        if(selected.parent()[0].id == "tag"){
+                            // Tag was selected
+                            destination = '{% url qpool_set_tag %}?qs=' + get_selection() + '&tag=' + selected.val();
+                        }
+                        if(selected.parent()[0].id == "actions"){
+                            destination = '{% url qpool_actions %}?qs=' + get_selection() + '&action=' + selected.val();
+                        }
+                        if (destination != '')
+                            window.location.replace(destination);
+                    });
+
+                </script>
+
+            </div>
         </div>
 
-        <!-- MAIN QUESTION TABLE -->
-        {% include 'cpanel/qpool_pagination.html' %}
-
-        Select:
-        <a onclick='$(".question_select").attr("checked", true).change();' href="#">All</a> /
-        <a onclick='$(".question_select").attr("checked", false).change();' href="#">None</a>
-
-        Action:
-        <select id="q_actions" disabled="true">
-            <option selected value="">-- Select action --</option>
-            <optgroup label="-- Add tag --" id="tag">
-                {% for t in category.tag_set.all %}
-                <option value="{{ t.id }}">{{ t }}</option>
-                {% endfor %}
-            </optgroup>
-            <optgroup label="-- Actions --" id="actions">
-                <option value="active"  >Set active</option>
-                <option value="inactive">Set inactive</option>
-            </optgroup>
-        </select>
-
-        <table>
-            <tr>
-                <th colspan="2">#</th>
-                <th>Question</th>
-                {% if cat != 'proposed' %}
-                <th>Active</th>
-                {% else %}
-                <th>Endorsed</th>
-                {% endif %}
-                {% if cat == 'qotd' %}
-                <th>Day</th>
-                {% endif %}
-                <th>Actions</th>
-            </tr>
-        {% for q in q_page.object_list %}
-            <tr id="qr_{{ q.id }}">
-                <td><input type="checkbox" class="question_select" id="qs_{{ q.id }}"/></td>
-                <td align="right">{{ q.id }}</td>
-                <td>
-                    <span class="question_preview" onclick="$('#qc_{{q.id}}').toggle();">{{ q }}</span>
-                    <div id="qc_{{ q.id }}" class="hidden">
-                        {% for a in q.answers %}
-                            {% if a.correct %}+{% else %}-{% endif %}{{ a.text }}<br/>
-                        {% endfor %}
-                    </div>
-                    <span class="points">{% if not q.is_valid %}<span class="wrong">Invalid</span>{% endif %}</span>
-                    {% if cat != 'proposed'%}
-                        <div class="second">{% if q.tags_nice %}tags: {{ q.tags_nice }}{% endif %}</div>
-                    {% else %}
-                        <div class="second"><p><b>Proposed by</b>: {{q.proposed_by}}</p>
-                            <p><b>Endorsed by</b>: {{q.endorsed_by}}</p>
-                            <p> <b>Tags</b>: {{ q.tag }}</p></div>
-                    {% endif %}
-                </td>
-                {% if cat != 'proposed' %}
-                <td>
-                <a class="button button-min" href="{% url switch_active q.id %}">{% if q.active %}<span class="ok">yes</span>
-                {% else %}<span class="wrong">no</span>
-                {% endif %}
-                </a>
-                </td>
-                {% else %}
-                <td>
-                <a class="button button-min" href="{% url switch_active q.id %}">{% if q.endorsed_by %}<span class="ok">yes</span>
-                {% else %}<span class="wrong">no</span>
-                {% endif %}
-                </a>
-                </td>
-                {% endif %}
-
-                {% if cat == 'qotd' %}
-                <td nowrap {% if q.scheduled == today %}class="bold"{%endif%}>{{ q.scheduled }}</td>
-                {% endif %}
-
-                <td class="actions" nowrap>
-                    <a class="button-min" href="{% url question_edit q.id%}">✍</a>
-                    <a class="button-min" href="{% url question_del q.id%}" onclick="return confirm('really?');">✕</a>
-                </td>
-            </tr>
-
-        {% empty %}
-        <tr><td colspan=3>No questions yet.</td></tr>
-        {% endfor %}
-        </table>
-        {% include 'cpanel/qpool_pagination.html' %}
-
-        <script>
-
-            function get_selection() {
-                var selection = "";
-                $('.question_select:checked').each(function () {
-                    selection += this.id.substring(3) + ',';
-                });
-                return selection;
-            }
-
-            $('.question_select').change(function () {
-                var value = $(this).is(':checked');
-                var id = this.id.substring(3);
-
-                $('#qr_' + id).toggleClass('selected', value);
-
-                if (get_selection() != '')
-                    $('#q_actions').attr('disabled', false);
-                else
-                    $('#q_actions').attr('disabled', true);
-
-            });
-
-            $('#q_actions').change(function (option) {
-                var selected = $("option:selected", this);
-                var destination = '';
-                if(selected.parent()[0].id == "tag"){
-                    // Tag was selected
-                    destination = '{% url qpool_set_tag %}?qs=' + get_selection() + '&tag=' + selected.val();
-                }
-                if(selected.parent()[0].id == "actions"){
-                    destination = '{% url qpool_actions %}?qs=' + get_selection() + '&action=' + selected.val();
-                }
-                if (destination != '')
-                    window.location.replace(destination);
-            });
-
-        </script>
-    </div> <!-- end tab-content -->
-</div> <!-- end tab-container -->
 {% endblock %} {# end subsectioncontent #}
 {% endblock %}
 
