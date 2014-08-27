@@ -1,13 +1,16 @@
 {% extends 'workshop/cpanel/index.html' %}
+{% load i18n %}
 
 {% block tabcontent %}
 
-<form action="" method="post">
-    <table>
-        {{ form.as_table }}
-    </table>
-    <button type="submit">Add</button>
-    {% csrf_token %}
-</form>
+    <form class="horizontal-form" method="post">
+        <table>
+            {{ form.as_table }}
+        </table>
+        <button class="btn btn-primary" type="submit">{% trans 'Add ' %}
+                <span class="glyphicon glyphicon-plus"></span>
+        </button>
+        {% csrf_token %}
+    </form>
 
 {% endblock %}
