@@ -1,12 +1,13 @@
 {% extends 'workshop/cpanel/index.html' %}
 {% load workshop %}
+{% load i18n %}
 
 {% block tabcontent %}
-    <form action="{% url ws_edit_group instance.pk %}" method="post">
+    <form class="horizontal-form" action="{% url ws_edit_group instance.pk %}" method="post">
         <table>
         {{ form.as_table }}
         </table>
         {% csrf_token %}
-        <button type="submit">Update</button>
+        <button class="btn btn-primary" type="submit">{% trans 'Update' %}</button>
     </form>
 {% endblock %}
