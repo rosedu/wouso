@@ -1,23 +1,24 @@
 {% extends 'cpanel/index.html' %}
+{% load i18n %}
 {% load user %}
-{% block scripts %}
-    <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
-{% endblock %}
 
-{% block sectiontitle %}Special Quests{% endblock %}
+{% block sectiontitle %}
+    Special Quests
+    <a class="btn btn-primary pull-right" href="{% url specialquest_new %}">
+        {% trans 'Add task ' %}<span class="glyphicon glyphicon-plus"></span></a>
+{% endblock %}
 
 {% block sectioncontent %}
 
-<ul class="tabs">
-    <li ><a href="{% url specialquest_home %}">Tasks</a></li>
-    <li class="active"><a href="{% url specialquest_cpanel_groups %}">Groups</a></li>
+<ul class="nav nav-tabs">
+    <li class="active"><a href="{% url specialquest_home %}">Tasks</a></li>
+    <li><a href="{% url specialquest_cpanel_groups %}">Groups</a></li>
 </ul>
 
-<div class="tab_container">
-    <div id="tab-1" class="tab_content">
-        &nbsp;
+<div class="container-fluid">
     {% block tabcontent %}
-    <table>
+    <div class=" col-md-10">
+    <table class="table table-bordered table-condensed table-hover">
         <tr>
             <th>Name</th>
             <th>Owner</th>
@@ -28,18 +29,34 @@
             <tr>
                 <td>{{ t.name }}</td>
                 <td>{% player t.head %}</td>
-                <td align="center">{{ t.players.count }}</td>
-                <td><a class="button button-min" href="{% url specialquest_cpanel_group_toggle t.id %}"><span{% if not t.active %} class="wrong"{% endif %}>{{ t.active }}</span></a></td>
-                <td class="actions" nowrap>
-                    <a href="{% url specialquest_group t.id %}">View members</a>
-                    <a href="{% url admin:specialquest_specialquestgroup_change t.id %}" title="edit">✍</a>
-                    <a href="{% url specialquest_cpanel_group_delete t.id %}" onclick="return confirm('realy?');" title="delete">x</a>
+                <td>{{ t.players.count }}</td>
+                <td>
+                    <a class="btn btn-primary" href="{% url specialquest_cpanel_group_toggle t.id %}">
+                        <span{% if not t.active %} class="wrong"{% endif %}>{{ t.active }}</span>
+                    </a>
+                </td>
+                <td>
+                    <a href="{% url specialquest_group t.id %}" class="btn btn-info">
+                        {% trans 'View members' %}
+                    </a>
+                    <a href="{% url admin:specialquest_specialquestgroup_change t.id %}" class="btn btn-success">
+                        {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+                    </a>
+                    <a href="{% url specialquest_cpanel_group_delete t.id %}" onclick="return confirm('realy?');"
+                        class="btn btn-danger">
+                        {% trans 'Delete ' %}<span class="glyphicon glyphicon-remove"></span>
+                    </a>
                 </td>
             </tr>
         {% empty %}
-        <tr><td colspan=5>No groups</td></tr>
+        <tr><td colspan="0">No groups</td></tr>
         {% endfor %}
     </table>
+    </div>
+    <div class="panel panel-primary col-md-2">
+    <div class="panel-body">
+        Current date and time:  {% now "d/m/Y H:i" %}
+    </div>
     {% endblock %}
     </div>
 </div>
