@@ -9,3 +9,18 @@
 .table th {
     background-color: #F5F5F5;
 }
+
+/* Question Pool */
+div.second {
+    color: #444;
+    text-align: right;
+    width: 275px;
+    padding-top: 22px;;
+    float: right;
+}
+.hidden {
+    display: none;
+}
+.question_preview {
+    cursor: pointer;
+}
