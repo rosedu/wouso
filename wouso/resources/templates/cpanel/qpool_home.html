@@ -13,7 +13,9 @@
             <span class="glyphicon glyphicon-plus"></span>{% trans 'Add question' %}
         </a>
         <a class="btn btn-primary" href="{% url importer %}">{% trans 'Import file' %}</a>
-        <a class="btn btn-success" href="{% url qpool_manage_tags %}">{% trans 'Manage tags' %}</a>
+        <a class="btn btn-success" href="{% url qpool_manage_tags %}">
+            <span class="glyphicon glyphicon-edit"></span>{% trans 'Manage tags' %}
+        </a>
     </div>
 {% endblock %}
 
@@ -139,7 +141,7 @@
                         <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                     </a> &nbsp; &nbsp;
                     <a class="btn btn-danger" href="{% url question_del q.id%}" onclick="return confirm('really?');">
-                        {% trans 'Delete ' %}<span class="glyphicon glyphicon-remove"></span>
+                        <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
                     </a>
                 </td>
             </tr>

@@ -17,7 +17,7 @@
         </a>
 
         <a class="btn btn-success" href="{% url ws_edit_spot 0 0 %}">
-            {% trans 'Edit Default Spot ' %}<span class="glyphicon glyphicon-edit"></span>
+            <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit Default Spot ' %}
         </a>
     </div>
 {% endblock %}
@@ -59,7 +59,7 @@
                         class="red"{% endif %}{% endif %}>{% get_schedule d.0 h %}
                         <br/>
                         <a class="btn btn-success btn btn-xs" href="{% url ws_edit_spot d.0 h %}">
-                            {% trans 'edit spot' %} <span class="glyphicon glyphicon-edit"></span>
+                            <span class="glyphicon glyphicon-edit"></span>{% trans 'spot' %}
                         </a>
                     </td>
                     {% endfor %}

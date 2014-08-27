@@ -28,7 +28,7 @@
                         <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                     </a> &nbsp; &nbsp;
                     <a class="btn btn-danger" href="{% url qpool_del_tag t.id %}">
-                        {% trans 'Delete ' %}<span class="glyphicon glyphicon-remove"></span>
+                        <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
                     </a> &nbsp; &nbsp;
                     {% if t.category %}
                     <a class="btn btn-warning" href="{% url qpool_home cat=t.category.name tag=t.id %}">

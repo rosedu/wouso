@@ -25,7 +25,7 @@
   <a class="btn btn-danger" href="{% url ws_stop w.id %}">Stop</a>
   {% endif %}
   {% if w.is_started and w.is_passed %}
-  <a class="btn btn-primary" onclick="return confirm('are you sure?');" href="{% url ws_mark_for_review w.id %}">Mark for review</a><br/>
+  <a class="btn btn-primary btn" onclick="return confirm('are you sure?');" href="{% url ws_mark_for_review w.id %}">Mark for review</a><br/>
   {% endif %}
   {% if w.is_reviewable %}
   <a class="btn btn-primary" onclick="return confirm('are you sure?');" href="{% url ws_mark_for_grading w.id %}">Mark for grading</a><br/>

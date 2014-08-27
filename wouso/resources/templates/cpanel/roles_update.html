@@ -16,7 +16,7 @@
         <tr>
             <td>{% player u.get_profile %}</td>
             <td><a class="btn btn-danger btn-sm" href="{% url roles_update_kick role.id u.id %}">
-                {% trans 'Remove ' %}<span class="glyphicon glyphicon-remove"></span>
+                <span class="glyphicon glyphicon-remove"></span>{% trans 'Remove' %}
             </a></td>
         </tr>
         {% endfor %}

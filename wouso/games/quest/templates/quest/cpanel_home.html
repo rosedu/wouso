@@ -45,7 +45,7 @@
                         <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                     </a>
                     <a href="{% url quest_sort q.id %}" class="btn btn-info">
-                        {% trans 'Sort ' %}<span class="glyphicon glyphicon-sort"></span>
+                        <span class="glyphicon glyphicon-sort"></span>{% trans 'Sort' %}
                     </a>
                     {% ifequal q.status "Passed" %}
                         {% if q.registered %}
