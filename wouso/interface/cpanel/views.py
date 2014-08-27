@@ -47,14 +47,13 @@ class ModuleViewMixin(object):
     module = 'undefined'
 
     def get_context_data(self, **kwargs):
-        context = super(ModuleViewMixin, self).get_context_data(**kwargs)
+        context = super(self).get_context_data(**kwargs)
         context.update(dict(module=self.module))
         return context
 
 
-class DashboardView(ModuleViewMixin, TemplateView):
+class DashboardView(TemplateView):
     template_name = 'cpanel/index.html'
-    module = 'home'
 
     def get_context_data(self, **kwargs):
         from wouso.games.quest.models import Quest, QuestGame
@@ -153,11 +152,10 @@ add_formula = permission_required('config.change_setting')(
     AddFormulaView.as_view())
 
 
-class SpellsView(ModuleViewMixin, ListView):
+class SpellsView(ListView):
     model = Spell
     template_name = 'cpanel/spells_home.html'
     context_object_name = 'spells'
-    module = 'spells'
 
     def get_context_data(self, **kwargs):
         context = super(SpellsView, self).get_context_data(**kwargs)
@@ -169,23 +167,20 @@ class SpellsView(ModuleViewMixin, ListView):
 spells = permission_required('config.change_setting')(SpellsView.as_view())
 
 
-class EditSpellView(ModuleViewMixin, UpdateView):
+class EditSpellView(UpdateView):
     template_name = 'cpanel/edit_spell.html'
     model = Spell
     form_class = SpellForm
     success_url = reverse_lazy('spells')
-    module = 'spells'
-
 
 edit_spell = permission_required('config.change_setting')(
     EditSpellView.as_view())
 
 
-class AddSpellView(ModuleViewMixin, CreateView):
+class AddSpellView(CreateView):
     template_name = 'cpanel/add_spell.html'
     form_class = SpellForm
     success_url = reverse_lazy('add_spell')
-    module = 'spells'
 
 
 add_spell = permission_required('config.change_setting')(AddSpellView.as_view())
@@ -204,9 +199,8 @@ def spell_delete(request, id):
     return HttpResponseRedirect(go_back)
 
 
-class CustomizationView(ModuleViewMixin, TemplateView):
+class CustomizationView(TemplateView):
     template_name = 'cpanel/customization.html'
-    module = 'custom'
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_superuser:
@@ -232,9 +226,8 @@ customization = permission_required('config.change_setting')(
     CustomizationView.as_view())
 
 
-class DisplayView(ModuleViewMixin, TemplateView):
+class DisplayView(TemplateView):
     template_name = 'cpanel/display.html'
-    module = 'display'
 
     def get_context_data(self, **kwargs):
         s = get_sidebar()
@@ -252,9 +245,8 @@ class DisplayView(ModuleViewMixin, TemplateView):
 display = permission_required('config.change_setting')(DisplayView.as_view())
 
 
-class GamesView(ModuleViewMixin, TemplateView):
+class GamesView(TemplateView):
     template_name = 'cpanel/customization.html'
-    module = 'games'
 
     def post(self, request, *args, **kwargs):
         switchboard = GamesSwitchboard()
@@ -345,10 +337,9 @@ def qpool_home(request, cat='qotd', page=u'1', tag=None):
                               context_instance=RequestContext(request))
 
 
-class QPoolNewView(ModuleViewMixin, FormView):
+class QPoolNewView(FormView):
     template_name = 'cpanel/qpool_new.html'
     form_class = QuestionForm
-    module = 'qpool'
 
     def get_form_kwargs(self):
         return dict(data=self.request.POST)
@@ -367,11 +358,10 @@ class QPoolNewView(ModuleViewMixin, FormView):
 qpool_new = permission_required('config.change_setting')(QPoolNewView.as_view())
 
 
-class QPoolAddAnswerView(ModuleViewMixin, UpdateView):
+class QPoolAddAnswerView(UpdateView):
     template_name = 'cpanel/add_answer.html'
     model = Question
     form_class = AnswerForm
-    module = 'qpool'
 
     def get_form_kwargs(self):
         kwargs = {
@@ -519,9 +509,8 @@ def qpool_set_active_categories(request):
     )
 
 
-class QpoolImporterView(ModuleViewMixin, TemplateView):
+class QpoolImporterView(TemplateView):
     template_name = 'cpanel/importer.html'
-    module = 'qpool'
 
     def get_context_data(self, **kwargs):
         categories = Category.objects.all().exclude(name='proposed')
@@ -707,10 +696,9 @@ def artifactset(request, id):
                               context_instance=RequestContext(request))
 
 
-class ArtifactHomeView(ModuleViewMixin, ListView):
+class ArtifactHomeView(ListView):
     template_name = 'cpanel/artifact_home.html'
     context_object_name = 'artifacts'
-    module = 'artifacts'
 
     def get_queryset(self):
         if 'group' not in self.kwargs.keys():
@@ -1090,7 +1078,7 @@ class StaticPagesView(ListView):
 static_pages = staff_required(StaticPagesView.as_view())
 
 
-class AddStaticPageView(ModuleViewMixin, CreateView):
+class AddStaticPageView(CreateView):
     template_name = 'cpanel/add_static_page.html'
     model = StaticPage
     form_class = StaticPageForm
@@ -1134,7 +1122,7 @@ class NewsView(ListView):
 news = permission_required('config.change_setting')(NewsView.as_view())
 
 
-class AddNewsView(ModuleViewMixin, CreateView):
+class AddNewsView(CreateView):
     template_name = "cpanel/add_news.html"
     model = NewsItem
     form_class = NewsForm
