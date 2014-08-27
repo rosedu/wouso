@@ -1,5 +1,6 @@
 {% extends 'workshop/cpanel/index.html' %}
 {% load workshop %}
+{% load i18n %}
 
 {% block tabcontent %}
     <form class=form-horizontal" method="post"
@@ -8,6 +9,6 @@
             {{ form.as_table }}
         </table>
         {% csrf_token %}
-        <button class="btn btn-primary" type="submit">Submit</button>
+        <button class="btn btn-primary" type="submit">{% trans 'Submit' %}</button>
     </form>
 {% endblock %}
