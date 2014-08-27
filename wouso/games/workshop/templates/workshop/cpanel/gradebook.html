@@ -9,31 +9,32 @@
 
 {% block tabcontent %}
 
-<table>
-    <tr>
-        <th colspan="2">Student</th>
-        {% for w in semigroup.workshop_set.all %}
-        <th>{{ w.title }}</th>
-        {% endfor %}
-    </tr>
-    {% for p in players %}
-    <tr>
-        <td>{{ p.user.first_name }} {{ p.user.last_name }}</td>
-        <td>[{{ p.user.username }}]</td>
-        {% for w in semigroup.workshop_set.all %}
-            <td>{% get_final_grade w p %}</td>
-        {% endfor %}
-    </tr>
-    {% endfor %}
-    <tr>
-        <td colspan="2"></td>
-        {% for w in semigroup.workshop_set.all %}
-        <td>
-            <a href="{% url ws_reviewers_map w.id %}">view</a>
-        </td>
-        {% endfor %}
-    </tr>
-</table>
+    <div class="container-fluid">
+        <table class="table table-bordered table table-striped">
+            <tr>
+                <th colspan="2">Student</th>
+                {% for w in semigroup.workshop_set.all %}
+                <th>{{ w.title }}</th>
+                {% endfor %}
+            </tr>
+            {% for p in players %}
+            <tr>
+                <td>{{ p.user.first_name }} {{ p.user.last_name }}</td>
+                <td>[{{ p.user.username }}]</td>
+                {% for w in semigroup.workshop_set.all %}
+                <td>{% get_final_grade w p %}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="2"></td>
+                {% for w in semigroup.workshop_set.all %}
+                <td><a class="btn btn-warning btn btn-xs" href="{% url ws_reviewers_map w.id %}">{% trans 'View' %}</a></td>
+                {% endfor %}
+            </tr>
+        </table>
+    </div>
 
-    <a class="button" href="{% url ws_workshops %}">Workshops</a>
+    <a class="btn btn-primary btn btn-sm" href="{% url ws_workshops %}">{% trans 'Back to Workshops' %}</a>
+
 {% endblock %}
