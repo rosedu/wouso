@@ -1,37 +1,46 @@
 {% extends 'cpanel/index.html' %}
 {% load user %}
+{% load i18n %}
 
 {% block sectiontitle %}Reports{% endblock %}
 
 {% block sectioncontent %}
-<table>
-<tr>
-    <th>User from</th>
-    <th>User to</th>
-    <th>Text</th>
-    <th>Dibs</th>
-    <th>Status</th>
-    <th>Timestamp</th>
-    <th>Edit</th>
-</tr>
-{% for r in reports %}
-<tr><td>{{ r.user_from }}</td>
-    <td>{{ r.user_to }}</td>
-    <td>{{ r.text|slice:"0:10" }}</td>
-    <td>{{ r.dibs }}</td>
-    <td>{% if r.status == "R" %}
-        Reported
-        {% else %}{% if r.status == "I" %}
-        Investigating
-        {% else %}{% if r.status == "S" %}
-        Resolved
-        {% else %}{% if r.status == "E" %}
-        Invalid
-        {% endif %}{% endif %}{% endif %}{% endif %}</td>
-    <td>{{ r.timestamp}}</td>
-    <td><a class="button" href="{% url edit_report r.id %}">Edit</a></td>
-
-</tr>
-{% endfor %}
+<div class="container-fluid">
+<table class="table table-bordered table-hover table-condensed">
+    <tr>
+        <th>User from</th>
+        <th>User to</th>
+        <th>Text</th>
+        <th>Dibs</th>
+        <th>Status</th>
+        <th>Timestamp</th>
+        <th>Edit</th>
+    </tr>
+    {% for r in reports %}
+    <tr>
+        <td>{{ r.user_from }}</td>
+        <td>{{ r.user_to }}</td>
+        <td>{{ r.text|slice:"0:50" }}</td>
+        <td>{{ r.dibs }}</td>
+        <td>{% if r.status == "R" %}
+            Reported
+            {% else %}{% if r.status == "I" %}
+            Investigating
+            {% else %}{% if r.status == "S" %}
+            Resolved
+            {% else %}{% if r.status == "E" %}
+            Invalid
+            {% endif %}{% endif %}{% endif %}{% endif %}</td>
+        <td>{{ r.timestamp}}</td>
+        <td>
+            <a class="btn btn-success" href="{% url edit_report r.id %}">
+                {% trans 'Edit ' %}<span class="glyphicon glyphicon-edit"></span>
+            </a>
+        </td>
+    </tr>
+    {% empty %}
+        <tr><td colspan="0">No reports have been made yet</td></tr>
+    {% endfor %}
 </table>
+</div>
 {% endblock %}
