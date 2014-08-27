@@ -7,7 +7,7 @@
 
 {% block tabcontent %}
 
-    <p> <a class="btn btn-primary btn btn-sm" href="{% url ws_schedule_change %}">
+    <p> <a class="btn btn-primary btn btn-sm pull-right" href="{% url ws_schedule_change %}">
             {% trans 'Add Schedule ' %} <span class="glyphicon glyphicon-plus"></span>
         </a>
         <a class="btn btn-warning btn btn-sm" href="{% url qpool_home cat=category.name %}">
