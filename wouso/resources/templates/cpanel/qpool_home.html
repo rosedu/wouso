@@ -126,7 +126,7 @@
                 {% else %}
                 <td>
                 {% if q.endorsed_by %}
-                    <a class="btn btn-warning" href="{% url switch_active q.id %}">% trans 'Yes' %}</a>
+                    <a class="btn btn-warning" href="{% url switch_active q.id %}">{% trans 'Yes' %}</a>
                 {% else %}
                     <a class="btn btn-danger" href="{% url switch_active q.id %}">{% trans 'No' %}</a>
                 {% endif %}
