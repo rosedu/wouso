@@ -82,8 +82,8 @@
             {% endif %}
         </table>
 
-            <button class="btn btn-danger" onclick="history.back(); return false;">{% trans 'Cancel' %}</button>
-            <button class="btn btn-warning" type="reset">{% trans 'Reset' %}</button>
+            <button class="btn btn-warning" onclick="history.back(); return false;">{% trans 'Cancel' %}</button>
+            <button class="btn btn-danger" type="reset">{% trans 'Reset' %}</button>
             <button class="btn btn-primary" type="submit" class="default">{% trans 'Save' %}</button>
 
     {% csrf_token %}
