@@ -57,6 +57,8 @@
 
         {% include 'cpanel/qpool_pagination.html' %}
 
+        <br/>
+
         <b>Select:</b>
         <a onclick='$(".question_select").attr("checked", true).change();' href="#">{% trans 'All' %}</a> /
         <a onclick='$(".question_select").attr("checked", false).change();' href="#">{% trans 'None' %}</a>
@@ -78,16 +80,19 @@
             </optgroup>
         </select>
 
+        <br/> <br/>
+
         <div class="col-md-10">
         <table class="table table-bordered table-hover table-condensed">
             <tr>
                 <th colspan="2">#</th>
                 <th>Question</th>
-                {% if cat != 'proposed' %}
-                <th>Active</th>
-                {% else %}
-                <th>Endorsed</th>
+                {% if cat == 'proposed' %}
+                <th>Proposed by:</th>
+                <th>Endorsed by:</th>
+                <th>Tags:</th>
                 {% endif %}
+                <th>Active</th>
                 {% if cat == 'qotd' %}
                 <th>Day</th>
                 {% endif %}
@@ -98,7 +103,7 @@
                 <td><input type="checkbox" class="question_select" id="qs_{{ q.id }}"/></td>
                 <td align="right">{{ q.id }}</td>
                 <td>
-                    <span class="question_preview" onclick="$('#qc_{{q.id}}').toggle();">{{ q }}</span>
+                    <span class="question_preview" onclick="$('#qc_{{q.id}}').toggle();" title="Click for answers">{{ q }}</span>
                     <div id="qc_{{ q.id }}" class="hidden">
                         {% for a in q.answers %}
                             {% if a.correct %}+{% else %}-{% endif %}{{ a.text }}<br/>
@@ -106,12 +111,11 @@
                     </div>
                     <span class="points">{% if not q.is_valid %}<span class="wrong">Invalid</span>{% endif %}</span>
                     {% if cat != 'proposed'%}
-                    <div class="second">{% if q.tags_nice %}tags: {{ q.tags_nice }}{% endif %}</div>
+                    <div>{% if q.tags_nice %}tags: {{ q.tags_nice }}{% endif %}</div>
                     {% else %}
-                    <div class="second"><p><b>Proposed by</b>: {{q.proposed_by}}</p>
-                        <p><b>Endorsed by</b>: {{q.endorsed_by}}</p>
-                        <p> <b>Tags</b>: {{ q.tag }}</p>
-                    </div>
+                    <td>{{q.proposed_by}}</td>
+                    <td>{{q.endorsed_by}}</td>
+                    <td>{{ q.tag }}</td>
                     {% endif %}
                 </td>
                 {% if cat != 'proposed' %}
@@ -124,9 +128,9 @@
                     </a>
                 </td>
                 {% else %}
-                <td>
+                <td style="vertical-align: middle">
                 {% if q.endorsed_by %}
-                    <a class="btn btn-warning" href="{% url switch_active q.id %}">{% trans 'Yes' %}</a>
+                    <a class="btn btn-success" href="{% url switch_active q.id %}">{% trans 'Yes' %}</a>
                 {% else %}
                     <a class="btn btn-danger" href="{% url switch_active q.id %}">{% trans 'No' %}</a>
                 {% endif %}
@@ -136,10 +140,10 @@
                 {% if cat == 'qotd' %}
                 <td {% if q.scheduled == today %}class="bold"{%endif%}>{{ q.scheduled }}</td>
                 {% endif %}
-                <td class="actions">
+                <td style="vertical-align: middle">
                     <a class="btn btn-success" href="{% url question_edit q.id%}">
                         <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
-                    </a> &nbsp; &nbsp;
+                    </a>
                     <a class="btn btn-danger" href="{% url question_del q.id%}" onclick="return confirm('really?');">
                         <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
                     </a>
