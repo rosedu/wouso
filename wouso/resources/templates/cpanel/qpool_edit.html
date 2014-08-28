@@ -1,69 +1,93 @@
 {% extends 'cpanel/qpool_home.html' %}
+{% load i18n %}
 
 {% block title %}CPanel{% endblock %}
 {% block sectiontitle %}{{ block.super }} &raquo; {% if question %}Edit question #{{ question.id }}{% else %}New question{% endif %}{% endblock %}
 
 {% block subsectioncontent %}
-<div class="second">
-    <p>Proposed by: {{ question.proposed_by }}, Endorsed by: {{ question.endorsed_by }}</p>
-    <p>Category: {{ question.category }}</p>
-    <p>Added: {{ question.date_added }} <br/>Last modified: {{ question.date_changed }}</p>
-</div>
 
-<form method="post" action="">
+    <p><b>Proposed by: </b>{{ question.proposed_by }}</p>
+    <p><b>Endorsed by: </b>{{ question.endorsed_by }}</p>
+    <p><b>Added: </b>{{ question.date_added }}</p>
+    <p><b>Last modified: </b>{{ question.date_changed}}</p>
 
-    {{ form.errors }}
-<table>
-    <tr><td><label for="text">Text:</label></td>
-        <td><textarea id="text" name="text" rows="10" cols="50">{{ question.text}}</textarea>
-    </tr>
-        {% for a in question.answers %}
-        <tr><td><input type="checkbox" name="correct_{{a.id}}" {% if a.correct %}checked{% endif %}/></td>
-            <td><textarea name="answer_{{a.id}}" cols="50">{{ a.text }}</textarea>
-            {% if question %}
-            <a href="{% url answer_del question.id a.id %}">x</a>
+    <hr/>
+
+    <form class="horizontal-form" method="post" >
+        {{ form.errors }}
+        <table class="table table-bordered table-hover">
+            <tr>
+                <th>Properties</th>
+                <th>Text</th>
+                <th>Manage</th>
+            </tr>
+            <tr>
+                <td style="vertical-align: middle"><label >Question text:</label></td>
+                <td><textarea id="text" name="text" rows="5" cols="50">{{ question.text}}</textarea></td>
+            </tr>
+            {% for a in question.answers %}
+            <tr>
+                <td style="vertical-align: middle">Correct: <input type="checkbox" name="correct_{{a.id}}" {% if a.correct %}checked{% endif %}/></td>
+                <td><textarea name="answer_{{a.id}}" cols="50">{{ a.text }}</textarea></td>
+                <td style="vertical-align: middle">
+                    {% if question %}
+                    <a class="btn btn-danger" href="{% url answer_del question.id a.id %}">
+                        <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete Answer' %}
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="3"><a class="btn btn-success" href="{% url add_answer question.id %}">
+                    <span class="glyphicon glyphicon-plus"></span>{% trans 'Add Answer' %}
+                </a>
+                </td>
+            </tr>
+            {% if question.category.name == 'qotd' %}
+            <tr>
+                <td style="vertical-align: middle"><label for="schedule">Schedule (dd.mm.yyyy):</label></td>
+                <td><input type="text" value="{% if question.scheduled != '-' %}{{ question.scheduled }}{% endif %}" name="schedule" id="schedule"/></td>
+                <td></td>
+            </tr>
             {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
+            {% if question.category.name == 'proposed' %}
+            <tr>
+                <td><b>Proposed for:</b></td>
+                <td>{% for t in question.tags.all  %}{{ t.name }} {% endfor %}</td>
+                <td></td>
+            </tr>
+            {% else %}
+            {% if question %}
+            <tr>
+                <td style="vertical-align: middle"><label for="tags">Tags:</label></td>
+                <td>{{ form.tags }}</td>
+                <td></td>
+            </tr>
+            {% endif %}
+            {% endif %}
+            {% if form.proposed_by %}
+            <tr>
+                <td><b>Proposed by:</b></td>
+                <td>{{ form.proposed_by }}</td>
+                <td></td>
+            </tr>
+            {% endif %}
+            {% if form.endorsed_by %}
+            <tr>
+                <td><b>Endorsed by:</b></td>
+                <td>{{ form.endorsed_by }}</td>
+                <td></td>
+            </tr>
+            {% endif %}
+        </table>
 
-    <tr><td><div class='action'>
-        <a class="button" href="{% url add_answer question.id %}">Add answer</a>
-            </div>
-        </td>
-    </tr>
+            <button class="btn btn-danger" onclick="history.back(); return false;">{% trans 'Cancel' %}</button>
+            <button class="btn btn-warning" type="reset">{% trans 'Reset' %}</button>
+            <button class="btn btn-primary" type="submit" class="default">{% trans 'Save' %}</button>
 
-    {% if question.category.name == 'qotd' %}
-    <tr><td><label for="schedule">Schedule (dd.mm.yyyy):</label></td>
-        <td><input type="text" value="{% if question.scheduled != '-' %}{{ question.scheduled }}{% endif %}" name="schedule" id="schedule"/></td>
-    </tr>
-    {% endif %}
-    {% if question.category.name == 'proposed' %}
-    <tr><td colspan="2">Proposed for: {% for t in question.tags.all  %}{{ t.name }} {% endfor %}</td></tr>
-    {% else %}
-        {% if question %}
-        <tr><td><label for="tags">Tags:</label></td>
-            <td>{{ form.tags }}</td>
-        </tr>
-        {% endif %}
-    {% endif %}
-
-    {% if form.proposed_by %}
-    <tr><td>Proposed by:</td><td>
-        {{ form.proposed_by }}
-    </td></tr>
-    {% endif %}
-    {% if form.endorsed_by %}
-    <tr><td>Endorsed by:</td><td>
-        {{ form.endorsed_by }}
-    </td></tr>
-    {% endif %}
-    </table>
-    <div>
-        <button onclick="history.back(); return false;" class="btn btn-warning">Cancel</button>
-        <button type="reset" class="btn btn-danger">Reset</button>
-        <button type="submit" class="btn btn-primary">Save</button>
-    </div>
     {% csrf_token %}
-</form>
+
+    </form>
+
 {% endblock %}
