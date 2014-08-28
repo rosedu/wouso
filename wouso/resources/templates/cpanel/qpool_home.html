@@ -88,11 +88,14 @@
                 <th colspan="2">#</th>
                 <th>Question</th>
                 {% if cat == 'proposed' %}
-                <th>Proposed by:</th>
-                <th>Endorsed by:</th>
-                <th>Tags:</th>
+                <th>Proposed by</th>
+                <th>Endorsed by</th>
+                <th>Tags</th>
+                <th>Endorsed</th>
                 {% endif %}
+                {% if cat != 'proposed' %}
                 <th>Active</th>
+                {% endif %}
                 {% if cat == 'qotd' %}
                 <th>Day</th>
                 {% endif %}
@@ -111,7 +114,7 @@
                     </div>
                     <span class="points">{% if not q.is_valid %}<span class="wrong">Invalid</span>{% endif %}</span>
                     {% if cat != 'proposed'%}
-                    <div>{% if q.tags_nice %}tags: {{ q.tags_nice }}{% endif %}</div>
+                    <div class="second">{% if q.tags_nice %}tags: {{ q.tags_nice }}{% endif %}</div>
                     {% else %}
                     <td>{{q.proposed_by}}</td>
                     <td>{{q.endorsed_by}}</td>
