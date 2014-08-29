@@ -107,7 +107,7 @@
                     <td>{{ q.id }}</td>
                     <td>
                         <span class="question_preview" onclick="$('#qc_{{q.id}}').toggle();" title="Click for answers">{{ q }}</span>
-                        <div id="qc_{{ q.id }}" class="hidden">
+                        <div id="qc_{{ q.id }}" class="collapse">
                             {% for a in q.answers %}
                                 {% if a.correct %}+{% else %}-{% endif %}{{ a.text }}<br/>
                             {% endfor %}
