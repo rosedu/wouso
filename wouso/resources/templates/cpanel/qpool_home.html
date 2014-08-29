@@ -106,15 +106,17 @@
                     <td><input type="checkbox" class="question_select" id="qs_{{ q.id }}"/></td>
                     <td>{{ q.id }}</td>
                     <td>
-                        <span class="question_preview" onclick="$('#qc_{{q.id}}').toggle();" title="Click for answers">{{ q }}</span>
-                        <div id="qc_{{ q.id }}" class="collapse">
-                            {% for a in q.answers %}
-                                {% if a.correct %}+{% else %}-{% endif %}{{ a.text }}<br/>
-                            {% endfor %}
+                        <div class="text-left">
+                            <span class="question_preview" onclick="$('#qc_{{q.id}}').toggle();" title="Click for answers">{{ q }}</span>
+                            <div id="qc_{{ q.id }}" class="collapse">
+                                {% for a in q.answers %}
+                                    {% if a.correct %}+{% else %}-{% endif %}{{ a.text }}<br/>
+                                {% endfor %}
+                            </div>
                         </div>
                         <span class="points">{% if not q.is_valid %}<span class="wrong">Invalid</span>{% endif %}</span>
                         {% if cat != 'proposed'%}
-                        <div class="second">{% if q.tags_nice %}tags: {{ q.tags_nice }}{% endif %}</div>
+                        <div class="second">{% if q.tags_nice %}<b>Tags:</b> {{ q.tags_nice }}{% endif %}</div>
                         {% else %}
                         <td>{{q.proposed_by}}</td>
                         <td>{{q.endorsed_by}}</td>
@@ -131,7 +133,7 @@
                         </a>
                     </td>
                     {% else %}
-                    <td style="vertical-align: middle">
+                    <td>
                     {% if q.endorsed_by %}
                         <a class="btn btn-success btn-xs" href="{% url switch_active q.id %}">{% trans 'Yes' %}</a>
                     {% else %}
