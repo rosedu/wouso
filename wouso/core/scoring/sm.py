@@ -65,13 +65,13 @@ def calculate(formula, **params):
     if formula is None:
         raise InvalidFormula(formula)
 
-    if not formula.definition:
+    if not formula.expression:
         return {}
 
-    return calculate_definition(formula.definition, formula, **params)
+    return calculate_expression(formula.expression, formula, **params)
 
 
-def calculate_definition(definition, formula=None, **params):
+def calculate_expression(expression, formula=None, **params):
     """
     Calculate a formula defintion. Example of such defintions are:
         * points=50
@@ -83,7 +83,7 @@ def calculate_definition(definition, formula=None, **params):
     """
     ret = {}
     try:
-        frml = definition.format(**params)
+        frml = expression.format(**params)
         # Python does not allow assignments inside eval
         # Using this workaround for now
         ass = frml.split(';')
@@ -119,7 +119,7 @@ def timer(user, game, formula, default=300, **params):
     formula = Formula.get(formula)
     if formula is None:
         raise InvalidFormula(formula)
-    if not formula.definition:
+    if not formula.expression:
         return default
 
     values = calculate(formula, **params)
