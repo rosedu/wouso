@@ -80,42 +80,42 @@
             <!-- Dashboard !-->
                 <h4 class="text-center">Dashboard</h4>
                 {% url dashboard as url %}
-                <li {% if request.path == url %}class="active"{% endif %}><a href="{% url dashboard %}">Dashboard</a></li>
+                <li {% if url == request.path %}class="active"{% endif %}><a href="{% url dashboard %}">Dashboard</a></li>
                 {% url qpool_home as url %}
-                <li {% if request.path == url %}class="active"{% endif %}><a href="{% url qpool_home %}">Question Pool</a></li>
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url qpool_home %}">Question Pool</a></li>
                 {% url spells as url %}
-                <li {% if request.path == url %}class="active"{% endif %}><a href="{% url spells %}">Spells</a></li>
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url spells %}">Spells</a></li>
                 {% url artifact_home as url %}
-                <li {% if request.path == url %}class="active"{% endif %}><a href="{% url artifact_home %}">Artifacts</a></li>
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url artifact_home %}">Artifacts</a></li>
                 {% url all_players as url %}
-                <li {% if request.path == url %}class="active"{% endif %}><a href="{% url all_players %}">Players</a></li>
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url all_players %}">Players</a></li>
                 {% url races_groups as url %}
-                <li {% if request.path == url %}class="active"{% endif %}><a href="{% url races_groups %}">Races & groups</a></li>
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url races_groups %}">Races & groups</a></li>
             <!-- Games !-->
                 <h4 class="text-center">Games</h4>
                 {% url games_home as url %}
-                <li {% if request.path == url %}class="active"{% endif %}><a href="{% url games_home %}">Games</a></li>
+                <li {% if url == request.path %}class="active"{% endif %}><a href="{% url games_home %}">Games</a></li>
                 {% url formulas as url %}
-                <li {% if request.path == url %}class="active"{% endif %}><a href="{% url formulas %}">Formulas</a></li>
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url formulas %}">Formulas</a></li>
                 {% cpanel_games %}
             <!-- Customization !-->
             {% if user.is_staff or user.is_superuser %}
                 <h4 class="text-center">Customization</h4>
                 {% url roles as url %}
-                <li {% if request.path == url %}class="active"{% endif %}><a href="{% url roles %}">Roles</a></li>
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url roles %}">Roles</a></li>
                 {% url customization as url %}
-                <li {% if request.path == url %}class="active"{% endif %}><a href="{% url customization %}">Customization</a></li>
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url customization %}">Customization</a></li>
                 {% url cpanel_display as url %}
-                <li {% if request.path == url %}class="active"{% endif %}><a href="{% url cpanel_display %}">Display</a></li>
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url cpanel_display %}">Display</a></li>
                 {% url reports as url %}
-                <li {% if request.path == url %}class="active"{% endif %}><a href="{% url reports %}">Reports</a></li>
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url reports %}">Reports</a></li>
             {% endif %}
             <!-- Shortcuts !-->
                 <h4 class="text-center">Shortcuts to Django Admin</h4>
                 {% url static_pages as url %}
-                <li {% if request.path == url %}class="active"{% endif %}><a href="{% url static_pages %}">Static Pages</a></li>
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url static_pages %}">Static Pages</a></li>
                 {% url news as url %}
-                <li {% if request.path == url %}class="active"{% endif %}><a href="{% url news %}">News</a></li>
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url news %}">News</a></li>
                 {% if user.is_staff or user.is_superuser %}
                 <li><a href="{% url admin:activity_activity_changelist %}">Activity Monitor</a></li>
                 <li><a href="{% url admin:index %}"><em>Django Admin »</em></a></li>
