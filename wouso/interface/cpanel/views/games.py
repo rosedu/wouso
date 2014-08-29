@@ -13,10 +13,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render_to_response
 from django.template import RequestContext
 from django.template.defaultfilters import slugify
-from django.utils.translation import ugettext_noop
 from django.utils.translation import ugettext as _
-from django.views.generic import UpdateView, CreateView, ListView, FormView, \
-    TemplateView, DetailView
+from django.views.generic import UpdateView, CreateView, ListView, FormView, TemplateView
 from wouso.core.config.models import Setting
 from wouso.core.decorators import staff_required
 from wouso.core.ui import get_sidebar
@@ -27,29 +25,18 @@ from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
 from wouso.core import scoring
 from wouso.core.scoring.models import Formula, History, Coin
-from wouso.core.signals import addActivity, add_activity
 from wouso.core.security.models import Report
 from wouso.games.challenge.models import Challenge, Participant
 from wouso.interface.apps.messaging.models import Message
-from wouso.interface.apps.pages.models import StaticPage, NewsItem
 from wouso.interface.cpanel.models import Customization, Switchboard, \
     GamesSwitchboard
+from wouso.interface.cpanel.views import ModuleViewMixin
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.middleware.impersonation import ImpersonateMiddleware
 from wouso.utils.import_questions import import_from_file
-from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, \
-    AnswerForm, EditReportForm, RaceForm, PlayerGroupForm, RoleForm, \
-    StaticPageForm, NewsForm
-from forms import FormulaForm, TagForm
-
-
-class ModuleViewMixin(object):
-    module = 'undefined'
-
-    def get_context_data(self, **kwargs):
-        context = super(ModuleViewMixin, self).get_context_data(**kwargs)
-        context.update(dict(module=self.module))
-        return context
+from wouso.interface.cpanel.forms import FormulaForm, SpellForm, QuestionForm, \
+    AnswerForm, TagsForm, AddTagForm, UserForm, RaceForm, PlayerGroupForm, \
+    RoleForm, EditReportForm, TagForm
 
 
 class DashboardView(ModuleViewMixin, TemplateView):
@@ -113,8 +100,9 @@ class DashboardView(ModuleViewMixin, TemplateView):
 dashboard = staff_required(DashboardView.as_view())
 
 
-class FormulasView(ListView):
+class FormulasView(ModuleViewMixin, ListView):
     model = Formula
+    module = 'formulas'
     template_name = 'cpanel/formulas_home.html'
     context_object_name = 'formulas'
 
@@ -845,10 +833,11 @@ def stafftoggle(request, id):
     return HttpResponseRedirect(reverse('player_profile', args=(id,)))
 
 
-class PlayersView(ListView):
+class PlayersView(ModuleViewMixin, ListView):
     template_name = 'cpanel/players.html'
     queryset = Player.objects.all().order_by('-user__date_joined')
     context_object_name = 'players'
+    module = 'players'
     paginate_by = 50
 
     def dispatch(self, request, *args, **kwargs):
@@ -966,9 +955,10 @@ def infraction_clear(request, user_id, infraction_id):
                 args=(user_id,)))
 
 
-class RacesGroupsView(ListView):
+class RacesGroupsView(ModuleViewMixin, ListView):
     template_name = 'cpanel/races/all.html'
     model = Race
+    module = 'races'
     context_object_name = 'races'
 
     def get_context_data(self, **kwargs):
@@ -1010,9 +1000,10 @@ group_add = permission_required('config.change_setting')(
 )
 
 
-class RolesView(ListView):
+class RolesView(ModuleViewMixin, ListView):
     template_name = 'cpanel/roles.html'
     model = Group
+    module = 'roles'
     context_object_name = 'roles'
 
 
@@ -1056,9 +1047,10 @@ def roles_update_kick(request, id, player_id):
     return redirect('roles_update', id=group.id)
 
 
-class ReportsView(ListView):
+class ReportsView(ModuleViewMixin, ListView):
     template_name = 'cpanel/reports.html'
     context_object_name = 'reports'
+    module = 'reports'
 
     def get_queryset(self):
         return Report.objects.all().order_by('-timestamp')
@@ -1075,101 +1067,6 @@ class EditReportView(UpdateView):
 
 
 edit_report = staff_required(EditReportView.as_view())
-
-
-class StaticPagesView(ListView):
-    template_name = 'cpanel/static_pages.html'
-    model = StaticPage
-
-    def get_context_data(self, **kwargs):
-        context = super(StaticPagesView, self).get_context_data(**kwargs)
-        context['pages'] = StaticPage.objects.all()
-        return context
-
-
-static_pages = staff_required(StaticPagesView.as_view())
-
-
-class AddStaticPageView(ModuleViewMixin, CreateView):
-    template_name = 'cpanel/add_static_page.html'
-    model = StaticPage
-    form_class = StaticPageForm
-    success_url = reverse_lazy('static_pages')
-
-
-add_static_page = permission_required('config.change_setting')(
-    AddStaticPageView.as_view())
-
-
-class EditStaticPageView(UpdateView):
-    template_name = 'cpanel/edit_static_page.html'
-    model = StaticPage
-    form_class = StaticPageForm
-    success_url = reverse_lazy('static_pages')
-
-
-edit_static_page = permission_required('config.change_setting')(
-    EditStaticPageView.as_view())
-
-
-@permission_required('config.change_setting')
-def del_static_page(request, pk):
-    page = get_object_or_404(StaticPage, pk=pk)
-
-    page.delete()
-
-    go_back = request.META.get('HTTP_REFERER', None)
-    if not go_back:
-        go_back = reverse('wouso.interface.cpanel.views.static_pages')
-
-    return HttpResponseRedirect(go_back)
-
-
-class NewsView(ListView):
-    template_name = 'cpanel/news.html'
-    model = NewsItem
-    context_object_name = 'news'
-
-
-news = permission_required('config.change_setting')(NewsView.as_view())
-
-
-class AddNewsView(ModuleViewMixin, CreateView):
-    template_name = "cpanel/add_news.html"
-    model = NewsItem
-    form_class = NewsForm
-
-    def get_success_url(self):
-        return reverse('news')
-
-
-add_news = permission_required('config.change_setting')(
-    AddNewsView.as_view())
-
-
-class EditNewsView(UpdateView):
-    template_name = "cpanel/edit_news.html"
-    model = NewsItem
-    form_class = NewsForm
-    success_url = reverse_lazy('news')
-
-
-edit_news = permission_required('config.change_setting')(
-    EditNewsView.as_view())
-
-
-@permission_required('config.change_setting')
-def del_news(request, pk):
-    news = get_object_or_404(NewsItem, pk=pk)
-
-    news.delete()
-
-    go_back = request.META.get('HTTP_REFERER', None)
-    if not go_back:
-        go_back = reverse('wouso.interface.cpanel.views.news')
-
-    return HttpResponseRedirect(go_back)
-
 
 @staff_required
 def system_message_group(request, group):
