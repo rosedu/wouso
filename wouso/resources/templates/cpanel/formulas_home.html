@@ -18,8 +18,7 @@
         <th>Formula</th>
         <th>Description</th>
         <th>Owner</th>
-        <th>Edit</th>
-        <th>Delete</th>
+        <th>Manage</th>
     </tr>
     {% for p in formulas %}
     <tr>
@@ -31,9 +30,7 @@
             <a class="btn btn-success" href="{% url edit_formula p.id %}">
                 {% trans 'Edit '%}<span class="glyphicon glyphicon-edit"></span>
             </a>
-        </td>
-            <td>
-                <a class="btn btn-danger" href="{% url formula_del p.id %}" onClick="return confirm('Realy?');">
+            <a class="btn btn-danger" href="{% url formula_del p.id %}" onClick="return confirm('Realy?');">
                 <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
             </a>
         </td>
