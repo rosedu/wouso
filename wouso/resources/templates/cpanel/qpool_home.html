@@ -1,6 +1,6 @@
 {% extends 'cpanel/index.html' %}
 {% load i18n %}
-
+{% load user %}
 
 
 {% block sectiontitle %}
@@ -34,170 +34,171 @@
             </li>
             {% endfor %}
         </ul>
-        <div class="pull-right">
-            {% if cat == 'qotd' %}
-            <a class="btn btn-primary" href="{% url qotd_schedule %}"
-                title="schedule active questions">{% trans 'Automatic schedule' %}
-            </a>
-            {% endif %}
-            {% if cat == 'challenge' %}
-            <a class="btn btn-primary" href="{% url set_active_categories %}">
-                {% trans 'Set active tags' %}
-            </a>
-            {% endif %}
-            <a class="btn btn-primary" href="{% url qpool_export category.name %}">
-                {% trans 'Export all' %}
-            </a>
-            <a class="btn btn-danger" href="{% url remove_all cat=cat %}"
-                onclick="return confirm('Are you sure do you want to remove all questions in this category?');">
-                {% trans 'Remove all' %}
-            </a>
-        </div>
+
         <!-- MAIN QUESTION TABLE -->
-
-        {% include 'cpanel/qpool_pagination.html' %}
-
-        <br/>
-
-        <b>Select:</b>
-        <a onclick='$(".question_select").attr("checked", true).change();' href="#">{% trans 'All' %}</a> /
-        <a onclick='$(".question_select").attr("checked", false).change();' href="#">{% trans 'None' %}</a>
-
-        <br/>
-
-        <b>Action:</b>
-
-        <select id="q_actions" disabled="true">
-            <option selected value="">-- Select action --</option>
-            <optgroup label="-- Add tag --" id="tag">
-                {% for t in category.tag_set.all %}
-                <option value="{{ t.id }}">{{ t }}</option>
-                {% endfor %}
-            </optgroup>
-            <optgroup label="-- Actions --" id="actions">
-                <option value="active"  >Set active</option>
-                <option value="inactive">Set inactive</option>
-            </optgroup>
-        </select>
-
-        <br/> <br/>
-
-        <div class="col-md-10">
-        <table class="table table-bordered table-hover table-condensed">
-            <tr>
-                <th colspan="2">#</th>
-                <th>Question</th>
-                {% if cat == 'proposed' %}
-                <th>Proposed by</th>
-                <th>Endorsed by</th>
-                <th>Tags</th>
-                <th>Endorsed</th>
-                {% endif %}
-                {% if cat != 'proposed' %}
-                <th>Active</th>
-                {% endif %}
+        <div class="row">
+            <div class="col-md-10">
+            {% include 'cpanel/qpool_pagination.html' %}
+            <div class="pull-right">
                 {% if cat == 'qotd' %}
-                <th>Day</th>
+                <a class="btn btn-primary" href="{% url qotd_schedule %}"
+                    title="schedule active questions">{% trans 'Automatic schedule' %}
+                </a>
                 {% endif %}
-                <th>Actions</th>
-            </tr>
-            {% for q in q_page.object_list %}
-            <tr id="qr_{{ q.id }}">
-                <td><input type="checkbox" class="question_select" id="qs_{{ q.id }}"/></td>
-                <td align="right">{{ q.id }}</td>
-                <td>
-                    <span class="question_preview" onclick="$('#qc_{{q.id}}').toggle();" title="Click for answers">{{ q }}</span>
-                    <div id="qc_{{ q.id }}" class="hidden">
-                        {% for a in q.answers %}
-                            {% if a.correct %}+{% else %}-{% endif %}{{ a.text }}<br/>
-                        {% endfor %}
-                    </div>
-                    <span class="points">{% if not q.is_valid %}<span class="wrong">Invalid</span>{% endif %}</span>
-                    {% if cat != 'proposed'%}
-                    <div class="second">{% if q.tags_nice %}tags: {{ q.tags_nice }}{% endif %}</div>
-                    {% else %}
-                    <td>{{q.proposed_by}}</td>
-                    <td>{{q.endorsed_by}}</td>
-                    <td>{{ q.tag }}</td>
+                {% if cat == 'challenge' %}
+                <a class="btn btn-primary" href="{% url set_active_categories %}">
+                    {% trans 'Set active tags' %}
+                </a>
+                {% endif %}
+                <a class="btn btn-primary" href="{% url qpool_export category.name %}">
+                    {% trans 'Export all' %}
+                </a>
+                <a class="btn btn-danger" href="{% url remove_all cat=cat %}"
+                    onclick="return confirm('Are you sure do you want to remove all questions in this category?');">
+                    {% trans 'Remove all' %}
+                </a>
+            </div>
+            <br/>
+
+            <b>Select:</b>
+            <a onclick='$(".question_select").attr("checked", true).change();' href="#">{% trans 'All' %}</a> /
+            <a onclick='$(".question_select").attr("checked", false).change();' href="#">{% trans 'None' %}</a>
+
+            <br/>
+
+            <b>Action:</b>
+
+            <select id="q_actions" disabled="true">
+                <option selected value="">-- Select action --</option>
+                <optgroup label="-- Add tag --" id="tag">
+                    {% for t in category.tag_set.all %}
+                    <option value="{{ t.id }}">{{ t }}</option>
+                    {% endfor %}
+                </optgroup>
+                <optgroup label="-- Actions --" id="actions">
+                    <option value="active"  >Set active</option>
+                    <option value="inactive">Set inactive</option>
+                </optgroup>
+            </select>
+
+            <br/> <br/>
+
+            <table class="table table-bordered table-hover table-condensed">
+                <tr>
+                    <th colspan="2">#</th>
+                    <th>Question</th>
+                    {% if cat == 'proposed' %}
+                    <th>Proposed by</th>
+                    <th>Endorsed by</th>
+                    <th>Tags</th>
+                    <th>Endorsed</th>
                     {% endif %}
-                </td>
-                {% if cat != 'proposed' %}
-                <td>
-                {% if q.active %}
-                    <a class="btn btn-success" href="{% url switch_active q.id %}">{% trans 'Yes' %}</a>
-                {% else %}
-                    <a class="btn btn-danger" href="{% url switch_active q.id %}">{% trans 'No' %}</a>
-                {% endif %}
-                    </a>
-                </td>
-                {% else %}
-                <td style="vertical-align: middle">
-                {% if q.endorsed_by %}
-                    <a class="btn btn-success" href="{% url switch_active q.id %}">{% trans 'Yes' %}</a>
-                {% else %}
-                    <a class="btn btn-danger" href="{% url switch_active q.id %}">{% trans 'No' %}</a>
-                {% endif %}
-                    </a>
-                </td>
-                {% endif %}
-                {% if cat == 'qotd' %}
-                <td {% if q.scheduled == today %}class="bold"{%endif%}>{{ q.scheduled }}</td>
-                {% endif %}
-                <td style="vertical-align: middle">
-                    <a class="btn btn-success" href="{% url question_edit q.id%}">
-                        <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
-                    </a>
-                    <a class="btn btn-danger" href="{% url question_del q.id%}" onclick="return confirm('really?');">
-                        <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
-                    </a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="0">No questions yet.</td></tr>
-            {% endfor %}
-        </table>
-        </div>
-        {% include 'cpanel/qpool_pagination.html' %}
-        {% block right-sidebar %}
-        <div class="panel panel-info col-md-2">
-        <div class="panel-body">
-            <h3>Filters:</h3>
-            <ul class="list-unstyled">
-                <li><b>Tags:</b></li>
-                {% for t in category.tag_set.all %}
-                <li>
-                    {% if t.id in tag_filters %}
-                    <strong><a href="?remtagfilter={{ t.id }}">{{ t }}</a></strong>
-                    {% else %}
-                    <a href="?addtagfilter={{ t.id }}">{{ t }}</a>
+                    {% if cat != 'proposed' %}
+                    <th>Active</th>
                     {% endif %}
-                </li>
+                    {% if cat == 'qotd' %}
+                    <th>Day</th>
+                    {% endif %}
+                    <th>Actions</th>
+                </tr>
+                {% for q in q_page.object_list %}
+                <tr id="qr_{{ q.id }}">
+                    <td><input type="checkbox" class="question_select" id="qs_{{ q.id }}"/></td>
+                    <td>{{ q.id }}</td>
+                    <td>
+                        <span class="question_preview" onclick="$('#qc_{{q.id}}').toggle();" title="Click for answers">{{ q }}</span>
+                        <div id="qc_{{ q.id }}" class="hidden">
+                            {% for a in q.answers %}
+                                {% if a.correct %}+{% else %}-{% endif %}{{ a.text }}<br/>
+                            {% endfor %}
+                        </div>
+                        <span class="points">{% if not q.is_valid %}<span class="wrong">Invalid</span>{% endif %}</span>
+                        {% if cat != 'proposed'%}
+                        <div class="second">{% if q.tags_nice %}tags: {{ q.tags_nice }}{% endif %}</div>
+                        {% else %}
+                        <td>{{q.proposed_by}}</td>
+                        <td>{{q.endorsed_by}}</td>
+                        <td>{{ q.tag }}</td>
+                        {% endif %}
+                    </td>
+                    {% if cat != 'proposed' %}
+                    <td>
+                    {% if q.active %}
+                        <a class="btn btn-success btn-xs" href="{% url switch_active q.id %}">{% trans 'Yes' %}</a>
+                    {% else %}
+                        <a class="btn btn-danger btn-xs" href="{% url switch_active q.id %}">{% trans 'No' %}</a>
+                    {% endif %}
+                        </a>
+                    </td>
+                    {% else %}
+                    <td style="vertical-align: middle">
+                    {% if q.endorsed_by %}
+                        <a class="btn btn-success btn-xs" href="{% url switch_active q.id %}">{% trans 'Yes' %}</a>
+                    {% else %}
+                        <a class="btn btn-danger btn-xs" href="{% url switch_active q.id %}">{% trans 'No' %}</a>
+                    {% endif %}
+                        </a>
+                    </td>
+                    {% endif %}
+                    {% if cat == 'qotd' %}
+                    <td {% if q.scheduled == today %}class="bold"{%endif%}>{{ q.scheduled }}</td>
+                    {% endif %}
+                    <td nowrap>
+                        <a class="btn btn-success btn-xs" href="{% url question_edit q.id%}">
+                            <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                        </a>
+                        <a class="btn btn-danger btn-xs" href="{% url question_del q.id%}" onclick="return confirm('really?');">
+                            <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+                        </a>
+                    </td>
+                </tr>
                 {% empty %}
-                <li><em>no tags</em></li>
+                <tr><td colspan="0">No questions yet.</td></tr>
                 {% endfor %}
-                <li><b>Properties:</b></li>
-                <li>
-                    {% if 'active' in prop_filters %}
-                    <strong><a href="?rempropfilter=active">{% trans 'active' %}</a></strong>
+            </table>
+            </div>
+            {% block right-sidebar %}
+            <div class="panel panel-info col-md-2">
+            <div class="panel-body">
+                <h3>Filters:</h3>
+                <ul class="list-unstyled">
+                    <li><b>Tags:</b></li>
+                    {% for t in category.tag_set.all %}
+                    <li>
+                        {% if t.id in tag_filters %}
+                        <strong><a href="?remtagfilter={{ t.id }}">{{ t }}</a></strong>
+                        {% else %}
+                        <a href="?addtagfilter={{ t.id }}">{{ t }}</a>
+                        {% endif %}
+                    </li>
+                    {% empty %}
+                    <li><em>no tags</em></li>
+                    {% endfor %}
+                    <li><b>Properties:</b></li>
+                    <li>
+                        {% if 'active' in prop_filters %}
+                        <strong><a href="?rempropfilter=active">{% trans 'active' %}</a></strong>
+                        {% else %}
+                        <a href="?addpropfilter=active">{% trans 'active' %}</a>
+                        {% endif %}
+                    </li>
+                </ul>
+                <hr/>
+                <p>
+                    <b>View:</b>
+                    {% for p in perpage_options %}
+                    {% if q_page.paginator.per_page == p %}
+                    <strong>{{ p }}</strong>
                     {% else %}
-                    <a href="?addpropfilter=active">{% trans 'active' %}</a>
+                    <a href="?changeperpage={{ p }}">{{ p }}</a>
                     {% endif %}
-                </li>
-            </ul>
-            <hr/>
-            <p>
-                <b>View:</b>
-                {% for p in perpage_options %}
-                {% if q_page.paginator.per_page == p %}
-                <strong>{{ p }}</strong>
-                {% else %}
-                <a href="?changeperpage={{ p }}">{{ p }}</a>
-                {% endif %}
-                {% endfor %}
-            </p>
-            <p><b>Total:</b> {{ q_page.paginator.count }}</p>
+                    {% endfor %}
+                </p>
+                <p><b>Total:</b> {{ q_page.paginator.count }}</p>
+            </div>
+            </div>
         </div>
-        </div>
+        {% include 'cpanel/qpool_pagination.html' %}
         {% endblock %}
         <script>
 
