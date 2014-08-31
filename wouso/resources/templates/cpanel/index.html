@@ -185,7 +185,7 @@
             <div class="panel-heading">Staff</div>
             <div class="panel-body">
                 {% for u in staff.user_set.all %}
-                {% player_simple u.get_profile %}
+                    {% player_simple u.get_profile %}
                 {% endfor %}
             </div>
         </div>
