@@ -9,13 +9,10 @@
 {% endblock %}
 
 {% block sectioncontent %}
-
 <ul class="nav nav-tabs">
     <li><a href="{% url specialquest_home %}">Tasks</a></li>
     <li class="active"><a href="{% url specialquest_cpanel_groups %}">Groups</a></li>
 </ul>
-
-<div class="container-fluid">
     {% block tabcontent %}
     <div class=" col-md-10">
     <table class="table table-bordered table-condensed table-hover">
@@ -54,10 +51,10 @@
     </table>
     </div>
     <div class="panel panel-primary col-md-2">
-    <div class="panel-body">
-        Current date and time:  {% now "d/m/Y H:i" %}
+        <div class="panel-body">
+            Current date and time:  {% now "d/m/Y H:i" %}
+        </div>
     </div>
     {% endblock %}
-    </div>
 </div>
 {% endblock %}

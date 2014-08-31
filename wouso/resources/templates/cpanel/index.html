@@ -11,7 +11,7 @@
     <TITLE>{% block title %}WoUSO Control Panel{% endblock %}</TITLE>
     <!-- Bootstrap CSS !-->
     <link href="{{ basepath }} /static/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ basepath }} /static/css/bs-style.css" rel="stylesheet">
+    <link href="{{ basepath }} /static/css/cpanel-style.css" rel="stylesheet">
     <link href="{{ basepath }} /static/css/dashboard.css" rel="stylesheet">
     <link href="{{ basepath }} /static/css/sticky-footer.css" rel="stylesheet">
 
@@ -135,41 +135,43 @@
     </div>
     {% block content %}
     <h1 class="page-header">{% block sectiontitle %}Dashboard{% endblock %}</h1>
-    {% block sectioncontent %}
-    <div class="panel panel-default col-md-7">
-        <div class="panel-body">
-        <h3>Quick actions</h3>
-            <div class="actions actions-left">
-                <a class="btn btn-primary" href="{% url add_player %}">Add player</a>
+        <div class="container-fluid">
+        {% block sectioncontent %}
+        <div class="panel panel-default col-md-7">
+            <div class="panel-body">
+            <h3>Quick actions</h3>
+                <div class="actions actions-left">
+                    <a class="btn btn-primary" href="{% url add_player %}">Add player</a>
+                </div>
+
+                <h3>Number of users who can play</h3>
+                <p>{{cp_number}} users can play. </p>
+
+                <h3>QPool</h3>
+                <p>Qotd: {{nr_future_questions}} future available questions. </p>
+                <p> {{nr_questions}} total questions. </p>
+
+                <h3>Quest</h3>
+                <p>{% if  active_quest %}One active quest: {{ active_quest }}{% else %}No quest active{% endif %}. Total: {{ total_quests }}</p>
+
+                <h3>Artifacts</h3>
+                <table>
+                    <tr>
+                        {%  for g in artifact_groups %}
+                        <td valign="top">
+                            <h4>{{ g }}</h4>
+                            {% for a in g.artifact_set.all %}
+                            {% artifact a %} {{ a.name }}<br/>
+                            {% endfor %}
+                        </td>
+                        {%  endfor %}
+                    </tr>
+                </table>
+
+                <h3>Misc</h3>
+                <a href="{% url clear_cache %}">Clear cache</a>
             </div>
-
-            <h3>Number of users who can play</h3>
-            <p>{{cp_number}} users can play. </p>
-
-            <h3>QPool</h3>
-            <p>Qotd: {{nr_future_questions}} future available questions. </p>
-            <p> {{nr_questions}} total questions. </p>
-
-            <h3>Quest</h3>
-            <p>{% if  active_quest %}One active quest: {{ active_quest }}{% else %}No quest active{% endif %}. Total: {{ total_quests }}</p>
-
-            <h3>Artifacts</h3>
-            <table>
-                <tr>
-                    {%  for g in artifact_groups %}
-                    <td valign="top">
-                        <h4>{{ g }}</h4>
-                        {% for a in g.artifact_set.all %}
-                        {% artifact a %} {{ a.name }}<br/>
-                        {% endfor %}
-                    </td>
-                    {%  endfor %}
-            </table>
-
-            <h3>Misc</h3>
-            <a href="{% url clear_cache %}">Clear cache</a>
         </div>
-    </div>
         <div class="panel panel-info col-md-4 col-md-offset-1">
             <div class="panel-heading">Django & WoUSO information</div>
             <div class="panel-body">
@@ -183,7 +185,7 @@
             <div class="panel-heading">Staff</div>
             <div class="panel-body">
                 {% for u in staff.user_set.all %}
-                {% player_simple u.get_profile %}
+                    {% player_simple u.get_profile %}
                 {% endfor %}
             </div>
         </div>
@@ -196,23 +198,22 @@
                 {% endfor %}
             </div>
         </div>
+        {% endblock %}
+        </div>
     {% endblock %}
-    {% endblock %}
-
-
 </div>
 <div class="footer">
-        <div class="container">
-            {% block footer %}
-            <p class="text-muted pull-right">&copy; 2007 - {% now "Y" %} ROSEdu</p>
-            {% endblock %}
+    <div class="container">
+        {% block footer %}
+        <p class="text-muted pull-right">&copy; 2007 - {% now "Y" %} ROSEdu</p>
+        {% endblock %}
 
-            <div id="PrivatebarUsers"></div>
+        <div id="PrivatebarUsers"></div>
 
-            {% autoescape off %}
-            {{ config_hidden_footer }}
-            {% endautoescape %}
-        </div>
+        {% autoescape off %}
+        {{ config_hidden_footer }}
+        {% endautoescape %}
     </div>
+</div>
 </body>
 </html>

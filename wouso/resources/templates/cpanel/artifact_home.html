@@ -8,7 +8,6 @@
 {% endblock %}
 
 {% block sectioncontent %}
-<div class="container-fluid">
 <ul class="nav nav-tabs">
     {% for c in groups %}
         <li {% if group == c %}class="active"{% endif %}><a href="{% url artifact_home c.name %}">{{ c.name }}</a></li>
@@ -16,7 +15,7 @@
 </ul>
 
 {% block tabcontent %}
-<div class="col-md-8">
+<div class="col-md-9">
 <table class="table table-bordered table-hover">
     <tr>
         <th></th>
@@ -45,7 +44,7 @@
     {% endfor %}
 </table>
 </div>
-<div class="panel panel-default col-md-3 col-md-offset-1">
+<div class="panel panel-default col-md-3">
     <div class="panel-body">
         <h3>Help</h3>
         <p>To give/remove artifacts from users, use the artifact button on their profile page.</p>
@@ -56,5 +55,5 @@
     </div>
 </div>
 {% endblock %}
-</div>
+
 {% endblock %}

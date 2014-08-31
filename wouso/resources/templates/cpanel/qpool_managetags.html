@@ -10,36 +10,33 @@
 {% endblock %}
 
 {% block subsectioncontent %}
-    <div class="container-fluid">
-        <br/>
-        <table class="table table-bordered table-hover table-condensed">
-            <tr>
-                <th>Tag</th>
-                <th>Category</th>
-                <th>Questions</th>
-                <th>Manage</th>
-            </tr>
-            {% for t in tags %}
-            <tr>
-                <td>{{ t }}</td>
-                <td>{{ t.category }}</td>
-                <td>{{ t.question_set.count }}</td>
-                <td><a class="btn btn-success" href="{% url qpool_edit_tag t.id %}">
-                        <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
-                    </a> &nbsp; &nbsp;
-                    <a class="btn btn-danger" href="{% url qpool_del_tag t.id %}">
-                        <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
-                    </a> &nbsp; &nbsp;
-                    {% if t.category %}
-                    <a class="btn btn-warning" href="{% url qpool_home cat=t.category.name tag=t.id %}">
-                        {% trans 'Filter' %}
-                    </a>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
+    <table class="table table-bordered table-hover table-condensed">
+        <tr>
+            <th>Tag</th>
+            <th>Category</th>
+            <th>Questions</th>
+            <th>Manage</th>
+        </tr>
+        {% for t in tags %}
+        <tr>
+            <td>{{ t }}</td>
+            <td>{{ t.category }}</td>
+            <td>{{ t.question_set.count }}</td>
+            <td><a class="btn btn-success" href="{% url qpool_edit_tag t.id %}">
+                    <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                </a> &nbsp; &nbsp;
+                <a class="btn btn-danger" href="{% url qpool_del_tag t.id %}">
+                    <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+                </a> &nbsp; &nbsp;
+                {% if t.category %}
+                <a class="btn btn-warning" href="{% url qpool_home cat=t.category.name tag=t.id %}">
+                    {% trans 'Filter' %}
+                </a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
 
 {% endblock %}
 
