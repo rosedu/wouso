@@ -4,7 +4,8 @@
 {% block sectiontitle %}
     Special Quests
     <a class="btn btn-primary pull-right" href="{% url specialquest_new %}">
-        <span class="glyphicon glyphicon-plus"></span>{% trans 'Add task' %}</a>
+        <span class="glyphicon glyphicon-plus"></span>{% trans 'Add task' %}
+    </a>
 {% endblock %}
 
 {% block sectioncontent %}
@@ -14,43 +15,42 @@
     <li ><a href="{% url specialquest_cpanel_groups %}">Groups</a></li>
 </ul>
 
-
 {% block tabcontent %}
 <div class=" col-md-10">
-<table class="table table-bordered table-condensed table-hover">
-    <tr>
-        <th>Name</th>
-        <th>Start date</th>
-        <th>End date</th>
-        <th>Gold</th>
-        <th>Actions</th>
-    </tr>
-    {% for t in tasks %}
+    <table class="table table-bordered table-condensed table-hover">
         <tr>
-            <td>{{ t.name }}</td>
-            <td>{{ t.start_date|date:"d/m/Y" }}</td>
-            <td>{{ t.end_date|date:"d/m/Y" }}</td>
-            <td>{{ t.value }}</td>
-            <td>
-                <a href="{% url specialquest_edit t.pk %}" class="btn btn-success">
-                    <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
-                </a>
-                <a href="{% url specialquest_delete t.pk %}" onclick="return confirm('really?');"
-                        class="btn btn-danger">
-                    <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
-                </a>
-            </td>
+            <th>Name</th>
+            <th>Start date</th>
+            <th>End date</th>
+            <th>Gold</th>
+            <th>Actions</th>
         </tr>
-    {% empty %}
-    <tr><td colspan="0">No tasks yet.</td></tr>
-    {% endfor %}
-</table>
+        {% for t in tasks %}
+            <tr>
+                <td>{{ t.name }}</td>
+                <td>{{ t.start_date|date:"d/m/Y" }}</td>
+                <td>{{ t.end_date|date:"d/m/Y" }}</td>
+                <td>{{ t.value }}</td>
+                <td>
+                    <a href="{% url specialquest_edit t.pk %}" class="btn btn-success">
+                        <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                    </a>
+                    <a href="{% url specialquest_delete t.pk %}" onclick="return confirm('really?');"
+                            class="btn btn-danger">
+                        <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+                    </a>
+                </td>
+            </tr>
+        {% empty %}
+        <tr><td colspan="0">No tasks yet.</td></tr>
+        {% endfor %}
+    </table>
 </div>
 <div class="panel panel-primary col-md-2">
-<div class="panel-body">
-    Current date and time:  {% now "d/m/Y H:i" %}
-</div>
-{% endblock %}
+    <div class="panel-body">
+        Current date and time:  {% now "d/m/Y H:i" %}
     </div>
 </div>
+{% endblock %}
+
 {% endblock %}
