@@ -135,6 +135,7 @@
     </div>
     {% block content %}
     <h1 class="page-header">{% block sectiontitle %}Dashboard{% endblock %}</h1>
+        <div class="container-fluid">
         {% block sectioncontent %}
         <div class="panel panel-default col-md-7">
             <div class="panel-body">
@@ -164,6 +165,7 @@
                             {% endfor %}
                         </td>
                         {%  endfor %}
+                    </tr>
                 </table>
 
                 <h3>Misc</h3>
@@ -197,6 +199,7 @@
             </div>
         </div>
         {% endblock %}
+        </div>
     {% endblock %}
 </div>
 <div class="footer">

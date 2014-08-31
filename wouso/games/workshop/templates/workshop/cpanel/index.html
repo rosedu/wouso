@@ -2,10 +2,8 @@
 {% load workshop %}
 {% load i18n %}
 
-
 {% block sectiontitle %}
     Workshop
-
     <div class="pull-right">
         <a class="btn btn-primary" href="{% url ws_add_workshop %}">
             <span class="glyphicon glyphicon-plus"></span>
@@ -27,63 +25,57 @@
     <strong>{% now "d. M. Y, H:i:s" %}</strong>
 
     <hr/>
+    <ul class="nav nav-tabs">
+        <li {% if not page %}class="active"{% endif %}><a href="{% url workshop_home %}">Timetable</a></li>
+        <li {% if page == 'schedule' %}class="active"{% endif %}><a href="{% url ws_schedule %}">Schedule</a></li>
+        <li {% if page == 'workshops' %}class="active"{% endif %}><a href="{% url ws_workshops %}">Workshops</a></li>
+        <li {% if page == 'semigroups' %}class="active"{% endif %}><a href="{% url ws_semigroups %}">Semigroups</a></li>
+    </ul>
+    {% block tabcontent %}
 
-    <div id="tab-1" class="container-fluid">
+    {% autoescape off %}{{ config_ws_cpanel_extra }}{% endautoescape %}
 
-        <ul class="nav nav-tabs">
-            <li {% if not page %}class="active"{% endif %}><a href="{% url workshop_home %}">Timetable</a></li>
-            <li {% if page == 'schedule' %}class="active"{% endif %}><a href="{% url ws_schedule %}">Schedule</a></li>
-            <li {% if page == 'workshops' %}class="active"{% endif %}><a href="{% url ws_workshops %}">Workshops</a></li>
-            <li {% if page == 'semigroups' %}class="active"{% endif %}><a href="{% url ws_semigroups %}">Semigroups</a></li>
-        </ul>
-
-        <br/>
-        
-        {% block tabcontent %}
-
-        {% autoescape off %}{{ config_ws_cpanel_extra }}{% endautoescape %}
-
-        <div class=" col-md-9">
-            <table class="table table-bordered table-condensed table-hover">
-                <tr>
-                    <th><em>Hour/Day</em></th>
-                    {% for d in days %}
-                    <th><em>{{ d.1 }}</em></th>
-                    {% endfor %}
-                </tr>
-                {% for h in hours %}
-                <tr>
-                    <td><em>{{ h }}:00</em></td>
-                    {% for d in days %}
-                    <td {% if d.0 == info.get_spot.0 %}{% if h == info.get_spot.1 %}
-                        class="red"{% endif %}{% endif %}>{% get_schedule d.0 h %}
-                        <br/>
-                        <a class="btn btn-success btn btn-xs" href="{% url ws_edit_spot d.0 h %}">
-                            <span class="glyphicon glyphicon-edit"></span>{% trans 'spot' %}
-                        </a>
-                    </td>
-                    {% endfor %}
-                </tr>
+    <div class="col-md-9">
+        <table class="table table-bordered table-condensed table-hover">
+            <tr>
+                <th><em>Hour/Day</em></th>
+                {% for d in days %}
+                <th><em>{{ d.1 }}</em></th>
                 {% endfor %}
-            </table>
-        </div>
+            </tr>
+            {% for h in hours %}
+            <tr>
+                <td><em>{{ h }}:00</em></td>
+                {% for d in days %}
+                <td {% if d.0 == info.get_spot.0 %}{% if h == info.get_spot.1 %}
+                    class="red"{% endif %}{% endif %}>{% get_schedule d.0 h %}
+                    <br/>
+                    <a class="btn btn-success btn btn-xs" href="{% url ws_edit_spot d.0 h %}">
+                        <span class="glyphicon glyphicon-edit"></span>{% trans 'spot' %}
+                    </a>
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 
-        <div class="panel panel-default col-md-3">
-            <div class="panel-body">
-                {% block information %}
-                {% if info %}
-                <p>
-                    Current spot: {{ info.get_spot }}<br/>
-                    Current group: {{ info.get_semigroups|join:", " }}<br/>
-                    Current qpool: {{ info.get_question_pool.count }}<br/>
-                    Default room: {{ info.default_room }}<br/>
-                </p>
-                {% endif %}
-                {% endblock %}
-            </div>
+    <div class="panel panel-default col-md-3">
+        <div class="panel-body">
+            {% block information %}
+            {% if info %}
+            <p>
+                Current spot: {{ info.get_spot }}<br/>
+                Current group: {{ info.get_semigroups|join:", " }}<br/>
+                Current qpool: {{ info.get_question_pool.count }}<br/>
+                Default room: {{ info.default_room }}<br/>
+            </p>
+            {% endif %}
+            {% endblock %}
         </div>
+    </div>
 
-        {% endblock %}
+    {% endblock %}
 
 </div>
 

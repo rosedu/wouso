@@ -8,7 +8,6 @@
 {% endblock %}
 
 {% block sectioncontent %}
-<div class="container-fluid">
 <ul class="nav nav-tabs">
     {% for c in groups %}
         <li {% if group == c %}class="active"{% endif %}><a href="{% url artifact_home c.name %}">{{ c.name }}</a></li>
@@ -56,5 +55,5 @@
     </div>
 </div>
 {% endblock %}
-</div>
+
 {% endblock %}

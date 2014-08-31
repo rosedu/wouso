@@ -4,8 +4,7 @@
 {% load i18n %}
 
 {% block tabcontent %}
-    <div class="container-fluid">
-        {% for semigroup in semigroups %}
+    {% for semigroup in semigroups %}
         <h3>{{ semigroup.get_room_display }}</h3>
 
         <hr/>
@@ -60,9 +59,6 @@
                 <span class="glyphicon glyphicon-plus"></span>{% trans 'Add' %}
             </button>
         </form>
-
     {% endfor %}
 
-    </div>
-        
 {% endblock %}

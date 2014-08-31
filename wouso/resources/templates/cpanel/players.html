@@ -5,18 +5,16 @@
 {% block sectiontitle %}Players
     <a class="pull-right btn btn-primary" href="{% url add_player %}">
         <span class="glyphicon glyphicon-plus"></span>{% trans 'Add player' %}
-    </a>    {% endblock %}
+    </a>
+{% endblock %}
 
 
 {% block sectioncontent %}
-<div class="container-fluid">
 <form class="pull-left" action="{% url manage_fwd %}" method="post">
     {% player_input 'player' %}
     {% csrf_token %}
     <button class="btn btn-info" type="submit">{% trans 'Search' %}</button>
 </form>
-
-<br/> <br/>
 
 <table class="table table-bordered table table-hover">
 <tr>
@@ -63,5 +61,4 @@
 
 
 {% include 'cpanel/pagination.html' %}
-</div>
 {% endblock %}

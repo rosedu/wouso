@@ -4,14 +4,12 @@
 {% block sectiontitle %}Question pool &raquo; Edit Tag{% endblock %}
 
 {% block sectioncontent %}
-
     {% if form.errors %}
         <p style="color: red;">
             Please correct the error{{ form.errors|pluralize }} below.
         </p>
     {% endif %}
 
-    <div class="container-fluid">
         <form class="horizontal-form" method="post">
             {% csrf_token %}
             <table>
@@ -20,6 +18,4 @@
             <br/>
             <input class="btn btn-primary" type="submit" value="Submit">
         </form>
-    </div>
-
 {% endblock %}

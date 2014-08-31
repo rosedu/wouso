@@ -3,85 +3,80 @@
 {% load artifacts %}
 {% load i18n %}
 
-{% block sectiontitle %}Spells
+{% block sectiontitle %}
+    Spells
     <a class="pull-right btn btn-primary" href="{% url add_spell %}">
         <span class="glyphicon glyphicon-plus"></span>{% trans 'Add spell' %}
-    </a>    {% endblock %}
-
+    </a>
+{% endblock %}
 
 {% block sectioncontent %}
 
-<div class="container-fluid">
 <table class="table table-bordered table table-hover">
-
-<tr>
-    <th></th>
-	<th>Name</th>
-    <th>Title</th>
-    <th>Type</th>
-	<th>Mass</th>
-	<th>Price</th>
-	<th>Due Days</th>
-	<th>Manage</th>
-</tr>
-{% for p in spells %}
-<tr>
-    <td>{% artifact p %}</td>
-    <td> {{ p.name }} </td>
-    <td> {{ p.title}} </td>
-    <td> {{ p.type }} </td>
-	<td> {{ p.mass }} </td>
-	<td> {{ p.price }} </td>
-	<td> {{ p.due_days }} </td>
-	<td nowrap>
-        <a class="btn btn-success" href="{% url edit_spell p.id %}">
-             <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
-        </a>
-        <a class="btn btn-danger" href="{% url spell_dell p.id %}" onclick="return confirm('Realy?');">
-            <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
-        </a>
-    </td>
-</tr>
-    {% empty %}
-        <tr>
-            <td colspan="0" class="text-center" >No spells yet. Please use the Add spell button to add new spells.</td>
-        </tr>
-{% endfor %}
+    <tr>
+        <th></th>
+    	<th>Name</th>
+        <th>Title</th>
+        <th>Type</th>
+    	<th>Mass</th>
+    	<th>Price</th>
+    	<th>Due Days</th>
+    	<th>Manage</th>
+    </tr>
+    {% for p in spells %}
+    <tr>
+        <td>{% artifact p %}</td>
+        <td> {{ p.name }} </td>
+        <td> {{ p.title}} </td>
+        <td> {{ p.type }} </td>
+    	<td> {{ p.mass }} </td>
+    	<td> {{ p.price }} </td>
+    	<td> {{ p.due_days }} </td>
+    	<td nowrap>
+            <a class="btn btn-success" href="{% url edit_spell p.id %}">
+                 <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+            </a>
+            <a class="btn btn-danger" href="{% url spell_dell p.id %}" onclick="return confirm('Realy?');">
+                <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+            </a>
+        </td>
+    </tr>
+        {% empty %}
+            <tr>
+                <td colspan="0" class="text-center" >No spells yet. Please use the Add spell button to add new spells.</td>
+            </tr>
+    {% endfor %}
 </table>
-
-
-<br/>
-
+<br />
 <h3 class="page-header">Spell History</h3>
 
 <table class="table table-bordered table table-hover">
-<tr>
-    <th>Name</th>
-    <th>Mass</th>
-    <th>Bought</th>
-    <th>Used</th>
-    <th>Cleaned</th>
-    <th>Expired</th>
-</tr>
-{% for p in spells %}
-<tr>
-    <td> {{ p.name }} </td>
-    <td> {{ p.mass }} </td>
-    <td> {{ p.history_bought }} </td>
-    <td> {{ p.history_used }} </td>
-    <td> {{ p.history_cleaned }} </td>
-    <td> {{ p.history_expired }} </td>
-</tr>
-{% endfor %}
+    <tr>
+        <th>Name</th>
+        <th>Mass</th>
+        <th>Bought</th>
+        <th>Used</th>
+        <th>Cleaned</th>
+        <th>Expired</th>
+    </tr>
+    {% for p in spells %}
+    <tr>
+        <td> {{ p.name }} </td>
+        <td> {{ p.mass }} </td>
+        <td> {{ p.history_bought }} </td>
+        <td> {{ p.history_used }} </td>
+        <td> {{ p.history_cleaned }} </td>
+        <td> {{ p.history_expired }} </td>
+    </tr>
+    {% endfor %}
 
-<tr>
-    <td><b>Total</b></td>
-    <td></td>
-    <td> {{ spells_bought }} </td>
-    <td> {{ spells_used }} </td>
-    <td> {{ spells_cleaned }} </td>
-    <td> {{ spells_expired }} </td>
-</tr>
+    <tr>
+        <td><b>Total</b></td>
+        <td></td>
+        <td> {{ spells_bought }} </td>
+        <td> {{ spells_used }} </td>
+        <td> {{ spells_cleaned }} </td>
+        <td> {{ spells_expired }} </td>
+    </tr>
 </table>
-</div>
 {% endblock %}
