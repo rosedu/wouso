@@ -1,30 +1,41 @@
 {% extends 'cpanel/index.html' %}
+{% load i18n %}
 {% load user %}
 
-{% block sectiontitle %}Formulas{% endblock %}
+{% block sectiontitle %}
+    Formulas
+    <a class="btn btn-primary pull-right" href="{% url add_formula %}">
+        <span class="glyphicon glyphicon-plus"></span>{% trans 'Add formulas' %}
+    </a>
+{% endblock %}
 
 {% block sectioncontent %}
 
-<a class="button" href="{% url add_formula %}">Add new formula</a>
-<br/>
-<br/>
-<table>
-<tr>
-  <th>Name</th>
-  <th>Formula</th>
-  <th>Description</th>
-  <th>Owner</th>
-  <th>Edit</th>
-  <th>Delete</th>
-</tr>
-{% for p in formulas %}
-<tr><td> {{ p.name }}</td>
-  <td> {{ p.definition }}</td>
-  <td> {{ p.description }} </td>
-  <td> {{ p.owner }}</td>
-  <td><a class="button" href="{% url edit_formula p.id %}">Edit</a></td>
-  <td><a class="button" href="{% url formula_del p.id %}" onClick="return confirm('Realy?');">Delete</a></td>
-</tr>
-{% endfor %}
+<div class="container-fluid">
+<table class="table table-bordered table-condensed table-hover">
+    <tr>
+        <th>Name</th>
+        <th>Formula</th>
+        <th>Description</th>
+        <th>Owner</th>
+        <th>Manage</th>
+    </tr>
+    {% for p in formulas %}
+    <tr>
+        <td>{{ p.name }}</td>
+        <td>{{ p.definition }}</td>
+        <td>{{ p.description }}</td>
+        <td>{{ p.owner }}</td>
+        <td>
+            <a class="btn btn-success" href="{% url edit_formula p.id %}">
+                {% trans 'Edit '%}<span class="glyphicon glyphicon-edit"></span>
+            </a>
+            <a class="btn btn-danger" href="{% url formula_del p.id %}" onClick="return confirm('Realy?');">
+                <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+            </a>
+        </td>
+    </tr>
+    {% endfor %}
 </table>
+</div>
 {% endblock %}

@@ -1,16 +1,24 @@
 {% extends 'cpanel/index.html' %}
 {% load user %}
+{% load i18n %}
 
-{% block sectiontitle %}Players{% endblock %}
+{% block sectiontitle %}Players
+    <a class="pull-right btn btn-primary" href="{% url add_player %}">
+        <span class="glyphicon glyphicon-plus"></span>{% trans 'Add player' %}
+    </a>    {% endblock %}
+
 
 {% block sectioncontent %}
-<form action="{% url manage_fwd %}" method="post">
+<div class="container-fluid">
+<form class="pull-left" action="{% url manage_fwd %}" method="post">
     {% player_input 'player' %}
     {% csrf_token %}
-    <button type="submit">Search</button>
+    <button class="btn btn-info" type="submit">{% trans 'Search' %}</button>
 </form>
 
-<table>
+<br/> <br/>
+
+<table class="table table-bordered table table-hover">
 <tr>
     <th>Name</th>
     <th>Points</th>
@@ -30,7 +38,7 @@
     <td>{{ p.qotd_count }}</td>
     <td>{{ p.chall_count }}</td>
     <td>{% if p.infraction_points %}
-        <a class="button" href="{% url infraction_history p.user_id %}">
+        <a class="btn btn-link" href="{% url infraction_history p.user_id %}">
             {{ p.infraction_points }}
         </a>
         {% else %}
@@ -38,18 +46,22 @@
         {% endif %}
     </td>
     <td>
-        <a class="button" href="{% url manage_player p.user_id %}">Manage Player</a>
+        <a class="btn btn-success" href="{% url manage_player p.user_id %}">
+            <span class="glyphicon glyphicon-edit"></span>{% trans 'Manage' %}
+        </a>
     </td>
 </tr>
     {% empty %}
-        <td colspan="0" class="empty">No spells yet. Please use the Add new player button to add new players.</td>
+    <tr>
+        <td colspan="0" class="text-center">No spells yet. Please use the Add player button to add new players.</td>
+    </tr>
 {% endfor %}
 </table>
 
 
-<a class="button" href="{% url infraction_recheck %}">Recheck Infractions</a><br>
-<a class="button" href="{% url add_player %}">Add new player</a>
+<a class="pull-left btn btn-warning" href="{% url infraction_recheck %}">{% trans 'Recheck Infractions' %}</a><br>
+
 
 {% include 'cpanel/pagination.html' %}
-
+</div>
 {% endblock %}

@@ -1,11 +1,16 @@
 {% extends 'cpanel/index.html' %}
-{% load user %}
-{% load artifacts %}
+{% load i18n %}
 
-{% block sectiontitle %}Static Pages{% endblock %}
+{% block sectiontitle %}
+    Static Pages
+    <a class="btn btn-primary pull-right" href="{% url add_static_page %}">
+        <span class="glyphicon glyphicon-plus"></span>{% trans 'Add static page' %}
+    </a>
+{% endblock %}
 
 {% block sectioncontent %}
-<table>
+<div class="container-fluid">
+<table class="table table-bordered table-condensed table-hover">
     <tr>
         <th>Name</th>
         <th>Title</th>
@@ -18,11 +23,15 @@
         <td>{{ p.title }}</td>
         <td>{{ p.hidden }}</td>
         <td>
-            <a class="button" href="{% url edit_static_page p.pk %}">Edit</a>
-            <a class="button" href="{% url del_static_page p.pk %}">Delete</a>
+            <a class="btn btn-success" href="{% url edit_static_page p.pk %}">
+                <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+            </a>
+            <a class="btn btn-danger" href="{% url del_static_page p.pk %}">
+                <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+            </a>
         </td>
     </tr>
     {% endfor %}
 </table>
-    <a class="button" href="{% url add_static_page %}">Add static page</a>
+</div>
 {% endblock %}

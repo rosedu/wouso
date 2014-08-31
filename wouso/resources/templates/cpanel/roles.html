@@ -1,15 +1,22 @@
 {% extends 'cpanel/index.html' %}
 {% load user %}
+{% load i18n %}
 
-{% block sectiontitle %}Roles{% endblock %}
+{% block sectiontitle %}
+    Roles
+    <a class="btn btn-primary pull-right" href="{% url roles_create %}">
+        <span class="glyphicon glyphicon-plus"></span>{% trans 'New role' %}
+    </a>
+{% endblock %}
 
 {% block sectioncontent %}
-
-<table>
+<div class="container-fluid">
+<table class="table table-bordered table-hover table-condensed">
     <tr>
         <th>Role</th>
         <th>Permissions</th>
         <th>Members</th>
+        <th>Manage</th>
     </tr>
     {% for r in roles %}
     <tr>
@@ -19,11 +26,12 @@
         </td>
         <td>{{ r.user_set.all.count }}</td>
         <td>
-            <a href="{% url roles_update r.id %}" class="button button-min">edit</a>
+            <a href="{% url roles_update r.id %}" class="btn btn-success">
+                <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+            </a>
         </td>
     </tr>
     {% endfor %}
 </table>
-
-<a class="button" href="{% url roles_create %}">New role</a>
+</div>
 {% endblock %}

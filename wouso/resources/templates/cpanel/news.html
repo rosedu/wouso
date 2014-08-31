@@ -1,11 +1,16 @@
 {% extends 'cpanel/index.html' %}
-{% load user %}
+{% load i18n %}
 
-{% block sectiontitle %}News{% endblock %}
+{% block sectiontitle %}
+    News
+    <a class="btn btn-primary pull-right" href="{% url add_news %}">
+        <span class="glyphicon glyphicon-plus"></span>{% trans 'Add news item' %}
+    </a>
+{% endblock %}
 
 {% block sectioncontent %}
-
-<table>
+<div class="container-fluid">
+<table class="table table-bordered table-hover table-condensed">
     <tr>
         <th>Title</th>
         <th>Author</th>
@@ -18,15 +23,17 @@
         <td>{{ n.author }}</td>
         <td>{{ n.date_pub }}</td>
         <td>
-            <a class="button" href="{% url edit_news n.pk %}">Edit</a>
-            <a class="button" href="{% url del_news n.pk %}">Delete</a>
+            <a class="btn btn-success" href="{% url edit_news n.pk %}">
+                <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+            </a>
+            <a class="btn btn-danger" href="{% url del_news n.pk %}">
+                <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+            </a>
         </td>
     </tr>
     {% empty %}
         <td colspan="0">No news items.</td>
     {% endfor %}
 </table>
-
-<a class="button" href="{% url add_news %}">Add news item</a>
-
+</div>
 {% endblock %}

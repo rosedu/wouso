@@ -4,28 +4,67 @@
 {% block sectiontitle %}{% block title %}{% trans 'Bonus' %}{% endblock %}{% endblock %}
 
 {% block sectioncontent %}
-    <h4>Give bonus to player {{ target_player }}:</h4>
-    <form action="" method="post">
+    <h4>Give bonus to player <strong> {{ target_player }}</strong>:</h4>
+    <form class="form-horizontal" method="post">
         {{ form.as_p }}
-        <button class="btn" type="submit">Bonus this player!</button>
+        <button class="btn btn-primary" type="submit">{% trans 'Bonus this player!' %}</button>
         {% csrf_token %}
     </form>
 
-
-    <p>History:</p>
-    <ul>
-        {% for bonus in bonuses %}
-            <li>{{ bonus.timestamp }} - {{ bonus.amount }} {{ bonus.coin }} from {% player bonus.external_id %}</li>
-        {% endfor %}
-    </ul>
     <hr/>
-    <ul>
-        {% for penalty in penalties %}
-            <li>{{ penalty.timestamp }} - {{ penalty.amount }} {{ penalty.coin }} by {% player penalty.external_id %}</li>
+
+    <h3><strong>History:</strong></h3>
+
+    <h4>--- Bonuses ---</h4>
+    <table style="width: 60%" class="table table-bordered table table-hover">
+        <tr>
+            <th>Timestamp</th>
+            <th>Amount</th>
+            <th>Coin</th>
+            <th>From</th>
+            <!--<th>Reason</th>-->
+        </tr>
+        {% for bonus in bonuses %}
+        <tr>
+            <td>{{ bonus.timestamp }}</td>
+            <td>{{ bonus.amount }}</td>
+            <td>{{ bonus.coin }}</td>
+            <td>{% player bonus.external_id %}</td>
+            <!--<td></td>  TODO: add bonus reason column -->
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="0" class="text-center">No bonuses yet.</td>
+        </tr>
         {% endfor %}
-    </ul>
+    </table>
 
+    <h4>--- Penalties ---</h4>
+    <table style="width: 60%" class="table table-bordered table table-hover">
+        <tr>
+            <th>Timestamp</th>
+            <th>Amount</th>
+            <th>Coin</th>
+            <th>From</th>
+            <!--<th>Reason</th>-->
+        </tr>
+        {% for penalty in penalties %}
+        <tr>
+            <td>{{ penalty.timestamp }}</td>
+            <td>{{ penalty.amount }}</td>
+            <td>{{ penalty.coin }}</td>
+            <td>{% player bonus.external_id %}</td>
+            <!--<td></td>  TODO: add penalty reason column -->
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="0" class="text-center">No penalties yet.</td>
+        </tr>
+        {% endfor %}
+    </table>
 
-<a class="button" href="{% url manage_player target_player.pk %}">Back to user</a>
+    <br/>
+
+    <a class="btn btn-primary" href="{% url manage_player target_player.pk %}">{% trans 'Back to user' %}</a>
 
 {% endblock %}

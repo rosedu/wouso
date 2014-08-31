@@ -36,9 +36,9 @@ $(document).ready(function() {
 <div class="info second">Drag and drop the bullets to reorder questions</div>
 
 <div class="actions">
-    <button onclick="history.back(); return false;">Cancel</button>
-    <button onclick="window.location.reload(); return false;">Reset</button>
-    <button type="submit" class="default">Save</button>
+    <button onclick="history.back(); return false;" class="btn btn-warning">Cancel</button>
+    <button onclick="window.location.reload(); return false;" class="btn btn-danger">Reset</button>
+    <button type="submit" class="btn btn-primary">Save</button>
 </div>
     {% csrf_token %}
 </form>

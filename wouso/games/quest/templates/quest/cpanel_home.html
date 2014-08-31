@@ -1,61 +1,86 @@
 {% extends 'cpanel/index.html' %}
+{% load i18n %}
 
-{% block sectiontitle %}Quests{% endblock %}
+{% block sectiontitle %}
+    Quests
+    <div class="pull-right">
+    <a class="btn btn-primary" href="{% url quest_new %}">
+        <span class="glyphicon glyphicon-plus"></span>{% trans 'Add quest'%}
+    </a>
+    {% if not final %}
+    <a class="btn btn-primary" href="{% url quest_create_finale %}">
+        <span class="glyphicon glyphicon-plus"></span>{% trans 'Add final quest' %}
+    </a>
+    </div>
+    {% endif %}
+{% endblock %}
 
 {% block sectioncontent %}
 
-<table>
-    <tr>
-        <th>#</th>
-        <th>Date</th>
-        <th>Title</th>
-        <th>Levels</th>
-        <th>Status</th>
-        <th>Formula</th>
-        <th></th>
-    </tr>
-    {% for q in quests %}
+<div class="container-fluid">
+<div class=" col-md-10">
+    <table class="table table-bordered table-condensed table-hover">
         <tr>
-            <td>{{ q.id }}</td>
-            <td nowrap>Starts {{ q.start|date:"d/m/Y H:i" }}
-            <div class="second">ends: {{q.end|date:"d/m/Y H:i"}}</div>
-            </td>
-            <td width="100%">{{ q.title }}</td>
-            <td align="center">{{ q.count }}</td>
-            <td>{{ q.status }}</td>
-            <td nowrap="nowrap">{{ q.get_formula }}</td>
-            <td class="actions" nowrap>
-                <a href="{% url quest_edit q.id %}" title="edit" class="button-min">✍</a>
-                <a href="{% url quest_sort q.id %}" title="sort" class="button-min">➝</a>
-                {% ifequal q.status "Passed" %}
-                    {% if q.registered %}
-                        <a class="button-min">Registered</div>
-                    {% else %}
-                        <a href="{% url register_results q.id %}" title="register" class="button-min">Register</a>
-                    {% endif %}
-                {% endifequal %}
-                {% if q.id == final.id %}
-                    <td>
-                    <a class="button" href="{% url final_results %}">Results</a>
-                    </td>
-                {% endif %}
-                {% if not q.is_active %}
-                <td>
-                    <a class="button" href="{% url quest_bonus q.id %}">Bonus top 10</a>
-                </td>
-                {% endif %}
-            </td>
+            <th>#</th>
+            <th>Date</th>
+            <th>Title</th>
+            <th>Levels</th>
+            <th>Status</th>
+            <th>Formula</th>
+            <th>Manage</th>
         </tr>
-    {% empty %}
-    <tr><td colspan=3>No quests</td></tr>
-    {% endfor %}
-</table>
-
-<a class="button" href="{% url quest_new %}">New quest</a>
-{% if not final %}
-<a class="button" href="{% url quest_create_finale %}">Create final quest</a>
-{% endif %}
-
-<div class="info second" style="clear:both">Current date and time:  {% now "d/m/Y H:i" %}. Final quest checker path: {{ final_checker }}</div>
-
+        {% for q in quests %}
+            <tr>
+                <td>{{ q.id }}</td>
+                <td>
+                    Starts: {{ q.start|date:"d/m/Y H:i" }}
+                    <div>Ends: {{q.end|date:"d/m/Y H:i"}}</div>
+                </td>
+                <td>{{ q.title }}</td>
+                <td>{{ q.count }}</td>
+                <td>{{ q.status }}</td>
+                <td>{{ q.get_formula }}</td>
+                <td>
+                    <a href="{% url quest_edit q.id %}"  class="btn btn-success">
+                        <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                    </a>
+                    <a href="{% url quest_sort q.id %}" class="btn btn-info">
+                        <span class="glyphicon glyphicon-sort"></span>{% trans 'Sort' %}
+                    </a>
+                    {% ifequal q.status "Passed" %}
+                        {% if q.registered %}
+                           <a href="{% url quest_sort q.id %}" class="btn btn-info">
+                                {% trans 'Registered' %}
+                             </a>
+                        {% else %}
+                            <a href="{% url register_results q.id %}" class="btn btn-info">
+                                {% trans 'Register' %}
+                            </a>
+                        {% endif %}
+                    {% endifequal %}
+                    {% if q.id == final.id %}
+                        <a class="btn btn-info" href="{% url final_results %}">
+                            {% trans 'Results' %}
+                        </a>
+                    {% endif %}
+                    {% if not q.is_active %}
+                        <a class="btn btn-info" href="{% url quest_bonus q.id %}">
+                            {% trans 'Bonus top 10' %}
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr><td colspan=0>No quests add yet.</td></tr>
+        {% endfor %}
+    </table>
+</div>
+<div class="panel panel-primary col-md-2">
+    <div class="panel-body">
+        Current date and time:  {% now "d/m/Y H:i" %}.
+        <br/><br/>
+        Final quest checker path: {{ final_checker }}
+    </div>
+</div>
+</div>
 {% endblock %}

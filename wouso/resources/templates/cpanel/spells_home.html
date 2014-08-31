@@ -1,13 +1,19 @@
 {% extends 'cpanel/index.html' %}
 {% load user %}
 {% load artifacts %}
+{% load i18n %}
 
-{% block sectiontitle %}Spells{% endblock %}
+{% block sectiontitle %}Spells
+    <a class="pull-right btn btn-primary" href="{% url add_spell %}">
+        <span class="glyphicon glyphicon-plus"></span>{% trans 'Add spell' %}
+    </a>    {% endblock %}
+
 
 {% block sectioncontent %}
 
+<div class="container-fluid">
+<table class="table table-bordered table table-hover">
 
-<table>
 <tr>
     <th></th>
 	<th>Name</th>
@@ -16,8 +22,7 @@
 	<th>Mass</th>
 	<th>Price</th>
 	<th>Due Days</th>
-	<th>Edit</th>
-	<th>Delete</th>
+	<th>Manage</th>
 </tr>
 {% for p in spells %}
 <tr>
@@ -28,19 +33,28 @@
 	<td> {{ p.mass }} </td>
 	<td> {{ p.price }} </td>
 	<td> {{ p.due_days }} </td>
-	<td><a class="button" href="{% url edit_spell p.id %}">Edit</a></td>
-	<td><a class="button" href="{% url spell_dell p.id %}" onclick="return confirm('Realy?');">Delete</a></td>
+	<td nowrap>
+        <a class="btn btn-success" href="{% url edit_spell p.id %}">
+             <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+        </a>
+        <a class="btn btn-danger" href="{% url spell_dell p.id %}" onclick="return confirm('Realy?');">
+            <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+        </a>
+    </td>
 </tr>
     {% empty %}
-        <td colspan="0" class="empty">No spells yet. Please use the Add new spell button to add new spells.</td>
+        <tr>
+            <td colspan="0" class="text-center" >No spells yet. Please use the Add spell button to add new spells.</td>
+        </tr>
 {% endfor %}
 </table>
 
-<a class="button" href="{% url add_spell %}">Add new spell</a>
 
 <br/>
-<h3>Spell History</h3>
-<table>
+
+<h3 class="page-header">Spell History</h3>
+
+<table class="table table-bordered table table-hover">
 <tr>
     <th>Name</th>
     <th>Mass</th>
@@ -60,8 +74,6 @@
 </tr>
 {% endfor %}
 
-<tr></tr>
-<tr></tr>
 <tr>
     <td><b>Total</b></td>
     <td></td>
@@ -71,4 +83,5 @@
     <td> {{ spells_expired }} </td>
 </tr>
 </table>
+</div>
 {% endblock %}

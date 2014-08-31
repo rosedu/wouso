@@ -5,104 +5,118 @@
 
 {% block sectiontitle %}Workshop{% endblock %}
 
-{% block information %}
-
-    <h4>Current semigroups</h4>
-    <ul>
-        {% for sg in info.get_semigroups %}
-            <li>{% player_group sg %} - {{ sg.get_room_display }}<br/>
-            total: {{ sg.players.count }}
-            online: {{ sg.online_players.count }}
-            </li>
-        {% endfor %}
-    </ul>
-    <span class="points"><a class="button" href="{% url ws_edit_spot info.get_spot.0 info.get_spot.1 %}">✍spot</a></span>
-
-    <div class="spacer"><!-- --></div>
-    <h4>Actions</h4>
-    <a href="?integrity_check=1">Integrity check</a>
-
-    <div class="spacer"><!-- --></div>
-    <h4>Help</h4>
-    <p>Workshops are sets of assessments per semigroup.</p>
-
-    <p>Here you can change the workshop status, and also review, grade and give feedback to students.</p>
-
-    <p>The statuses of an workshop are:
-    <ul>
-        <li>Started</li>
-        <li>Reviewing</li>
-        <li>Grading</li>
-        <li>Archived</li>
-    </ul></p>
-{% endblock %}
-
 {% block tabcontent %}
-    <div class="spacer-small">
+
+     <p> <a class="btn btn-primary pull-right" href="{% url ws_add_workshop %}">
+         <span class="glyphicon glyphicon-plus"></span><strong>{% trans 'Add workshop' %}</strong>
+         </a>
+     </p>
+     <p>Workshops are sets of assessments per semigroup.</p>
+
     {% autoescape off %}{{ config_ws_cpanel_extra }}{% endautoescape %}
+
+    <div class="container-fluid">
+        <div class="col-md-9">
+            <table class="table table-bordered table table-hover">
+                <tr>
+                    <th>Id</th>
+                    <th>Workshop</th>
+                    <th>Interval</th>
+                    <th>Status</th>
+                    <th>Assesments</th>
+                    <th>Manage</th>
+                    <th>Integrity</th>
+                </tr>
+                {% for w in workshops%}
+                <tr>
+                    <td> <a href="{% url ws_status pk=w.pk %}">{{ w.title }}</a> </td>
+                    <td>{{ w.date|date:"l, d F" }} - {% player_group w.semigroup %}<br/>
+                        <span class="points">{{ w.semigroup.get_room_display }}</span>
+                    </td>
+                    <td>{{ w.start_at|date:"H:i:s" }}<br/>{{ w.active_until|date:"H:i:s" }}</td>
+                    <td>{% if w.is_active %}Active
+                        {% else %}Inactive
+                        {% endif %}
+                        <br/>
+                        {{ w.get_status_display }}
+                    </td>
+                    <td>
+                        total: {{ w.assessment_set.count }}
+                        <a class="btn btn-success btn-sm" href="{% url ws_view_assessments w.id %}">{% trans 'View' %}</a>
+                    </td>
+                    <td>
+                        <a class="btn btn-success btn-sm" href="{% url ws_edit_workshop w.id %}">
+                            <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                        </a>
+                        {% if not w.start_at %}
+                        <a class="btn btn-primary btn-sm" href="{% url ws_start w.id %}">
+                            {% trans 'Start ' %}
+                        </a>
+                        {% endif %}
+                        {% if w.is_started and w.is_active %}
+                        <a class="btn btn-danger btn-sm" href="{% url ws_stop w.id %}">
+                            {% trans 'Stop ' %}
+                        </a>
+                        {% endif %}
+                        {% if w.is_started and w.is_passed %}
+                        <a class="btn btn-warning btn-sm" onclick="return confirm('are you sure?');"
+                           href="{% url ws_mark_for_review w.id %}">{% trans 'Mark for review' %}
+                        </a>
+                        {% endif %}
+                        {% if w.is_reviewable %}
+                        <a class="btn btn-warning btn-sm" onclick="return confirm('are you sure?');"
+                           href="{% url ws_mark_for_grading w.id %}">{% trans 'Mark for grading' %}
+                        </a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not w.is_started %}
+                        <a href="{% url ws_reviewers_map w.id %}">{% if w.is_gradable %}Grades
+                            {% else %}Reviewers map{% endif %}</a>
+                        {% endif %}
+                        {% if integrity_check %}
+                        {{ w.integrity }}
+                    </td>
+                        {% endif %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="panel panel-default col-md-3">
+            <div class="panel panel-body">
+                <h4>Current semigroups:</h4>
+                <ul>
+                    {% for sg in info.get_semigroups %}
+                    <li>{% player_group sg %} - {{ sg.get_room_display }}<br/>
+                        total: {{ sg.players.count }}
+                        online: {{ sg.online_players.count }}
+                    </li>
+                    {% endfor %}
+                </ul>
+
+                <h4>Actions:</h4>
+                <a class="btn btn-success" href="{% url ws_edit_spot info.get_spot.0 info.get_spot.1 %}">
+                    <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit Spot' %}
+                </a>
+                <a class="btn btn-warning" href="?integrity_check=1">
+                    {% trans 'Integrity Check' %}
+                </a>
+
+                <h4>Help:</h4>
+                <p>Here you can change the workshop status, and also review, grade and give feedback to students.</p>
+                <p>The statuses of a workshop are:
+                <ul>
+                    <li>Started</li>
+                    <li>Reviewing</li>
+                    <li>Grading</li>
+                    <li>Archived</li>
+                </ul>
+                </p>
+
+            </div>
+        </div>
     </div>
-    <div class="spacer-small"><!-- --></div>
-
-    <table>
-        <tr>
-            <th>Id</th>
-            <th>Workshop</th>
-            <th>Interval</th>
-            <th>Status</th>
-            <th>Assesments</th>
-            <th></th>
-            <th></th>
-            <th>Integrity</th>
-        </tr>
-        {% for w in workshops%}
-        <tr>
-            <td>
-                <a href="{% url ws_status pk=w.pk %}">{{ w.title }}</a>
-            </td>
-            <td>{{ w.date|date:"l, d F" }} - {% player_group w.semigroup %}<br/>
-                <span class="points">{{ w.semigroup.get_room_display }}</span>
-            </td>
-            <td>{{ w.start_at|date:"H:i:s" }}<br/>{{ w.active_until|date:"H:i:s" }}</td>
-            <td>{% if w.is_active %}Active
-                {% else %}Inactive
-                {% endif %}
-                <br/>
-                {{ w.get_status_display }}
-            </td>
-            <td align="right">
-                total: {{ w.assessment_set.count }}
-                <br/>
-                <a href="{% url ws_view_assessments w.id %}">view</a>
-            </td>
-            <td>
-                <a href="{% url ws_edit_workshop w.id %}">✍edit</a>
-                {% if not w.start_at %}
-                <a class="button" href="{% url ws_start w.id %}">Start</a>
-                {% endif %}
-                {% if w.is_started and w.is_active %}
-                <a class="button" href="{% url ws_stop w.id %}">Stop</a>
-                {% endif %}
-                {% if w.is_started and w.is_passed %}
-                <a class="button" onclick="return confirm('are you sure?');" href="{% url ws_mark_for_review w.id %}">Mark for review</a><br/>
-                {% endif %}
-                {% if w.is_reviewable %}
-                <a class="button" onclick="return confirm('are you sure?');" href="{% url ws_mark_for_grading w.id %}">Mark for grading</a><br/>
-                {% endif %}
-            </td>
-            <td>
-                {% if not w.is_started %}
-                    <a href="{% url ws_reviewers_map w.id %}">{% if w.is_gradable %}Grades{% else %}Reviewers map{% endif %}</a>
-                {% endif %}
-            </td>
-            {% if integrity_check %}
-            <td>{{ w.integrity }}</td>
-            {% endif %}
-        </tr>
-        {% endfor %}
-    </table>
-
-    <br/>
-    <a class="button" href="{% url ws_add_workshop %}"><strong>Add workshop</strong></a>
 
     {% include 'cpanel/pagination.html' %}
 {% endblock %}

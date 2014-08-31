@@ -4,40 +4,57 @@
 
 {% block sectiontitle %}Workshop{% endblock %}
 
-{% block information %}
-    <p>Use this feature to define Qpool tags for questions available in a predefined time span.</p>
-
-    <p>Then use Qpool normally to add/change/remove questions.</p>
-{% endblock %}
 
 {% block tabcontent %}
+
+    <p> <a class="btn btn-primary pull-right" href="{% url ws_schedule_change %}">
+             <span class="glyphicon glyphicon-plus"></span>{% trans 'Add Schedule' %}
+        </a>
+        <a class="btn btn-warning" href="{% url qpool_home cat=category.name %}">
+            {% trans 'Go to question pool' %}
+        </a>
+    </p>
     <p>Question tags used for workshops.</p>
-    <table>
-        <tr>
-            <th>Tag</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Questions</th>
-            <th>Select</th>
-            <th>Active</th>
-        </tr>
-        {% for s in schedules %}
-        <tr>
-            <td>
-                {{ s }}
-            </td>
-            <td>{{ s.start_date }}</td>
-            <td>{{ s.end_date }}</td>
-            <td align="right">{{ s.question_set.count }}</td>
-            <td align="right">{{ s.count }}</td>
-            <td>{% if s.is_active %}{% trans 'Yes' %}{% endif %}</td>
 
-            <td><a href="{% url ws_schedule_change s.id %}">✍</a></td>
-            <td><a href="{% url qpool_home cat='workshop' tag=s.id %}">filter</a></td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div class="container-fluid">
+        <div class="col-md-9">
+            <table class="table table-bordered table table-hover">
+                <tr>
+                    <th>Tag</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Questions</th>
+                    <th>Select</th>
+                    <th>Active</th>
+                    <th>Manage</th>
+                </tr>
+                {% for s in schedules %}
+                <tr>
+                    <td>{{ s }}</td>
+                    <td>{{ s.start_date }}</td>
+                    <td>{{ s.end_date }}</td>
+                    <td>{{ s.question_set.count }}</td>
+                    <td>{{ s.count }}</td>
+                    <td>{% if s.is_active %}{% trans 'Yes' %}{% endif %}</td>
+                    <td><a class="btn btn-success" href="{% url ws_schedule_change s.id %}">
+                            <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                        </a>
+                        <a class="btn btn-warning" href="{% url qpool_home cat='workshop' tag=s.id %}">Filter</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
 
-    <a class="button" href="{% url ws_schedule_change %}">Add</a>
-    <a class="button" href="{% url qpool_home cat=category.name %}">Go to question pool</a>
+        <div class="panel panel-default col-md-3">
+            <div class="panel-body">
+                {% block information %}
+                    <p>Use this feature to define Qpool tags for questions available in a predefined time span.</p>
+                    <p>Then use Qpool normally to add/change/remove questions.</p>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+
 {% endblock %}

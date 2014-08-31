@@ -1,47 +1,59 @@
 {% extends 'cpanel/qpool_home.html' %}
+{% load i18n %}
 
 {% block title %}CPanel{% endblock %}
 {% block sectiontitle %}{{ block.super }} &raquo; Add question{% endblock %}
 
 {% block subsectioncontent %}
-<form method="post">
-<table>
-    <tr><td><label for="text">Text:</label></td>
-        <td><textarea id="text" name="text" rows="10" cols="50">{{ question.text}}</textarea>
-    </tr>
-        {% for a in 123456|make_list %}
-         <tr><td><input type="checkbox" name="correct_{{a}}" /></td>
-            <td><textarea name="answer_{{a}}" cols="50"></textarea></td>
-        </tr>
-        {% endfor %}
 
-    {% if not question %}
-    <tr><td>Category: </td><td>
-        <select name="category">
-            {% for c in categs %}
-                <option value="{{c.1}}">{{ c.0 }}</option>
+    <form style="width: 70%" class="horizontal-form" method="post">
+        <table class="table table-bordered table-hover table-condensed">
+            <tr>
+                <th>Properties</th>
+                <th>Text</th>
+            </tr>
+            <tr>
+                <td style="vertical-align: middle"><label>Question Text:</label></td>
+                <td><textarea id="text" name="text" rows="5" cols="50">{{ question.text}}</textarea></td>
+            </tr>
+            {% for a in 123456|make_list %}
+            <tr>
+                <td style="vertical-align: middle">Correct: <input type="checkbox" name="correct_{{a}}"/></td>
+                <td><textarea name="answer_{{a}}" cols="50"></textarea></td>
+            </tr>
             {% endfor %}
-        </select>
-    </td></tr>
-    {% endif %}
+            {% if not question %}
+            <tr>
+                <td><b>Category:</b></td>
+                <td>
+                    <select name="category">
+                        {% for c in categs %}
+                        <option value="{{c.1}}">{{ c.0 }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            {% endif %}
+            {% if form.proposed_by %}
+            <tr>
+                <td><b>Proposed by:</b></td>
+                <td>{{ form.proposed_by }}</td>
+            </tr>
+            {% endif %}
+            {% if form.endorsed_by %}
+            <tr>
+                <td><b>Endorsed by:</b></td>
+                <td>{{ form.endorsed_by }}</td>
+            </tr>
+            {% endif %}
+        </table>
 
-    {% if form.proposed_by %}
-    <tr><td>Proposed by:</td><td>
-        {{ form.proposed_by }}
-    </td></tr>
-    {% endif %}
-    {% if form.endorsed_by %}
-    <tr><td>Endorsed by:</td><td>
-        {{ form.endorsed_by }}
-    </td></tr>
-    {% endif %}
-    </table>
+        <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
+        <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
+        <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
 
-    <div class="actions">
-        <button onclick="history.back(); return false;">Cancel</button>
-        <button type="reset">Reset</button>
-        <button type="submit" class="default">Save</button>
-    </div>
-    {% csrf_token %}
-</form>
+        {% csrf_token %}
+
+    </form>
+
 {% endblock %}

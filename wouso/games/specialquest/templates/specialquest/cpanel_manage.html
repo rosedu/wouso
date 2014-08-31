@@ -1,69 +1,111 @@
 {% extends 'cpanel/index.html' %}
 {% load i18n %}
 {% load user %}
-{% block title %}{% trans 'Special Quest' %}{% endblock %}
+
 {% block sectiontitle %}
-    {% player mplayer %} {% if mplayer.group %}and his group: <a href="{% url specialquest_group mplayer.group.id %}">{{ mplayer.group }}</a>{% endif %}
+    Special Quest Manage Player:{% player mplayer %} {% if mplayer.group %}and his group: <a href="{% url specialquest_group mplayer.group.id %}">{{ mplayer.group }}</a>{% endif %}
 {% endblock %}
 
 {% block sectioncontent %}
 
-<span class="points">Gold: {{ mplayer.coins.gold }}</span>
 
-{% if mplayer.done_tasks.all %}
-Done tasks:
-<ul>
-    {% for task in mplayer.done_tasks.all %}
-    <li><s><a href="{% url specialquest_task_view task.pk %}">{{task.name}}</a></s> ({{task.value}} gold)
-           <a href="{% url specialquest_manage_unset mplayer.id task.pk %}" class="points">Unset</a>.</li>
-    {% empty %}
-<li>None yet</li>
-    {% endfor %}
-</ul>
-{% endif %}
+    <h3><strong>Player Gold: {{ mplayer.coins.gold }}</strong></h3>
 
-{% if tasks_not_done %}
-Not done tasks:
-<ul>
-  {% for task in tasks_not_done %}
-      <li><a href="{% url specialquest_task_view task.pk %}">{{task.name}}</a> ({{task.value}} gold)
-          <a href="{% url specialquest_manage_set mplayer.id task.pk %}" class="points">Set done</a>.</li>
-  {% empty %}
-<li class="empty">None yet</li>
-  {% endfor %}
-</ul>
-{% endif %}
+    <h4>Tasks <em style="color: green">done</em>:</h4>
 
-<div class="spacer"></div>
-<h4>Give bonus:</h4>
-    <form action="" method="post">
-    Gold: <input class="big" type="text" size="3" value="0" name="gold">
-    public comment: <input class="big" type="text" size="20" maxlength="60" name="comment" /> (leave blank for no activity)
-    <div class="actions">
-        <button type="submit">Bonus this player!</button>
-    </div>
-    {% csrf_token %}
+    <ul>
+        {% for task in mplayer.done_tasks.all %}
+        <li><s><a href="{% url specialquest_task_view task.pk %}">{{task.name}}</a></s> ({{task.value}} gold)
+               <a href="{% url specialquest_manage_unset mplayer.id task.pk %}" >Unset</a></li>
+        {% empty %}
+        <li>None</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Tasks <em style="color: red">not done</em>:</h4>
+    <ul>
+        {% for task in tasks_not_done %}
+        <li><a href="{% url specialquest_task_view task.pk %}">{{task.name}}</a> ({{task.value}} gold)
+            <a href="{% url specialquest_manage_set mplayer.id task.pk %}" class="points">Set done</a></li>
+        {% empty %}
+        <li class="empty">None</li>
+        {% endfor %}
+    </ul>
+
+    <hr/>
+
+    <h3><strong>Give bonus:</strong></h3>
+    <form class="form-horizontal" method="post">
+        Gold:
+        <input type="text" size="3" value="0" name="gold">
+        <br/>
+        Public comment:
+        <input type="text" size="20" maxlength="60" name="comment"/> (leave blank for no activity)
+        <br/>
+        <button class="btn btn-primary" type="submit">{% trans 'Bonus this player!' %}</button>
+        {% csrf_token %}
     </form>
 
-<h4>Penalty points:</h4>
-    <form action="" method="post">
-    Points: <input class="big" type="text" size="3" value="0" name="points"/>
-    <div class="actions">
-        <button type="submit">Punish this player</button>
-    </div>
-    {% csrf_token %}
+    <hr/>
+
+    <h3><strong>Penalty points:</strong></h3>
+    <form class="form-horizontal" method="post">
+        Points:
+        <input type="text" size="3" value="0" name="points"/>
+        <br/>
+        <button class="btn btn-danger" type="submit">Punish this player!</button>
+        {% csrf_token %}
     </form>
 
-<p>History:</p>
-<ul>
-    {% for bonus in bonuses %}
-    <li>{{ bonus.timestamp }} - {{ bonus.amount }} {{ bonus.coin }} from {% player bonus.external_id %}</li>
-    {% endfor %}
-</ul>
-<hr/>
-<ul>
-    {% for penalty in penalties %}
-    <li>{{ penalty.timestamp }} - {{ penalty.amount }} {{ penalty.coin }} by {% player penalty.external_id %}</li>
-    {% endfor %}
-</ul>
+    <hr/>
+
+    <h3><strong>History:</strong></h3>
+
+    <h4>--- Bonuses ---</h4>
+    <table style="width: 60%" class="table table-bordered table table-hover">
+        <tr>
+            <th>Timestamp</th>
+            <th>Amount</th>
+            <th>Coin</th>
+            <th>From</th>
+        </tr>
+        {% for bonus in bonuses %}
+        <tr>
+            <td>{{ bonus.timestamp }}</td>
+            <td>{{ bonus.amount }}</td>
+            <td>{{ bonus.coin }}</td>
+            <td>{% player bonus.external_id %}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="0" class="text-center">No bonuses yet.</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h4>--- Penalties ---</h4>
+    <table style="width: 60%" class="table table-bordered table table-hover">
+        <tr>
+            <th>Timestamp</th>
+            <th>Amount</th>
+            <th>Coin</th>
+            <th>From</th>
+            <!--<th>Reason</th>-->
+        </tr>
+        {% for penalty in penalties %}
+        <tr>
+            <td>{{ penalty.timestamp }}</td>
+            <td>{{ penalty.amount }}</td>
+            <td>{{ penalty.coin }}</td>
+            <td>{% player bonus.external_id %}</td>
+            <!--<td></td>  TODO: add penalty reason column -->
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="0" class="text-center">No penalties yet.</td>
+        </tr>
+        {% endfor %}
+    </table>
+
 {% endblock %}
+        

@@ -1,49 +1,56 @@
 {% extends 'cpanel/index.html' %}
-{% block scripts %}
-    <link rel="stylesheet" type="text/css" href="/static/css/tabs.css" />
+{% load i18n %}
+
+{% block sectiontitle %}
+    Special Quests
+    <a class="btn btn-primary pull-right" href="{% url specialquest_new %}">
+        <span class="glyphicon glyphicon-plus"></span>{% trans 'Add task' %}</a>
 {% endblock %}
 
-{% block sectiontitle %}Special Quests{% endblock %}
-
 {% block sectioncontent %}
-
-<ul class="tabs">
+<div class="container-fluid">
+<ul class="nav nav-tabs">
     <li class="active"><a href="{% url specialquest_home %}">Tasks</a></li>
     <li ><a href="{% url specialquest_cpanel_groups %}">Groups</a></li>
 </ul>
 
-<div class="tab_container">
-    <div id="tab-1" class="tab_content">
-        &nbsp;
-    {% block tabcontent %}
-    <table>
+
+{% block tabcontent %}
+<div class=" col-md-10">
+<table class="table table-bordered table-condensed table-hover">
+    <tr>
+        <th>Name</th>
+        <th>Start date</th>
+        <th>End date</th>
+        <th>Gold</th>
+        <th>Actions</th>
+    </tr>
+    {% for t in tasks %}
         <tr>
-            <th>Name</th>
-            <th>Start date</th>
-            <th>End date</th>
-            <th>Gold</th>
-            <th>Actions</th>
+            <td>{{ t.name }}</td>
+            <td>{{ t.start_date|date:"d/m/Y" }}</td>
+            <td>{{ t.end_date|date:"d/m/Y" }}</td>
+            <td>{{ t.value }}</td>
+            <td>
+                <a href="{% url specialquest_edit t.pk %}" class="btn btn-success">
+                    <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                </a>
+                <a href="{% url specialquest_delete t.pk %}" onclick="return confirm('really?');"
+                        class="btn btn-danger">
+                    <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+                </a>
+            </td>
         </tr>
-        {% for t in tasks %}
-            <tr>
-                <td>{{ t.name }}</td>
-                <td>{{ t.start_date|date:"d/m/Y" }}</td>
-                <td>{{ t.end_date|date:"d/m/Y" }}</td>
-                <td>{{ t.value }}</td>
-                <td class="actions" nowrap>
-                    <a href="{% url specialquest_edit t.pk %}" title="edit">✍</a>
-                    <a href="{% url specialquest_delete t.pk %}" onclick="return confirm('really?');">✕</a>
-                </td>
-            </tr>
-        {% empty %}
-        <tr><td colspan=5>No tasks</td></tr>
-        {% endfor %}
-    </table>
-
-    <a class="button" href="{% url specialquest_new %}">New task</a>
-
-    <div class="info second" style="clear:both">Current date and time:  {% now "d/m/Y H:i" %}</div>
-    {% endblock %}
+    {% empty %}
+    <tr><td colspan="0">No tasks yet.</td></tr>
+    {% endfor %}
+</table>
+</div>
+<div class="panel panel-primary col-md-2">
+<div class="panel-body">
+    Current date and time:  {% now "d/m/Y H:i" %}
+</div>
+{% endblock %}
     </div>
 </div>
 {% endblock %}

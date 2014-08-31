@@ -7,9 +7,9 @@
 {% else %}
 <form action="{% url set_active_categories %}" method="post">{% csrf_token %}
     {{ form.as_p }}
-    <input type="submit" value="Submit" />
+    <input type="submit" value="Submit" class="btn btn-primary"/>
 </form>
 {% endif %}
 
-   <a class="button" href="{% url qpool_home cat='challenge' %}">Back</a>
+   <a class="btn btn-warning" href="{% url qpool_home cat='challenge' %}">Back</a>
 {% endblock %}
