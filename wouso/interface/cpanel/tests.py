@@ -13,6 +13,7 @@ from wouso.core.tests import WousoTest
 from wouso.core.user.models import Race, PlayerGroup
 from wouso.games.quest.models import Quest
 
+
 class addPlayerTestCase(TestCase):
     def setUp(self):
         self.user, new = User.objects.get_or_create(username='_test1', is_staff=True, is_superuser=True)
@@ -31,6 +32,7 @@ class addPlayerTestCase(TestCase):
 
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(old_number + 1, new_number)
+
 
 class CpanelViewsTest(WousoTest):
     def setUp(self):
@@ -126,7 +128,7 @@ class CpanelViewsTest(WousoTest):
         self.assertContains(response, 'Edit Spell')
         self.assertContains(response, 'spell1')
         self.assertContains(response, 'Spell no. 1')
-    
+
     def test_edit_spell_view_post(self):
         # Check the view with an invalid form
         spell = Spell.objects.create(name='spell1', title='Spell no. 1')
@@ -223,7 +225,7 @@ class CpanelViewsTest(WousoTest):
 
     def test_qpool_edit_tag_view_post(self):
         tag1 = Tag.objects.create(name='tag1', active=True)
-        
+
         # Check the view with a valid form
         data = {'name': 'tag_updated', 'active': True}
         response = self.client.post(reverse('qpool_edit_tag', args=[tag1.pk]), data)
@@ -231,7 +233,7 @@ class CpanelViewsTest(WousoTest):
         tag = Tag.objects.get(pk=tag1.pk)
         self.assertEqual(tag.name, 'tag_updated')
         self.assertTrue(tag.active)
-        
+
         # Check the view with an invalid form
         data = {}
         response = self.client.post(reverse('qpool_edit_tag', args=[tag1.pk]), data)
@@ -249,7 +251,7 @@ class CpanelViewsTest(WousoTest):
         self.assertContains(response, 'artifact_test_2')
 
     def test_add_player_view_get(self):
-        response =  self.client.get(reverse('add_player'))
+        response = self.client.get(reverse('add_player'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Add Player')
         self.assertContains(response, 'Username')
@@ -296,10 +298,10 @@ class CpanelViewsTest(WousoTest):
 
     def test_races_groups_view(self):
         """ Test adds races and groups and verifies the
-        following situations: 
+        following situations:
         - any added race is displayed
         - a group with no parent is displayed
-        - when a race is deleted, all contained groups 
+        - when a race is deleted, all contained groups
         are also deleted
         """
         r1 = Race.objects.create(name='Race_test_1', can_play=True)
@@ -384,7 +386,7 @@ class CpanelViewsTest(WousoTest):
 
     def test_customization_view_post(self):
         data = {'title': 'Custom test title'}
-        
+
         # POST data
         response = self.client.post(reverse('customization'), data)
 
@@ -402,7 +404,7 @@ class CpanelViewsTest(WousoTest):
         response = self.client.get(reverse('games_home'))
         self.assertContains(response, 'id="disable-WorkshopGame" checked')
 
-    @unittest.skip # TODO fixme
+    @unittest.skip  # TODO fixme
     def test_qpool_importer_view(self):
         response = self.client.get(reverse('importer'))
         chall_cat = Category.objects.get(name='challenge')
