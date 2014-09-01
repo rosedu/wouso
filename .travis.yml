@@ -1,0 +1,11 @@
+language: python
+python:
+  - "2.7"
+env:
+  - DJANGO=1.4
+install:
+  - pip install -r requirements-pip
+  - pip install -r requirements-extra
+before_script: cp wouso/settings.py.example wouso/settings.py
+script:
+  - python wouso/manage.py test wouso
