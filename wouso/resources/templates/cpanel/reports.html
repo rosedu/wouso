@@ -1,5 +1,6 @@
 {% extends 'cpanel/index.html' %}
 {% load user %}
+{% load i18n %}
 
 {% block sectiontitle %}Reports{% endblock %}
 
@@ -9,73 +10,41 @@
 {% endblock %}
 
 {% block sectioncontent %}
-
-<ul class="tabs">
-    <li><a href="#player" id="player-click" class="no-redir">Report Player</a></li>
-    <li><a href="#question" id="question-click" class="no-redir">Report Question</a></li>
-</ul>
-
-<div class="tab_container">
-    <br/>
-    <br/>
-    <div id="player" class="tab_content">
-        <br/>
-        <table>
-            <tr>
-                <th>User from</th>
-                <th>User to</th>
-                <th>Text</th>
-                <th>Dibs</th>
-                <th>Status</th>
-                <th>Timestamp</th>
-                <th>Edit</th>
-            </tr>
-            {% for r in reports %}
-            <tr>
-                <td>{{ r.user_from }}</td>
-                <td>{{ r.user_to }}</td>
-                <td>{{ r.text|slice:"0:10" }}</td>
-                <td>{{ r.dibs }}</td>
-                <td>
-                    {% if r.status == "R" %}
-                    Reported
-                    {% else %}{% if r.status == "I" %}
-                    Investigating
-                    {% else %}{% if r.status == "S" %}
-                    Resolved
-                    {% else %}{% if r.status == "E" %}
-                    Invalid
-                    {% endif %}{% endif %}{% endif %}{% endif %}
-                </td>
-                <td>{{ r.timestamp}}</td>
-                <td><a class="button" href="{% url edit_report r.id %}">Edit</a></td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
-
-    <div id="question" class="tab_content">
-        <br/>
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Question</th>
-                <th>Count</th>
-                <th>Edit</th>
-            </tr>
-        {% for q in questions %}
-        <tr>
-            <td>{{ q.q_id }}</td>
-            <td>{{ q.name }}</td>
-            <td align="right">{{ q.count }}</td>
-            <td class="actions" nowrap>
-                <a class="button-min" href="{% url question_edit q.id %}">✍</a>
-            </td>
-        </tr>
-        {% endfor %}
-        </table>
-    </div>
-</div>
-
+<table class="table table-bordered table-hover table-condensed">
+    <tr>
+        <th>User from</th>
+        <th>User to</th>
+        <th>Text</th>
+        <th>Dibs</th>
+        <th>Status</th>
+        <th>Timestamp</th>
+        <th>Edit</th>
+    </tr>
+    {% for r in reports %}
+    <tr>
+        <td>{{ r.user_from }}</td>
+        <td>{{ r.user_to }}</td>
+        <td>{{ r.text|slice:"0:50" }}</td>
+        <td>{{ r.dibs }}</td>
+        <td>{% if r.status == "R" %}
+            Reported
+            {% else %}{% if r.status == "I" %}
+            Investigating
+            {% else %}{% if r.status == "S" %}
+            Resolved
+            {% else %}{% if r.status == "E" %}
+            Invalid
+            {% endif %}{% endif %}{% endif %}{% endif %}</td>
+        <td>{{ r.timestamp}}</td>
+        <td>
+            <a class="btn btn-success" href="{% url edit_report r.id %}">
+                <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+            </a>
+        </td>
+    </tr>
+    {% empty %}
+        <tr><td colspan="0">No reports have been made yet</td></tr>
+    {% endfor %}
+</table>
 {% endblock %}
 

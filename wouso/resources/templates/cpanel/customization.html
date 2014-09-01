@@ -3,7 +3,6 @@
 {% block sectiontitle %}Customization{% endblock %}
 
 {% block sectioncontent %}
-
 <form method="post" action="">
 {% for sgroup in settings %}
     <fieldset><legend>{{ sgroup.name }}:</legend>
@@ -15,8 +14,7 @@
     {% endfor %}
     </fieldset>
 {% endfor %}
-<button type="submit">Save</button>
+<button type="submit" class="btn btn-primary">Save</button>
 {% csrf_token %}
 </form>
-
 {% endblock %}

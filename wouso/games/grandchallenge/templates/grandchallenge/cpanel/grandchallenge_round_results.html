@@ -8,7 +8,7 @@
     <h2>Round {{ round.round_number }} results</h2>
 
     <h3>Participants</h3>
-    <table>
+    <table class="table table-condensed table-hover table-bordered">
         <tr>
             <th>Participant</th>
             <th>Lost</th>
@@ -22,7 +22,7 @@
     </table>
 
     <h3>Challenges</h3>
-    <table>
+    <table class="table table-condensed table-hover table-bordered">
         <tr>
             <th>Challenge</th>
             <th>Date</th>
@@ -39,5 +39,5 @@
         {% endfor %}
     </table>
 
-    <a class="button" href="{% url grandchalls %}">Back</a>
+    <a class="btn btn-warning" href="{% url grandchalls %}">Back</a>
 {% endblock %}

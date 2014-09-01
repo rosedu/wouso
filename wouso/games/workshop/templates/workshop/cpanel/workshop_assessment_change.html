@@ -22,6 +22,6 @@
         {% csrf_token %}
         </form>
 
-<a class="button" href="{% url ws_view_assessment workshop.id assessment.id %}">View</a>
-<a class="button" href="{% url ws_view_assessments workshop.id %}">All assessments</a>
+<a class="btn btn-success" href="{% url ws_view_assessment workshop.id assessment.id %}">View</a>
+<a class="btn btn-primary" href="{% url ws_view_assessments workshop.id %}">All assessments</a>
 {% endblock %}

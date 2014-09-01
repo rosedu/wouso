@@ -1,15 +1,19 @@
 {% extends 'workshop/cpanel/index.html' %}
+{% load i18n %}
 
 {% block tabcontent %}
-<p>
-    Tip: to restart a workshop, clear <b>start at</b>, save, then choose <b>Start</b>.
-</p>
-<form action="" method="post">
-    <table>
-        {{ form.as_table }}
-    </table>
-    <button type="submit">Save</button> <a href="{% url ws_workshops %}">back</a>
-    {% csrf_token %}
-</form>
-
+    <p>
+        <b>Tip:</b> to restart a workshop, clear <b>start at</b>, save, then choose <b>Start</b>.
+    </p>
+    <form class="horizontal-form" method="post">
+        <table>
+            {{ form.as_table }}
+        </table>
+        <button class="btn btn-primary" type="submit">{% trans 'Save ' %}
+            <span class="glyphicon glyphicon-ok-sign"></span>
+        </button>
+        <br/> <br/>
+        <a class="btn btn-warning" href="{% url ws_workshops %}"> {% trans 'Back ' %}</a>
+        {% csrf_token %}
+    </form>
 {% endblock %}

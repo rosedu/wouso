@@ -1,76 +1,82 @@
 {% extends 'cpanel/index.html' %}
 {% load workshop %}
+{% load i18n %}
 
-{% block scripts %}
-<link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
+{% block sectiontitle %}
+    Workshop
+    <div class="pull-right">
+        <a class="btn btn-primary" href="{% url ws_add_workshop %}">
+            <span class="glyphicon glyphicon-plus"></span>
+            <strong>{% trans 'Add Workshop' %}</strong>
+        </a>
+
+        <a class="btn btn-primary" href="{% url ws_add_group %}">
+            <span class="glyphicon glyphicon-plus"></span>{% trans 'Add Semigroup' %}
+        </a>
+
+        <a class="btn btn-success" href="{% url ws_edit_spot 0 0 %}">
+            <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit Default Spot ' %}
+        </a>
+    </div>
 {% endblock %}
 
-{% block sectiontitle %}Workshop{% endblock %}
-
 {% block sectioncontent %}
-<div class="actions">
-    {% now "M. d, Y, H:i:s" %}
-</div>
 
-<ul class="tabs">
-    <li {% if not page %}class="active"{% endif %}><a href="{% url workshop_home %}">Timetable</a></li>
-    <li {% if page == 'schedule' %}class="active"{% endif %}><a href="{% url ws_schedule %}">Schedule</a></li>
-    <li {% if page == 'workshops' %}class="active"{% endif %}><a href="{% url ws_workshops %}">Workshops</a></li>
-    <li {% if page == 'semigroups' %}class="active"{% endif %}><a href="{% url ws_semigroups %}">Semigroups</a></li>
-</ul>
+    <strong>{% now "d. M. Y, H:i:s" %}</strong>
 
-<div class="tab_container">
-    <div id="tab-1" class="tab_content">
+    <hr/>
+    <ul class="nav nav-tabs">
+        <li {% if not page %}class="active"{% endif %}><a href="{% url workshop_home %}">Timetable</a></li>
+        <li {% if page == 'schedule' %}class="active"{% endif %}><a href="{% url ws_schedule %}">Schedule</a></li>
+        <li {% if page == 'workshops' %}class="active"{% endif %}><a href="{% url ws_workshops %}">Workshops</a></li>
+        <li {% if page == 'semigroups' %}class="active"{% endif %}><a href="{% url ws_semigroups %}">Semigroups</a></li>
+    </ul>
+    {% block tabcontent %}
 
-        <div class="subgroups">
-        {% block information %}
-            {% if info %}
-            <p>
-            Current spot: {{ info.get_spot }}<br/>
-            Current group: {{ info.get_semigroups|join:", " }}<br/>
-            Current qpool: {{ info.get_question_pool.count }}<br/>
-            Default room: {{ info.default_room }}<br/>
-            </p>
-            {% endif %}
-        {% endblock %}
-        </div>
+    {% autoescape off %}{{ config_ws_cpanel_extra }}{% endautoescape %}
 
-        &nbsp;
-        {% block tabcontent %}
-            <div class="spacer-small">
-            {% autoescape off %}{{ config_ws_cpanel_extra }}{% endautoescape %}
-            </div>
-            <div class="spacer-small"><!-- --></div>
-        <table class="border">
+    <div class="col-md-9">
+        <table class="table table-bordered table-condensed table-hover">
             <tr>
                 <th><em>Hour/Day</em></th>
                 {% for d in days %}
-                    <th><em>{{ d.1 }}</em></th>
+                <th><em>{{ d.1 }}</em></th>
                 {% endfor %}
             </tr>
             {% for h in hours %}
             <tr>
-                <td ALIGN="RIGHT"><em>{{ h }}:00</em></td>
+                <td><em>{{ h }}:00</em></td>
                 {% for d in days %}
-                    <td width="115" {% if d.0 == info.get_spot.0 %}{% if h == info.get_spot.1 %}class="red"{% endif %}{% endif %}>
-                        {% get_schedule d.0 h %}
-                        <br/>
-                        <br/>
-                        <span class="points">
-                            <a href="{% url ws_edit_spot d.0 h %}">✍spot</a>
-                        </span>
-                    </td>
+                <td {% if d.0 == info.get_spot.0 %}{% if h == info.get_spot.1 %}
+                    class="red"{% endif %}{% endif %}>{% get_schedule d.0 h %}
+                    <br/>
+                    <a class="btn btn-success btn btn-xs" href="{% url ws_edit_spot d.0 h %}">
+                        <span class="glyphicon glyphicon-edit"></span>{% trans 'spot' %}
+                    </a>
+                </td>
                 {% endfor %}
             </tr>
             {% endfor %}
         </table>
-
-
-        <a class="button" href="{% url ws_add_group %}">Add semigroup</a>
-        <a class="button" href="{% url ws_edit_spot 0 0 %}">Edit default spot</a>
-        <br/>
-        <a class="button" href="{% url ws_add_workshop %}"><strong>Add workshop</strong></a>
-        {% endblock %}
     </div>
+
+    <div class="panel panel-default col-md-3">
+        <div class="panel-body">
+            {% block information %}
+            {% if info %}
+            <p>
+                Current spot: {{ info.get_spot }}<br/>
+                Current group: {{ info.get_semigroups|join:", " }}<br/>
+                Current qpool: {{ info.get_question_pool.count }}<br/>
+                Default room: {{ info.default_room }}<br/>
+            </p>
+            {% endif %}
+            {% endblock %}
+        </div>
+    </div>
+
+    {% endblock %}
+
 </div>
+
 {% endblock %}

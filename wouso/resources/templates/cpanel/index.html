@@ -5,9 +5,17 @@
 {%  load i18n %}
 <html>
 <HEAD>
-    <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <TITLE>{% block title %}WoUSO Control Panel{% endblock %}</TITLE>
-    <LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/style.css" />
+    <!-- Bootstrap CSS !-->
+    <link href="{{ basepath }} /static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ basepath }} /static/css/cpanel-style.css" rel="stylesheet">
+    <link href="{{ basepath }} /static/css/dashboard.css" rel="stylesheet">
+    <link href="{{ basepath }} /static/css/sticky-footer.css" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery-1.6.2.min.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery.autocomplete.js"></script>
@@ -46,177 +54,165 @@
 </HEAD>
 
 <body>
-
-<div id="container">
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     {% block header %}
-    <div id="header-cp">
-        <div id="topbar">
-            <div class="first-line">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{% url dashboard %}">Control Panel</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
                 {% if user.real_user %}
-                   Impersonated by {{ user.real_user }} <a href="{% url impersonate_clear %}">clear</a>
+                    Impersonated by {{ user.real_user }} <li><a href="{% url impersonate_clear %}">clear</a></li>
                 {% endif %}
-                <a id="head-home" href="{% url homepage %}">Game</a>&nbsp;
-                <a id="head-logout" href="{% url logout_view %}">{% trans "Logout" %} &raquo;</a>
-            </div>
+                <li><a id="head-home" href="{% url homepage %}">Game</a></li>
+                <li><a id="head-logout" href="{% url logout_view %}">{% trans "Logout" %} <span class="glyphicon glyphicon-log-out"></span></a></li>
+            </ul>
         </div>
     </div>
     {% endblock %}
+</div>
 
-    <div class="spacer-search"></div>
-    <div class="cpanel-profile">
-        <a href="{% url player_profile player.id %}">
-            <img src="{% player_avatar player %}" class="avatar avatar-med float-right" />
-        </a>
-
-        <div class="cpanel-player-info">
-            <strong>{% player player %}</strong>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar sidebar">
+            <ul class="nav nav-sidebar">
+            <!-- Dashboard !-->
+                <h4 class="text-center">Dashboard</h4>
+                {% url dashboard as url %}
+                <li {% if url == request.path %}class="active"{% endif %}><a href="{% url dashboard %}">Dashboard</a></li>
+                {% url qpool_home as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url qpool_home %}">Question Pool</a></li>
+                {% url spells as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url spells %}">Spells</a></li>
+                {% url artifact_home as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url artifact_home %}">Artifacts</a></li>
+                {% url all_players as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url all_players %}">Players</a></li>
+                {% url races_groups as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url races_groups %}">Races & groups</a></li>
+            <!-- Games !-->
+                <h4 class="text-center">Games</h4>
+                {% url games_home as url %}
+                <li {% if url == request.path %}class="active"{% endif %}><a href="{% url games_home %}">Games</a></li>
+                {% url formulas as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url formulas %}">Formulas</a></li>
+                {% cpanel_games %}
+            <!-- Customization !-->
+            {% if user.is_staff or user.is_superuser %}
+                <h4 class="text-center">Customization</h4>
+                {% url roles as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url roles %}">Roles</a></li>
+                {% url customization as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url customization %}">Customization</a></li>
+                {% url cpanel_display as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url cpanel_display %}">Display</a></li>
+                {% url reports as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url reports %}">Reports</a></li>
+            {% endif %}
+            <!-- Shortcuts !-->
+                <h4 class="text-center">Shortcuts to Django Admin</h4>
+                {% url static_pages as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url static_pages %}">Static Pages</a></li>
+                {% url news as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url news %}">News</a></li>
+                {% if user.is_staff or user.is_superuser %}
+                <li><a href="{% url admin:activity_activity_changelist %}">Activity Monitor</a></li>
+                <li><a href="{% url admin:index %}"><em>Django Admin »</em></a></li>
+                {% endif %}
+            </ul>
         </div>
-    </div>
-<div>
-    <div id="sidebar" style="margin-top: -50px">
-        {% block sidebar %}
-            <div class="widget-top"></div>
-            <div class="widget-middle">
-                <h2>CPanel</h2>
-                <div class="widget-content">
-                    <ul class="menu">
-                        <li class="home"><a href="{% url dashboard %}">Dashboard</a></li>
-                        <li class="qpool"><a href="{% url qpool_home %}">Question Pool</a></li>
-                        <ul class="submenu">
-                            <li class="qpool_import"></li>
-                        </ul>
-                        <li class="spells"><a href="{% url spells %}">Spells</a></li>
-                        <li class="artifacts"><a href="{% url artifact_home %}">Artifacts</a></li>
-                        <li><a href="{% url all_players %}">Players</a></li>
-                        <li><a href="{% url races_groups %}">Races & groups</a></li>
-                    </ul>
-                </div>
-                <div class="widget-content">
-                    <ul class="menu">
-                        <li class="games"><a href="{% url games_home %}">Games</a></li>
-                        <li class="formulas"><a href="{% url formulas %}">Formulas</a></li>
-                        <li class="empty"></li>
-                        {% cpanel_games %}
-                    </ul>
-                </div>
-                <div class="widget-content">
-                    {% if user.is_staff or user.is_superuser %}
-                    <ul class="menu">
-                        Admin
-                        <li class="roles"><a href="{% url roles %}">Roles</a></li>
-                        <li class="custom"><a href="{% url customization %}">Customization</a></li>
-                        <li class="display"><a href="{% url cpanel_display %}">Display</a></li>
-                        <li class="reports"><a href="{% url reports %}">Reports</a></li>
-                    </ul>
-                    {% endif %}
-                    <ul class="menu">
-                        Shortcuts
-                        <li class="pages"><a href="{% url static_pages %}">Static Pages</a></li>
-                        <li class="news"><a href="{% url news %}">News</a></li>
-                        {% if user.is_staff or user.is_superuser %}
-                        <li><a href="{% url admin:activity_activity_changelist %}">Activity Monitor</a></li>
-                        <li><a href="{% url admin:index %}"><em>Django Admin »</em></a></li>
-                        {% endif %}
-                    </ul>
-                </div>
-                <br/>
-                <div class="widget-content">
-                    {% block extra_sidebar %}
-                    {% endblock %}
-                    <div class="clearer spacer"></div>
-                </div>
-            </div>
-            <div class="widget-bottom"></div>
-            {% endblock %}
     </div>
 </div>
-    <div id="content-cp">
-        <div id="ajax-message">
-            {% if messages %}
-                {% for message in messages %}
-                    <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
-                {% endfor %}
-            {% endif %}
+
+<div class="panel panel-default col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+    <div id="ajax-message">
+        {% if messages %}
+            {% for message in messages %}
+                <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    </div>
+    {% block content %}
+    <h1 class="page-header">{% block sectiontitle %}Dashboard{% endblock %}</h1>
+        <div class="container-fluid">
+        {% block sectioncontent %}
+        <div class="panel panel-default col-md-7">
+            <div class="panel-body">
+            <h3>Quick actions</h3>
+                <div class="actions actions-left">
+                    <a class="btn btn-primary" href="{% url add_player %}">Add player</a>
+                </div>
+
+                <h3>Number of users who can play</h3>
+                <p>{{cp_number}} users can play. </p>
+
+                <h3>QPool</h3>
+                <p>Qotd: {{nr_future_questions}} future available questions. </p>
+                <p> {{nr_questions}} total questions. </p>
+
+                <h3>Quest</h3>
+                <p>{% if  active_quest %}One active quest: {{ active_quest }}{% else %}No quest active{% endif %}. Total: {{ total_quests }}</p>
+
+                <h3>Artifacts</h3>
+                <table>
+                    <tr>
+                        {%  for g in artifact_groups %}
+                        <td valign="top">
+                            <h4>{{ g }}</h4>
+                            {% for a in g.artifact_set.all %}
+                            {% artifact a %} {{ a.name }}<br/>
+                            {% endfor %}
+                        </td>
+                        {%  endfor %}
+                    </tr>
+                </table>
+
+                <h3>Misc</h3>
+                <a href="{% url clear_cache %}">Clear cache</a>
+            </div>
         </div>
-        <div class="section">
-        {% block content %}
-            <h2>{% block sectiontitle %}Dashboard{% endblock %}</h2>
-
-            <div class="section-content">
-            {% block sectioncontent %}
-
-
-            <div class="subgroups sg-large">
-                <h3>Information</h3>
+        <div class="panel panel-info col-md-4 col-md-offset-1">
+            <div class="panel-heading">Django & WoUSO information</div>
+            <div class="panel-body">
                 <p>Django version: {{ django_version }}</p>
                 <p>Database: {{ database_name }} [{{ database_engine }}]</p>
                 <p>WoUSO version: {{ wouso_version }}</p>
                 <p>WoUSOcron last run: {{ last_run }}</p>
-                <h4>Staff</h4>
+            </div>
+        </div>
+        <div class="panel panel-info col-md-4 col-md-offset-1">
+            <div class="panel-heading">Staff</div>
+            <div class="panel-body">
                 {% for u in staff.user_set.all %}
-                {% player_simple u.get_profile %}
+                    {% player_simple u.get_profile %}
                 {% endfor %}
-
-
+            </div>
+        </div>
+        <div class="panel panel-info col-md-4 col-md-offset-1">
+            <div class="panel-heading">Online users</div>
+            <div class="panel-body">
                 <h4>Online Users</h4>
                 {% for u in online_users %}
                 {% player u%}
                 {% endfor %}
             </div>
-
-            <h3>Quick actions</h3>
-            <div class="actions actions-left">
-                <a class="button" href="{% url add_player %}">Add player</a>
-            </div>
-
-            <h3>Number of users who can play</h3>
-            <p>{{cp_number}} users can play. </p>
-
-            <h3>QPool</h3>
-            <p>Qotd: {{nr_future_questions}} future available questions. </p>
-            <p> {{nr_questions}} total questions. </p>
-
-            <h3>Quest</h3>
-            <p>{% if  active_quest %}One active quest: {{ active_quest }}{% else %}No quest active{% endif %}. Total: {{ total_quests }}</p>
-
-            <div class="spacer"></div>
-            <h3>Artifacts</h3>
-            <table>
-                <tr>
-                    {%  for g in artifact_groups %}
-                    <td valign="top">
-                        <h4>{{ g }}</h4>
-                        {% for a in g.artifact_set.all %}
-                        {% artifact a %} {{ a.name }}<br/>
-                        {% endfor %}
-                    </td>
-                    {%  endfor %}
-            </table>
-
-            <h3>Misc</h3>
-            <a href="{% url clear_cache %}">Clear cache</a>
-
-            {% endblock %}
-            </div><!-- section content -->
+        </div>
         {% endblock %}
         </div>
-
-
-
-
-    <div id="footer">
-        <div id="footer-content">
+    {% endblock %}
+</div>
+<div class="footer">
+    <div class="container">
         {% block footer %}
-        &copy; 2007 - {% now "Y" %} ROSEdu
+        <p class="text-muted pull-right">&copy; 2007 - {% now "Y" %} ROSEdu</p>
         {% endblock %}
-        </div>
-    </div>
 
-    <div id="PrivatebarUsers"></div>
+        <div id="PrivatebarUsers"></div>
 
-    {% autoescape off %}
-    {{ config_hidden_footer }}
-    {% endautoescape %}
+        {% autoescape off %}
+        {{ config_hidden_footer }}
+        {% endautoescape %}
     </div>
 </div>
 </body>
