@@ -400,9 +400,8 @@ class CpanelViewsTest(WousoTest):
         response = self.client.get(reverse('games_home'))
         self.assertContains(response, 'id="disable-WorkshopGame" checked')
 
-    # TODO: fix it
+    @unittest.skip # TODO fixme
     def test_qpool_importer_view(self):
-        return
         response = self.client.get(reverse('importer'))
         for c in Category.objects.all():
             print "here" + c.name
