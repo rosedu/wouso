@@ -242,7 +242,6 @@ class CpanelViewsTest(WousoTest):
         artifact2 = Artifact.objects.create(name='artifact_test_2', group=art_group)
         response = self.client.get(reverse('artifact_home'))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['module'], 'artifacts')
         self.assertContains(response, 'Artifacts')
         self.assertContains(response, 'artifact_test_1')
         self.assertContains(response, 'artifact_test_2')
