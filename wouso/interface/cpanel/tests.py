@@ -404,8 +404,6 @@ class CpanelViewsTest(WousoTest):
     @unittest.skip # TODO fixme
     def test_qpool_importer_view(self):
         response = self.client.get(reverse('importer'))
-        for c in Category.objects.all():
-            print "here" + c.name
         chall_cat = Category.objects.get(name='challenge')
         self.assertContains(response, 'Select input file', status_code=200)
         self.assertTrue(chall_cat in response.context['categories'])
