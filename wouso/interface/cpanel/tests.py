@@ -272,7 +272,6 @@ class CpanelViewsTest(WousoTest):
         p1 = self._get_player(1)
         response = self.client.get(reverse('manage_player', args=[p1.pk]))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Manage Player')
         self.assertContains(response, 'testuser1')
         self.assertContains(response, 'Username')
         self.assertContains(response, 'Password')
