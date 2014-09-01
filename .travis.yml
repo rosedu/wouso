@@ -8,4 +8,5 @@ install:
   - pip install -r requirements-extra
 before_script: cp wouso/settings.py.example wouso/settings.py
 script:
-  - python wouso/manage.py test wouso/interface/cpanel
+  - python wouso/manage.py test wouso/interface
+  - python wouso/manage.py test wouso/core
