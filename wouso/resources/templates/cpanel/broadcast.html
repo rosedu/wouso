@@ -4,10 +4,9 @@
 {% block sectiontitle %}{% block title %}{% trans 'Broadcast email' %}{% endblock %}{% endblock %}
 
 {% block sectioncontent %}
-    <h4>Broadcast email</h4>
     <form action="" method="post">
         {{ form.as_p }}
-        <button class="btn" type="submit">Send mail</button>
+        <button class="btn btn-primary" type="submit">Send mail</button>
         {% csrf_token %}
     </form>
 {% endblock %}
