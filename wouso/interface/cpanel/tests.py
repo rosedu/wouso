@@ -24,8 +24,9 @@ class addPlayerTestCase(TestCase):
         self.client = Client()
         self.client.login(username='_test1', password='secret')
         User.objects.get(pk=1).is_staff
-        resp = self.client.post('/cpanel/add_player/',
-                                {'username': '_test2', 'password': 'secret', 'confirm_password': 'secret'})
+
+        data = {'username': '_test2', 'password': 'secret', 'confirm_password': 'secret'}
+        resp = self.client.post(reverse('add_player'), data)
         new_number = len(User.objects.all())
 
         self.assertEqual(resp.status_code, 302)
