@@ -106,7 +106,7 @@ class SpellTestCase(WousoTest):
 
     def test_buy_spell(self):
         Coin.add('gold')
-        Formula.add('buy-spell', definition="gold=-{price}")
+        Formula.add('buy-spell', expression="gold=-{price}")
         spell = Spell.objects.create(name='test-spell', available=True, price=10)
         player = User.objects.create_user('test', 'test@a.ro', password='test').get_profile()
 
@@ -264,11 +264,11 @@ class SpellTestCase(WousoTest):
         chall = Challenge.create(user_from=player2, user_to=player, ignore_questions=True)
         chall.set_won_by_player(player2)
 
-        # Get 'chall-lost' definition. By default you still win 2 points when losing a challenge
+        # Get 'chall-lost' expression. By default you still win 2 points when losing a challenge
         formulas = ChallengeGame.get_formulas()
-        definition = formulas[1]['definition'] # this will be 'points=XX'
-        index = definition.find('=') + 1 # get position of '='
-        points = int(definition[index:]) # get XX (nr of points won when losing challenge)
+        exp = formulas[1]['expression'] # this will be 'points=XX'
+        index = exp.find('=') + 1 # get position of '='
+        points = int(exp[index:]) # get XX (nr of points won when losing challenge)
 
         # Losing player should have initial points + chall-lost points
         self.assertEqual(player.points, 10 + points)
