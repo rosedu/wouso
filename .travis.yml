@@ -6,6 +6,10 @@ env:
 install:
   - pip install -r requirements-pip
   - pip install -r requirements-extra
-before_script: cp wouso/settings.py.example wouso/settings.py
+before_script:
+  - cp wouso/settings.py.example wouso/settings.py
+  - curl 'https://pypi.python.org/packages/source/d/django-piston/django-piston-0.2.3.tar.gz' | tar xzf -
+  - cd django-piston-0.2.3; python setup.py install
+  - cd ..; rm -r django-piston-0.2.3
 script:
   - python wouso/manage.py test wouso
