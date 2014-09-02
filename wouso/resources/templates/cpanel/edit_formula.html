@@ -1,8 +1,15 @@
 {% extends 'cpanel/index.html' %}
 
 {% load user %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Edit Formula{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Formulas" "formulas" %}
+    {% breadcrumb "Add formula" "edit_formula" %}
+{% endblock %}
 
 {% block sectioncontent %}
 
