@@ -1,6 +1,14 @@
 {% extends 'workshop/cpanel/index.html' %}
+
 {% load workshop %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Schedule" "ws_schedule" %}
+    {% breadcrumb "Add schedule" "ws_schedule_change" %}
+{% endblock %}
 
 {% block tabcontent %}
     <form class=form-horizontal" method="post"
