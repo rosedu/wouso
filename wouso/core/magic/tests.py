@@ -244,7 +244,6 @@ class SpellTestCase(WousoTest):
         # Player should not be able to launch challenge with Paralyze on
         self.assertFalse(chall_user.can_launch())
 
-    @unittest.skip  # Test fails 80% of the time, percents=100 won't work
     def test_evade(self):
         """
          Test for Evade spell
@@ -252,19 +251,17 @@ class SpellTestCase(WousoTest):
         player = self._get_player()
         player2 = self._get_player(2)
 
+        initial_points = 10
+
         scoring.setup_scoring()
         Coin.add('points')
-        scoring.score_simple(player, 'points', 10)
-        self.assertEqual(player.points, 10)
+        scoring.score_simple(player, 'points', initial_points)
+        self.assertEqual(player.points, initial_points)
 
         # Create and apply evade
         evade = Spell.objects.create(name='challenge-evade', available=True, price=25, percents=100, type='p')
         obs = PlayerSpellDue.objects.create(player=player, source=player, spell=evade, due=datetime.now() + timedelta(days=1))
         self.assertTrue(player.magic.has_modifier('challenge-evade'))
-
-        # Create challenge and make first player lose it
-        chall = Challenge.create(user_from=player2, user_to=player, ignore_questions=True)
-        chall.set_won_by_player(player2)
 
         # Get 'chall-lost' expression. By default you still win 2 points when losing a challenge
         formulas = ChallengeGame.get_formulas()
@@ -272,8 +269,21 @@ class SpellTestCase(WousoTest):
         index = exp.find('=') + 1 # get position of '='
         points = int(exp[index:]) # get XX (nr of points won when losing challenge)
 
-        # Losing player should have initial points + chall-lost points
-        self.assertEqual(player.points, 10 + points)
+        # Create challenge and make first player lose it
+        chall = Challenge.create(user_from=player2, user_to=player, ignore_questions=True)
+        chall.set_won_by_player(player2)
+
+        # If evade spell worked losing player should have initial_points + 'chall-lost' points
+
+        # Evade has 20% chance of activation so play challenge in loop while it activates
+        while player.points != initial_points + points:
+            player.points = initial_points
+            chall.set_expired()
+            chall = Challenge.create(user_from=player2, user_to=player, ignore_questions=True)
+            chall.set_won_by_player(player2)
+
+        # Check if final score is ok
+        self.assertEqual(player.points, initial_points + points)
 
     def test_weakness(self):
         """
