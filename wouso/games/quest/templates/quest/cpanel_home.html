@@ -1,5 +1,6 @@
 {% extends 'cpanel/index.html' %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}
     Quests
@@ -13,6 +14,11 @@
     </a>
     </div>
     {% endif %}
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Quests" "quest_home" %}
 {% endblock %}
 
 {% block sectioncontent %}
