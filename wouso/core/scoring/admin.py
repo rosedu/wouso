@@ -10,7 +10,7 @@ class FormulaForm(forms.ModelForm):
 
 
 class FormulaAdmin(admin.ModelAdmin):
-    list_display = ('id', 'definition', 'owner', 'description')
+    list_display = ('id', 'expression', 'owner', 'description')
     form = FormulaForm
 
 

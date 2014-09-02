@@ -42,7 +42,7 @@ class Formula(Item, models.Model):
     A formula is owned by a game, or by the system (set owner to None)
     """
     name = models.CharField(max_length=100, unique=True)
-    definition = models.CharField(max_length=1000, default='')
+    expression = models.CharField(max_length=1000, default='')
     owner = models.ForeignKey(Game, null=True, blank=True)
     description = models.CharField(max_length=500, default='')
 
