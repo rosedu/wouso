@@ -1,11 +1,18 @@
 {% extends 'cpanel/index.html' %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}
     Special Quests
     <a class="btn btn-primary pull-right" href="{% url specialquest_new %}">
         <span class="glyphicon glyphicon-plus"></span>{% trans 'Add task' %}
     </a>
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Special quests" "specialquest_home" %}
+    {% breadcrumb "Tasks" "specialquest_home" %}
 {% endblock %}
 
 {% block sectioncontent %}

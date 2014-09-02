@@ -1,6 +1,12 @@
 {% extends 'cpanel/qpool_home.html' %}
+{% load django_bootstrap_breadcrumbs %}
 
-{% block sectiontitle %}{{ block.super }} &raquo; Questions importer{% endblock %}
+{% block sectiontitle %}Import questions{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Import questions" "importer" %}
+{% endblock %}
 
 {% block subsectioncontent %}
     <div class="subgroups">

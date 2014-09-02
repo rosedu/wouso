@@ -1,6 +1,12 @@
 {% extends 'cpanel/index.html' %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Customization{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Customization" "customization" %}
+{% endblock %}
 
 {% block sectioncontent %}
 <form method="post" action="">

@@ -1,8 +1,15 @@
 {% extends 'cpanel/index.html' %}
 
 {% load user %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Add Spell{% endblock %}
+
+{% block breadcrumbs %}
+	{{ block.super }}
+    {% breadcrumb "Spells" "spells" %}
+    {% breadcrumb "Add spell" "add_spell" %}
+{% endblock %}
 
 {% block sectioncontent %}
 

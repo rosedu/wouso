@@ -1,7 +1,15 @@
 {% extends 'cpanel/index.html' %}
 {% load user %}
+{% load django_bootstrap_breadcrumbs %}
+
 {% block title %}CPanel{% endblock %}
 {% block sectiontitle %}Final quest results{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Quests" "quest_home" %}
+    {% breadcrumb "Final quest results" "final_results" %}
+{% endblock %}
 
 {% block sectioncontent %}
 

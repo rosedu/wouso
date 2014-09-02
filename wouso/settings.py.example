@@ -138,6 +138,8 @@ INSTALLED_APPS = [
     'south',
     'social.apps.django_app.default',
 
+    'django_bootstrap_breadcrumbs',
+
     # WoUSO specific
     'wouso.core.config',
     'wouso.core.user',

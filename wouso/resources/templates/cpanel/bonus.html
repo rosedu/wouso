@@ -1,7 +1,16 @@
 {% extends 'cpanel/index.html' %}
 {% load i18n %}
 {% load user %}
-{% block sectiontitle %}{% block title %}{% trans 'Bonus' %}{% endblock %}{% endblock %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %}{% block title %}{% trans 'Bonus player' %}{% endblock %}{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Players" "all_players" %}
+    {% breadcrumb "Manage player" "manage_player" target_player.pk %}
+    {% breadcrumb "Bonus player" "bonus" %}
+{% endblock %}
 
 {% block sectioncontent %}
     <h4>Give bonus to player <strong> {{ target_player }}</strong>:</h4>

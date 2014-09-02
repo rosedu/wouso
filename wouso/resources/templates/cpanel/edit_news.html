@@ -1,8 +1,15 @@
 {% extends 'cpanel/index.html' %}
 
 {% load user %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Edit News Item{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "News" "news" %}
+    {% breadcrumb "Edit news" "edit_news" %}
+{% endblock %}
 
 {% block sectioncontent %}
 

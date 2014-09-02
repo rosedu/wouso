@@ -1,8 +1,14 @@
 {% extends 'cpanel/qpool_home.html' %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block title %}CPanel{% endblock %}
-{% block sectiontitle %}{{ block.super }} &raquo; {% if question %}Edit question #{{ question.id }}{% else %}New question{% endif %}{% endblock %}
+{% block sectiontitle %}{% if question %}Edit question #{{ question.id }}{% else %}New question{% endif %}{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Edit question" "question_edit" %}
+{% endblock %}
 
 {% block subsectioncontent %}
 

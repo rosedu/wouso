@@ -3,8 +3,16 @@
 {% load user %}
 {% load artifacts %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Set artifact{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Players" "all_players" %}
+    {% breadcrumb "Manage player" "manage_player" to.id  %}
+    {% breadcrumb "Set artifact" "artifact_set" %}
+{% endblock %}
 
 {% block sectioncontent %}
 

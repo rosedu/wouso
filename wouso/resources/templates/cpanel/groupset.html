@@ -1,8 +1,16 @@
 {% extends 'cpanel/index.html' %}
 {% load user %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Set groups{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Players" "all_players" %}
+    {% breadcrumb "Manage player" "manage_player" to.id  %}
+    {% breadcrumb "Set groups" "group_set" %}
+{% endblock %}
 
 {% block sectioncontent %}
 

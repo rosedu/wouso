@@ -1,8 +1,14 @@
 {% extends 'cpanel/index.html' %}
 
 {% block sectiontitle %}Display{% endblock %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectioncontent %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Display" "cpanel_display" %}
+{% endblock %}
 
 <form method="post" action="">
     <label for="display">

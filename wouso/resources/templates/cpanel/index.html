@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-{%  load artifacts %}
-{%  load cpanel %}
-{%  load user %}
-{%  load i18n %}
+{% load artifacts %}
+{% load cpanel %}
+{% load user %}
+{% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
 <html>
 <HEAD>
     <meta charset="utf-8">
@@ -135,6 +136,13 @@
     </div>
     {% block content %}
     <h1 class="page-header">{% block sectiontitle %}Dashboard{% endblock %}</h1>
+        {% block breadcrumbs %}
+            {% clear_breadcrumbs %}
+            {% breadcrumb "Home" "/cpanel/" %}
+        {% endblock %}
+        {% block bc %}
+            {% render_breadcrumbs "django_bootstrap_breadcrumbs/bootstrap3.html" %}
+        {% endblock %}
         <div class="container-fluid">
         {% block sectioncontent %}
         <div class="panel panel-default col-md-7">

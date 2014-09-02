@@ -1,7 +1,12 @@
 {% extends 'cpanel/qpool_home.html' %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
 
-{% block sectiontitle %}Question pool  &raquo; Add Tag{% endblock %}
+{% block sectiontitle %}Add tag{% endblock %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Add tag" "qpool_add_tag" %}
+{% endblock %}
 
 {% block sectioncontent %}
 

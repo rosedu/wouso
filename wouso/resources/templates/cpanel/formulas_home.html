@@ -1,12 +1,18 @@
 {% extends 'cpanel/index.html' %}
 {% load i18n %}
 {% load user %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}
     Formulas
     <a class="btn btn-primary pull-right" href="{% url add_formula %}">
         <span class="glyphicon glyphicon-plus"></span>{% trans 'Add formulas' %}
     </a>
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Formulas" "formulas" %}
 {% endblock %}
 
 {% block sectioncontent %}
