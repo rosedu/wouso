@@ -14,7 +14,7 @@
 <table class="table table-bordered table-condensed table-hover">
     <tr>
         <th>Name</th>
-        <th>Formula</th>
+        <th>Expression</th>
         <th>Description</th>
         <th>Owner</th>
         <th>Manage</th>
@@ -22,7 +22,7 @@
     {% for p in formulas %}
     <tr>
         <td>{{ p.name }}</td>
-        <td>{{ p.definition }}</td>
+        <td>{{ p.expression }}</td>
         <td>{{ p.description }}</td>
         <td>{{ p.owner }}</td>
         <td nowrap>

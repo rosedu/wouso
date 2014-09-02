@@ -724,26 +724,26 @@ class ChallengeGame(Game):
         """ Returns a list of formulas used by qotd """
         fs = []
         chall_game = kls.get_instance()
-        fs.append(dict(name='chall-won', definition='points=6+{different_race}+{different_class}',
+        fs.append(dict(name='chall-won', expression='points=6+{different_race}+{different_class}',
             owner=chall_game.game,
             description='Points earned when winning a challenge. Arguments: different_race (int 0,1), different_class (int 0,1)')
         )
-        fs.append(dict(name='chall-lost', definition='points=2',
+        fs.append(dict(name='chall-lost', expression='points=2',
             owner=chall_game.game,
             description='Points earned when losing a challenge')
         )
-        fs.append(dict(name='chall-draw', definition='points=4',
+        fs.append(dict(name='chall-draw', expression='points=4',
             owner=chall_game.game,
             description='Points earned when drawing a challenge')
         )
-        fs.append(dict(name='chall-warranty', definition='points=-3',
+        fs.append(dict(name='chall-warranty', expression='points=-3',
             owner=chall_game.game,
             description='Points taken as a warranty for challenge'))
-        fs.append(dict(name='chall-warranty-return', definition='points=3',
+        fs.append(dict(name='chall-warranty-return', expression='points=3',
             owner=chall_game.game,
             description='Points given back as a warranty taken for challenge'))
         fs.append(dict(name='chall-timer',
-            definition='tlimit=300 - 5 * ({level} - 1)', owner=chall_game.game,
+            expression='tlimit=300 - 5 * ({level} - 1)', owner=chall_game.game,
             description='Seconds left for a user in challenge'))
         return fs
 

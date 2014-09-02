@@ -134,18 +134,18 @@ class ChallengeTestCase(WousoTest):
 
         # TODO: improve usage of formulas inside tests.
         formula = Formula.get('chall-won')
-        formula.definition = 'points=10 + min(10, int(3 * {winner_points}/{loser_points}))'
+        formula.expression = 'points=10 + min(10, int(3 * {winner_points}/{loser_points}))'
         formula.save()
         chall.played()
 
     def test_variable_timer(self):
         formula = Formula.add('chall-timer')
-        formula.definition = 'tlimit=10'
+        formula.expression = 'tlimit=10'
         formula.save()
 
         self.assertEqual(scoring.timer(self.chall_user, ChallengeGame, 'chall-timer', level=self.chall_user.level_no), 10)
 
-        formula.definition = 'tlimit={level}'
+        formula.expression = 'tlimit={level}'
         formula.save()
 
         self.assertEqual(scoring.timer(self.chall_user, ChallengeGame, 'chall-timer', level=self.chall_user.level_no), self.chall_user.level_no)
