@@ -1,12 +1,18 @@
 {% extends 'cpanel/qpool_home.html' %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
 
 
 {% block sectiontitle %}
-    Question pool &raquo; Manage Tags
+    Manage tags
     <a class="btn btn-primary pull-right" href="{% url qpool_add_tag %}">
         <span class="glyphicon glyphicon-plus"></span>{% trans 'Add Tag' %}
     </a>
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Manage tags" "qpool_manage_tags" %}
 {% endblock %}
 
 {% block subsectioncontent %}

@@ -2,6 +2,8 @@
 {% load i18n %}
 {% load user %}
 
+{% load django_bootstrap_breadcrumbs %}
+
 
 {% block sectiontitle %}
     Question pool
@@ -17,6 +19,10 @@
             <span class="glyphicon glyphicon-edit"></span>{% trans 'Manage tags' %}
         </a>
     </div>
+    {% block breadcrumbs %}
+        {{ block.super }}
+        {% breadcrumb "Question Pool" "qpool_home" %}
+    {% endblock %}
 {% endblock %}
 
 {% block sectioncontent %}
