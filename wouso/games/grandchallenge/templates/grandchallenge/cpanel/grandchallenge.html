@@ -2,8 +2,14 @@
 {% load artifacts %}
 {% load user %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}The Grand Challenge{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Grand challenge" "grand_challenge" %}
+{% endblock %}
 
 {% block sectioncontent %}
     {% if round %}

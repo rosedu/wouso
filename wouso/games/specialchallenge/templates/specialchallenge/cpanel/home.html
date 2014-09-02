@@ -1,6 +1,12 @@
 {% extends 'cpanel/index.html' %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Special Challenges{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Special challenges" "special_challenges" %}
+{% endblock %}
 
 {% block sectioncontent %}
     <table class="table table-condensed table-bordered table-hover">
