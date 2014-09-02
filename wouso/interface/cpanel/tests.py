@@ -125,7 +125,7 @@ class CpanelViewsTest(WousoTest):
         spell = Spell.objects.create(name='spell1', title='Spell no. 1')
         response = self.client.get(reverse('edit_spell', args=[spell.pk]))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Edit Spell')
+        self.assertContains(response, 'Edit spell')
         self.assertContains(response, 'spell1')
         self.assertContains(response, 'Spell no. 1')
 
@@ -214,13 +214,13 @@ class CpanelViewsTest(WousoTest):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'tag1')
         self.assertContains(response, 'tag2')
-        self.assertContains(response, 'Manage Tags')
+        self.assertContains(response, 'Manage tags')
 
     def test_qpool_edit_tag_view_get(self):
         tag1 = Tag.objects.create(name='tag1', active=True)
         response = self.client.get(reverse('qpool_edit_tag', args=[tag1.pk]))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Edit Tag')
+        self.assertContains(response, 'Edit tag')
         self.assertContains(response, 'tag1')
 
     def test_qpool_edit_tag_view_post(self):
