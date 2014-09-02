@@ -9,6 +9,8 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
+    {% breadcrumb "Players" "all_players" %}
+    {% breadcrumb "Manage player" "manage_player" to.id  %}
     {% breadcrumb "Set artifact" "artifact_set" %}
 {% endblock %}
 

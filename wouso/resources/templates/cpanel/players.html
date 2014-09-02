@@ -1,6 +1,7 @@
 {% extends 'cpanel/index.html' %}
 {% load user %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Players
     <a class="pull-right btn btn-primary" href="{% url add_player %}">
@@ -8,6 +9,10 @@
     </a>
 {% endblock %}
 
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Players" "all_players" %}
+{% endblock %}
 
 {% block sectioncontent %}
 <form class="pull-left" action="{% url manage_fwd %}" method="post">
