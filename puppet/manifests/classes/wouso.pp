@@ -33,12 +33,27 @@ class wouso {
                     user => "${APP_USER}",
                     command => "${VENV_PY} manage.py wousoctl --setup --noinput",
                     require => [Exec['install-requirements'],
-                                Exec['copy-settings']],
+                                Exec['copy-settings'],
+                                File["/home/vagrant/wouso/wouso/initial_data.json"]],
+            }
+
+            exec {
+                "remove-admin-data-json":
+                    cwd => "${PROJ_DIR}/wouso",
+                    user => "${APP_USER}",
+                    command => "/bin/rm initial_data.json",
+                    require => [Exec['initial-setup']],
             }
 
             file {
                 "/home/vagrant/fastcgi.bash":
                     content => template("${PROJ_DIR}/puppet/files/home/vagrant/fastcgi.bash"),
+                    mode => '0744',
+            }
+
+            file {
+                "/home/vagrant/wouso/wouso/initial_data.json":
+                    content => template("${PROJ_DIR}/puppet/files/home/vagrant/initial_data_admin.json"),
                     mode => '0744',
             }
 

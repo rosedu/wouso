@@ -21,3 +21,4 @@ instance
 *.log
 nohup.out
 .vagrant
+nosetests.xml

@@ -831,7 +831,7 @@ def stafftoggle(request, id):
         else:
             profile.user.groups.add(staff_group)
 
-    return HttpResponseRedirect(reverse('player_profile', args=(id,)))
+    return HttpResponseRedirect(reverse('manage_player', args=(id,)))
 
 
 class PlayersView(ListView):
