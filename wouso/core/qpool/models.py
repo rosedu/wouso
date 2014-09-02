@@ -174,3 +174,24 @@ class Schedule(models.Model):
 
     def __unicode__(self):
         return str(self.day)
+
+
+class QuestionReport(models.Model):
+    name = models.CharField(max_length=2000)
+    count = models.IntegerField(default=0)
+    q_id = models.IntegerField(default=0)
+
+    @staticmethod
+    def add(question):
+        """
+         Add question to report list
+        """
+        try:
+            q = QuestionReport.objects.get(name=question)
+        except QuestionReport.DoesNotExist:
+            return QuestionReport.objects.create(name=question)
+
+        q.count += 1
+        q.save()
+
+        return q

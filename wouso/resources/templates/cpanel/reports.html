@@ -4,41 +4,69 @@
 
 {% block sectiontitle %}Reports{% endblock %}
 
+{% block scripts %}
+    <script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
+{% endblock %}
+
 {% block sectioncontent %}
-<table class="table table-bordered table-hover table-condensed">
-    <tr>
-        <th>User from</th>
-        <th>User to</th>
-        <th>Text</th>
-        <th>Dibs</th>
-        <th>Status</th>
-        <th>Timestamp</th>
-        <th>Edit</th>
-    </tr>
-    {% for r in reports %}
-    <tr>
-        <td>{{ r.user_from }}</td>
-        <td>{{ r.user_to }}</td>
-        <td>{{ r.text|slice:"0:50" }}</td>
-        <td>{{ r.dibs }}</td>
-        <td>{% if r.status == "R" %}
-            Reported
-            {% else %}{% if r.status == "I" %}
-            Investigating
-            {% else %}{% if r.status == "S" %}
-            Resolved
-            {% else %}{% if r.status == "E" %}
-            Invalid
-            {% endif %}{% endif %}{% endif %}{% endif %}</td>
-        <td>{{ r.timestamp}}</td>
-        <td>
-            <a class="btn btn-success" href="{% url edit_report r.id %}">
-                <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
-            </a>
-        </td>
-    </tr>
-    {% empty %}
-        <tr><td colspan="0">No reports have been made yet</td></tr>
-    {% endfor %}
-</table>
+    <ul class="nav nav-tabs">
+        <li><a href="#player" id="player-click" class="no-redir">Players</a></li>
+        <li><a href="#question" id="question-click" class="no-redir">Questions</a></li>
+    </ul>
+
+    <div class="tab_container">
+    	<div id="player" class="tab_content">
+            <table class="table table-bordered table-condensed table-hover">
+				<tr>
+					<th>User from</th>
+					<th>User to</th>
+					<th>Text</th>
+					<th>Dibs</th>
+					<th>Status</th>
+					<th>Timestamp</th>
+					<th>Manage</th>
+                </tr>
+			{% for r in reports %}
+			<tr>
+				<td>{{ r.user_from }}</td>
+				<td>{{ r.user_to }}</td>
+				<td>{{ r.text|slice:"0:10" }}</td>
+				<td>{{ r.dibs }}</td>
+				<td>{% if r.status == "R" %}
+					Reported
+					{% else %}{% if r.status == "I" %}
+					Investigating
+					{% else %}{% if r.status == "S" %}
+					Resolved
+					{% else %}{% if r.status == "E" %}
+					Invalid
+					{% endif %}{% endif %}{% endif %}{% endif %}</td>
+				<td>{{ r.timestamp}}</td>
+				<td>
+                    <a class="btn btn-success" href="{% url edit_report r.id %}">
+                        <span class="tabs">{% trans 'Edit' %}</span>
+                    </a>
+                </td>
+			</tr>
+			{% endfor %}
+    		</table>
+    	</div>
+    </div>
+    <div id="question" class="tab_content">
+        <table class="table table-bordered table-condensed table-hover">
+            <tr>
+                <th>ID</th>
+                <th>Question</th>
+                <th>Count</th>
+                <th>Manage</th>
+            </tr>
+            {% for q in questions %}
+            <tr>
+                <td></td>
+                <td>{{ q.name }}</td>
+                <td>{{ q.count }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 {% endblock %}

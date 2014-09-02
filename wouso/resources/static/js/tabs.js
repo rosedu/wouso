@@ -6,11 +6,11 @@ $(document).ready(function() {
 
     //When page loads...
     $(".tab_content").hide(); //Hide all content
-    $("ul.tabs li:first").addClass("active").show(); //Activate first tab
+    $("ul.nav-tabs li:first").addClass("active").show(); //Activate first tab
     $(".tab_content:first").show(); //Show first tab content
 
     //On Click Event
-    $("ul.tabs li").click(switchtab);
+    $("ul.nav-tabs li").click(switchtab);
 
     //Load with hash
     hash = document.location.hash;
@@ -18,7 +18,7 @@ $(document).ready(function() {
 });
 
 function switchtab() {
-    $("ul.tabs li").removeClass("active"); //Remove any "active" class
+    $("ul.nav-tabs li").removeClass("active"); //Remove any "active" class
     $(this).addClass("active"); //Add "active" class to selected tab
     $(".tab_content").hide(); //Hide all tab content
 

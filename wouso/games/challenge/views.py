@@ -13,6 +13,7 @@ from wouso.core.ui import register_sidebar_block, register_header_link
 from wouso.core.user.models import Player
 from wouso.core.decorators import staff_required
 from wouso.games.challenge.models import ChallengeException
+from wouso.core.qpool.models import QuestionReport
 from models import ChallengeUser, ChallengeGame, Challenge, Participant
 from forms import ChallengeForm
 import os
@@ -60,6 +61,12 @@ def index(request):
 
 class ChallengeView(View):
     def dispatch(self, request, *args, **kwargs):
+        if request.is_ajax():
+            if request.POST.get('name'):
+                request.session['name'] = request.POST['name']
+                name = request.POST['name']
+                QuestionReport.add(name)
+
         self.chall_user = request.user.get_profile().get_extension(ChallengeUser)
         self.chall = get_object_or_404(Challenge, pk=kwargs['id'])
         try:
@@ -104,6 +111,7 @@ class ChallengeView(View):
             questions_and_answers = zip(form.visible_fields(), results['results'])
         else:
             questions_and_answers = None
+
         return render_to_response('challenge/result.html',
             {'challenge': self.chall, 'challenge_user': self.chall_user,
             'points': results['points'], 'form' : form,  'questions_and_answers' : questions_and_answers},
