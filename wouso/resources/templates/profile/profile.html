@@ -87,7 +87,6 @@
     {% if perms.config.change_setting %}
     <div class="actions">
         <span class="button-list">Staff: [{{ profile.user.username }}] </span>
-        <a class="button {% if profile.in_staff_group %}cplayer-staff{% endif %}" href="{% url staff_toggle profile.id %}">Staff: {% if profile.in_staff_group %}<span class="ok">ON</span>{% else %}<span class="wrong">OFF</span>{% endif %}</a>
         <p class="clearer"></p>
     </div>
     {% endif %}

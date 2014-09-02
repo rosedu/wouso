@@ -13,6 +13,14 @@ Manage player
 {% with object.get_profile as player %}
 <h3 class="page-header">Player: {{ player.full_name }}
 <div class="pull-right">
+    <a class="btn btn-primary" href="{% url staff_toggle player.id %}">
+        Staff:
+        {% if player.in_staff_group %}
+            <span style="color: green">ON</span>
+        {% else %}
+            <span style="color: red">OFF</span>
+        {% endif %}
+    </a>
     <a class="btn btn-success" href="{% url artifact_set player.id %}">
         {% trans 'Artifacts ' %}
     </a>
