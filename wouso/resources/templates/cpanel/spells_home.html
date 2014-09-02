@@ -2,12 +2,18 @@
 {% load user %}
 {% load artifacts %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}
     Spells
     <a class="pull-right btn btn-primary" href="{% url add_spell %}">
         <span class="glyphicon glyphicon-plus"></span>{% trans 'Add spell' %}
     </a>
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Spells" "spells" %}
 {% endblock %}
 
 {% block sectioncontent %}

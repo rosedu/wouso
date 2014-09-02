@@ -1,10 +1,27 @@
 {% extends 'cpanel/index.html' %}
 {% load artifacts %}
-{% block sectiontitle %}Artifacts{% endblock %}
+{% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %}
+	{% if request.path == "/cpanel/artifact/new/" %}
+		Add artifact
+	{% else %}
+		Edit artifact {% artifact instance %}
+	{% endif %}
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Artifacts" "artifact_home" %}
+    {% if request.path == "/cpanel/artifact/new/" %}
+		{% breadcrumb "Add artifact" "artifact_edit" %}
+	{% else %}
+		{% breadcrumb "Edit artifact" artifact instance "artifact_edit" %}
+	{% endif %}
+{% endblock %}
 
 {% block sectioncontent %}
-
-<h3>Edit artifact {% artifact instance %}</h3>
 
 <form method="post" enctype="multipart/form-data">
 <table>

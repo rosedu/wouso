@@ -1,10 +1,16 @@
 {% extends 'cpanel/index.html' %}
 {% load i18n %}
 {% load artifacts %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}
     Artifacts <a class="btn btn-primary pull-right" href="{% url artifact_new %}">
     <span class="glyphicon glyphicon-plus"></span>{% trans 'Add artifact' %}</a>
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Artifacts" "artifact_home" %}
 {% endblock %}
 
 {% block sectioncontent %}

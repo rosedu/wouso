@@ -3,8 +3,14 @@
 {% load user %}
 {% load artifacts %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Set artifact{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Set artifact" "artifact_set" %}
+{% endblock %}
 
 {% block sectioncontent %}
 
