@@ -1,6 +1,8 @@
 {% extends 'cpanel/index.html' %}
+
 {% load workshop %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}
     Workshop
@@ -18,6 +20,11 @@
             <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit Default Spot ' %}
         </a>
     </div>
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Workshop" "workshop_home" %}
 {% endblock %}
 
 {% block sectioncontent %}

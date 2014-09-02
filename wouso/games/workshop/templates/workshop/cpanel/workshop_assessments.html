@@ -1,7 +1,15 @@
 {% extends 'workshop/cpanel/index.html' %}
+
 {% load user %}
 {% load workshop %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Workshops" "ws_workshops" %}
+    {% breadcrumb "View assessments" "ws_view_assessment" %}
+{% endblock %}
 
 {% block sectiontitle %}Workshop {{ workshop.title }} - Assessments{% endblock %}
 

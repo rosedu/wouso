@@ -1,8 +1,16 @@
 {% extends 'workshop/cpanel/index.html' %}
+
 {% load workshop %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Gradebook for semigroup {{ semigroup }}{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Semigroups" "ws_semigroups" %}
+    {% breadcrumb "Details" "ws_gradebook" %}
+{% endblock %}
 
 {% block information %}
 {% endblock %}

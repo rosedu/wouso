@@ -1,7 +1,14 @@
 {% extends 'workshop/cpanel/index.html' %}
+
 {% load workshop %}
 {% load user %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Edit spot" "ws_edit_spot" %}
+{% endblock %}
 
 {% block tabcontent %}
     {% for semigroup in semigroups %}
