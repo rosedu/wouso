@@ -133,6 +133,7 @@ All code is shared with the VM, which you can access using
     vagrant ssh
 
 From there you can find the project files and interact with the django project as usual.
+This also generated a superuser `admin:admin`.
 
 
 ## Development Best Practices
