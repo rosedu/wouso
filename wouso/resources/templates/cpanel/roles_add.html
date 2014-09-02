@@ -1,7 +1,14 @@
 {% extends 'cpanel/index.html' %}
 {% load user %}
+{% load django_bootstrap_breadcrumbs %}
 
-{% block sectiontitle %}Role add{% endblock %}
+{% block sectiontitle %}Add role{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Roles" "roles" %}
+    {% breadcrumb "Add role" "roles_create" %}
+{% endblock %}
 
 {% block sectioncontent %}
 
