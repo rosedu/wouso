@@ -1,11 +1,17 @@
 {% extends 'cpanel/index.html' %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}
     Static Pages
     <a class="btn btn-primary pull-right" href="{% url add_static_page %}">
         <span class="glyphicon glyphicon-plus"></span>{% trans 'Add static page' %}
     </a>
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Static pages" "static_pages" %}
 {% endblock %}
 
 {% block sectioncontent %}

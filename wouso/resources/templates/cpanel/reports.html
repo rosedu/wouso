@@ -1,8 +1,14 @@
 {% extends 'cpanel/index.html' %}
 {% load user %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Reports{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Reports" "reports" %}
+{% endblock %}
 
 {% block sectioncontent %}
 <table class="table table-bordered table-hover table-condensed">

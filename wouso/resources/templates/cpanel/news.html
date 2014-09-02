@@ -1,11 +1,17 @@
 {% extends 'cpanel/index.html' %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}
     News
     <a class="btn btn-primary pull-right" href="{% url add_news %}">
         <span class="glyphicon glyphicon-plus"></span>{% trans 'Add news item' %}
     </a>
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "News" "news" %}
 {% endblock %}
 
 {% block sectioncontent %}

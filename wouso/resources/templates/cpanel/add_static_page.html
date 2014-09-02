@@ -1,8 +1,15 @@
 {% extends 'cpanel/index.html' %}
 
 {% load user %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Add Static Page{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Static pages" "static_pages" %}
+    {% breadcrumb "Add static page" "add_static_page" %}
+{% endblock %}
 
 {% block sectioncontent %}
 
