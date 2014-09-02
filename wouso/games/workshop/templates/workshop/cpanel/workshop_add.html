@@ -1,5 +1,13 @@
 {% extends 'workshop/cpanel/index.html' %}
+
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Workshops" "ws_workshops" %}
+    {% breadcrumb "Add workshop" "ws_add_workshop" %}
+{% endblock %}
 
 {% block tabcontent %}
 
