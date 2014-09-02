@@ -1,6 +1,13 @@
 {% extends 'workshop/cpanel/index.html' %}
+
 {% load workshop %}
 {% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Edit semigroup" "ws_edit_group" %}
+{% endblock %}
 
 {% block tabcontent %}
     <form class="horizontal-form" action="{% url ws_edit_group instance.pk %}" method="post">
