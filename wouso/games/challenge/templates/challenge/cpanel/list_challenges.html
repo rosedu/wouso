@@ -1,7 +1,14 @@
 {% extends 'cpanel/index.html' %}
 {% load user %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Challenges{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Players" "all_players" %}
+    {% breadcrumb "Add player" "add_player" %}
+{% endblock %}
 
 {% block sectioncontent %}
 <div container="fluid">
