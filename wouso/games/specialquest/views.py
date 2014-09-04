@@ -38,6 +38,7 @@ def task(request, task_id):
 
 @login_required
 def setup_accept(request, group_id):
+    MAX_GROUP_MEMBERS = 4
     user = request.user.get_profile().get_extension(SpecialQuestUser)
     group = get_object_or_404(SpecialQuestGroup, pk=group_id)
 
@@ -47,6 +48,10 @@ def setup_accept(request, group_id):
 
     if user.group is not None:
         error = _('You are already in a group, cannot accept the invitation')
+        return index(request, error)
+
+    if group.players.count() >= MAX_GROUP_MEMBERS:
+        error = _('Group is full, you cannot accept the invitation')
         return index(request, error)
 
     user.add_to_group(group)
