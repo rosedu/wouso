@@ -50,15 +50,18 @@ def setup_accept(request, group_id):
 
     if group.active:
         error = _('Group is already active, you cannot accept the invitation')
-        return index(request, error)
+        messages.error(request, error)
+        return HttpResponseRedirect(reverse('specialquest_index_view'))
 
     if user.group is not None:
         error = _('You are already in a group, cannot accept the invitation')
-        return index(request, error)
+        messages.error(request, error)
+        return HttpResponseRedirect(reverse('specialquest_index_view'))
 
     if group.players.count() >= MAX_GROUP_MEMBERS:
         error = _('Group is full, you cannot accept the invitation')
-        return index(request, error)
+        messages.error(request, error)
+        return HttpResponseRedirect(reverse('specialquest_index_view'))
 
     user.add_to_group(group)
 
