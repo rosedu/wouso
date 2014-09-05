@@ -5,6 +5,7 @@ upat = [
     url(r'^$', 'wouso.interface.cpanel.views.status', name='status'),
     url(r'^customization/$', 'wouso.interface.cpanel.views.customization', name='customization'),
     url(r'^display/$', 'wouso.interface.cpanel.views.display', name='cpanel_display'),
+    url(r'^leaderboards/$', 'wouso.interface.cpanel.views.leaderboards', name='leaderboards'),
 
     url(r'^qpool/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
     url(r'^qpool/(?P<page>\d+)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),

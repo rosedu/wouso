@@ -97,6 +97,8 @@
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url races_groups %}">Groups</a></li>
                 {% url formulas as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url formulas %}">Formulas</a></li>
+                {% url leaderboards as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url leaderboards %}">Leaderboards</a></li>
             <!-- Games !-->
                 <h4 class="text-center">Games</h4>
                 {% cpanel_games %}

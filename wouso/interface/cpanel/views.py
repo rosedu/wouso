@@ -200,6 +200,14 @@ def spell_delete(request, id):
     return HttpResponseRedirect(go_back)
 
 
+class LeaderboardsView(ListView):
+    template_name = 'cpanel/leaderboards.html'
+    queryset = ''
+
+leaderboards = permission_required('config.change_setting')(
+    LeaderboardsView.as_view())
+
+
 class CustomizationView(TemplateView):
     template_name = 'cpanel/customization.html'
 
