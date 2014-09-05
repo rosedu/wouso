@@ -62,7 +62,7 @@
     {% block header %}
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="{% url dashboard %}">Control Panel</a>
+            <a class="navbar-brand" href="{% url status %}">Control Panel</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
@@ -83,8 +83,8 @@
             <ul class="nav nav-sidebar">
             <!-- Dashboard !-->
                 <h4 class="text-center">Dashboard</h4>
-                {% url dashboard as url %}
-                <li {% if url == request.path %}class="active"{% endif %}><a href="{% url dashboard %}">Dashboard</a></li>
+                {% url status as url %}
+                <li {% if url == request.path %}class="active"{% endif %}><a href="{% url status %}">Status</a></li>
                 {% url qpool_home as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url qpool_home %}">Question Pool</a></li>
                 {% url spells as url %}
@@ -139,7 +139,7 @@
         {% endif %}
     </div>
     {% block content %}
-    <h1 class="page-header">{% block sectiontitle %}Dashboard{% endblock %}</h1>
+    <h1 class="page-header">{% block sectiontitle %}Status{% endblock %}</h1>
         {% block breadcrumbs %}
             {% clear_breadcrumbs %}
             {% breadcrumb "Home" "/cpanel/" %}

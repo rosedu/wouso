@@ -53,7 +53,7 @@ class ModuleViewMixin(object):
         return context
 
 
-class DashboardView(TemplateView):
+class StatusView(TemplateView):
     template_name = 'cpanel/index.html'
 
     def get_context_data(self, **kwargs):
@@ -93,7 +93,7 @@ class DashboardView(TemplateView):
         # number of players which can play
         cp_number = Player.objects.filter(race__can_play=True).count()
 
-        context = super(DashboardView, self).get_context_data(**kwargs)
+        context = super(StatusView, self).get_context_data(**kwargs)
         context.update({'nr_future_questions': nr_future_questions,
                         'nr_questions': nr_questions,
                         'active_quest': active_quest,
@@ -110,7 +110,7 @@ class DashboardView(TemplateView):
         return context
 
 
-dashboard = staff_required(DashboardView.as_view())
+status = staff_required(StatusView.as_view())
 
 
 class FormulasView(ListView):
@@ -205,7 +205,7 @@ class CustomizationView(TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_superuser:
-            return redirect('dashboard')
+            return redirect('status')
         self.customization = Customization()
         self.switchboard = Switchboard()
         return super(CustomizationView, self).dispatch(request, *args, **kwargs)
@@ -1226,7 +1226,7 @@ def clean_impersonation(request):
 def clear_cache(request):
     if request.method == 'POST':
         cache.clear()
-        return redirect('dashboard')
+        return redirect('status')
     else:
         return render_to_response('cpanel/clear_cache.html', {},
                                   context_instance=RequestContext(request))

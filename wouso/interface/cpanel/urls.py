@@ -2,7 +2,7 @@ from django.conf.urls.defaults import *
 from wouso.interface.cpanel import get_cpanel_games
 
 upat = [
-    url(r'^$', 'wouso.interface.cpanel.views.dashboard', name='dashboard'),
+    url(r'^$', 'wouso.interface.cpanel.views.status', name='status'),
     url(r'^customization/$', 'wouso.interface.cpanel.views.customization', name='customization'),
     url(r'^display/$', 'wouso.interface.cpanel.views.display', name='cpanel_display'),
 
