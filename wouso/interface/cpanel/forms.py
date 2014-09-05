@@ -92,8 +92,13 @@ class QuestionForm(forms.Form):
         for t in self.instance.tags.all():
             self.instance.tags.remove(t)
         for t in data['tags']:
-            tag, new = Tag.objects.get_or_create(name=t)
-            self.instance.tags.add(tag)
+            try:
+                # since the form does no validation on Tag choices,
+                # we need to make sure they exist here
+                tag = Tag.objects.get(name=t)
+                self.instance.tags.add(tag)
+            except:
+                continue
         self.instance.save()
         return self.instance
 
