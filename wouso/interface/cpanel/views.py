@@ -44,15 +44,6 @@ from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, \
 from forms import FormulaForm, TagForm
 
 
-class ModuleViewMixin(object):
-    module = 'undefined'
-
-    def get_context_data(self, **kwargs):
-        context = super(self).get_context_data(**kwargs)
-        context.update(dict(module=self.module))
-        return context
-
-
 class StatusView(TemplateView):
     template_name = 'cpanel/index.html'
 
