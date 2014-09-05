@@ -86,7 +86,7 @@
                 {% url status as url %}
                 <li {% if url == request.path %}class="active"{% endif %}><a href="{% url status %}">Status</a></li>
                 {% url qpool_home as url %}
-                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url qpool_home %}">Question Pool</a></li>
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url qpool_home %}">Questions</a></li>
                 {% url spells as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url spells %}">Spells</a></li>
                 {% url artifact_home as url %}
@@ -104,7 +104,7 @@
                 {% cpanel_games %}
             <!-- Customization !-->
             {% if user.is_staff or user.is_superuser %}
-                <h4 class="text-center">Customization</h4>
+                <h4 class="text-center">Configuration</h4>
                 {% url roles as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url roles %}">Roles</a></li>
                 {% url customization as url %}
