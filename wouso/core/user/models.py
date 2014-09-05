@@ -10,7 +10,7 @@ from wouso.core.decorators import cached_method, drop_cache
 from wouso.core.game.models import Game
 from wouso.core.magic.manager import MagicManager
 from wouso.core.god import God
-from wouso.core.magic.models import  Spell
+from wouso.core.magic.models import Spell
 
 from .. import deprecated
 
@@ -303,7 +303,7 @@ class Player(models.Model):
         #drop_cache(self.get_extension, self, self.__class__)
         drop_cache(self._race_name, self)
         drop_cache(self._group, self)
-        update_display_name(self, save=False)
+        #update_display_name(self, save=False)
         return super(Player, self).save(**kwargs)
 
     def __getitem__(self, item):
@@ -313,38 +313,3 @@ class Player(models.Model):
 
     def __unicode__(self):
         return self.full_name or self.user.__unicode__()
-
-
-# Hack for having user and user's profile always in sync
-def user_post_save(sender, instance, **kwargs):
-    profile, new = Player.objects.get_or_create(user=instance)
-    if new:
-        # add in default group
-        from wouso.core.config.models import ChoicesSetting
-        try:
-            default_group = PlayerGroup.objects.get(pk=int(ChoicesSetting.get('default_group').get_value()))
-        except (PlayerGroup.DoesNotExist, ValueError):
-            pass
-        else:
-            default_group.players.add(profile)
-
-        try:
-            default_race = Race.objects.get(pk=int(ChoicesSetting.get('default_race').get_value()))
-        except (Race.DoesNotExist, ValueError):
-            pass
-        else:
-            profile.race = default_race
-            profile.save()
-        profile.nickname = profile.user.username
-        profile.save()
-    update_display_name(profile)
-
-models.signals.post_save.connect(user_post_save, User)
-
-def update_display_name(player, save=True):
-    display_name = unicode(settings.DISPLAY_NAME).format(first_name=player.user.first_name,
-                                                last_name=player.user.last_name,
-                                                nickname=player.nickname).strip()
-    player.full_name = display_name
-    if save:
-        player.save()
