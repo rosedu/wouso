@@ -99,8 +99,6 @@
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url formulas %}">Formulas</a></li>
             <!-- Games !-->
                 <h4 class="text-center">Games</h4>
-                {% url games_home as url %}
-                <li {% if url == request.path %}class="active"{% endif %}><a href="{% url games_home %}">Games</a></li>
                 {% cpanel_games %}
             <!-- Customization !-->
             {% if user.is_staff or user.is_superuser %}
