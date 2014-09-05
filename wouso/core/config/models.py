@@ -15,17 +15,22 @@ class Setting(models.Model):
         """ value setter, overridden by subclasses """
         self.value = v
         self.save()
-
     def get_value(self):
         """ value getter, overridden by subclasses """
         return self.value
 
     def form(self):
         """ Get HTML form input and label. """
-        html = '<label for="%s">%s</label><textarea name="%s" id="%s">%s</textarea>' \
-                    % (self.name, self.title, self.name, self.name, self.value)
+        html = """
+                <div class="form-group">
+                <label for="%s" class="col-sm-2 control-label">%s</label>
+                    <div class="col-sm-10">
+                        <textarea name="%s" id="%s" class="form-control">%s</textarea>
+                    """ % (self.name, self.title, self.name, self.name, self.value)
         if hasattr(self, 'help_text'):
             html += '<br/><em>' + self.help_text + '</em>'
+
+        html += "</div></div>"
         return html
 
     @classmethod
@@ -78,8 +83,13 @@ class BoolSetting(Setting):
         return self.value == 'True'
 
     def form(self):
-        return '<label for="%s">%s</label><input type="checkbox" name="%s" id="%s" %s value="True" />' \
-                    % (self.name, self.title, self.name, self.name, 'checked' if self.get_value() else '')
+        return """
+        <div class="form-group">
+            <label for="%s" class="col-sm-2 control-label">%s</label>
+            <div class="col-sm-1">
+                <input type="checkbox" name="%s" id="%s" %s value="True" class="form-control"/>
+            </div>
+        </div>""" % (self.name, self.title, self.name, self.name, 'checked' if self.get_value() else '')
 
 class ChoicesSetting(Setting):
     """ Setting storing string values, but having a choices list of tuple
@@ -91,10 +101,17 @@ class ChoicesSetting(Setting):
     choices = []
 
     def form(self):
-        html = '<label for="%s">%s</label><select id="%s" name="%s">' % (self.name, self.title, self.name, self.name)
+
+        html = """
+        <div class="form-group">
+            <label for="%s" class="col-sm-2 control-label">%s</label>
+            <div class="col-sm-10">
+                <select id="%s" name="%s" class="form-control">
+        """ % (self.name, self.title, self.name, self.name)
+
         for n,v in self.choices:
             html += '<option value="%s" %s>%s</option>' % (v, 'selected' if self.value == v else '', n)
-        html += '</select>'
+        html += '</select></div></div>'
         return html
 
 

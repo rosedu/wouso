@@ -164,6 +164,9 @@ INSTALLED_APPS = [
     'wouso.interface.apps.pages',
     'wouso.interface.apps.statistics',
     'wouso.interface.apps.messaging',
+
+    'bootstrapform',
+    'bootstrap3_datetime',
 ]
 
 # Authentication settings

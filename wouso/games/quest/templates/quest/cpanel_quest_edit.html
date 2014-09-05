@@ -1,5 +1,6 @@
 {% extends 'cpanel/index.html' %}
 {% load django_bootstrap_breadcrumbs %}
+{% load bootstrap %}
 
 {% block sectiontitle %}Quests{% endblock %}
 
@@ -17,10 +18,9 @@
 <h3>New quest</h3>
 {% endif %}
 
-<form method="post">
-<table>
-    {{ form.as_table }}
-</table>
+<form method="post" role="form" class="form-horizontal">
+    {{ form|bootstrap_horizontal }}
+
 <div class="actions">
     <button onclick="history.back(); return false;" class="btn btn-warning">Cancel</button>
     <button type="reset" class="btn btn-danger">Reset</button>

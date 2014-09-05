@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load bootstrap %}
 {% load artifacts %}
 {% load cpanel %}
 {% load user %}
@@ -25,6 +26,9 @@
     <script type="text/javascript">
         var url_base = '{{ basepath }}';
     </script>
+    <script type="text/javascript" src="{{ basepath }}/static/js/bootstrap.min.js"></script>
+    {{ form.media }} 
+
     {% if config_theme %}
     <LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/themes/{{ config_theme }}/styles.css" />
     {% endif %}
