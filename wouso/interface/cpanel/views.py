@@ -1070,6 +1070,21 @@ class ActivityMonitorView(ListView):
     template_name = 'cpanel/activity_monitor.html'
     model = Activity
 
+    def get_queryset(self):
+        objects = self.model.objects.all()
+        params = self.request.GET
+        if 'game' in params:
+            objects = objects.filter(game__name=params['game'])
+        if 'user_from' in params:
+            objects = objects.filter(user_from__nickname=params['user_from'])
+        if 'user_to' in params:
+            objects = objects.filter(user_from__nickname=params['user_to'])
+        if 'message' in params:
+            # doing this one manually because message is a property
+            msg = params['message'].lower()
+            objects = [o for o in objects if msg in o.message.lower()]
+        return objects
+
 activity_monitor = staff_required(ActivityMonitorView.as_view())
 
 
