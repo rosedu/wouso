@@ -7,6 +7,7 @@ from wouso.core.magic.models import Bazaar
 from wouso.interface.apps import get_apps
 from wouso.interface.apps.messaging.models import Message
 from wouso.interface import get_static_pages, detect_mobile, mobile_browser
+from wouso.interface.cpanel import get_control_panel_games
 from wouso.settings import FORCE_SCRIPT_NAME
 from . import set_theme
 
@@ -57,4 +58,5 @@ def context(request):
         settings_dict['base_template'] = 'interface/ajax_message.html'
 
     settings_dict['static_pages'] = get_static_pages()
+    settings_dict['games_list'] = get_control_panel_games()
     return settings_dict
