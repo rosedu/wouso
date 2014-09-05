@@ -8,6 +8,11 @@ from wouso.core.user.models import Race, PlayerGroup
 from wouso.interface.apps.pages.models import StaticPage, NewsItem
 
 
+class MultipleField(forms.MultipleChoiceField):
+    """No validation for choice."""
+    def validate(self, value):
+        return True
+
 class QuestionForm(forms.Form):
     text = forms.CharField(max_length=2000, widget=forms.Textarea)
     active = forms.BooleanField(required=False)
@@ -24,7 +29,7 @@ class QuestionForm(forms.Form):
                 self.fields['correct_%d' % i] = forms.BooleanField(required=False)
 
         alltags = instance.category.tag_set.all() if instance and instance.category else []
-        self.fields['tags'] = forms.MultipleChoiceField(
+        self.fields['tags'] = MultipleField(
             choices=[(tag.name, tag.name) for tag in alltags],
             widget=forms.SelectMultiple, required=False,
             initial=[t.name for t in instance.tags.all()] if instance else {}
