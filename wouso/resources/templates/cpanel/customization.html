@@ -9,14 +9,14 @@
 {% endblock %}
 
 {% block sectioncontent %}
-<form method="post" action="">
+ <form method="post" action="" role="form" class="form-horizontal">
 {% for sgroup in settings %}
     <fieldset><legend>{{ sgroup.name }}:</legend>
     {% for s in sgroup.props %}
         {% autoescape off %}
-            {{ s.form }}
+	<!-- TODO: change to use bootstrap_horizontal filter -->
+	{{ s.form }}
         {% endautoescape %}
-        <br/>
     {% endfor %}
     </fieldset>
 {% endfor %}

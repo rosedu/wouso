@@ -24,3 +24,23 @@ div.second {
 .question_preview {
     cursor: pointer;
 }
+
+/* Form styling */
+.form-horizontal .form-group {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.form-horizontal .control-label {
+    text-align: left;
+}
+
+input[type="checkbox"] {
+    width: 0;
+}
+
+
+.input-group.date .input-group-addon {
+    width: 0;
+}
+
