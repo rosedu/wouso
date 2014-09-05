@@ -30,6 +30,7 @@ from wouso.core.scoring.models import Formula, History, Coin
 from wouso.core.signals import addActivity, add_activity
 from wouso.core.security.models import Report
 from wouso.games.challenge.models import Challenge, Participant
+from wouso.interface.activity.models import Activity
 from wouso.interface.apps.messaging.models import Message
 from wouso.interface.apps.pages.models import StaticPage, NewsItem
 from wouso.interface.cpanel.models import Customization, Switchboard, \
@@ -1063,6 +1064,13 @@ class EditReportView(UpdateView):
 
 
 edit_report = staff_required(EditReportView.as_view())
+
+
+class ActivityMonitorView(ListView):
+    template_name = 'cpanel/activity_monitor.html'
+    model = Activity
+
+activity_monitor = staff_required(ActivityMonitorView.as_view())
 
 
 class StaticPagesView(ListView):

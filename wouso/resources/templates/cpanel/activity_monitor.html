@@ -1,0 +1,53 @@
+{% extends 'cpanel/index.html' %}
+{% load user %}
+{% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %}Activity Monitor{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Activity Monitor" "activity monitor" %}
+{% endblock %}
+
+{% block scripts %}
+    <link href="{{ basepath }} /static/css/tablesorter.css" rel="stylesheet">
+{% endblock %}
+
+
+{% block bottomscripts %}
+    <script type="text/javascript" src="{{ basepath }}/static/js/jquery.tablesorter.min.js"></script>
+    <script>
+        $("#table-list").tablesorter();
+        console.log("YO");
+    </script>
+{% endblock %}
+
+{% block sectioncontent %}
+<table class="table table-bordered table-hover table-condensed tablesorter" id="table-list">
+    <thead>
+    <tr>
+        <th>Timestamp</th>
+        <th>User from</th>
+        <th>User to</th>
+        <th>Game</th>
+        <th>Message</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for activity in object_list %}
+    <tr>
+        <td>{{ activity.timestamp }}</td>
+        <td>{{ activity.user_from }}</td>
+        <td>{{ activity.user_to }}</td>
+        <td>{{ activity.game }}</td>
+        {% autoescape off %}
+            <td>{{ activity.message }}</td>
+        {% endautoescape %}
+    </tr>
+    {% empty %}
+        <tr><td colspan="0">No activity objects found.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
