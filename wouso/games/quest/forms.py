@@ -10,5 +10,6 @@ class QuestCpanel(ModelForm):
         model = Quest
         widgets = {
                 'start': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"}),
-                    'end': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"})                    }
+                'end': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"})
+                }
         exclude = ('order', 'registered',)

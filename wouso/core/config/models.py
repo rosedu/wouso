@@ -108,7 +108,7 @@ class ChoicesSetting(Setting):
             <div class="col-sm-10">
                 <select id="%s" name="%s" class="form-control">
         """ % (self.name, self.title, self.name, self.name)
-        # html = '<label for="%s">%s</label><select id="%s" name="%s">' % (self.name, self.title, self.name, self.name)
+
         for n,v in self.choices:
             html += '<option value="%s" %s>%s</option>' % (v, 'selected' if self.value == v else '', n)
         html += '</select></div></div>'
