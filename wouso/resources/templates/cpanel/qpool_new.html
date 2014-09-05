@@ -9,6 +9,10 @@
     {% breadcrumb "Add question" "qpool_new" %}
 {% endblock %}
 
+{% block bottomscripts %}
+    <script type="text/javascript" src="{{ basepath }}/static/js/cpanel/qpool/qpool_new.js/"></script>
+{% endblock %}
+
 {% block subsectioncontent %}
 
     <form style="width: 70%" class="horizontal-form" method="post">
@@ -31,10 +35,17 @@
             <tr>
                 <td><b>Category:</b></td>
                 <td>
-                    <select name="category">
+                    <select name="category" id="select-category">
                         {% for c in categs %}
                         <option value="{{c.1}}">{{ c.0 }}</option>
                         {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><b>Tags:</b></td>
+                <td>
+                    <select multiple name="tags" id="select-tags">
                     </select>
                 </td>
             </tr>
