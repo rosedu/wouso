@@ -142,7 +142,7 @@ This also generated a superuser `admin:admin`.
 
 ## Development Best Practices
 
-After pulling new code from server, while in sandbox mode update the database schema by running the migration action:
+After pulling new code from server, while in sandbox mode, update the database schema by running the migration action:
 
     ./manage.py migrate
 
