@@ -94,13 +94,13 @@
                 {% url all_players as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url all_players %}">Players</a></li>
                 {% url races_groups as url %}
-                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url races_groups %}">Races & groups</a></li>
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url races_groups %}">Groups</a></li>
+                {% url formulas as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url formulas %}">Formulas</a></li>
             <!-- Games !-->
                 <h4 class="text-center">Games</h4>
                 {% url games_home as url %}
                 <li {% if url == request.path %}class="active"{% endif %}><a href="{% url games_home %}">Games</a></li>
-                {% url formulas as url %}
-                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url formulas %}">Formulas</a></li>
                 {% cpanel_games %}
             <!-- Customization !-->
             {% if user.is_staff or user.is_superuser %}
@@ -113,15 +113,15 @@
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url cpanel_display %}">Display</a></li>
                 {% url reports as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url reports %}">Reports</a></li>
-            {% endif %}
-            <!-- Shortcuts !-->
-                <h4 class="text-center">Shortcuts to Django Admin</h4>
                 {% url static_pages as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url static_pages %}">Static Pages</a></li>
                 {% url news as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url news %}">News</a></li>
                 {% url activity_monitor as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url activity_monitor %}">New Activity Monitor</a></li>
+            {% endif %}
+            <!-- Shortcuts !-->
+                <h4 class="text-center">Shortcuts to Django Admin</h4>
                 {% if user.is_staff or user.is_superuser %}
                 <li><a href="{% url admin:index %}"><em>Django Admin »</em></a></li>
                 {% endif %}
