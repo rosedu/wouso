@@ -72,6 +72,8 @@ urlpatterns += patterns('',
     url(r'^race/$', Resource(handler=RacesHandler, **ad)),
     url(r'^race/(?P<race_id>\d+)/members/$', Resource(handler=RaceMembersHandler, **ad)),
     url(r'^race/(?P<race_id>\d+)/groups/$', Resource(handler=GroupsHandler, **ad)),
+
+    url(r'^category/(?P<category>\w+)/tags$', Resource(handler=CategoryTagsHandler)),
 )
 
 for g in get_games():

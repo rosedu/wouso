@@ -9,6 +9,7 @@ from django.db.models.query_utils import Q
 from django.db.models.aggregates import Sum
 
 from wouso.core.config.models import Setting
+from wouso.core.qpool.models import Category
 from wouso.core.scoring.models import Coin
 from wouso.core.user.templatetags.user import player_avatar
 from wouso.core.game import get_games
@@ -523,6 +524,15 @@ class RacesHandler(BaseHandler):
     def read(self, request):
         qs = Race.objects.all().order_by('name')
         return [dict(id=r.id, name=r.name, members=r.player_set.count(), can_play=r.can_play) for r in qs]
+
+
+class CategoryTagsHandler(BaseHandler):
+    allowed_methods = ('GET',)
+
+    def read(self, request, category):
+        category = get_object_or_404(Category, name=category)
+        tags = category.tag_set.all()
+        return tags
 
 
 class MembersMixin(object):
