@@ -98,7 +98,7 @@ name='roles_create'),
     url(r'^news/del_news/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.del_news', name='del_news'),
 ]
 
-for g in get_cpanel_games():
+for g, trash in get_cpanel_games().items():
     upat.append((r'games/{game}/'.format(game=g), include('wouso.games.{game}.cpanel_urls'.format(game=g))))
 upat.append(url(r'^customization/games/', 'wouso.interface.cpanel.views.games', name='games_home'))
 urlpatterns = patterns('', *upat)
