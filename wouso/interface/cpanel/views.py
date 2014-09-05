@@ -207,11 +207,10 @@ class CustomizationView(TemplateView):
             return redirect('status')
         self.customization = Customization()
         self.switchboard = Switchboard()
-        self.games_switchboard = GamesSwitchboard()
         return super(CustomizationView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        for group in (self.customization, self.switchboard, self.games_switchboard):
+        for group in (self.customization, self.switchboard):
             for s in group.props():
                 val = request.POST.get(s.name, '')
                 s.set_value(val)
@@ -220,7 +219,8 @@ class CustomizationView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(CustomizationView, self).get_context_data(**kwargs)
-        context.update(dict(settings=(self.customization, self.switchboard, self.games_switchboard)))
+        context.update(dict(settings=(self.customization, self.switchboard)))
+
         return context
 
 
@@ -248,7 +248,7 @@ display = permission_required('config.change_setting')(DisplayView.as_view())
 
 
 class GamesView(TemplateView):
-    template_name = 'cpanel/customization.html'
+    template_name = 'cpanel/games_home.html'
 
     def post(self, request, *args, **kwargs):
         switchboard = GamesSwitchboard()

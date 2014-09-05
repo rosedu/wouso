@@ -111,8 +111,6 @@
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url roles %}">Roles</a></li>
                 {% url customization as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url customization %}">Customization</a></li>
-                {% url cpanel_display as url %}
-                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url cpanel_display %}">Display</a></li>
                 {% url reports as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url reports %}">Reports</a></li>
                 {% url static_pages as url %}

@@ -5,19 +5,19 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Customization" "customization" %}
+    {% breadcrumb "Enable/Disable games" "games_home" %}
 {% endblock %}
 
 {% block sectioncontent %}
 <ul class="nav nav-tabs">
-    <li class="active">
+    <li>
         <a href="{% url customization %}">
             Customization
         </a>
     </li>
-    <li>
+    <li class="active">
         <a href="{% url games_home %}">
-            Enable/Disable Games
+            Disable Games
         </a>
     </li>
     <li>
@@ -27,14 +27,14 @@
     </li>
 </ul>
 
-<form method="post" action="" role="form" class="form-horizontal">
+<form method="post" action="">
 {% for sgroup in settings %}
-    <fieldset><legend>{{ sgroup.name }}:</legend>
+    <fieldset>
     {% for s in sgroup.props %}
         {% autoescape off %}
-	<!-- TODO: change to use bootstrap_horizontal filter -->
-	{{ s.form }}
+            {{ s.form }}
         {% endautoescape %}
+        <br/>
     {% endfor %}
     </fieldset>
 {% endfor %}

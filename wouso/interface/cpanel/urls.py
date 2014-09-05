@@ -4,7 +4,7 @@ from wouso.interface.cpanel import get_cpanel_games
 upat = [
     url(r'^$', 'wouso.interface.cpanel.views.status', name='status'),
     url(r'^customization/$', 'wouso.interface.cpanel.views.customization', name='customization'),
-    url(r'^display/$', 'wouso.interface.cpanel.views.display', name='cpanel_display'),
+    url(r'^customization/display/$', 'wouso.interface.cpanel.views.display', name='cpanel_display'),
     url(r'^leaderboards/$', 'wouso.interface.cpanel.views.leaderboards', name='leaderboards'),
 
     url(r'^qpool/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
@@ -100,5 +100,5 @@ name='roles_create'),
 
 for g in get_cpanel_games():
     upat.append((r'games/{game}/'.format(game=g), include('wouso.games.{game}.cpanel_urls'.format(game=g))))
-upat.append(url(r'^games/', 'wouso.interface.cpanel.views.games', name='games_home'))
+upat.append(url(r'^customization/games/', 'wouso.interface.cpanel.views.games', name='games_home'))
 urlpatterns = patterns('', *upat)
