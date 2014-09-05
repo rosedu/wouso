@@ -120,8 +120,9 @@
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url static_pages %}">Static Pages</a></li>
                 {% url news as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url news %}">News</a></li>
+                {% url activity_monitor as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url activity_monitor %}">New Activity Monitor</a></li>
                 {% if user.is_staff or user.is_superuser %}
-                <li><a href="{% url admin:activity_activity_changelist %}">Activity Monitor</a></li>
                 <li><a href="{% url admin:index %}"><em>Django Admin »</em></a></li>
                 {% endif %}
             </ul>

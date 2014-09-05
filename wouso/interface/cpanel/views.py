@@ -30,6 +30,7 @@ from wouso.core.scoring.models import Formula, History, Coin
 from wouso.core.signals import addActivity, add_activity
 from wouso.core.security.models import Report
 from wouso.games.challenge.models import Challenge, Participant
+from wouso.interface.activity.models import Activity
 from wouso.interface.apps.messaging.models import Message
 from wouso.interface.apps.pages.models import StaticPage, NewsItem
 from wouso.interface.cpanel.models import Customization, Switchboard, \
@@ -1063,6 +1064,29 @@ class EditReportView(UpdateView):
 
 
 edit_report = staff_required(EditReportView.as_view())
+
+
+class ActivityMonitorView(ListView):
+    template_name = 'cpanel/activity_monitor.html'
+    model = Activity
+
+    def get_queryset(self):
+        objects = self.model.objects.all()
+        params = self.request.GET
+
+        if 'game' in params and params['game']:
+            objects = objects.filter(game__name=params['game'])
+        if 'user_from' in params and params['user_from']:
+            objects = objects.filter(user_from__nickname=params['user_from'])
+        if 'user_to' in params and params['user_to']:
+            objects = objects.filter(user_from__nickname=params['user_to'])
+        if 'message' in params and params['message']:
+            # doing this one manually because message is a property
+            msg = params['message'].lower()
+            objects = [o for o in objects if msg in o.message.lower()]
+        return objects
+
+activity_monitor = staff_required(ActivityMonitorView.as_view())
 
 
 class StaticPagesView(ListView):
