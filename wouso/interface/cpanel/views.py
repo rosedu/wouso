@@ -421,19 +421,29 @@ def question_switch(request, id):
     # qproposal - endorse part
     proposed_cat = Category.objects.filter(name='proposed')[0]
     if question.category == proposed_cat:
+        player = question.proposed_by.get_profile()
+        staff_user = request.user
+        amount = 0
+        for tag in question.tags.all():
+            if tag.name == 'qotd':
+                amount = QOTD_GOLD
+            elif tag.name == 'challenge':
+                amount = CHALLENGE_GOLD
+            elif tag.name == 'quest':
+                amount = QUEST_GOLD
+
+        # Question is endorsed
         if not question.endorsed_by:
-            player = question.proposed_by.get_profile()
-            staff_user = request.user
             question.endorsed_by = staff_user
             question.save()
-            amount = 0
-            for tag in question.tags.all():
-                if tag.name == 'qotd':
-                    amount = QOTD_GOLD
-                elif tag.name == 'challenge':
-                    amount = CHALLENGE_GOLD
-                elif tag.name == 'quest':
-                    amount = QUEST_GOLD
+            scoring.score(player, None, 'bonus-gold', external_id=staff_user.id,
+                          gold=amount)
+
+        # Endorsement is removed from question
+        else:
+            question.endorsed_by = None
+            question.save()
+            amount *= -1
             scoring.score(player, None, 'bonus-gold', external_id=staff_user.id,
                           gold=amount)
 
