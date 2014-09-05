@@ -35,7 +35,7 @@ In case of MySQL support:
         cd $PATH_TO_WOUSO_REPOSITORY
         virtualenv -p python2.7 sandbox
         echo '*' > sandbox/.gitignore
-        . sandbox/bin/activate
+        source sandbox/bin/activate
 
     `$PATH_TO_WOUSO_REPOSITORY` is the location of the clone of the WoUSO repository.
 
