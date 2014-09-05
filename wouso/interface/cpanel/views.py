@@ -1073,13 +1073,14 @@ class ActivityMonitorView(ListView):
     def get_queryset(self):
         objects = self.model.objects.all()
         params = self.request.GET
-        if 'game' in params:
+
+        if 'game' in params and params['game']:
             objects = objects.filter(game__name=params['game'])
-        if 'user_from' in params:
+        if 'user_from' in params and params['user_from']:
             objects = objects.filter(user_from__nickname=params['user_from'])
-        if 'user_to' in params:
+        if 'user_to' in params and params['user_to']:
             objects = objects.filter(user_from__nickname=params['user_to'])
-        if 'message' in params:
+        if 'message' in params and params['message']:
             # doing this one manually because message is a property
             msg = params['message'].lower()
             objects = [o for o in objects if msg in o.message.lower()]
