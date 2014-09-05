@@ -35,9 +35,13 @@ In case of MySQL support:
         cd $PATH_TO_WOUSO_REPOSITORY
         virtualenv -p python2.7 sandbox
         echo '*' > sandbox/.gitignore
-        . sandbox/bin/activate
+        source sandbox/bin/activate
 
     `$PATH_TO_WOUSO_REPOSITORY` is the location of the clone of the WoUSO repository.
+
+    You'll notice it works as you get a prompt update: the `(sandbox)` string is prefixed to the prompt. Something like:
+
+        (sandbox)wouso@wouso-dev:~/wouso.git$
 
     In case you do something wrong in the virtualenv, you may exit it using
 
@@ -138,6 +142,11 @@ This also generated a superuser `admin:admin`.
 
 ## Development Best Practices
 
-After pulling new code from server, run migration:
+After pulling new code from server, while in sandbox mode, update the database schema by running the migration action:
 
     ./manage.py migrate
+
+In case of issues, you may need to update the pip packages, by running the commands below while in the repository:
+
+    pip install -r requirements-pip
+    pip install -r requirements-extra
