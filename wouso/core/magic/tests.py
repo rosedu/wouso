@@ -13,6 +13,8 @@ from wouso.core.tests import WousoTest
 from wouso.core.user.models import Player
 from wouso.core.magic.models import Spell
 from wouso.games.challenge.models import Challenge, ChallengeUser, ChallengeGame
+from wouso.games.qotd.models import QotdUser
+from wouso.games.qotd.tests import _make_question_for_today
 from wouso.interface.activity.models import Activity
 from models import *
 from manager import MagicManager
@@ -349,6 +351,31 @@ class SpellTestCase(WousoTest):
 
         # Player should have 33% more points with charge applied
         self.assertEqual(player.points, points_no_charge + 0.33 * (points_no_charge - initial_points))
+
+    def test_blind(self):
+        """
+        Test for Blind spell
+        """
+
+        # Create a question and a test user
+        super_user = self._get_superuser()
+        qotd_user = self._get_player(1)
+        qotd_user = qotd_user.get_extension(QotdUser)
+        scoring.setup_scoring()
+
+        question = _make_question_for_today(super_user, 'question1')
+
+        c = Client()
+        c.login(username='testuser1', password='test')
+
+        # Cast blind on qotd_user
+        blind = Spell.objects.create(name='qotd-blind', available=True, price=10, type='n')
+        PlayerSpellDue.objects.create(player=qotd_user, source=qotd_user, spell=blind, due=datetime.now() + timedelta(days=1))
+        self.assertTrue(qotd_user.magic.has_modifier('qotd-blind'))
+
+        # Check if it blocks the user from answering the Question of the Day
+        response = c.get(reverse('qotd_index_view'), follow=True)
+        self.assertContains(response, "You have been blinded, you cannot answer to the Question of the Day")
 
 
 class TemplatetagsTest(WousoTest):
