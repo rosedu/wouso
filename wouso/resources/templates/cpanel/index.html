@@ -43,9 +43,9 @@
 
             var time =   hour + ":" +  min + ":" +  sec;
             document.getElementById('time').innerHTML = time;
-            // refresh rate 999 ms
-            setTimeout('display_time()', 999)
         }
+        // refresh rate 999 ms
+        setInterval(function(){display_time()}, 999);
     </script>
 
     <script type="text/javascript" src="{{ basepath }}/static/js/bootstrap.min.js"></script>
