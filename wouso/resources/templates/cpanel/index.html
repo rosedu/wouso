@@ -67,7 +67,8 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 {% if user.real_user %}
-                    Impersonated by {{ user.real_user }} <li><a href="{% url impersonate_clear %}">clear</a></li>
+                    <p class="navbar-text"><b>Impersonated by {{ user.real_user }}</b></p>
+                    <li><a href="{% url impersonate_clear %}" title="Unimpersonate">Clear</a></li>
                 {% endif %}
                 <li><a id="head-home" href="{% url homepage %}">Game</a></li>
                 <li><a id="head-logout" href="{% url logout_view %}">{% trans "Logout" %} <span class="glyphicon glyphicon-log-out"></span></a></li>
