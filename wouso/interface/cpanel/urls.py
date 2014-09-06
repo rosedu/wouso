@@ -2,9 +2,12 @@ from django.conf.urls.defaults import *
 from wouso.interface.cpanel import get_cpanel_games
 
 upat = [
-    url(r'^$', 'wouso.interface.cpanel.views.dashboard', name='dashboard'),
+    url(r'^$', 'wouso.interface.cpanel.views.status', name='status'),
     url(r'^customization/$', 'wouso.interface.cpanel.views.customization', name='customization'),
-    url(r'^display/$', 'wouso.interface.cpanel.views.display', name='cpanel_display'),
+    url(r'^customization/display/$', 'wouso.interface.cpanel.views.display', name='cpanel_display'),
+    url(r'^customization/games/$', 'wouso.interface.cpanel.views.games', name='games_home'),
+    url(r'^customization/features/$', 'wouso.interface.cpanel.views.features', name='features'),
+    url(r'^leaderboards/$', 'wouso.interface.cpanel.views.leaderboards', name='leaderboards'),
 
     url(r'^qpool/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
     url(r'^qpool/(?P<page>\d+)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
@@ -97,7 +100,6 @@ name='roles_create'),
     url(r'^news/del_news/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.del_news', name='del_news'),
 ]
 
-for g in get_cpanel_games():
-    upat.append((r'games/{game}/'.format(game=g), include('wouso.games.{game}.cpanel_urls'.format(game=g))))
-upat.append(url(r'^games/', 'wouso.interface.cpanel.views.games', name='games_home'))
+for g, trash in get_cpanel_games().items():
+    upat.append((r'{game}/'.format(game=g), include('wouso.{game}.cpanel_urls'.format(game=g.replace('/','.')))))
 urlpatterns = patterns('', *upat)

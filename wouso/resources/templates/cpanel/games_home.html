@@ -5,12 +5,12 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Customization" "customization" %}
+    {% breadcrumb "Disable games" "games_home" %}
 {% endblock %}
 
 {% block sectioncontent %}
 <ul class="nav nav-tabs">
-    <li class="active">
+    <li>
         <a href="{% url customization %}">
             Customization
         </a>
@@ -20,7 +20,7 @@
             Disable features
         </a>
     </li>
-    <li>
+    <li class="active">
         <a href="{% url games_home %}">
             Disable games
         </a>

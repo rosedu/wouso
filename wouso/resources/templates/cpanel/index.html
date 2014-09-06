@@ -62,7 +62,7 @@
     {% block header %}
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="{% url dashboard %}">Control Panel</a>
+            <a class="navbar-brand" href="{% url status %}">Control Panel</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
@@ -79,14 +79,14 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-3 col-md-2 sidebar sidebar">
+        <div class="col-md-2 sidebar">
             <ul class="nav nav-sidebar">
             <!-- Dashboard !-->
                 <h4 class="text-center">Dashboard</h4>
-                {% url dashboard as url %}
-                <li {% if url == request.path %}class="active"{% endif %}><a href="{% url dashboard %}">Dashboard</a></li>
+                {% url status as url %}
+                <li {% if url == request.path %}class="active"{% endif %}><a href="{% url status %}">Status</a></li>
                 {% url qpool_home as url %}
-                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url qpool_home %}">Question Pool</a></li>
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url qpool_home %}">Questions</a></li>
                 {% url spells as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url spells %}">Spells</a></li>
                 {% url artifact_home as url %}
@@ -94,34 +94,34 @@
                 {% url all_players as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url all_players %}">Players</a></li>
                 {% url races_groups as url %}
-                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url races_groups %}">Races & groups</a></li>
-            <!-- Games !-->
-                <h4 class="text-center">Games</h4>
-                {% url games_home as url %}
-                <li {% if url == request.path %}class="active"{% endif %}><a href="{% url games_home %}">Games</a></li>
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url races_groups %}">Groups</a></li>
                 {% url formulas as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url formulas %}">Formulas</a></li>
-                {% cpanel_games %}
+                {% url leaderboards as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url leaderboards %}">Leaderboards</a></li>
+            <!-- Games !-->
+                <h4 class="text-center">Games</h4>
+                {% for u, game in games_list.items %}
+                    <li {% if u in request.path %}class="active"{% endif %}><a href="/cpanel/{{u}}">{{game}}</a></li>
+                {% endfor %}
             <!-- Customization !-->
             {% if user.is_staff or user.is_superuser %}
-                <h4 class="text-center">Customization</h4>
+                <h4 class="text-center">Configuration</h4>
                 {% url roles as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url roles %}">Roles</a></li>
                 {% url customization as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url customization %}">Customization</a></li>
-                {% url cpanel_display as url %}
-                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url cpanel_display %}">Display</a></li>
                 {% url reports as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url reports %}">Reports</a></li>
-            {% endif %}
-            <!-- Shortcuts !-->
-                <h4 class="text-center">Shortcuts to Django Admin</h4>
                 {% url static_pages as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url static_pages %}">Static Pages</a></li>
                 {% url news as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url news %}">News</a></li>
                 {% url activity_monitor as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url activity_monitor %}">New Activity Monitor</a></li>
+            {% endif %}
+            <!-- Shortcuts !-->
+                <h4 class="text-center">Shortcuts to Django Admin</h4>
                 {% if user.is_staff or user.is_superuser %}
                 <li><a href="{% url admin:index %}"><em>Django Admin »</em></a></li>
                 {% endif %}
@@ -139,7 +139,7 @@
         {% endif %}
     </div>
     {% block content %}
-    <h1 class="page-header">{% block sectiontitle %}Dashboard{% endblock %}</h1>
+    <h1 class="page-header">{% block sectiontitle %}Status{% endblock %}</h1>
         {% block breadcrumbs %}
             {% clear_breadcrumbs %}
             {% breadcrumb "Home" "/cpanel/" %}

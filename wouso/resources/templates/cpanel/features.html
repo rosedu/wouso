@@ -5,17 +5,17 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Customization" "customization" %}
+    {% breadcrumb "Disable features" "features" %}
 {% endblock %}
 
 {% block sectioncontent %}
 <ul class="nav nav-tabs">
-    <li class="active">
+    <li>
         <a href="{% url customization %}">
             Customization
         </a>
     </li>
-    <li>
+    <li class="active">
         <a href="{% url features %}">
             Disable features
         </a>
@@ -44,4 +44,5 @@
 <button type="submit" class="btn btn-primary">Save</button>
 {% csrf_token %}
 </form>
+
 {% endblock %}

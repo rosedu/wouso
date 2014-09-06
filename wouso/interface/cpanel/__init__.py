@@ -1,14 +1,25 @@
-from django.db.models import get_models
-from wouso.core.game.models import Game
+import os
+import re
+from wouso.core.game import get_games
+
+
+def has_cpanel_url(game):
+    games_dir = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                             '../..', 'games'))
+    return os.path.exists(games_dir + '/' + game + '/cpanel_urls.py')
+
 
 def get_cpanel_games():
-    # TODO: use get_games and some has_cpanel/cpanel_url_module property!!!
-    import os
-    games_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..', 'games'))
+    """
+     Returns a dict of games having a cpanel page:
+        gs({'games/specialquest':'Special Quest'})
+    """
+    gs = {}
+    for game in get_games():
+        game = game.__name__.replace('Game', '')
+        if has_cpanel_url(game.lower()):
+            url = 'games/' + game.lower()
+            # Add space before capital letters (e.g. Special Quest)
+            gs[url] = re.sub(r"(\w)([A-Z])", r"\1 \2", game)
 
-    wgs = []
-    for g in os.listdir(games_dir):
-        if os.path.exists(games_dir + '/' + g + '/cpanel_urls.py'):
-            wgs.append(g)
-
-    return wgs
+    return gs

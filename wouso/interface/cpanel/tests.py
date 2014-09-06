@@ -381,8 +381,10 @@ class CpanelViewsTest(WousoTest):
 
     def test_customization_view_get(self):
         response = self.client.get(reverse('customization'))
-        self.assertContains(response, 'Customizations', status_code=200)
+        self.assertContains(response, 'Customization', status_code=200)
         self.assertContains(response, 'Disable features', status_code=200)
+        self.assertContains(response, 'Disable games', status_code=200)
+        self.assertContains(response, 'Display', status_code=200)
 
     def test_customization_view_post(self):
         data = {'title': 'Custom test title'}
@@ -442,7 +444,7 @@ class CpanelViewsTest(WousoTest):
         response = self.client.post(reverse('question_new'), data)
         self.assertTrue(Question.objects.get(text='sample text for test question'))
 
-    def test_dashboard_view(self):
+    def test_status_view(self):
         # Create dummy objects
         race = Race.objects.create(name='Race_test_1', can_play=True)
 
@@ -456,7 +458,7 @@ class CpanelViewsTest(WousoTest):
             player.save()
             ArtifactGroup.objects.create(name='ArtifactGroup%d' % i)
 
-        response = self.client.get(reverse('dashboard'))
+        response = self.client.get(reverse('status'))
 
         # Check if the required information is displayed
         self.assertContains(response, '6 users can play')

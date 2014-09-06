@@ -44,16 +44,7 @@ from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, \
 from forms import FormulaForm, TagForm
 
 
-class ModuleViewMixin(object):
-    module = 'undefined'
-
-    def get_context_data(self, **kwargs):
-        context = super(self).get_context_data(**kwargs)
-        context.update(dict(module=self.module))
-        return context
-
-
-class DashboardView(TemplateView):
+class StatusView(TemplateView):
     template_name = 'cpanel/index.html'
 
     def get_context_data(self, **kwargs):
@@ -93,7 +84,7 @@ class DashboardView(TemplateView):
         # number of players which can play
         cp_number = Player.objects.filter(race__can_play=True).count()
 
-        context = super(DashboardView, self).get_context_data(**kwargs)
+        context = super(StatusView, self).get_context_data(**kwargs)
         context.update({'nr_future_questions': nr_future_questions,
                         'nr_questions': nr_questions,
                         'active_quest': active_quest,
@@ -110,7 +101,7 @@ class DashboardView(TemplateView):
         return context
 
 
-dashboard = staff_required(DashboardView.as_view())
+status = staff_required(StatusView.as_view())
 
 
 class FormulasView(ListView):
@@ -200,26 +191,34 @@ def spell_delete(request, id):
     return HttpResponseRedirect(go_back)
 
 
+class LeaderboardsView(ListView):
+    template_name = 'cpanel/leaderboards.html'
+    queryset = ''
+
+
+leaderboards = permission_required('config.change_setting')(
+    LeaderboardsView.as_view())
+
+
 class CustomizationView(TemplateView):
     template_name = 'cpanel/customization.html'
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_superuser:
-            return redirect('dashboard')
+            return redirect('status')
         self.customization = Customization()
-        self.switchboard = Switchboard()
         return super(CustomizationView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        for group in (self.customization, self.switchboard):
-            for s in group.props():
-                val = request.POST.get(s.name, '')
-                s.set_value(val)
+        for s in self.customization.props():
+            val = request.POST.get(s.name, '')
+            s.set_value(val)
         return redirect('customization')
 
     def get_context_data(self, **kwargs):
         context = super(CustomizationView, self).get_context_data(**kwargs)
-        context.update(dict(settings=(self.customization, self.switchboard)))
+        context.update(dict(settings=self.customization))
+
         return context
 
 
@@ -247,23 +246,51 @@ display = permission_required('config.change_setting')(DisplayView.as_view())
 
 
 class GamesView(TemplateView):
-    template_name = 'cpanel/customization.html'
+    template_name = 'cpanel/games_home.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.switchboard = GamesSwitchboard()
+        return super(GamesView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        switchboard = GamesSwitchboard()
-        for s in switchboard.props():
+        self.switchboard = GamesSwitchboard()
+        for s in self.switchboard.props():
             val = request.POST.get(s.name, '')
             s.set_value(val)
         return redirect('games_home')
 
     def get_context_data(self, **kwargs):
         context = super(GamesView, self).get_context_data(**kwargs)
-        switchboard = GamesSwitchboard()
-        context.update(dict(settings=(switchboard,)))
+        context.update(dict(settings=self.switchboard))
         return context
 
 
 games = permission_required('config.change_setting')(GamesView.as_view())
+
+
+class FeaturesView(TemplateView):
+    template_name = 'cpanel/features.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.switchboard = Switchboard()
+        return super(FeaturesView, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        for group in self.switchboard:
+            for s in group.props():
+                val = request.POST.get(s.name, '')
+                s.set_value(val)
+
+        return redirect('features')
+
+    def get_context_data(self, **kwargs):
+        context = super(FeaturesView, self).get_context_data(**kwargs)
+        context.update(dict(settings=self.switchboard))
+
+        return context
+
+
+features = permission_required('config.change_setting')(FeaturesView.as_view())
 
 
 @permission_required('config.change_setting')
@@ -1226,7 +1253,7 @@ def clean_impersonation(request):
 def clear_cache(request):
     if request.method == 'POST':
         cache.clear()
-        return redirect('dashboard')
+        return redirect('status')
     else:
         return render_to_response('cpanel/clear_cache.html', {},
                                   context_instance=RequestContext(request))

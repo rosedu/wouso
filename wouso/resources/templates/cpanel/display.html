@@ -1,14 +1,36 @@
 {% extends 'cpanel/index.html' %}
-
-{% block sectiontitle %}Display{% endblock %}
 {% load django_bootstrap_breadcrumbs %}
 
-{% block sectioncontent %}
+{% block sectiontitle %}Customization{% endblock %}
 
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Display" "cpanel_display" %}
 {% endblock %}
+
+{% block sectioncontent %}
+<ul class="nav nav-tabs">
+    <li>
+        <a href="{% url customization %}">
+            Customization
+        </a>
+    </li>
+    <li>
+        <a href="{% url features %}">
+            Disable features
+        </a>
+    </li>
+    <li>
+        <a href="{% url games_home %}">
+            Disable games
+        </a>
+    </li>
+    <li class="active">
+        <a href="{% url cpanel_display %}">
+            Display
+        </a>
+    </li>
+</ul>
 
 <form method="post" action="">
     <label for="display">
