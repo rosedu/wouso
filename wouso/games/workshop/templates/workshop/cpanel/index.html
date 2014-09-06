@@ -29,9 +29,6 @@
 
 {% block sectioncontent %}
 
-    <strong>{% now "d. M. Y, H:i:s" %}</strong>
-
-    <hr/>
     <ul class="nav nav-tabs">
         <li {% if not page %}class="active"{% endif %}><a href="{% url workshop_home %}">Timetable</a></li>
         <li {% if page == 'schedule' %}class="active"{% endif %}><a href="{% url ws_schedule %}">Schedule</a></li>
