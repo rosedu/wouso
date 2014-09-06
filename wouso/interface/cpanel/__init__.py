@@ -10,19 +10,18 @@ def has_cpanel_url(game):
 
 def get_cpanel_games():
     """
-     Returns a dict with games having a cpanel link looking like this:
-        gs({'specialquest':'Special Quest'})
+     Returns a dict of games having a cpanel page:
+        gs({'games/specialquest':'Special Quest'})
     """
     gs = {}
     for game in get_games():
         game = game.__name__.replace('Game', '')
         if has_cpanel_url(game.lower()):
-            url = game.lower()
+            url = 'games/' + game.lower()
             if 'challenge' in game:
                 game = game.replace("Challenge", " Challenge")
             if 'quest' in game:
                 game = game.replace("Quest", " Quest")
-            game = game.title()
             gs[url] = game
 
     return gs

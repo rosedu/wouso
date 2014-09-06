@@ -99,6 +99,6 @@ name='roles_create'),
 ]
 
 for g, trash in get_cpanel_games().items():
-    upat.append((r'games/{game}/'.format(game=g), include('wouso.games.{game}.cpanel_urls'.format(game=g))))
+    upat.append((r'{game}/'.format(game=g), include('wouso.{game}.cpanel_urls'.format(game=g.replace('/','.')))))
 upat.append(url(r'^customization/games/', 'wouso.interface.cpanel.views.games', name='games_home'))
 urlpatterns = patterns('', *upat)
