@@ -1,4 +1,5 @@
 import os
+import re
 from wouso.core.game import get_games
 
 
@@ -18,10 +19,7 @@ def get_cpanel_games():
         game = game.__name__.replace('Game', '')
         if has_cpanel_url(game.lower()):
             url = 'games/' + game.lower()
-            if 'challenge' in game:
-                game = game.replace("Challenge", " Challenge")
-            if 'quest' in game:
-                game = game.replace("Quest", " Quest")
-            gs[url] = game
+            # Add space between capitalized letters (e.g. Special Quest)
+            gs[url] = re.sub(r"(\w)([A-Z])", r"\1 \2", game)
 
     return gs
