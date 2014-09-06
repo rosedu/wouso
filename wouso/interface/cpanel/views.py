@@ -195,6 +195,7 @@ class LeaderboardsView(ListView):
     template_name = 'cpanel/leaderboards.html'
     queryset = ''
 
+
 leaderboards = permission_required('config.change_setting')(
     LeaderboardsView.as_view())
 
@@ -206,20 +207,17 @@ class CustomizationView(TemplateView):
         if not request.user.is_superuser:
             return redirect('status')
         self.customization = Customization()
-        self.switchboard = Switchboard()
         return super(CustomizationView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        for group in (self.customization, self.switchboard):
-            for s in group.props():
-                val = request.POST.get(s.name, '')
-                s.set_value(val)
-
+        for s in self.customization.props():
+            val = request.POST.get(s.name, '')
+            s.set_value(val)
         return redirect('customization')
 
     def get_context_data(self, **kwargs):
         context = super(CustomizationView, self).get_context_data(**kwargs)
-        context.update(dict(settings=(self.customization, self.switchboard)))
+        context.update(dict(settings=self.customization))
 
         return context
 
@@ -250,21 +248,49 @@ display = permission_required('config.change_setting')(DisplayView.as_view())
 class GamesView(TemplateView):
     template_name = 'cpanel/games_home.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        self.switchboard = GamesSwitchboard()
+        return super(GamesView, self).dispatch(request, *args, **kwargs)
+
     def post(self, request, *args, **kwargs):
-        switchboard = GamesSwitchboard()
-        for s in switchboard.props():
+        self.switchboard = GamesSwitchboard()
+        for s in self.switchboard.props():
             val = request.POST.get(s.name, '')
             s.set_value(val)
         return redirect('games_home')
 
     def get_context_data(self, **kwargs):
         context = super(GamesView, self).get_context_data(**kwargs)
-        switchboard = GamesSwitchboard()
-        context.update(dict(settings=(switchboard,)))
+        context.update(dict(settings=self.switchboard))
         return context
 
 
 games = permission_required('config.change_setting')(GamesView.as_view())
+
+
+class FeaturesView(TemplateView):
+    template_name = 'cpanel/features.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.switchboard = Switchboard()
+        return super(FeaturesView, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        for group in self.switchboard:
+            for s in group.props():
+                val = request.POST.get(s.name, '')
+                s.set_value(val)
+
+        return redirect('features')
+
+    def get_context_data(self, **kwargs):
+        context = super(FeaturesView, self).get_context_data(**kwargs)
+        context.update(dict(settings=self.switchboard))
+
+        return context
+
+
+features = permission_required('config.change_setting')(FeaturesView.as_view())
 
 
 @permission_required('config.change_setting')

@@ -5,6 +5,8 @@ upat = [
     url(r'^$', 'wouso.interface.cpanel.views.status', name='status'),
     url(r'^customization/$', 'wouso.interface.cpanel.views.customization', name='customization'),
     url(r'^customization/display/$', 'wouso.interface.cpanel.views.display', name='cpanel_display'),
+    url(r'^customization/games/$', 'wouso.interface.cpanel.views.games', name='games_home'),
+    url(r'^customization/features/$', 'wouso.interface.cpanel.views.features', name='features'),
     url(r'^leaderboards/$', 'wouso.interface.cpanel.views.leaderboards', name='leaderboards'),
 
     url(r'^qpool/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
@@ -100,5 +102,4 @@ name='roles_create'),
 
 for g, trash in get_cpanel_games().items():
     upat.append((r'{game}/'.format(game=g), include('wouso.{game}.cpanel_urls'.format(game=g.replace('/','.')))))
-upat.append(url(r'^customization/games/', 'wouso.interface.cpanel.views.games', name='games_home'))
 urlpatterns = patterns('', *upat)

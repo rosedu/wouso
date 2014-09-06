@@ -5,7 +5,7 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Enable/Disable games" "games_home" %}
+    {% breadcrumb "Disable games" "games_home" %}
 {% endblock %}
 
 {% block sectioncontent %}
@@ -13,6 +13,11 @@
     <li>
         <a href="{% url customization %}">
             Customization
+        </a>
+    </li>
+    <li>
+        <a href="{% url features %}">
+            Disable features
         </a>
     </li>
     <li class="active">
@@ -28,14 +33,12 @@
 </ul>
 
 <form method="post" action="">
-{% for sgroup in settings %}
+{% for s in settings.props %}
     <fieldset>
-    {% for s in sgroup.props %}
         {% autoescape off %}
             {{ s.form }}
         {% endautoescape %}
         <br/>
-    {% endfor %}
     </fieldset>
 {% endfor %}
 <button type="submit" class="btn btn-primary">Save</button>
