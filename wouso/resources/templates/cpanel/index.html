@@ -23,9 +23,31 @@
     <script type="text/javascript" src="{{ basepath }}/static/js/format.item.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery.timers.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/ajaxify.js"></script>
+
     <script type="text/javascript">
         var url_base = '{{ basepath }}';
     </script>
+
+    <!-- Time script -->
+    <script type="text/javascript">
+        function display_time() {
+            var x = new Date()
+            var hour = x.getHours()
+            var min = x.getMinutes()
+            var sec = x.getSeconds()
+
+            // add leading zeros
+            if (hour < 10) {hour = "0" + hour;}
+            if (min < 10) {min = "0" + min;}
+            if (sec < 10) {sec = "0" + sec;}
+
+            var time =   hour + ":" +  min + ":" +  sec;
+            document.getElementById('time').innerHTML = time;
+            // refresh rate 999 ms
+            setTimeout('display_time()', 999)
+        }
+    </script>
+
     <script type="text/javascript" src="{{ basepath }}/static/js/bootstrap.min.js"></script>
     {{ form.media }} 
 
@@ -57,7 +79,7 @@
     {% block scripts %}{% endblock %}
 </HEAD>
 
-<body>
+<body onload="display_time()">
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     {% block header %}
     <div class="container-fluid">
@@ -67,7 +89,7 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 <p class="navbar-text">{% now "d M. Y" %}</p>
-                <p class="navbar-text">{% now "H:i:s" %}</p>
+                <div id="time" class="navbar-text"></div>
                 {% if user.real_user %}
                     <p class="navbar-text"><b>Impersonated by {{ user.real_user }}</b></p>
                     <li><a href="{% url impersonate_clear %}" title="Unimpersonate">Clear</a></li>
