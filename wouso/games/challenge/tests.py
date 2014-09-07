@@ -87,8 +87,7 @@ class ChallengeTestCase(WousoTest):
         self.assertTrue(chall.is_started_for_user(self.chall_user))
         self.assertFalse(chall.is_started_for_user(self.chall_user2))
 
-    """
-    @unittest.skip # TODO fixme
+    @unittest.skip  # TODO fixme
     def test_run_doesn_not_expires(self):
         chall = Challenge.create(user_from=self.chall_user, user_to=self.chall_user2, ignore_questions=True)
 
@@ -105,7 +104,7 @@ class ChallengeTestCase(WousoTest):
             mock_datetime.now.return_value = just_now + timedelta(minutes=10)
             self.assertFalse(chall.check_timedelta(self.chall_user))
 
-    @unittest.skip
+    @unittest.skip  # TODO fixme
     def test_run_expires(self):
         chall = Challenge.create(user_from=self.chall_user, user_to=self.chall_user2, ignore_questions=True)
 
@@ -120,7 +119,6 @@ class ChallengeTestCase(WousoTest):
             # pass some more time, challenge cannot be submited any more
             mock_datetime.now.return_value = just_now + timedelta(minutes=10)
             self.assertFalse(chall.check_timedelta(self.chall_user))
-    """
 
     def testScoring(self):
         chall = Challenge.create(user_from=self.chall_user, user_to=self.chall_user2, ignore_questions=True)
