@@ -30,7 +30,7 @@
 
     <!-- Time script -->
     <script type="text/javascript">
-        function display_time() {
+        function displayTime() {
             var x = new Date()
             var hour = x.getHours()
             var min = x.getMinutes()
@@ -43,9 +43,9 @@
 
             var time =   hour + ":" +  min + ":" +  sec;
             document.getElementById('time').innerHTML = time;
-            // refresh rate 999 ms
-            setTimeout('display_time()', 999)
         }
+        // refresh rate 999 ms
+        setInterval(function(){displayTime()}, 999);
     </script>
 
     <script type="text/javascript" src="{{ basepath }}/static/js/bootstrap.min.js"></script>
@@ -79,7 +79,7 @@
     {% block scripts %}{% endblock %}
 </HEAD>
 
-<body onload="display_time()">
+<body>
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     {% block header %}
     <div class="container-fluid">
