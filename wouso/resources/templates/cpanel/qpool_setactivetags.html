@@ -1,5 +1,14 @@
 {% extends 'cpanel/qpool_home.html' %}
 
+{% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %}Set active tags{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Set active tags" "qpool_setactivetags" %}
+{% endblock %}
+
 {% block subsectioncontent %}
 <h3> Active tags </h3>
 {% if tags.count == 0 %}
