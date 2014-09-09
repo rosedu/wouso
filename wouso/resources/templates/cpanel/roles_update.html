@@ -1,14 +1,15 @@
 {% extends 'cpanel/index.html' %}
+
 {% load user %}
 {% load i18n %}
 {% load django_bootstrap_breadcrumbs %}
 
-{% block sectiontitle %}Role Update: {{ role }}{% endblock %}
+{% block sectiontitle %}Edit role - {{ role }}{% endblock %}
 
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Roles" "roles" %}
-    {% breadcrumb "Role update" "roles_update" %}
+    {% breadcrumb "Edit role" "roles_update" %}
 {% endblock %}
 
 {% block sectioncontent %}
@@ -22,17 +23,22 @@
         {% for u in role.user_set.all %}
         <tr>
             <td>{% player u.get_profile %}</td>
-            <td><a class="btn btn-danger btn-sm" href="{% url roles_update_kick role.id u.id %}">
-                <span class="glyphicon glyphicon-remove"></span>{% trans 'Remove' %}
-            </a></td>
+            <td>
+                <a class="btn btn-danger btn-sm" href="{% url roles_update_kick role.id u.id %}">
+                    <span class="glyphicon glyphicon-remove"></span>{% trans 'Remove' %}
+                </a>
+            </td>
         </tr>
         {% endfor %}
     </table>
 </div>
+
 <form action="" method="post">
    {% player_input 'player' role.id %}
    {% csrf_token %}
-   <button type="submit" class="btn btn-primary">Add</button>
+   <button type="submit" class="btn btn-primary">
+      <span class="glyphicon glyphicon-plus"></span>{% trans 'Add' %}
+   </button>
 </form>
 
 <h3>Permissions</h3>
@@ -41,6 +47,6 @@
     <li>{{ p }}</li>
     {% endfor %}
 </ul>
-<a class="btn btn-success" href="{% url admin:auth_group_change role.pk %}">Change (external)</a>
-<a class="btn btn-warning" href="{% url roles %}">Back to roles</a>
+<a class="btn btn-success" href="{% url admin:auth_group_change role.pk %}">{% trans 'Change (external)' %}</a>
+<a class="btn btn-warning" href="{% url roles %}">{% trans 'Back to roles' %}</a>
 {% endblock %}
