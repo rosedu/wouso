@@ -2,6 +2,7 @@
 
 {% load workshop %}
 {% load i18n %}
+{% load bootstrap %}
 {% load django_bootstrap_breadcrumbs %}
 
 {% block breadcrumbs %}
@@ -10,11 +11,14 @@
 {% endblock %}
 
 {% block tabcontent %}
-    <form class="horizontal-form" action="{% url ws_edit_group instance.pk %}" method="post">
-        <table>
-        {{ form.as_table }}
-        </table>
-        {% csrf_token %}
-        <button class="btn btn-primary" type="submit">{% trans 'Update' %}</button>
-    </form>
+        
+    <br/>
+    <div class="col-md-8">
+        <form class="form-horizontal" role="form" action="{% url ws_edit_group instance.pk %}" method="post">
+            {{ form|bootstrap_horizontal }}
+            <button class="btn btn-primary" type="submit">{% trans 'Submit' %}</button>
+            {% csrf_token %}
+        </form>
+    </div>
+
 {% endblock %}

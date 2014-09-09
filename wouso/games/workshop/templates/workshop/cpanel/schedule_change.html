@@ -2,6 +2,7 @@
 
 {% load workshop %}
 {% load i18n %}
+{% load bootstrap %}
 {% load django_bootstrap_breadcrumbs %}
 
 {% block breadcrumbs %}
@@ -11,12 +12,15 @@
 {% endblock %}
 
 {% block tabcontent %}
-    <form class=form-horizontal" method="post"
-          action="{% if instance %}{% url ws_schedule_change instance.pk %}{% else %}{% url ws_schedule_change %}{%endif%}">
-        <table>
-            {{ form.as_table }}
-        </table>
-        {% csrf_token %}
-        <button class="btn btn-primary" type="submit">{% trans 'Submit' %}</button>
-    </form>
+
+    <br/>
+    <div class="col-md-8">
+        <form class=form-horizontal" method="post" role="form"
+              action="{% if instance %}{% url ws_schedule_change instance.pk %}{% else %}{% url ws_schedule_change %}{%endif%}">
+              {{ form|bootstrap_horizontal }}
+            <button class="btn btn-primary" type="submit">{% trans 'Submit' %}</button>
+            {% csrf_token %}
+        </form>
+    </div>
+
 {% endblock %}
