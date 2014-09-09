@@ -1,7 +1,15 @@
 {% extends 'cpanel/index.html' %}
+
 {% load user %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Edit Report{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Reports" "reports" %}
+    {% breadcrumb "Edit report" "edit_report" %}
+{% endblock %}
 
 {% block sectioncontent %}
     <b>User who reported: </b>{{ report.user_from }}<br/><br/>
