@@ -1,4 +1,5 @@
 {% extends 'cpanel/index.html' %}
+
 {% load user %}
 {% load i18n %}
 {% load django_bootstrap_breadcrumbs %}
@@ -17,7 +18,7 @@ Races and groups
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Races and groups" "races_groups" %}
+    {% breadcrumb "Groups" "races_groups" %}
 {% endblock %}
 
 {% block sectioncontent %}
