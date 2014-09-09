@@ -1,9 +1,17 @@
 {% extends 'cpanel/index.html' %}
+
 {% load i18n %}
 {% load user %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}
-    Special Quest Manage Player:{% player mplayer %} {% if mplayer.group %}and his group: <a href="{% url specialquest_group mplayer.group.id %}">{{ mplayer.group }}</a>{% endif %}
+    Special Quest - Manage Player:{% player mplayer %} {% if mplayer.group %}and his group: <a href="{% url specialquest_group mplayer.group.id %}">{{ mplayer.group }}</a>{% endif %}
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Special quests" "specialquest_home" %}
+    {% breadcrumb "Manage player" "specialquest_cpanel_manage" %}
 {% endblock %}
 
 {% block sectioncontent %}
