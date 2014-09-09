@@ -1,8 +1,11 @@
 {% extends 'cpanel/qpool_home.html' %}
+
 {% load i18n %}
+{% load bootstrap %}
 {% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Add tag{% endblock %}
+
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Add tag" "qpool_add_tag" %}
@@ -10,19 +13,18 @@
 
 {% block sectioncontent %}
 
-    {% if form.errors %}
-        <p style="color: red;">
-         Please correct the error{{ form.errors|pluralize }} below.
-        </p>
-    {% endif %}
+    <div class="col-md-8">
+        {% if form.errors %}
+            <p style="color: red;">
+             Please correct the error{{ form.errors|pluralize }} below.
+            </p>
+        {% endif %}
 
-    <form class="horizontal-form" method="post">
-        {% csrf_token %}
-        <table>
-            {{ form.as_table }}
-        </table>
-        <br/>
-        <input class="btn btn-primary" type="submit" value="Submit">
-    </form>
+        <form class="form-horizontal" role="form" action="" method="post">
+            {{ form|bootstrap_horizontal }}
+            <input class="btn btn-primary" type="submit" value="Submit">
+            {% csrf_token %}
+        </form>
+    </div>
 
 {% endblock %}

@@ -1,5 +1,7 @@
 {% extends 'cpanel/qpool_home.html' %}
 
+{% load i18n %}
+{% load bootstrap %}
 {% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Set active tags{% endblock %}
@@ -10,15 +12,22 @@
 {% endblock %}
 
 {% block subsectioncontent %}
-<h3> Active tags </h3>
-{% if tags.count == 0 %}
-<p>No available tags.</p>
-{% else %}
-<form action="{% url set_active_categories %}" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit" class="btn btn-primary"/>
-</form>
-{% endif %}
 
-   <a class="btn btn-warning" href="{% url qpool_home cat='challenge' %}">Back</a>
+    <div class="col-md-8">
+        <h3> Active tags </h3>
+
+        {% if tags.count == 0 %}
+            <p>No available tags.</p>
+        {% else %}
+
+        <form class="form-horizontal" role="form" action="{% url set_active_categories %}" method="post">
+            {{ form|bootstrap_horizontal }}
+            <input type="submit" value="Submit" class="btn btn-primary"/>
+            {% csrf_token %}
+        </form>
+        {% endif %}
+
+       <a class="btn btn-warning" href="{% url qpool_home cat='challenge' %}">{% trans 'Back' %}</a>
+    </div>
+
 {% endblock %}
