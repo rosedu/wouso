@@ -2,6 +2,7 @@
 
 {% load user %}
 {% load i18n %}
+{% load bootstrap %}
 {% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Add role{% endblock %}
@@ -15,14 +16,12 @@
 {% block sectioncontent %}
 
 <div class="col-md-8">
-    <form class="horizontal-form" method="post">
-        {% csrf_token %}
-        <table class="table table-bordered table-condensed">
-            {{ form.as_table }}
-        </table>
+    <form class="form-horizontal" method="post" role="form" action="">
+        {{ form|bootstrap_horizontal }}
         <button type="submit" class="btn btn-primary">
             <span class="glyphicon glyphicon-plus"></span> {% trans 'Add role' %}
         </button>
+        {% csrf_token %}
     </form>
 </div>
 
