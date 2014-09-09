@@ -19,18 +19,21 @@
 <h3>New task:</h3>
 {% endif %}
 
-<form style="width: 70%" class="horizontal-form" method="post">
-    <table class="table table-bordered table-condensed">
-        {{ form.as_table }}
-    </table>
+<div class="col-md-8">
+    <form class="horizontal-form" method="post">
 
-    <div class="actions">
-        <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
-        <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
-        <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
-    </div>
+        <table class="table table-bordered table-condensed">
+            {{ form.as_table }}
+        </table>
 
-    {% csrf_token %}
-</form>
+        <div class="actions">
+            <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
+            <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
+            <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
+        </div>
+
+        {% csrf_token %}
+    </form>
+</div>
 
 {% endblock %}

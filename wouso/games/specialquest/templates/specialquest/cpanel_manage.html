@@ -69,51 +69,53 @@
 
     <h3><strong>History:</strong></h3>
 
-    <h4>--- Bonuses ---</h4>
-    <table style="width: 60%" class="table table-bordered table table-hover">
-        <tr>
-            <th>Timestamp</th>
-            <th>Amount</th>
-            <th>Coin</th>
-            <th>From</th>
-        </tr>
-        {% for bonus in bonuses %}
-        <tr>
-            <td>{{ bonus.timestamp }}</td>
-            <td>{{ bonus.amount }}</td>
-            <td>{{ bonus.coin }}</td>
-            <td>{% player bonus.external_id %}</td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="0" class="text-center">No bonuses yet.</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div class="col-md-8">
+        <h4>--- Bonuses ---</h4>
+        <table class="table table-bordered table table-hover">
+            <tr>
+                <th>Timestamp</th>
+                <th>Amount</th>
+                <th>Coin</th>
+                <th>From</th>
+            </tr>
+            {% for bonus in bonuses %}
+            <tr>
+                <td>{{ bonus.timestamp }}</td>
+                <td>{{ bonus.amount }}</td>
+                <td>{{ bonus.coin }}</td>
+                <td>{% player bonus.external_id %}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="0" class="text-center">No bonuses yet.</td>
+            </tr>
+            {% endfor %}
+        </table>
 
-    <h4>--- Penalties ---</h4>
-    <table style="width: 60%" class="table table-bordered table table-hover">
-        <tr>
-            <th>Timestamp</th>
-            <th>Amount</th>
-            <th>Coin</th>
-            <th>From</th>
-            <!--<th>Reason</th>-->
-        </tr>
-        {% for penalty in penalties %}
-        <tr>
-            <td>{{ penalty.timestamp }}</td>
-            <td>{{ penalty.amount }}</td>
-            <td>{{ penalty.coin }}</td>
-            <td>{% player bonus.external_id %}</td>
-            <!--<td></td>  TODO: add penalty reason column -->
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="0" class="text-center">No penalties yet.</td>
-        </tr>
-        {% endfor %}
-    </table>
+        <h4>--- Penalties ---</h4>
+        <table class="table table-bordered table table-hover">
+            <tr>
+                <th>Timestamp</th>
+                <th>Amount</th>
+                <th>Coin</th>
+                <th>From</th>
+                <!--<th>Reason</th>-->
+            </tr>
+            {% for penalty in penalties %}
+            <tr>
+                <td>{{ penalty.timestamp }}</td>
+                <td>{{ penalty.amount }}</td>
+                <td>{{ penalty.coin }}</td>
+                <td>{% player bonus.external_id %}</td>
+                <!--<td></td>  TODO: add penalty reason column -->
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="0" class="text-center">No penalties yet.</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 
 {% endblock %}
         
