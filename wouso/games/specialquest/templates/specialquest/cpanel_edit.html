@@ -1,12 +1,14 @@
 {% extends 'cpanel/index.html' %}
 
-{% block sectiontitle %}Edit task{% endblock %}
+{% load i18n %}
 {% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %}Add / Edit task{% endblock %}
 
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Special quests" "specialquest_home" %}
-    {% breadcrumb "Edit task" "specialquest_create" %}
+    {% breadcrumb "Add / Edit task" "specialquest_create" %}
 {% endblock %}
 
 {% block sectioncontent %}
@@ -14,18 +16,21 @@
 {% if task %}
 <h3>Edit task #{{ task.pk }}</h3>
 {% else %}
-<h3>New task</h3>
+<h3>New task:</h3>
 {% endif %}
 
-<form method="post">
-<table>
-    {{ form.as_table }}
-</table>
-<div class="actions">
-    <button onclick="history.back(); return false;" class="btn btn-warning">Cancel</button>
-    <button type="reset" class="btn btn-danger">Reset</button>
-    <button type="submit" class="btn btn-primary">Save</button>
-</div>
+<form style="width: 70%" class="horizontal-form" method="post">
+    <table class="table table-bordered table-condensed">
+        {{ form.as_table }}
+    </table>
+
+    <div class="actions">
+        <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
+        <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
+        <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
+    </div>
+
     {% csrf_token %}
 </form>
+
 {% endblock %}
