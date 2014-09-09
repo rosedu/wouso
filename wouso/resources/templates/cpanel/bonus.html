@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load user %}
+{% load bootstrap %}
 {% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}{% block title %}{% trans 'Bonus player' %}{% endblock %}{% endblock %}
@@ -14,18 +15,18 @@
 {% endblock %}
 
 {% block sectioncontent %}
-    <h4>Give bonus to player <strong> {{ target_player }}</strong>:</h4>
-    <form class="form-horizontal" method="post">
-        {{ form.as_p }}
-        <button class="btn btn-primary" type="submit">{% trans 'Bonus this player!' %}</button>
-        {% csrf_token %}
-    </form>
-
-    <hr/>
-
-    <h3><strong>History:</strong></h3>
-
     <div class="col-md-8">
+        <h4>Give bonus to player <strong> {{ target_player }}</strong>:</h4>
+        <form class="form-horizontal" role="form" method="post" action="">
+            {{ form|bootstrap_horizontal }}
+            <button class="btn btn-primary" type="submit">{% trans 'Bonus this player!' %}</button>
+            {% csrf_token %}
+        </form>
+
+        <hr/>
+
+        <h3><strong>History:</strong></h3>
+
         <h4>--- Bonuses ---</h4>
         <table class="table table-bordered table table-hover">
             <tr>
