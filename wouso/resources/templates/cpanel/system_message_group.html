@@ -1,7 +1,15 @@
 {% extends 'cpanel/index.html' %}
+
 {% load user %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}System Message{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Groups" "races_groups" %}
+    {% breadcrumb "Message" "system_message_group" %}
+{% endblock %}
 
 {% block sectioncontent %}
 <form   method="post" action="">
