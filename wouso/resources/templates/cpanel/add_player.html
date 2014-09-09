@@ -1,6 +1,7 @@
 {% extends 'cpanel/index.html' %}
 
 {% load user %}
+{% load i18n %}
 {% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Add Player{% endblock %}
@@ -24,7 +25,7 @@
   <table>
     {{ form.as_table }}
   </table>
-  <button type="submit">Submit</button>
+  <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
 </form>
 
 {% endblock %}
