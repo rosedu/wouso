@@ -1,6 +1,7 @@
 {% extends 'cpanel/index.html' %}
 
 {% load user %}
+{% load bootstrap %}
 {% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Edit Report{% endblock %}
@@ -12,15 +13,21 @@
 {% endblock %}
 
 {% block sectioncontent %}
-    <b>User who reported: </b>{{ report.user_from }}<br/><br/>
-    <b>User who was reported: </b>{{ report.user_to }}<br/><br/>
-    <b>Text of the report: </b>{{ report.text }}<br/><br/>
-    <b>Timestamp: </b>{{ report.timestamp }}<br/><br/>
-    <form name="edit_report" method="POST">{% csrf_token %}
-    <b>{{ form.as_p }}</b>
-    <input type="submit" class="btn btn-primary" value="Submit" />
-    <a href="{% url wouso.interface.cpanel.views.reports %}">
-        <input type="button" class="btn btn-warning" value ="Cancel"/>
-    </a>
-    </form>
+
+    <div class="col-md-8">
+        <b>User who reported: </b>{{ report.user_from }}<br/><br/>
+        <b>User who was reported: </b>{{ report.user_to }}<br/><br/>
+        <b>Text of the report: </b>{{ report.text }}<br/><br/>
+        <b>Timestamp: </b>{{ report.timestamp }}<br/><br/>
+
+        <form class="form-horizontal" role="form" action="" name="edit_report" method="POST">
+            {{ form|bootstrap_horizontal }}
+            <input type="submit" class="btn btn-primary" value="Submit" />
+            <a href="{% url wouso.interface.cpanel.views.reports %}">
+                <input type="button" class="btn btn-warning" value ="Cancel"/>
+            </a>
+            {% csrf_token %}
+        </form>
+    </div>
+
 {% endblock %}
