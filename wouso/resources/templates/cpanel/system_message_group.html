@@ -1,25 +1,40 @@
 {% extends 'cpanel/index.html' %}
+
 {% load user %}
+{% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}System Message{% endblock %}
 
-{% block sectioncontent %}
-<form   method="post" action="">
-    <table>
-        <tr>
-            <th>To:</th>
-            <td>{% player_group group %}</td>
-        </tr>
-        <tr>
-            <th>Text</th>
-            <td>
-                <textarea name="text" rows="20" cols="60"></textarea>
-            </td>
-        </tr>
-    </table>
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Groups" "races_groups" %}
+    {% breadcrumb "Message" "system_message_group" %}
+{% endblock %}
 
-{% csrf_token %}
-<button type="submit">Send</button>
-</form>
+{% block sectioncontent %}
+
+<div class="col-md-8">
+    <form class="horizontal-form" method="post" action="">
+
+        <table class="table table-bordered table-condensed">
+            <tr>
+                <th>To:</th>
+                <td>{% player_group group %}</td>
+            </tr>
+            <tr>
+                <th style="vertical-align: middle">Text:</th>
+                <td>
+                    <textarea name="text" rows="8" cols="50"></textarea>
+                </td>
+            </tr>
+        </table>
+
+        {% csrf_token %}
+
+        <button class="btn btn-primary" type="submit">{% trans 'Send' %}</button>
+
+    </form>
+</div>
 
 {% endblock %}

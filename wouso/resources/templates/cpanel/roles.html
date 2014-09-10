@@ -1,4 +1,5 @@
 {% extends 'cpanel/index.html' %}
+
 {% load user %}
 {% load i18n %}
 {% load django_bootstrap_breadcrumbs %}
@@ -6,7 +7,7 @@
 {% block sectiontitle %}
     Roles
     <a class="btn btn-primary pull-right" href="{% url roles_create %}">
-        <span class="glyphicon glyphicon-plus"></span>{% trans 'New role' %}
+        <span class="glyphicon glyphicon-plus"></span>{% trans 'Add role' %}
     </a>
 {% endblock %}
 

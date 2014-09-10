@@ -1,6 +1,7 @@
 {% extends 'cpanel/index.html' %}
 
 {% load user %}
+{% load bootstrap %}
 {% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Add Static Page{% endblock %}
@@ -13,18 +14,18 @@
 
 {% block sectioncontent %}
 
-{% if form.errors %}
-    <p style="color: red;">
-        Please correct the error{{ form.errors|pluralize }} below.
-    </p>
-{% endif %}
+    <div class="col-md-8">
+        {% if form.errors %}
+            <p style="color: red;">
+                Please correct the error{{ form.errors|pluralize }} below.
+            </p>
+        {% endif %}
 
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  <table>
-    {{ form.as_table }}
-  </table>
-  <input type="submit" value="Submit" class="btn btn-primary">
-</form>
+        <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+            {{ form|bootstrap_horizontal}}
+            <input type="submit" value="Submit" class="btn btn-primary">
+            {% csrf_token %}
+        </form>
+    </div>
 
 {% endblock %}

@@ -37,28 +37,30 @@
 
 <h4><strong>Artifacts existing:</strong></h4>
 
-<table style="width: 50%" class="table table-bordered table table-hover">
-    <tr>
-        <th>Title</th>
-        <th>Amount</th>
-        <th>Admin Edit</th>
-    </tr>
-    {% for a in to.magic.artifact_amounts.all %}
-    <tr>
-        <td>{{ a.artifact.title }}</td>
-        <td>{{ a.amount }}</td>
-        <td>
-            <a class="btn btn-success" href="{% url admin:magic_playerartifactamount_change a.id %}">
-                <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
-            </a>
-        </td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="0" class="text-center">No artifacts yet.</td>
-    </tr>
-    {% endfor %}
-</table>
+<div class="col-md-8">
+    <table class="table table-bordered table table-hover">
+        <tr>
+            <th>Title</th>
+            <th>Amount</th>
+            <th>Admin Edit</th>
+        </tr>
+        {% for a in to.magic.artifact_amounts.all %}
+        <tr>
+            <td>{{ a.artifact.title }}</td>
+            <td>{{ a.amount }}</td>
+            <td>
+                <a class="btn btn-success" href="{% url admin:magic_playerartifactamount_change a.id %}">
+                    <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="0" class="text-center">No artifacts yet.</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 
 {% endif %}
 {% endblock %}

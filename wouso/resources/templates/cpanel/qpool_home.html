@@ -14,14 +14,16 @@
         <a class="btn btn-primary" href="{% url question_new %}">
             <span class="glyphicon glyphicon-plus"></span>{% trans 'Add question' %}
         </a>
-        <a class="btn btn-primary" href="{% url importer %}">{% trans 'Import file' %}</a>
+        <a class="btn btn-primary" href="{% url importer %}">
+            <span class="glyphicon glyphicon-import"></span>{% trans 'Import file' %}
+        </a>
         <a class="btn btn-success" href="{% url qpool_manage_tags %}">
             <span class="glyphicon glyphicon-edit"></span>{% trans 'Manage tags' %}
         </a>
     </div>
     {% block breadcrumbs %}
         {{ block.super }}
-        {% breadcrumb "Question Pool" "qpool_home" %}
+        {% breadcrumb "Questions" "qpool_home" %}
     {% endblock %}
 {% endblock %}
 
@@ -64,11 +66,11 @@
             </a>
             {% endif %}
             <a class="btn btn-primary" href="{% url qpool_export category.name %}">
-                {% trans 'Export all' %}
+                <span class="glyphicon glyphicon-export"></span>{% trans 'Export all' %}
             </a>
             <a class="btn btn-danger" href="{% url remove_all cat=cat %}"
                 onclick="return confirm('Are you sure do you want to remove all questions in this category?');">
-                {% trans 'Remove all' %}
+                <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete all' %}
             </a>
         </div>
         <br/>

@@ -178,7 +178,10 @@
             <div class="panel-body">
             <h3>Quick actions</h3>
                 <div class="actions actions-left">
-                    <a class="btn btn-primary" href="{% url add_player %}">Add player</a>
+                    <a class="btn btn-primary" href="{% url add_player %}">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        {% trans 'Add player' %}
+                    </a>
                 </div>
 
                 <h3>Number of users who can play</h3>

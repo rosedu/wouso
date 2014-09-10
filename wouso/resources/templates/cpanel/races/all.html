@@ -1,4 +1,5 @@
 {% extends 'cpanel/index.html' %}
+
 {% load user %}
 {% load i18n %}
 {% load django_bootstrap_breadcrumbs %}
@@ -17,7 +18,7 @@ Races and groups
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Races and groups" "races_groups" %}
+    {% breadcrumb "Groups" "races_groups" %}
 {% endblock %}
 
 {% block sectioncontent %}
@@ -25,17 +26,21 @@ Races and groups
     {% for r in races %}
     <li>
         {{ r }} {% if r.can_play %}[can play]{% endif %}
-        <a href="{% url admin:user_race_change r.id %}">
+        <a href="{% url admin:user_race_change r.id %}"
+            style="color: green" title="Edit">
             <span class="glyphicon glyphicon-edit"></span>
         </a>
         <ul>
             {% for g in r.children %}
             <li>
                 {{ g }}
-                <a href="{% url admin:user_playergroup_change g.id %}">
+                <a href="{% url admin:user_playergroup_change g.id %}"
+                   style="color: green" title="Edit">
                     <span class="glyphicon glyphicon-edit"></span>
                 </a>
-                <a href="{% url system_message_group g.id %}">Message</a>
+                <a href="{% url system_message_group g.id %}"
+                   title="Send a message to this group">{% trans 'Message' %}
+                </a>
             </li>
             {% endfor %}
         </ul>
@@ -46,8 +51,13 @@ Races and groups
         {% for g in orphan_groups %}
           <li>
               {{ g }}
-              <a href="{% url admin:user_playergroup_change g.id %}"><span class="glyphicon glyphicon-edit"></span></a>
-              <a href="{% url system_message_group g.id %}">Message</a>
+              <a href="{% url admin:user_playergroup_change g.id %}"
+                 style="color: green" title="Edit">
+                  <span class="glyphicon glyphicon-edit"></span>
+              </a>
+              <a href="{% url system_message_group g.id %}"
+                 title="Send a message to this group">{% trans 'Message' %}
+              </a>
           </li>
         {% endfor %}
       </ul>

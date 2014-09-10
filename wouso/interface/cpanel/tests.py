@@ -77,9 +77,9 @@ class CpanelViewsTest(WousoTest):
         response = self.client.get(reverse('add_formula'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Add Formula')
-        self.assertContains(response, 'Name:')
-        self.assertContains(response, 'Expression:')
-        self.assertContains(response, 'Description:')
+        self.assertContains(response, 'Name')
+        self.assertContains(response, 'Expression')
+        self.assertContains(response, 'Description')
 
     def test_add_formula_view_post(self):
         # Check the view with a valid form

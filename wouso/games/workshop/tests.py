@@ -140,10 +140,10 @@ class TestWorkshopViews(WousoTest):
 
     def test_add_group_view_get(self):
         response = self.c.get(reverse('ws_add_group'))
-        self.assertContains(response, 'Name:')
-        self.assertContains(response, 'Day:')
-        self.assertContains(response, 'Hour:')
-        self.assertContains(response, 'Room:')
+        self.assertContains(response, 'Name')
+        self.assertContains(response, 'Day')
+        self.assertContains(response, 'Hour')
+        self.assertContains(response, 'Room')
 
     def test_add_group_view_post(self):
         data = {u'room': u'ef108',
@@ -165,7 +165,7 @@ class TestWorkshopViews(WousoTest):
     def test_edit_group_view_get(self):
         sg = Semigroup.objects.create(day=u'1', hour=u'10', name=u'semigroup_test')
         response = self.c.get(reverse('ws_edit_group', args=[sg.pk]))
-        self.assertContains(response, 'Name:')
+        self.assertContains(response, 'Name')
         self.assertContains(response, 'value="semigroup_test"')
 
     def test_edit_group_view_post(self):
@@ -186,12 +186,12 @@ class TestWorkshopViews(WousoTest):
         sch = Schedule.objects.create(name='schedule_test')
         # Get the response for editing a schedule URL:'schedule/edit/(?P<schedule>\d+)/'
         response = self.c.get(reverse('ws_schedule_change', args=[sch.pk]))
-        self.assertContains(response, 'Name:')
+        self.assertContains(response, 'Name')
         self.assertContains(response, 'value="schedule_test"')
 
         # Get the response for adding a schedule URL:'schedule/add/'
         response = self.c.get(reverse('ws_schedule_change'))
-        self.assertContains(response, 'Name:')
+        self.assertContains(response, 'Name')
 
     def test_schedule_change_view_post(self):
         today = datetime.today()
@@ -206,9 +206,9 @@ class TestWorkshopViews(WousoTest):
 
     def test_workshop_add_view_get(self):
         response = self.c.get(reverse('ws_add_workshop'))
-        self.assertContains(response, 'Semigroup:')
-        self.assertContains(response, 'Date:')
-        self.assertContains(response, 'Question count:')
+        self.assertContains(response, 'Semigroup')
+        self.assertContains(response, 'Date')
+        self.assertContains(response, 'Question count')
 
     def test_workshop_add_view_post(self):
         sg = Semigroup.objects.create(day=u'1', hour=u'10', name=u'semigroup_test')
