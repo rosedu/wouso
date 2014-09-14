@@ -1,0 +1,12 @@
+{% extends 'cpanel/index.html' %}
+{% load i18n %}
+{% load user %}
+{% block sectiontitle %}{% block title %}{% trans 'Broadcast email' %}{% endblock %}{% endblock %}
+
+{% block sectioncontent %}
+    <form action="" method="post">
+        {{ form.as_p }}
+        <button class="btn btn-primary" type="submit">Send mail</button>
+        {% csrf_token %}
+    </form>
+{% endblock %}

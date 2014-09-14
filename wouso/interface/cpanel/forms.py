@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User, Group
+from django.forms import ValidationError
+from wouso.core.scoring.models import Coin
 from wouso.core.qpool.models import Question, Answer, Schedule, Category, Tag
 from wouso.core.magic.models import Spell
 from wouso.core.scoring.models import Formula
@@ -207,3 +209,20 @@ class StaticPageForm(forms.ModelForm):
 class NewsForm(forms.ModelForm):
     class Meta:
         model = NewsItem
+
+
+class BonusForm(forms.Form):
+    amount = forms.IntegerField(initial=0)
+    coin = forms.ModelChoiceField(queryset=Coin.objects.all())
+    reason = forms.CharField(required=False)
+
+    def clean_amount(self):
+        amount = self.cleaned_data.get('amount', None)
+        if not amount:
+            raise ValidationError('Invalid amount')
+        return amount
+
+
+class BroadcastEmailForm(forms.Form):
+    subject = forms.CharField(required=True)
+    message = forms.CharField(widget=forms.Textarea, required=False)

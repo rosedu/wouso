@@ -79,6 +79,7 @@ name='roles_create'),
     url(r'^activity_monitor/$', 'wouso.interface.cpanel.views.activity_monitor', name='activity_monitor'),
 
     # misc
+    url(r'^broadcast/$', 'wouso.interface.cpanel.views.broadcast_email', name='broadcast_email'),
     url(r'^tools/clear-cache/$', 'wouso.interface.cpanel.views.clear_cache', name='clear_cache'),
 
     url(r'^reports/$', 'wouso.interface.cpanel.views.reports', name='reports'),

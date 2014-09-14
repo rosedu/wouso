@@ -1,5 +1,6 @@
 import datetime
 from django import forms
+from django.core.mail import send_mail, send_mass_mail
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import models as auth
@@ -40,7 +41,7 @@ from wouso.middleware.impersonation import ImpersonateMiddleware
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, \
     AnswerForm, EditReportForm, RaceForm, PlayerGroupForm, RoleForm, \
-    StaticPageForm, NewsForm
+    StaticPageForm, NewsForm, BroadcastEmailForm, BonusForm
 from forms import FormulaForm, TagForm
 
 
@@ -1006,7 +1007,6 @@ class RacesGroupsView(ListView):
 
 
 class RacesAdd(CreateView):
-
     model = Race
     template_name = 'cpanel/races/create.html'
     form_class = RaceForm
@@ -1016,7 +1016,6 @@ class RacesAdd(CreateView):
 
 
 class GroupsAdd(CreateView):
-
     model = PlayerGroup
     template_name = 'cpanel/races/group_create.html'
     form_class = PlayerGroupForm
@@ -1259,16 +1258,29 @@ def clear_cache(request):
                                   context_instance=RequestContext(request))
 
 
-class BonusForm(forms.Form):
-    amount = forms.IntegerField(initial=0)
-    coin = forms.ModelChoiceField(queryset=Coin.objects.all())
-    reason = forms.CharField(required=False)
+@permission_required('config.change_setting')
+def broadcast_email(request):
+    """
+     Sends an email to all users in the game
+    """
+    if request.method == 'POST':
+        form = BroadcastEmailForm(request.POST)
+        if form.is_valid():
+            # Obtain form data
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+            from_email = settings.EMAIL_HOST_USER  # taken from settings.py
+            # Create an email list with all users that have an email set
+            user_list = User.objects.all()
+            email_list = [u.email for u in user_list if u.email]
+            send_mail(subject, message, from_email, email_list)
+            return HttpResponseRedirect('..')
+    else:
+        form = BroadcastEmailForm
 
-    def clean_amount(self):
-        amount = self.cleaned_data.get('amount', None)
-        if not amount:
-            raise ValidationError('Invalid amount')
-        return amount
+    return render_to_response('cpanel/broadcast.html',
+                              {'form': form},
+                              context_instance=RequestContext(request))
 
 
 @permission_required('config.change_setting')

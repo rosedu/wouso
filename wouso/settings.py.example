@@ -258,3 +258,9 @@ DISPLAY_NAME = '{first_name} {last_name}'
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
     from localsettings import *
 
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'wouso-email@gmail.com'
+EMAIL_HOST_PASSWORD = 'wouso-email-password'
+EMAIL_PORT = 587
