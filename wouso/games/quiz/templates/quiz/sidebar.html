@@ -1,0 +1,11 @@
+{% extends 'interface/sidebar_widget.html' %}
+{% load i18n %}
+
+{% block title %}{%  trans 'Quiz' %}{% endblock %}
+
+{% block content %}
+
+    {% trans 'Quiz Game.' %}.
+    <a href="{% url quiz_index_view %}">{% trans 'Link' %}</a>
+
+{% endblock %}
