@@ -7,7 +7,7 @@ from wouso.core.qpool.models import Question
 
 class QuizUser(Player):
     """ Extension of the User object, customized for quiz """
-    question = models.ForeignKey(Question, related_name="Mine", null=True)
+    my_question = models.ForeignKey(Question, related_name="MyQuestion", null=True)
 
 
 class QuizGame(Game):
