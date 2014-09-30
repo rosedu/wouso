@@ -39,6 +39,14 @@ def get_questions_with_category(category='all', active_only=True, endorsed_only=
 
     return result
 
+
+def get_questions_with_tag(tag='all', active_only=True, endorsed_only=False):
+    if tag == 'all':
+        result = models.Question.objects.all()
+
+    return result
+
+
 def get_questions_with_tag_for_day(tag, select):
     if isinstance(tag, str):
         query = models.Question.objects.filter(tags__name=tag).exclude(endorsed_by__isnull=True)
