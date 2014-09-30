@@ -5,11 +5,13 @@ from django.contrib.auth.models import User
 from utils import validate_dynq_code
 from wouso.core.common import Item
 
+
 class Category(Item, models.Model):
     """ One to many grouping for Question objects. Usually a game
     defines it's own category of questions in qpool.
     """
     name = models.CharField(max_length=100, unique=True)
+
 
 class Tag(models.Model):
     """ A simple way of grouping Questions """
@@ -140,6 +142,7 @@ class Question(models.Model):
     def __unicode__(self):
         return unicode(self.text)
 
+
 class Answer(models.Model):
     question = models.ForeignKey(Question)
     text = models.TextField()
@@ -148,6 +151,7 @@ class Answer(models.Model):
 
     def __unicode__(self):
         return self.text
+
 
 class Schedule(models.Model):
     question = models.OneToOneField(Question, related_name="schedule")
