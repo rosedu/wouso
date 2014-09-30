@@ -1,8 +1,10 @@
-from models import QuizUser, QuizGame
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 from django.views.generic import View
 from django.shortcuts import redirect
+
+from models import QuizUser, QuizGame
+from wouso.core.ui import register_sidebar_block
 
 
 class QuizView(View):
@@ -30,3 +32,5 @@ def sidebar_widget(context):
                             {'quser': quiz_user,
                              'quiz': QuizGame,
                              'id': 'quiz'})
+
+register_sidebar_block('quiz', sidebar_widget)
