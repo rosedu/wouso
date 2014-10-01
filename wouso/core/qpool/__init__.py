@@ -40,10 +40,8 @@ def get_questions_with_category(category='all', active_only=True, endorsed_only=
     return result
 
 
-def get_questions_with_tag(tag='all', active_only=True, endorsed_only=False):
-    if tag == 'all':
-        result = models.Question.objects.all()
-
+def get_questions_with_tag_and_category(tag='all', category='all', active_only=True, endorsed_only=False):
+    result = models.Question.objects.filter(tags__name=tag, category__name=category)
     return result
 
 

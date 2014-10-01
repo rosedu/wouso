@@ -2,7 +2,7 @@ from django.db import models
 
 from wouso.core.user.models import Player
 from wouso.core.game.models import Game
-from wouso.core.qpool import register_category, get_questions_with_category
+from wouso.core.qpool import register_category, get_questions_with_tag_and_category
 from wouso.core.qpool.models import Question
 
 
@@ -13,14 +13,13 @@ class QuizUser(Player):
                                     null=True)
 
 
-class Quiz(models.Models):
+class Quiz(models.Model):
     questions = models.ManyToManyField(Question)
     owner = models.ForeignKey(Game, null=True, blank=True)
 
     @classmethod
     def create(cls, ignore_questions=False):
-        questions = [q for q in get_questions_with_category('quiz')]
-        print questions
+        questions = [q for q in get_questions_with_tag_and_category('lesson-1', 'quiz')]
         return questions
 
 

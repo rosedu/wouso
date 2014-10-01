@@ -3,7 +3,7 @@ from django.template.loader import render_to_string
 from django.views.generic import View
 from django.shortcuts import redirect
 
-from models import QuizUser, QuizGame
+from models import Quiz, QuizUser, QuizGame
 from wouso.core.ui import register_sidebar_block
 
 
@@ -16,10 +16,11 @@ class QuizView(View):
         profile = request.user.get_profile()
         self.quiz_user = profile.get_extension(QuizUser)
 
+        Quiz.create(False)
+
         return super(QuizView, self).dispatch(request, *args, **kwargs)
 
 index = login_required(QuizView.as_view())
-
 
 def sidebar_widget(context):
     user = context.get('user', None)
