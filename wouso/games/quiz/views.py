@@ -16,7 +16,7 @@ class QuizView(View):
         profile = request.user.get_profile()
         self.quiz_user = profile.get_extension(QuizUser)
 
-        Quiz.create(False)
+        Quiz.create('lesson_one', False)
 
         return super(QuizView, self).dispatch(request, *args, **kwargs)
 
