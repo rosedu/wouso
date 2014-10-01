@@ -42,6 +42,13 @@ def get_questions_with_category(category='all', active_only=True, endorsed_only=
 
 def get_questions_with_tag_and_category(tag='all', category='all', active_only=True, endorsed_only=False):
     result = models.Question.objects.filter(tags__name=tag, category__name=category)
+
+    # filtering
+    if active_only:
+        result = result.filter(active=True)
+    if endorsed_only:
+        result = result.exclude(endorsed_by__isnull=True)
+
     return result
 
 
