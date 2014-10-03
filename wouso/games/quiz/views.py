@@ -6,7 +6,7 @@ from django.shortcuts import render_to_response, redirect, get_object_or_404
 
 from models import Quiz, QuizUser, QuizGame
 from forms import QuizForm
-from core.ui import register_sidebar_block
+from wouso.core.ui import register_sidebar_block
 
 
 class QuizView(View):
@@ -15,8 +15,11 @@ class QuizView(View):
             return redirect('wouso.interface.views.homepage')
 
         profile = request.user.get_profile()
+        print profile, "profile"
         self.quiz_user = profile.get_extension(QuizUser)
-        self.quiz = get_object_or_404(Quiz, pk=kwargs['id'])
+        print self.quiz_user, 'quiz_user'
+        print Quiz.objects.all()
+        self.quiz = get_object_or_404(Quiz, pk=1)
 
         Quiz.create('lesson_one', False)
 
@@ -29,7 +32,7 @@ class QuizView(View):
                                   context_instance=RequestContext(request))
 
 
-quiz = login_required(QuizView.as_view())
+index = login_required(QuizView.as_view())
 
 
 def sidebar_widget(context):
