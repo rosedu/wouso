@@ -36,9 +36,11 @@ class Quiz(models.Model):
         shuffle(questions)
 
         questions_qs = questions[:cls.LIMIT]
+        quiz = Quiz.objects.create(owner=None)
+        for q in questions_qs:
+            quiz.questions.add(q)
 
-        print questions_qs
-        return questions
+        return quiz
 
 
 class QuizGame(Game):
