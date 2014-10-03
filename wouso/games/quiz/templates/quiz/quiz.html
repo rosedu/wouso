@@ -10,6 +10,32 @@
 
 {% block sectioncontent %}
 
-
+<form method="post">
+    <ol>
+        {% for field in form.visible_fields %}
+            <li>
+                <div class="questions">
+                    {% autoescape off %}
+                    {{ field.label }}
+                    {% endautoescape %}
+                    <ul class="answers">
+                        {% for choice in field.field.choices %}
+                            {% autoescape off %}
+                            <li>
+                                <input type="checkbox" name="{{ field.html_name }}" value="{{ choice.0 }}"/>
+                                <label for="{{ field.html_name }}_{{ choice.0 }}">{{ choice.1 }}</label>
+                            </li>
+                            {% endautoescape %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </li>
+        {% endfor %}
+    </ol>
+    {% csrf_token %}
+    <div class="actions">
+        <button type="submit">{% trans 'Submit' %}</button>
+    </div>
+</form>
 
 {% endblock %}

@@ -15,13 +15,14 @@ class QuizView(View):
             return redirect('wouso.interface.views.homepage')
 
         profile = request.user.get_profile()
-        print profile, "profile"
+        # print profile, "profile"
         self.quiz_user = profile.get_extension(QuizUser)
-        print self.quiz_user, 'quiz_user'
-        print Quiz.objects.all()
+        # print self.quiz_user, 'quiz_user'
+        # print Quiz.objects.all()
         self.quiz = get_object_or_404(Quiz, pk=1)
+        # self.quiz = Quiz.create('lesson-1', False)
 
-        Quiz.create('lesson_one', False)
+        # Quiz.create('lesson_one', False)
 
         return super(QuizView, self).dispatch(request, *args, **kwargs)
 
