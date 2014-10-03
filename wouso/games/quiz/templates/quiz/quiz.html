@@ -22,7 +22,7 @@
                         {% for choice in field.field.choices %}
                             {% autoescape off %}
                             <li>
-                                <input type="checkbox" name="{{ field.html_name }}" value="{{ choice.0 }}"/>
+                                <input type="checkbox" name="{{ field.html_name }}" value="{{ choice.0 }}" id="{{ field.html_name }}_{{ choice.0 }}" />
                                 <label for="{{ field.html_name }}_{{ choice.0 }}">{{ choice.1 }}</label>
                             </li>
                             {% endautoescape %}

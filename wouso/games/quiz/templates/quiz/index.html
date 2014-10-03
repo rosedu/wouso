@@ -1,0 +1,16 @@
+{% extends 'interface/section_base.html'%}
+{% load i18n %}
+{% block title %}{% trans 'Quizzes' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Quizzes' %}{% endblock %}
+
+{% block sectioncontent %}
+
+<h3>Active Quizzes</h3>
+
+<ul>
+    {% for q in quizzes %}
+        <li><a href="{% url quiz_view q.id %}">{{ q }}</a></li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
