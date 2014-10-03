@@ -3,10 +3,21 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.views.generic import View
 from django.shortcuts import render_to_response, redirect, get_object_or_404
+from django.core.urlresolvers import reverse_lazy
 
 from models import Quiz, QuizUser, QuizGame
 from forms import QuizForm
 from wouso.core.ui import register_sidebar_block
+
+
+@login_required
+def index(request):
+    """ Shows all quizzes related to the current user """
+    quizzes = Quiz.objects.all()
+
+    return render_to_response('quiz/index.html',
+                              {'quizzes': quizzes},
+                              context_instance=RequestContext(request))
 
 
 class QuizView(View):
@@ -32,8 +43,22 @@ class QuizView(View):
                                   {'quiz': self.quiz, 'form': form},
                                   context_instance=RequestContext(request))
 
+    def post(self, request, **kwargs):
+        form = QuizForm(self.quiz, request.POST)
+        results = form.get_response()
+        form.check_self_boxes()
+        print results
+        if results.get('results', False):
+            results['results'] = form.get_results_in_order(results['results'])
+            questions_and_answers = zip(form.visible_fields(), results['results'])
+        else:
+            questions_and_answers = None
 
-index = login_required(QuizView.as_view())
+        print questions_and_answers, "QA"
+        return reverse_lazy('index')
+
+
+quiz = login_required(QuizView.as_view())
 
 
 def sidebar_widget(context):
