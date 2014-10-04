@@ -9,6 +9,7 @@
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Questions" "qpool_home" %}
+    {% breadcrumb "Edit question" "question_edit" question.id %}
     {% breadcrumb "Add answer" "add_answer" %}
 {% endblock %}
 
