@@ -42,6 +42,39 @@ class Quiz(models.Model):
 
         return quiz
 
+    @classmethod
+    def calculate_points(cls, responses):
+        """ Response contains a dict with question id and checked answers ids.
+        Example:
+            {1 : [14,], ...}, - has answered answer with id 14 at the question with id 1
+        """
+        points = 0
+        results = {}
+        for r, v in responses.iteritems():
+            checked, missed, wrong = 0, 0, 0
+            q = Question.objects.get(id=r)
+            correct_count = len([a for a in q.answers if a.correct])
+            wrong_count = len([a for a in q.answers if not a.correct])
+            for a in q.answers.all():
+                if a.correct:
+                    if a.id in v:
+                        checked += 1
+                    else:
+                        missed += 1
+                elif a.id in v:
+                    wrong += 1
+            if correct_count == 0:
+                qpoints = 1 if (len(v) == 0) else 0
+            elif wrong_count == 0:
+                qpoints = 1 if (len(v) == q.answers.count()) else 0
+            else:
+                qpoints = checked - wrong
+            qpoints = qpoints if qpoints > 0 else 0
+            points += qpoints
+            results[r] = (checked, correct_count)
+        # return {'points': int(100.0 * points), 'results' : results}
+        return {'points': points, 'results' : results}
+
 
 class QuizGame(Game):
     """ Each game must extend Game"""

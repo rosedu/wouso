@@ -30,7 +30,7 @@ class QuizView(View):
         self.quiz_user = profile.get_extension(QuizUser)
         # print self.quiz_user, 'quiz_user'
         # print Quiz.objects.all()
-        self.quiz = get_object_or_404(Quiz, pk=1)
+        self.quiz = get_object_or_404(Quiz, pk=kwargs['id'])
         # self.quiz = Quiz.create('lesson-1', False)
 
         # Quiz.create('lesson_one', False)
@@ -47,15 +47,17 @@ class QuizView(View):
         form = QuizForm(self.quiz, request.POST)
         results = form.get_response()
         form.check_self_boxes()
-        print results
-        if results.get('results', False):
-            results['results'] = form.get_results_in_order(results['results'])
-            questions_and_answers = zip(form.visible_fields(), results['results'])
-        else:
-            questions_and_answers = None
 
-        print questions_and_answers, "QA"
-        return reverse_lazy('index')
+        results = Quiz.calculate_points(results)
+        return render_to_response(('quiz/result.html'),
+            {'quiz': self.quiz, 'points': results['points']},
+            context_instance=RequestContext(request))
+
+        results = Quiz.calculate_points(results)
+        return render_to_response(('quiz/result.html'),
+            {'quiz': self.quiz, 'points': results['points']},
+            context_instance=RequestContext(request))
+
 
 
 quiz = login_required(QuizView.as_view())
