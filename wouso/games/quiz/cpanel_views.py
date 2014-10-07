@@ -20,7 +20,7 @@ list_quizzes = staff_required(ListQuizzes.as_view())
 
 
 class AddQuizView(CreateView):
-    template_name = 'cpanel/add_quiz.html'
+    template_name = 'quiz/cpanel/add_quiz.html'
     form_class = QuizForm
     success_url = reverse_lazy('list_quizzes')
 

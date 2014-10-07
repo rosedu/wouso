@@ -3,11 +3,18 @@
 {% load i18n %}
 {% load django_bootstrap_breadcrumbs %}
 
-{% block sectiontitle %}Quizzes{% endblock %}
+{% block sectiontitle %}
+    Quizzes
+    <div class="pull-right">
+        <a class="btn btn-primary" href="{% url add_quiz %}">
+            <span class="glyphicon glyphicon-plus"></span>{% trans 'Add quiz'%}
+        </a>
+    </div>
+{% endblock %}
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Quizzes" "quizzes" %}
+    {% breadcrumb "Quiz" "list_quizzes" %}
 {% endblock %}
 
 {% block sectioncontent %}
