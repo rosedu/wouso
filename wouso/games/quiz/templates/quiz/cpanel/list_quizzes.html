@@ -18,6 +18,8 @@
 {% endblock %}
 
 {% block sectioncontent %}
-
+{%  for q in quizzes %}
+    {{ q.name }}
+{% endfor %}
 
 {% endblock %}
