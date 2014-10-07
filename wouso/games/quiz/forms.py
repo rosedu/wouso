@@ -1,4 +1,5 @@
 from django import forms
+from wouso.games.quiz.models import Quiz
 
 
 class QuizForm(forms.Form):
@@ -44,3 +45,8 @@ class QuizForm(forms.Form):
             id = int(field.html_name[len('answer_'):])
             v.append(results[id])
         return v
+
+
+class QuizForm(forms.ModelForm):
+    class Meta:
+        model = Quiz
