@@ -1,0 +1,16 @@
+{% extends 'cpanel/index.html' %}
+
+{% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %}Quizzes{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Quizzes" "quizzes" %}
+{% endblock %}
+
+{% block sectioncontent %}
+
+
+{% endblock %}
