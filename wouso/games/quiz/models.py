@@ -23,19 +23,19 @@ Player.register_extension('quiz', QuizUser)
 
 
 class Quiz(models.Model):
+    name = models.TextField(max_length=200)
+    time_limit = models.TimeField()
     questions = models.ManyToManyField(Question)
     owner = models.ForeignKey(Game, null=True, blank=True)
-
-    LIMIT = 5
 
     @classmethod
     def create(cls, tag, ignore_questions=False):
         questions = [q for q in get_questions_with_tag_and_category(tag, 'quiz')]
-        if (len(questions) < cls.LIMIT) and not ignore_questions:
+        if (len(questions) < cls.time_limit) and not ignore_questions:
             raise QuizException('Too few questions')
         shuffle(questions)
 
-        questions_qs = questions[:cls.LIMIT]
+        questions_qs = questions[:cls.time_limit]
         quiz = Quiz.objects.create(owner=None)
         for q in questions_qs:
             quiz.questions.add(q)
