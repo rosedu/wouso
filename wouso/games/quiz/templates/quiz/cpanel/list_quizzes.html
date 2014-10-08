@@ -18,8 +18,36 @@
 {% endblock %}
 
 {% block sectioncontent %}
-{%  for q in quizzes %}
-    {{ q.name }}
-{% endfor %}
+
+<div class="col-md-12">
+    <table class="table table-bordered table-hover">
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Tags</th>
+            <th>Questions</th>
+            <th>Time Limit</th>
+            <th>Active</th>
+            <th>Manage</th>
+        </tr>
+        {% if quizzes %}
+            {% for q in quizzes %}
+            <tr>
+                <td>{{ q.id }}</td>
+                <td>{{ q.name }}</td>
+                <td></td>
+                <td>{{ q.number_of_questions }}</td>
+                <td>{{ q.time_limit }}</td>
+                <td></td>
+                <td>Delete / Edit</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="7">No quizzes added yet</td>
+            </tr>
+        {% endif %}
+    </table>
+</div>
 
 {% endblock %}
