@@ -50,7 +50,7 @@ class QuizForm(forms.Form):
         return v
 
 
-class QuizForm(forms.ModelForm):
+class AddQuizForm(forms.ModelForm):
     tag = forms.CharField()
 
     class Meta:
