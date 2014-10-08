@@ -109,6 +109,9 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
 
             q['text'] = ' '.join(s[1:])
 
+        elif line == 'tags:':
+            continue
+
         elif line.startswith('tags: '):
             tags_line = line.split('tags: ')[1]
             file_tags = tags_line.split()
