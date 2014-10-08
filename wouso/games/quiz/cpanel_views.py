@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import permission_required
 from django.views.generic import ListView, CreateView
 from django.core.urlresolvers import reverse_lazy
 
-from games.quiz.forms import QuizForm
+from games.quiz.forms import AddQuizForm
 from wouso.core.decorators import staff_required
 from wouso.games.quiz.models import Quiz
 
