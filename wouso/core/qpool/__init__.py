@@ -1,6 +1,8 @@
 # TODO: check usage of these functions and rename/refactor
 from django.db import models
 from django.db.models import Q
+from core.qpool.models import Question
+
 
 def get_questions_with_tags(tlist, select='any', active_only=True, endorsed_only=True):
     if isinstance(tlist, str):
@@ -54,7 +56,7 @@ def get_questions_with_tag_and_category(tag='all', category='all', active_only=T
 
 def get_questions_with_tag_for_day(tag, select):
     if isinstance(tag, str):
-        query = models.Question.objects.filter(tags__name=tag).exclude(endorsed_by__isnull=True)
+        query = Question.objects.filter(tags__name=tag).exclude(endorsed_by__isnull=True)
         for q in query:
             if q.day == select:
                 return q
