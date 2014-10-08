@@ -30,20 +30,6 @@ class Quiz(models.Model):
     owner = models.ForeignKey(Game, null=True, blank=True)
 
     @classmethod
-    def create(cls, tag, ignore_questions=False):
-        questions = [q for q in get_questions_with_tag_and_category(tag, 'quiz')]
-        if (len(questions) < cls.number_of_questions) and not ignore_questions:
-            raise QuizException('Too few questions')
-        shuffle(questions)
-
-        questions_qs = questions[:cls.number_of_questions]
-        quiz = Quiz.objects.create(owner=None)
-        for q in questions_qs:
-            quiz.questions.add(q)
-
-        return quiz
-
-    @classmethod
     def calculate_points(cls, responses):
         """ Response contains a dict with question id and checked answers ids.
         Example:

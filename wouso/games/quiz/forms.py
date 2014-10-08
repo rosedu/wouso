@@ -1,4 +1,7 @@
+from random import shuffle
 from django import forms
+from core.qpool import get_questions_with_tag_and_category
+from games.quiz.models import QuizException
 from wouso.games.quiz.models import Quiz
 
 
@@ -48,5 +51,22 @@ class QuizForm(forms.Form):
 
 
 class QuizForm(forms.ModelForm):
+    tag = forms.CharField()
+
     class Meta:
         model = Quiz
+        exclude = ['questions', 'owner']
+
+    def save(self):
+        data = self.cleaned_data
+
+        questions = [q for q in get_questions_with_tag_and_category(data['tag'], 'quiz')]
+        if len(questions) < data['number_of_questions']:
+            raise QuizException('Too few questions')
+        shuffle(questions)
+        questions_qs = questions[:data['number_of_questions']]
+
+        self.instance.save()
+        self.instance.questions = questions_qs
+
+        return self.instance

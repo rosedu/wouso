@@ -24,6 +24,5 @@ class AddQuizView(CreateView):
     form_class = QuizForm
     success_url = reverse_lazy('list_quizzes')
 
-
 add_quiz = permission_required('config.change_setting')(
     AddQuizView.as_view())
