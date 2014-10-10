@@ -10,7 +10,15 @@
 
 {% block sectioncontent %}
 
-<form method="post">
+<div id="timer" class="timer timer-big">
+        {{ quiz.time_limit }} seconds
+</div>
+<script id="timer_script" language="javascript">
+        var seconds = {{ quiz.time_limit }};
+        $(document).ready(function () { update('timer', 'quiz_form');});
+</script>
+
+<form method="post" id="quiz_form">
     <ol>
         {% for field in form.visible_fields %}
             <li>
