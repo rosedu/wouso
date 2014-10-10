@@ -1,9 +1,12 @@
+from django.contrib import messages
+from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.views.generic import View
 from django.shortcuts import render_to_response, redirect, get_object_or_404
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse_lazy, reverse
+from django.http import HttpResponseRedirect
 
 from models import Quiz, QuizUser, QuizGame
 from forms import QuizForm
@@ -26,19 +29,21 @@ class QuizView(View):
             return redirect('wouso.interface.views.homepage')
 
         profile = request.user.get_profile()
-        # print profile, "profile"
         self.quiz_user = profile.get_extension(QuizUser)
-        # print self.quiz_user, 'quiz_user'
-        # print Quiz.objects.all()
         self.quiz = get_object_or_404(Quiz, pk=kwargs['id'])
-        # self.quiz = Quiz.create('lesson-1', False)
 
-        # Quiz.create('lesson_one', False)
+        print self.quiz_user, self.quiz.players.all()
+        if self.quiz_user in self.quiz.players.all():
+            messages.error(request, _('You have already submitted this'
+                                      ' quiz!'))
+            return HttpResponseRedirect(reverse('quiz_index_view'))
 
         return super(QuizView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         form = QuizForm(self.quiz)
+        if self.quiz_user in self.quiz.players.all():
+            return HttpResponseRedirect(reverse('quiz_index_view'))
         return render_to_response('quiz/quiz.html',
                                   {'quiz': self.quiz, 'form': form},
                                   context_instance=RequestContext(request))
@@ -48,16 +53,12 @@ class QuizView(View):
         results = form.get_response()
         form.check_self_boxes()
 
-        results = Quiz.calculate_points(results)
-        return render_to_response(('quiz/result.html'),
-            {'quiz': self.quiz, 'points': results['points']},
-            context_instance=RequestContext(request))
+        self.quiz.add_player(self.quiz_user)
 
         results = Quiz.calculate_points(results)
         return render_to_response(('quiz/result.html'),
-            {'quiz': self.quiz, 'points': results['points']},
-            context_instance=RequestContext(request))
-
+                                  {'quiz': self.quiz, 'points': results['points']},
+                                  context_instance=RequestContext(request))
 
 
 quiz = login_required(QuizView.as_view())

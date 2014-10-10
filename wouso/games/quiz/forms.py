@@ -55,7 +55,7 @@ class AddQuizForm(forms.ModelForm):
 
     class Meta:
         model = Quiz
-        exclude = ['questions', 'owner']
+        exclude = ['questions', 'owner', 'players']
 
     def save(self):
         data = self.cleaned_data

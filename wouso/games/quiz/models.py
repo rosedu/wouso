@@ -29,6 +29,8 @@ class Quiz(models.Model):
     questions = models.ManyToManyField(Question)
     owner = models.ForeignKey(Game, null=True, blank=True)
 
+    players = models.ManyToManyField(QuizUser)
+
     @classmethod
     def calculate_points(cls, responses):
         """ Response contains a dict with question id and checked answers ids.
@@ -61,6 +63,9 @@ class Quiz(models.Model):
             results[r] = (checked, correct_count)
         # return {'points': int(100.0 * points), 'results' : results}
         return {'points': points, 'results' : results}
+
+    def add_player(self, player):
+        self.players.add(player)
 
 
 class QuizGame(Game):
