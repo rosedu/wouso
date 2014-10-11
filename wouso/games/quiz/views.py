@@ -16,10 +16,12 @@ from wouso.core.ui import register_sidebar_block
 @login_required
 def index(request):
     """ Shows all quizzes related to the current user """
-    quizzes = Quiz.objects.all()
-
+    quizzes = Quiz.objects.filter()
+    inactive_quizzes = [q for q in quizzes if q.elapsed]
+    active_quizzes = [q for q in quizzes if q.is_active]
     return render_to_response('quiz/index.html',
-                              {'quizzes': quizzes},
+                              {'active_quizzes': active_quizzes,
+                               'inactive_quizzes': inactive_quizzes},
                               context_instance=RequestContext(request))
 
 

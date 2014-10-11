@@ -1,4 +1,5 @@
 from random import shuffle
+from datetime import datetime
 
 from django.db import models
 
@@ -29,7 +30,25 @@ class Quiz(models.Model):
     questions = models.ManyToManyField(Question)
     owner = models.ForeignKey(Game, null=True, blank=True)
 
+    start = models.DateTimeField()
+    end = models.DateTimeField()
+
     players = models.ManyToManyField(QuizUser)
+
+    @property
+    def elapsed(self):
+        if self.end < datetime.now():
+            return True
+        return False
+
+    @property
+    def is_active(self):
+        acum = datetime.now()
+        if self.end < acum:
+            return False
+        elif self.start > acum:
+            return False
+        return True
 
     @classmethod
     def calculate_points(cls, responses):

@@ -1,9 +1,10 @@
 from random import shuffle
 from django import forms
 from core.qpool import get_questions_with_tag_and_category
-from core.qpool.models import Tag
+from core.qpool.models import Tag, Question
 from games.quiz.models import QuizException
 from wouso.games.quiz.models import Quiz
+from bootstrap3_datetime import widgets
 
 
 class QuizForm(forms.Form):
@@ -52,10 +53,14 @@ class QuizForm(forms.Form):
 
 
 class AddQuizForm(forms.ModelForm):
-    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.filter(category__name='quiz'))
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.filter(category__name='quiz'))
 
     class Meta:
         model = Quiz
+        widgets = {'start': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"}),
+                   'end': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"})
+        }
         exclude = ['questions', 'owner', 'players']
 
     def save(self):
@@ -63,7 +68,8 @@ class AddQuizForm(forms.ModelForm):
 
         # Get a list of questions from the Quiz category with tags selected
         # by staff user
-        questions = [q for q in get_questions_with_tag_and_category([data['tags']], 'quiz')]
+        tags_list = [t.name for t in data['tags']]
+        questions = [q for q in get_questions_with_tag_and_category(tags_list, 'quiz')]
 
         if len(questions) < data['number_of_questions']:
             raise QuizException('Too few questions')
