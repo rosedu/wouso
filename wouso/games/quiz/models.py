@@ -18,7 +18,10 @@ class QuizUser(Player):
     my_question = models.ForeignKey(Question,
                                     related_name="MyQuestion",
                                     null=True)
-
+    # time when user started quiz
+    start = models.DateTimeField(null=True, blank=True)
+    # ID of current started quiz
+    started_quiz_id = models.IntegerField(default=0)
 
 Player.register_extension('quiz', QuizUser)
 
@@ -84,7 +87,37 @@ class Quiz(models.Model):
         return {'points': points, 'results' : results}
 
     def add_player(self, player):
+        """ Add player to the list of players which have played the quiz
+        """
         self.players.add(player)
+
+    def set_start(self, user):
+        """ Set quiz start time for user
+        """
+        user.start = datetime.now()
+        user.save()
+
+    def is_started_for_user(self, user):
+        """ Check if user has already started quiz
+        """
+        if user.start is None:
+            return False
+        return True
+
+    def time_for_user(self, user):
+        """ Return seconds left for answering quiz
+        """
+        now = datetime.now()
+        return self.time_limit - (now - user.start).seconds
+
+    def reset(self, user):
+        """ Reset quiz start time and ID of current started quiz
+        """
+        if user.start is not None:
+            user.start = None
+        if user.started_quiz_id != 0:
+            user.started_quiz_id = 0
+        user.save()
 
 
 class QuizGame(Game):

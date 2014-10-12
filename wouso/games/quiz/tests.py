@@ -55,7 +55,7 @@ class TestQuizViews(WousoTest):
         self.assertContains(response, 'No quizzes have been added yet. Stay tuned!')
 
         # create quiz
-        Quiz.objects.create(name='TestingQuiz')
+        Quiz.objects.create(name='TestingQuiz', start=datetime.now(), end=datetime.now())
 
         # check after adding a quiz
         response = self.c.get(reverse('quiz_index_view'))
@@ -65,7 +65,7 @@ class TestQuizViews(WousoTest):
         # Not working properly
         # TODO: figure out how to add question q in quiz
         q = _make_question(text='Are you there?')
-        quiz = Quiz.objects.create(name='TestingQuiz')
+        quiz = Quiz.objects.create(name='TestingQuiz', start=datetime.now(), end=datetime.now())
         response = self.c.get(reverse('quiz_view', kwargs={'id':quiz.id}))
 
 

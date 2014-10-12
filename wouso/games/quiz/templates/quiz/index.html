@@ -5,9 +5,8 @@
 
 {% block sectioncontent %}
 
-<h3>Active Quizzes</h3>
-
 {% if active_quizzes or inactive_quizzes %}
+    <h3>Active Quizzes</h3>
     <ul>
         {% for q in active_quizzes %}
             <li>
@@ -15,6 +14,7 @@
             </li>
         {% endfor %}
     </ul>
+    
     <h3>Inactive Quizzes</h3>
     <ul>
         {% for q in inactive_quizzes %}

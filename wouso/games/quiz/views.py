@@ -34,20 +34,33 @@ class QuizView(View):
         self.quiz_user = profile.get_extension(QuizUser)
         self.quiz = get_object_or_404(Quiz, pk=kwargs['id'])
 
-        print self.quiz_user, self.quiz.players.all()
+        # check if user has already played quiz
         if self.quiz_user in self.quiz.players.all():
             messages.error(request, _('You have already submitted this'
                                       ' quiz!'))
+            return HttpResponseRedirect(reverse('quiz_index_view'))
+
+        # check if user has another quiz in progress
+        if (self.quiz_user.start is not None) and (self.quiz_user.started_quiz_id != int(kwargs['id'])):
+            messages.error(request, _('You have already started a quiz! '
+                'Please submit it before starting another.'))
             return HttpResponseRedirect(reverse('quiz_index_view'))
 
         return super(QuizView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         form = QuizForm(self.quiz)
-        if self.quiz_user in self.quiz.players.all():
-            return HttpResponseRedirect(reverse('quiz_index_view'))
+
+        if not self.quiz.is_started_for_user(self.quiz_user):
+            self.quiz.set_start(self.quiz_user)
+
+        seconds_left = self.quiz.time_for_user(self.quiz_user)
+        # set ID of current started quiz
+        self.quiz_user.started_quiz_id = kwargs['id']
+        self.quiz_user.save()
+
         return render_to_response('quiz/quiz.html',
-                                  {'quiz': self.quiz, 'form': form},
+                                  {'quiz': self.quiz, 'form': form, 'seconds_left': seconds_left},
                                   context_instance=RequestContext(request))
 
     def post(self, request, **kwargs):
@@ -55,7 +68,10 @@ class QuizView(View):
         results = form.get_response()
         form.check_self_boxes()
 
+        # add player to the list of quiz players
         self.quiz.add_player(self.quiz_user)
+        # reset start time and ID of current started quiz
+        self.quiz.reset(self.quiz_user)
 
         results = Quiz.calculate_points(results)
         return render_to_response(('quiz/result.html'),
