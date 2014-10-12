@@ -40,7 +40,9 @@
                 <td>{{ q.time_limit }}</td>
                 <td></td>
                 <td>
-                    Edit
+                   <a class="btn btn-success btn-xs" href="{% url edit_quiz q.id %}">
+                        <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                    </a>
                     <a class="btn btn-danger btn-xs" href="{% url delete_quiz q.id %}" onclick="return confirm('Really?');">
                         <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
                     </a>

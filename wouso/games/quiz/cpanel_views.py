@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import permission_required
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, UpdateView
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import get_object_or_404, redirect
 
@@ -33,3 +33,11 @@ def delete_quiz(request, id):
     quiz = get_object_or_404(Quiz, pk=id)
     quiz.delete()
     return redirect('list_quizzes')
+
+class EditQuizView(UpdateView):
+    template_name = 'quiz/cpanel/edit_quiz.html'
+    model = Quiz
+    form_class = AddQuizForm
+    success_url = reverse_lazy('list_quizzes')
+
+edit_quiz = permission_required('config.change_setting')(EditQuizView.as_view())
