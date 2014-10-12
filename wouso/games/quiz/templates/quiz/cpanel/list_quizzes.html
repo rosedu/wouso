@@ -39,7 +39,12 @@
                 <td>{{ q.number_of_questions }}</td>
                 <td>{{ q.time_limit }}</td>
                 <td></td>
-                <td>Delete / Edit</td>
+                <td>
+                    Edit
+                    <a class="btn btn-danger btn-xs" href="{% url delete_quiz q.id %}" onclick="return confirm('Really?');">
+                        <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+                    </a>
+                </td>
             </tr>
             {% endfor %}
         {% else %}

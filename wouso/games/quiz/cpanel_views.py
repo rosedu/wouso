@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import permission_required
 from django.views.generic import ListView, CreateView
 from django.core.urlresolvers import reverse_lazy
+from django.shortcuts import get_object_or_404, redirect
 
 from games.quiz.forms import AddQuizForm
 from wouso.core.decorators import staff_required
@@ -26,3 +27,9 @@ class AddQuizView(CreateView):
 
 add_quiz = permission_required('config.change_setting')(
     AddQuizView.as_view())
+
+@permission_required('config.change_setting')
+def delete_quiz(request, id):
+    quiz = get_object_or_404(Quiz, pk=id)
+    quiz.delete()
+    return redirect('list_quizzes')
