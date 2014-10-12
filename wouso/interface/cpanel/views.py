@@ -276,10 +276,9 @@ class FeaturesView(TemplateView):
         return super(FeaturesView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        for group in self.switchboard:
-            for s in group.props():
-                val = request.POST.get(s.name, '')
-                s.set_value(val)
+        for s in self.switchboard.props():
+            val = request.POST.get(s.name, '')
+            s.set_value(val)
 
         return redirect('features')
 
