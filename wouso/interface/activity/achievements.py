@@ -1,6 +1,8 @@
 import logging
 from datetime import datetime, timedelta
 from django.utils.translation import ugettext_noop
+from core import scoring
+from core.scoring.sm import score
 from wouso.core.common import App
 from wouso.core.user.models import Player
 from wouso.core.scoring.models import History
@@ -8,7 +10,8 @@ from wouso.interface.apps.messaging.models import Message
 from wouso.games.challenge.models import Challenge
 from wouso.core.magic.models import PlayerSpellDue, SpellHistory, Spell
 from models import Activity
-from wouso.core.signals import addActivity,messageSignal
+from wouso.core.signals import addActivity, messageSignal
+
 
 def consecutive_seens(player, timestamp):
     """
@@ -22,6 +25,7 @@ def consecutive_seens(player, timestamp):
             return i
 
     return len(activities)
+
 
 def consecutive_qotd_correct(player):
     """
@@ -37,15 +41,37 @@ def consecutive_qotd_correct(player):
             return result
     return result
 
+
 def login_between(time, first, second):
     if first <= time.hour < second:
         return True
     return False
 
+
+def login_at_start(player, start_hour, start_day, start_month, hour_offset):
+    # Get game's start time
+    start = datetime(2014, start_month, start_day, start_hour, 0)
+
+    # Get player's first login
+    first_seen = Activity.objects.filter(action__contains='login', user_to=player).order_by('timestamp')[:1]
+    month = first_seen[0].timestamp.month
+    day = first_seen[0].timestamp.day
+    hour = first_seen[0].timestamp.hour
+    first_login = datetime(2014, month, day, hour)
+    print first_login
+    print start
+    if first_login > start + timedelta(hours=hour_offset) or \
+       first_login < start:
+        return False
+
+    return True
+
+
 def login_between_count(player, first, second):
     activities = Activity.objects.filter(action__contains='seen', user_to=player)
-    activities = filter(lambda x : first <= x.timestamp.hour < second, activities)
+    activities = filter(lambda x: first <= x.timestamp.hour < second, activities)
     return len(activities)
+
 
 def unique_users_pm(player, minutes):
     """
@@ -53,8 +79,9 @@ def unique_users_pm(player, minutes):
     """
     activities = Message.objects.filter(receiver=player,
                                         timestamp__gt=datetime.now() - timedelta(minutes=minutes)
-                                        ).values('sender').distinct().count()
+    ).values('sender').distinct().count()
     return activities
+
 
 def wrong_first_qotd(player):
     """
@@ -67,6 +94,7 @@ def wrong_first_qotd(player):
         return True
     return False
 
+
 def challenge_count(player, days=None):
     """
      Return the count of challenges played by player in the last x _days_.
@@ -76,7 +104,8 @@ def challenge_count(player, days=None):
         return Activity.get_player_activity(player).filter(action__contains='chall').count()
     start = datetime.now() - timedelta(days=days)
     return Activity.get_player_activity(player).filter(
-            action__contains='chall', timestamp__gte=start).count()
+        action__contains='chall', timestamp__gte=start).count()
+
 
 def first_seen(player):
     """
@@ -86,7 +115,8 @@ def first_seen(player):
     first_seen = Activity.objects.filter(action='seen', user_to=player).order_by('timestamp')[:1]
     if first_seen.count() > 0:
         return (datetime.now() - first_seen[0].timestamp).days
-    return -1 #user has not logged in ever
+    return -1  # user has not logged in ever
+
 
 def consecutive_chall_won(player):
     """
@@ -103,6 +133,7 @@ def consecutive_chall_won(player):
 
     return result
 
+
 def check_for_god_mode(player, days, chall_min):
     """
     Return true if the player won all challenges and answerd all qotd 'days' days in a row witn a minimum of 'chall_min' challenges
@@ -111,25 +142,32 @@ def check_for_god_mode(player, days, chall_min):
     if len(qotd_list) == 0:
         return False
     if qotd_list[0].action == 'qotd-wrong':
-        return False#Last qotd was incorrect no point to check any further
+        return False  # Last qotd was incorrect no point to check any further
 
-    last_time = qotd_list[0].timestamp.replace(hour=0,minute=0,second=0,microsecond=0) + timedelta(days=1) #The day when the latest qotd was ok
-    first_time = last_time - timedelta(days=days)#The earlyest day to check
+    last_time = qotd_list[0].timestamp.replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(
+        days=1)  # The day when the latest qotd was ok
+    first_time = last_time - timedelta(days=days)  # The earlyest day to check
 
-    chall_won = Activity.objects.all().filter(user_from=player, action='chall-won', timestamp__gte=first_time).exclude(timestamp__gte=last_time).count()
-    chall_lost = Activity.objects.all().filter(user_to=player, action='chall-won', timestamp__gte=first_time).exclude(timestamp__gte=last_time).count()
-    qotd_ok = Activity.objects.all().filter(user_from=player, action='qotd-correct', timestamp__gte=first_time).exclude(timestamp__gte=last_time).count()
+    chall_won = Activity.objects.all().filter(user_from=player, action='chall-won', timestamp__gte=first_time).exclude(
+        timestamp__gte=last_time).count()
+    chall_lost = Activity.objects.all().filter(user_to=player, action='chall-won', timestamp__gte=first_time).exclude(
+        timestamp__gte=last_time).count()
+    qotd_ok = Activity.objects.all().filter(user_from=player, action='qotd-correct', timestamp__gte=first_time).exclude(
+        timestamp__gte=last_time).count()
 
     if chall_won >= chall_min and chall_lost == 0 and qotd_ok == days:
         return True
     return False
+
 
 def refused_challenges(player):
     """
      Return the count of refused challenges in the last week
     """
     start = datetime.now() + timedelta(days=-7)
-    return Activity.get_player_activity(player).filter(action__contains='chall-refused', timestamp__gte=start, user_from=player).count()
+    return Activity.get_player_activity(player).filter(action__contains='chall-refused', timestamp__gte=start,
+                                                       user_from=player).count()
+
 
 def challenges_played_today(player):
     """
@@ -143,6 +181,7 @@ def challenges_played_today(player):
             result += 1
     return result
 
+
 def get_chall_score(arguments):
     if not arguments:
         return 0
@@ -151,6 +190,7 @@ def get_chall_score(arguments):
         return max(chall.user_from.score, chall.user_to.score)
     else:
         return 0
+
 
 def get_challenge_time(arguments):
     """
@@ -168,12 +208,14 @@ def get_challenge_time(arguments):
     else:
         return 0
 
+
 def spell_count(player):
     """
      Return the number of spells casted on player simultaneously
     """
     today = datetime.now().date()
     return PlayerSpellDue.objects.filter(player=player, due__gte=today).count()
+
 
 def spent_gold(player):
     """
@@ -186,12 +228,14 @@ def spent_gold(player):
 
     return cost
 
+
 def gold_amount(player):
     """
      Return player's amount of gold
     """
     coins = History.user_coins(player)
     return coins['gold']
+
 
 def used_all_spells(player, mass):
     """
@@ -207,6 +251,7 @@ def used_all_spells(player, mass):
             return False
     return True
 
+
 class Achievements(App):
     @classmethod
     def earn_achievement(cls, player, modifier):
@@ -215,7 +260,7 @@ class Achievements(App):
             message = ugettext_noop('earned {artifact}')
             action_msg = 'earned-ach'
             addActivity.send(sender=None, user_from=player, game=None, message=message,
-                arguments=dict(artifact=result.artifact), action=action_msg
+                             arguments=dict(artifact=result.artifact), action=action_msg
             )
             Message.send(sender=None, receiver=player, subject="Achievement", text="You have just earned " + modifier)
         else:
@@ -249,8 +294,8 @@ class Achievements(App):
             # also check for minimum number of challenges played = 5
             if not player.magic.has_modifier('ach-this-is-sparta'):
                 if refused_challenges(player) == 0 and \
-                        challenge_count(player, days=7) >= 5 and \
-                        first_seen(player) >= 7:
+                                challenge_count(player, days=7) >= 5 and \
+                                first_seen(player) >= 7:
                     cls.earn_achievement(player, 'ach-this-is-sparta')
 
             # Check if player played 10 challenges in a day"
@@ -272,10 +317,10 @@ class Achievements(App):
             if not player.magic.has_modifier('ach-chall-def-big'):
                 if (kwargs.get('user_to').level_no - player.level_no) >= 2:
                     Activity.objects.create(timestamp=datetime.now(),
-                            user_from=player, user_to=player,
-                            action='defeat-better-player')
+                                            user_from=player, user_to=player,
+                                            action='defeat-better-player')
                     victories = Activity.objects.filter(user_to=player,
-                            action='defeat-better-player')
+                                                        action='defeat-better-player')
                     if victories.count() >= 5:
                         cls.earn_achievement(player, 'ach-chall-def-big')
                         victories.delete()
@@ -347,6 +392,17 @@ class Achievements(App):
                 if gold_amount(player) >= 300:
                     cls.earn_achievement(player, 'ach-gold-300')
 
+        if 'login' in action:
+            # # Check if player got a head start login
+            if not player.magic.has_modifier('ach-head-start'):
+                # (player, start_hour, start_day, start_month, hour_offset)
+                # server start date: hour, day, month
+                # hour_offset = offset from start date when player will be rewarded
+                if login_at_start(player, start_hour=8, start_day=13, start_month=10, hour_offset=2):
+                    scoring.score(player, None, 'head-start', None)
+                    cls.earn_achievement(player, 'ach-head-start')
+
+
     @classmethod
     def get_modifiers(self):
         return ['ach-login-10',
@@ -369,11 +425,13 @@ class Achievements(App):
                 'ach-use-all-spells',
                 'ach-use-all-mass',
                 'ach-spent-gold',
+                'ach-head-start',
         ]
 
 
 def check_for_achievements(sender, **kwargs):
     Achievements.activity_handler(sender, **kwargs)
+
 
 addActivity.connect(check_for_achievements)
 messageSignal.connect(check_for_achievements)

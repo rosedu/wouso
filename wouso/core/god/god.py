@@ -35,7 +35,9 @@ class DefaultGod:
             dict(name='general-infraction', expression='penalty=10', owner=None,
                 description='Give penalty points to suspicious users'),
             dict(name='chall-was-set-up-infraction', expression='penalty=20', owner=None,
-                description='Give penalty points for losing a challenge on purpose')
+                description='Give penalty points for losing a challenge on purpose'),
+            dict(name='head-start', expression='points=200', owner=None,
+                 description='Points earned for logging in the head start period')
         ]
         return fs
 
