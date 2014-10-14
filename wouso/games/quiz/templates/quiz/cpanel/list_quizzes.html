@@ -20,11 +20,10 @@
 {% block sectioncontent %}
 
 <div class="col-md-12">
-    <table class="table table-bordered table-hover">
+    <table class="table table-bordered table-hover table-condensed">
         <tr>
             <th>#</th>
             <th>Name</th>
-            <th>Tags</th>
             <th>Questions</th>
             <th>Time Limit</th>
             <th>Active</th>
@@ -35,10 +34,9 @@
             <tr>
                 <td>{{ q.id }}</td>
                 <td>{{ q.name }}</td>
-                <td></td>
                 <td>{{ q.number_of_questions }}</td>
                 <td>{{ q.time_limit }}</td>
-                <td></td>
+                <td>{{ q.start }} - {{ q.end }}</td>
                 <td>
                    <a class="btn btn-success btn-xs" href="{% url edit_quiz q.id %}">
                         <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
