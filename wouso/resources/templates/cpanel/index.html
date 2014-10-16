@@ -127,7 +127,7 @@
             <!-- Games !-->
                 <h4 class="text-center">Games</h4>
                 {% for u, game in games_list.items %}
-                    <li {% if u in request.path %}class="active"{% endif %}><a href="/cpanel/{{u}}">{{game}}</a></li>
+                    <li {% if u in request.path %}class="active"{% endif %}><a href="{% url status %}{{u}}">{{game}}</a></li>
                 {% endfor %}
             <!-- Customization !-->
             {% if user.is_staff or user.is_superuser %}
