@@ -51,9 +51,6 @@
     <script type="text/javascript" src="{{ basepath }}/static/js/bootstrap.min.js"></script>
     {{ form.media }} 
 
-    {% if config_theme %}
-    <LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/themes/{{ config_theme }}/styles.css" />
-    {% endif %}
     <style type="text/css">
         @import url("{{ basepath }}/static/css/autocomplete.css");
         {% block css %}li.{{module}} {font-weight: bold}
