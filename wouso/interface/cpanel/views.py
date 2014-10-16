@@ -1313,5 +1313,5 @@ def bonus(request, player_id):
 def fwd(request):
     if request.method == 'POST':
         player = get_object_or_404(Player, pk=request.POST.get('player'))
-        return redirect('manage_player', pk=player.pk)
+        return redirect('manage_player', pk=player.id)
     return redirect('all_players')
