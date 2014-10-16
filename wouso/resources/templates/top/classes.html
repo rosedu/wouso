@@ -16,12 +16,14 @@
 {% else %}
 <table border="0" cellspacing="0" cellpadding="0">
     <tr>
+        <th>{% trans '#' %}</th>
         <th>{% trans 'Group' %}</th>
         <th>{% trans 'Race' %}</th>
         <th>{% trans 'Points' %}</th>
     </tr>
     {% for s in classes %}
     <tr>
+    <td>{{ forloop.counter }}</td>
     <td>{% player_group s %}</td>
     <td>{% player_race s.parent %}</td>
     <td>{% coin_amount s.live_points %}</td>
