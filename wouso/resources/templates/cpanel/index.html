@@ -146,8 +146,8 @@
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url activity_monitor %}">New Activity Monitor</a></li>
             {% endif %}
             <!-- Shortcuts !-->
-                <h4 class="text-center">Shortcuts to Django Admin</h4>
                 {% if user.is_staff or user.is_superuser %}
+                <h4 class="text-center">Shortcuts to Django Admin</h4>
                 <li><a href="{% url admin:index %}"><em>Django Admin »</em></a></li>
                 {% endif %}
             </ul>
