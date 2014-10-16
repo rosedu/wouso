@@ -62,7 +62,7 @@ upat = [
     url(r'^players/infractions/(?P<user_id>\d+)/$', 'wouso.interface.cpanel.views.infraction_history', name='infraction_history'),
     url(r'^players/infractions_clear/(?P<user_id>\d+)/(?P<infraction_id>\d+)/$', 'wouso.interface.cpanel.views.infraction_clear', name='infraction_clear'),
     url(r'^players/infractions_recheck/$', 'wouso.interface.cpanel.views.infraction_recheck', name='infraction_recheck'),
-    url(r'^players/manage_player/(?P<user_id>\d+)/$', 'wouso.interface.cpanel.views.manage_player', name='manage_player'),
+    url(r'^players/manage_player/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.manage_player', name='manage_player'),
     url(r'^races/all/$', 'wouso.interface.cpanel.views.races_groups',
         name='races_groups'),
     url(r'^races/add/$', 'wouso.interface.cpanel.views.races_add',
