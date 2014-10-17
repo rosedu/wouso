@@ -1,0 +1,51 @@
+{% extends 'interface/section_base.html' %}
+
+{% load i18n %}
+{% load user %}
+
+{% block title %}{% trans 'Leaderboard' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Leaderboard' %}{% endblock %}
+
+{% block sectioncontent %}
+{% if top.disabled %}
+    {% trans 'Top has been disabled.' %}
+{% else %}
+    <h3><a href="{% url top_races %}">Top Races</a></h3>
+
+    <table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <th>{% trans '#' %}</th>
+            <th>{% trans 'Race' %}</th>
+            <th>{% trans 'Points' %}</th>
+        </tr>
+        {% for r in races %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{% player_race r %}</td>
+            <td>{% coin_amount r.points|floatformat:0 %}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h3><a href="{% url top_classes %}">Top Groups</a></h3>
+
+    <table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <th>{% trans '#' %}</th>
+            <th>{% trans 'Group' %}</th>
+            <th>{% trans 'Race' %}</th>
+            <th>{% trans 'Points' %}</th>
+        </tr>
+        {% for g in toptengroups %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{% player_group g %}</td>
+            <td>{% player_race g.parent %}</td>
+            <td>{% coin_amount g.live_points %}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="{% url top_classes %}">{% trans 'Full list..' %}</a>
+
+{% endif %}
+{% endblock %}

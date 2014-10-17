@@ -20,18 +20,20 @@
         </ol>
     {% endif %}
 
-    <a href="{% url wouso.interface.top.views.gettop %}" class="goto">{% trans 'Current top' %}</a>
-    <br/>
-    <a href="{% url quest_history %}" class="goto">{% trans 'Quest History' %}</a>
+    <!-- {# <a href="{% url wouso.interface.top.views.gettop %}" class="goto">{% trans 'Current top' %}</a> #} -->
+    <!-- <br/> -->
+    <a href="{% url leaderboard %}" class="goto">{% trans 'Leaderboard' %}</a>
     <br/>
     {% if not config_disable_challenge_top %}
     <a href="{% url wouso.interface.top.views.challenge_top %}" class="goto">{% trans 'Challenge top' %}</a>
     <br/>
     {% endif %}
+    <a href="{% url quest_history %}" class="goto">{% trans 'Quest History' %}</a>
+    <br/>
     <a href="{% url artifact_hof %}" class="goto">{% trans 'Achievements' %}</a>
     <br/>
     {% if not config_disable_top_pyramid %}
-    <a href="{% url wouso.interface.top.views.pyramid %}" class="goto">{% trans 'Pyramid' %}</a>
+    <!-- {# <a href="{% url wouso.interface.top.views.pyramid %}" class="goto">{% trans 'Pyramid' %}</a> #} -->
     {% endif %}
 
     {% for c in coin_top_setting %}
