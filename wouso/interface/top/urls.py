@@ -2,7 +2,7 @@ from django.conf.urls.defaults import patterns, url
 
 urlpatterns = patterns('wouso.interface.top.views',
     # url(r'^$', 'gettop', name='view_top'),
-    url(r'^toptype/(?P<toptype>\d)/sortcrit/(?P<sortcrit>\d)/page/(?P<page>\d+)/$', 'gettop', name='view_top'),
+    # url(r'^toptype/(?P<toptype>\d)/sortcrit/(?P<sortcrit>\d)/page/(?P<page>\d+)/$', 'gettop', name='view_top'),
     # url(r'^pyramid/$', 'pyramid', name='pyramid'),
     url(r'^challenge/$', 'challenge_top', name='challenge_top'),
     url(r'^challenge/(?P<sortcritno>\d+)/(?P<pageno>\d+)/$', 'challenge_top', name='challenge_top_arg'),
