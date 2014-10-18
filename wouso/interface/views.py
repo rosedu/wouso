@@ -19,9 +19,10 @@ from wouso.interface import logger, detect_mobile
 from wouso.interface.apps.pages.models import NewsItem
 from wouso.core.game import get_games
 from wouso.interface.forms import *
+from wouso.core.user.models import  Race
 from wouso.core.user.models import Player, PlayerGroup
 from wouso.interface.activity.models import Activity
-from wouso.interface.top.models import TopUser, History as TopHistory
+from wouso.interface.top.models import Top, TopUser, History as TopHistory
 
 
 def get_wall(page=u'1'):
@@ -284,3 +285,11 @@ def seen_24h(request):
     online_last24h = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
 
     return render_to_response('activity/seen24h.html', {'seen_players': online_last24h}, context_instance=RequestContext(request))
+
+def leaderboard_view(request):
+    toptengroups = PlayerGroup.objects.exclude(parent=None).exclude(parent__can_play=False).order_by('-points')[:10]
+    races = list(Race.objects.exclude(can_play=False))
+    races.sort(key=lambda a: a.points, reverse=True)
+    return render_to_response(('leaderboard.html'),
+                              {'races':races, 'toptengroups':toptengroups, 'top':Top},
+                              context_instance=RequestContext(request))

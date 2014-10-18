@@ -13,6 +13,8 @@ urlpatterns = patterns('',
 
     (r'^top/', include('wouso.interface.top.urls')),
 
+    url(r'^leaderboard/$', 'wouso.interface.views.leaderboard_view', name='leaderboard'),
+
     url(r'^user/login/$','wouso.interface.views.login_view', name='login_view'),
     url(r'^user/logout/$','wouso.interface.views.logout_view', name='logout_view'),
 
