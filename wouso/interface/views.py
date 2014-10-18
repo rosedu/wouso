@@ -288,6 +288,8 @@ def seen_24h(request):
 
 def leaderboard_view(request):
     toptengroups = PlayerGroup.objects.exclude(parent=None).exclude(parent__can_play=False).order_by('-points')[:10]
+    toptengroups = list(toptengroups)
+    toptengroups.sort(key=lambda obj: obj.live_points, reverse=True)
     races = list(Race.objects.exclude(can_play=False))
     races.sort(key=lambda a: a.points, reverse=True)
     return render_to_response(('leaderboard.html'),
