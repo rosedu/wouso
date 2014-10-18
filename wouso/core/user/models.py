@@ -62,7 +62,10 @@ class PlayerGroup(models.Model):
     def live_points(self):
         """ Calculate sum of user points dynamically """
         p = self.players.aggregate(total=models.Sum('points'))
-        return int(p['total']) or 0
+        if p['total'] is not None:
+            return int(p['total'])
+        else:
+            return 0
 
     @property
     @deprecated('Please get rid of me')
