@@ -11,6 +11,7 @@ from wouso.core.scoring.models import History
 from models import QuestGame, QuestUser, Quest, QuestResult
 from forms import QuestForm
 
+
 @login_required
 def index(request):
     quest = QuestGame.get_current()
@@ -42,6 +43,7 @@ def index(request):
             {'quest': quest, 'progress': quest_user, 'form': form, 'error': error},
             context_instance=RequestContext(request))
 
+
 def sidebar_widget(context):
     user = context.get('user', None)
     quest = QuestGame.get_current()
@@ -67,6 +69,7 @@ def sidebar_widget(context):
              })
 register_sidebar_block('quest', sidebar_widget)
 
+
 class HistoryView(ListView):
     template_name = 'quest/history.html'
     context_object_name = 'history'
@@ -79,4 +82,5 @@ class HistoryView(ListView):
         context.update({'gods': Player.get_quest_gods()})
         return context
 
-history = HistoryView.as_view()
+
+history = login_required(HistoryView.as_view())
