@@ -84,9 +84,19 @@ def pyramid(request):
 
 def topclasses(request):
     # top classes
-    classes = PlayerGroup.objects.exclude(parent=None).order_by('points')
+
+    # get reversed sorted list of classes belonging to a race which can play
+    classes = PlayerGroup.objects.exclude(parent=None).exclude(parent__can_play=False).order_by('points')
     classes = list(classes)
-    classes = reversed(sorted(classes, key=lambda obj: obj.live_points))
+    classes.sort(key=lambda obj: obj.live_points, reverse=True)
+
+    # get reversed sorted list of classes belonging to a race which cannot play
+    cannotplay_classes = PlayerGroup.objects.exclude(parent=None).exclude(parent__can_play=True).order_by('points')
+    cannotplay_classes = list(cannotplay_classes)
+    cannotplay_classes.sort(key=lambda obj: obj.live_points, reverse=True)
+
+    # append cannotplay_classes to classes
+    classes.extend(cannotplay_classes)
 
     return render_to_response('top/classes.html', {'classes':classes, 'top':Top},
                               context_instance=RequestContext(request))
