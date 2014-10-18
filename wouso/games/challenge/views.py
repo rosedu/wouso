@@ -170,8 +170,9 @@ def launch(request, to_id):
         return redirect('challenge_index_view')
 
     if not user_from.in_same_division(user_to):
-        messages.error(request, _('You are not in the same division'))
-        logging.info("Ready to unlock (not in same divission).")
+        messages.error(request, _('You are not in the same division'
+                                  '(within 20 positions of each other in the challenge top)'))
+        logging.info("Ready to unlock (not in same division).")
         lock.unlock()
         return redirect('challenge_index_view')
 

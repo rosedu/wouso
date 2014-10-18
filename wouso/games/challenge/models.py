@@ -53,7 +53,7 @@ class ChallengeUser(Player):
 
     def in_same_division(self, user):
         from wouso.interface.top.models import TopUser
-        position_diff = abs(self.get_extension(TopUser).position - user.get_extension(TopUser).position)
+        position_diff = abs(self.get_extension(TopUser).won_challenges - user.get_extension(TopUser).won_challenges)
         if position_diff <= 20:
           return True
         return False
