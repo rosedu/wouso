@@ -127,8 +127,14 @@ def challenge_top(request, sortcritno='0', pageno=1):
     except (EmptyPage, InvalidPage):
         users = paginator.page(1)
 
-    topseries = Race.objects.exclude(can_play=False)
-    topgroups = PlayerGroup.objects.exclude(parent=None).order_by('-points')[:TOPGROUPS_NO]
+    # get reversed sorted list of series
+    topseries = list(Race.objects.exclude(can_play=False))
+    topseries.sort(key=lambda a: a.points, reverse=True)
+
+    # get first TOPGROUPS_NO items from reversed sorted list of groups belonging to a 'can play' race
+    topgroups = PlayerGroup.objects.exclude(parent=None).exclude(parent__can_play=False).order_by('points')[:TOPGROUPS_NO]
+    topgroups = list(topgroups)
+    topgroups.sort(key=lambda obj: obj.live_points, reverse=True)
 
     return render_to_response('top/challenge_top.html', {
                     'allUsers': users,
