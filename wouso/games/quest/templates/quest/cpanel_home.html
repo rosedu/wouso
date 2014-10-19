@@ -68,7 +68,8 @@
                         </a>
                     {% endif %}
                     {% if not q.is_active %}
-                        <a class="btn btn-info" href="{% url quest_bonus q.id %}">
+                        <a class="btn btn-info" href="{% url quest_bonus q.id %}"
+                            onclick="return confirm('Really?');">
                             {% trans 'Bonus top 10' %}
                         </a>
                     {% endif %}
