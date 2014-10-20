@@ -132,9 +132,10 @@ def challenge_top(request, sortcritno='0', pageno=1):
     topseries.sort(key=lambda a: a.points, reverse=True)
 
     # get first TOPGROUPS_NO items from reversed sorted list of groups belonging to a 'can play' race
-    topgroups = PlayerGroup.objects.exclude(parent=None).exclude(parent__can_play=False).order_by('points')[:TOPGROUPS_NO]
+    topgroups = PlayerGroup.objects.exclude(parent=None).exclude(parent__can_play=False).order_by('points')
     topgroups = list(topgroups)
     topgroups.sort(key=lambda obj: obj.live_points, reverse=True)
+    topgroups = topgroups[:TOPGROUPS_NO]
 
     return render_to_response('top/challenge_top.html', {
                     'allUsers': users,
