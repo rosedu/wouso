@@ -35,11 +35,6 @@ div.second {
     text-align: left;
 }
 
-input[type="checkbox"] {
-    width: 0;
-}
-
-
 .input-group.date .input-group-addon {
     width: 0;
 }
