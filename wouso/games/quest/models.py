@@ -336,7 +336,7 @@ class QuestGame(Game):
             owner=quest_game.game,
             description='Bonus points earned when finishing the entire quest. No arguments.')
         )
-        fs.append(dict(name='quest-finish-bonus', expression='points=fib(12 - {position})',
+        fs.append(dict(name='quest-finish-bonus', expression='points=bonus({position})',
             owner=quest_game.game,
             description='Bonus points earned when finishing a quest. Given to first 10, argument: position.')
         )

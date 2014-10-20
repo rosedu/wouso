@@ -179,15 +179,27 @@ class ScoringFirstLogin(WousoTest):
 
 
 class ScoringTestFunctions(TestCase):
-    def test_fibbonaci_formula(self):
-        formula = Formula.add('test-fib', expression='points=fib(0)')
+    def test_quest_bonus_formula(self):
+        formula = Formula.add('test-bonus', expression='points=bonus(0)')
         value = calculate(formula)['points']
-        self.assertEqual(value, 0)
-        formula.expression = 'points=fib(1)'; formula.save(); value = calculate(formula)['points']
-        self.assertEqual(value, 1)
-        formula.expression = 'points=fib(2)'; formula.save(); value = calculate(formula)['points']
-        self.assertEqual(value, 1)
-        formula.expression = 'points=fib(3)'; formula.save(); value = calculate(formula)['points']
-        self.assertEqual(value, 2)
-        formula.expression = 'points=fib(4)'; formula.save(); value = calculate(formula)['points']
-        self.assertEqual(value, 3)
+        self.assertEqual(value, 160)
+        formula.expression = 'points=bonus(1)'; formula.save(); value = calculate(formula)['points']
+        self.assertEqual(value, 150);
+        formula.expression = 'points=bonus(2)'; formula.save(); value = calculate(formula)['points']
+        self.assertEqual(value, 140);
+        formula.expression = 'points=bonus(3)'; formula.save(); value = calculate(formula)['points']
+        self.assertEqual(value, 130);
+        formula.expression = 'points=bonus(4)'; formula.save(); value = calculate(formula)['points']
+        self.assertEqual(value, 120);
+        formula.expression = 'points=bonus(5)'; formula.save(); value = calculate(formula)['points']
+        self.assertEqual(value, 110);
+        formula.expression = 'points=bonus(6)'; formula.save(); value = calculate(formula)['points']
+        self.assertEqual(value, 100);
+        formula.expression = 'points=bonus(7)'; formula.save(); value = calculate(formula)['points']
+        self.assertEqual(value, 90);
+        formula.expression = 'points=bonus(8)'; formula.save(); value = calculate(formula)['points']
+        self.assertEqual(value, 80);
+        formula.expression = 'points=bonus(9)'; formula.save(); value = calculate(formula)['points']
+        self.assertEqual(value, 70);
+        formula.expression = 'points=bonus(10)'; formula.save(); value = calculate(formula)['points']
+        self.assertEqual(value, 60);
