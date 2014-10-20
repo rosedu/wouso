@@ -177,7 +177,8 @@ class PlayerGroupForm(forms.ModelForm):
     class Meta:
         model = PlayerGroup
         exclude = ['artifacts', 'owner']
-
+        
+        
 class UpdatePlayerGroupForm(forms.ModelForm):
     class Meta:
         model = PlayerGroup
