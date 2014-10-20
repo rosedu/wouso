@@ -21,11 +21,10 @@ class InvalidScoreCall(Exception): pass
 
 CORE_POINTS = ('points', 'gold', 'penalty')
 
-# Utility functions
-PHI = (1 + 5**0.5) / 2
 
-def fib(n):
-    return int(round((PHI**n - (1-PHI)**n) / 5**0.5))
+# weekly quest top 10 bonus
+def bonus(n):
+    return 10 * (16 - n)
 
 
 # Setup
