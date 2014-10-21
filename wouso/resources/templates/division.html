@@ -15,15 +15,15 @@
     {% else %}
         <table id="clasament" class="custom">
             <tr>
-                <th width="70%" align="left">{% trans 'Player' %}</th>
+                <th width="65%" align="left">{% trans 'Player' %}</th>
                 <th>{% trans 'Level' %}</th>
                 <th>{% trans 'Group' %}</th>
                 <th>{% trans 'Race' %}</th>
-                <th width="30%">{% trans 'Last seen' %}</th>
+                <th width="35%" nowrap>{% trans 'Last seen' %}</th>
             </tr>
             {% for d in division %}
                 <tr>
-                    <td>{{ d }}</td>
+                    <td>{% player d %}</td>
                     <td align="center">{{ d.level_no }}</td>
                     <td>{{ d.group }}</td>
                     <td>{{ d.race }}</td>
