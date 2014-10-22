@@ -298,6 +298,7 @@ def seen_24h(request):
     return render_to_response('activity/seen24h.html', {'seen_players': online_last24h}, context_instance=RequestContext(request))
 
 
+@login_required()
 def leaderboard_view(request):
     toptengroups = PlayerGroup.objects.exclude(parent=None).exclude(parent__can_play=False).order_by('-points')[:10]
     toptengroups = list(toptengroups)
@@ -309,6 +310,7 @@ def leaderboard_view(request):
                               context_instance=RequestContext(request))
 
 
+@login_required()
 def division_view(request):
     profile = request.user.get_profile()
 
