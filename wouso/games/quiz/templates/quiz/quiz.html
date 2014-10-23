@@ -1,7 +1,10 @@
 {% extends 'interface/section_base.html' %}
 {% load i18n %}
-{% block title %}{% trans 'Quiz #' %}{{ quiz.id }}{% endblock %}
-{% block sectiontitle %}{% trans 'Quiz #' %}{{ quiz.id }}{% endblock %}
+{% block title %}
+    {% trans 'Quiz #' %}{{ quiz.id }}
+    </br>
+    {{ quiz.name }}
+{% endblock %}
 
 {% block scripts %}
     {{ block.super }}

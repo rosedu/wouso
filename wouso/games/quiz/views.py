@@ -87,12 +87,11 @@ def sidebar_widget(context):
     if not user or not user.is_authenticated():
         return ''
 
-    quiz_user = user.get_profile().get_extension(QuizUser)
+    number_of_active_quizzes = Quiz.get_active_quizzes().__len__()
 
     return render_to_string('quiz/sidebar.html',
-                            {'quser': quiz_user,
-                             'quiz': QuizGame,
-                             'id': 'quiz'})
+                            {'number_of_active_quizzes': number_of_active_quizzes}
+                             )
 
 
 register_sidebar_block('quiz', sidebar_widget)

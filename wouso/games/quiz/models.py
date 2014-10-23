@@ -46,12 +46,17 @@ class Quiz(models.Model):
 
     @property
     def is_active(self):
-        acum = datetime.now()
-        if self.end < acum:
+        now = datetime.now()
+        if self.end < now:
             return False
-        elif self.start > acum:
+        elif self.start > now:
             return False
         return True
+
+    @classmethod
+    def get_active_quizzes(self):
+        active_quizzes = [q for q in self.objects.all() if q.is_active]
+        return active_quizzes
 
     @classmethod
     def calculate_points(cls, responses):

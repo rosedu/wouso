@@ -24,8 +24,8 @@
         <tr>
             <th>#</th>
             <th>Name</th>
-            <th>Questions</th>
-            <th>Time Limit</th>
+            <th>Number of questions</th>
+            <th>Time limit (seconds)</th>
             <th>Active</th>
             <th>Manage</th>
         </tr>
@@ -38,10 +38,10 @@
                 <td>{{ q.time_limit }}</td>
                 <td>{{ q.start }} - {{ q.end }}</td>
                 <td>
-                   <a class="btn btn-success btn-xs" href="{% url edit_quiz q.id %}">
+                   <a class="btn btn-success" href="{% url edit_quiz q.id %}">
                         <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                     </a>
-                    <a class="btn btn-danger btn-xs" href="{% url delete_quiz q.id %}" onclick="return confirm('Really?');">
+                    <a class="btn btn-danger" href="{% url delete_quiz q.id %}" onclick="return confirm('Really?');">
                         <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
                     </a>
                 </td>

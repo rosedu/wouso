@@ -54,14 +54,23 @@ class QuizForm(forms.Form):
 
 class AddQuizForm(forms.ModelForm):
     tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.filter(category__name='quiz'))
+            queryset=Tag.objects.filter(category__name='quiz'))
 
     class Meta:
         model = Quiz
+
         widgets = {'start': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"}),
                    'end': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"})
         }
         exclude = ['questions', 'owner', 'players']
+
+    def __init__(self, *args, **kwargs):
+        super(AddQuizForm, self).__init__(*args, **kwargs)
+
+        self.fields['start'].label = "Starts on"
+        self.fields['end'].label = "Ends on"
+        self.fields['tags'].label = "Question tags"
+        self.fields['time_limit'].label = "Time limit (seconds)"
 
     def save(self):
         data = self.cleaned_data
