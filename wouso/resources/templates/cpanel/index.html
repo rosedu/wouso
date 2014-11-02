@@ -121,6 +121,8 @@
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url formulas %}">Formulas</a></li>
                 {% url leaderboards as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url leaderboards %}">Leaderboards</a></li>
+                {% url karma as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url karma %}">Karma</a></li>
             <!-- Games !-->
                 <h4 class="text-center">Games</h4>
                 {% for u, game in games_list.items %}

@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User, Group
+from django.shortcuts import get_object_or_404
+
 from wouso.core.qpool.models import Question, Answer, Schedule, Category, Tag
 from wouso.core.magic.models import Spell
 from wouso.core.scoring.models import Formula
@@ -207,3 +209,13 @@ class StaticPageForm(forms.ModelForm):
 class NewsForm(forms.ModelForm):
     class Meta:
         model = NewsItem
+
+
+class KarmaBonusForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        group_id = kwargs.pop('group_id')
+        super(KarmaBonusForm, self).__init__(*args, **kwargs)
+        group = get_object_or_404(PlayerGroup, pk=group_id)
+        group_players = group.players.all().order_by('user__date_joined')
+        for p in group_players:
+            self.fields['%s' % p] = forms.IntegerField(initial=0, min_value=0, required=True, help_text=" ")
