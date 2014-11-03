@@ -216,4 +216,4 @@ class KarmaBonusForm(forms.Form):
         players = players or []
         super(KarmaBonusForm, self).__init__(data)
         for p in players:
-            self.fields['%s' % p] = forms.IntegerField(initial=0, min_value=0, required=True, help_text=" ")
+            self.fields['%s' % p.user.username] = forms.IntegerField(label=unicode(p), initial=0, min_value=0, required=True, help_text=" ")
