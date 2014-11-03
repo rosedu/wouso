@@ -60,11 +60,10 @@ def login_at_start(player, start_hour, start_day, start_month, hour_offset):
     first_login = datetime(2014, month, day, hour)
     print first_login
     print start
-    if first_login > start + timedelta(hours=hour_offset) or \
-       first_login < start:
-        return False
+    if day == start_day:
+        return True
 
-    return True
+    return False
 
 
 def login_between_count(player, first, second):
@@ -398,7 +397,7 @@ class Achievements(App):
                 # (player, start_hour, start_day, start_month, hour_offset)
                 # server start date: hour, day, month
                 # hour_offset = offset from start date when player will be rewarded
-                if login_at_start(player, start_hour=8, start_day=13, start_month=10, hour_offset=2):
+                if login_at_start(player, start_hour=20, start_day=13, start_month=10, hour_offset=2):
                     scoring.score(player, None, 'head-start', None)
                     cls.earn_achievement(player, 'ach-head-start')
 
