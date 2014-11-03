@@ -212,9 +212,8 @@ class NewsForm(forms.ModelForm):
 
 
 class KarmaBonusForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        group_id = kwargs.pop('group_id')
-        super(KarmaBonusForm, self).__init__(*args, **kwargs)
+    def __init__(self, data=None, instance=None, group_id=None):
+        super(KarmaBonusForm, self).__init__(data)
         group = get_object_or_404(PlayerGroup, pk=group_id)
         group_players = group.players.all().order_by('user__date_joined')
         for p in group_players:
