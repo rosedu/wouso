@@ -212,9 +212,8 @@ class NewsForm(forms.ModelForm):
 
 
 class KarmaBonusForm(forms.Form):
-    def __init__(self, data=None, instance=None, group_id=None):
+    def __init__(self, data=None, players=None):
+        players = players or []
         super(KarmaBonusForm, self).__init__(data)
-        group = get_object_or_404(PlayerGroup, pk=group_id)
-        group_players = group.players.all().order_by('user__date_joined')
-        for p in group_players:
+        for p in players:
             self.fields['%s' % p] = forms.IntegerField(initial=0, min_value=0, required=True, help_text=" ")
