@@ -629,3 +629,51 @@ input.inline, label.inline {
 .pagination li.active {
     font-weight: bold;
 }
+/* achievements */
+.artifact-default-ach-login-10 {
+    background : transparent url(library/images/icons/ach-login-10.png) 0 center no-repeat;
+}
+
+.artifact-default-ach-bad-start {
+	background : transparent url(library/images/icons/ach-bad-start.png) 0 center no-repeat;
+}
+.artifact-default-ach-spell-5 {
+	background : transparent url(library/images/icons/ach-spell-5.png) 0 center no-repeat;
+}
+.artifact-default-ach-chall-100, .artifact-default-ach-chall-10-a-day {
+	background : transparent url(library/images/icons/ach-chall-100.png) 0 center no-repeat;
+}
+.artifact-default-ach-chall-def-big {
+	background : transparent url(library/images/icons/ach-chall-def-big.png) 0 center no-repeat;
+}
+.artifact-default-ach-chall-won-10 {
+	background : transparent url(library/images/icons/ach-chall-won-10.png) 0 center no-repeat;
+}
+.artifact-default-ach-early-bird {
+	background : transparent url(library/images/icons/ach-early-bird.png) 0 center no-repeat;
+}
+.artifact-default-ach-flawless-victory {
+	background : transparent url(library/images/icons/ach-flawless-victory.png) 0 center no-repeat;
+}
+.artifact-default-ach-god-mode-on {
+	background : transparent url(library/images/icons/ach-god-mode-on.png) 0 center no-repeat;
+}
+.artifact-default-ach-night-owl {
+	background : transparent url(library/images/icons/ach-night-owl.png) 0 center no-repeat;
+}
+.artifact-default-ach-popularity {
+	background : transparent url(library/images/icons/ach-popularity.png) 0 center no-repeat;
+}
+.artifact-default-ach-qotd-10 {
+	background : transparent url(library/images/icons/ach-qotd-10.png) 0 center no-repeat;
+}
+.artifact-default-ach-this-is-sparta {
+	background : transparent url(library/images/icons/ach-this-is-sparta.png) 0 center no-repeat;
+}
+.artifact-default-ach-win-fast {
+	background : transparent url(library/images/icons/ach-win-fast.png) 0 center no-repeat;
+}
+.artifact-default-ach-head-start {
+	background : transparent url(library/images/icons/ach-head-start.png) 0 center no-repeat;
+}
+
