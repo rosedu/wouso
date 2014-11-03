@@ -18,7 +18,7 @@
             {% if r.children %}
                 <ul>
                     {% for g in r.children %}
-                        <li><a href="{% url karma_group g.id %}"> {{ g }}</a></li>
+                        <li><a href="{% url karma_group g.id %}">{{ g.name }} {{ g }}</a></li>
                     {% endfor %}
                 </ul>
             {% endif %}
