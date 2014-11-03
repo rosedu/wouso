@@ -1329,25 +1329,20 @@ def karma_view(request):
 def karma_group_view(request, group):
     group_id = group
     group = get_object_or_404(PlayerGroup, pk=group)
+    players = group.players.all()
     if request.method == 'POST':
-        form = KarmaBonusForm(request.POST, group_id=group_id)
+        form = KarmaBonusForm(request.POST, players=players)
         if form.is_valid():
             formula = Formula.get('bonus-karma')
             if formula is None:
                 messages.error(request, 'No such formula, bonus-karma')
             else:
-                # iterate through group players
-                for entry in form.fields:
+                for player, entry in zip(players, form.fields):
                     # get amount of karma points for current player
                     karma_points = form.cleaned_data[entry]
-                    # if karma points are zero skip
+                    # if karma points are zero then skip
                     if karma_points == 0:
                         continue
-                    # get Player
-                    try:
-                        player = Player.objects.filter(full_name=entry)[0]
-                    except IndexError:
-                        player = Player.objects.filter(user__username=entry)[0]
                     # compute formula and calculate amount of bonus given
                     amount = eval(formula.expression.format(**{'karma_points': karma_points}).split('=')[1])
                     # apply scoring
@@ -1360,7 +1355,7 @@ def karma_group_view(request, group):
                     messages.info(request, 'Successfully given bonus')
             return redirect('karma_group', **{'group': group_id})
     else:
-        form = KarmaBonusForm(group_id=group_id)
+        form = KarmaBonusForm(players=players)
     return render_to_response('cpanel/karma_group.html',
                               {'form':form, 'group':group},
                               context_instance=RequestContext(request))
