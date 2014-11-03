@@ -7,7 +7,11 @@ upat = [
     url(r'^customization/display/$', 'wouso.interface.cpanel.views.display', name='cpanel_display'),
     url(r'^customization/games/$', 'wouso.interface.cpanel.views.games', name='games_home'),
     url(r'^customization/features/$', 'wouso.interface.cpanel.views.features', name='features'),
+
     url(r'^leaderboards/$', 'wouso.interface.cpanel.views.leaderboards', name='leaderboards'),
+
+    url(r'^karma/$', 'wouso.interface.cpanel.views.karma_view', name='karma'),
+    url(r'^karma/group/(?P<group>\d+)/$', 'wouso.interface.cpanel.views.karma_group_view', name='karma_group'),
 
     url(r'^qpool/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
     url(r'^qpool/(?P<page>\d+)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
@@ -63,12 +67,11 @@ upat = [
     url(r'^players/infractions_clear/(?P<user_id>\d+)/(?P<infraction_id>\d+)/$', 'wouso.interface.cpanel.views.infraction_clear', name='infraction_clear'),
     url(r'^players/infractions_recheck/$', 'wouso.interface.cpanel.views.infraction_recheck', name='infraction_recheck'),
     url(r'^players/manage_player/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.manage_player', name='manage_player'),
-    url(r'^races/all/$', 'wouso.interface.cpanel.views.races_groups',
-        name='races_groups'),
-    url(r'^races/add/$', 'wouso.interface.cpanel.views.races_add',
-        name='races_add'),
-    url(r'^races/groups/add/$', 'wouso.interface.cpanel.views.group_add',
-        name='group_add'),
+
+    url(r'^races/all/$', 'wouso.interface.cpanel.views.races_groups', name='races_groups'),
+    url(r'^races/add/$', 'wouso.interface.cpanel.views.races_add', name='races_add'),
+    url(r'^races/groups/add/$', 'wouso.interface.cpanel.views.group_add', name='group_add'),
+
     url(r'^roles/$', 'wouso.interface.cpanel.views.roles', name='roles'),
     url(r'^roles/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.roles_update', name='roles_update'),
     url(r'^roles/(?P<id>\d+)/kick/player=(?P<player_id>\d+)/$', 'wouso.interface.cpanel.views.roles_update_kick', name='roles_update_kick'),

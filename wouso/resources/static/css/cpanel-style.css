@@ -39,3 +39,6 @@ div.second {
     width: 0;
 }
 
+.karma-form input[type="text"] {
+    width: 7%;
+}

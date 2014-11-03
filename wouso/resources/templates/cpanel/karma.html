@@ -1,0 +1,27 @@
+{% extends 'cpanel/index.html' %}
+
+{% load user %}
+{% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %} Karma {% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Karma" "karma" %}
+{% endblock %}
+
+{% block sectioncontent %}
+    <ul>
+        {% for r in races %}
+            <li>{{ r }}</li>
+            {% if r.children %}
+                <ul>
+                    {% for g in r.children %}
+                        <li><a href="{% url karma_group g.id %}"> {{ g }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endblock %}

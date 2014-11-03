@@ -37,7 +37,9 @@ class DefaultGod:
             dict(name='chall-was-set-up-infraction', expression='penalty=20', owner=None,
                 description='Give penalty points for losing a challenge on purpose'),
             dict(name='head-start', expression='points=200', owner=None,
-                 description='Points earned for logging in the head start period')
+                description='Points earned for logging in the head start period'),
+            dict(name='bonus-karma', expression='gold={karma_points}*10', owner=None,
+                description='Bonus given for earning Karma Points'),
         ]
         return fs
 
