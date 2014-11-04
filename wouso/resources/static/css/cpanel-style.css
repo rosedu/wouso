@@ -24,19 +24,14 @@ div.second {
 .question_preview {
     cursor: pointer;
 }
-
-/* Form styling */
-.form-horizontal .form-group {
-    margin-right: 0;
-    margin-left: 0;
-}
-
-.form-horizontal .control-label {
-    text-align: left;
-}
-
 .input-group.date .input-group-addon {
     width: 0;
+}
+.form-group {
+    font-size: 13px;
+}
+.form-control {
+    width: auto;
 }
 /* achievements */
 .artifact, .artifact-container {
@@ -45,9 +40,6 @@ div.second {
     width: 24px;
     height: 24px;
     display: inline-block;
-}
-.karma-form input[type="text"] {
-    width: 7%;
 }
 .artifact-default-ach-login-10 {
     background : transparent url(images/icons/ach-login-10.png) 0 center no-repeat;

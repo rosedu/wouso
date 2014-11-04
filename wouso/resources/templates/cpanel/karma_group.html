@@ -16,7 +16,7 @@
 {% block sectioncontent %}
 
     <h4>Enter Karma points for players of {{ group }}:</h4>
-    <form action="" method="post" role="form" class="karma-form">
+    <form action="" method="post" role="form">
         {% csrf_token %}
         {{ form|bootstrap_horizontal }}
         <button class="btn btn-warning" onclick="history.back(); return false;">{% trans 'Cancel' %}</button>
