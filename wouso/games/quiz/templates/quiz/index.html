@@ -5,7 +5,7 @@
 
 {% block sectioncontent %}
 
-{% if active_quizzes or inactive_quizzes %}
+{% if active_quizzes %}
     <h3>Active Quizzes</h3>
     <ul>
         {% for q in active_quizzes %}
@@ -14,12 +14,21 @@
             </li>
         {% endfor %}
     </ul>
-    
-    <h3>Inactive Quizzes</h3>
+
+    <h3>Played quizzes</h3>
     <ul>
-        {% for q in inactive_quizzes %}
+        {% for q in played_quizzes %}
             <li>
-                {{ q.name }}
+                <a href="{% url quiz_view q.id %}">{{ q.name }} {{ q.points }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h3>Expired quizzes</h3>
+    <ul>
+        {% for q in expired_quizzes %}
+            <li>
+                <a href="{% url quiz_view q.id %}">{{ q.name }}</a>
             </li>
         {% endfor %}
     </ul>

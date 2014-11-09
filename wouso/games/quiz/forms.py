@@ -1,9 +1,10 @@
 from random import shuffle
+from datetime import datetime
 from django import forms
 from core.qpool import get_questions_with_tag_and_category
 from core.qpool.models import Tag, Question
 from games.quiz.models import QuizException
-from wouso.games.quiz.models import Quiz
+from wouso.games.quiz.models import Quiz, QuizUser, UserToQuiz
 from bootstrap3_datetime import widgets
 
 
@@ -62,7 +63,7 @@ class AddQuizForm(forms.ModelForm):
         widgets = {'start': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"}),
                    'end': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"})
         }
-        exclude = ['questions', 'owner', 'players']
+        exclude = ['questions', 'owner', 'players', 'status']
 
     def __init__(self, *args, **kwargs):
         super(AddQuizForm, self).__init__(*args, **kwargs)
@@ -72,7 +73,7 @@ class AddQuizForm(forms.ModelForm):
         self.fields['tags'].label = "Question tags"
         self.fields['time_limit'].label = "Time limit (seconds)"
 
-    def save(self):
+    def save(self, commit=True):
         data = self.cleaned_data
 
         # Get a list of questions from the Quiz category with tags selected
@@ -87,5 +88,15 @@ class AddQuizForm(forms.ModelForm):
 
         self.instance.save()
         self.instance.questions = questions_qs
+
+        # Set status based on current date and time (Active, Inactive, Expired)
+        now = datetime.now()
+        if data['start'] <= now <= data['end']:
+            self.instance.status = 'A'
+        elif data['start'] > now:
+            self.instance.status = 'I'
+        elif data['end'] < now:
+            self.instance.status = 'E'
+        self.instance.save()
 
         return self.instance

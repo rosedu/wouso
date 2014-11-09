@@ -13,50 +13,83 @@ class QuizException(Exception):
     pass
 
 
-class QuizUser(Player):
-    """ Extension of the User object, customized for quiz """
-    my_question = models.ForeignKey(Question,
-                                    related_name="MyQuestion",
-                                    null=True)
-    # time when user started quiz
-    start = models.DateTimeField(null=True, blank=True)
-    # ID of current started quiz
-    started_quiz_id = models.IntegerField(default=0)
-
-Player.register_extension('quiz', QuizUser)
-
-
 class Quiz(models.Model):
+    CHOICES = {
+        ('A', 'ACTIVE'),
+        ('I', 'INACTIVE'),  # Active in future
+        ('E', 'EXPIRED')
+    }
     name = models.CharField(max_length=100)
     number_of_questions = models.IntegerField(default=5)
     time_limit = models.IntegerField(default=300)
     questions = models.ManyToManyField(Question)
-    owner = models.ForeignKey(Game, null=True, blank=True)
 
     start = models.DateTimeField()
     end = models.DateTimeField()
 
-    players = models.ManyToManyField(QuizUser)
+    owner = models.ForeignKey(Game, null=True, blank=True)
+
+    status = models.CharField(max_length=1, choices=CHOICES)
+
+    def set_active(self):
+        self.status = 'A'
+        self.save()
+
+    def set_inactive(self):
+        self.status = 'I'
+        self.save()
+
+    def set_started(self):
+        self.status = 'S'
+        self.save()
+
+    def set_played(self):
+        self.status = 'P'
+        self.save()
+
+    def set_expired(self):
+        self.status = 'E'
+        self.save()
+
+    def is_active(self):
+        return self.status == 'A'
+
+    def is_inactive(self):
+        return self.status == 'I'
+
+    def is_started(self):
+        return self.status == 'S'
+
+    def is_played(self):
+        return self.status == 'P'
+
+    def is_expired(self):
+        return self.status == 'E'
 
     @property
     def elapsed(self):
         if self.end < datetime.now():
             return True
         return False
+    #
+    # @property
+    # def is_active(self):
+    #     now = datetime.now()
+    #     if self.end < now:
+    #         return False
+    #     elif self.start > now:
+    #         return False
+    #     return True
 
-    @property
-    def is_active(self):
-        now = datetime.now()
-        if self.end < now:
-            return False
-        elif self.start > now:
-            return False
-        return True
+    # @property
+    # def active_quizzes(self):
+    #     active_quizzes = [q for q in self.objects.all() if q.is_active()]
+    #     return active_quizzes
 
     @classmethod
-    def get_active_quizzes(self):
-        active_quizzes = [q for q in self.objects.all() if q.is_active]
-        return active_quizzes
+    def played_quizzes(self):
+        played_quizzes = [q for q in self.objects.all() if q.time_for_user() == 0]
+        return played_quizzes
 
     @classmethod
     def calculate_points(cls, responses):
@@ -94,12 +127,13 @@ class Quiz(models.Model):
     def add_player(self, player):
         """ Add player to the list of players which have played the quiz
         """
-        self.players.add(player)
+        # self.players.add(player)
 
     def set_start(self, user):
         """ Set quiz start time for user
         """
         user.start = datetime.now()
+        user.quiz.set_started()
         user.save()
 
     def is_started_for_user(self, user):
@@ -138,3 +172,36 @@ class QuizGame(Game):
         super(QuizGame, self).__init__(*args, **kwargs)
 
 register_category(QuizGame.QPOOL_CATEGORY, QuizGame)
+
+
+class QuizUser(Player):
+    """ Extension of the User object, customized for quiz """
+    # quiz = models.ForeignKey(Quiz, null=True)
+
+    # time when user started quiz
+    start = models.DateTimeField(null=True, blank=True)
+    # ID of current started quiz
+    started_quiz_id = models.IntegerField(default=0)
+    quizzes = models.ManyToManyField(Quiz, through='UserToQuiz')
+    # score = models.IntegerField(default=0)
+    # quizzes = models.ForeignKey(Quiz, null=True, blank=True)
+
+    @property
+    def active_quizzes(self):
+        active_quizzes = [q for q in Quiz.objects.all() if q.is_active()]
+        return active_quizzes
+
+
+Player.register_extension('quiz', QuizUser)
+
+
+class UserToQuiz(models.Model):
+    CHOICES = {
+        ('P', 'PLAYED'),
+        ('R', 'RUNNING'),
+        ('N', 'NOT STARTED')
+    }
+    user = models.ForeignKey(QuizUser)
+    quiz = models.ForeignKey(Quiz)
+    state = models.CharField(max_length=1, choices=CHOICES, default='N')
+    score = models.IntegerField(default=-1)

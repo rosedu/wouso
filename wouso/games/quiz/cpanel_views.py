@@ -28,11 +28,13 @@ class AddQuizView(CreateView):
 add_quiz = permission_required('config.change_setting')(
     AddQuizView.as_view())
 
+
 @permission_required('config.change_setting')
 def delete_quiz(request, id):
     quiz = get_object_or_404(Quiz, pk=id)
     quiz.delete()
     return redirect('list_quizzes')
+
 
 class EditQuizView(UpdateView):
     template_name = 'quiz/cpanel/edit_quiz.html'
