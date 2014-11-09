@@ -13,9 +13,7 @@ class ListQuizzes(ListView):
     paginate_by = 50
     context_object_name = 'quizzes'
     template_name = 'quiz/cpanel/list_quizzes.html'
-    
-    # def get_queryset(self):
-    #     return self.model.objects.all().order_by('-date')
+
 
 list_quizzes = staff_required(ListQuizzes.as_view())
 

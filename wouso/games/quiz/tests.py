@@ -1,18 +1,13 @@
-import json
-import unittest
-
-from datetime import datetime,timedelta
-from mock import patch
+from datetime import datetime
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.test.client import Client, RequestFactory
-from django.utils.translation import ugettext as _
+from django.test.client import Client
 
 from wouso.core import scoring
-from wouso.core.qpool.models import Question, Answer, Category
 from wouso.core.user.models import Player
 from wouso.core.tests import WousoTest
 from wouso.games.quiz.models import Quiz, QuizUser, QuizGame
+
 
 class QuizTestCase(WousoTest):
     def setUp(self):
@@ -66,7 +61,7 @@ class TestQuizViews(WousoTest):
         # TODO: figure out how to add question q in quiz
         q = _make_question(text='Are you there?')
         quiz = Quiz.objects.create(name='TestingQuiz', start=datetime.now(), end=datetime.now())
-        response = self.c.get(reverse('quiz_view', kwargs={'id':quiz.id}))
+        response = self.c.get(reverse('quiz_view', kwargs={'id': quiz.id}))
 
 
 def _make_question(text='How many', correct=2):
