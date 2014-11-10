@@ -72,6 +72,7 @@ class AddQuizForm(forms.ModelForm):
         self.fields['end'].label = "Ends on"
         self.fields['tags'].label = "Question tags"
         self.fields['time_limit'].label = "Time limit (seconds)"
+        self.fields['another_chance'].label = "Retake quiz after (days)"
 
     def save(self, commit=True):
         data = self.cleaned_data

@@ -1,5 +1,3 @@
-import json
-
 from datetime import datetime
 
 from django.db import models
@@ -23,11 +21,16 @@ class Quiz(models.Model):
     name = models.CharField(max_length=100)
     number_of_questions = models.IntegerField(default=5)
     time_limit = models.IntegerField(default=300)
-    max_points = models.IntegerField(default=100)
+
+    points_reward = models.IntegerField(default=100)
+    gold_reward = models.IntegerField(default=30)
+
     questions = models.ManyToManyField(Question)
 
     start = models.DateTimeField()
     end = models.DateTimeField()
+
+    another_chance = models.IntegerField(default=7)
 
     owner = models.ForeignKey(Game, null=True, blank=True)
 
@@ -87,7 +90,7 @@ class Quiz(models.Model):
 
         points = int(float(points) / len(q.answers) * self.max_points)
 
-        return {'points': points, 'results' : results}
+        return {'points': points, 'results': results}
 
 
 class QuizGame(Game):
@@ -142,9 +145,13 @@ class UserToQuiz(models.Model):
     user = models.ForeignKey(QuizUser)
     quiz = models.ForeignKey(Quiz)
     state = models.CharField(max_length=1, choices=CHOICES, default='N')
-    attempt = models.ForeignKey('QuizAttempt')
+    attempts = models.ManyToManyField('QuizAttempt')
 
     start = models.DateTimeField(blank=True, null=True)
+
+    def _give_bonus(self, points):
+        """TODO"""
+        pass
 
     def time_left(self):
         now = datetime.now()
@@ -158,9 +165,8 @@ class UserToQuiz(models.Model):
     def set_played(self, points):
         self.state = 'P'
         self.start = None
-        self.attempt.points = points
-        self.attempt.date = datetime.now()
-        self.attempt.save()
+        self.attempts.create(points=points, date=datetime.now())
+        self._give_bonus(points)
         self.save()
 
     def is_running(self):
@@ -172,7 +178,17 @@ class UserToQuiz(models.Model):
     def is_played(self):
         return self.state == 'P'
 
+    def can_play_again(self):
+        if self.attempts.all().count():
+            last_attempt = self.attempts.all().reverse()[0].date
+            return (datetime.now() - last_attempt).days >= self.quiz.another_chance
+
+        return True
+
 
 class QuizAttempt(models.Model):
+    """
+     Stores information about each quiz attempt
+    """
     points = models.IntegerField(default=-1)
     date = models.DateTimeField(blank=True, null=True)

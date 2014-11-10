@@ -19,19 +19,13 @@ def index(request):
     """ Shows all quizzes related to the current user """
     profile = request.user.get_profile()
     quiz_user = profile.get_extension(QuizUser)
-    attempt = QuizAttempt.objects.create()
 
     for q in Quiz.objects.all():
         try:
             obj = UserToQuiz.objects.get(user=quiz_user, quiz=q)
         except UserToQuiz.DoesNotExist:
-            obj = UserToQuiz(user=quiz_user, quiz=q, attempt=attempt)
+            obj = UserToQuiz(user=quiz_user, quiz=q)
             obj.save()
-
-    # quiz = Quiz.objects.get(id=1)
-    # through = UserToQuiz.objects.get(user=quiz_user, quiz=quiz)
-    # print through.attempt.points
-    # through.attempt.points =
 
     return render_to_response('quiz/index.html',
                               {'active_quizzes': quiz_user.active_quizzes,
@@ -50,9 +44,9 @@ class QuizView(View):
         self.through = UserToQuiz.objects.get(user=self.quiz_user, quiz=self.quiz)
 
         # check if user has already played quiz
-        # if self.through.is_played():
-        #     messages.error(request, _('You have already submitted this quiz!'))
-        #     return HttpResponseRedirect(reverse('quiz_index_view'))
+        if not self.through.can_play_again():
+            messages.error(request, _('You have already submitted this quiz!'))
+            return HttpResponseRedirect(reverse('quiz_index_view'))
 
         return super(QuizView, self).dispatch(request, *args, **kwargs)
 
