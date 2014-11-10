@@ -53,13 +53,13 @@ class Question(models.Model):
     text = models.TextField()
     proposed_by = models.ForeignKey(User, null=True, blank=True, related_name="%(app_label)s_%(class)s_proposedby_related")
     endorsed_by = models.ForeignKey(User, null=True, blank=True, related_name="%(app_label)s_%(class)s_endorsedby_related")
-    active = models.BooleanField(default=False)
+    active = models.BooleanField()
 
     category = models.ForeignKey(Category, null=True)
     tags = models.ManyToManyField(Tag, blank=True)
 
-    answer_type = models.CharField(max_length=1, choices=(("R", "single choice"), ("C", "multiple choice"),
-                                                          ("F", "free text")), default="R")
+    answer_type = models.CharField(max_length=1, choices=(("C", "multiple choice"), ("R", "single choice"),
+        ("F", "free text")), default="C")
     # a dynamic question would have its code run before returning it to the caller
     type = models.CharField(max_length=1, choices=(("S", "static"), ("D", "dynamic")), default="S")
     code = models.TextField(blank=True, validators=[validate_dynq_code],

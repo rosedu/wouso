@@ -37,6 +37,9 @@ class QuestionForm(forms.Form):
             initial=[t.name for t in instance.tags.all()] if instance else {}
         )
         self.instance = instance
+        self.fields['active'] = forms.BooleanField(required=False)
+        self.fields['answertype'] = forms.ChoiceField(choices=(("C", "multiple choice"), ("R", "single choice"),
+                    ("F", "free text")))
         if users:
             self.fields['endorsed_by'] = forms.ModelChoiceField(queryset=User.objects.all(), required=False,
                                                                 initial=instance.endorsed_by if instance else None)
@@ -71,6 +74,7 @@ class QuestionForm(forms.Form):
         self.instance.text = data['text']
         self.instance.active = data['active']
 
+        self.instance.answer_type = data['answertype']
         if self.instance.category.name == 'workshop':
             self.instance.answer_type = 'F'
 

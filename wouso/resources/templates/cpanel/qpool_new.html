@@ -26,12 +26,6 @@
                     <td style="vertical-align: middle"><label>Question Text:</label></td>
                     <td><textarea id="text" name="text" rows="5" cols="50">{{ question.text}}</textarea></td>
                 </tr>
-                {% for a in 123456|make_list %}
-                <tr>
-                    <td style="vertical-align: middle">Correct: <input type="checkbox" name="correct_{{a}}"/></td>
-                    <td><textarea name="answer_{{a}}" cols="50"></textarea></td>
-                </tr>
-                {% endfor %}
                 {% if not question %}
                 <tr>
                     <td><b>Category:</b></td>
@@ -50,7 +44,21 @@
                         </select>
                     </td>
                 </tr>
+                <tr>
+                    <td><b>Answer Type:</b></td>
+                    <td>{{ form.answertype }}</td>
+                </tr>
                 {% endif %}
+                {% for a in 123456|make_list %}
+                <tr>
+                    <td style="vertical-align: middle">Correct: <input type="checkbox" name="correct_{{a}}"/></td>
+                    <td><textarea name="answer_{{a}}" cols="50"></textarea></td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td><b>Active:</b></td>
+                    <td>{{ form.active }}</td>
+                </tr>
                 {% if form.proposed_by %}
                 <tr>
                     <td><b>Proposed by:</b></td>
