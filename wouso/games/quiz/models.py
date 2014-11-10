@@ -23,6 +23,7 @@ class Quiz(models.Model):
     name = models.CharField(max_length=100)
     number_of_questions = models.IntegerField(default=5)
     time_limit = models.IntegerField(default=300)
+    max_points = models.IntegerField(default=100)
     questions = models.ManyToManyField(Question)
 
     start = models.DateTimeField()
@@ -53,8 +54,7 @@ class Quiz(models.Model):
     def is_expired(self):
         return self.status == 'E'
 
-    @classmethod
-    def _calculate_points(cls, responses):
+    def calculate_points(self, responses):
         """ Response contains a dict with question id and checked answers ids.
         Example:
             {1 : [14,], ...}, - has answered answer with id 14 at the question with id 1
@@ -79,10 +79,13 @@ class Quiz(models.Model):
             elif wrong_count == 0:
                 qpoints = 1 if (len(v) == q.answers.count()) else 0
             else:
-                qpoints = checked - wrong
+                # qpoints = checked - wrong
+                qpoints = checked
             qpoints = qpoints if qpoints > 0 else 0
             points += qpoints
             results[r] = (checked, correct_count)
+
+        points = int(float(points) / len(q.answers) * self.max_points)
 
         return {'points': points, 'results' : results}
 
@@ -120,6 +123,11 @@ class QuizUser(Player):
         expired_quizzes = [t for t in through if t.quiz.is_expired()]
         return expired_quizzes
 
+    @property
+    def all_quizzes(self):
+        through = UserToQuiz.objects.filter(user=self)
+        return through
+
 
 Player.register_extension('quiz', QuizUser)
 
@@ -149,6 +157,7 @@ class UserToQuiz(models.Model):
 
     def set_played(self, points):
         self.state = 'P'
+        self.start = None
         self.attempt.points = points
         self.attempt.date = datetime.now()
         self.attempt.save()

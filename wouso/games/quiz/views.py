@@ -50,9 +50,9 @@ class QuizView(View):
         self.through = UserToQuiz.objects.get(user=self.quiz_user, quiz=self.quiz)
 
         # check if user has already played quiz
-        if self.through.is_played():
-            messages.error(request, _('You have already submitted this quiz!'))
-            return HttpResponseRedirect(reverse('quiz_index_view'))
+        # if self.through.is_played():
+        #     messages.error(request, _('You have already submitted this quiz!'))
+        #     return HttpResponseRedirect(reverse('quiz_index_view'))
 
         return super(QuizView, self).dispatch(request, *args, **kwargs)
 
@@ -74,7 +74,7 @@ class QuizView(View):
         results = form.get_response()
         form.check_self_boxes()
 
-        results = Quiz._calculate_points(results)
+        results = self.quiz.calculate_points(results)
         self.through.set_played(points=results['points'])
 
         return render_to_response('quiz/result.html',
