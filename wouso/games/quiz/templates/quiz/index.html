@@ -9,23 +9,47 @@
     <h3>Active Quizzes</h3>
     <ul>
         {% for t in active_quizzes %}
-            <li>
-                <a href="{% url quiz_view t.quiz.id %}">{{ t.quiz.name }}</a>
-                , state = {{ t.state }}, score = {{ t.score }}
-            </li>
+            <li><a href="{% url quiz_view t.quiz.id %}">{{ t.quiz.name }}</a></li>
         {% endfor %}
     </ul>
 
     <h3>Expired quizzes</h3>
     <ul>
         {% for t in expired_quizzes %}
-            <li>
-                {{ t.quiz.name }}, state = {{ t.state }}, score = {{ t.score }}
-            </li>
+            <li>{{ t.quiz.name }}</li>
         {% endfor %}
     </ul>
 {% else %}
     <p>{% trans 'No quizzes have been added yet. Stay tuned!' %}</p>
+{% endif %}
+
+<h3>Your quiz results:</h3>
+{% if played_quizzes %}
+    <p>BEST = Best Attempt <br/>
+        LAST = Last Attempt
+    </p>
+    <table>
+        <tr>
+            <th>#</th>
+            <th>Quiz</th>
+            <th>BEST (timestamp)</th>
+            <th>BEST (points)</th>
+            <th>LAST (timestamp)</th>
+            <th>LAST (points)</th>
+        </tr>
+        {% for t in played_quizzes %}
+            <tr style="text-align: center">
+                <td>{{ forloop.counter }}</td>
+                <td>{{ t.quiz.name }}</td>
+                <td>{{ t.best_attempt.date }}</td>
+                <td>{{ t.best_attempt.points }}</td>
+                <td>{{ t.last_attempt.date }}</td>
+                <td>{{ t.last_attempt.points }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p> {% trans "You haven't submitted any quiz yet" %}
 {% endif %}
 
 {% endblock %}

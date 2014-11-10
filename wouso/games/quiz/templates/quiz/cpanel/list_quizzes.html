@@ -24,11 +24,12 @@
         <tr>
             <th>#</th>
             <th>Name</th>
-            <th>Number of questions</th>
+            <th>No. of questions</th>
             <th>Time limit (seconds)</th>
-            <th>Max points</th>
+            <th>Points</th>
             <th>Gold</th>
-            <th>Active</th>
+            <th>From</th>
+            <th>Until</th>
             <th>Manage</th>
         </tr>
         {% if quizzes %}
@@ -38,9 +39,10 @@
                 <td>{{ q.name }}</td>
                 <td>{{ q.number_of_questions }}</td>
                 <td>{{ q.time_limit }}</td>
-                <td>{{ q.max_points }}</td>
-                <td>{{ q.gold }}</td>
-                <td>{{ q.start }} - {{ q.end }}</td>
+                <td>{{ q.points_reward }}</td>
+                <td>{{ q.gold_reward }}</td>
+                <td>{{ q.start }}</td>
+                <td>{{ q.end }}</td>
                 <td>
                    <a class="btn btn-success" href="{% url edit_quiz q.id %}">
                         <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}

@@ -29,7 +29,8 @@ def index(request):
 
     return render_to_response('quiz/index.html',
                               {'active_quizzes': quiz_user.active_quizzes,
-                              'expired_quizzes': quiz_user.expired_quizzes},
+                              'expired_quizzes': quiz_user.expired_quizzes,
+                              'played_quizzes': quiz_user.played_quizzes},
                               context_instance=RequestContext(request))
 
 
@@ -43,7 +44,7 @@ class QuizView(View):
         self.quiz = get_object_or_404(Quiz, pk=kwargs['id'])
         self.through = UserToQuiz.objects.get(user=self.quiz_user, quiz=self.quiz)
 
-        # check if user has already played quiz
+        # check if user is eligible to play quiz
         if not self.through.can_play_again():
             messages.error(request, _('You have already submitted this quiz!'))
             return HttpResponseRedirect(reverse('quiz_index_view'))
@@ -68,11 +69,11 @@ class QuizView(View):
         results = form.get_response()
         form.check_self_boxes()
 
-        results = self.quiz.calculate_points(results)
-        self.through.set_played(points=results['points'])
+        points, gold = self.quiz.calculate_reward(results)
+        self.through.set_played(points=points, gold=gold)
 
         return render_to_response('quiz/result.html',
-                                  {'quiz': self.quiz, 'points': results['points']},
+                                  {'quiz': self.quiz, 'points': points},
                                   context_instance=RequestContext(request))
 
 

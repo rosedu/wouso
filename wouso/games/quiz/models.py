@@ -1,11 +1,15 @@
 from datetime import datetime
 
 from django.db import models
+from django.utils.translation import ugettext as _
 
+from wouso.core import scoring
+from wouso.core.signals import add_activity
 from wouso.core.user.models import Player
 from wouso.core.game.models import Game
 from wouso.core.qpool import register_category
 from wouso.core.qpool.models import Question
+
 
 
 class QuizException(Exception):
@@ -57,40 +61,23 @@ class Quiz(models.Model):
     def is_expired(self):
         return self.status == 'E'
 
-    def calculate_points(self, responses):
+    def calculate_reward(self, responses):
         """ Response contains a dict with question id and checked answers ids.
         Example:
             {1 : [14,], ...}, - has answered answer with id 14 at the question with id 1
         """
-        points = 0
-        results = {}
-        for r, v in responses.iteritems():
-            checked, missed, wrong = 0, 0, 0
-            q = Question.objects.get(id=r)
-            correct_count = len([a for a in q.answers if a.correct])
-            wrong_count = len([a for a in q.answers if not a.correct])
-            for a in q.answers.all():
-                if a.correct:
-                    if a.id in v:
-                        checked += 1
-                    else:
-                        missed += 1
-                elif a.id in v:
-                    wrong += 1
-            if correct_count == 0:
-                qpoints = 1 if (len(v) == 0) else 0
-            elif wrong_count == 0:
-                qpoints = 1 if (len(v) == q.answers.count()) else 0
-            else:
-                # qpoints = checked - wrong
-                qpoints = checked
-            qpoints = qpoints if qpoints > 0 else 0
-            points += qpoints
-            results[r] = (checked, correct_count)
+        correct_count = 0.0
+        total_count = len(responses)
 
-        points = int(float(points) / len(q.answers) * self.max_points)
+        for question_id, checked_answer_id in responses.iteritems():
+            question = Question.objects.get(id=question_id)
+            correct_answer_id = [ans.id for ans in question.answers if ans.correct]
+            if checked_answer_id == correct_answer_id:
+                correct_count += 1
 
-        return {'points': points, 'results': results}
+        points = int((correct_count / total_count) * self.points_reward)
+        gold = int((correct_count / total_count) * self.gold_reward)
+        return points, gold
 
 
 class QuizGame(Game):
@@ -127,8 +114,8 @@ class QuizUser(Player):
         return expired_quizzes
 
     @property
-    def all_quizzes(self):
-        through = UserToQuiz.objects.filter(user=self)
+    def played_quizzes(self):
+        through = UserToQuiz.objects.filter(user=self, state='P')
         return through
 
 
@@ -145,13 +132,39 @@ class UserToQuiz(models.Model):
     user = models.ForeignKey(QuizUser)
     quiz = models.ForeignKey(Quiz)
     state = models.CharField(max_length=1, choices=CHOICES, default='N')
+    start = models.DateTimeField(blank=True, null=True)
     attempts = models.ManyToManyField('QuizAttempt')
 
-    start = models.DateTimeField(blank=True, null=True)
+    @property
+    def all_attempts(self):
+        return self.attempts.all()
 
-    def _give_bonus(self, points):
-        """TODO"""
-        pass
+    @property
+    def best_attempt(self):
+        if self.all_attempts.count() == 0:
+            return None
+        return sorted(self.all_attempts, key=lambda x: x.points, reverse=True)[0]
+
+    @property
+    def last_attempt(self):
+        return list(self.all_attempts)[-1]
+
+    def _give_bonus(self, points, gold):
+        if self.best_attempt is not None:
+            if points > self.best_attempt.points:
+                points = points - self.best_attempt.points
+                gold = gold - self.best_attempt.gold
+                scoring.score(self.user, None, 'bonus-points', points=points)
+                scoring.score(self.user, None, 'bonus-gold', gold=gold)
+                add_activity(self.user, _('received {points} points and {gold} gold bonus'
+                                ' for beating his/her highscore at quiz {quiz_name}'),
+                                points=points, gold=gold, quiz_name=self.quiz.name)
+        else:
+            scoring.score(self.user, None, 'bonus-points', points=points)
+            scoring.score(self.user, None, 'bonus-gold', gold=gold)
+            add_activity(self.user, _('received {points} points and {gold} gold bonus'
+                                ' for submitting quiz {quiz_name}'),
+                                points=points, gold=gold, quiz_name=self.quiz.name)
 
     def time_left(self):
         now = datetime.now()
@@ -162,27 +175,26 @@ class UserToQuiz(models.Model):
         self.start = datetime.now()
         self.save()
 
-    def set_played(self, points):
+    def set_played(self, points, gold):
         self.state = 'P'
-        self.start = None
-        self.attempts.create(points=points, date=datetime.now())
-        self._give_bonus(points)
+        # bonus must be given before creating a new attempt
+        self._give_bonus(points=points, gold=gold)
+        self.attempts.create(date=datetime.now(), points=points, gold=gold)
         self.save()
 
     def is_running(self):
         return self.state == 'R'
 
     def is_not_running(self):
-        return self.state == 'N'
+        return not self.state == 'R'
 
     def is_played(self):
         return self.state == 'P'
 
     def can_play_again(self):
-        if self.attempts.all().count():
-            last_attempt = self.attempts.all().reverse()[0].date
+        if self.all_attempts.count():
+            last_attempt = self.all_attempts.reverse()[0].date
             return (datetime.now() - last_attempt).days >= self.quiz.another_chance
-
         return True
 
 
@@ -190,5 +202,6 @@ class QuizAttempt(models.Model):
     """
      Stores information about each quiz attempt
     """
-    points = models.IntegerField(default=-1)
     date = models.DateTimeField(blank=True, null=True)
+    points = models.IntegerField(default=-1)
+    gold = models.IntegerField(default=0)
