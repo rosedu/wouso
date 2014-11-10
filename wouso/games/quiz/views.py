@@ -7,6 +7,7 @@ from django.views.generic import View
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from games.quiz.models import QuizAttempt
 
 from models import Quiz, QuizUser, QuizGame, UserToQuiz
 from forms import QuizForm
@@ -18,13 +19,19 @@ def index(request):
     """ Shows all quizzes related to the current user """
     profile = request.user.get_profile()
     quiz_user = profile.get_extension(QuizUser)
+    attempt = QuizAttempt.objects.create()
 
     for q in Quiz.objects.all():
         try:
             obj = UserToQuiz.objects.get(user=quiz_user, quiz=q)
         except UserToQuiz.DoesNotExist:
-            obj = UserToQuiz(user=quiz_user, quiz=q)
+            obj = UserToQuiz(user=quiz_user, quiz=q, attempt=attempt)
             obj.save()
+
+    # quiz = Quiz.objects.get(id=1)
+    # through = UserToQuiz.objects.get(user=quiz_user, quiz=quiz)
+    # print through.attempt.points
+    # through.attempt.points =
 
     return render_to_response('quiz/index.html',
                               {'active_quizzes': quiz_user.active_quizzes,
@@ -68,9 +75,9 @@ class QuizView(View):
         form.check_self_boxes()
 
         results = Quiz._calculate_points(results)
-        self.through.set_played(score=results['points'])
+        self.through.set_played(points=results['points'])
 
-        return render_to_response(('quiz/result.html'),
+        return render_to_response('quiz/result.html',
                                   {'quiz': self.quiz, 'points': results['points']},
                                   context_instance=RequestContext(request))
 

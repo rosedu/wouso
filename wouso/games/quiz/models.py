@@ -1,3 +1,5 @@
+import json
+
 from datetime import datetime
 
 from django.db import models
@@ -89,6 +91,7 @@ class QuizGame(Game):
     """ Each game must extend Game"""
     class Meta:
         proxy = True
+
     QPOOL_CATEGORY = 'quiz'
 
     def __init__(self, *args, **kwargs):
@@ -131,7 +134,7 @@ class UserToQuiz(models.Model):
     user = models.ForeignKey(QuizUser)
     quiz = models.ForeignKey(Quiz)
     state = models.CharField(max_length=1, choices=CHOICES, default='N')
-    score = models.IntegerField(default=-1)
+    attempt = models.ForeignKey('QuizAttempt')
 
     start = models.DateTimeField(blank=True, null=True)
 
@@ -144,9 +147,11 @@ class UserToQuiz(models.Model):
         self.start = datetime.now()
         self.save()
 
-    def set_played(self, score):
+    def set_played(self, points):
         self.state = 'P'
-        self.score = score
+        self.attempt.points = points
+        self.attempt.date = datetime.now()
+        self.attempt.save()
         self.save()
 
     def is_running(self):
@@ -157,3 +162,8 @@ class UserToQuiz(models.Model):
 
     def is_played(self):
         return self.state == 'P'
+
+
+class QuizAttempt(models.Model):
+    points = models.IntegerField(default=-1)
+    date = models.DateTimeField(blank=True, null=True)
