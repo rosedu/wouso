@@ -11,7 +11,6 @@ from wouso.core.qpool import register_category
 from wouso.core.qpool.models import Question
 
 
-
 class QuizException(Exception):
     pass
 
@@ -62,8 +61,9 @@ class Quiz(models.Model):
         return self.status == 'E'
 
     def calculate_reward(self, responses):
-        """ Response contains a dict with question id and checked answers ids.
-        Example:
+        """
+         Response contains a dict with question id and checked answers ids.
+         Example:
             {1 : [14,], ...}, - has answered answer with id 14 at the question with id 1
         """
         correct_count = 0.0
@@ -81,7 +81,9 @@ class Quiz(models.Model):
 
 
 class QuizGame(Game):
-    """ Each game must extend Game"""
+    """
+     Each game must extend Game
+    """
     class Meta:
         proxy = True
 
@@ -98,7 +100,9 @@ register_category(QuizGame.QPOOL_CATEGORY, QuizGame)
 
 
 class QuizUser(Player):
-    """ Extension of the User object, customized for quiz """
+    """
+     Extension of the User object, customized for quiz
+    """
     quizzes = models.ManyToManyField(Quiz, through='UserToQuiz')
 
     @property
@@ -123,6 +127,9 @@ Player.register_extension('quiz', QuizUser)
 
 
 class UserToQuiz(models.Model):
+    """
+     Used as a link between each user and each quiz
+    """
     CHOICES = {
         ('P', 'PLAYED'),
         ('R', 'RUNNING'),
@@ -176,8 +183,9 @@ class UserToQuiz(models.Model):
         self.save()
 
     def set_played(self, points, gold):
+        # Bonus must be given before creating a new attempt, otherwise
+        # player will not be bonused in case of new highscore
         self.state = 'P'
-        # bonus must be given before creating a new attempt
         self._give_bonus(points=points, gold=gold)
         self.attempts.create(date=datetime.now(), points=points, gold=gold)
         self.save()
@@ -203,5 +211,6 @@ class QuizAttempt(models.Model):
      Stores information about each quiz attempt
     """
     date = models.DateTimeField(blank=True, null=True)
+
     points = models.IntegerField(default=-1)
     gold = models.IntegerField(default=0)
