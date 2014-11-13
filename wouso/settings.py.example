@@ -150,6 +150,7 @@ INSTALLED_APPS = [
     'wouso.core.security',
 
     'wouso.games.qotd',
+    'wouso.games.quiz',
     'wouso.games.challenge',
     'wouso.games.grandchallenge',
     'wouso.games.specialchallenge',

@@ -86,3 +86,6 @@ div.second {
 .artifact-default-ach-head-start {
 	background : transparent url(images/icons/ach-head-start.png) 0 center no-repeat;
 }
+.form-control {
+    width: 40%;
+}

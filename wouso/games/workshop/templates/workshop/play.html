@@ -25,11 +25,11 @@
     </div>
     <script id="timer_script" language="javascript">
         var seconds = {{ seconds_left }};
-        $(document).ready(function () { update('timer');});
+        $(document).ready(function () { update('timer', 'workshop_form');});
     </script>
 
 
-<form action="" method="post" id="challenge_form">
+<form action="" method="post" id="workshop_form">
     <table>
         {% for q in assessment.questions.all %}
             <tr>
