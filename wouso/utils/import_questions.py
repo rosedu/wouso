@@ -20,10 +20,6 @@ def add(question, answers, category=None, tags=None, file_tags=None):
     # imports valid only after init()
     from wouso.core.qpool.models import Question, Answer, Tag, Category
 
-    #print question
-    #for a in answers:
-    #    print a
-
     # create and save question
     q = Question(**question)
     q.save()
@@ -35,7 +31,7 @@ def add(question, answers, category=None, tags=None, file_tags=None):
 
     if file_tags:
         for tag_name in file_tags:
-            tag, created = Tag.objects.get_or_create(name=tag_name)
+            tag, created = Tag.objects.get_or_create(name=tag_name, category=category)
             if created:
                 tag.save()
                 if category is not None:
@@ -94,7 +90,7 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
                     q['answer_type'] = 'R'
                 else:
                     q['answer_type'] = 'C'
-                add(q, answers, category, tags)
+                add(q, answers, category, tags, file_tags)
                 nr_imported += 1
                 q_saved = True
                 a_saved = True
@@ -108,6 +104,9 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
             s = line.split()
 
             q['text'] = ' '.join(s[1:])
+
+        elif line == 'tags:':
+            continue
 
         elif line.startswith('tags: '):
             tags_line = line.split('tags: ')[1]

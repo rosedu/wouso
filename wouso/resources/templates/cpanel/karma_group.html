@@ -1,0 +1,27 @@
+{% extends 'cpanel/index.html' %}
+
+{% load user %}
+{% load i18n %}
+{% load bootstrap %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %} Group {{ group.name }} {% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Karma" "karma" %}
+    {% breadcrumb "Group" "karma_group" group.id %}
+{% endblock %}
+
+{% block sectioncontent %}
+
+    <h4>Enter Karma points for players of {{ group }}:</h4>
+    <form action="" method="post" role="form">
+        {% csrf_token %}
+        {{ form|bootstrap_horizontal }}
+        <button class="btn btn-warning" onclick="history.back(); return false;">{% trans 'Cancel' %}</button>
+        <input class="btn btn-danger" type="reset" value="Reset" />
+        <input class="btn btn-primary" type="submit" value="Bonus Players" />
+    </form>
+
+{% endblock %}

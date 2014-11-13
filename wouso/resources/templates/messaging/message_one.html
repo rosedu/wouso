@@ -2,9 +2,9 @@
 <div class="">
     <h4>{{m.subject}}</h4>
     <p>
-        <pre>
+    <pre style="white-space: pre-wrap;">
     From: {% if m.sender %}{{m.sender}}{% else %}{% trans 'System' %}{% endif %}
-    To: {{ m.receiver }}
+    To:     {{ m.receiver }}
 
     {{m.text}}
     </pre>

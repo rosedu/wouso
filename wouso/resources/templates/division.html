@@ -1,0 +1,36 @@
+{% extends 'interface/section_base.html' %}
+
+{% load i18n %}
+{% load user %}
+
+{% block title %}{% trans 'My Division' %}{% endblock %}
+{% block sectiontitle %}{% trans 'My Division' %}{% endblock %}
+
+{% block sectioncontent %}
+{% if top.disabled %}
+    {% trans 'Top has been disabled.' %}
+{% else %}
+    {% if user.is_staff %}
+        {% trans 'Staff users are not members of any division' %}
+    {% else %}
+        <table id="clasament" class="custom">
+            <tr>
+                <th width="65%" align="left">{% trans 'Player' %}</th>
+                <th>{% trans 'Level' %}</th>
+                <th>{% trans 'Group' %}</th>
+                <th>{% trans 'Race' %}</th>
+                <th width="35%" nowrap>{% trans 'Last seen' %}</th>
+            </tr>
+            {% for d in division %}
+                <tr>
+                    <td>{% player d %}</td>
+                    <td align="center">{{ d.level_no }}</td>
+                    <td>{{ d.group }}</td>
+                    <td>{{ d.race }}</td>
+                    <td align="right">{{ d.last_seen }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endif %}
+{% endblock %}

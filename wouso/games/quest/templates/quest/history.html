@@ -17,11 +17,14 @@
     {% for quest in history %}
         <h3>{{ quest.title }}</h3>
         <p>
-            Available from {{quest.start}} to {{quest.end}}.
+            Available from {{quest.start}} to {{quest.end}}
+            <br/>
             Had {{quest.questions.count}} questions.
             {% if quest.registered %}
+            <br/>
             {{ quest.players_count }} players attempted it.
             {% endif %}
+            <br/>
             {{ quest.players_completed }} players successfully completed this quest.
         </p>
 

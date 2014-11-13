@@ -1,4 +1,4 @@
-{% if q_page.has_previous or q_page.has_next %}
+{% if page_obj.has_previous or page_obj.has_next %}
 <ul class="pagination">
     {% if page_obj.has_previous %}
         <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>

@@ -1,0 +1,34 @@
+{% extends 'interface/section_base.html' %}
+
+{% load i18n %}
+{% load user %}
+
+{% block title %}{% trans 'Top Races' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Races' %}{% endblock %}
+
+{% block sidebar %}
+    {% include 'top/sidebar.html' %}
+{% endblock %}
+
+{% block sectioncontent %}
+
+{% if top.disabled %}
+    {% trans 'Top has been disabled.' %}
+{% else %}
+    <table border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <th>{% trans '#' %}</th>
+            <th>{% trans 'Race' %}</th>
+            <th>{% trans 'Points' %}</th>
+        </tr>
+        {% for r in races %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{% player_race r %}</td>
+            <td>{% coin_amount r.points|floatformat:0 %}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+
+{% endblock %}

@@ -33,7 +33,7 @@ Races and groups
         <ul>
             {% for g in r.children %}
             <li>
-                {{ g }}
+	        {{ g.name}} {{ g }}
                 <a href="{% url admin:user_playergroup_change g.id %}"
                    style="color: green" title="Edit">
                     <span class="glyphicon glyphicon-edit"></span>

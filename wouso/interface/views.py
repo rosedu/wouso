@@ -19,9 +19,10 @@ from wouso.interface import logger, detect_mobile
 from wouso.interface.apps.pages.models import NewsItem
 from wouso.core.game import get_games
 from wouso.interface.forms import *
+from wouso.core.user.models import Race
 from wouso.core.user.models import Player, PlayerGroup
 from wouso.interface.activity.models import Activity
-from wouso.interface.top.models import TopUser, History as TopHistory
+from wouso.interface.top.models import Top, TopUser, History as TopHistory
 
 
 def get_wall(page=u'1'):
@@ -70,6 +71,7 @@ def login_view(request):
             return redirect(settings.LOGIN_REDIRECT_URL)
     return HttpResponseRedirect("/")
 
+
 def logout_view(request):
     """
      This is used to save data in session after logout
@@ -83,6 +85,7 @@ def logout_view(request):
     for i in data:
         request.session[i] = data[i]
     return redirect('homepage')
+
 
 def hub(request):
     if request.user.is_anonymous():
@@ -100,6 +103,7 @@ def hub(request):
         else:
             return HttpResponseRedirect(reverse('static_page', args=(story.slug,)))
     return homepage(request)
+
 
 def homepage(request, page=u'1'):
     """ First page shown """
@@ -180,6 +184,7 @@ def search(request):
 
     return render_to_response('site_base.html', context_instance=RequestContext(request))
 
+
 def instantsearch(request):
     """ Perform instant search """
     logger.debug('Initiating instant search')
@@ -198,6 +203,7 @@ def instantsearch(request):
 
     else:
         return HttpResponse('')
+
 
 def searchone(request):
     """ Get one user, based on his/her name """
@@ -222,11 +228,13 @@ def searchone(request):
 
     raise Http404()
 
+
 def ajax(request, name):
     if name == 'header':
         return render_to_response('interface/header.html',
                                 context_instance=RequestContext(request))
     raise Http404
+
 
 def ajax_get(request, model, id=0):
     if model == 'pages.staticpage':
@@ -238,6 +246,7 @@ def ajax_get(request, model, id=0):
     obj = get_object_or_404(model, pk=id)
 
     return HttpResponse(serializers.serialize('json', (obj,)))
+
 
 def ajax_notifications(request):
     if request.user.is_authenticated():
@@ -251,14 +260,17 @@ def ajax_notifications(request):
 
     return HttpResponse('{"count": %d}' % count)
 
+
 def no_api(request):
     return HttpResponse('API module inactive.')
+
 
 def ui(request):
     """ Show the UI template. The rest is Javascript
     """
 
     return render_to_response('interface/ui.html', {}, context_instance=RequestContext(request))
+
 
 def all_activity(request):
     """
@@ -284,3 +296,26 @@ def seen_24h(request):
     online_last24h = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
 
     return render_to_response('activity/seen24h.html', {'seen_players': online_last24h}, context_instance=RequestContext(request))
+
+
+@login_required()
+def leaderboard_view(request):
+    toptengroups = PlayerGroup.objects.exclude(parent=None).exclude(parent__can_play=False).order_by('-points')[:10]
+    toptengroups = list(toptengroups)
+    toptengroups.sort(key=lambda obj: obj.live_points, reverse=True)
+    races = list(Race.objects.exclude(can_play=False))
+    races.sort(key=lambda a: a.points, reverse=True)
+    return render_to_response(('leaderboard.html'),
+                              {'races':races, 'toptengroups':toptengroups, 'top':Top},
+                              context_instance=RequestContext(request))
+
+
+@login_required()
+def division_view(request):
+    profile = request.user.get_profile()
+
+    division = profile.get_division(20)
+
+    return render_to_response('division.html',
+                              {'division': division},
+                              context_instance=RequestContext(request))

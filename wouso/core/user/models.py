@@ -2,6 +2,7 @@
 import logging
 from md5 import md5
 from datetime import datetime, timedelta
+from random import shuffle
 from django.db import models
 from django.db.models import Sum, Q
 from django.contrib.auth.models import User, Permission
@@ -62,7 +63,10 @@ class PlayerGroup(models.Model):
     def live_points(self):
         """ Calculate sum of user points dynamically """
         p = self.players.aggregate(total=models.Sum('points'))
-        return p['total'] or 0
+        if p['total'] is not None:
+            return int(p['total'])
+        else:
+            return 0
 
     @property
     @deprecated('Please get rid of me')
@@ -158,6 +162,28 @@ class Player(models.Model):
 
         players = allUsers[start:start+2*count+1]
         return players
+
+    def get_division(self, count):
+        base_query = Player.objects.exclude(user__is_superuser=True)\
+                                   .exclude(race__can_play=False)
+        all_users = list(base_query.order_by('-points'))
+
+        try:
+            position = all_users.index(self)
+        except ValueError:
+            return []
+
+        # Division's start should be (position - count) if position is greater
+        # than count (start position is positive) or 0 if is negative
+        start = max(position - count, 0)
+
+        # Division's end should be (position + count) if it doesn't exceed
+        end = min(position + count, all_users.__len__())
+
+        division = all_users[start:end]
+        shuffle(division)
+
+        return division
 
     def user_name(self):
         return self.user.username

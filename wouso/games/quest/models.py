@@ -258,13 +258,14 @@ class Quest(models.Model):
         """
         Number of players who attempted the quest
         """
-        return self.questresult_set.values('user').distinct().count()
+        # exclude players not belonging to a 'can play' race
+        return self.questresult_set.exclude(user__race__can_play=False).values('user').distinct().count()
     
     def players_completed(self):
         """
         Number of players who finished the quest
         """
-        return self.questresult_set.filter(level=self.count).count()
+        return self.questresult_set.filter(level=self.count).exclude(user__race__can_play=False).count()
 
     def top_results(self):
         """

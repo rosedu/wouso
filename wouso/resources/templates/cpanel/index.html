@@ -51,9 +51,6 @@
     <script type="text/javascript" src="{{ basepath }}/static/js/bootstrap.min.js"></script>
     {{ form.media }} 
 
-    {% if config_theme %}
-    <LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/themes/{{ config_theme }}/styles.css" />
-    {% endif %}
     <style type="text/css">
         @import url("{{ basepath }}/static/css/autocomplete.css");
         {% block css %}li.{{module}} {font-weight: bold}
@@ -124,10 +121,12 @@
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url formulas %}">Formulas</a></li>
                 {% url leaderboards as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url leaderboards %}">Leaderboards</a></li>
+                {% url karma as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url karma %}">Karma</a></li>
             <!-- Games !-->
                 <h4 class="text-center">Games</h4>
                 {% for u, game in games_list.items %}
-                    <li {% if u in request.path %}class="active"{% endif %}><a href="/cpanel/{{u}}">{{game}}</a></li>
+                    <li {% if u in request.path %}class="active"{% endif %}><a href="{% url status %}{{u}}">{{game}}</a></li>
                 {% endfor %}
             <!-- Customization !-->
             {% if user.is_staff or user.is_superuser %}
@@ -146,8 +145,8 @@
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url activity_monitor %}">New Activity Monitor</a></li>
             {% endif %}
             <!-- Shortcuts !-->
-                <h4 class="text-center">Shortcuts to Django Admin</h4>
                 {% if user.is_staff or user.is_superuser %}
+                <h4 class="text-center">Shortcuts to Django Admin</h4>
                 <li><a href="{% url admin:index %}"><em>Django Admin »</em></a></li>
                 {% endif %}
             </ul>
@@ -167,7 +166,7 @@
     <h1 class="page-header">{% block sectiontitle %}Status{% endblock %}</h1>
         {% block breadcrumbs %}
             {% clear_breadcrumbs %}
-            {% breadcrumb "Home" "/cpanel/" %}
+            {% breadcrumb "Home" "status" %}
         {% endblock %}
         {% block bc %}
             {% render_breadcrumbs "django_bootstrap_breadcrumbs/bootstrap3.html" %}
