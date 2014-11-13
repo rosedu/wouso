@@ -25,17 +25,18 @@
 
 <h3>Your quiz results:</h3>
 {% if played_quizzes %}
-    <p>BEST = Best Attempt <br/>
-        LAST = Last Attempt
-    </p>
     <table>
         <tr>
-            <th>#</th>
-            <th>Quiz</th>
-            <th>BEST (timestamp)</th>
-            <th>BEST (points)</th>
-            <th>LAST (timestamp)</th>
-            <th>LAST (points)</th>
+            <th rowspan="2">#</th>
+            <th rowspan="2">Quiz</th>
+            <th colspan="2">Best Attempt</th>
+            <th colspan="2">Last Attempt</th>
+        </tr>
+        <tr>
+            <th>Date</th>
+            <th>Score</th>
+            <th>Date</th>
+            <th>Score</th>
         </tr>
         {% for t in played_quizzes %}
             <tr style="text-align: center">

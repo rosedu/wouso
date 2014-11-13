@@ -23,6 +23,7 @@ class AddQuizView(CreateView):
     form_class = AddQuizForm
     success_url = reverse_lazy('list_quizzes')
 
+
 add_quiz = permission_required('config.change_setting')(
     AddQuizView.as_view())
 
@@ -39,5 +40,6 @@ class EditQuizView(UpdateView):
     model = Quiz
     form_class = AddQuizForm
     success_url = reverse_lazy('list_quizzes')
+
 
 edit_quiz = permission_required('config.change_setting')(EditQuizView.as_view())
