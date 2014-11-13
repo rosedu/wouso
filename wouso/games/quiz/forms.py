@@ -82,10 +82,14 @@ class AddQuizForm(forms.ModelForm):
         tags_list = [t.name for t in data['tags']]
         questions = [q for q in get_questions_with_tag_and_category(tags_list, 'quiz')]
 
-        if len(questions) < data['number_of_questions']:
-            raise QuizException('Too few questions')
         shuffle(questions)
-        questions_qs = questions[:data['number_of_questions']]
+
+        # if not enough questions in tag(s) get them all
+        if len(questions) < data['number_of_questions']:
+            questions_qs = questions
+            self.instance.number_of_questions = len(questions)
+        else:
+            questions_qs = questions[:data['number_of_questions']]
 
         self.instance.save()
         self.instance.questions = questions_qs
