@@ -138,8 +138,6 @@ INSTALLED_APPS = [
     'south',
     'social.apps.django_app.default',
 
-    'django_bootstrap_breadcrumbs',
-
     # WoUSO specific
     'wouso.core.config',
     'wouso.core.user',
@@ -168,7 +166,19 @@ INSTALLED_APPS = [
 
     'bootstrapform',
     'bootstrap3_datetime',
+    'django_bootstrap_breadcrumbs',
 ]
+
+# Rich text editor settings
+CKEDITOR_UPLOAD_PATH = 'upload/'
+CKEDITOR_JQUERY_URL = '/static/js/jquery-1.8.1.min.js'
+CKEDITOR_CONFIGS = {
+    "default": {
+        "removePlugins": "stylesheetparser",
+        'toolbar': 'Full',
+        'extraAllowedContent': 'iframe'
+    }
+}
 
 # Authentication settings
 LOGIN_URL = '/user/login/'
