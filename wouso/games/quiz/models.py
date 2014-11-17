@@ -1,4 +1,5 @@
 from datetime import datetime
+from random import shuffle
 
 from django.db import models
 from django.utils.translation import ugettext as _
@@ -7,8 +8,8 @@ from wouso.core import scoring
 from wouso.core.signals import add_activity
 from wouso.core.user.models import Player
 from wouso.core.game.models import Game
-from wouso.core.qpool import register_category
-from wouso.core.qpool.models import Question
+from wouso.core.qpool import register_category, get_questions_with_tag_and_category
+from wouso.core.qpool.models import Question, Tag
 
 
 class QuizException(Exception):
@@ -28,7 +29,7 @@ class Quiz(models.Model):
     points_reward = models.IntegerField(default=100)
     gold_reward = models.IntegerField(default=30)
 
-    questions = models.ManyToManyField(Question)
+    tags = models.ManyToManyField(Tag)
 
     start = models.DateTimeField()
     end = models.DateTimeField()
@@ -66,6 +67,9 @@ class Quiz(models.Model):
          Example:
             {1 : [14,], ...}, - has answered answer with id 14 at the question with id 1
         """
+        if len(responses) == 0:
+            return 0, 0
+
         correct_count = 0.0
         total_count = len(responses)
 
@@ -84,6 +88,7 @@ class QuizGame(Game):
     """
      Each game must extend Game
     """
+
     class Meta:
         proxy = True
 
@@ -138,6 +143,7 @@ class UserToQuiz(models.Model):
 
     user = models.ForeignKey(QuizUser)
     quiz = models.ForeignKey(Quiz)
+    questions = models.ManyToManyField(Question)
     state = models.CharField(max_length=1, choices=CHOICES, default='N')
     start = models.DateTimeField(blank=True, null=True)
     attempts = models.ManyToManyField('QuizAttempt')
@@ -156,6 +162,13 @@ class UserToQuiz(models.Model):
     def last_attempt(self):
         return list(self.all_attempts)[-1]
 
+    def make_questions(self):
+        if self.questions.count() != 0:
+            return
+        questions = [q for q in get_questions_with_tag_and_category(list(self.quiz.tags.all()), 'quiz')]
+        shuffle(questions)
+        self.questions = questions[:self.quiz.number_of_questions]
+
     def _give_bonus(self, points, gold):
         if self.best_attempt is not None:
             if points > self.best_attempt.points:
@@ -164,14 +177,14 @@ class UserToQuiz(models.Model):
                 scoring.score(self.user, None, 'bonus-points', points=points)
                 scoring.score(self.user, None, 'bonus-gold', gold=gold)
                 add_activity(self.user, _('received {points} points and {gold} gold bonus'
-                                ' for beating his/her highscore at quiz {quiz_name}'),
-                                points=points, gold=gold, quiz_name=self.quiz.name)
+                                          ' for beating his/her highscore at quiz {quiz_name}'),
+                             points=points, gold=gold, quiz_name=self.quiz.name)
         else:
             scoring.score(self.user, None, 'bonus-points', points=points)
             scoring.score(self.user, None, 'bonus-gold', gold=gold)
             add_activity(self.user, _('received {points} points and {gold} gold bonus'
-                                ' for submitting quiz {quiz_name}'),
-                                points=points, gold=gold, quiz_name=self.quiz.name)
+                                      ' for submitting quiz {quiz_name}'),
+                         points=points, gold=gold, quiz_name=self.quiz.name)
 
     def time_left(self):
         now = datetime.now()
@@ -211,6 +224,6 @@ class QuizAttempt(models.Model):
      Stores information about each quiz attempt
     """
     date = models.DateTimeField(blank=True, null=True)
-
     points = models.IntegerField(default=-1)
     gold = models.IntegerField(default=0)
+

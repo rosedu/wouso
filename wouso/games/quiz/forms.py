@@ -9,10 +9,13 @@ from bootstrap3_datetime import widgets
 
 
 class QuizForm(forms.Form):
-    def __init__(self, quiz, data=None):
+    def __init__(self, through, data=None):
         super(QuizForm, self).__init__(data)
 
-        for q in quiz.questions.all():
+        questions = list(through.questions.all())
+        shuffle(questions)
+
+        for q in questions:
             field = forms.MultipleChoiceField(
                 widget=forms.CheckboxSelectMultiple,
                 label=q.text)
@@ -63,7 +66,7 @@ class AddQuizForm(forms.ModelForm):
         widgets = {'start': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"}),
                    'end': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"})
         }
-        exclude = ['questions', 'owner', 'players', 'status']
+        exclude = ['owner', 'players', 'status']
 
     def __init__(self, *args, **kwargs):
         super(AddQuizForm, self).__init__(*args, **kwargs)
@@ -79,20 +82,20 @@ class AddQuizForm(forms.ModelForm):
 
         # Get a list of questions from the Quiz category with tags selected
         # by staff user
-        tags_list = [t.name for t in data['tags']]
-        questions = [q for q in get_questions_with_tag_and_category(tags_list, 'quiz')]
-
-        shuffle(questions)
-
-        # if not enough questions in tag(s) get them all
-        if len(questions) < data['number_of_questions']:
-            questions_qs = questions
-            self.instance.number_of_questions = len(questions)
-        else:
-            questions_qs = questions[:data['number_of_questions']]
+        tags_list = [t for t in data['tags']]
+        all_questions = [q for q in get_questions_with_tag_and_category(tags_list, 'quiz')]
 
         self.instance.save()
-        self.instance.questions = questions_qs
+        self.instance.tags = tags_list
+
+        # If not enough questions in tag(s) set quiz's number of questions
+        # as max number of questions available
+        if len(all_questions) < data['number_of_questions']:
+            self.instance.number_of_questions = len(all_questions)
+        else:
+            self.instance.number_of_questions = data['number_of_questions']
+
+        self.instance.save()
 
         # Set status based on current date and time (Active, Inactive, Expired)
         now = datetime.now()

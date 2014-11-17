@@ -7,7 +7,6 @@ from django.views.generic import View
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from games.quiz.models import QuizAttempt
 
 from models import Quiz, QuizUser, QuizGame, UserToQuiz
 from forms import QuizForm
@@ -52,7 +51,9 @@ class QuizView(View):
         return super(QuizView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        form = QuizForm(self.quiz)
+        self.through.make_questions()
+
+        form = QuizForm(self.through)
 
         if self.through.is_not_running():
             self.through.set_running()
@@ -65,7 +66,7 @@ class QuizView(View):
                                   context_instance=RequestContext(request))
 
     def post(self, request, **kwargs):
-        form = QuizForm(self.quiz, request.POST)
+        form = QuizForm(self.through, request.POST)
         results = form.get_response()
         form.check_self_boxes()
 
