@@ -163,10 +163,12 @@ INSTALLED_APPS = [
     'wouso.interface.apps.pages',
     'wouso.interface.apps.statistics',
     'wouso.interface.apps.messaging',
+    'wouso.interface.apps.lesson',
 
     'bootstrapform',
     'bootstrap3_datetime',
     'django_bootstrap_breadcrumbs',
+    'ckeditor',
 ]
 
 # Rich text editor settings
@@ -268,4 +270,3 @@ DISPLAY_NAME = '{first_name} {last_name}'
 # PLEASE LEAVE THIS ON THE LAST LINES OF THIS FILE
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
     from localsettings import *
-
