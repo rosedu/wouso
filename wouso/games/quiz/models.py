@@ -71,7 +71,7 @@ class Quiz(models.Model):
 
     def is_public(self):
         return self.type == 'P'
-    
+
     def calculate_reward(self, responses):
         """
          Response contains a dict with question id and checked answers ids.
