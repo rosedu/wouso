@@ -45,7 +45,7 @@ urlpatterns = patterns('',
     url(r'^s/(.+)/$', 'wouso.interface.apps.pages.views.staticpage', name='static_page'),
 
     #Lesson
-    (r'^lesson/', include('wouso.interface.apps.lesson.urls')),
+    (r'^lessons/', include('wouso.interface.apps.lesson.urls')),
 
     #Report
     url(r'^report/(?P<id>\d*)/$','wouso.core.security.views.report', name='report_player'),

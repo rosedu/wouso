@@ -10,6 +10,18 @@
     background-color: #F5F5F5;
 }
 
+/* Quest */
+.handle {
+    cursor: move;
+    font-size: 2em;
+    float: right;
+    width: 30px;
+    height: 30px;
+    display: block;
+    text-align: center;
+    vertical-align: middle;
+}
+
 /* Question Pool */
 div.second {
     color: #444;

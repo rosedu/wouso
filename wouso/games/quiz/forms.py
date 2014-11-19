@@ -3,7 +3,6 @@ from datetime import datetime
 from django import forms
 from core.qpool import get_questions_with_tag_and_category
 from core.qpool.models import Tag
-from games.quiz.models import QuizException
 from wouso.games.quiz.models import Quiz
 from bootstrap3_datetime import widgets
 

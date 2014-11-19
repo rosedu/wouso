@@ -12,10 +12,6 @@ from wouso.core.qpool import register_category, get_questions_with_tag_and_categ
 from wouso.core.qpool.models import Question, Tag
 
 
-class QuizException(Exception):
-    pass
-
-
 class Quiz(models.Model):
     CHOICES = {
         ('A', 'ACTIVE'),

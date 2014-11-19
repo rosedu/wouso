@@ -1,9 +1,8 @@
 from django.contrib.auth.decorators import permission_required
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy
-from django.shortcuts import get_object_or_404, redirect
 
-from games.quiz.forms import AddQuizForm
+from wouso.games.quiz.forms import AddQuizForm
 from wouso.core.decorators import staff_required
 from wouso.games.quiz.models import Quiz
 
@@ -19,27 +18,32 @@ list_quizzes = staff_required(ListQuizzes.as_view())
 
 
 class AddQuizView(CreateView):
-    template_name = 'quiz/cpanel/add_quiz.html'
     form_class = AddQuizForm
     success_url = reverse_lazy('list_quizzes')
+    template_name = 'quiz/cpanel/quiz.html'
 
 
 add_quiz = permission_required('config.change_setting')(
     AddQuizView.as_view())
 
 
-@permission_required('config.change_setting')
-def delete_quiz(request, id):
-    quiz = get_object_or_404(Quiz, pk=id)
-    quiz.delete()
-    return redirect('list_quizzes')
-
-
 class EditQuizView(UpdateView):
-    template_name = 'quiz/cpanel/edit_quiz.html'
     model = Quiz
     form_class = AddQuizForm
     success_url = reverse_lazy('list_quizzes')
+    template_name = 'quiz/cpanel/quiz.html'
 
 
 edit_quiz = permission_required('config.change_setting')(EditQuizView.as_view())
+
+
+class DeleteQuizView(DeleteView):
+    model = Quiz
+    success_url = reverse_lazy('list_quizzes')
+
+    def get(self, *args, **kwargs):
+        return self.delete(*args, **kwargs)
+
+
+delete_quiz = permission_required('config.change_setting')(
+    DeleteQuizView.as_view())
