@@ -94,6 +94,9 @@ class Quiz(models.Model):
         gold = int((correct_count / total_count) * self.gold_reward)
         return points, gold
 
+    def __unicode__(self):
+        return self.name
+
 
 class QuizGame(Game):
     """

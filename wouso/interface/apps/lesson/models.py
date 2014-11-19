@@ -6,6 +6,9 @@ from games.quiz.models import Quiz
 class LessonCategory(models.Model):
     name = models.CharField(max_length=100)
 
+    def __unicode__(self):
+        return self.name
+
 
 class Lesson(models.Model):
     """
