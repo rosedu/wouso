@@ -22,9 +22,17 @@ class Quiz(models.Model):
         ('I', 'INACTIVE'),  # Active in future
         ('E', 'EXPIRED')
     }
+
+    TYPES = {
+        ('P', 'Public'),
+        ('L', 'Lesson')
+    }
+
     name = models.CharField(max_length=100)
     number_of_questions = models.IntegerField(default=5)
     time_limit = models.IntegerField(default=300)
+
+    type = models.CharField(max_length=1, choices=TYPES)
 
     points_reward = models.IntegerField(default=100)
     gold_reward = models.IntegerField(default=30)
@@ -61,6 +69,9 @@ class Quiz(models.Model):
     def is_expired(self):
         return self.status == 'E'
 
+    def is_public(self):
+        return self.type == 'P'
+    
     def calculate_reward(self, responses):
         """
          Response contains a dict with question id and checked answers ids.
@@ -112,8 +123,9 @@ class QuizUser(Player):
 
     @property
     def active_quizzes(self):
+        # Active public quizzes
         through = UserToQuiz.objects.filter(user=self)
-        active_quizzes = [t for t in through if t.quiz.is_active()]
+        active_quizzes = [t for t in through if t.quiz.is_active() and t.quiz.is_public()]
         return active_quizzes
 
     @property
