@@ -29,6 +29,7 @@
             <th>Time limit (seconds)</th>
             <th>Points</th>
             <th>Gold</th>
+            <th>Replay after (days)</th>
             <th>From</th>
             <th>Until</th>
             <th>Manage</th>
@@ -45,9 +46,10 @@
                 <td>{{ q.time_limit }}</td>
                 <td>{{ q.points_reward }}</td>
                 <td>{{ q.gold_reward }}</td>
-                <td>{{ q.start }}</td>
-                <td>{{ q.end }}</td>
-                <td>
+                <td>{{ q.another_chance }}</td>
+                <td nowrap>{{ q.start }}</td>
+                <td nowrap>{{ q.end }}</td>
+                <td nowrap>
                    <a class="btn btn-success" href="{% url edit_quiz q.id %}">
                         <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                     </a>
