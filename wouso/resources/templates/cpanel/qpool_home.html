@@ -28,11 +28,15 @@
 {% endblock %}
 
 {% block sectioncontent %}
+
+{% block searchbar %}
 <form class="horizontal-form" method="get">
     <input  type="text" name="q" value="{{ search_query }}" size="40"/>
     <button class="btn btn-primary" type="submit">{% trans 'Search'%}</button>
 </form>
 <hr/>
+{% endblock %}
+
 {% block subsectioncontent %}
     <ul class="nav nav-tabs">
         {% for c in categs %}

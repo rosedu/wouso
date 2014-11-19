@@ -10,6 +10,10 @@
     {% breadcrumb "Edit question" "question_edit" %}
 {% endblock %}
 
+<!-- Disable search bar. -->
+{% block searchbar %}
+{% endblock %}
+
 {% block subsectioncontent %}
 
     <p><b>Proposed by: </b>{{ question.proposed_by }}</p>
