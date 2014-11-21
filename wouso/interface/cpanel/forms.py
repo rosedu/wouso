@@ -21,7 +21,7 @@ class QuestionForm(forms.Form):
     schedule = forms.DateField(required=False, input_formats=['%d.%m.%Y', '%Y-%m-%d'], help_text='dd.mm.yyyy')
     category = forms.CharField(max_length=100, required=False)
 
-    def __init__(self, data=None, instance=None, users=True):
+    def __init__(self, data=None, instance=None):
         super(QuestionForm, self).__init__(data)
         if data is not None:
             for i in filter(lambda a: a.startswith('answer_'), data.keys()):
@@ -40,14 +40,6 @@ class QuestionForm(forms.Form):
         self.fields['active'] = forms.BooleanField(required=False)
         self.fields['answertype'] = forms.ChoiceField(choices=(("C", "multiple choice"), ("R", "single choice"),
                     ("F", "free text")))
-        if users:
-            self.fields['endorsed_by'] = forms.ModelChoiceField(queryset=User.objects.all(), required=False,
-                                                                initial=instance.endorsed_by if instance else None)
-            self.fields['proposed_by'] = forms.ModelChoiceField(queryset=User.objects.all(), required=False,
-                                                                initial=instance.proposed_by if instance else None)
-            self.users = True
-        else:
-            self.users = False
 
     def save(self):
         data = self.cleaned_data
@@ -77,10 +69,6 @@ class QuestionForm(forms.Form):
         self.instance.answer_type = data['answertype']
         if self.instance.category.name == 'workshop':
             self.instance.answer_type = 'F'
-
-        if self.users:
-            self.instance.endorsed_by = data['endorsed_by']
-            self.instance.proposed_by = data['proposed_by']
 
         # for qotd, scheduled
         if self.instance.category.name == 'qotd':

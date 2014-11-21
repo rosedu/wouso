@@ -63,18 +63,6 @@
                     <td><b>Active:</b></td>
                     <td>{{ form.active }}</td>
                 </tr>
-                {% if form.proposed_by %}
-                <tr>
-                    <td><b>Proposed by:</b></td>
-                    <td>{{ form.proposed_by }}</td>
-                </tr>
-                {% endif %}
-                {% if form.endorsed_by %}
-                <tr>
-                    <td><b>Endorsed by:</b></td>
-                    <td>{{ form.endorsed_by }}</td>
-                </tr>
-                {% endif %}
             </table>
 
             <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
