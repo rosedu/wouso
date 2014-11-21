@@ -30,27 +30,17 @@ class LessonView(View):
         try:
             self.through = UserToQuiz.objects.get(user=self.quiz_user, quiz=self.lesson.quiz)
         except UserToQuiz.DoesNotExist:
-            self.through = UserToQuiz(user=self.quiz_user, quiz=self.lesson.quiz)
-            self.through.save()
-
-        # check if user is eligible to play quiz
-        if not self.through.can_play_again():
-            messages.error(request, _('You have already submitted this quiz!'))
+            if self.lesson.quiz is not None:
+                self.through = UserToQuiz(user=self.quiz_user, quiz=self.lesson.quiz)
+                self.through.save()
 
         return super(LessonView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        self.through.make_questions()
-        form = QuizForm(self.through)
-
-        if self.through.is_not_running():
-            self.through.set_running()
-
-        seconds_left = self.through.time_left
-
+        if not hasattr(self, 'attr_name'):
+            self.through = None
         return render_to_response('lesson/lesson.html',
-                                  {'lesson': self.lesson,
-                                   'form': form, 'seconds_left': seconds_left},
+                                  {'lesson': self.lesson, 'through': self.through},
                                   context_instance=RequestContext(request))
 
 

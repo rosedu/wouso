@@ -1,5 +1,6 @@
 from django import forms
 from wouso.interface.apps.lesson.models import Lesson, LessonCategory
+from games.quiz.models import Quiz
 
 
 class LessonForm(forms.ModelForm):
@@ -10,6 +11,7 @@ class LessonForm(forms.ModelForm):
         super(LessonForm, self).__init__(*args, **kwargs)
 
         self.fields['quiz_show_time'].label = "Show quiz after (minutes)"
+        self.fields['quiz'].queryset = Quiz.objects.filter(type='L')
 
 
 class CategoryForm(forms.ModelForm):

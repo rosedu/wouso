@@ -22,7 +22,7 @@ class Lesson(models.Model):
     youtube_url = models.URLField()
     content = RichTextField()
     category = models.ForeignKey(LessonCategory)
-    quiz = models.ForeignKey(Quiz)
+    quiz = models.ForeignKey(Quiz, blank=True, null=True)
     quiz_show_time = models.IntegerField(default=5)
 
     def __unicode__(self):

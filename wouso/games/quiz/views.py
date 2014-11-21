@@ -46,7 +46,8 @@ class QuizView(View):
         # check if user is eligible to play quiz
         if not self.through.can_play_again():
             messages.error(request, _('You have already submitted this quiz!'))
-            return HttpResponseRedirect(reverse('quiz_index_view'))
+            # redirect to same page
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
         return super(QuizView, self).dispatch(request, *args, **kwargs)
 
@@ -55,7 +56,7 @@ class QuizView(View):
 
         form = QuizForm(self.through)
 
-        if self.through.is_not_running():
+        if self.through.is_not_running:
             self.through.set_running()
 
         seconds_left = self.through.time_left

@@ -171,6 +171,8 @@ class UserToQuiz(models.Model):
 
     @property
     def last_attempt(self):
+        if self.all_attempts.count() == 0:
+            return None
         return list(self.all_attempts)[-1]
 
     def make_questions(self):
@@ -214,20 +216,28 @@ class UserToQuiz(models.Model):
         self.attempts.create(date=datetime.now(), points=points, gold=gold)
         self.save()
 
+    @property
     def is_running(self):
         return self.state == 'R'
 
+    @property
     def is_not_running(self):
         return not self.state == 'R'
 
+    @property
     def is_played(self):
         return self.state == 'P'
 
     def can_play_again(self):
         if self.all_attempts.count():
-            last_attempt = self.all_attempts.reverse()[0].date
-            return (datetime.now() - last_attempt).days >= self.quiz.another_chance
+            return (datetime.now() - self.last_attempt.date).days >= self.quiz.another_chance
         return True
+
+    @property
+    def days_until_can_replay(self):
+        if self.can_play_again():
+            return 0
+        return self.quiz.another_chance - (datetime.now() - self.last_attempt.date).days
 
 
 class QuizAttempt(models.Model):
