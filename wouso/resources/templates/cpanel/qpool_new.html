@@ -11,6 +11,79 @@
 
 {% block bottomscripts %}
     <script type="text/javascript" src="{{ basepath }}/static/js/cpanel/qpool/qpool_new.js/"></script>
+    <style>
+    .col-md-8 {
+        font-family: Tahoma, Geneva, sans-serif;
+        font-size: 14px;
+        color: #000;
+    }
+    label {
+        color: #47F;
+        margin-top: 5px;
+        margin-left: 5px;
+        display: inline-block;
+        width: 200px;
+    }
+    textarea {
+        width: 500px;
+        height: 100px;
+        padding: 10px;
+        border-radius: 5px;
+        border: solid #999 1px;
+        margin-bottom: 15px;
+        outline: none;
+    }
+    textarea:focus {
+        border: solid #47F 1px;
+        -webkit-box-shadow: 1px 1px 10px #CCC;
+        -moz-box-shadow: 1px 1px 10px #CCC;
+        box-shadow: 1px 1px 10px #CCC;
+    }
+    textarea#question {
+        height: 100px;
+    }
+    textarea#answer {
+        height: 70px;
+    }
+    .formfield * {
+        vertical-align: middle;
+    }
+    select {
+        padding: 3px;
+        margin: 0;
+        border-radius: 4px;
+        -webkit-box-shadow:
+            0 3px 0 #ccc,
+            0 -1px #fff inset;
+        background: #f8f8f8;
+        border: solid #CCC 1px;
+        outline: none;
+        display: inline-block;
+        -webkit-appearance: none;
+        cursor: pointer;
+    }
+    input[type=checkbox] {
+        padding: 0;
+        margin: 0;
+        position: relative;
+        top: -2px;
+        left: 10px;
+        display: inline-block;
+
+        /* All browsers except webkit */
+        transform: scale(1.2);
+
+        /* Webkit browsers */
+        -webkit-transform: scale(1.2);
+    }
+    .mark {
+        width: auto;
+        background-color: #FFF;
+        display: inline-block;
+        padding-left: 40px;
+        text-indent: -15px;
+    }
+    </style>
 {% endblock %}
 
 <!-- Disable search bar. -->
@@ -20,50 +93,50 @@
 {% block subsectioncontent %}
 
     <div class="col-md-8">
-        <form class="horizontal-form" method="post">
-            <table class="table table-bordered table-hover table-condensed">
-                <tr>
-                    <th>Properties</th>
-                    <th>Text</th>
-                </tr>
-                <tr>
-                    <td style="vertical-align: middle"><label>Question Text:</label></td>
-                    <td><textarea id="text" name="text" rows="5" cols="50">{{ question.text}}</textarea></td>
-                </tr>
-                {% if not question %}
-                <tr>
-                    <td><b>Category:</b></td>
-                    <td>
-                        <select name="category" id="select-category">
-                            {% for c in categs %}
-                            <option value="{{c.1}}">{{ c.0 }}</option>
-                            {% endfor %}
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><b>Tags:</b></td>
-                    <td>
-                        <select multiple name="tags" id="select-tags">
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><b>Answer Type:</b></td>
-                    <td>{{ form.answertype }}</td>
-                </tr>
-                {% endif %}
-                {% for a in 123456|make_list %}
-                <tr>
-                    <td style="vertical-align: middle">Correct: <input type="checkbox" name="correct_{{a}}"/></td>
-                    <td><textarea name="answer_{{a}}" cols="50"></textarea></td>
-                </tr>
-                {% endfor %}
-                <tr>
-                    <td><b>Active:</b></td>
-                    <td>{{ form.active }}</td>
-                </tr>
-            </table>
+        <form class="orizontal-form" method="post">
+            <p class="formfield">
+                <label for="text">Insert question text</label>
+                <textarea id="text" name="text">{{ question.text }}</textarea>
+            </p>
+            <hr />
+
+            {% if not question %}
+                <p class="formfield">
+                    <label for="select-category">Select category</label>
+                    <select name="category" id="select-category">
+                        {% for c in categs %}
+                        <option value="{{c.1}}">{{ c.0 }}</option>
+                        {% endfor %}
+                    </select>
+                </p>
+
+                <p class="formfield">
+                    <label for="select-tags">Choose tags</label>
+                    <select multiple name="tags" id="select-tags">
+                    </select>
+                </p>
+
+                <p class="formfield">
+                    <label>Question type</label>
+                    {{ form.answertype }}
+                </p>
+                <hr />
+            {% endif %}
+
+            {% for a in 123456|make_list %}
+                <p class="formfield">
+                    <textarea name="answer_{{a}}" id="answer"></textarea>
+                    <label class="mark" for="checkbox">Mark correct</label>
+                    <input id="checkbox" type="checkbox" name="correct_{{a}}"/>
+                </p>
+            {% endfor %}
+            <hr />
+
+            <p class="formfield">
+                <label>Mark question as active</label>
+                {{ form.active }}
+            </p>
+            <br />
 
             <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
             <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
