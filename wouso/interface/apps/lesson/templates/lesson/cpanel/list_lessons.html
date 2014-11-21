@@ -27,11 +27,10 @@
         <tr>
             <th>#</th>
             <th>Name</th>
-            <th>Manage</th>
             <th>Quiz</th>
             <th>Show quiz after (minutes)</th>
+            <th>Manage</th>
         </tr>
-        {% if lessons %}
             {% for l in lessons %}
             <tr>
                 <td>{{ forloop.counter }}</td>
@@ -39,20 +38,19 @@
                 <td>{{ l.quiz }}</td>
                 <td>{{ l.quiz_show_time }}</td>
                 <td>
-                   <a class="btn btn-success" href="">
+                   <a class="btn btn-success" href="{% url edit_lesson l.id %}">
                         <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                     </a>
-                    <a class="btn btn-danger" href="" onclick="return confirm('Really?');">
+                    <a class="btn btn-danger" href="{% url delete_lesson l.id %}" onclick="return confirm('Really?');">
                         <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
                     </a>
                 </td>
             </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="10">No lessons added yet</td>
+                </tr>
             {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="10">No lessons added yet</td>
-            </tr>
-        {% endif %}
     </table>
 </div>
 

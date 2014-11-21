@@ -20,7 +20,7 @@ list_quizzes = staff_required(ListQuizzes.as_view())
 class AddQuizView(CreateView):
     form_class = AddQuizForm
     success_url = reverse_lazy('list_quizzes')
-    template_name = 'quiz/cpanel/quiz.html'
+    template_name = 'quiz/cpanel/add_quiz.html'
 
 
 add_quiz = permission_required('config.change_setting')(
@@ -31,10 +31,11 @@ class EditQuizView(UpdateView):
     model = Quiz
     form_class = AddQuizForm
     success_url = reverse_lazy('list_quizzes')
-    template_name = 'quiz/cpanel/quiz.html'
+    template_name = 'quiz/cpanel/add_quiz.html'
 
 
-edit_quiz = permission_required('config.change_setting')(EditQuizView.as_view())
+edit_quiz = permission_required('config.change_setting')(
+    EditQuizView.as_view())
 
 
 class DeleteQuizView(DeleteView):

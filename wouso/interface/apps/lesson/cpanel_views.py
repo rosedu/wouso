@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import permission_required
-from django.core.urlresolvers import reverse_lazy, reverse
+from django.core.urlresolvers import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from core.decorators import staff_required
 from interface.apps.lesson.forms import LessonForm, CategoryForm
@@ -24,6 +24,29 @@ class AddLessonView(CreateView):
 
 add_lesson = permission_required('config.change_setting')(
     AddLessonView.as_view())
+
+
+class EditLessonView(UpdateView):
+    model = Lesson
+    form_class = LessonForm
+    success_url = reverse_lazy('lessons')
+    template_name = 'lesson/cpanel/edit_lesson.html'
+
+
+edit_lesson = permission_required('config.change_setting')(
+    EditLessonView.as_view())
+
+
+class DeleteLessonView(DeleteView):
+    model = Lesson
+    success_url = reverse_lazy('lessons')
+
+    def get(self, *args, **kwargs):
+        return self.delete(*args, **kwargs)
+
+
+delete_lesson = permission_required('config.change_setting')(
+    DeleteLessonView.as_view())
 
 
 class ManageCategoriesView(ListView):
