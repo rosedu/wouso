@@ -37,7 +37,7 @@ class LessonView(View):
         return super(LessonView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        if not hasattr(self, 'attr_name'):
+        if not hasattr(self, 'through'):
             self.through = None
         return render_to_response('lesson/lesson.html',
                                   {'lesson': self.lesson, 'through': self.through},
