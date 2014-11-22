@@ -19,7 +19,7 @@ class Lesson(models.Model):
      The lesson
     """
     name = models.CharField(max_length=100)
-    youtube_url = models.URLField()
+    youtube_url = models.URLField(blank=True, null=True)
     content = RichTextField()
     category = models.ForeignKey(LessonCategory)
     quiz = models.ForeignKey(Quiz, blank=True, null=True)
