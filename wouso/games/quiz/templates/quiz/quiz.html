@@ -3,9 +3,7 @@
 {% load i18n %}
 
 {% block title %}
-    {% trans 'Quiz #' %}{{ quiz.id }}
-    </br>
-    {{ quiz.name }}
+    {{ quiz.qtype }} {% trans 'Quiz ' %} {{ quiz }}
 {% endblock %}
 
 {% block scripts %}

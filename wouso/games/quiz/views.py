@@ -28,8 +28,7 @@ def index(request):
 
     return render_to_response('quiz/index.html',
                               {'active_quizzes': quiz_user.active_quizzes,
-                              'expired_quizzes': quiz_user.expired_quizzes,
-                              'played_quizzes': quiz_user.played_quizzes},
+                               'expired_quizzes': quiz_user.expired_quizzes},
                               context_instance=RequestContext(request))
 
 
@@ -45,7 +44,9 @@ class QuizView(View):
 
         # check if user is eligible to play quiz
         if not self.through.can_play_again():
-            messages.error(request, _('You have already submitted this quiz!'))
+            messages.error(request,
+                           _('You can replay this quiz in {days} day(s)!'.format(
+                               days=self.through.days_until_can_replay)), )
             # redirect to same page
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
@@ -63,7 +64,7 @@ class QuizView(View):
 
         return render_to_response('quiz/quiz.html',
                                   {'quiz': self.quiz, 'form': form,
-                                  'seconds_left': seconds_left},
+                                   'seconds_left': seconds_left},
                                   context_instance=RequestContext(request))
 
     def post(self, request, **kwargs):

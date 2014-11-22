@@ -1,11 +1,13 @@
 {% extends 'interface/section_base.html' %}
 {% load i18n %}
-{% block title %}{% trans 'Quiz #' %}{{ quiz.id }}{% endblock %}
-{% block sectiontitle %}{% trans 'Quiz #' %}{{ quiz.id }} - {% trans 'Results' %}{% endblock %}
+
+{% block title %}
+    {% trans 'Results - ' %} {{ quiz.qtype }} {% trans 'Quiz ' %} {{ quiz }}
+{% endblock %}
 
 {% block sectioncontent %}
 
-<p>{% trans 'You scored:' %} {{ points }}!</p>
+<p>{% trans 'You scored:' %} {{ points }} out of {{ quiz.points_reward }}!</p>
 
 <a href="{% url quiz_index_view %}">{% trans 'Back to quizzes' %}</a>
 

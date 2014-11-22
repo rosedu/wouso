@@ -68,6 +68,12 @@ class Quiz(models.Model):
     def is_public(self):
         return self.type == 'P'
 
+    @property
+    def qtype(self):
+        if self.type == 'L':
+            return 'Lesson'
+        return 'Public'
+
     def calculate_reward(self, responses):
         """
          Response contains a dict with question id and checked answers ids.

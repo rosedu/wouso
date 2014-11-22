@@ -14,10 +14,11 @@ from models import Lesson, LessonCategory
 
 @login_required
 def index(request):
-    """ Shows all lesson related to the current user """
+    """ Shows all lessons related to the current user """
     categories = LessonCategory.objects.all()
+
     return render_to_response('lesson/index.html',
-                              {'categories':categories},
+                              {'categories': categories},
                               context_instance=RequestContext(request))
 
 
@@ -39,6 +40,7 @@ class LessonView(View):
     def get(self, request, *args, **kwargs):
         if not hasattr(self, 'through'):
             self.through = None
+
         return render_to_response('lesson/lesson.html',
                                   {'lesson': self.lesson, 'through': self.through},
                                   context_instance=RequestContext(request))
