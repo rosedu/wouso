@@ -1,3 +1,5 @@
+import re
+
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -41,8 +43,16 @@ class LessonView(View):
         if not hasattr(self, 'through'):
             self.through = None
 
+        # get YouTube embed video url
+        match = re.search(r'^(http|https)\:\/\/www\.youtube\.com\/watch\?v\=(\w*)(\&(.*))?$', self.lesson.youtube_url)
+        if match:
+            embed_url = '//www.youtube.com/embed/%s' % (match.group(2))
+        else:
+            embed_url = ''
+
         return render_to_response('lesson/lesson.html',
-                                  {'lesson': self.lesson, 'through': self.through},
+                                  {'lesson': self.lesson, 'through': self.through,
+                                   'embed_url': embed_url},
                                   context_instance=RequestContext(request))
 
 

@@ -10,16 +10,24 @@
 
 {% block scripts %}
     {{ block.super }}
+
     <script type="text/javascript" src="{{ basepath }}/static/js/timer.js"></script>
+
     <script type="text/javascript">
         function showIt() {document.getElementById("quiz").style.visibility = "visible";}
         setTimeout("showIt()", {{ lesson.quiz_show_time }} * 60 * 1000);
     </script>
+
 {% endblock %}
 
 {% block sectioncontent %}
 
     {{ lesson.content|safe }}
+
+
+    {% if lesson.youtube_url %}
+    <iframe width="560" height="315" src="{{ embed_url }}" frameborder="0" allowfullscreen></iframe>
+    {% endif %}
 
     {% if through %}
         {% if through.is_running %}
