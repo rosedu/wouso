@@ -109,28 +109,26 @@
             </p>
             <hr />
 
-            {% if not question %}
-                <p class="formfield">
-                    <label for="select-category">Select category</label>
-                    <select name="category" id="select-category">
-                        {% for c in categs %}
-                        <option value="{{c.1}}">{{ c.0 }}</option>
-                        {% endfor %}
-                    </select>
-                </p>
+            <p class="formfield">
+                <label for="select-category">Select category</label>
+                <select name="category" id="select-category">
+                    {% for c in categs %}
+                    <option value="{{c.1}}">{{ c.0 }}</option>
+                    {% endfor %}
+                </select>
+            </p>
 
-                <p class="formfield">
-                    <label for="select-tags">Choose tags</label>
-                    <select multiple name="tags" id="select-tags">
-                    </select>
-                </p>
+            <p class="formfield">
+                <label for="select-tags">Choose tags</label>
+                <select multiple name="tags" id="select-tags">
+                </select>
+            </p>
 
-                <p class="formfield">
-                    <label>Question type</label>
-                    {{ form.answertype }}
-                </p>
-                <hr />
-            {% endif %}
+            <p class="formfield">
+                <label>Question type</label>
+                {{ form.answertype }}
+            </p>
+            <hr />
 
             <p class="info-column">
                 <a class="btn btn-sm btn-success" id="add"><span class="glyphicon glyphicon-plus"></span>Add new answer</a>

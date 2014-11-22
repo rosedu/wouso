@@ -414,8 +414,8 @@ def qpool_edit(request, id):
     if request.method == 'POST':
         form = QuestionForm(request.POST, instance=question)
         if form.is_valid():
-            newq.proposed_by = request.user
             newq = form.save()
+            newq.proposed_by = request.user
             if newq.endorsed_by is None:
                 newq.endorsed_by = request.user
                 newq.save()

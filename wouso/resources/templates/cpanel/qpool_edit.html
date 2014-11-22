@@ -10,94 +10,177 @@
     {% breadcrumb "Edit question" "question_edit" %}
 {% endblock %}
 
+{% block bottomscripts %}
+    <script type="text/javascript" src="{{ basepath }}/static/js/cpanel/qpool/qpool_new.js/"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <style>
+    .col-md-8 {
+        font-family: Tahoma, Geneva, sans-serif;
+        font-size: 13px;
+        color: #000;
+    }
+    label {
+        color: #47F;
+        margin-top: 5px;
+        margin-left: 5px;
+        display: inline-block;
+        width: 160px;
+    }
+    textarea {
+        width: 450px;
+        height: 100px;
+        padding: 10px;
+        border-radius: 5px;
+        border: solid #999 1px;
+        margin-bottom: 15px;
+        outline: none;
+    }
+    textarea:focus {
+        border: solid #47F 1px;
+        -webkit-box-shadow: 1px 1px 10px #CCC;
+        -moz-box-shadow: 1px 1px 10px #CCC;
+        box-shadow: 1px 1px 10px #CCC;
+    }
+    textarea#question {
+        height: 100px;
+    }
+    textarea#answer {
+        height: 70px;
+    }
+    .formfield * {
+        vertical-align: middle;
+    }
+    select {
+        padding: 3px;
+        margin: 0;
+        border-radius: 4px;
+        -webkit-box-shadow:
+            0 3px 0 #ccc,
+            0 -1px #fff inset;
+        background: #f8f8f8;
+        border: solid #CCC 1px;
+        outline: none;
+        display: inline-block;
+        -webkit-appearance: none;
+        cursor: pointer;
+    }
+    input[type=checkbox] {
+        padding: 0;
+        margin: 0;
+        position: relative;
+        top: -2px;
+        left: 5px;
+        display: inline-block;
+    }
+    .mark {
+        width: auto;
+        background-color: #FFF;
+        display: inline-block;
+        padding-left: 20px;
+        text-indent: -15px;
+    }
+    .add {
+        color: #47F;
+        margin-top: 5px;
+        margin-left: 5px;
+        display: inline-block;
+        width: 160px;
+        cursor: pointer;
+    }
+    .info-column {
+        display: inline-block;
+        width: 160px;
+        margin-top: 5px;
+        margin-left: 5px;
+    }
+    </style>
+{% endblock %}
+
 <!-- Disable search bar. -->
 {% block searchbar %}
 {% endblock %}
 
 {% block subsectioncontent %}
 
-    <p><b>Proposed by: </b>{{ question.proposed_by }}</p>
-    <p><b>Endorsed by: </b>{{ question.endorsed_by }}</p>
-    <p><b>Added: </b>{{ question.date_added }}</p>
-    <p><b>Last modified: </b>{{ question.date_changed}}</p>
+    <div class="col-md-8">
+        <form class="orizontal-form" method="post">
+            {{ form.errors }}
+            <p class="formfield">
+                <label>Proposed by</label>
+                {{ question.proposed_by }}
+            </p>
+            <p class="formfield">
+                <label>Added on</label>
+                {{ question.date_added }}
+            </p>
+            <p class="formfield">
+                <label>Last modified on</label>
+                {{ question.date_changed }}
+            </p>
+            <hr/>
 
-    <hr/>
+            <p class="formfield">
+                <label for="text">Edit question text</label>
+                <textarea id="text" name="text">{{ question.text }}</textarea>
+            </p>
+            <hr />
 
-    <form class="horizontal-form" method="post" >
-        {{ form.errors }}
-        <table class="table table-bordered table-hover">
-            <tr>
-                <th>Properties</th>
-                <th>Text</th>
-                <th>Manage</th>
-            </tr>
-            <tr>
-                <td style="vertical-align: middle"><label >Question text:</label></td>
-                <td><textarea id="text" name="text" rows="5" cols="50">{{ question.text}}</textarea></td>
-            </tr>
-            {% for a in question.answers %}
-            <tr>
-                <td style="vertical-align: middle">Correct: <input type="checkbox" name="correct_{{a.id}}" {% if a.correct %}checked{% endif %}/></td>
-                <td><textarea name="answer_{{a.id}}" cols="50">{{ a.text }}</textarea></td>
-                <td style="vertical-align: middle">
-                    {% if question %}
-                    <a class="btn btn-danger" href="{% url answer_del question.id a.id %}">
-                        <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete Answer' %}
-                    </a>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-            <tr>
-                <td colspan="3"><a class="btn btn-success" href="{% url add_answer question.id %}">
-                    <span class="glyphicon glyphicon-plus"></span>{% trans 'Add Answer' %}
-                </a>
-                </td>
-            </tr>
-            {% if question.category.name == 'qotd' %}
-            <tr>
-                <td style="vertical-align: middle"><label for="schedule">Schedule (dd.mm.yyyy):</label></td>
-                <td><input type="text" value="{% if question.scheduled != '-' %}{{ question.scheduled }}{% endif %}" name="schedule" id="schedule"/></td>
-                <td></td>
-            </tr>
-            {% endif %}
-            {% if question.category.name == 'proposed' %}
-            <tr>
-                <td><b>Proposed for:</b></td>
-                <td>{% for t in question.tags.all  %}{{ t.name }} {% endfor %}</td>
-                <td></td>
-            </tr>
-            {% else %}
-            {% if question %}
-            <tr>
-                <td style="vertical-align: middle"><label for="tags">Tags:</label></td>
-                <td>{{ form.tags }}</td>
-                <td></td>
-            </tr>
-            {% endif %}
-            {% endif %}
-            {% if form.proposed_by %}
-            <tr>
-                <td><b>Proposed by:</b></td>
-                <td>{{ form.proposed_by }}</td>
-                <td></td>
-            </tr>
-            {% endif %}
-            {% if form.endorsed_by %}
-            <tr>
-                <td><b>Endorsed by:</b></td>
-                <td>{{ form.endorsed_by }}</td>
-                <td></td>
-            </tr>
-            {% endif %}
-        </table>
+            <p class="formfield">
+                <label for="select-category">Select category</label>
+                <select name="category" id="select-category">
+                    {% for c in categs %}
+                        {% if c.1 == question.category.name %}
+                            <option value="{{c.1}}" selected="selected">{{ c.0 }}</option>
+                        {% else %}
+                            <option value="{{c.1}}">{{ c.0 }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </p>
 
-            <button class="btn btn-warning" onclick="history.back(); return false;">{% trans 'Cancel' %}</button>
-            <button class="btn btn-danger" type="reset">{% trans 'Reset' %}</button>
-            <button class="btn btn-primary" type="submit" class="default">{% trans 'Save' %}</button>
+            <p class="formfield">
+                <label for="select-tags">Choose tags</label>
+                <select multiple name="tags" id="select-tags">
+                </select>
+            </p>
 
-    {% csrf_token %}
+            <p class="formfield">
+                <label>Question type</label>
+                {{ form.answertype }}
+            </p>
+            <hr />
 
-    </form>
+            <p class="info-column">
+                <a class="btn btn-sm btn-success" id="add"><span class="glyphicon glyphicon-plus"></span>Add new answer</a>
+            </p>
+            <div id="wrapper">
+                <!-- Add four default answers -->
+                {% for a in question.answers %}
+                    <div id="box_{{a.id}}" class="formfield">
+                        <div class="info-column">
+                            <a class="btn btn-sm btn-warning" id="remove"><span class="glyphicon glyphicon-minus"></span>Remove this answer</a>
+                        </div>
+                        <textarea name="answer_{{a.id}}" id="answer">{{ a.text }}</textarea>
+                        <label class="mark" for="checkbox">Mark correct</label>
+                        <input id="checkbox" type="checkbox" name="correct_{{a.id}}" {% if a.correct %} checked {% endif %}/>
+                    </div>
+                {% endfor %}
+            </div>
+            <hr />
+
+            <p class="formfield">
+                <label>Mark question as active</label>
+                {{ form.active }}
+            </p>
+            <br />
+
+            <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
+            <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
+            <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
+
+            {% csrf_token %}
+
+        </form>
+    </div>
 
 {% endblock %}
