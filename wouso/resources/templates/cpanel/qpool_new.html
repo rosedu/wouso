@@ -11,10 +11,11 @@
 
 {% block bottomscripts %}
     <script type="text/javascript" src="{{ basepath }}/static/js/cpanel/qpool/qpool_new.js/"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <style>
     .col-md-8 {
         font-family: Tahoma, Geneva, sans-serif;
-        font-size: 14px;
+        font-size: 13px;
         color: #000;
     }
     label {
@@ -22,10 +23,10 @@
         margin-top: 5px;
         margin-left: 5px;
         display: inline-block;
-        width: 200px;
+        width: 160px;
     }
     textarea {
-        width: 500px;
+        width: 450px;
         height: 100px;
         padding: 10px;
         border-radius: 5px;
@@ -67,21 +68,29 @@
         margin: 0;
         position: relative;
         top: -2px;
-        left: 10px;
+        left: 5px;
         display: inline-block;
-
-        /* All browsers except webkit */
-        transform: scale(1.2);
-
-        /* Webkit browsers */
-        -webkit-transform: scale(1.2);
     }
     .mark {
         width: auto;
         background-color: #FFF;
         display: inline-block;
-        padding-left: 40px;
+        padding-left: 20px;
         text-indent: -15px;
+    }
+    .add {
+        color: #47F;
+        margin-top: 5px;
+        margin-left: 5px;
+        display: inline-block;
+        width: 160px;
+        cursor: pointer;
+    }
+    .info-column {
+        display: inline-block;
+        width: 160px;
+        margin-top: 5px;
+        margin-left: 5px;
     }
     </style>
 {% endblock %}
@@ -123,13 +132,22 @@
                 <hr />
             {% endif %}
 
-            {% for a in 123456|make_list %}
-                <p class="formfield">
-                    <textarea name="answer_{{a}}" id="answer"></textarea>
-                    <label class="mark" for="checkbox">Mark correct</label>
-                    <input id="checkbox" type="checkbox" name="correct_{{a}}"/>
-                </p>
-            {% endfor %}
+            <p class="info-column">
+                <a class="btn btn-sm btn-success" id="add"><span class="glyphicon glyphicon-plus"></span>Add new answer</a>
+            </p>
+            <div id="wrapper">
+                <!-- Add four default answers -->
+                {% for a in 1234|make_list %}
+                    <div id="box_{{a}}" class="formfield">
+                        <div class="info-column">
+                            <a class="btn btn-sm btn-warning" id="remove"><span class="glyphicon glyphicon-minus"></span>Remove this answer</a>
+                        </div>
+                        <textarea name="answer_{{a}}" id="answer"></textarea>
+                        <label class="mark" for="checkbox">Mark correct</label>
+                        <input id="checkbox" type="checkbox" name="correct_{{a}}"/>
+                    </div>
+                {% endfor %}
+            </div>
             <hr />
 
             <p class="formfield">
