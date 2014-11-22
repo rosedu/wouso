@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+
 from core.decorators import staff_required
 from interface.apps.lesson.forms import LessonForm, CategoryForm
 from interface.apps.lesson.models import Lesson, LessonCategory

@@ -1,7 +1,5 @@
 import re
 
-from django.utils.translation import ugettext as _
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
@@ -9,7 +7,6 @@ from django.template.loader import render_to_string
 from django.views.generic import View
 
 from wouso.core.ui import register_sidebar_block
-from games.quiz.forms import QuizForm
 from games.quiz.models import QuizUser, UserToQuiz
 from models import Lesson, LessonCategory
 
