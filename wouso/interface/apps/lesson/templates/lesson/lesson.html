@@ -17,8 +17,8 @@
         var seconds = {{ lesson.quiz_show_time }} * 60;
         $(document).ready(function () { update('timer');});
         setTimeout(function() {
-            $('#gabriel').prop('disabled', false);
-            $('#gabriel').removeClass('disabled');
+            $('#quizbutton').prop('disabled', false);
+            $('#quizbutton').removeClass('disabled');
         }, seconds * 1000);
     </script>
 
@@ -48,7 +48,7 @@
         {% else %}
             <div>Quiz enabled in: <p style="display: inline;" id="timer"></p></div>
             <a href="{% url quiz_view lesson.quiz.id %}">
-                <button id="gabriel" class="disabled" type="button" disabled>Start Quiz!</button>
+                <button id="quizbutton" class="disabled" type="button" disabled>Start Quiz!</button>
             </a>
         {% endif %}
      {% else %}
