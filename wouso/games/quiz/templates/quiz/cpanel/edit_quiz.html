@@ -1,0 +1,21 @@
+{% extends 'quiz/cpanel/list_quizzes.html' %}
+
+{% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+{% load bootstrap %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Edit quiz" "edit_quiz" quiz.id %}
+{% endblock %}
+
+{% block sectioncontent %}
+     <form method="post" role="form" class="form-horizontal" action="">
+        <table>
+        {{ form|bootstrap_horizontal}}
+        </table>
+        {% csrf_token %}
+        <a class="btn btn-warning" href="{% url list_quizzes %}">{% trans 'Back' %}</a>
+        <button class="btn btn-primary" type="submit">{% trans 'Submit' %}</button>
+    </form>
+{% endblock %}

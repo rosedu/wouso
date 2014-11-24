@@ -8,6 +8,7 @@
 /wouso/localsettings.py
 /wouso/resources/static/upload/*
 /wouso/resources/static/themes/blackout
+/wouso/resources/static/storage/*
 /docs/_build
 src/
 build/
