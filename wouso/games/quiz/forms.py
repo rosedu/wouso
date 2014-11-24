@@ -7,6 +7,8 @@ from core.qpool import get_questions_with_tag_and_category
 from core.qpool.models import Tag
 from wouso.games.quiz.models import Quiz
 
+from bootstrap3_datetime import widgets
+
 
 class QuizForm(forms.Form):
     def __init__(self, through, data=None):
