@@ -434,13 +434,39 @@ class CpanelViewsTest(WousoTest):
         Category.objects.create(name='sample_category')
         response = self.client.get(reverse('question_new'))
         self.assertContains(response, 'Add question', status_code=200)
-        self.assertContains(response, 'Text:')
-        self.assertContains(response, 'Category:')
+        self.assertContains(response, 'Insert question text')
+        self.assertContains(response, 'Select category')
         self.assertContains(response, 'sample_category')
 
-    def test_qpool_new_view_post(self):
+    def test_qpool_new_category_ok(self):
+        Category.objects.create(name='sample_category')
         data = {'text': 'sample text for test question',
-                'category': 'sample_category'}
+                'category': 'sample_category',
+                'answertype': 'R',
+                'answer_1': 'sample answer',
+                'correct_1': 'on'}
+        response = self.client.post(reverse('question_new'), data)
+        self.assertTrue(Question.objects.get(category__name='sample_category'))
+
+    @unittest.skip
+    # FIXME: If not entering all fields the question home page should add
+    # an "Invalid" string.
+    def test_qpool_new_no_answer_invalid(self):
+        Category.objects.create(name='sample_category')
+        data = {'text': 'sample text for test question',
+                'category': 'sample_category',
+                'answertype': 'R'}
+        response = self.client.post(reverse('question_new'), data)
+        response = self.client.get(reverse('qpool_home'))
+        self.assertContains(response, 'Invalid')
+
+    def test_qpool_new_answer_ok(self):
+        Category.objects.create(name='sample_category')
+        data = {'text': 'sample text for test question',
+                'category': 'sample_category',
+                'answertype': 'R',
+                'answer_1': 'sample_response',
+                'correct_1': 'on'}
         response = self.client.post(reverse('question_new'), data)
         self.assertTrue(Question.objects.get(text='sample text for test question'))
 

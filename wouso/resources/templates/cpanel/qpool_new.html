@@ -11,59 +11,68 @@
 
 {% block bottomscripts %}
     <script type="text/javascript" src="{{ basepath }}/static/js/cpanel/qpool/qpool_new.js/"></script>
+    <script src="{{ basepath }}/static/js/jquery-1.11.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/cpanel-qpool.css" />
+{% endblock %}
+
+<!-- Disable search bar. -->
+{% block searchbar %}
 {% endblock %}
 
 {% block subsectioncontent %}
 
     <div class="col-md-8">
-        <form class="horizontal-form" method="post">
-            <table class="table table-bordered table-hover table-condensed">
-                <tr>
-                    <th>Properties</th>
-                    <th>Text</th>
-                </tr>
-                <tr>
-                    <td style="vertical-align: middle"><label>Question Text:</label></td>
-                    <td><textarea id="text" name="text" rows="5" cols="50">{{ question.text}}</textarea></td>
-                </tr>
-                {% for a in 123456|make_list %}
-                <tr>
-                    <td style="vertical-align: middle">Correct: <input type="checkbox" name="correct_{{a}}"/></td>
-                    <td><textarea name="answer_{{a}}" cols="50"></textarea></td>
-                </tr>
+        <form class="orizontal-form" method="post">
+            <p class="formfield">
+                <label for="text">Insert question text</label>
+                <textarea id="text" name="text">{{ question.text }}</textarea>
+            </p>
+            <hr />
+
+            <p class="formfield">
+                <label for="select-category">Select category</label>
+                <select name="category" id="select-category">
+                    {% for c in categs %}
+                    <option value="{{c.1}}">{{ c.0 }}</option>
+                    {% endfor %}
+                </select>
+            </p>
+
+            <p class="formfield">
+                <label for="select-tags">Choose tags</label>
+                <select multiple name="tags" id="select-tags">
+                </select>
+            </p>
+
+            <p class="formfield">
+                <label>Question type</label>
+                {{ form.answertype }}
+            </p>
+            <hr />
+
+            <p class="info-column">
+                <a class="btn btn-sm btn-success" id="add"><span class="glyphicon glyphicon-plus"></span>Add new answer</a>
+            </p>
+            <div id="wrapper">
+                <!-- Add four default answers -->
+                {% for a in 1234|make_list %}
+                    <div id="box_{{a}}" class="formfield">
+                        <div class="info-column">
+                            <a class="btn btn-sm btn-warning" id="remove"><span class="glyphicon glyphicon-minus"></span>Remove this answer</a>
+                        </div>
+                        <textarea name="answer_{{a}}" id="answer"></textarea>
+                        <label class="mark" for="checkbox">Mark correct</label>
+                        <input id="checkbox" type="checkbox" name="correct_{{a}}"/>
+                    </div>
                 {% endfor %}
-                {% if not question %}
-                <tr>
-                    <td><b>Category:</b></td>
-                    <td>
-                        <select name="category" id="select-category">
-                            {% for c in categs %}
-                            <option value="{{c.1}}">{{ c.0 }}</option>
-                            {% endfor %}
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td><b>Tags:</b></td>
-                    <td>
-                        <select multiple name="tags" id="select-tags">
-                        </select>
-                    </td>
-                </tr>
-                {% endif %}
-                {% if form.proposed_by %}
-                <tr>
-                    <td><b>Proposed by:</b></td>
-                    <td>{{ form.proposed_by }}</td>
-                </tr>
-                {% endif %}
-                {% if form.endorsed_by %}
-                <tr>
-                    <td><b>Endorsed by:</b></td>
-                    <td>{{ form.endorsed_by }}</td>
-                </tr>
-                {% endif %}
-            </table>
+            </div>
+            <hr />
+
+            <p class="formfield">
+                <label>Mark question as active</label>
+                {{ form.active }}
+            </p>
+            <br />
 
             <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
             <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>

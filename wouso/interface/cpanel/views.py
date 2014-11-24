@@ -415,6 +415,7 @@ def qpool_edit(request, id):
         form = QuestionForm(request.POST, instance=question)
         if form.is_valid():
             newq = form.save()
+            newq.proposed_by = request.user
             if newq.endorsed_by is None:
                 newq.endorsed_by = request.user
                 newq.save()
@@ -428,7 +429,7 @@ def qpool_edit(request, id):
                 if question.category.name == 'proposed':
                     show_users = True
 
-        form = QuestionForm(instance=question, users=show_users)
+        form = QuestionForm(instance=question)
 
     return render_to_response('cpanel/qpool_edit.html',
                               {'question': question,
