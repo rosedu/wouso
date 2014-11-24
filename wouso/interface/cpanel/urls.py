@@ -78,6 +78,9 @@ upat = [
     url(r'^roles/roles_create$', 'wouso.interface.cpanel.views.roles_create',
 name='roles_create'),
 
+    (r'^lessons/', include('wouso.interface.apps.lesson.cpanel_urls')),
+    (r'^files/', include('wouso.interface.apps.files.cpanel_urls')),
+
     url(r'^activity_monitor/$', 'wouso.interface.cpanel.views.activity_monitor', name='activity_monitor'),
 
     # misc

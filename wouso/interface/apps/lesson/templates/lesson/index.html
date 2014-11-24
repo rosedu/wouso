@@ -1,0 +1,28 @@
+{% extends 'interface/section_base.html'%}
+
+{% load i18n %}
+
+{% block title %}{% trans 'Lessons' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Lessons' %}{% endblock %}
+
+{% block sectioncontent %}
+
+{% if categories %}
+    <ul>
+        {% for c in categories %}
+            <h3>{{ c }}</h3>
+            {% if c.lessons %}
+            <ol>
+                {% for l in c.lessons %}
+                <li><a href="{% url lesson_view l.id %}">{{ l }}</a></li>
+                {% endfor %}
+            </ol>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% else %}
+    No categories have been added yet.
+{% endif %}
+
+
+{% endblock %}

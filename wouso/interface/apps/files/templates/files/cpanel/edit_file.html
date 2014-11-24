@@ -1,0 +1,21 @@
+{% extends 'files/cpanel/list_files.html' %}
+
+{% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+{% load bootstrap %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Edit file" "edit_file" file.id %}
+{% endblock %}
+
+{% block sectioncontent %}
+     <form method="post" role="form" class="form-horizontal" action="">
+        <table>
+        {{ form|bootstrap_horizontal}}
+        </table>
+        {% csrf_token %}
+        <a class="btn btn-warning" href="{% url files %}">{% trans 'Back' %}</a>
+        <button class="btn btn-primary" type="submit">{% trans 'Submit' %}</button>
+    </form>
+{% endblock %}
