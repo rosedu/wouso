@@ -13,9 +13,13 @@
 
     <script type="text/javascript" src="{{ basepath }}/static/js/timer.js"></script>
 
-    <script type="text/javascript">
-        function showIt() {document.getElementById("quiz").style.visibility = "visible";}
-        setTimeout("showIt()", {{ lesson.quiz_show_time }} * 60 * 1000);
+    <script id="timer_script" language="javascript">
+        var seconds = {{ lesson.quiz_show_time }} * 60;
+        $(document).ready(function () { update('timer');});
+        setTimeout(function() {
+            $('#gabriel').prop('disabled', false);
+            $('#gabriel').removeClass('disabled');
+        }, seconds * 1000);
     </script>
 
 {% endblock %}
@@ -24,7 +28,6 @@
 
     {{ lesson.content|safe }}
 
-
     {% if lesson.youtube_url %}
     <iframe width="560" height="315" src="{{ embed_url }}" frameborder="0" allowfullscreen></iframe>
     {% endif %}
@@ -32,18 +35,21 @@
     {% if through %}
         {% if through.is_running %}
             <div>
-                The quiz is already running!
-                <a href="{% url quiz_view lesson.quiz.id %}">Go back to Quiz</a>
+                <p>The quiz is already running!</p>
+                <a href="{% url quiz_view lesson.quiz.id %}">
+                    <button type="button">Back to Quiz!</button>
+                </a>
             </div>
         {% elif not through.can_play_again %}
-            <div>
-                You cannot replay this quiz yet!
-                Please come back in {{ through.days_until_can_replay }} day(s).
-            </div>
+            <p>You can replay this quiz in {{ through.days_until_can_replay }} day(s).</p>
+            <a href="{% url quiz_view lesson.quiz.id %}">
+                <button class="disabled" type="button" disabled>Start Quiz!</button>
+            </a>
         {% else %}
-        <div id="quiz" style="visibility: hidden">
-            <a href="{% url quiz_view lesson.quiz.id %}">Start Quiz</a>
-        </div>
+            <div>Quiz enabled in: <p style="display: inline;" id="timer"></p></div>
+            <a href="{% url quiz_view lesson.quiz.id %}">
+                <button id="gabriel" class="disabled" type="button" disabled>Start Quiz!</button>
+            </a>
         {% endif %}
      {% else %}
         <div>This lesson has no quiz attached.</div>

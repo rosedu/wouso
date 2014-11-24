@@ -596,6 +596,12 @@ div.group-cc {
     border-top: 3px solid blue;
 }
 
+/* lesson */
+.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
 /* cpanel */
 .question_preview {
     cursor: pointer;

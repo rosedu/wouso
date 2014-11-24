@@ -42,14 +42,14 @@
             if (sec < 10) {sec = "0" + sec;}
 
             var time =   hour + ":" +  min + ":" +  sec;
-            document.getElementById('time').innerHTML = time;
+            $('#time').html(time);
         }
         // refresh rate 999 ms
         setInterval(function(){displayTime()}, 999);
     </script>
 
     <script type="text/javascript" src="{{ basepath }}/static/js/bootstrap.min.js"></script>
-    {{ form.media }} 
+    {{ form.media }}
 
     <style type="text/css">
         @import url("{{ basepath }}/static/css/autocomplete.css");
