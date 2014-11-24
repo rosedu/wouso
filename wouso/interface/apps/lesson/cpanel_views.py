@@ -106,7 +106,7 @@ def sort_lessons(request, id):
             order = [i[1] for i in map(lambda a: a.split('='), neworder.split('&'))]
             print order
             category.reorder(order)
-            return HttpResponseRedirect(reverse('manage_categories'))
+            return HttpResponseRedirect(reverse('manage_lesson_categories'))
 
     return render_to_response('lesson/cpanel/sort_lessons.html',
                               {'category': category,

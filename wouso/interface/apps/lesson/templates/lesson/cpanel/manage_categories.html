@@ -24,6 +24,9 @@
         <tr>
             <td>{{ c.name }}</td>
             <td>
+                <a class="btn btn-info" href="{% url sort_lessons c.id %}">
+                    <span class="glyphicon glyphicon-sort"></span>{% trans 'Sort Lessons' %}
+                </a>
                 <a class="btn btn-success" href="{% url edit_lesson_category c.id %}">
                     <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                 </a>
