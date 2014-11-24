@@ -5,10 +5,26 @@ from games.quiz.models import Quiz
 
 class LessonCategory(models.Model):
     name = models.CharField(max_length=100)
+    order = models.CharField(max_length=1000, default="", blank=True)
 
     @property
     def lessons(self):
-        return self.lesson_set.all()
+        """ Get lessons in specified order """
+        if not self.order:
+            return self.lesson_set.all()
+        else:
+            order = [int(i) for i in self.order.split(',')]
+            ls = {}
+            for l in self.lesson_set.all():
+                ls[l.id] = l
+            return [ls[i] for i in order]
+
+    def reorder(self, order):
+        self.order = ''
+        for i in order:
+            self.order += i + ','
+        self.order = self.order[:-1]
+        self.save()
 
     def __unicode__(self):
         return self.name

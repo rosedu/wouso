@@ -1,5 +1,8 @@
 from django.contrib.auth.decorators import permission_required
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse_lazy, reverse
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render_to_response
+from django.template import RequestContext
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from core.decorators import staff_required
@@ -91,3 +94,21 @@ class DeleteCategoryView(DeleteView):
 
 delete_category = permission_required('config.change_setting')(
     DeleteCategoryView.as_view())
+
+
+def sort_lessons(request, id):
+    category = get_object_or_404(LessonCategory, pk=id)
+
+    if request.method == 'POST':
+        neworder = request.POST.get('order')
+        if neworder:
+            # convert str to array
+            order = [i[1] for i in map(lambda a: a.split('='), neworder.split('&'))]
+            print order
+            category.reorder(order)
+            return HttpResponseRedirect(reverse('manage_categories'))
+
+    return render_to_response('lesson/cpanel/sort_lessons.html',
+                              {'category': category,
+                               'module': 'category'},
+                              context_instance=RequestContext(request))

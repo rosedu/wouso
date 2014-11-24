@@ -10,7 +10,12 @@
     background-color: #F5F5F5;
 }
 
-/* Quest */
+/* Quest and Lesson */
+.sort-list {
+}
+.sort-list li {
+    margin: 28px;
+}
 .handle {
     cursor: move;
     font-size: 2em;

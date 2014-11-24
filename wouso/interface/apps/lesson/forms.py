@@ -18,3 +18,4 @@ class LessonForm(forms.ModelForm):
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = LessonCategory
+        exclude = ('order')
