@@ -10,8 +10,7 @@
 {% if categories %}
     <ul>
         {% for c in categories %}
-        <li>
-            {{ c }}
+            <h3>{{ c }}</h3>
             {% if c.lessons %}
             <ol>
                 {% for l in c.lessons %}
@@ -19,7 +18,6 @@
                 {% endfor %}
             </ol>
             {% endif %}
-        </li>
         {% endfor %}
     </ul>
 {% else %}

@@ -1,0 +1,19 @@
+{% extends 'interface/section_base.html'%}
+
+{% load i18n %}
+
+{% block title %}{% trans 'Files' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Files' %}{% endblock %}
+
+{% block sectioncontent %}
+    {% for c in categories %}
+        <h3>{{ c }}</h3>
+        {% if c.files %}
+        <ol>
+            {% for f in c.files %}
+                <li>[{{ f.type }}] <a href="{{ f.file.url }}">{{ f }}</a> ({{ f.file.size|filesizeformat }})</li>
+            {% endfor %}
+        </ol>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

@@ -47,6 +47,9 @@ urlpatterns = patterns('',
     #Lesson
     (r'^lessons/', include('wouso.interface.apps.lesson.urls')),
 
+    #Lesson
+    (r'^files/', include('wouso.interface.apps.files.urls')),
+
     #Report
     url(r'^report/(?P<id>\d*)/$','wouso.core.security.views.report', name='report_player'),
 

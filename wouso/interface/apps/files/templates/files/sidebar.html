@@ -1,0 +1,10 @@
+{% extends 'interface/sidebar_widget.html' %}
+{% load i18n %}
+
+{% block title %}{%  trans 'Files' %}{% endblock %}
+
+{% block content %}
+
+    <a href="{% url files_index_view %}">{% trans 'View all' %}</a>
+
+{% endblock %}
