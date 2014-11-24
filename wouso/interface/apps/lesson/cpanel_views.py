@@ -65,7 +65,7 @@ manage_categories = permission_required('config.change_setting')(
 
 class AddCategoryView(CreateView):
     form_class = CategoryForm
-    success_url = reverse_lazy('manage_categories')
+    success_url = reverse_lazy('manage_lesson_categories')
     template_name = 'lesson/cpanel/category.html'
 
 
@@ -76,7 +76,7 @@ add_category = permission_required('config.change_setting')(
 class EditCategoryView(UpdateView):
     model = LessonCategory
     form_class = CategoryForm
-    success_url = reverse_lazy('manage_categories')
+    success_url = reverse_lazy('manage_lesson_categories')
     template_name = 'lesson/cpanel/category.html'
 
 
@@ -86,7 +86,7 @@ edit_category = permission_required('config.change_setting')(
 
 class DeleteCategoryView(DeleteView):
     model = LessonCategory
-    success_url = reverse_lazy('manage_categories')
+    success_url = reverse_lazy('manage_lesson_categories')
 
     def get(self, *args, **kwargs):
         return self.delete(*args, **kwargs)
