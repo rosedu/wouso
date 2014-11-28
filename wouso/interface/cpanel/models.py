@@ -3,8 +3,10 @@ from wouso.core.user.models import PlayerGroup, Race
 from wouso.utils import get_themes
 from wouso.core.game import get_games
 
+
 class ConfigGroup:
     name = 'Customizations'
+
 
 class Customization(ConfigGroup):
     def props(self):
@@ -24,6 +26,7 @@ class Customization(ConfigGroup):
 
         return [title, intro, theme, logo, hf, default_group, default_race, einfo]
 
+
 class Switchboard(ConfigGroup):
     name = 'Disable features'
 
@@ -42,10 +45,12 @@ class Switchboard(ConfigGroup):
 
         return p
 
+
 class GamesSwitchboard(ConfigGroup):
     name = 'Disable games'
 
-    def props(self):
+    @staticmethod
+    def props():
         p = []
         for g in get_games():
             p.append(BoolSetting.get('disable-%s' % g.__name__))
