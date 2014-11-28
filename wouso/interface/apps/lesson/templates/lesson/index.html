@@ -13,7 +13,7 @@
             <h3>{{ c }}</h3>
             {% if c.lessons %}
             <ol>
-                {% for l in c.lessons %}
+                {% for l in c.active_lessons %}
                 <li><a href="{% url lesson_view l.id %}">{{ l }}</a></li>
                 {% endfor %}
             </ol>

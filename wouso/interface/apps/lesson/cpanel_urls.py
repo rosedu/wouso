@@ -10,4 +10,5 @@ urlpatterns = patterns('wouso.interface.apps.lesson.cpanel_views',
     url(r'^edit_category/(?P<pk>\d+)/$', 'edit_category', name='edit_lesson_category'),
     url(r'^delete_category/(?P<pk>\d+)/$', 'delete_category', name='delete_lesson_category'),
     url(r'^sort_lessons/(?P<id>\d+)/$', 'sort_lessons', name='sort_lessons'),
+    url(r'^switch_active/(?P<id>\d+)/$', 'lesson_switch_active', name='lesson_switch_active'),
 )

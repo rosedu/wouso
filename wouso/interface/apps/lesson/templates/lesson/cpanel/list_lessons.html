@@ -30,6 +30,7 @@
             <th>Category</th>
             <th>Quiz</th>
             <th>Show quiz after (minutes)</th>
+            <th>Active</th>
             <th>Manage</th>
         </tr>
             {% for l in lessons %}
@@ -39,6 +40,14 @@
                 <td>{{ l.category }}</td>
                 <td>{{ l.quiz }}</td>
                 <td>{{ l.quiz_show_time }}</td>
+                <td>
+                    {% if l.active %}
+                        <a class="btn btn-success btn-xs" href="{% url lesson_switch_active l.id %}">{% trans 'Yes' %}</a>
+                    {% else %}
+                        <a class="btn btn-danger btn-xs" href="{% url lesson_switch_active l.id %}">{% trans 'No' %}</a>
+                    {% endif %}
+
+                </td>
                 <td>
                    <a class="btn btn-success" href="{% url edit_lesson l.id %}">
                         <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}

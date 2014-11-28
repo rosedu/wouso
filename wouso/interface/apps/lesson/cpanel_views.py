@@ -96,6 +96,7 @@ delete_category = permission_required('config.change_setting')(
     DeleteCategoryView.as_view())
 
 
+@permission_required('config.change_setting')
 def sort_lessons(request, id):
     category = get_object_or_404(LessonCategory, pk=id)
 
@@ -112,3 +113,13 @@ def sort_lessons(request, id):
                               {'category': category,
                                'module': 'category'},
                               context_instance=RequestContext(request))
+
+
+@permission_required('config.change_setting')
+def lesson_switch_active(request, id):
+    lesson = get_object_or_404(Lesson, pk=id)
+
+    lesson.active = not lesson.active
+    lesson.save()
+
+    return HttpResponseRedirect(reverse('lessons'))

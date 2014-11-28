@@ -19,6 +19,10 @@ class LessonCategory(models.Model):
                 ls[l.id] = l
             return [ls[i] for i in order]
 
+    @property
+    def active_lessons(self):
+        return [l for l in self.lessons if l.active]
+
     def reorder(self, order):
         self.order = ''
         for i in order:
@@ -40,6 +44,7 @@ class Lesson(models.Model):
     category = models.ForeignKey(LessonCategory)
     quiz = models.ForeignKey(Quiz, blank=True, null=True)
     quiz_show_time = models.IntegerField(default=5)
+    active = models.BooleanField()
 
     def __unicode__(self):
         return self.name

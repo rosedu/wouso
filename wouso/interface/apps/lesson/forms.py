@@ -12,6 +12,7 @@ class LessonForm(forms.ModelForm):
         super(LessonForm, self).__init__(*args, **kwargs)
 
         self.fields['quiz_show_time'].label = "Show quiz after (minutes)"
+        self.fields['active'].label = "Mark lesson as active"
         self.fields['quiz'].queryset = Quiz.objects.filter(type='L')
 
 
