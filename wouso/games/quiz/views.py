@@ -27,7 +27,8 @@ def index(request):
 
     return render_to_response('quiz/index.html',
                               {'active_quizzes': quiz_user.active_quizzes,
-                               'expired_quizzes': quiz_user.expired_quizzes},
+                               'expired_quizzes': quiz_user.expired_quizzes,
+                               'played_quizzes': quiz_user.played_quizzes},
                               context_instance=RequestContext(request))
 
 
@@ -87,8 +88,7 @@ def sidebar_widget(context):
     if not user or not user.is_authenticated():
         return ''
 
-    quiz_user = user.get_profile().get_extension(QuizUser)
-    number_of_active_quizzes = quiz_user.active_quizzes.__len__()
+    number_of_active_quizzes = Quiz.objects.filter(status='A', type='P').count()
 
     return render_to_string('quiz/sidebar.html',
                             {'number_of_active_quizzes': number_of_active_quizzes})
