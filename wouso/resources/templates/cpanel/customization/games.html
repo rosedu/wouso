@@ -5,24 +5,24 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Customization" "customization" %}
+    {% breadcrumb "Games" "games_home" %}
 {% endblock %}
 
 {% block sectioncontent %}
 <ul class="nav nav-tabs">
-    <li class="active">
+    <li>
         <a href="{% url customization %}">
             Customization
         </a>
     </li>
     <li>
         <a href="{% url features %}">
-            Disable features
+            Features
         </a>
     </li>
-    <li>
+    <li class="active">
         <a href="{% url games_home %}">
-            Disable games
+            Games
         </a>
     </li>
     <li>
@@ -33,15 +33,15 @@
 </ul>
 
 <form method="post" action="">
-{% for s in settings.props %}
-    <fieldset>
-        {% autoescape off %}
-            {{ s.form }}
-        {% endautoescape %}
-        <br/>
-    </fieldset>
-{% endfor %}
-<button type="submit" class="btn btn-primary">Save</button>
-{% csrf_token %}
+    {% for s in settings.props %}
+        <fieldset>
+            {% autoescape off %}
+                {{ s.form }}
+            {% endautoescape %}
+            <br/>
+        </fieldset>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Save</button>
+    {% csrf_token %}
 </form>
 {% endblock %}

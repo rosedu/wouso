@@ -47,7 +47,7 @@ class Switchboard(ConfigGroup):
 
 
 class GamesSwitchboard(ConfigGroup):
-    name = 'Disable games'
+    name = 'Games'
 
     @staticmethod
     def props():

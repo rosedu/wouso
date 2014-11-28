@@ -56,16 +56,19 @@ class Setting(models.Model):
     def title(self):
         """ Capitalize name to create a setting title for display """
         if self.name.startswith('disable-'):
-            return self.name[8:].capitalize()
+            return self.name[8:].capitalize().replace('game', ' game').replace('-', ' ')
+
         return self.name.capitalize().replace('_', ' ')
 
     def __unicode__(self):
         return self.name
 
+
 class HTMLSetting(Setting):
     """ Setting storing a generic text or HTML """
     class Meta:
         proxy = True
+
 
 class BoolSetting(Setting):
     """ Setting storing boolean values (as string True/False) """
@@ -76,7 +79,7 @@ class BoolSetting(Setting):
         if isinstance(b, bool):
             self.value = 'True' if b else 'False'
         else:
-            self.value = b
+            self.value = not b
         self.save()
 
     def get_value(self):
@@ -89,7 +92,8 @@ class BoolSetting(Setting):
             <div class="col-sm-1">
                 <input type="checkbox" name="%s" id="%s" %s value="True" class="form-control"/>
             </div>
-        </div>""" % (self.name, self.title, self.name, self.name, 'checked' if self.get_value() else '')
+        </div>""" % (self.name, self.title, self.name, self.name, '' if self.get_value() else 'checked')
+
 
 class ChoicesSetting(Setting):
     """ Setting storing string values, but having a choices list of tuple
