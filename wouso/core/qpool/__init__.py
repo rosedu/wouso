@@ -43,7 +43,7 @@ def get_questions_with_category(category='all', active_only=True, endorsed_only=
 
 
 def get_questions_with_tag_and_category(tags='all', category='all', active_only=True, endorsed_only=False):
-    result = Question.objects.filter(tags__name__in=tags, category__name=category)
+    result = Question.objects.filter(tags__name__in=tags, category__name=category).distinct()
 
     # filtering
     if active_only:
