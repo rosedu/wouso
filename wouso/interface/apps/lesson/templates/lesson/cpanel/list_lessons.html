@@ -20,12 +20,88 @@
     {% breadcrumb "Lessons" "lessons" %}
 {% endblock %}
 
+{% block scripts %}
+    {{ block.super }}
+
+    <script>
+        function get_selection() {
+            /* return a string containing ids of all lessons selected */
+
+            var selection = "";
+            $('.select_all:checked').each(function() {
+                selection += this.id + ' ';
+            });
+            return selection;
+        }
+
+        function select_category(option) {
+            /* select/unselect all lessons belonging to a category */
+
+            var cls = '.' + option.value;
+            var value = true;
+            $(cls).each(function() {
+                value = value && $(this).is(':checked');
+            });
+            /* if value remains true then unselect all, else select all */
+            $(cls).attr('checked', !value).change();
+        }
+
+        $(function() {
+            /* update 'disabled' attribute for actions */
+
+            $('.select_all').change(function() {
+                if (get_selection() != '')
+                    $('#l_actions').attr('disabled', false);
+                else
+                    $('#l_actions').attr('disabled', true);
+            });
+        });
+
+        function apply_action(option) {
+            /* apply the selected action to the selected lessons */
+
+            var action = option.value;
+            if (action == '')
+                return;
+            var destination = '{% url lesson_actions %}?l_id=' + get_selection() + '&action=' + action;
+            window.location.replace(destination);
+        }
+    </script>
+
+{% endblock %}
+
 {% block sectioncontent %}
 
 <div class="col-md-12">
+
+    <b>Select:</b>
+    <a onclick='$(".select_all").attr("checked", true).change();' href="#">{% trans 'All' %}</a> /
+    <a onclick='$(".select_all").attr("checked", false).change();' href="#">{% trans 'None' %}</a>
+
+    <br/>
+
+    <b>Select:</b>
+    <select onclick="select_category(this)">
+        <option selected value="">-- Category --</option>
+        {% for c in categories %}
+        <option value="{{c.id}}">{{ c }}</option>
+        {% endfor %}
+    </select>
+
+    <br/>
+
+    <b>Action:</b>
+    <select onclick="apply_action(this)" id="l_actions" disabled="true">
+        <option selected value="">-- Select action --</option>
+        <option value="active"  >Set active</option>
+        <option value="inactive">Set inactive</option>
+    </select>
+
+    <br/> <br/>
+
     <table class="table table-bordered table-hover table-condensed">
         <tr>
-            <th>#</th>
+            <th colspan="2">#</th>
             <th>Name</th>
             <th>Category</th>
             <th>Quiz</th>
@@ -35,7 +111,8 @@
         </tr>
             {% for l in lessons %}
             <tr>
-                <td>{{ forloop.counter }}</td>
+                <td><input type="checkbox" id="{{ l.id }}" class="select_all {{ l.category.id }}"/></td>
+                <td>{{ l.id }}</td>
                 <td>{{ l.name }}</td>
                 <td>{{ l.category }}</td>
                 <td>{{ l.quiz }}</td>

@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import permission_required
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404, render_to_response, redirect
 from django.template import RequestContext
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
@@ -15,6 +15,11 @@ class LessonsView(ListView):
     paginate_by = 50
     context_object_name = 'lessons'
     template_name = 'lesson/cpanel/list_lessons.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(LessonsView, self).get_context_data(**kwargs)
+        context['categories'] = LessonCategory.objects.all()
+        return context
 
 
 lessons = staff_required(LessonsView.as_view())
@@ -123,3 +128,24 @@ def lesson_switch_active(request, id):
     lesson.save()
 
     return HttpResponseRedirect(reverse('lessons'))
+
+
+@permission_required('config.change_setting')
+def lesson_actions(request):
+    action = request.GET.get('action', None)
+    l_id = request.GET.get('l_id', '').split()
+    l_id = map(int, l_id)
+    queryset = Lesson.objects.filter(id__in=l_id)
+
+    if action == 'active':
+        for l in queryset:
+            l.active = True
+            l.save()
+    elif action == 'inactive':
+        for l in queryset:
+            l.active = False
+            l.save()
+
+    redir = request.META.get('HTTP_REFERER', reverse('lessons'))
+
+    return redirect(redir)
