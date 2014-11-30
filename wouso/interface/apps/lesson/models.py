@@ -1,6 +1,7 @@
 from ckeditor.fields import RichTextField
 from django.db import models
-from games.quiz.models import Quiz
+from wouso.games.quiz.models import Quiz
+from wouso.core.common import App
 
 
 class LessonCategory(models.Model):
@@ -34,9 +35,9 @@ class LessonCategory(models.Model):
         return self.name
 
 
-class Lesson(models.Model):
+class Lesson(models.Model, App):
     """
-     The lesson
+     Lesson module
     """
     name = models.CharField(max_length=100)
     youtube_url = models.URLField(blank=True, null=True)

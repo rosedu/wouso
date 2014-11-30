@@ -16,10 +16,11 @@ def get_cpanel_games():
     """
     gs = {}
     for game in get_games():
-        game = game.__name__.replace('Game', '')
-        if has_cpanel_url(game.lower()):
-            url = 'games/' + game.lower()
-            # Add space before capital letters (e.g. Special Quest)
-            gs[url] = re.sub(r"(\w)([A-Z])", r"\1 \2", game)
+        if not game.disabled():
+            game = game.__name__.replace('Game', '')
+            if has_cpanel_url(game.lower()):
+                url = 'games/' + game.lower()
+                # Add space before capital letters (e.g. Special Quest)
+                gs[url] = re.sub(r"(\w)([A-Z])", r"\1 \2", game)
 
     return gs

@@ -30,9 +30,12 @@ class Customization(ConfigGroup):
 class Switchboard(ConfigGroup):
     name = 'Disable features'
 
-    def props(self):
+    @staticmethod
+    def props():
         p = []
-        for a in ('Qproposal', 'Top', 'Magic', 'Bazaar', 'Bazaar-Exchange', 'Statistics', 'Challenge-Top', 'Top-Pyramid'):
+        for a in ('Qproposal', 'Top', 'Magic', 'Bazaar', 'Bazaar-Exchange',
+                  'Statistics', 'Challenge-Top', 'Top-Pyramid', 'Lesson',
+                  'MessageApp', 'File'):
             p.append(BoolSetting.get('disable-%s' % a))
 
         p.append(BoolSetting.get('disable_login'))
@@ -40,7 +43,6 @@ class Switchboard(ConfigGroup):
         p.append(BoolSetting.get('disable-challenge-random'))
         coin_tops = Setting.get('top-coins')
         coin_tops.help_text = 'Coin names, comma separated'
-        #coin_tops.choices = [(g.name, unicode(g)) for g in Coin.objects.all()]
         p.append(coin_tops)
 
         return p

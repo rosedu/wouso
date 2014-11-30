@@ -206,7 +206,9 @@ class CustomizationView(TemplateView):
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_superuser:
             return redirect('status')
+
         self.customization = Customization()
+
         return super(CustomizationView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):

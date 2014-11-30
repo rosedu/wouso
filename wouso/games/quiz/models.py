@@ -253,4 +253,3 @@ class QuizAttempt(models.Model):
     date = models.DateTimeField(blank=True, null=True)
     points = models.IntegerField(default=-1)
     gold = models.IntegerField(default=0)
-

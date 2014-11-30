@@ -88,7 +88,13 @@ def sidebar_widget(context):
     if not user or not user.is_authenticated():
         return ''
 
+    if QuizGame.disabled():
+        return ''
+
     number_of_active_quizzes = Quiz.objects.filter(status='A', type='P').count()
+
+    quiz_user = user.get_profile().get_extension(QuizUser)
+    number_of_active_quizzes = quiz_user.active_quizzes.__len__()
 
     return render_to_string('quiz/sidebar.html',
                             {'number_of_active_quizzes': number_of_active_quizzes})

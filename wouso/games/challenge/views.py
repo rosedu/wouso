@@ -284,6 +284,10 @@ def header_link(context):
     user = context.get('user', None)
     if not user or not user.is_authenticated():
         return dict(text=_('Challenges'))
+
+    if ChallengeGame.disabled():
+        return ''
+
     profile = user.get_profile()
     if profile:
         chall_user = profile.get_extension(ChallengeUser)
@@ -306,6 +310,7 @@ def sidebar_widget(context):
     user = context.get('user', None)
     if not user or not user.is_authenticated():
         return ''
+
     chall_user = user.get_profile().get_extension(ChallengeUser)
     challs = ChallengeGame.get_active(chall_user)
     challs = [c for c in challs if c.status == 'A']

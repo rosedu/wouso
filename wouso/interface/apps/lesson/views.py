@@ -61,6 +61,9 @@ def sidebar_widget(context):
     if not user or not user.is_authenticated():
         return ''
 
+    if Lesson.disabled():
+        return ''
+
     return render_to_string('lesson/sidebar.html', {})
 
 

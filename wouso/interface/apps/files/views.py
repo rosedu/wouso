@@ -4,7 +4,7 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 
 from wouso.core.ui import register_sidebar_block
-from wouso.interface.apps.files.models import FileCategory
+from wouso.interface.apps.files.models import FileCategory, File
 
 
 @login_required
@@ -21,6 +21,9 @@ def index(request):
 def sidebar_widget(context):
     user = context.get('user', None)
     if not user or not user.is_authenticated():
+        return ''
+
+    if File.disabled():
         return ''
 
     return render_to_string('files/sidebar.html', {})

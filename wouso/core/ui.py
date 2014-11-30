@@ -1,3 +1,5 @@
+from django.db import models
+from wouso.core.game.models import Game
 
 class BlockLibrary(object):
     def __init__(self):

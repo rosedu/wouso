@@ -1,4 +1,5 @@
 from django.db import models
+from wouso.core.common import App
 
 
 class FileCategory(models.Model):
@@ -12,7 +13,7 @@ class FileCategory(models.Model):
         return self.name
 
 
-class File(models.Model):
+class File(models.Model, App):
     name = models.CharField(max_length=100)
     file = models.FileField(upload_to='storage')
     category = models.ForeignKey(FileCategory)
