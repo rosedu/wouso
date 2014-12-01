@@ -137,8 +137,8 @@
                 <h4 class="text-center">Configuration</h4>
                 {% url roles as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url roles %}">Roles</a></li>
-                {% url customization as url %}
-                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url customization %}">Customization</a></li>
+                {% url customization_home as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url customization_home %}">Customization</a></li>
                 {% url reports as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url reports %}">Reports</a></li>
                 {% url static_pages as url %}

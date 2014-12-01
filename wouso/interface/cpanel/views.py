@@ -203,11 +203,13 @@ leaderboards = permission_required('config.change_setting')(
 class CustomizationView(TemplateView):
     template_name = 'cpanel/customization/customization.html'
 
+    def __init__(self, **kwargs):
+        super(CustomizationView, self).__init__(**kwargs)
+        self.customization = Customization()
+
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_superuser:
             return redirect('status')
-
-        self.customization = Customization()
 
         return super(CustomizationView, self).dispatch(request, *args, **kwargs)
 
@@ -215,7 +217,7 @@ class CustomizationView(TemplateView):
         for s in self.customization.props():
             val = request.POST.get(s.name, '')
             s.set_value(val)
-        return redirect('customization')
+        return redirect('customization_home')
 
     def get_context_data(self, **kwargs):
         context = super(CustomizationView, self).get_context_data(**kwargs)
@@ -224,7 +226,7 @@ class CustomizationView(TemplateView):
         return context
 
 
-customization = permission_required('config.change_setting')(
+customization_home = permission_required('config.change_setting')(
     CustomizationView.as_view())
 
 
@@ -241,10 +243,11 @@ class DisplayView(TemplateView):
         data = request.POST['display']
         blocks = ','.join([b.strip() for b in data.split(',') if b.strip()])
         Setting.get('sidebar-order').set_value(blocks)
-        return redirect('cpanel_display')
+        return redirect('customization_display')
 
 
-display = permission_required('config.change_setting')(DisplayView.as_view())
+customization_display = permission_required('config.change_setting')(
+    DisplayView.as_view())
 
 
 class GamesView(TemplateView):
@@ -259,7 +262,7 @@ class GamesView(TemplateView):
             val = request.POST.get(s.name, '')
             s.set_value(val)
 
-        return redirect('games_home')
+        return redirect('customization_games')
 
     def get_context_data(self, **kwargs):
         context = super(GamesView, self).get_context_data(**kwargs)
@@ -267,22 +270,23 @@ class GamesView(TemplateView):
         return context
 
 
-games = permission_required('config.change_setting')(GamesView.as_view())
+customization_games = permission_required('config.change_setting')(
+    GamesView.as_view())
 
 
 class FeaturesView(TemplateView):
     template_name = 'cpanel/customization/features.html'
 
-    def dispatch(self, request, *args, **kwargs):
+    def __init__(self, **kwargs):
+        super(FeaturesView, self).__init__(**kwargs)
         self.switchboard = Switchboard()
-        return super(FeaturesView, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         for s in self.switchboard.props():
             val = request.POST.get(s.name, '')
             s.set_value(val)
 
-        return redirect('features')
+        return redirect('customization_features')
 
     def get_context_data(self, **kwargs):
         context = super(FeaturesView, self).get_context_data(**kwargs)
@@ -291,7 +295,8 @@ class FeaturesView(TemplateView):
         return context
 
 
-features = permission_required('config.change_setting')(FeaturesView.as_view())
+customization_features = permission_required('config.change_setting')(
+    FeaturesView.as_view())
 
 
 @permission_required('config.change_setting')

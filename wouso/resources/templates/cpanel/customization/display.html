@@ -5,28 +5,28 @@
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Display" "cpanel_display" %}
+    {% breadcrumb "Display" "customization_display" %}
 {% endblock %}
 
 {% block sectioncontent %}
 <ul class="nav nav-tabs">
     <li>
-        <a href="{% url customization %}">
+        <a href="{% url customization_home %}">
             Customization
         </a>
     </li>
     <li>
-        <a href="{% url features %}">
+        <a href="{% url customization_features %}">
             Features
         </a>
     </li>
     <li>
-        <a href="{% url games_home %}">
+        <a href="{% url customization_games %}">
             Games
         </a>
     </li>
     <li class="active">
-        <a href="{% url cpanel_display %}">
+        <a href="{% url customization_display %}">
             Display
         </a>
     </li>

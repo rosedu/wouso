@@ -15,6 +15,7 @@ class Setting(models.Model):
         """ value setter, overridden by subclasses """
         self.value = v
         self.save()
+
     def get_value(self):
         """ value getter, overridden by subclasses """
         return self.value
@@ -51,11 +52,13 @@ class Setting(models.Model):
         cache.delete(cache_key)
         return super(Setting, self).save(**kwargs)
 
-
     @property
     def title(self):
         """ Capitalize name to create a setting title for display """
         if self.name.startswith('disable-'):
+            # Remove 'disable-', capitalize, remove '-' and add a space before
+            # game
+            # Ex: challengegame -> Challenge game
             return self.name[8:].capitalize().replace('game', ' game').replace('-', ' ')
 
         return self.name.capitalize().replace('_', ' ')
@@ -113,7 +116,7 @@ class ChoicesSetting(Setting):
                 <select id="%s" name="%s" class="form-control">
         """ % (self.name, self.title, self.name, self.name)
 
-        for n,v in self.choices:
+        for n, v in self.choices:
             html += '<option value="%s" %s>%s</option>' % (v, 'selected' if self.value == v else '', n)
         html += '</select></div></div>'
         return html

@@ -2,11 +2,12 @@ from django.conf.urls.defaults import *
 from wouso.interface.cpanel import get_cpanel_games
 
 upat = [
+    # Customization
     url(r'^$', 'wouso.interface.cpanel.views.status', name='status'),
-    url(r'^customization/$', 'wouso.interface.cpanel.views.customization', name='customization'),
-    url(r'^customization/display/$', 'wouso.interface.cpanel.views.display', name='cpanel_display'),
-    url(r'^customization/games/$', 'wouso.interface.cpanel.views.games', name='games_home'),
-    url(r'^customization/features/$', 'wouso.interface.cpanel.views.features', name='features'),
+    url(r'^customization/$', 'wouso.interface.cpanel.views.customization_home', name='customization_home'),
+    url(r'^customization/games/$', 'wouso.interface.cpanel.views.customization_games', name='customization_games'),
+    url(r'^customization/features/$', 'wouso.interface.cpanel.views.customization_features', name='customization_features'),
+    url(r'^customization/display/$', 'wouso.interface.cpanel.views.customization_display', name='customization_display'),
 
     url(r'^leaderboards/$', 'wouso.interface.cpanel.views.leaderboards', name='leaderboards'),
 

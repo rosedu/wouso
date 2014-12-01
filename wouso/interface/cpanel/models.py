@@ -51,8 +51,7 @@ class Switchboard(ConfigGroup):
 class GamesSwitchboard(ConfigGroup):
     name = 'Games'
 
-    @staticmethod
-    def props():
+    def props(self):
         p = []
         for g in get_games():
             p.append(BoolSetting.get('disable-%s' % g.__name__))

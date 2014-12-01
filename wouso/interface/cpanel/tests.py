@@ -397,13 +397,13 @@ class CpanelViewsTest(WousoTest):
         self.assertContains(response, 'Custom test title', status_code=200)
 
     def test_games_view_get(self):
-        response = self.client.get(reverse('games_home'))
+        response = self.client.get(reverse('customization_games'))
         self.assertContains(response, 'Disable games', status_code=200)
 
     def test_games_view_post(self):
         data = {'disable-WorkshopGame': 'True'}
-        response = self.client.post(reverse('games_home'), data)
-        response = self.client.get(reverse('games_home'))
+        response = self.client.post(reverse('customization_games'), data)
+        response = self.client.get(reverse('customization_games'))
         self.assertContains(response, 'id="disable-WorkshopGame" checked')
 
     @unittest.skip  # TODO fixme
