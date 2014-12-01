@@ -380,25 +380,25 @@ class CpanelViewsTest(WousoTest):
         self.assertNotContains(response, 'Message sent!')
 
     def test_customization_view_get(self):
-        response = self.client.get(reverse('customization'))
+        response = self.client.get(reverse('customization_home'))
         self.assertContains(response, 'Customization', status_code=200)
-        self.assertContains(response, 'Disable features', status_code=200)
-        self.assertContains(response, 'Disable games', status_code=200)
+        self.assertContains(response, 'Features', status_code=200)
+        self.assertContains(response, 'Games', status_code=200)
         self.assertContains(response, 'Display', status_code=200)
 
     def test_customization_view_post(self):
         data = {'title': 'Custom test title'}
 
         # POST data
-        response = self.client.post(reverse('customization'), data)
+        response = self.client.post(reverse('customization_home'), data)
 
         # Check if data has been updated
-        response = self.client.get(reverse('customization'))
+        response = self.client.get(reverse('customization_home'))
         self.assertContains(response, 'Custom test title', status_code=200)
 
     def test_games_view_get(self):
         response = self.client.get(reverse('customization_games'))
-        self.assertContains(response, 'Disable games', status_code=200)
+        self.assertContains(response, 'Games', status_code=200)
 
     def test_games_view_post(self):
         data = {'disable-WorkshopGame': 'True'}
