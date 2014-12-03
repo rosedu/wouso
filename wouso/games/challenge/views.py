@@ -129,7 +129,7 @@ class FileLock:
 class NamedFileLock:
     def __init__(self, filename):
         self.filename = filename
-    
+
     def lock(self):
         return FileLock(self.filename)
 
@@ -331,14 +331,14 @@ class HistoryView(ListView):
         challenges = [p.challenge for p in Participant.objects.filter(user=self.player)]
         challenges = sorted(challenges, key=lambda c: c.date)
         return challenges
-    
+
     def get_context_data(self, **kwargs):
         context = super(HistoryView, self).get_context_data(**kwargs)
         context.update({'challplayer': self.player})
         return context
 
 history = HistoryView.as_view()
-    
+
 @login_required
 def challenge_player(request):
     if request.method == 'POST':
@@ -353,7 +353,7 @@ def challenge_player(request):
 
 @login_required
 def challenge_random(request):
-    setting = BoolSetting.get('disable-challenge-random').get_value()
+    setting = BoolSetting.get('random_challenge').get_value()
     if setting:
         messages.error(request, _('Random challenge disabled'))
         return redirect('challenge_index_view')

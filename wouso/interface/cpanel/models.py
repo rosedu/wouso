@@ -40,7 +40,7 @@ class Switchboard(ConfigGroup):
 
         p.append(BoolSetting.get('login'))
         p.append(BoolSetting.get('header_autoreload'))
-        p.append(BoolSetting.get('disable-challenge-random'))
+        p.append(BoolSetting.get('random_challenge'))
         coin_tops = Setting.get('top-coins')
         coin_tops.help_text = 'Coin names, comma separated'
         p.append(coin_tops)
