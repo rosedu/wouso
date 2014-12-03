@@ -25,7 +25,7 @@
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery.timers.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/ajaxify.js"></script>
 
-    {% if config_enable_header_autoreload %}
+    {% if config_header_autoreload %}
     <script type="text/javascript">
         $(document).ready(function (){$(document).everyTime(10000, reload_header);});
     </script>

@@ -38,8 +38,8 @@ class Switchboard(ConfigGroup):
                   'MessageApp', 'File'):
             p.append(BoolSetting.get('disable-%s' % a))
 
-        p.append(BoolSetting.get('disable_login'))
-        p.append(BoolSetting.get('enable_header_autoreload'))
+        p.append(BoolSetting.get('login'))
+        p.append(BoolSetting.get('header_autoreload'))
         p.append(BoolSetting.get('disable-challenge-random'))
         coin_tops = Setting.get('top-coins')
         coin_tops.help_text = 'Coin names, comma separated'
