@@ -203,13 +203,11 @@ leaderboards = permission_required('config.change_setting')(
 class CustomizationView(TemplateView):
     template_name = 'cpanel/customization/customization.html'
 
-    def __init__(self, **kwargs):
-        super(CustomizationView, self).__init__(**kwargs)
-        self.customization = Customization()
-
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_superuser:
             return redirect('status')
+
+        self.customization = Customization()
 
         return super(CustomizationView, self).dispatch(request, *args, **kwargs)
 
