@@ -81,18 +81,18 @@
     {% block header %}
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="{% url status %}">Control Panel</a>
+            <a class="navbar-brand header_clickable" href="{% url status %}">Control Panel</a>
+            <p class="navbar-text header_text">{% now "d M Y" %}</p>
+            <div id="time" class="navbar-text header_text"></div>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
-                <p class="navbar-text">{% now "d M. Y" %}</p>
-                <div id="time" class="navbar-text"></div>
-                {% if user.real_user %}
-                    <p class="navbar-text">Impersonated by {{ user.real_user }}</p>
-                    <li><a href="{% url impersonate_clear %}" title="Unimpersonate">Clear</a></li>
-                {% endif %}
-                <li><a id="head-home" href="{% url homepage %}">Game</a></li>
-                <li><a id="head-logout" href="{% url logout_view %}">{% trans "Logout" %} <span class="glyphicon glyphicon-log-out"></span></a></li>
+            {% if user.real_user %}
+                <p class="navbar-text">Impersonated by {{ user.real_user }}</p>
+                <li><a href="{% url impersonate_clear %}" title="Unimpersonate">Clear</a></li>
+            {% endif %}
+            <li><a id="head-home" class="header_clickable" href="{% url homepage %}">Game</a></li>
+            <li><a id="head-logout" class="header_clickable" href="{% url logout_view %}">{% trans "Logout" %} <span class="glyphicon glyphicon-log-out"></span></a></li>
             </ul>
         </div>
     </div>

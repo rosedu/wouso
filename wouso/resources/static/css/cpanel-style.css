@@ -10,6 +10,14 @@
     background-color: #F5F5F5;
 }
 
+.header_clickable {
+    color: white !important;
+}
+
+.header_text {
+    font-family: Arial Black;
+}
+
 /* Question Pool */
 div.second {
     color: #444;
