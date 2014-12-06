@@ -4,11 +4,20 @@
 }
 .nav nav-sidebar {
     height: 1 px;
-    background-color: #FFFFFF;
+    background-color: #F12345;
 }
 .table th {
-    background-color: #F5F5F5;
+    background-color: #F55555;
 }
+
+.header_clickable {
+    color: white !important;
+}
+
+.header_text {
+    font-family: Arial Black;
+}
+
 
 /* Question Pool */
 div.second {
