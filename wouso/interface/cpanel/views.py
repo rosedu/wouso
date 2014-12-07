@@ -191,6 +191,17 @@ def spell_delete(request, id):
     return HttpResponseRedirect(go_back)
 
 
+@permission_required('config.change_setting')
+def spell_switch(request, id):
+    spell = get_object_or_404(Spell, pk=id)
+
+   
+    spell.available = not spell.available
+    spell.save()
+    print spell.available
+    return HttpResponseRedirect(reverse('spells'))
+
+
 class LeaderboardsView(ListView):
     template_name = 'cpanel/leaderboards.html'
     queryset = ''

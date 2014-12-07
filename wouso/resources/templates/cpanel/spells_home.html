@@ -27,6 +27,7 @@
     	<th>Mass</th>
     	<th>Price</th>
     	<th>Due Days</th>
+        <th>Active</th>
     	<th>Manage</th>
     </tr>
     {% for p in spells %}
@@ -38,6 +39,14 @@
     	<td> {{ p.mass }} </td>
     	<td> {{ p.price }} </td>
     	<td> {{ p.due_days }} </td>
+        <td>
+            {% if p.available %}
+                <a class="btn btn-success btn-xs" href="{% url spell_switch_active p.id %}">{% trans 'Yes' %}</a>
+            {% else %}
+                <a class="btn btn-danger btn-xs" href="{% url spell_switch_active p.id %}">{% trans 'No' %}</a>
+            {% endif %}
+                </a>
+        </td>
     	<td nowrap>
             <a class="btn btn-success" href="{% url edit_spell p.id %}">
                  <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
