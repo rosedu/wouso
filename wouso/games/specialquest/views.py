@@ -72,12 +72,14 @@ def setup_accept(request, group_id):
 def setup_leave(request):
     user = request.user.get_profile().get_extension(SpecialQuestUser)
     group = user.group
+    group.remove(user)
     if group is None or group.active or ((group.head == user) and not group.is_empty()):
         # do nothing
         pass
     else:
         user.group = None
         user.save()
+
         if group.head == user:
             group.delete()
 
