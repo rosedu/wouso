@@ -54,11 +54,12 @@ class SpecialQuestGroup(PlayerGroup):
         return new_group
 
     def remove(self, user):
-        print user.id
-        if user == self.head:
-            #do nothing
-            pass
-        else:
+        """
+        Removing the head user would delete the group
+        However, this is handled separately somewhere else 
+        so no need to worry about it
+        """
+        if user != self.head:
             self.players.remove(user)
         
     def __unicode__(self):
