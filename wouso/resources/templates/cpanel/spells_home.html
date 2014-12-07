@@ -36,9 +36,9 @@
         <td> {{ p.name }} </td>
         <td> {{ p.title}} </td>
         <td> {{ p.type }} </td>
-    	<td> {{ p.mass }} </td>
-    	<td> {{ p.price }} </td>
-    	<td> {{ p.due_days }} </td>
+        <td> {{ p.mass }} </td>
+        <td> {{ p.price }} </td>
+        <td> {{ p.due_days }} </td>
         <td>
             {% if p.available %}
                 <a class="btn btn-success btn-xs" href="{% url spell_switch_active p.id %}">{% trans 'Yes' %}</a>
