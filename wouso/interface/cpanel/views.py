@@ -1249,16 +1249,6 @@ def clean_impersonation(request):
     return redirect('homepage')
 
 
-@permission_required('superuser')
-def clear_cache(request):
-    if request.method == 'POST':
-        cache.clear()
-        return redirect('status')
-    else:
-        return render_to_response('cpanel/clear_cache.html', {},
-                                  context_instance=RequestContext(request))
-
-
 class BonusForm(forms.Form):
     amount = forms.IntegerField(initial=0)
     coin = forms.ModelChoiceField(queryset=Coin.objects.all())
