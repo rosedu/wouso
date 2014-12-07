@@ -12,11 +12,13 @@ class Invitation(models.Model):
     def __unicode__(self):
         return u"Invitation from %s to %s" % (self.group.head, self.to)
 
+
 class GroupCompletion(models.Model):
     team = models.ForeignKey('SpecialQuestGroup')
     task = models.ForeignKey('SpecialQuestTask')
 
     date = models.DateTimeField(auto_now_add=True)
+
 
 class SpecialQuestGroup(PlayerGroup):
     head = models.ForeignKey('SpecialQuestUser', related_name='owned_groups')
@@ -51,8 +53,16 @@ class SpecialQuestGroup(PlayerGroup):
         head.save()
         return new_group
 
+    def remove(self, user):
+        """Removing the head user would delete the group. However, this is 
+        handled separately somewhere else, so no need to worry about it.
+        """
+        if user != self.head:
+            self.players.remove(user)
+        
     def __unicode__(self):
         return u"%s [%d]" % (self.name, self.players.count())
+
 
 class SpecialQuestTask(models.Model):
     name = models.CharField(max_length=200)
@@ -82,6 +92,7 @@ class SpecialQuestTask(models.Model):
 
     def __unicode__(self):
         return unicode(self.name)
+
 
 class SpecialQuestUser(Player):
     group = models.ForeignKey('SpecialQuestGroup', blank=True, default=None, null=True)
@@ -117,6 +128,7 @@ class SpecialQuestUser(Player):
         self.group = group
         self.save()
         group.players.add(self.user.get_profile())
+
 
 class SpecialQuestGame(Game):
     """ Each game must extend Game """
