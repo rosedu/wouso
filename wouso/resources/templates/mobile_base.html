@@ -26,7 +26,7 @@
             {% player_simple player %}
             {% for h in heads %}<a href="{{ h.0.link }}">{{ h.0.text }}</a>{% endfor %}
             {% if user.is_staff %}
-            <a href="{% url status %}">CPanel</a>
+            <a href="{% url status %}">Control Panel</a>
             {% endif %}
             <a href="{% url logout_view %}">{% trans "Logout" %} &raquo;</a>
         {% else %}
