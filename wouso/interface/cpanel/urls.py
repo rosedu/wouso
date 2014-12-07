@@ -47,6 +47,7 @@ upat = [
     url(r'^artifacts/(?P<group>\w+)/$', 'wouso.interface.cpanel.views.artifact_home', name='artifact_home'),
 
     url(r'^spells/$','wouso.interface.cpanel.views.spells', name='spells'),
+    url(r'^spells/switch_active/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.spell_switch', name='spell_switch_active'),
     url(r'^spells/edit_spell/(?P<pk>\d+)$','wouso.interface.cpanel.views.edit_spell',name='edit_spell'),
     url(r'^spells/add_spell/$', 'wouso.interface.cpanel.views.add_spell',name='add_spell'),
     url(r'^spells/del/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.spell_delete', name='spell_dell'),
