@@ -58,7 +58,7 @@
             {% if challenge_launched_recently %}
                 <span class="button">{% trans 'Challenged' %}</span>
             {% else %}
-                <a class="button" href="{% url challenge_launch profile.id %}">{% trans 'Challenge!' %}</a>
+                <a class="button" href="{% url challenge_launch profile.id %}" title="Challenge this player">{% trans 'Challenge!' %}</a>
             {% endif %}
         {% endifnotequal %}
 
@@ -73,7 +73,7 @@
                title="{% trans 'Invite in my Special Quest group' %}">{% trans 'Invite' %}</a>
         {% endif %}
 
-        <a class="button" href="{% url report_player profile.id%}">Report</a>
+        <a class="button" href="{% url report_player profile.id%}" title="Report this player to the game administators">Report</a>
     </div>
 
     <div class="second">{% trans 'Last seen' %}:
