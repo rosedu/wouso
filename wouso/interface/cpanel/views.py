@@ -165,6 +165,7 @@ class EditSpellView(UpdateView):
     form_class = SpellForm
     success_url = reverse_lazy('spells')
 
+
 edit_spell = permission_required('config.change_setting')(
     EditSpellView.as_view())
 
@@ -197,7 +198,7 @@ def spell_switch(request, id):
 
     spell.available = not spell.available
     spell.save()
-    
+
     return HttpResponseRedirect(reverse('spells'))
 
 
@@ -1016,7 +1017,6 @@ class RacesGroupsView(ListView):
 
 
 class RacesAdd(CreateView):
-
     model = Race
     template_name = 'cpanel/races/create.html'
     form_class = RaceForm
@@ -1026,7 +1026,6 @@ class RacesAdd(CreateView):
 
 
 class GroupsAdd(CreateView):
-
     model = PlayerGroup
     template_name = 'cpanel/races/group_create.html'
     form_class = PlayerGroupForm
@@ -1132,6 +1131,7 @@ class ActivityMonitorView(ListView):
             msg = params['message'].lower()
             objects = [o for o in objects if msg in o.message.lower()]
         return objects
+
 
 activity_monitor = staff_required(ActivityMonitorView.as_view())
 
@@ -1306,7 +1306,7 @@ def bonus(request, player_id):
 
     return render_to_response('cpanel/bonus.html',
                               {'target_player': player, 'form': form,
-                              'bonuses': bonuses, 'penalties': penalties},
+                               'bonuses': bonuses, 'penalties': penalties},
                               context_instance=RequestContext(request))
 
 
@@ -1321,42 +1321,52 @@ def fwd(request):
 def karma_view(request):
     races = Race.objects.exclude(can_play=False)
     groups = PlayerGroup.objects.exclude(parent=None).exclude(parent__can_play=False)
+
     return render_to_response('cpanel/karma.html',
-                              {'races':races, 'groups':groups},
+                              {'races': races, 'groups': groups},
                               context_instance=RequestContext(request))
 
 
 @permission_required('config.change_setting')
-def karma_group_view(request, group):
-    group_id = group
-    group = get_object_or_404(PlayerGroup, pk=group)
+def karma_group_view(request, id):
+    group = get_object_or_404(PlayerGroup, pk=id)
     players = group.players.all()
+
     if request.method == 'POST':
         form = KarmaBonusForm(request.POST, players=players)
+
         if form.is_valid():
             formula = Formula.get('bonus-karma')
+
             if formula is None:
                 messages.error(request, 'No such formula, bonus-karma')
             else:
                 for player, entry in zip(players, form.fields):
-                    # get amount of karma points for current player
+                    # Get amount of karma points for current player
                     karma_points = form.cleaned_data[entry]
-                    # if karma points are zero then skip
+
+                    # Skip if there are no karma points
                     if karma_points == 0:
                         continue
-                    # compute formula and calculate amount of bonus given
+
+                    # Compute formula and calculate amount of bonus given
                     amount = eval(formula.expression.format(**{'karma_points': karma_points}).split('=')[1])
-                    # apply scoring
-                    scoring.score(player, None, formula, external_id=request.user.get_profile().id, **{'karma_points': karma_points})
-                    # add activity (parse formula expression to get the coin from formula)
-                    add_activity(player, _(
-                        'received {amount} {coin} bonus for {karma_points} Karma Points'),
-                                amount=amount, coin=formula.expression.split('=')[0], karma_points=karma_points,
-                                reason='Bonus for Karma')
+
+                    # Apply scoring
+                    scoring.score(player, None, formula, external_id=request.user.get_profile().id,
+                                  **{'karma_points': karma_points})
+
+                    # Add activity (parse formula expression to get the coin from formula)
+                    add_activity(player, _('received {amount} {coin} bonus for {karma_points} Karma Points'),
+                                 amount=amount, coin=formula.expression.split('=')[0],
+                                 karma_points=karma_points, reason='Bonus for Karma')
+
                     messages.info(request, 'Successfully given bonus')
-            return redirect('karma_group', **{'group': group_id})
+
+            return redirect('karma_group', id=id)
     else:
         form = KarmaBonusForm(players=players)
+
     return render_to_response('cpanel/karma_group.html',
-                              {'form':form, 'group':group},
+                              {'form': form, 'group': group},
                               context_instance=RequestContext(request))

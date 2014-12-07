@@ -493,24 +493,22 @@ class CpanelViewsTest(WousoTest):
         self.assertContains(response, 'ArtifactGroup3')
 
     def test_karma_view(self):
-        race = Race.objects.create(name='Race_test_1', can_play=True)
-        group = PlayerGroup.objects.create(name='Group_test_1', parent=race)
+        race = Race.objects.create(name='Race_test', can_play=True)
+        group = PlayerGroup.objects.create(name='Group_test', parent=race)
+        data = {'races': race, 'groups': group}
 
-        response = self.client.get(reverse('karma'), 
-                                   kwargs={'races': race, 'groups': group})
+        response = self.client.get(reverse('karma'), kwargs=data)
 
-        self.assertContains(response, 'Race_test_1')
-        self.assertContains(response, 'Group_test_1')
+        self.assertContains(response, race)
+        self.assertContains(response, group)
 
     def test_karma_group_view(self):
-        race = Race.objects.create(name='Race_test_1', can_play=True)
-        group = PlayerGroup.objects.create(name='Group_test_1', parent=race)
-        player = User.objects.create(username='test_user', 
+        group = PlayerGroup.objects.create(name='Group_test')
+        player = User.objects.create(username='test_user',
                                      password='test').get_profile()
         group.players.add(player)
 
-        response = self.client.get(reverse('karma_group', 
-                                   kwargs={'group': group.id}))
+        response = self.client.get(reverse('karma_group', args=[group.id]))
 
-        self.assertContains(response, 'test_user')
-        self.assertContains(response, 'Group_test_1')       
+        self.assertContains(response, group)
+        self.assertContains(response, player)
