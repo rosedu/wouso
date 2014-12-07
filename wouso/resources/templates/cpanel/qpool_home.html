@@ -31,7 +31,7 @@
 
 {% block searchbar %}
 <form class="horizontal-form" method="get">
-    <input  type="text" name="q" value="{{ search_query }}" size="40"/>
+    <input  type="text" name="q" value="{{ search_query }}" />
     <button class="btn btn-primary" type="submit">{% trans 'Search'%}</button>
 </form>
 <hr/>
@@ -79,14 +79,14 @@
         </div>
         <br/>
 
+        <div> 
         <b>Select:</b>
         <a onclick='$(".question_select").attr("checked", true).change();' href="#">{% trans 'All' %}</a> /
         <a onclick='$(".question_select").attr("checked", false).change();' href="#">{% trans 'None' %}</a>
 
-        <br/>
-
+        <span style="display:inline-block; width: 5px;"></span>
+        
         <b>Action:</b>
-
         <select id="q_actions" disabled="true">
             <option selected value="">-- Select action --</option>
             <optgroup label="-- Add tag --" id="tag">
@@ -99,7 +99,7 @@
                 <option value="inactive">Set inactive</option>
             </optgroup>
         </select>
-
+        <div/>
         <br/> <br/>
 
         <table class="table table-bordered table-hover table-condensed">

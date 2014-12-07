@@ -16,9 +16,10 @@
 
 {% block sectioncontent %}
 <form class="pull-left" action="{% url manage_fwd %}" method="post">
-    {% player_input 'player' %}
+    {% player_input 'player' %} 
     {% csrf_token %}
-    <button class="btn btn-info" type="submit">{% trans 'Search' %}</button>
+    <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
+    <hr/>
 </form>
 
 <table class="table table-bordered table table-hover">
