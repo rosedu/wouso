@@ -1,7 +1,10 @@
+import logging
 from django.utils.translation import ugettext as _
 from wouso.core import signals
 from wouso.core.magic.models import Artifact, ArtifactGroup, SpellHistory, NoArtifactLevel
 from wouso.core.game import get_games
+from django.db import models
+from django.contrib.auth.models import User
 
 class DefaultGod:
     """ A basic God implementation and also the base class for other gods.
@@ -264,5 +267,70 @@ def post_expire(sender, **kwargs):
         psdue.player.points = scoring.real_points(psdue.player)
         psdue.player.save()
 
+
+def give_start_points_to_player(player):
+    """
+    Give starting points to player right after being creating player.
+    """
+    from wouso.core.scoring.sm import score
+    from wouso.core.scoring.sm import InvalidFormula
+    try:
+        score(player, None, 'start-points')
+    except InvalidFormula:
+        logging.error('Formula start points is missing')
+
+def add_player_to_default_groups(player):
+    """
+    Add player to default starting groups right after creating player.
+    """
+    from wouso.core.config.models import ChoicesSetting
+    from wouso.core.user.models import PlayerGroup, Race
+    try:
+        default_group = PlayerGroup.objects.get(pk=int(ChoicesSetting.get('default_group').get_value()))
+    except (PlayerGroup.DoesNotExist, ValueError):
+        pass
+    else:
+        default_group.players.add(player)
+
+    try:
+        default_race = Race.objects.get(pk=int(ChoicesSetting.get('default_race').get_value()))
+    except (Race.DoesNotExist, ValueError):
+        pass
+    else:
+        player.race = default_race
+        player.save()
+
+def set_player_name_info(player):
+    """
+    Set player names when user/player is created or updated.
+    """
+    from django.conf import settings
+    player.nickname = player.user.username
+    display_name = unicode(settings.DISPLAY_NAME).format(first_name=player.user.first_name,
+                                                last_name=player.user.last_name,
+                                                nickname=player.nickname).strip()
+    player.full_name = display_name
+    player.save()
+
+def player_post_save_cb(sender, **kwargs):
+    """
+    Callback function invoked after player save.
+    """
+    from wouso.core.user.models import Player
+    created = kwargs.get('created')
+    instance = kwargs.get('instance')
+    player, new = Player.objects.get_or_create(user=instance)
+
+    # If save action was for a newly created record, give starting points
+    # according to start-points formula and add to default groups.
+    if created == True:
+        give_start_points_to_player(player)
+        player, new = Player.objects.get_or_create(user=instance)
+        add_player_to_default_groups(player)
+        player, new = Player.objects.get_or_create(user=instance)
+    set_player_name_info(player)
+
+
 signals.postCast.connect(post_cast)
 signals.postExpire.connect(post_expire)
+models.signals.post_save.connect(player_post_save_cb, User)
