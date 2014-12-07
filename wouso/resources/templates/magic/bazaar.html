@@ -27,37 +27,39 @@
         <br/>
     <table>
     {% for s in spells %}
-    <div style="clear:both">
-        <tr>
-            <td width="100%">
-                <h3>{% artifact s %}{{ s.title }}</h3>
-                <p>{{ s.description }}</p>
-                </div>
-            </td>
-            <td nowrap="nowrap">
-                {% if s.due_days == 1 %}
-                    {% trans '1 day' %}
-                {% else %}
-                    {% if s.due_days > 1 %}
-                        {{ s.due_days }} {% trans 'days' %}
-                    {% endif %}
-                {% endif %}
-            </td>
-            <td align="right" >
-                {% coin_amount s.price 'gold' %}
-            </td>
-            <td>
-                {% if user.get_profile.level_no >= s.level_required %}
-                <a href="{% url bazaar_buy s.id %}" class="button">{% trans 'Buy' %}</a>
-                {% else %}
-                <span class="button">{% blocktrans with s.level_required as level %}Level {{level}} required{% endblocktrans %}</span>
-                {% endif %}
-            </td>
-            <td>
-                {% spell_stock player s %}
-            </td>
-        </tr>
-    </div>
+        {% if s.available %}
+            <div style="clear:both">
+                <tr>
+                    <td width="100%">
+                        <h3>{% artifact s %}{{ s.title }}</h3>
+                        <p>{{ s.description }}</p>
+                        </div>
+                    </td>
+                    <td nowrap="nowrap">
+                        {% if s.due_days == 1 %}
+                            {% trans '1 day' %}
+                        {% else %}
+                            {% if s.due_days > 1 %}
+                                {{ s.due_days }} {% trans 'days' %}
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td align="right" >
+                        {% coin_amount s.price 'gold' %}
+                    </td>
+                    <td>
+                        {% if user.get_profile.level_no >= s.level_required %}
+                        <a href="{% url bazaar_buy s.id %}" class="button">{% trans 'Buy' %}</a>
+                        {% else %}
+                        <span class="button">{% blocktrans with s.level_required as level %}Level {{level}} required{% endblocktrans %}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% spell_stock player s %}
+                    </td>
+                </tr>
+            </div>
+        {% endif %}
     {% empty %}
         {% trans 'Nothing' %}.
     {% endfor %}
