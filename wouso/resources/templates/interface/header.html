@@ -9,7 +9,7 @@
             Impersonated by {{ user.real_user }} <a href="{% url impersonate_clear %}">clear</a>
         {% endif %}
         {% if perms.config.change_setting %}
-        <a id="head-cpanel" href="{% url status %}">CPanel</a>
+        <a id="head-cpanel" href="{% url status %}">Control Panel</a>
         {% endif %}
 
         <a id="head-logout" href="{% url logout_view %}" onclick="remove_storage()">{% trans "Logout" %} &raquo;</a>
