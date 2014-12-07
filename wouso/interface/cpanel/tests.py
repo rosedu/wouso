@@ -491,3 +491,26 @@ class CpanelViewsTest(WousoTest):
         self.assertContains(response, '5 total questions')
         self.assertContains(response, 'No quest active. Total: 5')
         self.assertContains(response, 'ArtifactGroup3')
+
+    def test_karma_view(self):
+        race = Race.objects.create(name='Race_test_1', can_play=True)
+        group = PlayerGroup.objects.create(name='Group_test_1', parent=race)
+
+        response = self.client.get(reverse('karma'), 
+                                   kwargs={'races': race, 'groups': group})
+
+        self.assertContains(response, 'Race_test_1')
+        self.assertContains(response, 'Group_test_1')
+
+    def test_karma_group_view(self):
+        race = Race.objects.create(name='Race_test_1', can_play=True)
+        group = PlayerGroup.objects.create(name='Group_test_1', parent=race)
+        player = User.objects.create(username='test_user', 
+                                     password='test').get_profile()
+        group.players.add(player)
+
+        response = self.client.get(reverse('karma_group', 
+                                   kwargs={'group': group.id}))
+
+        self.assertContains(response, 'test_user')
+        self.assertContains(response, 'Group_test_1')       
