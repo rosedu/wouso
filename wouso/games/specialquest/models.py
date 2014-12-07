@@ -54,10 +54,8 @@ class SpecialQuestGroup(PlayerGroup):
         return new_group
 
     def remove(self, user):
-        """
-        Removing the head user would delete the group
-        However, this is handled separately somewhere else 
-        so no need to worry about it
+        """Removing the head user would delete the group. However, this is 
+        handled separately somewhere else, so no need to worry about it.
         """
         if user != self.head:
             self.players.remove(user)
