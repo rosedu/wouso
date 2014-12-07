@@ -2,9 +2,9 @@ from django.contrib.syndication.views import Feed
 from wouso.core.qpool.models import Question
 
 class LatestQuestionsFeed(Feed):
-    title = "WoUSO question of the day"
+    title = "WoUSO Question of the Day"
     link = "/qotdfeed/"
-    description = "WoUSO question of the day"
+    description = "WoUSO Question of the Day"
 
     def items(self):
         #return Question.objects.order_by('-date')[:5]

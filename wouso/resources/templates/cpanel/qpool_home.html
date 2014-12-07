@@ -43,7 +43,7 @@
         <li {% if cat == c.name %}class="active"{% endif %}>
             <!-- TODO: find better approach -->
             {% if c.name == 'qotd' %}
-                <a href="{% url qpool_home c.name %}">Question of the day</a>
+                <a href="{% url qpool_home c.name %}">Question of the Day</a>
             {% elif c.name == 'specialchallenge' %}
                 <a href="{% url qpool_home c.name %}">Special Challenge</a>
             <!-- TODO -->
