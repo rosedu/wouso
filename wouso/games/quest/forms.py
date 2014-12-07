@@ -1,9 +1,9 @@
-from django.forms import CharField, Form, ModelForm, Textarea
+from django.forms import CharField, Form, ModelForm, TextInput
 from models import Quest
 from bootstrap3_datetime import widgets
 
 class QuestForm(Form):
-    answer = CharField(max_length=4000, widget=Textarea)
+    answer = CharField(max_length=4000, widget=TextInput)
 
 class QuestCpanel(ModelForm):
     class Meta:
