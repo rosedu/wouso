@@ -39,12 +39,12 @@ upat = [
     url(r'^questions/action/$', 'wouso.interface.cpanel.views.qpool_actions', name='qpool_actions'),
 
 
-    url(r'^artifact/$', 'wouso.interface.cpanel.views.artifact_home', name='artifact_home'),
-    url(r'^artifact/user_set/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.artifactset', name='artifact_set'),
-    url(r'^artifact/new/$', 'wouso.interface.cpanel.views.artifact_edit', name='artifact_new'),
-    url(r'^artifact/edit/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.artifact_edit', name='artifact_edit'),
-    url(r'^artifact/del/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.artifact_del', name='artifact_del'),
-    url(r'^artifact/(?P<group>\w+)/$', 'wouso.interface.cpanel.views.artifact_home', name='artifact_home'),
+    url(r'^artifacts/$', 'wouso.interface.cpanel.views.artifact_home', name='artifact_home'),
+    url(r'^artifacts/user_set/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.artifactset', name='artifact_set'),
+    url(r'^artifacts/new/$', 'wouso.interface.cpanel.views.artifact_edit', name='artifact_new'),
+    url(r'^artifacts/edit/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.artifact_edit', name='artifact_edit'),
+    url(r'^artifacts/del/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.artifact_del', name='artifact_del'),
+    url(r'^artifacts/(?P<group>\w+)/$', 'wouso.interface.cpanel.views.artifact_home', name='artifact_home'),
 
     url(r'^spells/$','wouso.interface.cpanel.views.spells', name='spells'),
     url(r'^spells/edit_spell/(?P<pk>\d+)$','wouso.interface.cpanel.views.edit_spell',name='edit_spell'),
