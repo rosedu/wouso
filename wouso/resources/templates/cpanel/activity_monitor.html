@@ -1,5 +1,6 @@
 {% extends 'cpanel/index.html' %}
 
+{% load bootstrap %}
 {% load user %}
 {% load i18n %}
 {% load django_bootstrap_breadcrumbs %}
@@ -27,10 +28,10 @@
 {% block sectioncontent %}
 
 <h3>Filters</h3>
-<form action="" method="get" enctype="multipart/form-data">
-    <input name="message" placeholder="message query"><br>
-    <input name="user_from" placeholder="user_from query"><br>
-    <input name="user_to" placeholder="user_to query"><br><br>
+<form class="form-horizontal" action="" method="get" enctype="multipart/form-data">
+    <input class="form-control" name="message" placeholder="message query"><br>
+    <input class="form-control" name="user_from" placeholder="user_from query"><br>
+    <input class="form-control" name="user_to" placeholder="user_to query"><br><br>
     <input type="submit" value="Submit" class="btn btn-primary" />
 </form>
 

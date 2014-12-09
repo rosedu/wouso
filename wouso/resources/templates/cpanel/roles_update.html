@@ -33,8 +33,8 @@
     </table>
 </div>
 
-<form action="" method="post">
-   {% player_input 'player' role.id %}
+<form class="form-inline" role="form" action="" method="post">
+    <input  class="form-control" type="player_input" name="player" value="{{ role.id }}">
    {% csrf_token %}
    <button type="submit" class="btn btn-primary">
       <span class="glyphicon glyphicon-plus"></span>{% trans 'Add' %}

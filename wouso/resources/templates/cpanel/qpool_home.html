@@ -30,8 +30,8 @@
 {% block sectioncontent %}
 
 {% block searchbar %}
-<form class="horizontal-form" method="get">
-    <input  type="text" name="q" value="{{ search_query }}" size="40"/>
+<form class="form-inline" role="form" method="get">
+    <input  class="form-control" type="text" name="q" value="{{ search_query }}" size="40"/>
     <button class="btn btn-primary" type="submit">{% trans 'Search'%}</button>
 </form>
 <hr/>

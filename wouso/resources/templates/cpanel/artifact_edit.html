@@ -1,5 +1,6 @@
 {% extends 'cpanel/index.html' %}
 {% load artifacts %}
+{% load bootstrap %}
 {% load i18n %}
 {% load django_bootstrap_breadcrumbs %}
 
@@ -23,9 +24,9 @@
 
 {% block sectioncontent %}
 
-<form method="post" enctype="multipart/form-data">
+<form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
 <table>
-    {{ form }}
+	{{ form|bootstrap_horizontal }}
 </table>
 <div class="actions">
     <button onclick="history.back(); return false;" class="btn btn-warning">Cancel</button>
