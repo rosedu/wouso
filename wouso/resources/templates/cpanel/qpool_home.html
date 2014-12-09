@@ -79,7 +79,7 @@
         </div>
         <br/>
 
-        <div> 
+        <div class="form-inline"> 
         <b>Select:</b>
         <a onclick='$(".question_select").attr("checked", true).change();' href="#">{% trans 'All' %}</a> /
         <a onclick='$(".question_select").attr("checked", false).change();' href="#">{% trans 'None' %}</a>
@@ -87,7 +87,7 @@
         <span style="display:inline-block; width: 5px;"></span>
         
         <b>Action:</b>
-        <select id="q_actions" disabled="true">
+        <select class="form-control" id="q_actions" disabled="true">
             <option selected value="">-- Select action --</option>
             <optgroup label="-- Add tag --" id="tag">
                 {% for t in category.tag_set.all %}
