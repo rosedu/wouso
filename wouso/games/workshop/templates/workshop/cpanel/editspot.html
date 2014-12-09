@@ -59,8 +59,8 @@
 
         <p><strong>Total:</strong> {{ semigroup.players.count }}.</p>
 
-        <form class="horizontal-form" action="?semigroup={{semigroup.id}}" method="post">
-            {% player_input 'player' semigroup.id %}
+        <form class="form-inline" action="?semigroup={{semigroup.id}}" method="post">
+            <input  class="form-control" type="player_input" name="player" value="{{semigroup.id}}"/>
             {% csrf_token %}
             <button class="btn btn-primary" type="submit">
                 <span class="glyphicon glyphicon-plus"></span>{% trans 'Add' %}

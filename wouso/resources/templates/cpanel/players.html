@@ -15,8 +15,8 @@
 {% endblock %}
 
 {% block sectioncontent %}
-<form class="pull-left" action="{% url manage_fwd %}" method="post">
-    {% player_input 'player' %} 
+<form class="pull-left form-inline" role="form" action="{% url manage_fwd %}" method="post">
+    <input class="form-control" type="text" name="player" value="{{ player_input}}">
     {% csrf_token %}
     <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
     <hr/>
