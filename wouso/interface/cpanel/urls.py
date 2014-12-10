@@ -39,6 +39,8 @@ upat = [
     url(r'^qpool/set_tag/$', 'wouso.interface.cpanel.views.qpool_settag', name='qpool_set_tag'),
     url(r'^qpool/action/$', 'wouso.interface.cpanel.views.qpool_actions', name='qpool_actions'),
 
+    url(r'^qpool/add_question/$', 'wouso.interface.cpanel.views.add_question', name='add_question'),
+
 
     url(r'^artifact/$', 'wouso.interface.cpanel.views.artifact_home', name='artifact_home'),
     url(r'^artifact/user_set/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.artifactset', name='artifact_set'),

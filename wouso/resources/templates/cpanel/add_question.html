@@ -1,0 +1,195 @@
+{% extends 'cpanel/qpool_home.html' %}
+
+{% load i18n %}
+{% load bootstrap %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %}Add question{% endblock %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Add question" "add_question" %}
+{% endblock %}
+
+{% block bottomscripts %}
+    <script type="text/javascript" src="{{ basepath }}/static/js/cpanel/qpool/add_question.js/"></script>
+    <script src="{{ basepath }}/static/js/jquery-1.11.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/cpanel-qpool.css" />
+
+    <script>
+        function show(option) {
+            if (option.value == 'normal') {
+                $('.normal').each(function() {
+                    this.style.display = 'block';
+                });
+                $('.rich').each(function() {
+                    this.style.display = 'none';
+                });
+            }
+            else if (option.value == 'rich') {
+                $('.rich').each(function() {
+                    this.style.display = 'block';
+                });
+                $('.normal').each(function() {
+                    this.style.display = 'none';
+                });
+            }
+        }
+
+        function switch_schedule(option) {
+            if (option.value == 'qotd') {
+                $('#schedule')[0].style.display = 'block';
+            }
+            else {
+                $('#schedule')[0].style.display = 'none';
+            }
+        }
+    </script>
+{% endblock %}
+
+<!-- Disable search bar. -->
+{% block searchbar %}
+{% endblock %}
+
+{% block subsectioncontent %}
+    <div class="col-md-10">
+
+        <form class="form-horizontal" method="post">
+            <p class="formfield">
+                <label>Select question text type</label>
+                <select name="text_type" onclick="show(this)">
+                    <option selected value="normal">Normal</option>
+                    <option value="rich">Rich</option>
+                </select>
+            </p>
+
+            <div class="formfield normal">
+                <label>Insert question text</label>
+                {{ form.text }}
+                <hr />
+            </div>
+
+            <div class="formfield rich" style="display: none">
+                <label>Insert question rich text</label>
+                {{ form.rich_text }}
+                <hr />
+            </div>
+
+            <p class="formfield">
+                <label for="select-category">Select category</label>
+                <select name="category" id="select-category" onclick="switch_schedule(this)">
+                    {% for c in categories %}
+                    <option value="{{ c.1 }}">{{ c.0 }}</option>
+                    {% endfor %}
+                </select>
+            </p>
+
+            <div class="formfield" id="schedule">
+                <label>Day scheduled (dd.mm.yyyy)</label>
+                {{ form.schedule }}
+                <br />
+            </div>
+
+            <p class="formfield">
+                <label for="select-tags">Choose tags</label>
+                <select multiple name="tags" id="select-tags">
+                </select>
+            </p>
+
+            <p class="formfield">
+                <label>Question type</label>
+                {{ form.answer_type }}
+            </p>
+            <hr />
+
+            <!--TODO: Write a custom templatetag in order to iterate from 1 to {{ max_answers }} in {{ form.answer_%d }}-->
+
+            <!--Normal Answers-->
+            <div class="formfield normal">
+                {{ form.answer_1 }}
+                <label class="mark">Answer #1:</label>
+                <label for="checkbox_1" class="mark">Mark correct</label>
+                <input id="checkbox_1" type="checkbox" name="correct_1"/>
+                <label class="mark">Mark active</label>
+                <input type="checkbox" name="active_1"/>
+            </div>
+
+            <div class="formfield normal">
+                {{ form.answer_2 }}
+                <label class="mark">Answer #2:</label>
+                <label for="checkbox_2" class="mark">Mark correct</label>
+                <input id="checkbox_2" type="checkbox" name="correct_2"/>
+                <label class="mark">Mark active</label>
+                <input type="checkbox" name="active_2"/>
+            </div>
+
+            <div class="formfield normal">
+                {{ form.answer_3 }}
+                <label class="mark">Answer #3:</label>
+                <label for="checkbox_3" class="mark">Mark correct</label>
+                <input id="checkbox_3" type="checkbox" name="correct_3"/>
+                <label class="mark">Mark active</label>
+                <input type="checkbox" name="active_3"/>
+            </div>
+
+            <div class="formfield normal">
+                {{ form.answer_4 }}
+                <label class="mark">Answer #4:</label>
+                <label for="checkbox_4" class="mark">Mark correct</label>
+                <input id="checkbox_4" type="checkbox" name="correct_4"/>
+                <label class="mark">Mark active</label>
+                <input type="checkbox" name="active_4"/>
+            </div>
+
+            <!--Rich Answers-->
+            <div class="formfield rich" style="display: none">
+                <label class="mark">Answer #1:</label>
+                <label for="rich_checkbox_1" class="mark">Mark correct</label>
+                <input id="rich_checkbox_1" type="checkbox" name="rich_correct_1"/>
+                <label class="mark">Mark active</label>
+                <input type="checkbox" name="rich_active_1"/>
+                {{ form.rich_answer_1 }}
+            </div>
+
+            <div class="formfield rich" style="display: none">
+                <label class="mark">Answer #2:</label>
+                <label for="rich_checkbox_2" class="mark">Mark correct</label>
+                <input id="rich_checkbox_2" type="checkbox" name="rich_correct_2"/>
+                <label class="mark">Mark active</label>
+                <input type="checkbox" name="rich_active_2"/>
+                {{ form.rich_answer_2 }}
+            </div>
+
+            <div class="formfield rich"style="display: none">
+                <label class="mark">Answer #3:</label>
+                <label for="rich_checkbox_3" class="mark">Mark correct</label>
+                <input id="rich_checkbox_3" type="checkbox" name="rich_correct_3"/>
+                <label class="mark">Mark active</label>
+                <input type="checkbox" name="rich_active_3"/>
+                {{ form.rich_answer_3 }}
+            </div>
+
+            <div class="formfield rich"style="display: none">
+                <label class="mark">Answer #4:</label>
+                <label for="rich_checkbox_4" class="mark">Mark correct</label>
+                <input id="rich_checkbox_4" type="checkbox" name="rich_correct_4"/>
+                <label class="mark">Mark active</label>
+                <input type="checkbox" name="rich_active_4"/>
+                {{ form.rich_answer_4 }}
+            </div>
+
+            <br/>
+
+            <p class="formfield">
+                <label>Mark question as active</label>
+                {{ form.active }}
+            </p>
+            <br />
+
+            <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
+            <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
+            <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
+
+            {% csrf_token %}
+        </form>
+    </div>
+{% endblock %}

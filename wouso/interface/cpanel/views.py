@@ -40,7 +40,7 @@ from wouso.middleware.impersonation import ImpersonateMiddleware
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, \
     AnswerForm, EditReportForm, RaceForm, PlayerGroupForm, RoleForm, \
-    StaticPageForm, NewsForm, KarmaBonusForm
+    StaticPageForm, NewsForm, KarmaBonusForm, AddQuestionForm
 from forms import FormulaForm, TagForm
 
 
@@ -388,6 +388,30 @@ class QPoolNewView(FormView):
 
 
 qpool_new = permission_required('config.change_setting')(QPoolNewView.as_view())
+
+
+class AddQuestionView(FormView):
+    form_class = AddQuestionForm
+    template_name = 'cpanel/add_question.html'
+
+    def get_form_kwargs(self):
+        return dict(data=self.request.POST)
+
+    def form_valid(self, form):
+        new_question = form.save()
+        return redirect('qpool_home', cat=new_question.category.name)
+
+    def get_context_data(self, **kwargs):
+        context = super(AddQuestionView, self).get_context_data(**kwargs)
+        max_answers = self.form_class.noas
+        categories = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
+        context['categories'] = categories
+        context['max_answers'] = max_answers
+        return context
+
+
+add_question = permission_required('config.change_setting')(
+    AddQuestionView.as_view())
 
 
 class QPoolAddAnswerView(UpdateView):
