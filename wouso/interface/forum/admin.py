@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import Category, Forum, Topic, Post
+from wouso.interface.forum.models import Category, Forum, Topic, Post
 
 
 admin.site.register(Category)

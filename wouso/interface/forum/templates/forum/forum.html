@@ -1,7 +1,6 @@
 {% extends "forum/forum_base.html" %}
 
 {% load i18n %}
-
 {% block title %}
 {% trans "Forums" %} - {{ block.super }}
 {% endblock %}
@@ -17,9 +16,6 @@
 {% endblock %}
 
 {% block content %}
-<div class="page-header">
-    <h1>{% trans "Forums" %}</h1>
-</div>
 <table class="table">
     <thead>
     <tr>
@@ -37,7 +33,7 @@
             <td style="width: 70%;">
                 <a href="{% url topic topic.id %}">{{ topic.name }}</a>
             </td>
-            <td>{{ topic.last_post.user.username }}</td>
+            <td>{{ topic.last_post.user.user }}</td>
             <td>{{ topic.count_posts }}</td>
             <td>0</td>
         </tr>

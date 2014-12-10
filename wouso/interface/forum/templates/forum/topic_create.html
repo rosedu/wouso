@@ -1,42 +1,28 @@
-{% extends "base.html" %}
+{% extends "forum/forum_base.html" %}
 
+{% load user %}
 {% load i18n %}
-
+{% load bootstrap %}
 {% block title %}
-{% trans "Forums" %} - {{block.super}}
+{% trans "Forums" %} - {{ block.super }}
 {% endblock %}
 
 {% block breadcrumb %}
 <ol class="breadcrumb">
-  <li><a href="{% url overview %}">{% trans "Forums" %}</a></li>
-  <li><a href="{% url overview %}#{{forum.category.id}}">{{forum.category.name}}</a> </li>
-  <li><a href="{% url forum forum.id %}">{{forum.name}}</a></li>
-  <li class="active">{% trans "Create topic" %}</li>
+    <li><a href="{% url overview %}">{% trans "Forums" %}</a></li>
+    <li><a href="{% url overview %}#{{ forum.category.id }}">{{ forum.category.name }}</a></li>
+    <li><a href="{% url forum forum.id %}">{{ forum.name }}</a></li>
+    <li class="active">{% trans "Create topic" %}</li>
 </ol>
 {% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <h1>{% trans "Forums" %}</h1>
-</div>
 <div class="row">
-  <div class="col-md-3">
-    <div class="thumbnail pull-left" style="margin-right: 15px;">
-      <img src="http://placehold.it/64x64" alt="avatar">
-    </div>
-    <div>
-      <p>{{user.username}}</p>
-    </div>
-  </div>
-  <div class="col-md-9">
-     <form method="post" role="form" class="form-horizontal" action="">
-        <table>
-        {{ form}}
-        </table>
+    <form method="post" role="form" class="form-horizontal" action="{% url topic_create forum.id %}">
+        {{ form|bootstrap_horizontal }}
+        {{ form.media }}
         {% csrf_token %}
-        <!--<a class="btn btn-warning" href="{% url list_quizzes %}">{% trans 'Back' %}</a>-->
         <button class="btn btn-primary" type="submit">{% trans 'Submit' %}</button>
     </form>
-  </div>
 </div>
 {% endblock %}

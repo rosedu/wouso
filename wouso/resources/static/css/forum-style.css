@@ -1,0 +1,33 @@
+div.first-line {
+    /*margin-top: 4px;*/
+    padding-right: 10em;
+    font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    font-size: 0.8em;
+}
+div.first-line a {
+    text-decoration: none;
+    border: 1px solid #aaa;
+    border-bottom: none;
+    background-color: #eee;
+    /*padding: 0 5px;*/
+    color: #444;
+}
+div.header-player-info {
+    /*padding-top: 5px;*/
+    margin-right: 100px;
+    text-align: right;
+}
+div.second-info {
+    padding-top: 10px;
+    display: inline-block;
+}
+div.second {
+    color: #444;
+    width: 275px;
+    padding-top: 22px;;
+}
+div#logo {
+    height: 100px;
+    width: 260px;
+    background: url(../img/logo.png) no-repeat;
+}

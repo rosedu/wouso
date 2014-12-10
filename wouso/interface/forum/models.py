@@ -5,7 +5,7 @@ from wouso.core.user.models import Player
 
 class ForumUser(Player):
     def __unicode__(self):
-        return self.full_name
+        super(ForumUser, self).__init__()
 
 
 Player.register_extension('top', ForumUser)
@@ -25,18 +25,16 @@ class Forum(models.Model):
     description = models.TextField(blank=True)
     is_closed = models.BooleanField(default=False)
 
-    @property
-    def last_topic(self):
+    def get_latest_topic(self):
         if self.topics.count() > 0:
             return self.topics.all()[0]
 
         return None
 
-    @property
-    def last_poster(self):
-        last_topic = self.last_topic()
-        if last_topic():
-            return last_topic.last_post.user.full_name
+    def get_latest_poster(self):
+        latest_topic = self.get_latest_topic()
+        if latest_topic:
+            return latest_topic.last_post.user.user
 
         return '-'
 

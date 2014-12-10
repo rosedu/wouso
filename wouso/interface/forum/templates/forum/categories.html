@@ -1,27 +1,22 @@
 {% extends "forum/forum_base.html" %}
 
 {% load i18n %}
+
 {% block title %}
 {% trans "Forums" %} - {{block.super}}
 {% endblock %}
 
 {% block breadcrumb %}
 <ol class="breadcrumb">
-  <li class="active">{% trans "Forums" %}</li>
+    <li class="active">{% trans "Forums" %}</li>
 </ol>
 {% endblock %}
 
 {% block content %}
-{% block sidebar %}
-{% endblock%}
-
-<div class="page-header">
-    <h1>{% trans "Forums" %}</h1>
-</div>
 <table class="table">
     {% for category in category_list %}
     <thead>
-            <tr>
+        <tr>
             <th colspan="2">
                 <span class=" glyphicon glyphicon-chevron-right"></span>
                 <a name="{{ category.id }}">{{ category.name }}</a>

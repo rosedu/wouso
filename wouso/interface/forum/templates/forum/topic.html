@@ -1,0 +1,45 @@
+{% extends "forum/forum_base.html" %}
+
+{% load i18n %}
+{% load user %}
+
+{% block title %}
+{% trans "Forums" %} - {{ block.super }}
+{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li><a href="{% url overview %}">{% trans "Forums" %}</a></li>
+    <li><a href="{% url overview %}#{{ topic.forum.category.id }}">{{ topic.forum.category.name }}</a></li>
+    <li><a href="{% url forum topic.forum.id %}">{{ topic.forum.name }}</a></li>
+    <li class="active">{{ topic.name }}</li>
+</ol>
+{% endblock %}
+
+{% block content %}
+<ul class="media-list">
+{% for post in topic.posts.all %}
+    <li class="media">
+        <a class="pull-left" href="{% url player_profile post.user.user.id %}">
+            <img src="{% player_avatar post.user %}" alt="{{ post.user.user }}" style="width: 64px; height: 64px">
+        </a>
+        <div class="media-body">
+            <h4 class="media-heading">{{ post.user.user }}</h4>
+            {{ post.text|safe }}
+            <div style="clear: both"></div>
+            <p class="pull-right">
+                <small><a href="#{{ forloop.counter }}" name="{{ forloop.counter }}">#{{ forloop.counter }}</a></small>
+            </p>
+            <p class="pull-right"><small>{{ post.created }}</small></p>
+        </div>
+    </li>
+    <hr/>
+{% endfor %}
+</ul>
+
+{% if not topic.forum.is_closed or user.is_staff %}
+    <p><a href="{% url post_create topic.id %}" class="btn btn-primary">{% trans "Create post" %}</a></p>
+{% else %}
+    <p>{% trans "This forum is closed, only admins can create and post here." %}
+{% endif %}
+{% endblock %}
