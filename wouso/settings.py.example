@@ -158,6 +158,7 @@ INSTALLED_APPS = [
 
     'wouso.interface',
     'wouso.interface.cpanel',
+    'wouso.interface.forum',
     'wouso.interface.top',
     'wouso.interface.activity',
     'wouso.interface.apps.pages',
