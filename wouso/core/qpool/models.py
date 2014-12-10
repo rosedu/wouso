@@ -155,7 +155,7 @@ class Answer(models.Model):
     rich_text = RichTextField()
     explanation = models.TextField(null=True, default='', blank=True)
     correct = models.BooleanField()
-    active = models.BooleanField()
+    active = models.BooleanField(default=True)
 
     def __unicode__(self):
         return self.text if self.text else self.rich_text
