@@ -36,6 +36,8 @@ class GroupHistory(ObjectHistory):
         tot = len(hs)
         return [(tot - i, h.position) for (i,h) in enumerate(hs)]
 
+#class TopGroup(ObjectHistory, PlayerGroup)
+
 class TopUser(ObjectHistory, Player):
     _history = None
 
@@ -231,6 +233,10 @@ class History(models.Model): # TODO: deprecate (maybe), check if NewHistory cove
 
 
 class Top(App):
+    @property
+    def poz(self):
+        return 5
+    
     @classmethod
     def get_sidebar_widget(kls, context):
         top5 = TopUser.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)

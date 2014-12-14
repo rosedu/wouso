@@ -29,7 +29,7 @@ class SpecialQuestGroup(PlayerGroup):
 
     @property
     def members(self):
-        return [p.get_extension(SpecialQuestUser) for p in self.players.all()]
+        return [p.get_extension(SpecialQuestUser) for p in self.players.all()[1:]]
 
     @property
     def completed_tasks(self):

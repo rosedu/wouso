@@ -37,6 +37,18 @@ class GroupsView(ListView):
 
 groups = permission_required('specialquest.change_specialquestuser')(GroupsView.as_view())
 
+class GroupEditView(ListView):
+    model = SpecialQuestGroup
+    template_name = 'specialquest/cpanel_group_edit.html'
+    context_object_name = 'editgroup'
+
+    def get_context_data(self, **kwargs):
+        context = super(GroupEditView, self).get_context_data(**kwargs)
+        context.update({'module': 'specialquest'})
+        return context
+
+editgroup = permission_required('specialquest.change_specialquestuser')(GroupEditView.as_view())
+
 @permission_required('specialquest.change_specialquestuser')
 def edit(request, id=None):
     if id is not None:
@@ -178,6 +190,26 @@ def group_delete(request, group):
 
 
 @permission_required('specialquest.change_specialquestuser')
+def group_edit(request, group):
+
+    group = get_object_or_404(SpecialQuestGroup, id=group)
+    
+
+    #form = TaskForm(instance=task)
+
+    #if request.method == 'POST':
+        #form = TaskForm(request.POST, instance=task)
+        #if form.is_valid():
+         #   form.save()
+         #   return HttpResponseRedirect(reverse('wouso.games.specialquest.cpanel.home'))
+
+    return render_to_response('specialquest/cpanel_group_edit.html',
+                              {'group': group,
+                              # 'form': form,
+                               'module': 'specialquest'},
+                              context_instance=RequestContext(request))
+
+@permission_required('specialquest.change_specialquestuser')
 def group_drop_player(request, group, player):
     group = get_object_or_404(SpecialQuestGroup, id=group)
     player = get_object_or_404(SpecialQuestUser, id=player)
@@ -189,4 +221,4 @@ def group_drop_player(request, group, player):
     player.group = None
     player.save()
 
-    return redirect('specialquest_group', group_id=group.id)
+    return redirect('specialquest_cpanel_group_edit', group.id)
