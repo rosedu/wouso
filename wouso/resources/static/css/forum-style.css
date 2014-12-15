@@ -1,3 +1,4 @@
+/* Top bar */
 div.first-line {
     text-align: right;
     margin-top: 4px;
@@ -12,6 +13,9 @@ div.first-line a {
     color: #444;
 }
 div.player-info {
+    width: 275px;
+}
+div.player-info-text {
     text-align: right;
     display: inline-block;
 }
@@ -32,4 +36,9 @@ img.avatar {
 .avatar-med {
     width: 64px;
     height: 64px;
+}
+div.post {
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    padding: 5px;
 }

@@ -1,9 +1,10 @@
 {% load user %}
 {% load i18n %}
 <a class="pull-left" href="{% url player_profile post.user.user.id %}">
-    <img class="media-object" src="{% player_avatar post.user %}" alt="{{ post.user.user }}" style="width: 64px; height: 64px" />
+    <img class="media-object avatar avatar-med" src="{% player_avatar post.user %}" alt="{{ post.user.user }}" />
 </a>
 <div class="media-body">
+    <div class="post">
     <h4 class="media-heading">
         <a href="{% url player_profile post.user.user.id %}">
             {{ post.user.user }}
@@ -18,6 +19,7 @@
         {{ post.created }} |
         &nbsp;<a class="pull-right" href="{% url post_create topic.id post.id %}">{% trans 'Reply' %}</a></p>
     </div>
+        </div>
     {% if post.replies %}
         {% for reply in post.replies.all %}
             <!-- Nested media object -->

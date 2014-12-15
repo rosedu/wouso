@@ -8,6 +8,7 @@
         {% if user.real_user %}
             Impersonated by {{ user.real_user }} <a href="{% url impersonate_clear %}">clear</a>
         {% endif %}
+        <a id="head-forum" href="{% url forums_overview %}">Forum</a>
         {% if perms.config.change_setting %}
         <a id="head-cpanel" href="{% url status %}">CPanel</a>
         {% endif %}

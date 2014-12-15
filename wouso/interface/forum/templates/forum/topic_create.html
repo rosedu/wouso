@@ -9,8 +9,8 @@
 
 {% block breadcrumb %}
 <ol class="breadcrumb">
-    <li><a href="{% url overview %}">{% trans "Forums" %}</a></li>
-    <li><a href="{% url overview %}#{{ forum.category.id }}">{{ forum.category.name }}</a></li>
+    <li><a href="{% url forums_overview %}">{% trans "Forums" %}</a></li>
+    <li><a href="{% url forums_overview %}#{{ forum.category.id }}">{{ forum.category.name }}</a></li>
     <li><a href="{% url forum forum.id %}">{{ forum.name }}</a></li>
     <li class="active">{% trans "Create topic" %}</li>
 </ol>

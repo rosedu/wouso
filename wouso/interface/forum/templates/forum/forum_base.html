@@ -37,18 +37,16 @@
             </div>
             <!-- Avatar -->
             {% if user.is_authenticated %}
-            <div>
-                <div class="media">
-                    <a class="pull-right" href="{% url player_profile player.id %}">
-                        <img src="{% player_avatar player %}" class="media-object avatar avatar-med" />
-                    </a>
-                    <div class="media-body">
-                        <h4 class="media-heading" style="text-align: right">{% player player %}</h4>
-                        <div class="player-info">
-                            {% trans 'Level' %} {{ player.level_no }}
-                            {% coin_amount player %}
-                            {% coin_amount 'gold' %}
-                        </div>
+            <div class="media player-info">
+                <a class="pull-right" href="{% url player_profile player.id %}">
+                    <img src="{% player_avatar player %}" class="media-object avatar avatar-med" />
+                </a>
+                <div class="media-body">
+                    <h4 class="media-heading" style="text-align: right">{% player player %}</h4>
+                    <div class="player-info-text">
+                        {% trans 'Level' %} {{ player.level_no }}
+                        {% coin_amount player %}
+                        {% coin_amount 'gold' %}
                     </div>
                 </div>
             </div>
