@@ -23,7 +23,9 @@ class HomeView(ListView):
         context.update({'module': 'specialquest'})
         return context
 
+
 home = permission_required('specialquest.change_specialquestuser')(HomeView.as_view())
+
 
 class GroupsView(ListView):
     model = SpecialQuestGroup
@@ -35,7 +37,9 @@ class GroupsView(ListView):
         context.update({'module': 'specialquest'})
         return context
 
+
 groups = permission_required('specialquest.change_specialquestuser')(GroupsView.as_view())
+
 
 class GroupEditView(ListView):
     model = SpecialQuestGroup
@@ -47,7 +51,9 @@ class GroupEditView(ListView):
         context.update({'module': 'specialquest'})
         return context
 
+
 editgroup = permission_required('specialquest.change_specialquestuser')(GroupEditView.as_view())
+
 
 @permission_required('specialquest.change_specialquestuser')
 def edit(request, id=None):
@@ -70,6 +76,7 @@ def edit(request, id=None):
                                'module': 'specialquest'},
                               context_instance=RequestContext(request))
 
+
 @permission_required('specialquest.change_specialquestuser')
 def delete(request, id=None):
     if id is None:
@@ -77,6 +84,7 @@ def delete(request, id=None):
     task = get_object_or_404(SpecialQuestTask, pk=id)
     task.delete()
     return HttpResponseRedirect(reverse('wouso.games.specialquest.cpanel.home'))
+
 
 @permission_required('specialquest.change_specialquestuser')
 def manage_player(request, player_id):
@@ -128,6 +136,7 @@ def manage_player(request, player_id):
                          bonuses=bonuses, penalties=penalties),
                     context_instance=RequestContext(request))
 
+
 @permission_required('specialquest.change_specialquestuser')
 def manage_player_set(request, player_id, task_id):
     player = get_object_or_404(SpecialQuestUser, id=player_id)
@@ -155,6 +164,7 @@ def manage_player_set(request, player_id, task_id):
                                          action=action_msg)
 
     return HttpResponseRedirect(reverse('specialquest_manage', args=(player.id,)))
+
 
 @permission_required('specialquest.change_specialquestuser')
 def manage_player_unset(request, player_id, task_id):
@@ -191,23 +201,13 @@ def group_delete(request, group):
 
 @permission_required('specialquest.change_specialquestuser')
 def group_edit(request, group):
-
     group = get_object_or_404(SpecialQuestGroup, id=group)
     
-
-    #form = TaskForm(instance=task)
-
-    #if request.method == 'POST':
-        #form = TaskForm(request.POST, instance=task)
-        #if form.is_valid():
-         #   form.save()
-         #   return HttpResponseRedirect(reverse('wouso.games.specialquest.cpanel.home'))
-
     return render_to_response('specialquest/cpanel_group_edit.html',
                               {'group': group,
-                              # 'form': form,
                                'module': 'specialquest'},
                               context_instance=RequestContext(request))
+
 
 @permission_required('specialquest.change_specialquestuser')
 def group_drop_player(request, group, player):
@@ -221,4 +221,4 @@ def group_drop_player(request, group, player):
     player.group = None
     player.save()
 
-    return redirect('specialquest_cpanel_group_edit', group.id)
+    return redirect('specialquest_group_edit', group.id)

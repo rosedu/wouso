@@ -14,7 +14,7 @@
     {{ block.super }}
     {% breadcrumb "Special quests" "specialquest_home" %}
     {% breadcrumb "Groups" "specialquest_cpanel_groups" %}
-    {% breadcrumb "Edit" "specialquest_cpanel_groups" %}
+    {% breadcrumb "Edit" "specialquest_group_edit" %}
 {% endblock %}
 
 {% block sectioncontent %}
@@ -37,17 +37,19 @@
     				</td>
     	{% endif %}
        			</tr>
-       		{% for p in group.members %}
-       			<tr>
-       				<td> {{p.full_name}} </td>
+      {% if group.members_except_first %}
+        {% for p in group.members_except_first %}
+          	<tr>
+            	<td> {{p.full_name}} </td>
        				<td>
        					<a href="{% url specialquest_cpanel_drop group.id p.id %}" onclick="return confirm('really?');"
                             class="btn btn-danger">
                         	<span class="glyphicon glyphicon-remove"></span>{% trans 'Drop' %}
                     	</a>
-                	</td>
-       			</tr>
-       		{% endfor %}
+              </td>
+            </tr>
+        {% endfor %}
+      {% endif %}
     	</table>
     </div>
     <div class="col-md-10">

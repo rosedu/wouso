@@ -29,6 +29,10 @@ class SpecialQuestGroup(PlayerGroup):
 
     @property
     def members(self):
+        return [p.get_extension(SpecialQuestUser) for p in self.players.all()]
+
+    @property
+    def members_except_first(self):
         return [p.get_extension(SpecialQuestUser) for p in self.players.all()[1:]]
 
     @property

@@ -4,8 +4,8 @@ urlpatterns = patterns('wouso.games.specialquest.cpanel',
     url(r'^$', 'home', name='specialquest_home'),
     url(r'^groups/$', 'groups', name='specialquest_cpanel_groups'),
     url(r'^groups/(?P<group>\d+)/toggle/$', 'group_active_toggle', name='specialquest_cpanel_group_toggle'),
-   # url(r'^group/(?P<group>\d+)/edit/$', 'editgroup', name='specialquest_cpanel_group_edit'),
-    url(r'^groups/(?P<group>\d+)/edit/$', 'group_edit', name='specialquest_cpanel_group_edit'),
+   
+    url(r'^groups/(?P<group>\d+)/edit/$', 'group_edit', name='specialquest_group_edit'),
     url(r'^groups/(?P<group>\d+)/edit/(?P<player>\d+)/$', 'group_drop_player', name='specialquest_cpanel_drop'),
     url(r'^groups/(?P<group>\d+)/destroy/$', 'group_delete', name='specialquest_cpanel_group_delete'),
     
