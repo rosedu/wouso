@@ -19,7 +19,7 @@
 
 {% block content %}
 <div class="row">
-    <form method="post" role="form" class="form-horizontal" action="{% url post_create topic.pk %}">
+    <form method="post" role="form" class="form-horizontal" action="{% url post_create topic.pk post.pk %}">
         {{ form|bootstrap_horizontal }}
         {{ form.media }}
         {% csrf_token %}

@@ -75,6 +75,7 @@ class PostCreateView(FormView):
 
     def dispatch(self, request, *args, **kwargs):
         self.topic = Topic.objects.get(id=kwargs.get('pk', None))
+        self.parent_post = Post.objects.get(id=kwargs.get('post_id', None))
         if self.topic.forum.is_closed and not request.user.is_staff:
             messages.error(request, "You do not have the permissions to create a topic")
             return HttpResponseRedirect(reverse_lazy('forum', args=[self.topic.forum.id]))
@@ -88,6 +89,7 @@ class PostCreateView(FormView):
 
         post = Post(topic=self.topic, text=message, user=forum_user)
         post.save()
+        self.parent_post.replies.add(post)
 
         post.topic.last_post = post
         post.topic.save()
@@ -99,6 +101,7 @@ class PostCreateView(FormView):
     def get_context_data(self, **kwargs):
         context = super(PostCreateView, self).get_context_data(**kwargs)
         context['topic'] = Topic.objects.get(id=self.kwargs.get('pk', None))
+        context['post'] = Post.objects.get(id=self.kwargs.get('post_id', None))
         return context
 
 

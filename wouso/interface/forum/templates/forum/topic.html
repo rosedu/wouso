@@ -18,27 +18,15 @@
 
 {% block content %}
 <ul class="media-list">
-{% for post in topic.posts.all %}
-    <li class="media">
-        <a class="pull-left" href="{% url player_profile post.user.user.id %}">
-            <img src="{% player_avatar post.user %}" alt="{{ post.user.user }}" style="width: 64px; height: 64px">
-        </a>
-        <div class="media-body">
-            <h4 class="media-heading">{{ post.user.user }}</h4>
-            {{ post.text|safe }}
-            <div style="clear: both"></div>
-            <p class="pull-right">
-                <small><a href="#{{ forloop.counter }}" name="{{ forloop.counter }}">#{{ forloop.counter }}</a></small>
-            </p>
-            <p class="pull-right"><small>{{ post.created }}</small></p>
-        </div>
-    </li>
-    <hr/>
-{% endfor %}
+    {% with post=topic.first_post %}
+        <li class="media">
+        {% include "forum/replies_list.html" %}
+        </li>
+    {% endwith %}
 </ul>
 
 {% if not topic.forum.is_closed or user.is_staff %}
-    <p><a href="{% url post_create topic.id %}" class="btn btn-primary">{% trans "Create post" %}</a></p>
+    <p><a href="{% url post_create topic.id topic.first_post.id %}" class="btn btn-primary">{% trans "Create post" %}</a></p>
 {% else %}
     <p>{% trans "This forum is closed, only admins can create and post here." %}
 {% endif %}

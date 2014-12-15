@@ -58,6 +58,10 @@ class Topic(models.Model):
                                   related_name='forum_last_post',
                                   blank=True, null=True)
 
+    @property
+    def first_post(self):
+        return self.posts.all()[:1].get()
+
     def count_posts(self):
         return self.posts.count()
 
@@ -70,6 +74,8 @@ class Topic(models.Model):
 
 class Post(models.Model):
     topic = models.ForeignKey(Topic, related_name='posts')
+    parent = models.ForeignKey('self', related_name='replies',
+                               blank=True, null=True)
     user = models.ForeignKey(ForumUser)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

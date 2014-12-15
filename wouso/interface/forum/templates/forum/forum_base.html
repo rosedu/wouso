@@ -14,6 +14,60 @@
 </head>
 <body>
     <div class="container">
+        <!-- Logo -->
+        <div id="logo" class="pull-left">
+            <a href="{% url homepage %}" id="logo" title="{{config_title}}"></a>
+        </div>
+        <!-- Buttons -->
+        <div class="pull-right">
+            <div class="first-line">
+            {% if user.is_authenticated %}
+                {% if user.real_user %}
+                    Impersonated by {{ user.real_user }} <a href="{% url impersonate_clear %}">clear</a>
+                {% endif %}
+                <a id="head-gagme" href="{% url homepage %}">Game</a>
+                {% if perms.config.change_setting %}
+                <a id="head-cpanel" href="{% url status %}">CPanel</a>
+                {% endif %}
+
+                <a id="head-logout" href="{% url logout_view %}" onclick="remove_storage()">{% trans "Logout" %} &raquo;</a>
+            {% else %}
+            {% trans 'Anonimous' %}, <a href="{% url login_view %}">{% trans "Login" %} &raquo;</a>
+            {% endif %}
+            </div>
+            <!-- Avatar -->
+            {% if user.is_authenticated %}
+            <div>
+                <div class="media">
+                    <a class="pull-right" href="{% url player_profile player.id %}">
+                        <img src="{% player_avatar player %}" class="media-object avatar avatar-med" />
+                    </a>
+                    <div class="media-body">
+                        <h4 class="media-heading" style="text-align: right">{% player player %}</h4>
+                        <div class="player-info">
+                            {% trans 'Level' %} {{ player.level_no }}
+                            {% coin_amount player %}
+                            {% coin_amount 'gold' %}
+                        </div>
+                    </div>
+                </div>
+                <div>
+                </div>
+                <!--<a href="{% url player_profile player.id %}"><img src="{% player_avatar player %}" class="avatar avatar-med float-right" /></a>-->
+                <!--<div class="header-player-info">-->
+                    <!--<strong>{% player player %}</strong>-->
+
+                    <!--&lt;!&ndash;<div class="second-info">&ndash;&gt;-->
+                    <!--{% trans 'Level' %} {{ player.level_no }}-->
+                    <!--{% coin_amount player %}-->
+                    <!--{% coin_amount player 'gold' %}-->
+                    <!--</div>-->
+                <!--</div>-->
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="container">
         <h1>{% trans "Forums" %}</h1>
         {% block breadcrumb %}{% endblock %}
         {% block content %}{% endblock %}
