@@ -1,0 +1,33 @@
+{% extends "forum/forum_base.html" %}
+
+{% load i18n %}
+{% load user %}
+
+{% block title %}
+{% trans "Forums" %} - {{ block.super }}
+{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li><a href="{% url forums_overview %}">{% trans "Forums" %}</a></li>
+    <li><a href="{% url forums_overview %}#{{ topic.forum.category.id }}">{{ topic.forum.category.name }}</a></li>
+    <li><a href="{% url forum topic.forum.id %}">{{ topic.forum.name }}</a></li>
+    <li class="active">{{ topic.name }}</li>
+</ol>
+{% endblock %}
+
+{% block content %}
+<ul class="media-list">
+    {% with post=topic.first_post %}
+        <li class="media">
+        {% include "forum/replies_list.html" %}
+        </li>
+    {% endwith %}
+</ul>
+
+{% if not topic.forum.is_closed or user.is_staff %}
+    <p><a href="{% url post_create topic.id topic.first_post.id %}" class="btn btn-primary">{% trans "Create post" %}</a></p>
+{% else %}
+    <p>{% trans "This forum is closed, only admins can create and post here." %}
+{% endif %}
+{% endblock %}

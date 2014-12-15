@@ -15,6 +15,8 @@ urlpatterns = patterns('',
 
     (r'^top/', include('wouso.interface.top.urls')),
 
+    (r'^forum/', include('wouso.interface.forum.urls')),
+
     url(r'^leaderboard/$', 'wouso.interface.views.leaderboard_view', name='leaderboard'),
     url(r'^division/$', 'wouso.interface.views.division_view', name='division'),
 
