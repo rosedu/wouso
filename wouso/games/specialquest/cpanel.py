@@ -204,9 +204,7 @@ def group_edit(request, group):
     group = get_object_or_404(SpecialQuestGroup, id=group)
     
     return render_to_response('specialquest/cpanel_group_edit.html',
-                              {'group': group,
-                               'module': 'specialquest'},
-                              context_instance=RequestContext(request))
+                              {'group': group})
 
 
 @permission_required('specialquest.change_specialquestuser')
