@@ -51,7 +51,7 @@
 {% endblock %}
 
 {% block subsectioncontent %}
-    <div class="col-md-10">
+    <div class="col-md-12">
 
         <form class="form-horizontal" method="post">
             <p class="formfield">
@@ -70,7 +70,8 @@
 
             <div class="formfield rich" style="display: none">
                 <label>Insert question rich text</label>
-                {{ form.rich_text }}
+                <textarea name="rich_text"></textarea>
+                <script> CKEDITOR.replace('rich_text'); </script>
                 <hr />
             </div>
 
@@ -101,81 +102,31 @@
             </p>
             <hr />
 
-            <!--TODO: Write a custom templatetag in order to iterate from 1 to {{max_answers}} in form.answer_%d tag-->
+            {% for i in 12345678|make_list %}
+                <!--Normal answers-->
+                <div class="formfield normal">
 
-            <!--Normal Answers-->
-            <div class="formfield normal">
-                {{ form.answer_1 }}
-                <label class="mark">Answer #1:</label>
-                <label for="checkbox_1" class="mark">Mark correct</label>
-                <input id="checkbox_1" type="checkbox" name="correct_1"/>
-                <label class="mark">Mark active</label>
-                <input type="checkbox" name="active_1"/>
-            </div>
+                    <label class="mark">Answer #{{i}}</label>
+                    <label for="checkbox_{{i}}" class="mark">Mark correct</label>
+                    <input id="checkbox_{{i}}" type="checkbox" name="correct_{{i}}"/>
+                    <label class="mark">Mark active</label>
+                    <input type="checkbox" name="active_{{i}}"/>
+                    <br/>
+                    <textarea name="answer_{{i}}"></textarea>
+                </div>
 
-            <div class="formfield normal">
-                {{ form.answer_2 }}
-                <label class="mark">Answer #2:</label>
-                <label for="checkbox_2" class="mark">Mark correct</label>
-                <input id="checkbox_2" type="checkbox" name="correct_2"/>
-                <label class="mark">Mark active</label>
-                <input type="checkbox" name="active_2"/>
-            </div>
-
-            <div class="formfield normal">
-                {{ form.answer_3 }}
-                <label class="mark">Answer #3:</label>
-                <label for="checkbox_3" class="mark">Mark correct</label>
-                <input id="checkbox_3" type="checkbox" name="correct_3"/>
-                <label class="mark">Mark active</label>
-                <input type="checkbox" name="active_3"/>
-            </div>
-
-            <div class="formfield normal">
-                {{ form.answer_4 }}
-                <label class="mark">Answer #4:</label>
-                <label for="checkbox_4" class="mark">Mark correct</label>
-                <input id="checkbox_4" type="checkbox" name="correct_4"/>
-                <label class="mark">Mark active</label>
-                <input type="checkbox" name="active_4"/>
-            </div>
-
-            <!--Rich Answers-->
-            <div class="formfield rich" style="display: none">
-                <label class="mark">Answer #1:</label>
-                <label for="rich_checkbox_1" class="mark">Mark correct</label>
-                <input id="rich_checkbox_1" type="checkbox" name="rich_correct_1"/>
-                <label class="mark">Mark active</label>
-                <input type="checkbox" name="rich_active_1"/>
-                {{ form.rich_answer_1 }}
-            </div>
-
-            <div class="formfield rich" style="display: none">
-                <label class="mark">Answer #2:</label>
-                <label for="rich_checkbox_2" class="mark">Mark correct</label>
-                <input id="rich_checkbox_2" type="checkbox" name="rich_correct_2"/>
-                <label class="mark">Mark active</label>
-                <input type="checkbox" name="rich_active_2"/>
-                {{ form.rich_answer_2 }}
-            </div>
-
-            <div class="formfield rich"style="display: none">
-                <label class="mark">Answer #3:</label>
-                <label for="rich_checkbox_3" class="mark">Mark correct</label>
-                <input id="rich_checkbox_3" type="checkbox" name="rich_correct_3"/>
-                <label class="mark">Mark active</label>
-                <input type="checkbox" name="rich_active_3"/>
-                {{ form.rich_answer_3 }}
-            </div>
-
-            <div class="formfield rich"style="display: none">
-                <label class="mark">Answer #4:</label>
-                <label for="rich_checkbox_4" class="mark">Mark correct</label>
-                <input id="rich_checkbox_4" type="checkbox" name="rich_correct_4"/>
-                <label class="mark">Mark active</label>
-                <input type="checkbox" name="rich_active_4"/>
-                {{ form.rich_answer_4 }}
-            </div>
+                <!--Rich answers-->
+                <div class="formfield rich" style="display: none">
+                    <label class="mark">Answer #{{i}}</label>
+                    <label for="rich_checkbox_{{i}}" class="mark">Mark correct</label>
+                    <input id="rich_checkbox_{{i}}" type="checkbox" name="rich_correct_{{i}}"/>
+                    <label class="mark">Mark active</label>
+                    <input type="checkbox" name="rich_active_{{i}}"/>
+                    <textarea name="rich_answer_{{i}}"></textarea>
+                    <script> CKEDITOR.replace('rich_answer_{{i}}'); </script>
+                </div>
+                <br/>
+            {% endfor %}
 
             <br/>
 

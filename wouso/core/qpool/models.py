@@ -83,6 +83,11 @@ class Question(models.Model):
             return None
 
     @property
+    def answers_all(self):
+        """ A list of all answers """
+        return self.answer_set.all()
+
+    @property
     def answers(self):
         """ A list of all active answers """
         return self.answer_set.filter(active=True)

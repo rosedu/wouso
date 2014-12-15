@@ -168,6 +168,9 @@
                 <td {% if q.scheduled == today %}class="bold"{%endif%}>{{ q.scheduled }}</td>
                 {% endif %}
                 <td nowrap>
+                    <a class="btn btn-danger btn-xs" href="{% url edit_question q.id %}">
+                        <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit #2' %}
+                    </a>
                     <a class="btn btn-success btn-xs" href="{% url question_edit q.id%}">
                         <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                     </a>
