@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext_noop
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView
 from wouso.core.user.models import Player
 from wouso.core import scoring, signals
 from models import SpecialQuestTask, SpecialQuestUser, SpecialQuestGame, SpecialQuestGroup
@@ -18,11 +18,6 @@ class HomeView(ListView):
     template_name = 'specialquest/cpanel_home.html'
     context_object_name = 'tasks'
 
-    def get_context_data(self, **kwargs):
-        context = super(HomeView, self).get_context_data(**kwargs)
-        context.update({'module': 'specialquest'})
-        return context
-
 
 home = permission_required('specialquest.change_specialquestuser')(HomeView.as_view())
 
@@ -32,27 +27,17 @@ class GroupsView(ListView):
     template_name = 'specialquest/cpanel_groups.html'
     context_object_name = 'groups'
 
-    def get_context_data(self, **kwargs):
-        context = super(GroupsView, self).get_context_data(**kwargs)
-        context.update({'module': 'specialquest'})
-        return context
-
-
+    
 groups = permission_required('specialquest.change_specialquestuser')(GroupsView.as_view())
 
 
-class GroupEditView(ListView):
+class GroupEditView(UpdateView):
     model = SpecialQuestGroup
     template_name = 'specialquest/cpanel_group_edit.html'
-    context_object_name = 'editgroup'
-
-    def get_context_data(self, **kwargs):
-        context = super(GroupEditView, self).get_context_data(**kwargs)
-        context.update({'module': 'specialquest'})
-        return context
+    context_object_name = 'group'
 
 
-editgroup = permission_required('specialquest.change_specialquestuser')(GroupEditView.as_view())
+group_edit = permission_required('specialquest.change_specialquestuser')(GroupEditView.as_view())
 
 
 @permission_required('specialquest.change_specialquestuser')
@@ -197,14 +182,6 @@ def group_delete(request, group):
     group = get_object_or_404(SpecialQuestGroup, id=group)
     group.destroy()
     return redirect('specialquest_cpanel_groups')
-
-
-@permission_required('specialquest.change_specialquestuser')
-def group_edit(request, group):
-    group = get_object_or_404(SpecialQuestGroup, id=group)
-    
-    return render_to_response('specialquest/cpanel_group_edit.html',
-                              {'group': group})
 
 
 @permission_required('specialquest.change_specialquestuser')

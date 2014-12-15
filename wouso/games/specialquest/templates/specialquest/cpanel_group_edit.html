@@ -18,53 +18,53 @@
 {% endblock %}
 
 {% block sectioncontent %}
+
 	{% block tabcontent %}
+
 	<div class=" col-md-10">
-		{% trans 'Members: ' %} {{group.players.count}} 
+	    {% trans 'Members: ' %} {{group.players.count}} 
 	</div>
+
 	<div class=" col-md-10">
     	<table class="table table-bordered table-condensed table-hover">
     		<tr>
-           	 	<th>Name</th>
-           		
-           	 	<th>Actions</th>
+           	 	<th>Name</th>   
+          	 	<th>Actions</th>
        		</tr>
-       			<tr>
-       				<td> {{group.head}} </td>
-       				<td>
-       					{% if perms.specialquest.change_specialquestuser %}
-    					<a class="button" href="{% url specialquest_manage group.head.id %}">Manage head</a>
-    				</td>
-    	{% endif %}
-       			</tr>
-      {% if group.members_except_first %}
-        {% for p in group.members_except_first %}
-          	<tr>
-            	<td> {{p.full_name}} </td>
-       				<td>
-       					<a href="{% url specialquest_cpanel_drop group.id p.id %}" onclick="return confirm('really?');"
+       		<tr>
+       			<td> {{group.head}} </td>
+       			<td>
+       				{% if perms.specialquest.change_specialquestuser %}
+    				<a class="button" href="{% url specialquest_manage group.head.id %}">Manage head</a>
+                    {% endif %}
+    			</td>
+      		</tr>
+            {% if group.members_except_first %}
+                {% for p in group.members_except_first %}
+          	    <tr>
+            	    <td> {{p.full_name}} </td>
+       			    <td>
+       				    <a href="{% url specialquest_cpanel_drop group.id p.id %}" onclick="return confirm('really?');"
                             class="btn btn-danger">
-                        	<span class="glyphicon glyphicon-remove"></span>{% trans 'Drop' %}
-                    	</a>
-              </td>
-            </tr>
-        {% endfor %}
-      {% endif %}
+                       	    <span class="glyphicon glyphicon-remove"></span>{% trans 'Drop' %}
+                   	    </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% endif %}
     	</table>
-    </div>
+   
     <div class="col-md-10">
     	<h3>Done tasks</h3>
-      	  <ul>
-      	  {% for info in group.completed_tasks %}
-       	     <li>{{ info.task }} - {{ info.date }}</li>
-       	 {% empty %}
-       	     <li>{% trans 'Nothing.' %}</li>
-       	 {% endfor %}
-       	 </ul>
+      	<ul>
+      	    {% for info in group.completed_tasks %}
+       	    <li>{{ info.task }} - {{ info.date }}</li>
+       	    {% empty %}
+       	    <li>{% trans 'Nothing.' %}</li>
+       	    {% endfor %}
+        </ul>
     </div>
+
 	{% endblock %}
 
-
-	
-	
 {% endblock %}

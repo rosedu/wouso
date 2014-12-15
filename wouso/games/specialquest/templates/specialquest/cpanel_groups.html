@@ -41,7 +41,7 @@
                 </td>
                 <td>
                     
-                    <a href="{% url specialquest_group_edit t.id %}" class="btn btn-success">
+                    <a href="{% url specialquest_group_edit t.pk %}" class="btn btn-success">
                         <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                     </a>
                     <a href="{% url specialquest_cpanel_group_delete t.id %}" onclick="return confirm('really?');"
