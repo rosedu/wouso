@@ -1,9 +1,10 @@
 from datetime import date
+
 from django.db import models
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_noop, ugettext as _
+
 from wouso.core.user.models import Player, PlayerGroup
 from wouso.core.game.models import Game
+
 
 class Invitation(models.Model):
     group = models.ForeignKey('SpecialQuestGroup')
@@ -58,12 +59,12 @@ class SpecialQuestGroup(PlayerGroup):
         return new_group
 
     def remove(self, user):
-        """Removing the head user would delete the group. However, this is 
+        """Removing the head user would delete the group. However, this is
         handled separately somewhere else, so no need to worry about it.
         """
         if user != self.head:
             self.players.remove(user)
-        
+
     def __unicode__(self):
         return u"%s [%d]" % (self.name, self.players.count())
 
@@ -169,9 +170,9 @@ class SpecialQuestGame(Game):
         fs = []
         quest_game = kls.get_instance()
         fs.append(dict(name='specialquest-passed', expression='gold={value}',
-            owner=quest_game.game,
-            description='Points earned when finishing a task. Arguments: value.')
-        )
+                  owner=quest_game.game,
+                  description='Points earned when finishing a task. Arguments: value.'))
+
         return fs
 
     @classmethod
