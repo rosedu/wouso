@@ -25,9 +25,9 @@
 
 <ul class="spaced">
 {% for a in assessment.answer_set.all %}
-    <li>{{ forloop.counter }}. {{ a.question.text }}
+    <li>{{ forloop.counter }}. {{ a.question|safe }}
         <p> <em>{% trans 'Your answer' %}:</em><br/>
-            <pre>{{ a.text }}</pre>
+            <pre>{{ a|safe }}</pre>
             <ul>
             {% for r in a.review_set.all %}
                 <li>

@@ -13,9 +13,9 @@
 <form method="post" action="">
     <ul class="spaced">
         {% for a in assessment.answer_set.all %}
-        <li>{{ forloop.counter }}. {{ a.question.text }}
+        <li>{{ forloop.counter }}. {{ a.question|safe }}
             <p> <em>{% trans 'Answer' %}:</em>
-                <tt>{{ a.text }}</tt>
+                <tt>{{ a|safe }}</tt>
             <ul class="spaced">
                 {% for r in a.review_set.all %}
                     {% if r.reviewer != user.get_profile %}

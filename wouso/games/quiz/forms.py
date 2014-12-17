@@ -20,8 +20,8 @@ class QuizForm(forms.Form):
         for q in questions:
             field = forms.MultipleChoiceField(
                 widget=forms.CheckboxSelectMultiple,
-                label=q.text)
-            field.choices = [(a.id, a.text) for a in q.shuffled_answers]
+                label=q)
+            field.choices = [(a.id, a) for a in q.shuffled_answers]
             self.fields['answer_{id}'.format(id=q.id)] = field
         self.data = data
 
