@@ -3,11 +3,11 @@
 {% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}
-	{% trans 'Group: ' %} {{group.name}}
-	<p>
-		{% trans 'Status: ' %}
-    	<span class="points">{% if sqgroup.active %}{% trans 'Active' %}{% else %}{% trans 'Inactive' %}{% endif %}</span>
-	</p>
+    {% trans 'Group: ' %} {{group.name}}
+    <p>
+        {% trans 'Status: ' %}
+        <span class="points">{% if sqgroup.active %}{% trans 'Active' %}{% else %}{% trans 'Inactive' %}{% endif %}</span>
+    </p>
 {% endblock %}
 
 {% block breadcrumbs %}
@@ -19,52 +19,49 @@
 
 {% block sectioncontent %}
 
-	{% block tabcontent %}
+    {% block tabcontent %}
 
-	<div class=" col-md-10">
-	    {% trans 'Members: ' %} {{group.players.count}} 
-	</div>
+    <div class="col-md-10">
+        <div style="padding-bottom: 5px">{% trans 'Members: ' %} {{group.players.count}}</div>
 
-	<div class=" col-md-10">
-    	<table class="table table-bordered table-condensed table-hover">
-    		<tr>
-           	 	<th>Name</th>   
-          	 	<th>Actions</th>
-       		</tr>
-       		<tr>
-       			<td> {{group.head}} </td>
-       			<td>
-       				{% if perms.specialquest.change_specialquestuser %}
-    				<a class="button" href="{% url specialquest_manage group.head.id %}">Manage head</a>
+        <table class="table table-bordered table-condensed table-hover">
+            <tr>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+            <tr>
+                <td> {{group.head}} </td>
+                <td>
+                    {% if perms.specialquest.change_specialquestuser %}
+                    <a class="button" href="{% url specialquest_manage group.head.id %}">Manage head</a>
                     {% endif %}
-    			</td>
-      		</tr>
+                </td>
+            </tr>
             {% if group.members_except_first %}
                 {% for p in group.members_except_first %}
-          	    <tr>
-            	    <td> {{p.full_name}} </td>
-       			    <td>
-       				    <a href="{% url specialquest_cpanel_drop group.id p.id %}" onclick="return confirm('really?');"
+                <tr>
+                    <td> {{p.full_name}} </td>
+                    <td>
+                        <a href="{% url specialquest_cpanel_drop group.id p.id %}" onclick="return confirm('really?');"
                             class="btn btn-danger">
-                       	    <span class="glyphicon glyphicon-remove"></span>{% trans 'Drop' %}
-                   	    </a>
+                            <span class="glyphicon glyphicon-remove"></span>{% trans 'Drop' %}
+                        </a>
                     </td>
                 </tr>
                 {% endfor %}
             {% endif %}
-    	</table>
-   
-    <div class="col-md-10">
-    	<h3>Done tasks</h3>
-      	<ul>
-      	    {% for info in group.completed_tasks %}
-       	    <li>{{ info.task }} - {{ info.date }}</li>
-       	    {% empty %}
-       	    <li>{% trans 'Nothing.' %}</li>
-       	    {% endfor %}
+        </table>
+
+        <h3>Done tasks</h3>
+        <ul>
+            {% for info in group.completed_tasks %}
+            <li>{{ info.task }} - {{ info.date }}</li>
+            {% empty %}
+            <li>{% trans 'Nothing.' %}</li>
+            {% endfor %}
         </ul>
     </div>
 
-	{% endblock %}
+    {% endblock %}
 
 {% endblock %}
