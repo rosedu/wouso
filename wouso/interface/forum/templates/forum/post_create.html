@@ -19,7 +19,6 @@
 {% endblock %}
 
 {% block content %}
-{% if post.parent %}
 <div class="media">
     <a class="pull-left" href="{% url player_profile post.user.user.id %}">
     <img class="media-object" src="{% player_avatar post.user %}" alt="{{ post.user.user }}" style="width: 64px; height: 64px" />
@@ -42,7 +41,6 @@
     </div>
 </div>
 <br/>
-{% endif %}
 
 <div class="row">
     <form method="post" role="form" class="form-horizontal" action="{% url post_create topic.pk post.pk %}">
