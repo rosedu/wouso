@@ -34,6 +34,10 @@ class SpecialQuestGroup(PlayerGroup):
         return [p.get_extension(SpecialQuestUser) for p in self.players.all()]
 
     @property
+    def members_except_first(self):
+        return [p.get_extension(SpecialQuestUser) for p in self.players.all()[1:]]
+
+    @property
     def completed_tasks(self):
         return GroupCompletion.objects.filter(team=self).order_by('-date')
 

@@ -40,13 +40,11 @@
                     </a>
                 </td>
                 <td>
-                    <a href="{% url specialquest_group t.id %}" class="btn btn-info">
-                        {% trans 'View members' %}
-                    </a>
-                    <a href="{% url admin:specialquest_specialquestgroup_change t.id %}" class="btn btn-success">
+                    
+                    <a href="{% url specialquest_group_edit t.pk %}" class="btn btn-success">
                         <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                     </a>
-                    <a href="{% url specialquest_cpanel_group_delete t.id %}" onclick="return confirm('realy?');"
+                    <a href="{% url specialquest_cpanel_group_delete t.id %}" onclick="return confirm('really?');"
                         class="btn btn-danger">
                         <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
                     </a>

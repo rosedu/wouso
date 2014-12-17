@@ -11,10 +11,12 @@ from wouso.core.ui import register_sidebar_block
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.games.challenge.models import ChallengeUser
 
+
 class ObjectHistory:
     @property
     def disabled(self):
         return Top.disabled()
+
 
 class GroupHistory(ObjectHistory):
     def __init__(self, group):
@@ -35,6 +37,7 @@ class GroupHistory(ObjectHistory):
         hs = History.objects.filter(group=self.group, relative_to=relative_to).order_by('-date')[:7]
         tot = len(hs)
         return [(tot - i, h.position) for (i,h) in enumerate(hs)]
+
 
 class TopUser(ObjectHistory, Player):
     _history = None
@@ -123,6 +126,7 @@ class TopUser(ObjectHistory, Player):
         hs = self.history()
         tot = len(hs)
         return [(tot - i, h.points) for (i,h) in enumerate(hs)]
+
 
 Player.register_extension('top', TopUser)
 
@@ -231,6 +235,7 @@ class History(models.Model): # TODO: deprecate (maybe), check if NewHistory cove
 
 
 class Top(App):
+       
     @classmethod
     def get_sidebar_widget(kls, context):
         top5 = TopUser.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
@@ -335,6 +340,7 @@ class Top(App):
     def get_coin_position(cls, coin, user):
         coin = Coin.get(coin)
         return NewHistory.get_obj_position(user, relative_to=coin)
+
 
 register_sidebar_block('top', Top.get_sidebar_widget)
 #def user_post_save(sender, instance, **kwargs):

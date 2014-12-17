@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext_noop
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView
 from wouso.core.user.models import Player
 from wouso.core import scoring, signals
 from models import SpecialQuestTask, SpecialQuestUser, SpecialQuestGame, SpecialQuestGroup
@@ -18,24 +18,27 @@ class HomeView(ListView):
     template_name = 'specialquest/cpanel_home.html'
     context_object_name = 'tasks'
 
-    def get_context_data(self, **kwargs):
-        context = super(HomeView, self).get_context_data(**kwargs)
-        context.update({'module': 'specialquest'})
-        return context
 
 home = permission_required('specialquest.change_specialquestuser')(HomeView.as_view())
+
 
 class GroupsView(ListView):
     model = SpecialQuestGroup
     template_name = 'specialquest/cpanel_groups.html'
     context_object_name = 'groups'
 
-    def get_context_data(self, **kwargs):
-        context = super(GroupsView, self).get_context_data(**kwargs)
-        context.update({'module': 'specialquest'})
-        return context
-
+    
 groups = permission_required('specialquest.change_specialquestuser')(GroupsView.as_view())
+
+
+class GroupEditView(UpdateView):
+    model = SpecialQuestGroup
+    template_name = 'specialquest/cpanel_group_edit.html'
+    context_object_name = 'group'
+
+
+group_edit = permission_required('specialquest.change_specialquestuser')(GroupEditView.as_view())
+
 
 @permission_required('specialquest.change_specialquestuser')
 def edit(request, id=None):
@@ -58,6 +61,7 @@ def edit(request, id=None):
                                'module': 'specialquest'},
                               context_instance=RequestContext(request))
 
+
 @permission_required('specialquest.change_specialquestuser')
 def delete(request, id=None):
     if id is None:
@@ -65,6 +69,7 @@ def delete(request, id=None):
     task = get_object_or_404(SpecialQuestTask, pk=id)
     task.delete()
     return HttpResponseRedirect(reverse('wouso.games.specialquest.cpanel.home'))
+
 
 @permission_required('specialquest.change_specialquestuser')
 def manage_player(request, player_id):
@@ -116,6 +121,7 @@ def manage_player(request, player_id):
                          bonuses=bonuses, penalties=penalties),
                     context_instance=RequestContext(request))
 
+
 @permission_required('specialquest.change_specialquestuser')
 def manage_player_set(request, player_id, task_id):
     player = get_object_or_404(SpecialQuestUser, id=player_id)
@@ -143,6 +149,7 @@ def manage_player_set(request, player_id, task_id):
                                          action=action_msg)
 
     return HttpResponseRedirect(reverse('specialquest_manage', args=(player.id,)))
+
 
 @permission_required('specialquest.change_specialquestuser')
 def manage_player_unset(request, player_id, task_id):
@@ -189,4 +196,4 @@ def group_drop_player(request, group, player):
     player.group = None
     player.save()
 
-    return redirect('specialquest_group', group_id=group.id)
+    return redirect('specialquest_group_edit', group.id)
