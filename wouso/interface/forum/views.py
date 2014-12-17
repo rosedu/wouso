@@ -1,3 +1,5 @@
+from django.contrib import messages
+from django.http import HttpResponseRedirect
 from django.views.generic import ListView, DetailView, FormView
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
@@ -77,7 +79,7 @@ class PostCreateView(FormView):
         self.topic = Topic.objects.get(id=kwargs.get('pk', None))
         self.parent_post = Post.objects.get(id=kwargs.get('post_id', None))
         if self.topic.forum.is_closed and not request.user.is_staff:
-            messages.error(request, "You do not have the permissions to create a topic")
+            messages.error(request, "You do not have the permissions to create a post")
             return HttpResponseRedirect(reverse_lazy('forum', args=[self.topic.forum.id]))
 
         return super(PostCreateView, self).dispatch(request, *args, **kwargs)
