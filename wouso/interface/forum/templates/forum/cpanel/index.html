@@ -1,0 +1,61 @@
+{% extends 'cpanel/index.html' %}
+
+{% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %}
+    Forum
+    <div class="pull-right">
+        <a class="btn btn-primary" href="{% url add_forum %}">
+            <span class="glyphicon glyphicon-plus"></span>{% trans 'Add forum' %}
+        </a>
+        <a class="btn btn-success" href="{% url manage_forum_categories %}">
+            <span class="glyphicon glyphicon-edit"></span>{% trans 'Manage categories' %}
+        </a>
+    </div>
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Forum" "forum" %}
+{% endblock %}
+
+{% block sectioncontent %}
+    <table class="table table-bordered table-hover table-condensed">
+        <tr>
+            <th>#</th>
+            <th>Forum</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Active</th>
+            <th>Manage</th>
+        </tr>
+        {% for f in forums %}
+        <tr>
+            <td>{{ f.id }}</td>
+            <td>{{ f }}</td>
+            <td>{{ f.category }}</td>
+            <td>{{ f.description }}</td>
+            <td>
+                {% if f.is_closed %}
+                    {% trans 'No' %}
+                {% else %}
+                    {% trans 'Yes' %}
+                {% endif %}
+            </td>
+            <td>
+                <a class="btn btn-success" href="{% url edit_forum f.id %}">
+                    <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                </a>
+                <a class="btn btn-danger" href="{% url delete_forum f.id %}">
+                    <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="10">No forums have been created yet.</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

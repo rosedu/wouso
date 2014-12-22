@@ -1,0 +1,32 @@
+{% extends 'forum/cpanel/index.html' %}
+
+{% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+{% load bootstrap %}
+
+{% block sectiontitle %}
+    Add forum
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Edit forum" "edit_forum" forum.id %}
+{% endblock %}
+
+{% block sectioncontent %}
+        <div class="col-md-8">
+            {% if form.errors %}
+                <p style="color: red;">
+                    Please correct the error{{ form.errors|pluralize }} below.
+                </p>
+            {% endif %}
+
+            <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+                {{ form|bootstrap_horizontal }}
+                <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
+                <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
+                <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
+                {% csrf_token %}
+            </form>
+        </div>
+{% endblock %}

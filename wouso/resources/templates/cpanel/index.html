@@ -128,6 +128,8 @@
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url files %}">Files</a></li>
                 {% url karma as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url karma %}">Karma</a></li>
+                {% url forum as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url forum %}">Forum</a></li>
             <!-- Games !-->
                 <h4 class="text-center">Games</h4>
                 {% for u, game in games_list.items %}
