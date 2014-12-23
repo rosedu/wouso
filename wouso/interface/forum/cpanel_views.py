@@ -1,5 +1,7 @@
 from django.contrib.auth.decorators import permission_required
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse_lazy, reverse
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from core.decorators import staff_required
@@ -95,3 +97,34 @@ class DeleteForumCategoryView(DeleteView):
 
 delete_forum_category = permission_required('config.change_setting')(
     DeleteForumCategoryView.as_view())
+
+
+@permission_required('config.change_setting')
+def forum_switch_closed(request, id):
+    forum = get_object_or_404(Forum, pk=id)
+
+    forum.is_closed = not forum.is_closed
+    forum.save()
+
+    return HttpResponseRedirect(reverse('forum'))
+
+
+@permission_required('config.change_setting')
+def forum_actions(request):
+    action = request.GET.get('action', None)
+    f_id = request.GET.get('f_id', '').split()
+    f_id = map(int, f_id)
+    queryset = Forum.objects.filter(id__in=f_id)
+
+    if action == 'closed':
+        for f in queryset:
+            f.is_closed = True
+            f.save()
+    elif action == 'open':
+        for f in queryset:
+            f.is_closed = False
+            f.save()
+
+    redir = request.META.get('HTTP_REFERER', reverse('forum'))
+
+    return redirect(redir)

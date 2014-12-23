@@ -32,6 +32,7 @@
             <td style="width: 14px;"></td>
             <td style="width: 70%;">
                 <a href="{% url forum forum.id %}">{{ forum.name }}</a>
+                {% if forum.is_closed %} [closed] {% endif %}
                 <div style="font-size: 12px; padding-left: 5px">{{ forum.description }}</div>
             </td>
             <td>{{ forum.get_latest_poster }}</td>
