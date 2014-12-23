@@ -25,9 +25,8 @@
     {% endwith %}
 </ul>
 
-{% if not topic.forum.is_closed or user.is_staff %}
-    <p><a href="{% url post_create topic.id topic.first_post.id %}" class="btn btn-primary">{% trans "Create post" %}</a></p>
-{% else %}
-    <p>{% trans "This forum is closed, only admins can create and post here." %}
+{% if topic.forum.is_closed and not user.is_staff %}
+    <p>{% trans "This forum is closed, only admins can create and post here." %}</p>
 {% endif %}
+
 {% endblock %}
