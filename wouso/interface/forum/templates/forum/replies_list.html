@@ -9,6 +9,7 @@
         <a href="{% url player_profile post.user.user.id %}">
             {{ post.user.user }}
         </a>
+        - {{ post.topic.name }}
     </h4>
     {{ post.text|safe }}
     <div style="clear: both"></div>
