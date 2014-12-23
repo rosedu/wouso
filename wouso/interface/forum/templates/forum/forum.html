@@ -17,6 +17,8 @@
 
 {% block content %}
 
+<p><b>{{ forum.name }}</b> - {{ forum.description }}</p>
+
 {% if not forum.is_closed or user.is_staff %}
     <p><a href="{% url topic_create forum.id %}" class="btn btn-primary">{% trans "Create topic" %}</a></p>
 {% endif %}
