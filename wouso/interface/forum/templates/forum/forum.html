@@ -16,9 +16,11 @@
 {% endblock %}
 
 {% block content %}
+
 {% if not forum.is_closed or user.is_staff %}
     <p><a href="{% url topic_create forum.id %}" class="btn btn-primary">{% trans "Create topic" %}</a></p>
 {% endif %}
+
 <table class="table">
     <thead>
     <tr>
@@ -27,7 +29,7 @@
         <td>{% trans "Replies" %}</td>
     </tr>
     </thead>
-    
+
     <tbody>
     {% for topic in forum.topics.all %}
         <tr>
@@ -52,7 +54,4 @@
     </tbody>
 </table>
 
-{% if not forum.is_closed or user.is_staff %}
-    <p><a href="{% url topic_create forum.id %}" class="btn btn-primary">{% trans "Create topic" %}</a></p>
-{% endif %}
 {% endblock %}
