@@ -17,3 +17,7 @@ def cpanel_games():
                             (g, cpanel_link, g, g.capitalize())
 
     return text
+
+@register.filter(name='add_css')
+def add_css(field, css):
+   return field.as_widget(attrs={"class":css})
