@@ -40,7 +40,7 @@ from wouso.middleware.impersonation import ImpersonateMiddleware
 from wouso.utils.import_questions import import_from_file
 from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, \
     AnswerForm, EditReportForm, RaceForm, PlayerGroupForm, RoleForm, \
-    StaticPageForm, NewsForm, KarmaBonusForm
+    StaticPageForm, NewsForm, KarmaBonusForm, AddQuestionForm, EditQuestionForm
 from forms import FormulaForm, TagForm
 
 
@@ -164,6 +164,7 @@ class EditSpellView(UpdateView):
     model = Spell
     form_class = SpellForm
     success_url = reverse_lazy('spells')
+
 
 edit_spell = permission_required('config.change_setting')(
     EditSpellView.as_view())
@@ -388,6 +389,52 @@ class QPoolNewView(FormView):
 
 
 qpool_new = permission_required('config.change_setting')(QPoolNewView.as_view())
+
+
+class AddQuestionView(FormView):
+    form_class = AddQuestionForm
+    template_name = 'cpanel/add_question.html'
+
+    def get_form_kwargs(self):
+        return dict(data=self.request.POST)
+
+    def form_valid(self, form):
+        new_question = form.save()
+        return redirect('qpool_home', cat=new_question.category.name)
+
+    def get_context_data(self, **kwargs):
+        context = super(AddQuestionView, self).get_context_data(**kwargs)
+        max_answers = self.form_class.noas
+        categories = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
+        context['categories'] = categories
+        context['max_answers'] = max_answers
+        return context
+
+
+add_question = permission_required('config.change_setting')(
+    AddQuestionView.as_view())
+
+
+@permission_required('config.change_setting')
+def edit_question(request, id):
+    question = get_object_or_404(Question, pk=id)
+    categories = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
+
+    if request.method == 'POST':
+        form = EditQuestionForm(request.POST, instance=question)
+        if form.is_valid():
+            new_question = form.save()
+            new_question.proposed_by = request.user
+            if new_question.endorsed_by is None:
+                new_question.endorsed_by = request.user
+                new_question.save()
+            return redirect('qpool_home', cat=new_question.category.name)
+    else:
+        form = EditQuestionForm(instance=question)
+
+    return render_to_response('cpanel/edit_question.html',
+                              {'question': question, 'form': form, 'categories': categories},
+                              context_instance=RequestContext(request))
 
 
 class QPoolAddAnswerView(UpdateView):
@@ -1011,7 +1058,6 @@ class RacesGroupsView(ListView):
 
 
 class RacesAdd(CreateView):
-
     model = Race
     template_name = 'cpanel/races/create.html'
     form_class = RaceForm
@@ -1021,7 +1067,6 @@ class RacesAdd(CreateView):
 
 
 class GroupsAdd(CreateView):
-
     model = PlayerGroup
     template_name = 'cpanel/races/group_create.html'
     form_class = PlayerGroupForm
@@ -1127,6 +1172,7 @@ class ActivityMonitorView(ListView):
             msg = params['message'].lower()
             objects = [o for o in objects if msg in o.message.lower()]
         return objects
+
 
 activity_monitor = staff_required(ActivityMonitorView.as_view())
 
@@ -1311,7 +1357,7 @@ def bonus(request, player_id):
 
     return render_to_response('cpanel/bonus.html',
                               {'target_player': player, 'form': form,
-                              'bonuses': bonuses, 'penalties': penalties},
+                               'bonuses': bonuses, 'penalties': penalties},
                               context_instance=RequestContext(request))
 
 
@@ -1327,7 +1373,7 @@ def karma_view(request):
     races = Race.objects.exclude(can_play=False)
     groups = PlayerGroup.objects.exclude(parent=None).exclude(parent__can_play=False)
     return render_to_response('cpanel/karma.html',
-                              {'races':races, 'groups':groups},
+                              {'races': races, 'groups': groups},
                               context_instance=RequestContext(request))
 
 
@@ -1352,16 +1398,17 @@ def karma_group_view(request, group):
                     # compute formula and calculate amount of bonus given
                     amount = eval(formula.expression.format(**{'karma_points': karma_points}).split('=')[1])
                     # apply scoring
-                    scoring.score(player, None, formula, external_id=request.user.get_profile().id, **{'karma_points': karma_points})
+                    scoring.score(player, None, formula, external_id=request.user.get_profile().id,
+                                  **{'karma_points': karma_points})
                     # add activity (parse formula expression to get the coin from formula)
                     add_activity(player, _(
                         'received {amount} {coin} bonus for {karma_points} Karma Points'),
-                                amount=amount, coin=formula.expression.split('=')[0], karma_points=karma_points,
-                                reason='Bonus for Karma')
+                                 amount=amount, coin=formula.expression.split('=')[0], karma_points=karma_points,
+                                 reason='Bonus for Karma')
                     messages.info(request, 'Successfully given bonus')
             return redirect('karma_group', **{'group': group_id})
     else:
         form = KarmaBonusForm(players=players)
     return render_to_response('cpanel/karma_group.html',
-                              {'form':form, 'group':group},
+                              {'form': form, 'group': group},
                               context_instance=RequestContext(request))

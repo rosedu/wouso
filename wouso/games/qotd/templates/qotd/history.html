@@ -7,7 +7,7 @@
     <ul>
         {% for q in history %}
             <li><em>{{ q.day }}</em>
-                <p>{{ q.question.text }}</p>
+                <p>{{ q.question }}</p>
             </li>
         {% empty %}
             <li class="empty">{% trans 'No questions' %}</li>

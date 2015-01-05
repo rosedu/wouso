@@ -1,8 +1,12 @@
 from random import shuffle
 from datetime import datetime, date, timedelta
+
 from django.db import models
 from django.contrib.auth.models import User
+
 from utils import validate_dynq_code
+from ckeditor.fields import RichTextField
+
 from wouso.core.common import Item
 
 
@@ -51,6 +55,7 @@ class Question(models.Model):
     the given answer should return True or False if the answer is valid.
     """
     text = models.TextField()
+    rich_text = RichTextField()
     proposed_by = models.ForeignKey(User, null=True, blank=True, related_name="%(app_label)s_%(class)s_proposedby_related")
     endorsed_by = models.ForeignKey(User, null=True, blank=True, related_name="%(app_label)s_%(class)s_endorsedby_related")
     active = models.BooleanField()
@@ -78,13 +83,19 @@ class Question(models.Model):
             return None
 
     @property
-    def answers(self):
-        """ A list of answers """
+    def answers_all(self):
+        """ A list of all answers """
         return self.answer_set.all()
 
     @property
+    def answers(self):
+        """ A list of all active answers """
+        return self.answer_set.filter(active=True)
+
+    @property
     def correct_answers(self):
-        return self.answer_set.filter(correct=True)
+        """ A list of all correct active answers """
+        return self.answer_set.filter(active=True, correct=True)
 
     @property
     def shuffled_answers(self):
@@ -140,17 +151,19 @@ class Question(models.Model):
         return self.active
 
     def __unicode__(self):
-        return unicode(self.text)
+        return self.text if self.text else self.rich_text
 
 
 class Answer(models.Model):
     question = models.ForeignKey(Question)
     text = models.TextField()
+    rich_text = RichTextField()
     explanation = models.TextField(null=True, default='', blank=True)
     correct = models.BooleanField()
+    active = models.BooleanField(default=True)
 
     def __unicode__(self):
-        return self.text
+        return self.text if self.text else self.rich_text
 
 
 class Schedule(models.Model):

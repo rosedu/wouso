@@ -11,12 +11,12 @@
         {% for q in challenge.questions.all %}
         <li>
             {% autoescape off %}
-            {{ q.text }}
+            {{ q|safe }}
                 <ul>
                     {% for a in q.answers %}
                     <li>
                         {% if a.correct %}X {% endif %}
-                        {% autoescape off %}{{ a.text }}{% endautoescape %}
+                        {% autoescape off %}{{ a|safe }}{% endautoescape %}
                     </li>
                     {% endfor %}
                 </ul>

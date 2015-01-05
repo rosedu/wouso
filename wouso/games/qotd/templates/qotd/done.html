@@ -8,13 +8,13 @@
 
 {% if question %}
 {% autoescape off %}
-<p>{{ question.text }}</p>
+<p>{{ question|safe }}</p>
 <div class="answers">
 <ul>
 {% for a in question.answers %}
     <li {% ifequal a choice %}class={% if a.correct %}"ok"{% else %}"wrong"{% endif %}{% endifequal %}>
         <input type=radio disabled {% ifequal a choice %}checked{% endifequal %} id="qotd_a_{{a.id}}" />
-        <label for="qotd_a_{{a.id}}" class="{% ifequal a choice %}bold{% endifequal %}">{% if a.correct %}[{% trans 'correct' %}] {% endif %}{{ a.text }}</label>
+        <label for="qotd_a_{{a.id}}" class="{% ifequal a choice %}bold{% endifequal %}">{% if a.correct %}[{% trans 'correct' %}] {% endif %}{{ a|safe }}</label>
     </li>
 {% endfor %}
 </ul>

@@ -243,7 +243,7 @@ class Quest(models.Model):
                 return False
             return retval == 0
         elif self.type == TYPE_CLASSIC:
-            answers = [a.text.lower() for a in question.answers.all()]
+            answers = [a.__unicode__().lower() for a in question.answers]
             return answer.strip().lower() in answers
         return False
 
@@ -260,7 +260,7 @@ class Quest(models.Model):
         """
         # exclude players not belonging to a 'can play' race
         return self.questresult_set.exclude(user__race__can_play=False).values('user').distinct().count()
-    
+
     def players_completed(self):
         """
         Number of players who finished the quest
@@ -389,7 +389,7 @@ class FinalQuest(Quest):
                     arguments=dict(level=level),
                     game=QuestGame.get_instance()
                 )
-    
+
     def fetch_levels(self):
         levels = []
         for level in xrange(len(self.levels) + 1):

@@ -11,13 +11,13 @@
 {% endif %}
 
 {% if question %}
-<p>{% autoescape off %}{{ question.text }}{% endautoescape %}</p>
+<p>{% autoescape off %}{{ question|safe }}{% endautoescape %}</p>
 <form method="post" action="{% url qotd_index_view %}">
 <div class="answers">
 <ul>
     {% for a in question.shuffled_answers %}
         <li><input type=radio name="answers" value="{{ a.id }}" id="qotd_a_{{a.id}}"/>
-            <label for="qotd_a_{{a.id}}">{% autoescape off %}{{ a.text }}{% endautoescape %}</label>
+            <label for="qotd_a_{{a.id}}">{% autoescape off %}{{ a|safe }}{% endautoescape %}</label>
         </li>
     {% endfor %}
 </ul>
