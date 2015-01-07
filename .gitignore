@@ -23,3 +23,4 @@ instance
 nohup.out
 .vagrant
 nosetests.xml
+/sandbox/
