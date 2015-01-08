@@ -60,14 +60,14 @@ div#logo {
     float:left;
 }
 #container {
-    width: 930px;
+    width: 1024px;
     margin: 0 auto;
 }
 #topbar {
     text-align: right;
     position: absolute;
     margin: 0px auto;
-    width: 930px;
+    width: 1024px;
     float: right;
     text-align: right;
 }
@@ -121,7 +121,7 @@ div#logo {
     padding-left: 10px;
 }
 #content {
-    width: 700px;
+    width: 790px;
     float: right;
 }
 #ajax-message {
