@@ -24,7 +24,6 @@ class addPlayerTestCase(TestCase):
         old_number = len(User.objects.all())
         self.client = Client()
         self.client.login(username='_test1', password='secret')
-        User.objects.get(pk=1).is_staff
 
         data = {'username': '_test2', 'password': 'secret', 'confirm_password': 'secret'}
         resp = self.client.post(reverse('add_player'), data)
