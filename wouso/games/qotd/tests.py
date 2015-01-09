@@ -105,10 +105,11 @@ class PageTests(WousoTest):
         self.assertContains(response, 'what is the question?')
 
     def test_question_response_and_done(self):
-        _make_question_for_today(user=self.user, text="what is the question?")
+        q = _make_question_for_today(user=self.user, text="what is the question?")
         response = self.client.get('/g/qotd/')
         self.assertContains(response, 'what is the question')
-        response_form = self.client.post('/g/qotd/', {'answers': 2}, follow=True)
+        a_id = Answer.objects.filter(question=q)[0].id
+        response_form = self.client.post('/g/qotd/', {'answers': a_id}, follow=True)
         self.assertContains(response_form, '[correct]')
 
 
