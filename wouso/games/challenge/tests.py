@@ -354,14 +354,14 @@ class TestChallengeViews(WousoTest):
         # Challenge is launched but not accepted
         self.ch.status = 'L'
         self.ch.save()
-        response = self.c.get(reverse('view_challenge', args=[1]), follow=True)
+        response = self.c.get(reverse('view_challenge', args=[self.ch.id]), follow=True)
         self.assertContains(response, _('The challenge was not accepted'))
 
     def test_challenge_is_not_runnable_when_it_is_refused(self):
         # Challenge is refused
         self.ch.status = 'R'
         self.ch.save()
-        response = self.c.get(reverse('view_challenge', args=[1]), follow=True)
+        response = self.c.get(reverse('view_challenge', args=[self.ch.id]), follow=True)
         self.assertContains(response, _('The challenge was refused'))
 
     def test_challenge_is_not_runnable_more_than_once(self):
@@ -371,14 +371,14 @@ class TestChallengeViews(WousoTest):
         participant.played = True
         participant.score = 200
         participant.save()
-        response = self.c.get(reverse('view_challenge', args=[1]), follow=True)
+        response = self.c.get(reverse('view_challenge', args=[self.ch.id]), follow=True)
         self.assertContains(response, _('You have already submitted this challenge'))
     
     def test_challenge_is_runnable(self):
         # Challenge is accepted, display the challenge
         self.ch.status = 'A'
         self.ch.save()
-        response = self.c.get(reverse('view_challenge', args=[1]))
+        response = self.c.get(reverse('view_challenge', args=[self.ch.id]))
         self.assertContains(response, 'first answer')
         self.assertContains(response, 'second answer')
 
@@ -386,33 +386,38 @@ class TestChallengeViews(WousoTest):
         self.ch.status = 'A'
         self.ch.save()
         # Run the challenge
-        response = self.c.get(reverse('view_challenge', args=[1])) 
+        response = self.c.get(reverse('view_challenge', args=[self.ch.id]))
         # Submit the challenge
-        data = {u'answer_1': [u'1'], 'answer_2': [u'1']}
-        response = self.c.post(reverse('view_challenge', args=[1]), data)
+        data = {self.question1.id: [u'answer_%d' %(self.answer1.id)],
+                self.question2.id: [u'answer_%d' %(self.answer2.id)]}
+        response = self.c.post(reverse('view_challenge', args=[self.ch.id]), data)
         self.assertContains(response, 'You scored')
         # Try to submit it again
-        response = self.c.post(reverse('view_challenge', args=[1]), data, follow=True)
+        response = self.c.post(reverse('view_challenge', args=[self.ch.id]), data, follow=True)
         self.assertContains(response, 'You have already submitted')
 
     def test_challenge_cannot_be_submitted_when_it_is_not_accepted(self):
         self.ch.status = 'L'
         self.ch.save()
-        data = {u'answer_1': [u'1'], 'answer_2': [u'1']}
-        response = self.c.post(reverse('view_challenge', args=[1]), data, follow=True)
+        # Submit the challenge
+        data = {self.question1.id: [u'answer_%d' %(self.answer1.id)],
+                self.question2.id: [u'answer_%d' %(self.answer2.id)]}
+        response = self.c.post(reverse('view_challenge', args=[self.ch.id]), data, follow=True)
         self.assertContains(response, 'The challenge was not accepted')
 
     def test_challenge_cannot_be_submitted_when_it_is_refused(self):
         self.ch.status = 'R'
         self.ch.save()
-        data = {u'answer_1': [u'1'], 'answer_2': [u'1']}
-        response = self.c.post(reverse('view_challenge', args=[1]), data, follow=True)
+        # Submit the challenge
+        data = {self.question1.id: [u'answer_%d' %(self.answer1.id)],
+                self.question2.id: [u'answer_%d' %(self.answer2.id)]}
+        response = self.c.post(reverse('view_challenge', args=[self.ch.id]), data, follow=True)
         self.assertContains(response, 'The challenge was refused')
 
     def test_challenge_history(self):
         self.ch.status = 'A'
         self.ch.save()
-        response = self.c.get(reverse('challenge_history', args=[1])) 
+        response = self.c.get(reverse('challenge_history', args=[self.ch_player1.id]))
         self.assertContains(response, 'testuser1</a> vs.')
         self.assertContains(response, 'Result:')
         self.assertContains(response, 'Pending [A]')
@@ -443,7 +448,7 @@ class TestChallengeViews(WousoTest):
         self.ch.user_to.seconds_took = 50
         self.ch.user_to.save()
 
-        response = self.c.get(reverse('detailed_challenge_stats', args=[2]))
+        response = self.c.get(reverse('detailed_challenge_stats', args=[self.ch_player2.id]))
         self.assertContains(response, 'testuser1 - testuser2')
         self.assertContains(response, '100')
         self.assertContains(response, '200')
@@ -464,7 +469,7 @@ class TestChallengeViews(WousoTest):
         self.ch.user_to.seconds_took = 50
         self.ch.user_to.save()
 
-        response = self.c.get(reverse('detailed_challenge_stats', args=[2, 1]))
+        response = self.c.get(reverse('detailed_challenge_stats', args=[self.ch_player2.id, self.ch_player1.id]))
         self.assertContains(response, 'testuser2 - testuser1')
         self.assertContains(response, '100')
         self.assertContains(response, '200')
@@ -491,7 +496,7 @@ class TestChallengeViews(WousoTest):
         self.ch.save()
         self.ch.user_to.seconds_took = 100
         self.ch.user_to.save()
-        response = self.c.get(reverse('challenge_stats', args=[2]))
+        response = self.c.get(reverse('challenge_stats', args=[self.ch_player2.id]))
         self.assertContains(response, 'Challenges - testuser2')
         self.assertContains(response, 'Challenges played:  1')
         self.assertContains(response, 'Challenges sent:  0')
