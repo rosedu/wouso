@@ -52,87 +52,90 @@
 {% endblock %}
 
 {% block subsectioncontent %}
-        <form class="form-horizontal" method="post">
-            <div class="form-group">
-                <label for="text_type" class="control-label col-sm-3">Select question text type</label>
-                <select class="form-control col-sm-9" id="text_type" name="text_type" onclick="show(this)">
-                    <option selected value="normal">Normal</option>
-                    <option value="rich">Rich</option>
-                </select>
+    <form class="form-horizontal" method="post">
+        <div class="form-group">
+            <label for="text_type" class="control-label col-sm-3">Select question text type</label>
+            <select class="form-control col-sm-3" id="text_type" name="text_type" onclick="show(this)">
+                <option selected value="normal">Normal</option>
+                <option value="rich">Rich</option>
+            </select>
+        </div>
+
+        <div class="form-group normal">
+            <label for="question-text" class="control-label col-sm-3">Insert question text</label>
+            <div id="question-text">{{ form.text }}</div>
+        </div>
+
+        <div class="form-group rich" style="display: none">
+            <label class="control-label col-sm-3">Insert question rich text</label>
+            <br/> <br/>
+            {{ form.rich_text }}
+        </div>
+
+        <div class="form-group">
+            <label for="select-category" class="control-label col-sm-3">Select category</label>
+            <select name="category" id="select-category" class="form-control col-sm-3" onclick="switch_schedule(this)">
+                {% for c in categories %}
+                <option value="{{ c.1 }}">{{ c.0 }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group" id="schedule">
+            <label class="control-label col-sm-3">Day scheduled (dd.mm.yyyy)</label>
+            {{ form.schedule }}
+        </div>
+
+        <div class="form-group">
+            <label for="select-tags" class="control-label col-sm-3">Choose tags</label>
+            <select class="form-control col-sm-3" multiple name="tags" id="select-tags">
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="answer_type" class="control-label col-sm-3">Question type</label>
+            <div id="answer_type">{{ form.answer_type|add_css:"form-control col-sm-3" }}</div>
+        </div>
+
+        <div class="form-group">
+            <label for="form-active" class="control-label col-sm-3">Mark question as active</label>
+            <div id="form-active">{{ form.active|add_css:"form-control col-sm-3" }}</div>
+        </div>
+
+        <hr />
+
+        {% for i in answers_range %}
+            <!--Normal answers-->
+            <div class="formfield normal">
+                <h4 class="mark">Answer #{{i}}</h4>
+                <label for="checkbox_{{i}}" class="mark">Mark correct</label>
+                <input id="checkbox_{{i}}" type="checkbox" name="correct_{{i}}"/>
+                <label class="mark">Mark active</label>
+                <input type="checkbox" name="active_{{i}}" checked/>
+                <br/>
+                <textarea name="answer_{{i}}"></textarea>
             </div>
 
-            <div class="form-group normal">
-                <label for="question-text" class="control-label col-sm-3">Insert question text</label>
-                <div id="question-text">{{ form.text|add_css:"form-control col-sm-9" }}</div>
+            <!--Rich answers-->
+            <div class="formfield rich" style="display: none">
+                <h4 class="mark">Answer #{{i}}</h4>
+                <label for="rich_checkbox_{{i}}" class="mark">Mark correct</label>
+                <input id="rich_checkbox_{{i}}" type="checkbox" name="rich_correct_{{i}}"/>
+                <label class="mark">Mark active</label>
+                <input type="checkbox" name="rich_active_{{i}}" checked/>
+                <br/>
+                {% with "rich_answer_"|add:i as answer %}
+                    {{ form|get_form_field:answer }}
+                {% endwith %}
             </div>
+        {% endfor %}
 
-            <div class="form-group rich" style="display: none">
-                <label for="cke_rich_text" class="control-label col-sm-3">Insert question rich text</label>
-                <textarea name="rich_text"></textarea>
-                <script> CKEDITOR.replace('rich_text'); </script>
-            </div>
+        <br/>
 
-            <div class="form-group">
-                <label for="select-category" class="control-label col-sm-3">Select category</label>
-                <select name="category" id="select-category" class="form-control col-sm-9" onclick="switch_schedule(this)">
-                    {% for c in categories %}
-                    <option value="{{ c.1 }}">{{ c.0 }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+        <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
+        <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
+        <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
 
-            <div class="form-group" id="schedule">
-                <label for="form-schedule" class="control-label col-sm-3">Day scheduled (dd.mm.yyyy)</label>
-                <div id="form-schedule">{{ form.schedule|add_css:"form-control col-sm-9" }}</div>
-            </div>
-
-            <div class="form-group">
-                <label for="select-tags" class="control-label col-sm-3">Choose tags</label>
-                <select class="form-control col-sm-9" multiple name="tags" id="select-tags">
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="answer_type" class="control-label col-sm-3">Question type</label>
-                <div id="answer_type">{{ form.answer_type|add_css:"form-control col-sm-9" }}</div>
-            </div>
-
-            <div class="form-group">
-                <label for="form-active" class="control-label col-sm-3">Mark question as active</label>
-                <div id="form-active">{{ form.active|add_css:"form-control col-sm-9" }}</div>
-            </div>
-            <hr />
-
-            {% for i in 12345678|make_list %}
-                <!--Normal answers-->
-                <div class="formfield normal">
-
-                    <label class="mark">Answer #{{i}}</label>
-                    <label for="checkbox_{{i}}" class="mark">Mark correct</label>
-                    <input id="checkbox_{{i}}" type="checkbox" name="correct_{{i}}"/>
-                    <label class="mark">Mark active</label>
-                    <input type="checkbox" name="active_{{i}}"/>
-                    <br/>
-                    <textarea name="answer_{{i}}"></textarea>
-                </div>
-
-                <!--Rich answers-->
-                <div class="formfield rich" style="display: none">
-                    <label class="mark">Answer #{{i}}</label>
-                    <label for="rich_checkbox_{{i}}" class="mark">Mark correct</label>
-                    <input id="rich_checkbox_{{i}}" type="checkbox" name="rich_correct_{{i}}"/>
-                    <label class="mark">Mark active</label>
-                    <input type="checkbox" name="rich_active_{{i}}"/>
-                    <br/>
-                    <textarea name="rich_answer_{{i}}"></textarea>
-                    <script> CKEDITOR.replace('rich_answer_{{i}}'); </script>
-                </div>
-            {% endfor %}
-
-            <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
-            <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
-            <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
-
-            {% csrf_token %}
-        </form>
+        {% csrf_token %}
+    </form>
 {% endblock %}

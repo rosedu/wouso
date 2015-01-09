@@ -17,7 +17,7 @@ from django.utils.translation import ugettext_noop
 from django.utils.translation import ugettext as _
 from django.views.generic import UpdateView, CreateView, ListView, FormView, \
     TemplateView, DetailView
-from wouso.core.config.models import Setting
+from wouso.core.config.models import Setting, IntegerSetting
 from wouso.core.decorators import staff_required
 from wouso.core.ui import get_sidebar
 from wouso.core.user.models import Player, PlayerGroup, Race
@@ -371,6 +371,7 @@ def qpool_home(request, cat='qotd', page=u'1', tag=None):
 
 
 class QPoolNewView(FormView):
+    """ This view is not used anymore. """
     template_name = 'cpanel/qpool_new.html'
     form_class = QuestionForm
 
@@ -404,10 +405,10 @@ class AddQuestionView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super(AddQuestionView, self).get_context_data(**kwargs)
-        max_answers = self.form_class.noas
+        answers_range = [str(i) for i in range(1, IntegerSetting.get('question_number_of_answers').get_value() + 1)]
         categories = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
         context['categories'] = categories
-        context['max_answers'] = max_answers
+        context['answers_range'] = answers_range
         return context
 
 
@@ -419,6 +420,7 @@ add_question = permission_required('config.change_setting')(
 def edit_question(request, id):
     question = get_object_or_404(Question, pk=id)
     categories = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
+    answers_range = [str(i) for i in range(1, len(question.answers_all) + 1)]
 
     if request.method == 'POST':
         form = EditQuestionForm(request.POST, instance=question)
@@ -433,11 +435,13 @@ def edit_question(request, id):
         form = EditQuestionForm(instance=question)
 
     return render_to_response('cpanel/edit_question.html',
-                              {'question': question, 'form': form, 'categories': categories},
+                              {'question': question, 'form': form,
+                               'categories': categories, 'answers_range': answers_range},
                               context_instance=RequestContext(request))
 
 
 class QPoolAddAnswerView(UpdateView):
+    """ This view is not used anymore. """
     template_name = 'cpanel/add_answer.html'
     model = Question
     form_class = AnswerForm
@@ -460,6 +464,7 @@ qpool_add_answer = permission_required('config.change_setting')(
 
 @permission_required('config.change_setting')
 def qpool_edit(request, id):
+    """ This view is not used anymore. """
     question = get_object_or_404(Question, pk=id)
     categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
 
@@ -493,8 +498,7 @@ def qpool_edit(request, id):
 
 @permission_required('config.change_setting')
 def question_switch(request, id):
-    """ Accept a proposed question
-    """
+    """ Accept a proposed question """
     question = get_object_or_404(Question, pk=id)
 
     # qproposal - endorse part
@@ -562,6 +566,7 @@ def qpool_delete(request, id):
 
 @permission_required('config.change_setting')
 def qpool_delete_answer(request, question_id, answer_id):
+    """ This view is not used anymore. """
     answer = get_object_or_404(Answer, pk=answer_id)
 
     answer.delete()

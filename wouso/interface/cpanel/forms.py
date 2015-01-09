@@ -10,16 +10,18 @@ from wouso.core.scoring.models import Formula
 from wouso.core.security.models import Report
 from wouso.core.user.models import Race, PlayerGroup
 from wouso.interface.apps.pages.models import StaticPage, NewsItem
+from wouso.core.config.models import IntegerSetting
 
 
 class MultipleField(forms.MultipleChoiceField):
-    """No validation for choice."""
+    """ No validation for choice. """
 
     def validate(self, value):
         return True
 
 
 class QuestionForm(forms.Form):
+    """ This form is not used anymore. """
     text = forms.CharField(max_length=2000, widget=forms.Textarea)
     active = forms.BooleanField(required=False)
     schedule = forms.DateField(required=False, input_formats=['%d.%m.%Y', '%Y-%m-%d'], help_text='dd.mm.yyyy')
@@ -109,12 +111,11 @@ class AddQuestionForm(forms.Form):
     active = forms.BooleanField(required=False)
     schedule = forms.DateField(required=False, input_formats=['%d.%m.%Y', '%Y-%m-%d'], help_text='dd.mm.yyyy')
     category = forms.CharField(max_length=100)
-    noas = 8  # number of answers
 
     def __init__(self, data=None, instance=None):
         super(AddQuestionForm, self).__init__(data)
 
-        for i in xrange(1, self.noas + 1):
+        for i in xrange(1, IntegerSetting.get('question_number_of_answers').get_value() + 1):
             self.fields['answer_%d' % i] = forms.CharField(max_length=500,
                                                            widget=forms.Textarea, required=False)
             self.fields['correct_%d' % i] = forms.BooleanField(required=False)
@@ -143,7 +144,7 @@ class AddQuestionForm(forms.Form):
         if data['text']:
             # Question with normal text
             self.instance.text = data['text']
-            for i in xrange(1, self.noas + 1):
+            for i in xrange(1, IntegerSetting.get('question_number_of_answers').get_value() + 1):
                 a = Answer.objects.create(question=self.instance)
                 a.text = data['answer_%d' % i]
                 a.correct = data['correct_%d' % i]
@@ -152,7 +153,7 @@ class AddQuestionForm(forms.Form):
         else:
             # Question with rich text
             self.instance.rich_text = data['rich_text']
-            for i in xrange(1, self.noas + 1):
+            for i in xrange(1, IntegerSetting.get('question_number_of_answers').get_value() + 1):
                 a = Answer.objects.create(question=self.instance)
                 a.rich_text = data['rich_answer_%d' % i]
                 a.correct = data['rich_correct_%d' % i]
@@ -186,18 +187,17 @@ class EditQuestionForm(forms.Form):
     active = forms.BooleanField(required=False)
     schedule = forms.DateField(required=False, input_formats=['%d.%m.%Y', '%Y-%m-%d'], help_text='dd.mm.yyyy')
     category = forms.CharField(max_length=100)
-    noas = 8  # number of answers
 
     def __init__(self, data=None, instance=None):
         super(EditQuestionForm, self).__init__(data)
 
-        for a, i in zip(instance.answers_all, xrange(1, self.noas + 1)):
+        for a, i in zip(instance.answers_all, xrange(1, len(instance.answers_all) + 1)):
             self.fields['answer_%d' % i] = forms.CharField(max_length=500,
-                                                           widget=forms.Textarea, required=False)
+                                                           widget=forms.Textarea, required=False, initial=a.text)
             self.fields['correct_%d' % i] = forms.BooleanField(required=False, initial=a.correct)
             self.fields['active_%d' % i] = forms.BooleanField(required=False, initial=a.active)
 
-            self.fields['rich_answer_%d' % i] = forms.CharField(required=False, widget=CKEditorWidget())
+            self.fields['rich_answer_%d' % i] = forms.CharField(required=False, widget=CKEditorWidget(), initial=a.rich_text)
             self.fields['rich_correct_%d' % i] = forms.BooleanField(required=False, initial=a.correct)
             self.fields['rich_active_%d' % i] = forms.BooleanField(required=False, initial=a.active)
 
@@ -219,6 +219,9 @@ class EditQuestionForm(forms.Form):
 
         self.fields['schedule'] = forms.DateField(required=False, initial=instance.schedule if instance.category.name == 'qotd' else None)
 
+        self.fields['text'] = forms.CharField(required=False, widget=forms.Textarea, initial=instance.text)
+        self.fields['rich_text'] = forms.CharField(required=False, widget=CKEditorWidget(), initial=instance.rich_text)
+
         self.instance = instance
 
     def save(self):
@@ -229,7 +232,7 @@ class EditQuestionForm(forms.Form):
         if data['text']:
             # Question with normal text
             self.instance.text = data['text']
-            for a, i in zip(self.instance.answers_all, xrange(1, self.noas + 1)):
+            for a, i in zip(self.instance.answers_all, xrange(1, len(self.instance.answers_all) + 1)):
                 a.text = data['answer_%d' % i]
                 a.correct = data['correct_%d' % i]
                 a.active = data['active_%d' % i]
@@ -237,7 +240,7 @@ class EditQuestionForm(forms.Form):
         else:
             # Question with rich text
             self.instance.rich_text = data['rich_text']
-            for a, i in zip(self.instance.answers_all, xrange(1, self.noas + 1)):
+            for a, i in zip(self.instance.answers_all, xrange(1, len(self.instance.answers_all) + 1)):
                 a.text = data['rich_answer_%d' % i]
                 a.correct = data['rich_correct_%d' % i]
                 a.active = data['rich_active_%d' % i]
@@ -267,6 +270,7 @@ class EditQuestionForm(forms.Form):
 
 
 class AnswerForm(forms.Form):
+    """ This form is not used anymore. """
     def __init__(self, data=None, instance=None):
         super(AnswerForm, self).__init__(data)
 

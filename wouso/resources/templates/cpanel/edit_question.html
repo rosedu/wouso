@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load django_bootstrap_breadcrumbs %}
 {% load bootstrap %}
+{% load cpanel %}
 
 {% block breadcrumbs %}
     {{ block.super }}
@@ -31,108 +32,113 @@
 
 
 {% block sectioncontent %}
-    <div class="col col-md-12">
+    <form class="form-horizontal" method="post">
+        {{ form.errors }}
+        <p class="formfield">
+            <label>Proposed by</label>
+            {{ question.proposed_by }}
+        </p>
+        <p class="formfield">
+            <label>Added on</label>
+            {{ question.date_added }}
+        </p>
+        <p class="formfield">
+            <label>Last modified on</label>
+            {{ question.date_changed }}
+        </p>
 
-        <form class="form-horizontal" method="post">
-            {{ form.errors }}
-            <p class="formfield">
-                <label>Proposed by</label>
-                {{ question.proposed_by }}
-            </p>
-            <p class="formfield">
-                <label>Added on</label>
-                {{ question.date_added }}
-            </p>
-            <p class="formfield">
-                <label>Last modified on</label>
-                {{ question.date_changed }}
-            </p>
-            <hr/>
+        <hr/>
 
-            <div class="formfield">
-                {% if question.text %}
-                    <label for="text">Edit question text</label>
-                    <textarea id="text" name="text">{{ question.text }}</textarea>
-                {% elif question.rich_text %}
-                    <label>Edit question rich text</label>
-                    <textarea name="rich_text" id="rich_text">
-                        {{ question }}
-                    </textarea>
-                    <script> CKEDITOR.replace('rich_text'); </script>
-                {% endif %}
-                <hr/>
-            </div>
-
-            <p class="formfield">
-                <label for="select-category">Select category</label>
-                <select name="category" id="select-category" onclick="switch_schedule(this)">
-                    {% for c in categories %}
-                    <option value="{{ c.1 }}" {% if c.1 == question.category.name %} selected="selected" {% endif %}>{{ c.0 }}</option>
-                    {% endfor %}
-                </select>
-            </p>
-
-            <div class="formfield" id="schedule" {% if question.category.name != 'qotd' %} style="display: none;" {% endif %}>
-                <label>Day scheduled (dd.mm.yyyy)</label>
-                {{ form.schedule }}
-                <br />
-            </div>
-
-            <p class="formfield">
-                <label for="select-tags">Choose tags</label>
-                <select multiple name="tags" id="select-tags">
-                </select>
-            </p>
-
-            <p class="formfield">
-                <label>Question type</label>
-                {{ form.answer_type }}
-            </p>
-            <hr />
-
+        <div class="form-group">
+            <label class="control-label col-sm-3">Edit question text</label>
             {% if question.text %}
-                <!--Normal Answers-->
-                {% for a in question.answers_all %}
-                <div class="formfield">
-                    <label class="mark">Answer #{{ forloop.counter }}:</label>
-                    <label class="mark">Mark correct</label>
-                    <input type="checkbox" name="correct_{{ forloop.counter }}" {% if a.correct %} checked {% endif %}/>
-                    <label class="mark">Mark active</label>
-                    <input type="checkbox" name="active_{{ forloop.counter }}" {% if a.active %} checked {% endif %}/>
-                    <br/>
-                    <textarea name="answer_{{ forloop.counter }}">{{ a }}</textarea>
-                </div>
-                {% endfor %}
-
+                {{ form.text }}
             {% elif question.rich_text %}
-                <!--Rich Answers-->
-                {% for a in question.answers_all %}
-                <div class="formfield">
-                    <label class="mark">Answer #{{ forloop.counter }}:</label>
-                    <label class="mark">Mark correct</label>
-                    <input type="checkbox" name="rich_correct_{{ forloop.counter }}" {% if a.correct %} checked {% endif %}/>
-                    <label class="mark">Mark active</label>
-                    <input type="checkbox" name="rich_active_{{ forloop.counter }}" {% if a.active %} checked {% endif %}/>
-                    <textarea name="rich_answer_{{ forloop.counter }}">{{ a }}</textarea>
-                    <script> CKEDITOR.replace('rich_answer_{{ forloop.counter }}'); </script>
-                </div>
-                <br/>
-                {% endfor %}
+                <br/> <br/>
+                {{ form.rich_text }}
             {% endif %}
+        </div>
 
-            <br/>
+        <br/>
 
-            <p class="formfield">
-                <label>Mark question as active</label>
-                {{ form.active }}
-            </p>
-            <br />
+        <div class="form-group">
+            <label for="select-category" class="control-label col-sm-3">Select category</label>
+            <select name="category" id="select-category" class="control-label col-sm-3" onclick="switch_schedule(this)">
+                {% for c in categories %}
+                <option value="{{ c.1 }}" {% if c.1 == question.category.name %} selected="selected" {% endif %}>{{ c.0 }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-            <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
-            <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
-            <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
+        <div class="form-group" id="schedule" {% if question.category.name != 'qotd' %} style="display: none;" {% endif %}>
+            <label class="control-label col-sm-3">Day scheduled (dd.mm.yyyy)</label>
+            {{ form.schedule }}
+        </div>
 
-            {% csrf_token %}
-        </form>
-    </div>
+        <div class="form-group">
+            <label for="select-tags" class="control-label col-sm-3">Choose tags</label>
+            <select class="form-control col-sm-3" multiple name="tags" id="select-tags">
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="answer_type" class="control-label col-sm-3">Question type</label>
+            <div id="answer_type">{{ form.answer_type|add_css:"form-control col-sm-3" }}</div>
+        </div>
+
+        <div class="form-group">
+            <label for="form-active" class="control-label col-sm-3">Mark question as active</label>
+            <div id="form-active">{{ form.active|add_css:"form-control col-sm-3" }}</div>
+        </div>
+
+        <hr />
+
+        {% if question.text %}
+            <!--Normal Answers-->
+            {% for i in answers_range %}
+                <div class="formfield">
+                    <h4 class="mark">Answer #{{i}}</h4>
+                    <label class="mark">Mark correct</label>
+                    {% with "correct_"|add:i as correct %}
+                        {{ form|get_form_field:correct }}
+                    {% endwith %}
+                    <label class="mark">Mark active</label>
+                    {% with "active_"|add:i as active %}
+                        {{ form|get_form_field:active }}
+                    {% endwith %}
+                    <br/>
+                    {% with "answer_"|add:i as answer %}
+                        {{ form|get_form_field:answer }}
+                    {% endwith %}
+                </div>
+            {% endfor %}
+        {% elif question.rich_text %}
+            <!--Rich Answers-->
+            {% for i in answers_range %}
+                <div class="formfield">
+                    <h4 class="mark">Answer #{{i}}</h4>
+                    <label class="mark">Mark correct</label>
+                    {% with "rich_correct_"|add:i as correct %}
+                            {{ form|get_form_field:correct }}
+                    {% endwith %}
+                    <label class="mark">Mark active</label>
+                    {% with "rich_active_"|add:i as active %}
+                        {{ form|get_form_field:active }}
+                    {% endwith %}
+                    <br/>
+                    {% with "rich_answer_"|add:i as answer %}
+                        {{ form|get_form_field:answer }}
+                    {% endwith %}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <br/>
+
+        <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
+        <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
+        <button type="submit" class="btn btn-primary">{% trans 'Save' %}</button>
+
+        {% csrf_token %}
+    </form>
 {% endblock %}
