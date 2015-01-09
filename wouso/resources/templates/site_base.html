@@ -39,17 +39,9 @@
 
 <BODY>
     <div id="container">
-	{% block header %}
-    <div id="header">
         {% include 'interface/header.html' %}
 
-        <div id="logo">
-            <a href="{% url homepage %}" id="logoa" title="{{config_title}}"></a>
-        </div>
-    </div>
-    {% endblock %}
-
-
+    <div class="spacer"></div>
 
     {% block search %}
     <div id="search">
@@ -65,8 +57,8 @@
             });
         </script>
     </div>
-
     {% endblock %}
+
     <div class="spacer-search"></div>
 
     <div id="sidebar">
