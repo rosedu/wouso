@@ -184,7 +184,8 @@ class TestQotdViews(WousoTest):
 
     def test_qotd_index_submit(self):
         self.assertFalse(self.qotd_user.last_answered)
-        data = {u'answers': [u'2']}
+        a_id = Answer.objects.filter(question=self.question)[1].id
+        data = {u'answers': [a_id]}
         self.c.post(reverse('qotd_index_view'), data)
         q_user= QotdUser.objects.get(user__username='testuser1')
         initial_last_answered = q_user.last_answered
