@@ -24,3 +24,5 @@ nohup.out
 .vagrant
 nosetests.xml
 /sandbox/
+/tags
+/TAGS
