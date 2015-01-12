@@ -24,7 +24,9 @@ class Customization(ConfigGroup):
         default_race = ChoicesSetting.get('default_race')
         default_race.choices = [(unicode(g), str(g.id)) for g in Race.objects.all()]
 
-        return [title, intro, theme, logo, hf, default_group, default_race, einfo]
+        question_number_of_answers = IntegerSetting.get('question_number_of_answers')
+
+        return [title, intro, theme, logo, hf, default_group, default_race, einfo, question_number_of_answers]
 
 
 class Switchboard(ConfigGroup):

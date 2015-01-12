@@ -11,10 +11,7 @@
         <a class="btn btn-primary" href="{% url qpool_home %}" title="Home">
             <span class="glyphicon glyphicon-home"></span>
         </a>
-        <a class="btn btn-danger" href="{% url add_question %}">
-            <span class="glyphicon glyphicon-plus"></span>{% trans 'Add question #2' %}
-        </a>
-        <a class="btn btn-primary" href="{% url question_new %}">
+        <a class="btn btn-primary" href="{% url add_question %}">
             <span class="glyphicon glyphicon-plus"></span>{% trans 'Add question' %}
         </a>
         <a class="btn btn-primary" href="{% url importer %}">
@@ -168,10 +165,7 @@
                 <td {% if q.scheduled == today %}class="bold"{%endif%}>{{ q.scheduled }}</td>
                 {% endif %}
                 <td nowrap>
-                    <a class="btn btn-danger btn-xs" href="{% url edit_question q.id %}">
-                        <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit #2' %}
-                    </a>
-                    <a class="btn btn-success btn-xs" href="{% url question_edit q.id%}">
+                    <a class="btn btn-success btn-xs" href="{% url edit_question q.id %}">
                         <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                     </a>
                     <a class="btn btn-danger btn-xs" href="{% url question_del q.id%}" onclick="return confirm('really?');">

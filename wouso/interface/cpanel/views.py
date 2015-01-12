@@ -17,7 +17,7 @@ from django.utils.translation import ugettext_noop
 from django.utils.translation import ugettext as _
 from django.views.generic import UpdateView, CreateView, ListView, FormView, \
     TemplateView, DetailView
-from wouso.core.config.models import Setting
+from wouso.core.config.models import Setting, IntegerSetting
 from wouso.core.decorators import staff_required
 from wouso.core.ui import get_sidebar
 from wouso.core.user.models import Player, PlayerGroup, Race
@@ -38,8 +38,8 @@ from wouso.interface.cpanel.models import Customization, Switchboard, \
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.middleware.impersonation import ImpersonateMiddleware
 from wouso.utils.import_questions import import_from_file
-from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, \
-    AnswerForm, EditReportForm, RaceForm, PlayerGroupForm, RoleForm, \
+from forms import TagsForm, UserForm, SpellForm, AddTagForm,\
+    EditReportForm, RaceForm, PlayerGroupForm, RoleForm, \
     StaticPageForm, NewsForm, KarmaBonusForm, AddQuestionForm, EditQuestionForm
 from forms import FormulaForm, TagForm
 
@@ -370,27 +370,6 @@ def qpool_home(request, cat='qotd', page=u'1', tag=None):
                               context_instance=RequestContext(request))
 
 
-class QPoolNewView(FormView):
-    template_name = 'cpanel/qpool_new.html'
-    form_class = QuestionForm
-
-    def get_form_kwargs(self):
-        return dict(data=self.request.POST)
-
-    def form_valid(self, form):
-        new_question = form.save()
-        return redirect('qpool_home', cat=new_question.category.name)
-
-    def get_context_data(self, **kwargs):
-        context = super(QPoolNewView, self).get_context_data(**kwargs)
-        categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
-        context.update(dict(categs=categs))
-        return context
-
-
-qpool_new = permission_required('config.change_setting')(QPoolNewView.as_view())
-
-
 class AddQuestionView(FormView):
     form_class = AddQuestionForm
     template_name = 'cpanel/add_question.html'
@@ -404,10 +383,10 @@ class AddQuestionView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super(AddQuestionView, self).get_context_data(**kwargs)
-        max_answers = self.form_class.noas
+        answers_range = [str(i) for i in range(1, IntegerSetting.get('question_number_of_answers').get_value() + 1)]
         categories = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
         context['categories'] = categories
-        context['max_answers'] = max_answers
+        context['answers_range'] = answers_range
         return context
 
 
@@ -419,6 +398,7 @@ add_question = permission_required('config.change_setting')(
 def edit_question(request, id):
     question = get_object_or_404(Question, pk=id)
     categories = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
+    answers_range = [str(i) for i in range(1, len(question.answers_all) + 1)]
 
     if request.method == 'POST':
         form = EditQuestionForm(request.POST, instance=question)
@@ -433,68 +413,14 @@ def edit_question(request, id):
         form = EditQuestionForm(instance=question)
 
     return render_to_response('cpanel/edit_question.html',
-                              {'question': question, 'form': form, 'categories': categories},
-                              context_instance=RequestContext(request))
-
-
-class QPoolAddAnswerView(UpdateView):
-    template_name = 'cpanel/add_answer.html'
-    model = Question
-    form_class = AnswerForm
-
-    def get_form_kwargs(self):
-        kwargs = {
-            'data': self.request.POST,
-            'instance': self.object
-        }
-        return kwargs
-
-    def form_valid(self, form):
-        form.save(id=self.object)
-        return redirect('question_edit', id=self.object.id)
-
-
-qpool_add_answer = permission_required('config.change_setting')(
-    QPoolAddAnswerView.as_view())
-
-
-@permission_required('config.change_setting')
-def qpool_edit(request, id):
-    question = get_object_or_404(Question, pk=id)
-    categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
-
-    if request.method == 'POST':
-        form = QuestionForm(request.POST, instance=question)
-        if form.is_valid():
-            newq = form.save()
-            newq.proposed_by = request.user
-            if newq.endorsed_by is None:
-                newq.endorsed_by = request.user
-                newq.save()
-            return redirect('qpool_home', cat=newq.category.name)
-        else:
-            print "nevalid"
-    else:
-        show_users = False
-        if question:
-            if question.category:
-                if question.category.name == 'proposed':
-                    show_users = True
-
-        form = QuestionForm(instance=question)
-
-    return render_to_response('cpanel/qpool_edit.html',
-                              {'question': question,
-                               'form': form,
-                               'module': 'qpool',
-                               'categs': categs},
+                              {'question': question, 'form': form,
+                               'categories': categories, 'answers_range': answers_range},
                               context_instance=RequestContext(request))
 
 
 @permission_required('config.change_setting')
 def question_switch(request, id):
-    """ Accept a proposed question
-    """
+    """ Accept a proposed question """
     question = get_object_or_404(Question, pk=id)
 
     # qproposal - endorse part
@@ -558,15 +484,6 @@ def qpool_delete(request, id):
         go_back = reverse('wouso.interface.cpanel.views.qpool_home')
 
     return HttpResponseRedirect(go_back)
-
-
-@permission_required('config.change_setting')
-def qpool_delete_answer(request, question_id, answer_id):
-    answer = get_object_or_404(Answer, pk=answer_id)
-
-    answer.delete()
-
-    return redirect('question_edit', id=question_id)
 
 
 @permission_required('config.change_setting')
