@@ -20,91 +20,6 @@ class MultipleField(forms.MultipleChoiceField):
         return True
 
 
-class QuestionForm(forms.Form):
-    """ This form is not used anymore. """
-    text = forms.CharField(max_length=2000, widget=forms.Textarea)
-    active = forms.BooleanField(required=False)
-    schedule = forms.DateField(required=False, input_formats=['%d.%m.%Y', '%Y-%m-%d'], help_text='dd.mm.yyyy')
-    category = forms.CharField(max_length=100, required=False)
-
-    def __init__(self, data=None, instance=None):
-        super(QuestionForm, self).__init__(data)
-        if data is not None:
-            for i in filter(lambda a: a.startswith('answer_'), data.keys()):
-                i = int(i[7:])
-                self.fields['answer_%d' % i] = forms.CharField(max_length=500,
-                                                               widget=forms.Textarea, required=False)
-                self.fields['correct_%d' % i] = forms.BooleanField(required=False)
-        categs = [(c.name, c.name.capitalize()) for c in Category.objects.all()]
-        self.fields['category'] = forms.ChoiceField(choices=categs,
-                                                    initial=instance.category.name if instance and instance.category else None)
-        alltags = instance.category.tag_set.all() if instance and instance.category else []
-        self.fields['tags'] = MultipleField(
-            choices=[(tag.name, tag.name) for tag in alltags],
-            widget=forms.SelectMultiple, required=False,
-            initial=[t.name for t in instance.tags.all()] if instance else {}
-        )
-
-        self.fields['active'] = forms.BooleanField(required=False, initial=instance.active if instance else False)
-        self.fields['answertype'] = forms.ChoiceField(choices=(("C", "multiple choice"), ("R", "single choice"),
-                                                               ("F", "free text")),
-                                                      initial=instance.answer_type if instance else None)
-        self.instance = instance
-
-    def save(self):
-        data = self.cleaned_data
-        # If new question create question instance. Otherwise drop all answers in order to replace them.
-        if self.instance is None:
-            self.instance = Question.objects.create()
-        else:
-            # Remove all answers and have them replaced.
-            Answer.objects.filter(question=self.instance).delete()
-
-        self.instance.category, nn = Category.objects.get_or_create(name=data['category'])
-
-        for i in filter(lambda a: a.startswith('answer_'), data.keys()):
-            i = int(i[7:])
-            if data['answer_%d' % i] is None or not data['answer_%d' % i].strip():
-                continue
-            a = Answer.objects.create(question=self.instance)
-            a.text = data['answer_%d' % i]
-            a.correct = data['correct_%d' % i]
-            a.save()
-
-        self.instance.text = data['text']
-        self.instance.active = data['active']
-
-        self.instance.answer_type = data['answertype']
-        if self.instance.category.name == 'workshop':
-            self.instance.answer_type = 'F'
-
-        # for qotd, scheduled
-        if self.instance.category.name == 'qotd':
-            sched = Schedule.objects.filter(question=self.instance)
-            if sched:
-                sched = sched[0]
-            else:
-                sched = Schedule.objects.create(question=self.instance)
-            if data['schedule'] is None:
-                sched.delete()
-            else:
-                sched.day = data['schedule']
-                sched.save()
-        # also do tags
-        for t in self.instance.tags.all():
-            self.instance.tags.remove(t)
-        for t in data['tags']:
-            try:
-                # since the form does no validation on Tag choices,
-                # we need to make sure they exist here
-                tag = Tag.objects.get(name=t)
-                self.instance.tags.add(tag)
-            except:
-                continue
-        self.instance.save()
-        return self.instance
-
-
 class AddQuestionForm(forms.Form):
     text = forms.CharField(required=False, max_length=2000, widget=forms.Textarea)
     rich_text = forms.CharField(required=False, widget=CKEditorWidget())
@@ -267,23 +182,6 @@ class EditQuestionForm(forms.Form):
 
         self.instance.save()
         return self.instance
-
-
-class AnswerForm(forms.Form):
-    """ This form is not used anymore. """
-    def __init__(self, data=None, instance=None):
-        super(AnswerForm, self).__init__(data)
-
-        self.fields['new_answer_text'] = forms.CharField(max_length=100,
-                                                         widget=forms.Textarea, required=False)
-        self.fields['new_answer_correct'] = forms.BooleanField(required=False)
-
-    def save(self, id=None):
-        data = self.cleaned_data
-        a = Answer.objects.create(question=id)
-        a.text = data['new_answer_text']
-        a.correct = data['new_answer_correct']
-        a.save()
 
 
 class TagsForm(forms.Form):

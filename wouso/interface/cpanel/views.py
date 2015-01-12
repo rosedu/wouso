@@ -38,8 +38,8 @@ from wouso.interface.cpanel.models import Customization, Switchboard, \
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.middleware.impersonation import ImpersonateMiddleware
 from wouso.utils.import_questions import import_from_file
-from forms import QuestionForm, TagsForm, UserForm, SpellForm, AddTagForm, \
-    AnswerForm, EditReportForm, RaceForm, PlayerGroupForm, RoleForm, \
+from forms import TagsForm, UserForm, SpellForm, AddTagForm,\
+    EditReportForm, RaceForm, PlayerGroupForm, RoleForm, \
     StaticPageForm, NewsForm, KarmaBonusForm, AddQuestionForm, EditQuestionForm
 from forms import FormulaForm, TagForm
 
@@ -370,28 +370,6 @@ def qpool_home(request, cat='qotd', page=u'1', tag=None):
                               context_instance=RequestContext(request))
 
 
-class QPoolNewView(FormView):
-    """ This view is not used anymore. """
-    template_name = 'cpanel/qpool_new.html'
-    form_class = QuestionForm
-
-    def get_form_kwargs(self):
-        return dict(data=self.request.POST)
-
-    def form_valid(self, form):
-        new_question = form.save()
-        return redirect('qpool_home', cat=new_question.category.name)
-
-    def get_context_data(self, **kwargs):
-        context = super(QPoolNewView, self).get_context_data(**kwargs)
-        categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
-        context.update(dict(categs=categs))
-        return context
-
-
-qpool_new = permission_required('config.change_setting')(QPoolNewView.as_view())
-
-
 class AddQuestionView(FormView):
     form_class = AddQuestionForm
     template_name = 'cpanel/add_question.html'
@@ -437,62 +415,6 @@ def edit_question(request, id):
     return render_to_response('cpanel/edit_question.html',
                               {'question': question, 'form': form,
                                'categories': categories, 'answers_range': answers_range},
-                              context_instance=RequestContext(request))
-
-
-class QPoolAddAnswerView(UpdateView):
-    """ This view is not used anymore. """
-    template_name = 'cpanel/add_answer.html'
-    model = Question
-    form_class = AnswerForm
-
-    def get_form_kwargs(self):
-        kwargs = {
-            'data': self.request.POST,
-            'instance': self.object
-        }
-        return kwargs
-
-    def form_valid(self, form):
-        form.save(id=self.object)
-        return redirect('question_edit', id=self.object.id)
-
-
-qpool_add_answer = permission_required('config.change_setting')(
-    QPoolAddAnswerView.as_view())
-
-
-@permission_required('config.change_setting')
-def qpool_edit(request, id):
-    """ This view is not used anymore. """
-    question = get_object_or_404(Question, pk=id)
-    categs = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
-
-    if request.method == 'POST':
-        form = QuestionForm(request.POST, instance=question)
-        if form.is_valid():
-            newq = form.save()
-            newq.proposed_by = request.user
-            if newq.endorsed_by is None:
-                newq.endorsed_by = request.user
-                newq.save()
-            return redirect('qpool_home', cat=newq.category.name)
-        else:
-            print "nevalid"
-    else:
-        show_users = False
-        if question:
-            if question.category:
-                if question.category.name == 'proposed':
-                    show_users = True
-
-        form = QuestionForm(instance=question)
-
-    return render_to_response('cpanel/qpool_edit.html',
-                              {'question': question,
-                               'form': form,
-                               'module': 'qpool',
-                               'categs': categs},
                               context_instance=RequestContext(request))
 
 
@@ -562,16 +484,6 @@ def qpool_delete(request, id):
         go_back = reverse('wouso.interface.cpanel.views.qpool_home')
 
     return HttpResponseRedirect(go_back)
-
-
-@permission_required('config.change_setting')
-def qpool_delete_answer(request, question_id, answer_id):
-    """ This view is not used anymore. """
-    answer = get_object_or_404(Answer, pk=answer_id)
-
-    answer.delete()
-
-    return redirect('question_edit', id=question_id)
 
 
 @permission_required('config.change_setting')
