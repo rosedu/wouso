@@ -413,40 +413,36 @@ class CpanelViewsTest(WousoTest):
         self.assertContains(response, 'Select input file', status_code=200)
         self.assertTrue(chall_cat in response.context['categories'])
 
-    def test_qpool_add_answer_view_get(self):
-        q1 = Question.objects.create(text='Question 1')
-        a1 = Answer.objects.create(text='Answer 1', question=q1, correct=True)
-        a2 = Answer.objects.create(text='Answer 2', question=q1, correct=False)
-        response = self.client.get(reverse('add_answer', args=[q1.pk]))
-        self.assertContains(response, 'Question 1', status_code=200)
-        self.assertContains(response, 'Answer 1')
-        self.assertContains(response, 'Answer 2')
-
-    def test_qpool_add_answer_view_post(self):
-        q1 = Question.objects.create(text='Question 1')
-        data = {'new_answer_text': 'First Answer',
-                'new_answer_correct': 'on'}
-        self.client.post(reverse('add_answer', args=[q1.pk]), data)
-        response = self.client.get(reverse('add_answer', args=[q1.pk]))
-        self.assertContains(response, 'First Answer')
-
     def test_qpool_new_view_get(self):
         Category.objects.create(name='sample_category')
-        response = self.client.get(reverse('question_new'))
+        response = self.client.get(reverse('add_question'))
         self.assertContains(response, 'Add question', status_code=200)
         self.assertContains(response, 'Insert question text')
         self.assertContains(response, 'Select category')
         self.assertContains(response, 'sample_category')
 
     def test_qpool_new_category_ok(self):
+        # Test question with normal text
         Category.objects.create(name='sample_category')
         data = {'text': 'sample text for test question',
                 'category': 'sample_category',
-                'answertype': 'R',
+                'answer_type': 'R',
                 'answer_1': 'sample answer',
-                'correct_1': 'on'}
-        response = self.client.post(reverse('question_new'), data)
+                'correct_1': 'on',
+                'active_1': 'on'}
+        response = self.client.post(reverse('add_question'), data)
         self.assertTrue(Question.objects.get(category__name='sample_category'))
+
+        # Test question with rich text
+        Category.objects.create(name='sample_category_2')
+        data = {'rich_text': '<p><b>sample rich text</b></p>',
+                'category': 'sample_category_2',
+                'answer_type': 'R',
+                'rich_answer_1': '<i>sample_answer</i>',
+                'rich_correct_1': 'on',
+                'rich_active_1': 'on'}
+        response = self.client.post(reverse('add_question'), data)
+        self.assertTrue(Question.objects.get(category__name='sample_category_2'))
 
     @unittest.skip
     # FIXME: If not entering all fields the question home page should add
@@ -455,20 +451,33 @@ class CpanelViewsTest(WousoTest):
         Category.objects.create(name='sample_category')
         data = {'text': 'sample text for test question',
                 'category': 'sample_category',
-                'answertype': 'R'}
+                'answer_type': 'R'}
         response = self.client.post(reverse('question_new'), data)
         response = self.client.get(reverse('qpool_home'))
         self.assertContains(response, 'Invalid')
 
-    def test_qpool_new_answer_ok(self):
+    def test_qpool_new_question_ok(self):
         Category.objects.create(name='sample_category')
+
+        # Test question with normal text
         data = {'text': 'sample text for test question',
                 'category': 'sample_category',
-                'answertype': 'R',
+                'answer_type': 'R',
                 'answer_1': 'sample_response',
-                'correct_1': 'on'}
-        response = self.client.post(reverse('question_new'), data)
+                'correct_1': 'on',
+                'active_1': 'on'}
+        response = self.client.post(reverse('add_question'), data)
         self.assertTrue(Question.objects.get(text='sample text for test question'))
+
+        # Test question with rich text
+        data = {'rich_text': '<p><b>sample rich text</b></p>',
+                'category': 'sample_category',
+                'answer_type': 'R',
+                'rich_answer_1': '<i>sample_answer</i>',
+                'rich_correct_1': 'on',
+                'rich_active_1': 'on'}
+        response = self.client.post(reverse('add_question'), data)
+        self.assertTrue(Question.objects.get(rich_text='<p><b>sample rich text</b></p>'))
 
     def test_status_view(self):
         # Create dummy objects
