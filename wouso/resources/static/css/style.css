@@ -630,6 +630,13 @@ div.group-cb {
 div.group-cc {
     border-top: 3px solid blue;
 }
+.race-logo {
+    width: 84px;
+    height: 84px;
+    margin: 0 10px 0 0;
+    float: left;
+    border: 3px solid #323232
+}
 
 /* lesson */
 .disabled {
