@@ -1,3 +1,4 @@
+import os
 from django import template
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -7,6 +8,7 @@ from wouso.core.user.models import Player
 from wouso.core.scoring.models import Coin
 from wouso.core.magic.templatetags.artifacts import artifact
 register = template.Library()
+
 
 @register.simple_tag
 def player(user, artif_html=None, real_name=False):
@@ -52,6 +54,7 @@ def player_simple2(user, user2):
 
     return u'<a href="%s">%s</a>' % (link, name)
 
+
 @register.simple_tag
 def player_group(group):
     """ Render group with link to group's profile page """
@@ -61,6 +64,7 @@ def player_group(group):
         return u'<a href="%s%s" title="%s">%s</a>' % (link, group, group.name, group)
     else:
         return ''
+
 
 @register.simple_tag
 def player_race(race):
@@ -98,12 +102,14 @@ def coin_amount(amount, coin=None):
 
     return '<div class="coin-amount coin-%s" title="%s">%s</div>' % (coin.name, coin.name, amount)
 
+
 @register.simple_tag
 def spell_stock(player, spell):
     if player is None:
         return ''
     stock = player.magic.spell_stock(spell)
     return 'x%d' % stock if stock > 0 else '-'
+
 
 @register.simple_tag
 def player_input(name, id=None):
@@ -113,3 +119,8 @@ def player_input(name, id=None):
     return '<input type="hidden" placeholder="Player..." name="{name}" id="ac_input_{id}_value" />\n' \
            '<input type="text" id="ac_input_{id}" class="ac_input big" />\n' \
            '<script>$(document).ready(function() {func_content});</script>'.format(name=name, id=id, func_content=func_content)
+
+
+@register.simple_tag()
+def race_logo(race):
+    return os.path.join(settings.MEDIA_RACE_LOGO_URL, os.path.basename(str(race.logo)))

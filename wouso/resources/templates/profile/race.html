@@ -17,6 +17,9 @@
         <h1 class="points-big">{{ race.points}} points</h1>
     </div>
 
+    <div>
+        <img class="race-logo" src="{% race_logo race %}"/>
+    </div>
     <div id="profile-info">
     <h2>{{ race }} {% if race.title != '' %}<small>[{{ race.name }}]</small>{% endif %}</h2>
 
@@ -29,7 +32,6 @@
         <a class="button" href="{% url admin:user_race_change race.id %}">✍</a>
     </div>
     {% endif %}
-
     <div class="second">
     </div>
     </div>
