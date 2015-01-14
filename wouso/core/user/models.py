@@ -26,6 +26,8 @@ class Race(models.Model):
 
     can_play = models.BooleanField(default=True, blank=True)
 
+    logo = models.ImageField(upload_to=settings.MEDIA_RACE_LOGO_DIR, null=True, blank=True)
+
     @property
     def points(self):
         """ Sum of race members points
