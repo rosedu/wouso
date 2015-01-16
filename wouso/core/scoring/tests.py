@@ -1,6 +1,8 @@
 from django.test import TestCase
 from django.db.models.query import QuerySet
 from django.contrib.auth.models import User
+
+from wouso.core.config.models import IntegerListSetting
 from wouso.core.game.models import Game
 from wouso.core import scoring, signals
 from wouso.core.tests import WousoTest
@@ -93,6 +95,8 @@ class ScoringTestCase(TestCase):
 
 class UpdateScoringTest(WousoTest):
     def testUpdatePoints(self):
+        IntegerListSetting.get('level_limits').set_value("80 125 180 245 320 450")
+
         Coin.add('points')
         Coin.add('gold')
         Formula.add('level-gold', expression='gold=10*{level}', owner=None)
