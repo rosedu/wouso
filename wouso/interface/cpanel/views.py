@@ -17,7 +17,7 @@ from django.utils.translation import ugettext_noop
 from django.utils.translation import ugettext as _
 from django.views.generic import UpdateView, CreateView, ListView, FormView, \
     TemplateView, DetailView
-from wouso.core.config.models import Setting, IntegerSetting
+from wouso.core.config.models import Setting, IntegerSetting, IntegerListSetting
 from wouso.core.decorators import staff_required
 from wouso.core.ui import get_sidebar
 from wouso.core.user.models import Player, PlayerGroup, Race
@@ -296,6 +296,35 @@ class FeaturesView(TemplateView):
 
 customization_features = permission_required('config.change_setting')(
     FeaturesView.as_view())
+
+
+class CustomizationLevelsView(TemplateView):
+    template_name = 'cpanel/customization/levels.html'
+
+    def __init__(self, **kwargs):
+        super(CustomizationLevelsView, self).__init__(**kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(CustomizationLevelsView, self).get_context_data(**kwargs)
+
+        level_limits = IntegerListSetting.get('level_limits').get_value()
+        context['maximum_level'] = 1 + len(level_limits)
+        context['level_limits'] = level_limits
+
+        return context
+
+customization_levels = permission_required('config.change_setting')(
+    CustomizationLevelsView.as_view())
+
+
+@permission_required('config.change_setting')
+def customization_set_levels(request):
+    new_level_limits = request.GET.get('new_level_limits', '')
+    IntegerListSetting.get('level_limits').set_value(new_level_limits)
+
+    redir = request.META.get('HTTP_REFERER', reverse('customization_levels'))
+
+    return redirect(redir)
 
 
 @permission_required('config.change_setting')
