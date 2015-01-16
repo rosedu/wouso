@@ -132,3 +132,23 @@ class IntegerSetting(Setting):
             return int(self.value)
         except ValueError:
             return 0
+
+
+class IntegerListSetting(Setting):
+    """ Setting storing integer values as strings """
+
+    def set_value(self, v):
+        self.value = unicode(v)
+        self.save()
+
+    def get_value(self):
+        l = []
+        for n in self.value.split():
+            try:
+                l.append(int(n))
+            except ValueError:
+                l.append(0)
+        return l
+
+    def form(self):
+        return ''

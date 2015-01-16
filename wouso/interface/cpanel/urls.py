@@ -8,6 +8,8 @@ upat = [
     url(r'^customization/games/$', 'wouso.interface.cpanel.views.customization_games', name='customization_games'),
     url(r'^customization/features/$', 'wouso.interface.cpanel.views.customization_features', name='customization_features'),
     url(r'^customization/display/$', 'wouso.interface.cpanel.views.customization_display', name='customization_display'),
+    url(r'^customization/levels/$', 'wouso.interface.cpanel.views.customization_levels', name='customization_levels'),
+    url(r'^customization/set_levels/$', 'wouso.interface.cpanel.views.customization_set_levels', name='customization_set_levels'),
 
     url(r'^leaderboards/$', 'wouso.interface.cpanel.views.leaderboards', name='leaderboards'),
 

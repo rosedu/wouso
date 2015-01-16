@@ -42,6 +42,13 @@
         }
     },
     {
+        "pk": "level_limits",
+        "model": "config.setting",
+        "fields": {
+            "value": "500 1000 1500 2000 2500 3000 3500"
+        }
+    },
+    {
         "pk": "disable-Qproposal",
         "model": "config.setting",
         "fields": {

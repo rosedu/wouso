@@ -201,7 +201,6 @@ MEDIA_RACE_LOGO_URL = "/static/upload/"
 
 WOUSO_VERSION = '5.0.1'
 
-LEVEL_LIMITS = None # Override this with an iterable
 STARTING_POINTS = 15
 
 FINAL_QUEST_CHECKER_PATH = '/home/wouso/fqchecker/' # Folder containing task-01/check, task-02/, task-03/check etc

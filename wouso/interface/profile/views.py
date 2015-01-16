@@ -165,7 +165,7 @@ def player_race(request, race_id):
 
     # Get levels
     levels = []
-    for i, limit in enumerate(God.LEVEL_LIMITS):
+    for i, limit in enumerate(God.get_level_limits()):
         l = God.get_race_level(level_no=i + 1, race=race)
         l.limit = limit
         levels.append(l)
