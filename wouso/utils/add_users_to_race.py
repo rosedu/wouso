@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# To test, run from parent folder using a command such as:
+# PYTHONPATH=../:. python utils/add_users_to_race.py utils/sample-data/sample-user-race-mapping.csv
+
 import sys
 import csv
 import wouso.utils.user_util
