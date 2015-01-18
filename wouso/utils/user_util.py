@@ -79,7 +79,7 @@ def add_user(username, first_name, last_name, email, password, is_active=False, 
     user.first_name = first_name
     user.last_name = last_name
     user.email = email
-    user.set_password = password
+    user.set_password(password)
     user.is_active = is_active
     user.is_staff = is_staff
     user.is_superuser = is_superuser
