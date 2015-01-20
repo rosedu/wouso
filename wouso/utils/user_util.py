@@ -9,6 +9,7 @@
 import argparse
 import sys
 import os
+import codecs
 
 # Setup Django environment.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "wouso.settings")
@@ -16,6 +17,9 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "wouso.settings")
 from django.contrib.auth.models import User
 from wouso.core.user.models import Race
 from wouso.core.user.models import Player
+
+UTF8Writer = codecs.getwriter('utf8')
+sys.stdout = UTF8Writer(sys.stdout)
 
 def _print_user(user):
     """Print information about an user.
