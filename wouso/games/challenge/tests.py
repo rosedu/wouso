@@ -510,7 +510,7 @@ class TestChallengeViews(WousoTest):
         # Button is displayed for a different user
         self.c.login(username='testuser2', password='test')
         response = self.c.get(reverse('player_profile', args=[self.ch_player1.pk]))
-        self.assertContains(response, _('Challenge!'))
+        self.assertContains(response, _('Challenge'))
 
     def test_admin_button_challenges(self):
         admin = self._get_superuser()
