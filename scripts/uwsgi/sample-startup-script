@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# TODO: Point toplevel_dir variable to wouso folder.
+#
+# We assume the sandbox subfolder is called sandbox/ and is a subfolder
+# of the wouso (top-level) folder.
+#
+# We assume the wsgi configuration file is named wouso_uwsgi.ini and is
+# located in the scripts/uwsgi/ subfolder of the wouso (top-level)
+# folder.
+
+toplevel_dir=~/projects/rosedu/wouso/wouso-razvand-fork.git
+virtualenv_dir="$toplevel_dir"/sandbox
+uwsgi_dir="$toplevel_dir"/scripts/uwsgi
+
+cd "$toplevel_dir"
+source "$virtualenv_dir"/bin/activate
+uwsgi --ini "$uwsgi_dir"/sample_wouso_uwsgi.ini
