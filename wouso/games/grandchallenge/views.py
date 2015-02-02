@@ -16,7 +16,7 @@ def index(request):
     played = gc_user.get_played()
 
     if not gc_user in GrandChallengeGame.base_query():
-        messages.error(request, _('Ne pare rau, nu participi in turneu'))
+        messages.error(request, _('We are sorry, you are not part of the tournament'))
         return render(request, 'grandchallenge/message.html')
 
     return render_to_response('grandchallenge/index.html',
