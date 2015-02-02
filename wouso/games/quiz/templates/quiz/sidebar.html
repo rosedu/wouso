@@ -6,9 +6,9 @@
 {% block content %}
 
     {% if number_of_active_quizzes %}
-        <p>{{ number_of_active_quizzes }} available.</p>
+        {{ number_of_active_quizzes }} {% trans 'quizzes are active.' %}
     {% else %}
-        <p>No active quizzes available.</p>
+        {% trans 'No quizzes are active.' %}
     {% endif %}
     <a href="{% url quiz_index_view %}">{% trans 'View all' %}</a>
 
