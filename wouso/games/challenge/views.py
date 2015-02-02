@@ -152,7 +152,7 @@ def launch(request, to_id):
 
 
     if ChallengeGame.disabled():
-        messages.error(request, _('Provocarile sunt dezactivate'))
+        messages.error(request, _('Challenges have been disabled.'))
         logging.info("Ready to unlock (disabled).")
         lock.unlock()
         return redirect('challenge_index_view')
