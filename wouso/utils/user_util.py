@@ -62,7 +62,7 @@ def show_user(username):
     if not p:
         return
     _print_user(p.user)
-    print "race:", p.race
+    print "race: %s, %s" %(p.race.name, p.race.title)
 
 def show_race(race_name):
     """Show information about race.
