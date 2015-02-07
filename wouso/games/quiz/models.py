@@ -117,9 +117,6 @@ class QuizGame(Game):
         super(QuizGame, self).__init__(*args, **kwargs)
 
 
-register_category(QuizGame.QPOOL_CATEGORY, QuizGame)
-
-
 class QuizUser(Player):
     """
      Extension of the User object, customized for quiz
@@ -146,6 +143,8 @@ class QuizUser(Player):
 
 
 Player.register_extension('quiz', QuizUser)
+
+register_category(QuizGame.QPOOL_CATEGORY, QuizGame)
 
 
 class UserToQuiz(models.Model):
