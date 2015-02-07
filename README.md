@@ -16,10 +16,11 @@ The following packages need to be installed:
 * python-virtualenv
 * libldap2-dev
 * libsasl2-dev
+* libssl-dev
 
 On a Debian-based system run the command:
 
-    sudo apt-get install python2.7 python-pip python-django python-dev python-virtualenv libldap2-dev libsasl2-dev
+    sudo apt-get install python2.7 python-pip python-django python-dev python-virtualenv libldap2-dev libsasl2-dev libssl-dev
 
 In case of MySQL support:
 
