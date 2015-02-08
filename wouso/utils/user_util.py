@@ -28,6 +28,16 @@ def _print_user(user):
             user.last_name, user.email, user.is_active, user.is_staff, \
             user.is_superuser)
 
+def _print_player(player):
+    """Print information about a player. Same as user but add race name.
+    """
+    user = player.user
+    race_name = player.race.name if player.race else "None"
+    race_title = player.race.title if player.race else "None"
+    print "%s,%s,%s,%s,%s,%s,%s,%s,%s" %(user.username, user.first_name, \
+            user.last_name, user.email, user.is_active, user.is_staff, \
+            user.is_superuser, race_name, race_title)
+
 def _print_race(race):
     """Print information about a race.
     """
@@ -48,6 +58,22 @@ def list_users(race=None):
         users = [p.user for p in players]
     for u in users:
         _print_user(u)
+
+def list_players(race=None):
+    """List players belonging to a particular race. In case race is missing,
+    list all players. Add printing of race name."""
+    _players = Player.objects.all()
+    if race:
+        players = []
+        for p in _players:
+            if p.race == None:
+                continue
+            if p.race.name == race:
+                players.append(p)
+    else:
+        players = _players
+    for p in players:
+        _print_player(p)
 
 def list_races(race=None):
     """List all races.
@@ -207,6 +233,7 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--list-users", help="list users (in race)", const='###', nargs='?', metavar="RACE")
+    parser.add_argument("--list-players", help="list players (in race)", const='###', nargs='?', metavar="RACE")
     parser.add_argument("--list-races", help="list races", action="store_true")
     parser.add_argument("--show-user", help="show summary info about user", metavar="USERNAME")
     parser.add_argument("--show-race", help="show summary info about race", metavar="RACE_NAME")
@@ -226,6 +253,12 @@ def main():
         if args.list_users == '###':
             race = None
         list_users(race)
+
+    if args.list_players:
+        race = args.list_players
+        if args.list_players == '###':
+            race = None
+        list_players(race)
 
     if args.list_races:
         list_races()
