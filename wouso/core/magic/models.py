@@ -76,7 +76,7 @@ class NoArtifactLevel(object):
     def __init__(self, level_no):
         self.id = ''
         self.name = 'level-%s' % level_no
-        self.title = 'Level %s' % level_no
+        self.title = '%s %s' % (_('Level'), level_no)
         self.image = ''
         self.path = 'default-%s' % self.name
         self.group = None

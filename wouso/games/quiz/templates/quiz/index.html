@@ -8,37 +8,37 @@
 {% block sectioncontent %}
 
 {% if active_quizzes or expired_quizzes %}
-    <h3>Active Quizzes</h3>
+    <h3>{% trans 'Active Quizzes' %}</h3>
     <ul>
         {% for t in active_quizzes %}
             <li><a href="{% url quiz_view t.quiz.id %}">{{ t.quiz.name }}</a></li>
         {% endfor %}
     </ul>
 
-    <h3>Expired quizzes</h3>
+    <h3>{% trans 'Expired Quizzes' %}</h3>
     <ul>
         {% for t in expired_quizzes %}
             <li>{{ t.quiz.name }}</li>
         {% endfor %}
     </ul>
 {% else %}
-    <p>{% trans 'No quizzes have been added yet. Stay tuned!' %}</p>
+    <p>{% trans 'No quizzes have been published. Come back later.' %}</p>
 {% endif %}
 
-<h3>Your quiz results:</h3>
+<h3>{% trans 'Your results' %}</h3>
 {% if played_quizzes %}
     <table>
         <tr>
             <th rowspan="2">#</th>
-            <th rowspan="2">Quiz</th>
-            <th colspan="2">Best Attempt</th>
-            <th colspan="2">Last Attempt</th>
+            <th rowspan="2">{% trans 'Quiz' %}</th>
+            <th colspan="2">{% trans 'Best Score' %}</th>
+            <th colspan="2">{% trans 'Last Score' %}</th>
         </tr>
         <tr>
-            <th>Date</th>
-            <th>Score</th>
-            <th>Date</th>
-            <th>Score</th>
+            <th>{% trans 'Date' %}</th>
+            <th>{% trans 'Score' %}</th>
+            <th>{% trans 'Date' %}</th>
+            <th>{% trans 'Result' %}</th>
         </tr>
         {% for t in played_quizzes %}
             <tr style="text-align: center">
@@ -52,7 +52,7 @@
         {% endfor %}
     </table>
 {% else %}
-    <p> {% trans "You haven't submitted any quiz yet" %}
+    <p> {% trans "You haven't run any quiz yet." %} </p>
 {% endif %}
 
 {% endblock %}

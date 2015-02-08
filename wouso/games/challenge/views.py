@@ -152,7 +152,7 @@ def launch(request, to_id):
 
 
     if ChallengeGame.disabled():
-        messages.error(request, _('Provocarile sunt dezactivate'))
+        messages.error(request, _('Challenges have been disabled.'))
         logging.info("Ready to unlock (disabled).")
         lock.unlock()
         return redirect('challenge_index_view')
@@ -210,7 +210,7 @@ def launch(request, to_id):
 @login_required
 def accept(request, id):
     if ChallengeGame.disabled():
-        messages.error(request, _('Provocarile sunt dezactivate'))
+        messages.error(request, _('Challenges are disabled'))
         return redirect('challenge_index_view')
 
     chall = get_object_or_404(Challenge, pk=id)

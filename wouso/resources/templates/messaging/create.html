@@ -10,7 +10,7 @@
 
 <form id="msg" onsubmit="messagingSubmit();" method="post" action="{% url create %}" data-ajax="false">
     <table>
-    <tr><td>To:</td><td valign="top">
+        <tr><td>{% trans 'To' %}:</td><td valign="top">
             {% if to %}
                 <input type="text" id="to_input" class="hidden">
                 <input type="hidden" id="to" name="to" value="{{ to.id }}" />
@@ -22,7 +22,7 @@
     <tr><td>{% trans 'Subject' %}: </td><td valign="top">
             <input type="text" id="subject" name="subject" class="big" size="50" value="{{ subject }}"/>
     </td></tr>
-    <tr><td valign="top">Text:</td>
+    <tr><td valign="top">{% trans 'Text' %}:</td>
     <td>
         <textarea id="text" name="text" class="big" cols="50" rows="5"></textarea>
     </td>
