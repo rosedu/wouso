@@ -73,7 +73,7 @@ class QuizView(View):
         form.check_self_boxes()
 
         points, gold = self.quiz.calculate_reward(results)
-        self.through.set_played(points=points, gold=gold)
+        self.through.set_played(results, points, gold)
 
         return render_to_response('quiz/result.html',
                                   {'quiz': self.quiz, 'points': points},

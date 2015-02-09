@@ -162,7 +162,6 @@ class UserToQuiz(models.Model):
     questions = models.ManyToManyField(Question)
     state = models.CharField(max_length=1, choices=CHOICES, default='N')
     start = models.DateTimeField(blank=True, null=True)
-    attempts = models.ManyToManyField('QuizAttempt')
 
     @property
     def all_attempts(self):
@@ -213,12 +212,12 @@ class UserToQuiz(models.Model):
         self.start = datetime.now()
         self.save()
 
-    def set_played(self, points, gold):
+    def set_played(self, results, points, gold):
         # Bonus must be given before creating a new attempt, otherwise
         # player will not be bonused in case of new highscore
         self.state = 'P'
-        self._give_bonus(points=points, gold=gold)
-        self.attempts.create(date=datetime.now(), points=points, gold=gold)
+        self._give_bonus(points, gold)
+        self.attempts.create(str(results), points, gold)
         self.save()
 
     @property
@@ -249,6 +248,8 @@ class QuizAttempt(models.Model):
     """
      Stores information about each quiz attempt
     """
-    date = models.DateTimeField(blank=True, null=True)
+    user_to_quiz = models.ForeignKey(UserToQuiz, related_name='attempts')
+    date = models.DateTimeField(auto_now_add=True)
+    results = models.TextField(blank=True, null=True)
     points = models.IntegerField(default=-1)
     gold = models.IntegerField(default=0)
