@@ -1,4 +1,5 @@
 import os
+import pickle
 
 from datetime import datetime
 from random import shuffle
@@ -46,7 +47,6 @@ class Quiz(models.Model):
     category = models.ForeignKey(QuizCategory, null=True, blank=True)
 
     name = models.CharField(max_length=100)
-    number_of_questions = models.IntegerField(default=5)
     time_limit = models.IntegerField(default=300)
 
     type = models.CharField(max_length=1, choices=TYPES)
@@ -54,7 +54,7 @@ class Quiz(models.Model):
     points_reward = models.IntegerField(default=100)
     gold_reward = models.IntegerField(default=30)
 
-    tags = models.ManyToManyField(Tag)
+    tags = models.TextField(blank=True, null=True)
 
     start = models.DateTimeField()
     end = models.DateTimeField()
@@ -209,9 +209,19 @@ class UserToQuiz(models.Model):
     def make_questions(self):
         if self.questions.count() != 0:
             return
-        questions = [q for q in get_questions_with_tag_and_category(list(self.quiz.tags.all()), 'quiz')]
+
+        t = pickle.loads(self.quiz.tags)
+        questions = []
+        for k in t:
+            q = get_questions_with_tag_and_category(k, 'quiz')
+            # Cannot shuffle a queryset, create list from it
+            q = list(q)
+            shuffle(q)
+            for i in q[:t[k]]:
+                questions.append(i)
+
         shuffle(questions)
-        self.questions = questions[:self.quiz.number_of_questions]
+        self.questions = questions
 
     def _give_bonus(self, points, gold):
         if self.best_attempt is not None:
