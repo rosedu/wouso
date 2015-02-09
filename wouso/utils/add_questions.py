@@ -7,6 +7,7 @@ import sys
 import os
 import codecs
 
+
 # Setup Django environment.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "wouso.settings")
 
@@ -14,7 +15,7 @@ from wouso.core.qpool.models import Question, Answer, Tag, Category
 from django.contrib.auth.models import User
 
 
-def add_question(question, answers, category=None, tags=None, file_tags=None):
+def add_question(question, answers, category=None, tag=None, file_tags=None):
     """ Question is a dict with the following keys: text, endorsed_by, answer_type
     [, proposed_by, active, type, code]
     answers is a list of dicts with the following keys: text, correct [, explanation]
@@ -49,67 +50,78 @@ def add_question(question, answers, category=None, tags=None, file_tags=None):
     return q
 
 
-def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=None, tags=None, all_active=False):
+START_QUESTION_MARK = "?"
+ANSWER_TYPE_SINGLE_CHOICE = "R"
+ANSWER_TYPE_MULTIPLE_CHOICE = "C"
+ANSWER_TYPE_FREE_TEXT = "F"
+START_CORRECT_ANSWER_MARK = "+"
+START_INCORRECT_ANSWER_MARK = "-"
+START_TAGS_MARK = "tags:"
+
+def import_questions_from_file(f, proposed_by=None, endorsed_by=None, category=None, tag=None, active=False):
     # read file and parse contents
     a_saved = True
     q_saved = True
     a = {}
     answers = []
     q = {}
-    nr_correct = 0
-
-    nr_imported = 0
-
-
+    num_correct_answers = 0
+    num_imported_questions = 0
     state = 'question'
 
-    for line in opened_file:
+    for line in f:
         line = line.strip()
         if not line:
             continue
 
-        # parse line according to its beginning
-        # second condition (or ____) is for windows reasons
-        if line[0] == '?' or (ord(line[0]) == 239 and line[3] == '?'):
+        # In case of start with question line, do the following:
+        #    TODO
+        if line.startswith(START_QUESTION_MARK):
             if not a_saved:
                 answers.append(a)
                 a_saved = True
             if not q_saved:
-                if all_active is True:
-                    q['active'] = True
-                if endorsed_by is not None:
-                    q['endorsed_by'] = endorsed_by
-                if proposed_by is not None:
-                    q['proposed_by'] = proposed_by
                 if len(answers) == 0:
-                    q['answer_type'] = 'F'
-                elif nr_correct == 1:
-                    q['answer_type'] = 'R'
+                    q['answer_type'] = ANSWER_TYPE_FREE_TEXT
+                elif num_correct_answers <= 1:
+                    q['answer_type'] = ANSWER_TYPE_SINGLE_CHOICE
                 else:
-                    q['answer_type'] = 'C'
-                add(q, answers, category, tags, file_tags)
-                nr_imported += 1
+                    q['answer_type'] = ANSWER_TYPE_MULTIPLE_CHOICE
+                q['answers'] = answers
+                q['proposed_by'] = proposed_by
+                q['endorsed_by'] = endorsed_by
+                q['category'] = category
+                q['tag'] = tag
+                q['file_tags'] = file_tags
+                print q
+                #add_question(q)
+                num_imported_questions += 1
                 q_saved = True
                 a_saved = True
 
+            # Mark states for start of a new question.
             state = 'question'
             q = {}
             file_tags = None
             answers = []
-            nr_correct = 0
+            num_correct_answers = 0
             q_saved = False
-            s = line.split()
+            q['text'] = line[len(START_QUESTION_MARK):].strip()
 
-            q['text'] = ' '.join(s[1:])
+        elif line.startswith(START_TAGS_MARK):
+            tags_list = line.split(START_TAGS_MARK)[1]
+            file_tag_names = [tag.strip() for tag in tags_list.split()]
+            file_tags = []
+            for tag_name in file_tag_names:
+                try:
+                    tag = Tag.objects.get(name=tag_name)
+                except Exception as e:
+                    continue
+                if not tag:
+                    continue
+                file_tags.append(tag)
 
-        elif line == 'tags:':
-            continue
-
-        elif line.startswith('tags: '):
-            tags_line = line.split('tags: ')[1]
-            file_tags = tags_line.split()
-
-        elif line[0] == '-' or line[0] == '+':
+        elif line.startswith(START_CORRECT_ANSWER_MARK) or line.startswith(START_INCORRECT_ANSWER_MARK):
             if not a_saved:
                 answers.append(a)
                 a_saved = True
@@ -117,24 +129,22 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
             state = 'answer'
             a = {}
             a_saved = False
-            s = line.split()
 
-            if s[0] == '-':
+            if line.startswith(START_INCORRECT_ANSWER_MARK):
                 a['correct'] = False
+                a['text'] = line[len(START_INCORRECT_ANSWER_MARK):].strip()
             else:
                 a['correct'] = True
-                nr_correct += 1
-
-            a['text'] = ' '.join(s[1:])
+                a['text'] = line[len(START_CORRECT_ANSWER_MARK):].strip()
+                num_correct_answers +=1
 
         else:
-            # continuation line
+            # If nothing else, it's a continuation line.
             if state == 'question':
                 if q.has_key('text'):
                     q['text'] += '\n' + line
                 else:
                     q['text'] = line
-
             else:
                 a['text'] += '\n' + line
 
@@ -142,33 +152,38 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
         answers.append(a)
         a_saved = True
     if not q_saved:
-        if all_active is True:
-            q['active'] = True
-        if endorsed_by is not None:
-            q['endorsed_by'] = endorsed_by
-        if proposed_by is not None:
-            q['proposed_by'] = proposed_by
         if len(answers) == 0:
-            q['answer_type'] = 'F'
-        elif nr_correct == 1:
-            q['answer_type'] = 'R'
+            q['answer_type'] = ANSWER_TYPE_FREE_TEXT
+        elif num_correct_answers <= 1:
+            q['answer_type'] = ANSWER_TYPE_SINGLE_CHOICE
         else:
-            q['answer_type'] = 'C'
-        add(q, answers, category, tags, file_tags)
-        nr_imported += 1
+            q['answer_type'] = ANSWER_TYPE_MULTIPLE_CHOICE
+        q['answers'] = answers
+        q['proposed_by'] = proposed_by
+        q['endorsed_by'] = endorsed_by
+        q['category'] = category
+        q['tag'] = tag
+        q['file_tags'] = file_tags
+        print q
+        #add_question(q)
+        num_imported_questions += 1
+        q_saved = True
+        a_saved = True
 
-    return nr_imported
+    return num_imported_questions
 
 
 def main():
-
-    if len(sys.argv) != 4:
-        print 'Usage: add_questions.py <file> <proposed-by> <endorsed_by>'
+    if len(sys.argv) != 5:
+        print >>sys.stderr, 'Usage: add_questions.py <file> <category> <proposed-by> <endorsed_by>'
         sys.exit(1)
 
     filename = sys.argv[1]
-    proposed_by_name = sys.argv[2]
-    endorsed_by_name = sys.argv[3]
+    category_name = sys.argv[2]
+    proposed_by_name = sys.argv[3]
+    endorsed_by_name = sys.argv[4]
+    # Tag is filename without extension.
+    tag_name = os.path.splitext(os.path.basename(filename))[0]
 
     try:
         proposed_by = User.objects.get(username=proposed_by_name)
@@ -184,10 +199,30 @@ def main():
         endorsed_by = User.objects.get(username=endorsed_by_name)
     except Exception as e:
         print e
-        print >>sys.stderr, "Proposed by user %s does not exist." %(endorsed_by_name)
+        print >>sys.stderr, "Endorsed by user %s does not exist." %(endorsed_by_name)
         sys.exit(1)
     if not endorsed_by:
-        print >>sys.stderr, "Proposed by user %s does not exist." %(endorsed_by_name)
+        print >>sys.stderr, "Endorsed by user %s does not exist." %(endorsed_by_name)
+        sys.exit(1)
+
+    try:
+        category = Category.objects.get(name=category_name)
+    except Exception as e:
+        print e
+        print >>sys.stderr, "Category %s does not exist." %(category_name)
+        sys.exit(1)
+    if not category:
+        print >>sys.stderr, "Category %s does not exist." %(category_name)
+        sys.exit(1)
+
+    try:
+        tag = Tag.objects.get(name=tag_name)
+    except Exception as e:
+        print e
+        print >>sys.stderr, "Tag %s does not exist." %(tag_name)
+        sys.exit(1)
+    if not tag:
+        print >>sys.stderr, "Tag %s does not exist." %(tag_name)
         sys.exit(1)
 
     try:
@@ -195,7 +230,15 @@ def main():
     except:
         print >>sys.stderr, "Cannot open file %s for reading questions." %(filename)
         sys.exit(1)
-    #import_questions_from_file(f, proposed_by, endorsed_by)
+
+    print "Import questions from file %s." %(filename)
+    print "  Category: %s" %(category)
+    print "  Tag: %s" %(tag)
+    print "  Proposed by: %s" %(proposed_by)
+    print "  Endorsed by: %s" %(endorsed_by)
+
+    n = import_questions_from_file(f, proposed_by, endorsed_by, category, tag, active=True)
+    print "\nImported %d questions." %(n)
 
 
 if __name__ == '__main__':
