@@ -543,6 +543,10 @@ class WorkshopGame(Game):
         user = context.get('user', None)
         if not user or user.is_anonymous():
             return ''
+
+        if WorkshopGame.disabled():
+            return ''
+
         player = user.get_profile()
         ws_player = player.get_extension(WorkshopPlayer)
         semigroups = cls.get_semigroups()

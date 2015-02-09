@@ -1,0 +1,157 @@
+{% extends 'cpanel/index.html' %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %}Customization{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Levels" "customization_levels" %}
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script>
+        function resetFields(text) {
+            $('#error1').text('');
+
+            if (text != parseInt(text, 10)) {
+                $('#error1').text('Max level must be an integer.');
+                return;
+            }
+
+            var new_max_lvl = parseInt(text, 10);
+
+            if (new_max_lvl < 1) {
+                $('#error1').text('Max level must be greater than 0.');
+                return;
+            }
+
+            var current_limits = [];
+            {% for lim in level_limits %}
+                current_limits.push({{lim}});
+            {% endfor %}
+            var curr_max_lvl = current_limits.length;
+
+            var wrapper = $('#wrapper');
+            wrapper.find('div').each(function() {
+                $(this).remove();
+            });
+
+            for (var i = 1; i < new_max_lvl; i++) {
+                var value = 0;
+                if (i <= curr_max_lvl)
+                    value = current_limits[i-1];
+                $('<div class="form-group">' +
+                        '<label class="col-md-2 control-label">Level ' + (i+1) + '</label>' +
+                        '<div class="col-md-6">' +
+                            '<input type="text" class="form-control" maxlength="9" value="' + value +'" onclick="$(\'#error2\').text(\'\')">' +
+                        '</div>' +
+                  '</div>').appendTo(wrapper);
+            }
+        }
+
+        function submitHandler(e) {
+
+            $('#error2').text('');
+
+            var new_max_lvl = $('#new_max_level').val();
+
+            if (new_max_lvl != parseInt(new_max_lvl, 10)) {
+                $('#error2').text('Max level must be an integer.');
+                e.preventDefault();
+            }
+            else if (new_max_lvl < 1) {
+                $('#error2').text('Max level must be greater than 0.');
+                e.preventDefault();
+            }
+
+            var wrapper = $('#wrapper');
+            var prev_lim = -1;
+            var new_limits = '';
+            wrapper.find('input').each(function() {
+                var curr_lim = $(this).val();
+                if (curr_lim != parseInt(curr_lim, 10)) {
+                    $('#error2').text('Level limits must be integers.');
+                    e.preventDefault();
+                }
+                curr_lim = parseInt(curr_lim, 10);
+                if (curr_lim < 1) {
+                    $('#error2').text('Level limits must be greater than 0.');
+                    e.preventDefault();
+                }
+                if (curr_lim <= prev_lim) {
+                    $('#error2').text('Level limits must be ascending.');
+                    e.preventDefault();
+                }
+                new_limits += curr_lim + ' ';
+                prev_lim = curr_lim;
+            });
+
+            var destination = '{% url customization_set_levels %}?new_level_limits=' + new_limits;
+            window.location.replace(destination);
+        }
+    </script>
+{% endblock %}
+
+{% block sectioncontent %}
+
+    <ul class="nav nav-tabs">
+        <li><a href="{% url customization_home %}">Customization</a></li>
+        <li><a href="{% url customization_features %}">Features</a></li>
+        <li><a href="{% url customization_games %}">Games</a></li>
+        <li><a href="{% url customization_display %}">Display</a></li>
+        <li class="active"><a href="{% url customization_levels %}">Levels</a></li>
+    </ul>
+
+    <div class="col-md-6 float-left">
+        <h3>Set new level limits:</h3>
+        <div class="form-group">
+            <label style="padding-top: 7px" for="new_max_level" class="col-md-3 control-label">New max level</label>
+            <div class="col-md-3">
+                <input id="new_max_level" type="text" class="form-control" maxlength="2" value="{{maximum_level}}" onchange="resetFields($(this).val())">
+            </div>
+        </div>
+
+        <br/> <br/>
+        <div><p id="error1" style="color: red;"></p></div>
+
+        <form class="form-horizontal">
+            <div id="wrapper">
+            {% for lim in level_limits %}
+            <div class="form-group">
+                <label class="col-md-2 control-label">Level {{forloop.counter|add:'1'}}</label>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" maxlength="9" value="{{lim}}" onclick="$('#error2').text('')">
+                </div>
+            </div>
+            {% endfor %}
+            </div>
+
+            <p id="error2" class="text-left" style="color: red;"></p>
+            <input class="btn btn-primary" type="button" value="Submit" onclick="submitHandler(this)">
+        </form>
+
+    </div>
+
+    <div class="col-md-6 float-right">
+        <h3>Current level limits:</h3>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-md-3 control-label">Current max level</label>
+                <div class="col-md-3">
+                    <input disabled type="text" class="form-control" value="{{maximum_level}}">
+                </div>
+            </div>
+
+            {% for lim in level_limits %}
+            <div class="form-group">
+                <label class="col-md-2 control-label">Level {{forloop.counter|add:'1'}}</label>
+                <div class="col-md-6">
+                    <input disabled type="text" class="form-control" value="{{lim}}">
+                </div>
+            </div>
+            {% endfor %}
+        </form>
+    </div>
+
+{% endblock %}

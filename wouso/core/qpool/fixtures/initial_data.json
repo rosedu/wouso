@@ -35,30 +35,10 @@
   }
  },
  {
-  "pk": 1,
-  "model": "qpool.tag",
+  "pk": 6,
+  "model": "qpool.category",
   "fields": {
-   "active": false,
-   "category": 4,
-   "name": "qotd"
-  }
- },
- {
-  "pk": 2,
-  "model": "qpool.tag",
-  "fields": {
-   "active": false,
-   "category": 4,
-   "name": "challenge"
-  }
- },
- {
-  "pk": 3,
-  "model": "qpool.tag",
-  "fields": {
-   "active": false,
-   "category": 4,
-   "name": "quest"
+   "name": "quiz"
   }
  }
 ]

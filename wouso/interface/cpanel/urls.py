@@ -2,26 +2,24 @@ from django.conf.urls.defaults import *
 from wouso.interface.cpanel import get_cpanel_games
 
 upat = [
+    # Customization
     url(r'^$', 'wouso.interface.cpanel.views.status', name='status'),
-    url(r'^customization/$', 'wouso.interface.cpanel.views.customization', name='customization'),
-    url(r'^customization/display/$', 'wouso.interface.cpanel.views.display', name='cpanel_display'),
-    url(r'^customization/games/$', 'wouso.interface.cpanel.views.games', name='games_home'),
-    url(r'^customization/features/$', 'wouso.interface.cpanel.views.features', name='features'),
+    url(r'^customization/$', 'wouso.interface.cpanel.views.customization_home', name='customization_home'),
+    url(r'^customization/games/$', 'wouso.interface.cpanel.views.customization_games', name='customization_games'),
+    url(r'^customization/features/$', 'wouso.interface.cpanel.views.customization_features', name='customization_features'),
+    url(r'^customization/display/$', 'wouso.interface.cpanel.views.customization_display', name='customization_display'),
+    url(r'^customization/levels/$', 'wouso.interface.cpanel.views.customization_levels', name='customization_levels'),
+    url(r'^customization/set_levels/$', 'wouso.interface.cpanel.views.customization_set_levels', name='customization_set_levels'),
 
     url(r'^leaderboards/$', 'wouso.interface.cpanel.views.leaderboards', name='leaderboards'),
 
     url(r'^karma/$', 'wouso.interface.cpanel.views.karma_view', name='karma'),
-    url(r'^karma/group/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.karma_group_view', name='karma_group'),
 
     url(r'^questions/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
     url(r'^questions/(?P<page>\d+)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
     url(r'^questions/tag_questions/$', 'wouso.interface.cpanel.views.qpool_tag_questions', name='tag_questions'),
-    url(r'^questions/edit/(?P<pk>\d+)/add_answer', 'wouso.interface.cpanel.views.qpool_add_answer', name='add_answer'),
-    url(r'^questions/edit/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.qpool_edit', name='question_edit'),
     url(r'^questions/del/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.qpool_delete', name='question_del'),
-    url(r'^questions/del/(?P<question_id>\d+)/(?P<answer_id>\d+)/$', 'wouso.interface.cpanel.views.qpool_delete_answer', name='answer_del'),
     url(r'^questions/set_active_categories', 'wouso.interface.cpanel.views.qpool_set_active_categories', name='set_active_categories'),
-    url(r'^questions/new/$', 'wouso.interface.cpanel.views.qpool_new', name='question_new'),
     url(r'^questions/switch_active/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.question_switch', name='switch_active'),
     url(r'^questions/importer/$', 'wouso.interface.cpanel.views.qpool_importer', name='importer'),
     url(r'^questions/importer/send$', 'wouso.interface.cpanel.views.qpool_import_from_upload', name='importer_send'),
@@ -37,7 +35,8 @@ upat = [
     url(r'^questions/del_tag/(?P<tag>\d+)/$', 'wouso.interface.cpanel.views.qpool_delete_tag', name='qpool_del_tag'),
     url(r'^questions/set_tag/$', 'wouso.interface.cpanel.views.qpool_settag', name='qpool_set_tag'),
     url(r'^questions/action/$', 'wouso.interface.cpanel.views.qpool_actions', name='qpool_actions'),
-
+    url(r'^qpool/add_question/$', 'wouso.interface.cpanel.views.add_question', name='add_question'),
+    url(r'^qpool/edit_question/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.edit_question', name='edit_question'),
 
     url(r'^artifacts/$', 'wouso.interface.cpanel.views.artifact_home', name='artifact_home'),
     url(r'^artifacts/user_set/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.artifactset', name='artifact_set'),
@@ -45,6 +44,8 @@ upat = [
     url(r'^artifacts/edit/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.artifact_edit', name='artifact_edit'),
     url(r'^artifacts/del/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.artifact_del', name='artifact_del'),
     url(r'^artifacts/(?P<group>\w+)/$', 'wouso.interface.cpanel.views.artifact_home', name='artifact_home'),
+
+    url(r'^karma/group/(?P<group>\d+)/$', 'wouso.interface.cpanel.views.karma_group_view', name='karma_group'),
 
     url(r'^spells/$','wouso.interface.cpanel.views.spells', name='spells'),
     url(r'^spells/switch_active/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.spell_switch', name='spell_switch_active'),
@@ -78,6 +79,10 @@ upat = [
     url(r'^roles/(?P<id>\d+)/kick/player=(?P<player_id>\d+)/$', 'wouso.interface.cpanel.views.roles_update_kick', name='roles_update_kick'),
     url(r'^roles/roles_create$', 'wouso.interface.cpanel.views.roles_create',
 name='roles_create'),
+
+    (r'^lessons/', include('wouso.interface.apps.lesson.cpanel_urls')),
+    (r'^files/', include('wouso.interface.apps.files.cpanel_urls')),
+    (r'^forum/', include('wouso.interface.forum.cpanel_urls')),
 
     url(r'^activity_monitor/$', 'wouso.interface.cpanel.views.activity_monitor', name='activity_monitor'),
 

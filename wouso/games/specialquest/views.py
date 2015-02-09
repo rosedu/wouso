@@ -38,7 +38,7 @@ def task(request, task_id):
 
     return render_to_response('specialquest/task.html',
                               {'task': t, 'done': done,
-                                  'days_left': days_left},
+                               'days_left': days_left},
                               context_instance=RequestContext(request))
 
 
@@ -108,6 +108,7 @@ def setup_create(request):
 
     if error:
         messages.error(request, error)
+
     return render_to_response('specialquest/create.html',
                               context_instance=RequestContext(request))
 
@@ -158,8 +159,9 @@ def sidebar_widget(context):
         return ''
 
     return render_to_string('specialquest/sidebar.html',
-                            {'not_done': count,
-                             'id': 'specialquest'})
+                            {'not_done': count})
+
+
 register_sidebar_block('specialquest', sidebar_widget)
 
 
@@ -176,4 +178,6 @@ def header_link(context):
     url = reverse('wouso.games.specialquest.views.index')
 
     return dict(link=url, count=count, text=_('Special'))
+
+
 register_header_link('specialquest', header_link)

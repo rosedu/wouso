@@ -12,7 +12,15 @@ def render_zone(context, zone, glue):
     order = [k for k in Setting.get('%s-order' % zone).get_value().split(',') if k]
     if not order:
         order = s.get_blocks()
-    return glue.join([s.get_block(block, context) for block in order])
+
+    # Do not print blocks with empty contents.
+    non_empty_block_contents = []
+    for block in order:
+        content = s.get_block(block, context)
+        if content and not content.isspace():
+            non_empty_block_contents.append(content)
+
+    return glue.join(non_empty_block_contents)
 
 
 @register.simple_tag(takes_context=True)

@@ -1,0 +1,55 @@
+{% extends "forum/forum_base.html" %}
+
+{% load i18n %}
+{% load bootstrap %}
+{% load user %}
+
+{% block title %}
+{% trans "Forums" %} - {{ topic.forum.name }}
+{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li><a href="{% url forums_overview %}">{% trans "Forums" %}</a></li>
+    <li><a href="{% url forums_overview %}#{{ topic.forum.category.id }}">{{ topic.forum.category.name }}</a></li>
+    <li><a href="{% url forum topic.forum.id %}">{{ topic.forum.name }}</a></li>
+    <li><a href="{% url topic topic.id %}">{{ topic.name }}</a></li>
+    <li class="active">{% trans "Create post" %}</li>
+</ol>
+{% endblock %}
+
+{% block content %}
+<div class="media">
+    <a class="pull-left" href="{% url player_profile post.user.user.id %}">
+    <img class="media-object" src="{% player_avatar post.user %}" alt="{{ post.user.user }}" style="width: 64px; height: 64px" />
+    </a>
+    <div class="media-body">
+        <h4 class="media-heading">
+            <a href="{% url player_profile post.user.user.id %}">
+                {{ post.user.user }}
+            </a>
+        </h4>
+        {{ post.text|safe }}
+        <div style="clear: both"></div>
+        <!-- Leave this here or the world will fall apart -->
+        &nbsp;
+        <!-- -------------------------------------------- -->
+        <div class="pull-right small">
+            {{ post.created }} |
+            &nbsp;<a class="pull-right" href="{% url post_create topic.id post.id %}">{% trans 'Reply' %}</a>
+        </div>
+    </div>
+</div>
+<br/>
+
+<div class="row">
+    <form method="post" role="form" class="form-horizontal" action="{% url post_create topic.pk post.pk %}">
+        {{ form|bootstrap_horizontal }}
+        {{ form.media }}
+        {% csrf_token %}
+        <div class="col-md-3">
+            <button class="btn btn-primary pull-right" type="submit">{% trans 'Send post' %}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

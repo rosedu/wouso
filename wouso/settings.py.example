@@ -138,8 +138,6 @@ INSTALLED_APPS = [
     'south',
     'social.apps.django_app.default',
 
-    'django_bootstrap_breadcrumbs',
-
     # WoUSO specific
     'wouso.core.config',
     'wouso.core.user',
@@ -150,6 +148,7 @@ INSTALLED_APPS = [
     'wouso.core.security',
 
     'wouso.games.qotd',
+    'wouso.games.quiz',
     'wouso.games.challenge',
     'wouso.games.grandchallenge',
     'wouso.games.specialchallenge',
@@ -159,15 +158,31 @@ INSTALLED_APPS = [
 
     'wouso.interface',
     'wouso.interface.cpanel',
+    'wouso.interface.forum',
     'wouso.interface.top',
     'wouso.interface.activity',
     'wouso.interface.apps.pages',
     'wouso.interface.apps.statistics',
     'wouso.interface.apps.messaging',
+    'wouso.interface.apps.lesson',
+    'wouso.interface.apps.files',
 
     'bootstrapform',
     'bootstrap3_datetime',
+    'django_bootstrap_breadcrumbs',
+    'ckeditor',
 ]
+
+# Rich text editor settings
+CKEDITOR_UPLOAD_PATH = 'upload/'
+CKEDITOR_JQUERY_URL = '/static/js/jquery-1.8.1.min.js'
+CKEDITOR_CONFIGS = {
+    "default": {
+        "removePlugins": "stylesheetparser",
+        'toolbar': 'Full',
+        'extraAllowedContent': 'iframe'
+    }
+}
 
 # Authentication settings
 LOGIN_URL = '/user/login/'
@@ -181,9 +196,14 @@ AUTH_PROFILE_MODULE = 'user.Player'
 MEDIA_ARTIFACTS_DIR = os.path.dirname(__file__) + "/resources/static/upload/"
 MEDIA_ARTIFACTS_URL = "/static/upload/"
 
+MEDIA_RACE_LOGO_DIR = os.path.dirname(__file__) + "/resources/static/upload/"
+MEDIA_RACE_LOGO_URL = "/static/upload/"
+
+MEDIA_QUIZCATEGORY_LOGO_DIR = os.path.dirname(__file__) + "/resources/static/upload/"
+MEDIA_QUIZCATEGORY_LOGO_URL = "/static/upload"
+
 WOUSO_VERSION = '5.0.1'
 
-LEVEL_LIMITS = None # Override this with an iterable
 STARTING_POINTS = 15
 
 FINAL_QUEST_CHECKER_PATH = '/home/wouso/fqchecker/' # Folder containing task-01/check, task-02/, task-03/check etc
@@ -257,4 +277,3 @@ DISPLAY_NAME = '{first_name} {last_name}'
 # PLEASE LEAVE THIS ON THE LAST LINES OF THIS FILE
 if os.path.isfile(os.path.dirname(__file__) + "/localsettings.py"):
     from localsettings import *
-

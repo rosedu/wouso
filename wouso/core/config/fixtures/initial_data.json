@@ -1,91 +1,105 @@
 [
     {
-        "pk": "default_group", 
-        "model": "config.setting", 
+        "pk": "default_group",
+        "model": "config.setting",
         "fields": {
             "value": ""
         }
-    }, 
+    },
     {
-        "pk": "default_race", 
-        "model": "config.setting", 
+        "pk": "default_race",
+        "model": "config.setting",
         "fields": {
             "value": "1"
         }
-    }, 
+    },
     {
-        "pk": "test", 
-        "model": "config.setting", 
+        "pk": "test",
+        "model": "config.setting",
         "fields": {
             "value": "test"
         }
-    }, 
+    },
     {
-        "pk": "title", 
-        "model": "config.setting", 
+        "pk": "title",
+        "model": "config.setting",
         "fields": {
             "value": "World of USO - next"
         }
-    }, 
+    },
     {
-        "pk": "intro", 
-        "model": "config.setting", 
+        "pk": "intro",
+        "model": "config.setting",
         "fields": {
             "value": "World of USO e un joc simplu realizat pentru studen\u021bii cursului de USO (Utilizarea Sistemelor de Operare) din Facultatea de Automatic\u0103 \u0219i Calculatoare a Universit\u0103\u021bii Politehnica Bucure\u0219ti.\r\n\r\nWorld of USO are 3 p\u0103r\u021bi: Question of the Day, Challenge \u0219i The Quest"
         }
     },
     {
-        "pk": "disable-Qproposal", 
-        "model": "config.setting", 
+        "pk": "question_number_of_answers",
+        "model": "config.setting",
         "fields": {
-            "value": ""
+            "value": "4"
         }
-    }, 
+    },
     {
-        "pk": "theme", 
-        "model": "config.setting", 
+        "pk": "level_limits",
+        "model": "config.setting",
         "fields": {
-            "value": ""
+            "value": "500 1000 1500 2000 2500 3000 3500"
         }
-    }, 
+    },
     {
-        "pk": "disable-QotdGame", 
-        "model": "config.setting", 
+        "pk": "disable-Qproposal",
+        "model": "config.setting",
         "fields": {
             "value": ""
         }
-    }, 
+    },
     {
-        "pk": "disable-SpecialQuestGame", 
-        "model": "config.setting", 
+        "pk": "theme",
+        "model": "config.setting",
         "fields": {
             "value": ""
         }
-    }, 
+    },
     {
-        "pk": "disable-Top", 
-        "model": "config.setting", 
+        "pk": "disable-QotdGame",
+        "model": "config.setting",
         "fields": {
             "value": ""
         }
-    }, 
+    },
     {
-        "pk": "disable-chall-was-set-up-SecurityRule", 
-        "model": "config.setting", 
+        "pk": "disable-SpecialQuestGame",
+        "model": "config.setting",
         "fields": {
             "value": ""
         }
-    }, 
+    },
     {
-        "pk": "disable-login-multiple-account-SecurityRule", 
-        "model": "config.setting", 
+        "pk": "disable-Top",
+        "model": "config.setting",
         "fields": {
             "value": ""
         }
-    }, 
+    },
+    {
+        "pk": "disable-chall-was-set-up-SecurityRule",
+        "model": "config.setting",
+        "fields": {
+            "value": ""
+        }
+    },
+    {
+        "pk": "disable-login-multiple-account-SecurityRule",
+        "model": "config.setting",
+        "fields": {
+            "value": ""
+        }
+    },
     {
         "pk": "disable-reported-user-SecurityRule",
-        "model": "config.setting", 
+        "model": "config.setting",
         "fields": {
             "value": ""
         }

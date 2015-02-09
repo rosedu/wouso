@@ -11,7 +11,7 @@
         <a class="btn btn-primary" href="{% url qpool_home %}" title="Home">
             <span class="glyphicon glyphicon-home"></span>
         </a>
-        <a class="btn btn-primary" href="{% url question_new %}">
+        <a class="btn btn-primary" href="{% url add_question %}">
             <span class="glyphicon glyphicon-plus"></span>{% trans 'Add question' %}
         </a>
         <a class="btn btn-primary" href="{% url importer %}">
@@ -126,10 +126,10 @@
                 <td>{{ q.id }}</td>
                 <td>
                     <div class="text-left">
-                        <span class="question_preview" onclick="$('#qc_{{q.id}}').toggle();" title="Click for answers">{{ q }}</span>
+                        <span class="question_preview" onclick="$('#qc_{{q.id}}').toggle();" title="Click for answers">{{ q|safe }}</span>
                         <div id="qc_{{ q.id }}" class="collapse">
                             {% for a in q.answers %}
-                                {% if a.correct %}+{% else %}-{% endif %}{{ a.text }}<br/>
+                                {% if a.correct %}+{% else %}-{% endif %}{{ a|safe }}<br/>
                             {% endfor %}
                         </div>
                     </div>
@@ -165,7 +165,7 @@
                 <td {% if q.scheduled == today %}class="bold"{%endif%}>{{ q.scheduled }}</td>
                 {% endif %}
                 <td nowrap>
-                    <a class="btn btn-success btn-xs" href="{% url question_edit q.id%}">
+                    <a class="btn btn-success btn-xs" href="{% url edit_question q.id %}">
                         <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                     </a>
                     <a class="btn btn-danger btn-xs" href="{% url question_del q.id%}" onclick="return confirm('really?');">

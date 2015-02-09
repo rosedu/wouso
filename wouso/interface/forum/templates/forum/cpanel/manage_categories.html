@@ -1,0 +1,43 @@
+{% extends 'forum/cpanel/index.html' %}
+
+{% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %}
+    Manage categories
+    <a class="btn btn-primary pull-right" href="{% url add_forum_category %}">
+        <span class="glyphicon glyphicon-plus"></span>{% trans 'Add category' %}
+    </a>
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Manage categories" "manage_forum_categories" %}
+{% endblock %}
+
+{% block sectioncontent %}
+    <table class="table table-bordered table-hover table-condensed">
+        <tr>
+            <th>Category</th>
+            <th>Manage</th>
+        </tr>
+        {% for c in categories %}
+        <tr>
+            <td>{{ c }}</td>
+            <td>
+                <a class="btn btn-success" href="{% url edit_forum_category c.id %}">
+                    <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                </a>
+                <a class="btn btn-danger" href="{% url delete_forum_category c.id %}">
+                    <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="10">No forum categories have been added yet.</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}

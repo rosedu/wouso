@@ -216,7 +216,7 @@ class TestWorkshopViews(WousoTest):
         self.assertFalse(workshops)
 
         today = datetime.today()
-        data = {u'semigroup': u'1',
+        data = {u'semigroup': sg.id,
                 u'date': today.date(),
                 u'question_count': u'5'}
         response = self.c.post(reverse('ws_add_workshop'), data)

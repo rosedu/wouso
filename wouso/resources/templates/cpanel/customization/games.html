@@ -1,0 +1,33 @@
+{% extends 'cpanel/index.html' %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %}Customization{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Games" "customization_games" %}
+{% endblock %}
+
+{% block sectioncontent %}
+
+<ul class="nav nav-tabs">
+        <li><a href="{% url customization_home %}">Customization</a></li>
+        <li><a href="{% url customization_features %}">Features</a></li>
+        <li class="active"><a href="{% url customization_games %}">Games</a></li>
+        <li><a href="{% url customization_display %}">Display</a></li>
+        <li><a href="{% url customization_levels %}">Levels</a></li>
+</ul>
+
+<form method="post" action="">
+    {% for s in settings.props %}
+        <fieldset>
+            {% autoescape off %}
+                {{ s.form }}
+            {% endautoescape %}
+            <br/>
+        </fieldset>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Save</button>
+    {% csrf_token %}
+</form>
+{% endblock %}

@@ -96,6 +96,9 @@ def sidebar_widget(context):
     user = context.get('user', None)
     if not user or not user.is_authenticated():
         return ''
+
+    if QotdGame.disabled():
+        return ''
     qotd = QotdGame.get_for_today()
     qotd_user = user.get_profile().get_extension(QotdUser)
 

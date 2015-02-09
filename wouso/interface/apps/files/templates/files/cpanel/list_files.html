@@ -1,0 +1,55 @@
+{% extends 'cpanel/index.html' %}
+
+{% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %}
+    Files
+    <div class="pull-right">
+        <a class="btn btn-primary" href="{% url add_file %}">
+            <span class="glyphicon glyphicon-plus"></span>{% trans 'Upload file' %}
+        </a>
+            <a class="btn btn-success" href="{% url manage_categories %}">
+            <span class="glyphicon glyphicon-edit"></span>{% trans 'Manage categories' %}
+        </a>
+    </div>
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Files" "files" %}
+{% endblock %}
+
+{% block sectioncontent %}
+
+<div class="col-md-12">
+    <table class="table table-bordered table-hover table-condensed">
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Manage</th>
+        </tr>
+            {% for f in files %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ f.name }}</td>
+                <td>{{ f.category }}</td>
+                <td>
+                   <a class="btn btn-success" href="{% url edit_file f.id %}">
+                        <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                    </a>
+                    <a class="btn btn-danger" href="{% url delete_file f.id %}" onclick="return confirm('Really?');">
+                        <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="10">No files have been uploaded.</td>
+                </tr>
+            {% endfor %}
+    </table>
+</div>
+
+{% endblock %}

@@ -105,8 +105,8 @@ def create_finale(request):
 
 
 @permission_required('quest.change_quest')
-def quest_bonus(request, quest):
-    quest = get_object_or_404(Quest, pk=quest)
+def quest_bonus(request, id):
+    quest = get_object_or_404(Quest, pk=id)
     quest.give_bonus()
     return redirect('quest_home')
 

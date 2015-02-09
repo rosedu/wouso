@@ -2,6 +2,8 @@ from django.utils.translation import ugettext as _
 from wouso.core import signals
 from wouso.core.magic.models import Artifact, ArtifactGroup, SpellHistory, NoArtifactLevel
 from wouso.core.game import get_games
+from wouso.core.config.models import IntegerListSetting
+
 
 class DefaultGod:
     """ A basic God implementation and also the base class for other gods.
@@ -9,7 +11,9 @@ class DefaultGod:
     This can be overriden by realm specific version of God. Every year,
     a new god can/must be written.
     """
-    LEVEL_LIMITS = (80, 125, 180, 245, 320, 450)
+
+    def get_level_limits(self):
+        return IntegerListSetting.get('level_limits').get_value()
 
     def get_system_formulas(self):
         """ Return formulas used by the meta wouso game.
@@ -17,29 +21,29 @@ class DefaultGod:
         """
         fs = [
             dict(name='start-points', expression='points=420', owner=None,
-                description='Points received at the start of the game'),
+                 description='Points received at the start of the game'),
             dict(name='buy-spell', expression='gold=-{price}', owner=None,
-                description='Gold spent on spells'),
+                 description='Gold spent on spells'),
             dict(name='gold-points-rate', expression='points={gold}*3;gold=-{gold}', owner=None,
-                description='Exchange gold in points'),
+                 description='Exchange gold in points'),
             dict(name='points-gold-rate', expression='points=-{points};gold={points}*0.1', owner=None,
-                description='Exchange points in gold'),
+                 description='Exchange points in gold'),
             dict(name='bonus-gold', expression='gold={gold}', owner=None,
-                description='Give bonus gold to the poor people'),
+                 description='Give bonus gold to the poor people'),
             dict(name='bonus-points', expression='points={points}', owner=None,
-                description='Give bonus points'),
+                 description='Give bonus points'),
             dict(name='penalty-points', expression='points=-{points}', owner=None,
-                description='Take back points from user'),
+                 description='Take back points from user'),
             dict(name='level-gold', expression='gold=10*{level}', owner=None,
-                description='Bonus gold on level upgrade'),
+                 description='Bonus gold on level upgrade'),
             dict(name='general-infraction', expression='penalty=10', owner=None,
-                description='Give penalty points to suspicious users'),
+                 description='Give penalty points to suspicious users'),
             dict(name='chall-was-set-up-infraction', expression='penalty=20', owner=None,
-                description='Give penalty points for losing a challenge on purpose'),
+                 description='Give penalty points for losing a challenge on purpose'),
             dict(name='head-start', expression='points=200', owner=None,
-                description='Points earned for logging in the head start period'),
+                 description='Points earned for logging in the head start period'),
             dict(name='bonus-karma', expression='gold={karma_points}*10', owner=None,
-                description='Bonus given for earning Karma Points'),
+                 description='Bonus given for earning Karma Points'),
         ]
         return fs
 
@@ -74,24 +78,26 @@ class DefaultGod:
             nivelul 6: 320 - 450p
             nivelul 7: 450 -
         """
-        for i, limit in enumerate(DefaultGod.LEVEL_LIMITS):
+        level_limits = self.get_level_limits()
+        for i, limit in enumerate(level_limits):
             if points < limit:
                 return i + 1
-        return 7  # maximum level for now
+        return 1 + len(level_limits)  # maximum level
 
     def get_level_progress(self, player):
         """ Get player progress inside its level """
         level_no = player.level_no
         points = player.points
+        level_limits = self.get_level_limits()
         try:
             if level_no == 1:
                 current_limit = 0
             else:
-                current_limit = DefaultGod.LEVEL_LIMITS[level_no - 2]
+                current_limit = level_limits[level_no - 2]
         except:
             current_limit = 0
         try:
-            next_limit = DefaultGod.LEVEL_LIMITS[level_no - 1]
+            next_limit = level_limits[level_no - 1]
         except:
             next_limit = 1000
 
@@ -101,7 +107,8 @@ class DefaultGod:
         else:
             percent = round(100.0 * points_gained / next_limit)
 
-        return dict(next_level=level_no + 1, points_gained=points_gained , points_left=next_limit-points, percent=percent)
+        return dict(next_level=level_no + 1, points_gained=points_gained, points_left=next_limit - points,
+                    percent=percent)
 
     def get_all_modifiers(self):
         """ Fetch modifiers from games and also add system specific ones
@@ -116,6 +123,7 @@ class DefaultGod:
             ms.extend(g.get_modifiers())
 
         from wouso.interface.apps import get_apps
+
         for a in get_apps():
             ms.extend(a.get_modifiers())
 
@@ -150,7 +158,7 @@ class DefaultGod:
             return False, 'Player has immunity'
 
         if destination.magic.has_modifier(spell.name):
-                return False, 'Player already has this spell cast on him'
+            return False, 'Player already has this spell cast on him'
 
         if destination.magic.has_modifier('curse') and (spell.type != 'n'):
             return False, 'Player is cursed'
@@ -159,8 +167,8 @@ class DefaultGod:
             return False, 'Player is cursed'
 
         if spell.name == 'challenge-affect-scoring':
-           if not spell_cleanup(spell, destination, spell.name):
-               return False, 'Something wrong'
+            if not spell_cleanup(spell, destination, spell.name):
+                return False, 'Something wrong'
         if spell.name == 'challenge-affect-scoring-won':
             if not spell_cleanup(spell, destination, spell.name):
                 return False, 'Something wrong'
@@ -189,10 +197,11 @@ class DefaultGod:
             lastch = Challenge.last_between(player_from, player_to)
             if lastch:
                 elapsed_days = (datetime.now() - lastch.date).days
-                position_diff = abs(player_from.get_extension(TopUser).position - player_to.get_extension(TopUser).position)
+                position_diff = abs(
+                    player_from.get_extension(TopUser).position - player_to.get_extension(TopUser).position)
                 rule = ceil(position_diff * 0.1)
                 if rule > 7:
-                    rule = 7 # nu bloca mai mult de 7 zile
+                    rule = 7  # nu bloca mai mult de 7 zile
                 if rule <= elapsed_days:
                     return True
                 return False
@@ -200,19 +209,20 @@ class DefaultGod:
         return True
 
 
-def spell_cleanup(spell,destination,spell_name):
+def spell_cleanup(spell, destination, spell_name):
     """
     This function eliminates same type spells with contrary sign +/-
     """
     existing = destination.magic.spells.filter(spell__name=spell_name)
     if existing.count() > 0:
-    # check if a spell with the same sign +/- exists
+        # check if a spell with the same sign +/- exists
         for sp in existing:
             if (sp.spell.percents * spell.percents) > 0:
                 return False
     # in order to apply this new spell, cancel existing, sign contrary, spells
     existing.delete()
     return True
+
 
 # Define the receivers for postCast and postExpire signals
 def post_cast(sender, **kwargs):
@@ -249,6 +259,7 @@ def post_cast(sender, **kwargs):
         psdue.player.save()
     return False
 
+
 def post_expire(sender, **kwargs):
     """
      Execute an action right before a spell expires
@@ -260,9 +271,11 @@ def post_expire(sender, **kwargs):
         return
 
     from wouso.core import scoring
+
     if psdue.spell.name == 'top-disguise':
         psdue.player.points = scoring.real_points(psdue.player)
         psdue.player.save()
+
 
 signals.postCast.connect(post_cast)
 signals.postExpire.connect(post_expire)

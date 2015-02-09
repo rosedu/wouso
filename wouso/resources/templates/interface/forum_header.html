@@ -1,0 +1,43 @@
+{% load user %}
+{% load i18n %}
+{% load ui %}
+
+<!-- Logo -->
+<div id="logo" class="pull-left">
+    <a href="{% url homepage %}" id="logo" title="{{config_title}}"></a>
+</div>
+
+<!-- Buttons -->
+<div class="pull-right">
+    <div class="first-line">
+    {% if user.is_authenticated %}
+        {% if user.real_user %}
+            Impersonated by {{ user.real_user }} <a href="{% url impersonate_clear %}">clear</a>
+        {% endif %}
+        <a id="head-game" href="{% url homepage %}">Game</a>
+        {% if perms.config.change_setting %}
+        <a id="head-cpanel" href="{% url status %}">CPanel</a>
+        {% endif %}
+
+        <a id="head-logout" href="{% url logout_view %}" onclick="remove_storage()">{% trans "Logout" %} &raquo;</a>
+    {% else %}
+    {% trans 'Anonymous' %}, <a href="{% url login_view %}">{% trans "Login" %} &raquo;</a>
+    {% endif %}
+    </div>
+    <!-- Avatar -->
+    {% if user.is_authenticated %}
+    <div class="media player-info">
+        <a class="pull-right" href="{% url player_profile player.id %}">
+            <img src="{% player_avatar player %}" class="media-object avatar avatar-med" />
+        </a>
+        <div class="media-body" style="padding-top: 10px">
+            <h4 class="media-heading" style="text-align: right">{% player player %}</h4>
+            <div class="player-info-text">
+                {% trans 'Level' %} {{ player.level_no }}
+                {% coin_amount player %}
+                {% coin_amount player 'gold' %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>

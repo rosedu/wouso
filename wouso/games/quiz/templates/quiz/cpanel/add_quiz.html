@@ -1,0 +1,39 @@
+{% extends 'quiz/cpanel/list_quizzes.html' %}
+
+{% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+{% load bootstrap %}
+{% load cpanel %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Add quiz" "add_quiz" %}
+{% endblock %}
+
+{% block sectioncontent %}
+    <form class="form-horizontal" method="post">
+        {% for f in form %}
+            {% if "tag_" not in f.name %}
+                <div class="form-group">
+                    <label for="{{f.label}}" class="control-label col-md-2">{{ f.label }}</label>
+                    <div id="{{f.label}}">{{ f|add_css:"form-control col-md-3" }}</div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <hr/>
+
+        <b>{% trans 'Tags' %}</b>
+        {% for f in form %}
+            {% if "tag_" in f.name %}
+                <div class="form-group">
+                    <label for="{{f.label}}" class="control-label col-md-2">{{ f.label }}</label>
+                    <div id="{{f.label}}">{{ f|add_css:"form-control col-md-1" }}</div>
+                </div>
+            {% endif %}
+        {% endfor %}
+        <a class="btn btn-warning" href="{% url list_quizzes %}">{% trans 'Back' %}</a>
+        <button class="btn btn-primary" type="submit">{% trans 'Submit' %}</button>
+        {% csrf_token %}
+    </form>
+{% endblock %}

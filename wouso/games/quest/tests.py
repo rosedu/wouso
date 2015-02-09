@@ -143,10 +143,10 @@ class QuestTestCase(WousoTest):
         initial_points = pl.points
 
         #add quest bonus
-        response = quest_bonus(request, 1)
+        response = quest_bonus(request, quest.id)
 
         #get final points
-        pl = User.objects.get(pk=1)
+        pl = User.objects.get(username=self.user.username)
         final_points = pl.get_profile().points
 
         self.assertTrue(final_points > initial_points)

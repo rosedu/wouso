@@ -4,6 +4,8 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    (r'^ckeditor/', include('ckeditor.urls')),
+
     url(r'^$', 'wouso.interface.views.homepage', name='homepage'),
     url(r'^hub/$', 'wouso.interface.views.hub', name='hub'),
     url(r'^(?P<page>\d*)/$', 'wouso.interface.views.homepage', name='homepage'),
@@ -12,6 +14,8 @@ urlpatterns = patterns('',
     url(r'^activity/seen/$', 'wouso.interface.views.seen_24h', name='seen24'),
 
     (r'^top/', include('wouso.interface.top.urls')),
+
+    (r'^forum/', include('wouso.interface.forum.urls')),
 
     url(r'^leaderboard/$', 'wouso.interface.views.leaderboard_view', name='leaderboard'),
     url(r'^division/$', 'wouso.interface.views.division_view', name='division'),
@@ -41,6 +45,12 @@ urlpatterns = patterns('',
     (r'^instantsearch/$', 'wouso.interface.views.instantsearch'),
     (r'^searchone/$', 'wouso.interface.views.searchone'),
     url(r'^s/(.+)/$', 'wouso.interface.apps.pages.views.staticpage', name='static_page'),
+
+    #Lesson
+    (r'^lessons/', include('wouso.interface.apps.lesson.urls')),
+
+    #Lesson
+    (r'^files/', include('wouso.interface.apps.files.urls')),
 
     #Report
     url(r'^report/(?P<id>\d*)/$','wouso.core.security.views.report', name='report_player'),
