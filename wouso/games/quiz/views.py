@@ -43,7 +43,7 @@ class QuizView(View):
         self.through = UserToQuiz.objects.get(user=self.quiz_user, quiz=self.quiz)
 
         # check if user is eligible to play quiz
-        if not self.through.can_play_again():
+        if not self.through.can_play_again() and not self.quiz_user.user.is_staff:
             messages.error(request,
                            _('You can replay this quiz in {days} day(s)!'.format(
                                days=self.through.days_until_can_replay)), )
