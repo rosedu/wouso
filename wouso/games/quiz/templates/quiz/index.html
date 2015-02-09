@@ -11,7 +11,11 @@
     <h3>{% trans 'Active Quizzes' %}</h3>
     <ul>
         {% for t in active_quizzes %}
-            <li><a href="{% url quiz_view t.quiz.id %}">{{ t.quiz.name }}</a></li>
+            <li>
+                <a href="{% url quiz_view t.quiz.id %}" onclick="return confirm('Are you sure you want to take this quiz?')">
+                    {{ t.quiz.name }}
+                </a>
+            </li>
         {% endfor %}
     </ul>
 
