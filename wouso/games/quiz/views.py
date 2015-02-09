@@ -27,6 +27,7 @@ def index(request):
 
     return render_to_response('quiz/index.html',
                               {'active_quizzes': quiz_user.active_quizzes,
+                               'inactive_quizzes': quiz_user.inactive_quizzes,
                                'expired_quizzes': quiz_user.expired_quizzes,
                                'played_quizzes': quiz_user.played_quizzes},
                               context_instance=RequestContext(request))
@@ -43,7 +44,7 @@ class QuizView(View):
         self.through = UserToQuiz.objects.get(user=self.quiz_user, quiz=self.quiz)
 
         # check if user is eligible to play quiz
-        if not self.through.can_play_again():
+        if not self.through.can_play_again() and not self.quiz_user.user.is_staff:
             messages.error(request,
                            _('You can replay this quiz in {days} day(s)!'.format(
                                days=self.through.days_until_can_replay)), )
@@ -73,7 +74,7 @@ class QuizView(View):
         form.check_self_boxes()
 
         points, gold = self.quiz.calculate_reward(results)
-        self.through.set_played(points=points, gold=gold)
+        self.through.set_played(results, points, gold)
 
         return render_to_response('quiz/result.html',
                                   {'quiz': self.quiz, 'points': points},
