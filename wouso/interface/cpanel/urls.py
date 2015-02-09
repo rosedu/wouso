@@ -14,6 +14,7 @@ upat = [
     url(r'^leaderboards/$', 'wouso.interface.cpanel.views.leaderboards', name='leaderboards'),
 
     url(r'^karma/$', 'wouso.interface.cpanel.views.karma_view', name='karma'),
+    url(r'^karma/group/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.karma_group_view', name='karma_group'),
 
     url(r'^questions/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
     url(r'^questions/(?P<page>\d+)/$', 'wouso.interface.cpanel.views.qpool_home', name='qpool_home'),
