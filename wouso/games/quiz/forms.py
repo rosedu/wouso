@@ -5,7 +5,7 @@ from django import forms
 
 from core.qpool import get_questions_with_tag_and_category
 from core.qpool.models import Tag
-from wouso.games.quiz.models import Quiz
+from wouso.games.quiz.models import Quiz, QuizCategory
 
 from bootstrap3_datetime import widgets
 
@@ -110,3 +110,8 @@ class AddQuizForm(forms.ModelForm):
         self.instance.save()
 
         return self.instance
+
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = QuizCategory

@@ -9,6 +9,9 @@
         <a class="btn btn-primary" href="{% url add_quiz %}">
             <span class="glyphicon glyphicon-plus"></span>{% trans 'Add quiz'%}
         </a>
+        <a class="btn btn-success" href="{% url manage_quiz_categories %}">
+            <span class="glyphicon glyphicon-edit"></span>{% trans 'Manage categories' %}
+        </a>
     </div>
 {% endblock %}
 
@@ -24,6 +27,7 @@
         <tr>
             <th>#</th>
             <th>Name</th>
+            <th>Category</th>
             <th>Type</th>
             <th>No. of questions</th>
             <th>Time limit (seconds)</th>
@@ -38,6 +42,7 @@
         <tr>
             <td>{{ q.id }}</td>
             <td>{{ q.name }}</td>
+            <td>{{ q.category }}</td>
             <td>
                 {% if q.type == "P" %} Public {% else %} Lesson {% endif %}
             </td>
@@ -59,7 +64,7 @@
         </tr>
         {% empty %}
             <tr>
-                <td colspan="11">No quizzes added yet</td>
+                <td colspan="12">No quizzes added yet</td>
             </tr>
         {% endfor %}
     </table>
