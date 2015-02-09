@@ -15,35 +15,50 @@ from wouso.core.qpool.models import Question, Answer, Tag, Category
 from django.contrib.auth.models import User
 
 
-def add_question(question, answers, category=None, tag=None, file_tags=None):
-    """ Question is a dict with the following keys: text, endorsed_by, answer_type
-    [, proposed_by, active, type, code]
-    answers is a list of dicts with the following keys: text, correct [, explanation]
+def add_question(question):
+    """ question is a dictionary with the following keys:
+        'text': the question text (string)
+        'answer_type': whether the question is single choice or multiple choice (string)
+        'answers': a dictionary of answers with the following keys:
+            'text': the answer text (string)
+            'correct': whether the answer is correct (boolean)
+        'proposed_by': the user that proposed the question (User object)
+        'endorsed_by': the user endorsing the question (User object)
+        'active': whether the question is active (boolean)
+        'category': the question category (i.e. quiz) (Category object)
+        'tag': the question primary tag (from file name) (Tag object)
+        'file_tags': secondary tags (from file contents) (array of Tag objects)
     """
-    q = Question(**question)
+    q = Question()
+    q.save()
+    q.text = question['text']
+    q.answer_type = question['answer_type']
     q.save()
 
-    if tags:
-        for tag in tags:
+    if question['proposed_by']:
+        q.proposed_by = question['proposed_by']
+    q.save()
+
+    if question['endorsed_by']:
+        q.endorsed_by = question['endorsed_by']
+    q.save()
+
+    q.active = question['active']
+
+    if question['category']:
+        q.category = question['category']
+    q.save()
+
+    if question['tag']:
+        q.tags.add(question['tag'])
+        q.save()
+
+    if question['file_tags']:
+        for tag in question['file_tags']:
             q.tags.add(tag)
         q.save()
 
-    if file_tags:
-        for tag_name in file_tags:
-            tag, created = Tag.objects.get_or_create(name=tag_name, category=category)
-            if created:
-                tag.save()
-                if category is not None:
-                    category.tag_set.add(tag)
-                    category.save()
-            q.tags.add(tag)
-        q.save()
-
-    if category is not None:
-        q.category = category
-        q.save()
-
-    for answer in answers:
+    for answer in question['answers']:
         a = Answer(question=q, **answer)
         a.save()
 
@@ -75,7 +90,7 @@ def import_questions_from_file(f, proposed_by=None, endorsed_by=None, category=N
             continue
 
         # In case of start with question line, do the following:
-        #    TODO
+        #    TODO: Explain the way parsing is done.
         if line.startswith(START_QUESTION_MARK):
             if not a_saved:
                 answers.append(a)
@@ -87,14 +102,15 @@ def import_questions_from_file(f, proposed_by=None, endorsed_by=None, category=N
                     q['answer_type'] = ANSWER_TYPE_SINGLE_CHOICE
                 else:
                     q['answer_type'] = ANSWER_TYPE_MULTIPLE_CHOICE
+                q['active'] = active
                 q['answers'] = answers
                 q['proposed_by'] = proposed_by
                 q['endorsed_by'] = endorsed_by
                 q['category'] = category
                 q['tag'] = tag
                 q['file_tags'] = file_tags
-                print q
-                #add_question(q)
+                ret = add_question(q)
+                print "Added question id %d." %(ret.id)
                 num_imported_questions += 1
                 q_saved = True
                 a_saved = True
@@ -158,14 +174,15 @@ def import_questions_from_file(f, proposed_by=None, endorsed_by=None, category=N
             q['answer_type'] = ANSWER_TYPE_SINGLE_CHOICE
         else:
             q['answer_type'] = ANSWER_TYPE_MULTIPLE_CHOICE
+        q['active'] = active
         q['answers'] = answers
         q['proposed_by'] = proposed_by
         q['endorsed_by'] = endorsed_by
         q['category'] = category
         q['tag'] = tag
         q['file_tags'] = file_tags
-        print q
-        #add_question(q)
+        ret = add_question(q)
+        print "Added question id %d." %(ret.id)
         num_imported_questions += 1
         q_saved = True
         a_saved = True
