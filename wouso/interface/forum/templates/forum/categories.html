@@ -1,0 +1,46 @@
+{% extends "forum/forum_base.html" %}
+
+{% load i18n %}
+
+{% block title %}
+{% trans "Forums" %}
+{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li class="active">{% trans "Forums" %}</li>
+</ol>
+{% endblock %}
+
+{% block content %}
+<table class="table">
+    {% for category in category_list %}
+    <thead>
+        <tr>
+            <th colspan="2">
+                <span class=" glyphicon glyphicon-chevron-right"></span>
+                <a name="{{ category.id }}">{{ category.name }}</a>
+            </th>
+            <td>{% trans "Last Poster" %}</td>
+            <td>{% trans "Topics" %}</td>
+            <td>{% trans "Posts" %}</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for forum in category.forums.all %}
+        <tr>
+            <td style="width: 14px;"></td>
+            <td style="width: 70%;">
+                <a href="{% url forum forum.id %}">{{ forum.name }}</a>
+                {% if forum.is_closed %} [closed] {% endif %}
+                <div style="font-size: 12px; padding-left: 5px">{{ forum.description }}</div>
+            </td>
+            <td>{{ forum.get_latest_poster }}</td>
+            <td>{{ forum.count_topics }}</td>
+            <td>{{ forum.count_posts }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    {% endfor %}
+</table>
+{% endblock %}

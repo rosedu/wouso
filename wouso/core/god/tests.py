@@ -1,9 +1,13 @@
 import unittest
+
 from django.contrib.auth.models import User
 from django.test import TestCase
+
+from wouso.core.config.models import IntegerListSetting
 from wouso.core.magic.models import NoArtifactLevel
 from wouso.core.user.models import PlayerGroup, Race
 from wouso.games.challenge.models import ChallengeGame
+
 from . import get_god
 
 
@@ -26,6 +30,7 @@ class GodTestCase(TestCase):
         self.assertIsInstance(level, NoArtifactLevel)
 
     def test_get_level_limit(self):
+        IntegerListSetting.get('level_limits').set_value("80 125 180 245 320 450")
         god = get_god()
 
         self.assertEqual(god.get_level_for_points(0), 1)

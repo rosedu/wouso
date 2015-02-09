@@ -25,7 +25,7 @@
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery.timers.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/ajaxify.js"></script>
 
-    {% if config_enable_header_autoreload %}
+    {% if config_header_autoreload %}
     <script type="text/javascript">
         $(document).ready(function (){$(document).everyTime(10000, reload_header);});
     </script>
@@ -39,23 +39,15 @@
 
 <BODY>
     <div id="container">
-	{% block header %}
-    <div id="header">
         {% include 'interface/header.html' %}
 
-        <div id="logo">
-            <a href="{% url homepage %}" id="logoa" title="{{config_title}}"></a>
-        </div>
-    </div>
-    {% endblock %}
-
-
+    <div class="spacer"></div>
 
     {% block search %}
     <div id="search">
         <form method="post" action="{{ basepath }}/search/" style="float:right;">
             <input id="query" type="text" name="query" size="10" value="{{ search_query }}"/>
-            <button type=submit>{% trans 'Search' %}</button>
+            <button type=submit>{% trans 'Search player' %}</button>
         </form>
         <script type="text/javascript">
             var myID = '{{player.id}}'
@@ -65,8 +57,8 @@
             });
         </script>
     </div>
-
     {% endblock %}
+
     <div class="spacer-search"></div>
 
     <div id="sidebar">

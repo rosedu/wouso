@@ -1,0 +1,34 @@
+{% load user %}
+{% load i18n %}
+<a class="pull-left" href="{% url player_profile post.user.user.id %}">
+    <img class="media-object avatar avatar-med" src="{% player_avatar post.user %}" alt="{{ post.user.user }}" />
+</a>
+<div class="media-body">
+    <div class="post">
+    <h4 class="media-heading">
+        <a href="{% url player_profile post.user.user.id %}">
+            {{ post.user.user }}
+        </a>
+        - {{ post.topic.name }}
+    </h4>
+    {{ post.text|safe }}
+    <div style="clear: both"></div>
+    <!-- Leave this here or the world will fall apart -->
+    &nbsp;
+    <!-- -------------------------------------------- -->
+    <div class="pull-right small">
+        {{ post.created }} |
+        &nbsp;<a class="pull-right" href="{% url post_create topic.id post.id %}">{% trans 'Reply' %}</a>
+    </div>
+        </div>
+    {% if post.replies %}
+        {% for reply in post.replies.all %}
+            <!-- Nested media object -->
+            <div class="media">
+            {% with post=reply template_name="forum/replies_list.html" %}
+                {% include template_name %}
+            {% endwith %}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>

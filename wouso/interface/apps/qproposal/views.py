@@ -7,6 +7,7 @@ from django.template import RequestContext
 from wouso.core.qpool.models import Question, Tag, Answer, Category
 from models import Qproposal
 
+
 def propose(request):
 
     MAX_ANSWERS = 6
@@ -47,12 +48,15 @@ def propose(request):
     else:
         form = QuestionForm(MAX_ANSWERS)
     return render_to_response('qproposal/propose.html',
-                           {'form': form},
-                           context_instance=RequestContext(request))
+                              {'form': form},
+                              context_instance=RequestContext(request))
+
 
 def footer_link(context):
     if Qproposal.disabled():
         return ''
     url = reverse('propose')
     return '<a href="%s">' % url + _('Propose question') + '</a>'
+
+
 register_footer_link('qproposal', footer_link)

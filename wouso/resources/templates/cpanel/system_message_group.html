@@ -4,7 +4,7 @@
 {% load i18n %}
 {% load django_bootstrap_breadcrumbs %}
 
-{% block sectiontitle %}System Message{% endblock %}
+{% block sectiontitle %}{% trans 'System Message' %}{% endblock %}
 
 {% block breadcrumbs %}
     {{ block.super }}
@@ -19,11 +19,11 @@
 
         <table class="table table-bordered table-condensed">
             <tr>
-                <th>To:</th>
+                <th>{% trans 'To' %}:</th>
                 <td>{% player_group group %}</td>
             </tr>
             <tr>
-                <th style="vertical-align: middle">Text:</th>
+                <th style="vertical-align: middle">{% trans 'Text' %}:</th>
                 <td>
                     <textarea name="text" rows="8" cols="50"></textarea>
                 </td>

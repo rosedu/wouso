@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+{% load user %}
+{% load i18n %}
+{% load ui %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="{{ basepath }}/static/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="{{ basepath }}/static/css/forum-style.css" rel="stylesheet"/>
+    <script type="text/javascript" src="{{ basepath }}/static/js/bootstrap.min.js"></script>
+
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <div class="container">
+        {% include 'interface/forum_header.html' %}
+    </div>
+    <div class="container">
+        <h1>{% trans "Forums" %}</h1>
+        {% block breadcrumb %}{% endblock %}
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

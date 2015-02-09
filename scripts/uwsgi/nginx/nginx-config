@@ -1,0 +1,48 @@
+# The upstream component nginx needs to connect to.
+upstream django {
+	# TODO: Fill path to uWSGI socket.
+	server unix:///todo/path/to/wouso/folder/wouso.sock; # for a file (UNIX) socket
+	#server 127.0.0.1:8001; # for a web port (Berkeley) socket
+}
+
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+	root /var/www/html;
+
+	index index.html index.htm index.nginx-debian.html;
+
+	server_name _;
+
+	charset     utf-8;
+	client_max_body_size 75M;
+
+	location /media/admin {
+		# TODO: Fill path to admin folder.
+		alias /todo/path/to/wouso/folder/sandbox/lib/python2.7/site-packages/django/contrib/admin/static/admin;
+	}
+
+	location /admin-media {
+		# TODO: Fill path to admin-media folder.
+		alias /todo/path/to/wouso/folder/sandbox/lib/python2.7/site-packages/django/contrib/admin/static/admin;
+	}
+
+	# Django media
+	location /media  {
+		# TODO: Fill path to media folder.
+		alias /todo/path/to/wouso/folder/wouso/resources/static/img;  # your Django project's media files - amend as required
+	}
+
+	location /static {
+		# TODO: Fill path to static folder.
+		alias /todo/path/to/wouso/folder/wouso/resources/static; # your Django project's static files - amend as required
+	}
+
+	# Finally, send all non-media requests to the Django server.
+	location / {
+		uwsgi_pass  django;
+		# TODO: Fill path to uswgi_params file.
+		include     /todo/path/to/wouso/folder/scripts/uwsgi/uwsgi_params; # the uwsgi_params file you installed
+	}
+}

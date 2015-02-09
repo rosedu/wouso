@@ -433,7 +433,7 @@ class TestMagicViews(WousoTest):
         self.assertContains(response, _('Expected post'))
 
     def test_magic_cast_error_message(self):
-        data = {'days': 10, 'spell': 1}
+        data = {'days': 10, 'spell': self.spell_1.id}
         self.p1.magic.add_spell(self.spell_1)
-        response = self.c.post(reverse('magic_cast', args=[2]), data)
+        response = self.c.post(reverse('magic_cast', args=[self.p2.id]), data)
         self.assertContains(response, _('Invalid number of days'))

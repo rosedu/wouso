@@ -25,7 +25,7 @@
 	{% csrf_token %}
     <button type="submit">{% trans 'Challenge!' %}</button>
     </form> <br>
-    {% if not config_disable_challenge_random %}
+    {% if config_random_challenge %}
     <a href="{% url challenge_random %}">Challenge random player</a> <br>
     {% endif %}
 

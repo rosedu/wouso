@@ -15,7 +15,7 @@ class QotdHandler(BaseHandler):
         except models.Model.DoesNotExist:
             raise Http404()
         if question:
-            return {'text': question.text, 'answers': dict([(a.id, a.text) for a in question.answers]),
+            return {'text': question, 'answers': dict([(a.id, a) for a in question.answers]),
                     'had_answered': qotduser.has_answered}
         return {}
 

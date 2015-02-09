@@ -3,17 +3,17 @@
     <table id="Messages">
         <tr>
 
-	    <th>Delete</th>
+            <th width="10%">{% trans 'Delete' %}</th>
             {% if box != 'sent' %}
-                <th>From</th>
+                <th width="25%">{% trans 'From' %}</th>
             {% endif %}
 
             {% if box != 'rec' %}
-            <th>To</th>
+                <th width="25%">{% trans 'To' %}</th>
             {% endif %}
 
-            <th width="100%">Subject</th>
-            <th>Date</th>
+            <th width="70%">{% trans 'Subject' %}</th>
+            <th width="25%">{% trans 'Date' %}</th>
         </tr>
         {% for msg in messages_list %}
             <tr {% if msg.read %}class="read"{% else %}class="unread"{% endif %}>
@@ -34,17 +34,17 @@
         <div id="pagination">
             <span id="previous-step">
             {% if messages_list.has_previous %}
-            <a id="previous" href="" onclick="getMessages(event, {{ messages_list.previous_page_number }}, '{% url quiet_home quiet='q' box=box %}');">Newer messages</a>
+            <a id="previous" href="" onclick="getMessages(event, {{ messages_list.previous_page_number }}, '{% url quiet_home quiet='q' box=box %}');">{% trans 'Newer messages' %}</a>
             {% endif %}
             </span>
 
             <span id="current-step">
-                Page {{ messages_list.number }} of {{ messages_list.paginator.num_pages }}.
+                {% trans 'Page' %} {{ messages_list.number }} {% trans 'of' %} {{ messages_list.paginator.num_pages }}
             </span>
 
             <span id="next-step">
             {% if messages_list.has_next %}
-            <a id="next" href="" onclick="getMessages(event, {{ messages_list.next_page_number }}, '{% url quiet_home quiet='q' box=box %}'); ">Older messages</a>
+            <a id="next" href="" onclick="getMessages(event, {{ messages_list.next_page_number }}, '{% url quiet_home quiet='q' box=box %}'); ">{% trans 'Older messages' %}</a>
             {% endif %}
             </span>
         </div>

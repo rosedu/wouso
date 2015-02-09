@@ -3,6 +3,7 @@ from piston.utils import rc
 from wouso.core.user.models import Player
 from models import ChallengeUser, ChallengeGame, ChallengeException, Challenge
 
+
 class ChallengesHandler(BaseHandler):
     methods_allowed = ('GET',)
 
@@ -10,10 +11,11 @@ class ChallengesHandler(BaseHandler):
         player = request.user.get_profile()
         challuser = player.get_extension(ChallengeUser)
         return [dict(status=c.status, date=c.date, id=c.id,
-            user_from=unicode(c.user_from.user),
-            user_from_id=c.user_from.user.id,
-            user_to=unicode(c.user_to.user),
-            user_to_id=c.user_to.user.id) for c in ChallengeGame.get_active(challuser)]
+                     user_from=unicode(c.user_from.user),
+                     user_from_id=c.user_from.user.id,
+                     user_to=unicode(c.user_to.user),
+                     user_to_id=c.user_to.user.id) for c in ChallengeGame.get_active(challuser)]
+
 
 class ChallengeGetRandom(BaseHandler):
     methods_allowed = ('GET',)
@@ -22,12 +24,13 @@ class ChallengeGetRandom(BaseHandler):
         challuser = (request.user.get_profile()).get_extension(ChallengeUser)
         challuser2 = challuser.get_random_opponent()
         if not challuser2:
-            return {'succes': False, 'error': 'No random opponent found'} 
+            return {'succes': False, 'error': 'No random opponent found'}
         try:
             chall = challuser.launch_against(challuser2)
         except ChallengeException as e:
             return {'succes': False, 'error': unicode(e)}
         return {'succes': True, 'challenge': dict(id=chall.id)}
+
 
 class ChallengeLaunch(BaseHandler):
     methods_allowed = ('GET',)
@@ -35,7 +38,7 @@ class ChallengeLaunch(BaseHandler):
     def read(self, request, player_id):
         player = request.user.get_profile()
         challuser = player.get_extension(ChallengeUser)
- 
+
         try:
             player2 = Player.objects.get(pk=player_id)
         except Player.DoesNotExist:
@@ -83,7 +86,9 @@ class ChallengeHandler(BaseHandler):
                     'to': unicode(challenge.user_to.user),
                     'date': challenge.date,
                     'seconds': challenge.time_for_user(challuser),
-                    'questions': dict([(q.id ,{'text': q.text, 'answers': dict([(a.id, a.text) for a in q.answers])}) for q in challenge.questions.all()]),
+                    'questions': dict(
+                        [(q.id, {'text': q, 'answers': dict([(a.id, a) for a in q.answers])}) for q in
+                         challenge.questions.all()]),
             }
 
         if action == 'refuse':

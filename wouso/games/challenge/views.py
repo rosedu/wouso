@@ -129,7 +129,7 @@ class FileLock:
 class NamedFileLock:
     def __init__(self, filename):
         self.filename = filename
-    
+
     def lock(self):
         return FileLock(self.filename)
 
@@ -152,7 +152,7 @@ def launch(request, to_id):
 
 
     if ChallengeGame.disabled():
-        messages.error(request, _('Provocarile sunt dezactivate'))
+        messages.error(request, _('Challenges have been disabled.'))
         logging.info("Ready to unlock (disabled).")
         lock.unlock()
         return redirect('challenge_index_view')
@@ -210,7 +210,7 @@ def launch(request, to_id):
 @login_required
 def accept(request, id):
     if ChallengeGame.disabled():
-        messages.error(request, _('Provocarile sunt dezactivate'))
+        messages.error(request, _('Challenges are disabled'))
         return redirect('challenge_index_view')
 
     chall = get_object_or_404(Challenge, pk=id)
@@ -284,6 +284,10 @@ def header_link(context):
     user = context.get('user', None)
     if not user or not user.is_authenticated():
         return dict(text=_('Challenges'))
+
+    if ChallengeGame.disabled():
+        return ''
+
     profile = user.get_profile()
     if profile:
         chall_user = profile.get_extension(ChallengeUser)
@@ -306,6 +310,7 @@ def sidebar_widget(context):
     user = context.get('user', None)
     if not user or not user.is_authenticated():
         return ''
+
     chall_user = user.get_profile().get_extension(ChallengeUser)
     challs = ChallengeGame.get_active(chall_user)
     challs = [c for c in challs if c.status == 'A']
@@ -326,14 +331,14 @@ class HistoryView(ListView):
         challenges = [p.challenge for p in Participant.objects.filter(user=self.player)]
         challenges = sorted(challenges, key=lambda c: c.date)
         return challenges
-    
+
     def get_context_data(self, **kwargs):
         context = super(HistoryView, self).get_context_data(**kwargs)
         context.update({'challplayer': self.player})
         return context
 
 history = HistoryView.as_view()
-    
+
 @login_required
 def challenge_player(request):
     if request.method == 'POST':
@@ -348,7 +353,7 @@ def challenge_player(request):
 
 @login_required
 def challenge_random(request):
-    setting = BoolSetting.get('disable-challenge-random').get_value()
+    setting = BoolSetting.get('random_challenge').get_value()
     if setting:
         messages.error(request, _('Random challenge disabled'))
         return redirect('challenge_index_view')

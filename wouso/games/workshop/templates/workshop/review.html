@@ -11,10 +11,10 @@
 
         <ul class="spaced">
         {% for a in as.answer_set.all %}
-            <li>{{ forloop.counter }}. {{ a.question.text }}
+            <li>{{ forloop.counter }}. {{ a.question|safe }}
                 <p>
                     <em>{% trans 'Answer' %}:</em><br/>
-                    <pre>{{ a.text }}</pre>
+                    <pre>{{ a|safe }}</pre>
 
                     {% if not workshop.is_reviewable %}
                     <span class="points red">

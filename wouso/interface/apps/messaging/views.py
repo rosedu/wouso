@@ -119,9 +119,17 @@ def delete(request, id):
 def header_link(context):
     # TODO refactor this lame thing
     user = context.get('user', None)
+
     if not user or not user.is_authenticated():
         return dict(text=_('Messages'))
+
+    if MessageApp.disabled():
+        return ''
+
     count = MessageApp.get_unread_for_user(user)
     url = reverse('messaging')
+
     return dict(link=url, count=count, text=_('Messages'))
+
+
 register_header_link('messaging', header_link)

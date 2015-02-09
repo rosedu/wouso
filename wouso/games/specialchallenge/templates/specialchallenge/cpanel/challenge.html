@@ -8,7 +8,7 @@
     <h2>Specialchallenge #{{ object.id }}</h2>
     <ol>
         {% for question in object.questions.all %}
-        <li>{{ question.text }}</li>
+        <li>{{ question|safe }}</li>
         {% endfor %}
     </ol>
 

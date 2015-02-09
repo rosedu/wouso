@@ -1,0 +1,138 @@
+{% extends 'cpanel/index.html' %}
+
+{% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %}
+    Forum
+    <div class="pull-right">
+        <a class="btn btn-primary" href="{% url add_forum %}">
+            <span class="glyphicon glyphicon-plus"></span>{% trans 'Add forum' %}
+        </a>
+        <a class="btn btn-success" href="{% url manage_forum_categories %}">
+            <span class="glyphicon glyphicon-edit"></span>{% trans 'Manage categories' %}
+        </a>
+    </div>
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Forum" "forum" %}
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script>
+        function get_selection() {
+            /* return a string containing ids of all forums selected */
+
+            var selection = "";
+            $('.select_all:checked').each(function() {
+                selection += this.id + ' ';
+            });
+            return selection;
+        }
+
+        function select_category(option) {
+            /* select/unselect all forums belonging to a category */
+
+            var cls = '.' + option.value;
+            var value = true;
+            $(cls).each(function() {
+                value = value && $(this).is(':checked');
+            });
+            /* if value remains true then unselect all, else select all */
+            $(cls).attr('checked', !value).change();
+        }
+
+        $(function() {
+            /* update 'disabled' attribute for actions */
+
+            $('.select_all').change(function() {
+                if (get_selection() != '')
+                    $('#f_actions').attr('disabled', false);
+                else
+                    $('#f_actions').attr('disabled', true);
+            });
+        });
+
+        function apply_action(option) {
+            /* apply the selected action to the selected forums */
+
+            var action = option.value;
+            if (action == '')
+                return;
+            var destination = '{% url forum_actions %}?f_id=' + get_selection() + '&action=' + action;
+            window.location.replace(destination);
+        }
+    </script>
+{% endblock %}
+
+{% block sectioncontent %}
+    <div class="col-md-12">
+
+        <b>Select:</b>
+        <a onclick='$(".select_all").attr("checked", true).change();' href="#">{% trans 'All' %}</a> /
+        <a onclick='$(".select_all").attr("checked", false).change();' href="#">{% trans 'None' %}</a>
+
+        <br/>
+
+        <b>Select:</b>
+        <select onclick="select_category(this)">
+            <option selected value="">-- Category --</option>
+            {% for c in categories %}
+            <option value="{{c.id}}">{{ c }}</option>
+            {% endfor %}
+        </select>
+
+        <br/>
+
+        <b>Action:</b>
+        <select onclick="apply_action(this)" id="f_actions" disabled="true">
+            <option selected value="">-- Select action --</option>
+            <option value="closed"  >Set closed</option>
+            <option value="open">Set open</option>
+        </select>
+
+        <br/> <br/>
+
+        <table class="table table-bordered table-hover table-condensed">
+            <tr>
+                <th colspan="2">#</th>
+                <th>Forum</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Closed</th>
+                <th>Manage</th>
+            </tr>
+            {% for f in forums %}
+            <tr>
+                <td><input type="checkbox" id="{{ f.id }}" class="select_all {{ f.category.id }}"/></td>
+                <td>{{ f.id }}</td>
+                <td>{{ f }}</td>
+                <td>{{ f.category }}</td>
+                <td>{{ f.description }}</td>
+                <td>
+                    {% if f.is_closed %}
+                        <a class="btn btn-danger btn-xs" href="{% url forum_switch_closed f.id %}">{% trans 'Yes' %}</a>
+                    {% else %}
+                        <a class="btn btn-success btn-xs" href="{% url forum_switch_closed f.id %}">{% trans 'No' %}</a>
+                    {% endif %}
+                </td>
+                <td>
+                    <a class="btn btn-success" href="{% url edit_forum f.id %}">
+                        <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                    </a>
+                    <a class="btn btn-danger" href="{% url delete_forum f.id %}">
+                        <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="10">No forums have been created yet.</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

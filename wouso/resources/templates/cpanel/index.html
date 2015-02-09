@@ -42,14 +42,14 @@
             if (sec < 10) {sec = "0" + sec;}
 
             var time =   hour + ":" +  min + ":" +  sec;
-            document.getElementById('time').innerHTML = time;
+            $('#time').html(time);
         }
         // refresh rate 999 ms
         setInterval(function(){displayTime()}, 999);
     </script>
 
     <script type="text/javascript" src="{{ basepath }}/static/js/bootstrap.min.js"></script>
-    {{ form.media }} 
+    {{ form.media }}
 
     <style type="text/css">
         @import url("{{ basepath }}/static/css/autocomplete.css");
@@ -87,12 +87,15 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
-            {% if user.real_user %}
-                <p class="navbar-text">Impersonated by {{ user.real_user }}</p>
-                <li><a href="{% url impersonate_clear %}" title="Unimpersonate">Clear</a></li>
-            {% endif %}
-            <li><a id="head-home" class="navbar-brand header_clickable" href="{% url homepage %}">Game</a></li>
-            <li><a id="head-logout" class="navbar-brand header_clickable" href="{% url logout_view %}">{% trans "Logout" %} <span class="glyphicon glyphicon-log-out"></span></a></li>
+                <p class="navbar-text">{% now "d M. Y" %}</p>
+                <div id="time" class="navbar-text"></div>
+                <li><a id="head-forum" href="{% url forums_overview %}">Forum</a></li>
+                {% if user.real_user %}
+                    <p class="navbar-text">Impersonated by {{ user.real_user }}</p>
+                    <li><a href="{% url impersonate_clear %}" title="Unimpersonate">Clear</a></li>
+                {% endif %}
+                <li><a id="head-home" href="{% url homepage %}">Game</a></li>
+                <li><a id="head-logout" href="{% url logout_view %}">{% trans "Logout" %} <span class="glyphicon glyphicon-log-out"></span></a></li>
             </ul>
         </div>
     </div>
@@ -121,8 +124,14 @@
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url formulas %}">Formulas</a></li>
                 {% url leaderboards as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url leaderboards %}">Leaderboards</a></li>
+                {% url lessons as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url lessons %}">Lessons</a></li>
+                {% url files as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url files %}">Files</a></li>
                 {% url karma as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url karma %}">Karma</a></li>
+                {% url forum as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url forum %}">Forum</a></li>
             <!-- Games !-->
                 <h4 class="text-center">Games</h4>
                 {% for u, game in games_list.items %}
@@ -133,8 +142,8 @@
                 <h4 class="text-center">Configuration</h4>
                 {% url roles as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url roles %}">Roles</a></li>
-                {% url customization as url %}
-                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url customization %}">Customization</a></li>
+                {% url customization_home as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url customization_home %}">Customization</a></li>
                 {% url reports as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url reports %}">Reports</a></li>
                 {% url static_pages as url %}

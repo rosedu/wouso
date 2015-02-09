@@ -21,7 +21,7 @@
     <h2>{{ profile }}</h2>
     <h3>{% artifact_full profile.level %} </h3>
     <h4>{% if profile.group %}{% trans 'Group' %}: {% player_group profile.group %}{% endif %}
-    {% if profile.race %}{% trans 'Race' %}: {% player_race profile.race %}{% endif %}
+    {% if profile.race %}{% trans 'Group' %}: {% player_race profile.race %}{% endif %}
     </h4>
     {% if profile.magic.artifact_amounts.all %}
         <ul class="artifacts" id="player-artifacts">
@@ -101,7 +101,7 @@
         <span class="button-list">Admin:</span>
         <a class="button" href="{% url challenge_stats profile.id %}">{% trans 'Challenges' %}</a>
         <a class="button button-min" href="{% url admin:auth_user_change profile.user.id %}">✍</a>
-        <a class="button" href="{% url impersonate profile.id %}">Impersonate</a>
+        <a class="button" href="{% url impersonate profile.id %}">{% trans 'Impersonate' %}</a>
     </div>
     {% endif %}
 
@@ -160,7 +160,7 @@
                     },
                 };
                 var setup = [
-                    {label: "Position evolution", color: "green", data: d1},
+                    {label: "{% trans 'Position evolution' %}", color: "green", data: d1},
                     {% for g in top.topgroups %}
                     {label: "{{ g }}", data: dg{{g.id}}},
                     {% endfor %}
@@ -196,7 +196,7 @@
                         },
                 };
                 $("#tab-3").bind('custom', function() {
-                    $.plot($("#graf2"), [{ label: "Weekly points evolution", color: "blue", data: d1}], options);
+                    $.plot($("#graf2"), [{ label: "{% trans 'Weekly points evolution' %}", color: "blue", data: d1}], options);
                     $('#tab-3').unbind('custom');
                 });
             });

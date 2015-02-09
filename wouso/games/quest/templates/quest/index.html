@@ -41,7 +41,7 @@
 
                 <p>
                 {% autoescape off %}
-                    {{ progress.current_question.text }}
+                    {{ progress.current_question|safe }}
                 {% endautoescape %}
                 </p>
 

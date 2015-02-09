@@ -1,0 +1,15 @@
+{% extends 'interface/sidebar_widget.html' %}
+{% load i18n %}
+
+{% block title %}{%  trans 'Quizzes' %}{% endblock %}
+
+{% block content %}
+
+    {% if number_of_active_quizzes %}
+        {{ number_of_active_quizzes }} {% trans 'quizzes are active.' %}
+    {% else %}
+        {% trans 'No quizzes are active.' %}
+    {% endif %}
+    <a href="{% url quiz_index_view %}">{% trans 'View all' %}</a>
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "forum/forum_base.html" %}
+
+{% load i18n %}
+{% block title %}
+{% trans "Forums" %} - {{ forum.name }}
+{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li><a href="{% url forums_overview %}">{% trans "Forums" %}</a></li>
+    <li>
+        <a href="{% url forums_overview %}#{{  forum.category.id  }}">{{ forum.category.name }}</a>
+    </li>
+    <li class="active">{{ forum.name }}</li>
+</ol>
+{% endblock %}
+
+{% block content %}
+
+<p><b>{{ forum.name }}</b> - {{ forum.description }}</p>
+
+{% if not forum.is_closed or user.is_staff %}
+    <p><a href="{% url topic_create forum.id %}" class="btn btn-primary">{% trans "Create topic" %}</a></p>
+{% endif %}
+
+<table class="table">
+    <thead>
+    <tr>
+        <th colspan="2">{% trans "Topics" %}</th>
+        <td>{% trans "Last Poster" %}</td>
+        <td>{% trans "Replies" %}</td>
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for topic in forum.topics.all %}
+        <tr>
+            <td style="width: 14px;"><i class="icon-circle-arrow-right" style="margin-top: 1px;"></i></td>
+            <td style="width: 70%;">
+                <a href="{% url topic topic.id %}">{{ topic.name }}</a>
+            </td>
+            <td>{{ topic.last_post.user.user }}</td>
+            <td>{{ topic.count_posts }}</td>
+        </tr>
+        {% empty %}
+        {% if forum.is_closed %}
+        <tr>
+            <td colspan="5">{% trans "No topics in this forum, only admins can create and post here." %}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="5">{% trans "No topics in this forum, create one :)" %}</td>
+        </tr>
+        {% endif %}
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

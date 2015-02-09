@@ -1,0 +1,28 @@
+{% extends "forum/forum_base.html" %}
+
+{% load user %}
+{% load i18n %}
+{% load bootstrap %}
+{% block title %}
+{% trans "Forums" %} - {{ forum.name }}
+{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+    <li><a href="{% url forums_overview %}">{% trans "Forums" %}</a></li>
+    <li><a href="{% url forums_overview %}#{{ forum.category.id }}">{{ forum.category.name }}</a></li>
+    <li><a href="{% url forum forum.id %}">{{ forum.name }}</a></li>
+    <li class="active">{% trans "Create topic" %}</li>
+</ol>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <form method="post" role="form" class="form-horizontal" action="{% url topic_create forum.id %}">
+        {{ form|bootstrap_horizontal }}
+        {{ form.media }}
+        {% csrf_token %}
+        <button class="btn btn-primary" type="submit">{% trans 'Submit' %}</button>
+    </form>
+</div>
+{% endblock %}

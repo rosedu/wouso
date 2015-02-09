@@ -1,7 +1,3 @@
-#import logging
-
-#logging.basicConfig(filename='/home/wouso/sites/wouso.cs.pub.ro/next/wouso.log',level=logging.INFO,format='%(levelname)s:%(filename)s:%(funcName)s:%(lineno)d:%(message)s')
-
 def get_games():
     import os
     res = []

@@ -1,0 +1,52 @@
+{% extends 'interface/section_base.html' %}
+
+{% load i18n %}
+
+{% block title %}
+    {{ quiz.qtype }} {% trans 'Quiz ' %} {{ quiz }}
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script type="text/javascript" src="{{ basepath }}/static/js/timer.js"></script>
+{% endblock %}
+
+{% block sectioncontent %}
+
+<div id="timer" class="timer timer-big">
+        {{ seconds_left }} seconds
+</div>
+<script id="timer_script" language="javascript">
+        var seconds = {{ seconds_left }};
+        $(document).ready(function () { update('timer', 'quiz_form');});
+</script>
+
+<form action="{% url quiz_view quiz.id %}" method="post" id="quiz_form">
+    <ol>
+        {% for field in form.visible_fields %}
+            <li>
+                <div class="questions">
+                    {% autoescape off %}
+                    {{ field.label }}
+                    {% endautoescape %}
+                    <ul class="answers">
+                        {% for choice in field.field.choices %}
+                            {% autoescape off %}
+                            <li>
+                                <input type="radio" name="{{ field.html_name }}" value="{{ choice.0 }}" id="{{ field.html_name }}_{{ choice.0 }}" />
+                                <label for="{{ field.html_name }}_{{ choice.0 }}">{{ choice.1 }}</label>
+                            </li>
+                            {% endautoescape %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </li>
+        {% endfor %}
+    </ol>
+    {% csrf_token %}
+    <div class="actions">
+        <button type="submit">{% trans 'Submit' %}</button>
+    </div>
+</form>
+
+{% endblock %}

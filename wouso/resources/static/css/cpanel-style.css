@@ -18,6 +18,30 @@
     font-family: Arial Black;
 }
 
+.logo {
+    width: 84px;
+    height: 84px;
+    margin: 0 10px 0 0;
+    border: 3px solid #323232
+}
+
+/* Quest and Lesson */
+.sort-list {
+}
+.sort-list li {
+    margin: 28px;
+}
+.handle {
+    cursor: move;
+    font-size: 2em;
+    float: right;
+    width: 30px;
+    height: 30px;
+    display: block;
+    text-align: center;
+    vertical-align: middle;
+}
+
 /* Question Pool */
 div.second {
     color: #444;
@@ -93,4 +117,7 @@ div.second {
 }
 .artifact-default-ach-head-start {
 	background : transparent url(images/icons/ach-head-start.png) 0 center no-repeat;
+}
+.form-control {
+    width: 40%;
 }

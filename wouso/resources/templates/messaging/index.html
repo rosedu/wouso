@@ -26,29 +26,28 @@
 
 <div class="tab_container">
     <div id="rec" class="tab_content">
-        <table id="Messages">
+        <table id="{% trans 'Messages' %}">
             <tr>
-                <th>From</td>
-                <th>To</td>
-                <th>Subject</td>
-            </tr>
+                <th>{% trans 'From' %}</td>
+                <th>{% trans 'To' %}</td>
+                <th>{% trans 'Subject' %}</td>
             {% for msg in messages_rec %}
                 <tr>
                     <td>{% if msg.sender %}{{msg.sender}}{% else %}{% trans 'System' %}{% endif %}</td>
                     <td>{{msg.receiver}}</td>
                     <td>{{msg.subject}}</td>
                 </tr>
-            {% empty %} <tr> <td colspan=3>No messages.</td></tr>
+            {% empty %} <tr> <td colspan=3>{% trans 'No messages.' %}</td></tr>
             {% endfor %}
         </table>
     </div>
 
     <div id="sent" class="tab_content">
-        <table id="Messages">
+        <table id="{% trans 'Messages' %}">
             <tr>
-                <th>From</td>
-                <th>To</td>
-                <th>Subject</td>
+                <th>{% trans 'From' %}</td>
+                <th>{% trans 'To' %}</td>
+                <th>{% trans 'Subject' %}</td>
             </tr>
             {% for msg in messages_sent %}
                 <tr>
@@ -56,17 +55,17 @@
                     <td>{{msg.receiver}}</td>
                     <td>{{msg.subject}}</td>
                 </tr>
-            {% empty %} <tr> <td colspan=3>No messages.</td></tr>
+            {% empty %} <tr> <td colspan=3>{% trans 'No messages.' %}</td></tr>
             {% endfor %}
         </table>
     </div>
 
     <div id="all" class="tab_content">
-        <table id="Messages">
+        <table id="{% trans 'Messages' %}">
             <tr>
-                <th>From</td>
-                <th>To</td>
-                <th>Subject</td>
+                <th>{% trans 'From' %}</td>
+                <th>{% trans 'To' %}</td>
+                <th>{% trans 'Subject' %}</td>
             </tr>
             {% for msg in messages_all %}
                 <tr>
@@ -74,7 +73,7 @@
                     <td>{{msg.receiver}}</td>
                     <td>{{msg.subject}}</td>
                 </tr>
-            {% empty %} <tr> <td colspan=3>No messages.</td></tr>
+            {% empty %} <tr> <td colspan=3>{% trans 'No messages.' %}</td></tr>
             {% endfor %}
         </table>
     </div>
