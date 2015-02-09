@@ -92,8 +92,8 @@ class Quiz(models.Model):
             if checked_answer_id == correct_answer_id:
                 correct_count += 1
 
-        points = int((correct_count / total_count) * self.points_reward)
-        gold = int((correct_count / total_count) * self.gold_reward)
+        points = int((correct_count / total_count) * int(self.points_reward))
+        gold = int((correct_count / total_count) * int(self.gold_reward))
         return points, gold
 
     def __unicode__(self):
