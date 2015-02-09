@@ -1,9 +1,9 @@
+import pickle
 from random import shuffle
 from datetime import datetime
 
 from django import forms
 
-from core.qpool import get_questions_with_tag_and_category
 from core.qpool.models import Tag
 from wouso.games.quiz.models import Quiz, QuizCategory
 
@@ -65,10 +65,15 @@ class AddQuizForm(forms.ModelForm):
         widgets = {'start': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"}),
                    'end': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"})
         }
-        exclude = ['owner', 'players', 'status']
+        exclude = ['owner', 'players', 'status', 'tags']
 
     def __init__(self, *args, **kwargs):
         super(AddQuizForm, self).__init__(*args, **kwargs)
+
+        self.fields['start'].label = "Starts on"
+        self.fields['end'].label = "Ends on"
+        self.fields['time_limit'].label = "Time limit (seconds)"
+        self.fields['another_chance'].label = "Retake quiz after (days)"
 
         for t in Tag.objects.filter(category__name='quiz'):
             self.fields['tag_%s' % t] = forms.IntegerField(label=unicode(t), initial=0)
@@ -76,20 +81,18 @@ class AddQuizForm(forms.ModelForm):
     def save(self, commit=True):
         data = self.cleaned_data
 
-        # Get a list of questions from the Quiz category with tags selected
-        # by staff user
-        tags_list = [t for t in data['tags']]
-        all_questions = [q for q in get_questions_with_tag_and_category(tags_list, 'quiz')]
+        # Create a dict containing tags as keys and the corresponding number of
+        # questions to be taken from the pool as values
+        # e.g. {'Tag1': 1, 'Tag2': 2}
+        tags = {}
+        for k in data:
+            v = data[k]
+            if k.startswith('tag_'):
+                k = k.replace('tag_', '')
+                tags[k] = v
 
         self.instance.save()
-        self.instance.tags = tags_list
-
-        # If not enough questions in tag(s) set quiz's number of questions
-        # as max number of questions available
-        if len(all_questions) < data['number_of_questions']:
-            self.instance.number_of_questions = len(all_questions)
-        else:
-            self.instance.number_of_questions = data['number_of_questions']
+        self.instance.tags = pickle.dumps(tags)
 
         self.instance.save()
 

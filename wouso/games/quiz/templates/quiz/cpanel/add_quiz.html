@@ -34,5 +34,6 @@
         {% endfor %}
         <a class="btn btn-warning" href="{% url list_quizzes %}">{% trans 'Back' %}</a>
         <button class="btn btn-primary" type="submit">{% trans 'Submit' %}</button>
+        {% csrf_token %}
     </form>
 {% endblock %}
