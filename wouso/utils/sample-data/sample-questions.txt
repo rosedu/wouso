@@ -1,0 +1,46 @@
+? Care dintre următoarele componente se află cel mai aproape de hardware în ierarhia de aplicații?
++ nucleul
+- shell-ul
+- compilatorul
+- browser-ul
+
+? Care din următoarele definesc un sistem de operare? (alegeți 2 variante)
++ nucleu
+- programe de bază
+- aplicații
+- utilizator
++ hardware
+
+? Care este rădăcina sistemului de operare, respectiv separatorul de cale pe un sistem de fișiere Linux?
++ /, respectiv /
+- root, respectiv /
+- start, respectiv :
+- \, respetiv /
+
+? Care sunt cele două argumente uzuale ale comenzii mount? (alegeți 2 variante)
++ un dispozitiv
++ un director
+- un nume de utilizator
+- un proces
+- o adresă de memorie
+
+? Care dintre următoarele sunt întotdeauna definite pentru un utilizator într-un sistem Linux?
++ uid
+- director home
+- grupuri secundare
+- parolă
+
+? Care dintre următoarele pot fi asociate în număr mai mare de 1 unui utilizator?
+- parole
+- directoare home
+- grupuri primare
++ grupuri secundare
+
+? În care dintre următoarele fișiere se găsesc informații legate de utilizatori? (alegeți 3 variante)
++ /etc/passwd
++ /etc/shadow
++ /etc/group
+- /etc/users
+- /etc/user.conf
+- /etc/inittab
+- /etc/u/u.conf
