@@ -29,7 +29,6 @@
             <th>Name</th>
             <th>Category</th>
             <th>Type</th>
-            <th>No. of questions</th>
             <th>Time limit (seconds)</th>
             <th>Points</th>
             <th>Gold</th>
@@ -46,7 +45,6 @@
             <td>
                 {% if q.type == "P" %} Public {% else %} Lesson {% endif %}
             </td>
-            <td>{{ q.number_of_questions }}</td>
             <td>{{ q.time_limit }}</td>
             <td>{{ q.points_reward }}</td>
             <td>{{ q.gold_reward }}</td>
