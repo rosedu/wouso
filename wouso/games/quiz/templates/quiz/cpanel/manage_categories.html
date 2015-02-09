@@ -1,0 +1,41 @@
+{% extends 'quiz/cpanel/list_quizzes.html' %}
+{% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %}
+    Manage categories
+        <a class="btn btn-primary pull-right" href="{% url add_quiz_category %}">
+            <span class="glyphicon glyphicon-plus"></span>{% trans 'Add category' %}
+        </a>
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Manage categories" "manage_quiz_categories" %}
+{% endblock %}
+
+{% block sectioncontent %}
+    <table class="table table-bordered table-hover table-condensed">
+        <tr>
+            <th>Name</th>
+            <th>Logo</th>
+            <th>Manage</th>
+        </tr>
+        {% for c in categories %}
+        <tr>
+            <td>{{ c.name }}</td>
+            <td><img class="logo" src="{{ c.logo_url }}"/></td>
+            <td>
+                <a class="btn btn-success" href="{% url edit_quiz_category c.id %}">
+                    <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                </a>
+                <a class="btn btn-danger" href="{% url delete_quiz_category c.id %}">
+                    <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+            <td colspan="10">No categories have been added yet.</td>
+        {% endfor %}
+    </table>
+{% endblock %}

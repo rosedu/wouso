@@ -10,6 +10,13 @@
     background-color: #F5F5F5;
 }
 
+.logo {
+    width: 84px;
+    height: 84px;
+    margin: 0 10px 0 0;
+    border: 3px solid #323232
+}
+
 /* Quest and Lesson */
 .sort-list {
 }

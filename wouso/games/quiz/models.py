@@ -1,6 +1,9 @@
+import os
+
 from datetime import datetime
 from random import shuffle
 
+from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext as _
 
@@ -10,6 +13,22 @@ from wouso.core.user.models import Player
 from wouso.core.game.models import Game
 from wouso.core.qpool import register_category, get_questions_with_tag_and_category
 from wouso.core.qpool.models import Question, Tag
+
+
+class QuizCategory(models.Model):
+    name = models.CharField(max_length=100)
+    logo = models.ImageField(upload_to=settings.MEDIA_QUIZCATEGORY_LOGO_DIR, null=True, blank=True)
+
+    @property
+    def quizzes(self):
+        return self.quiz_set.all()
+
+    @property
+    def logo_url(self):
+        return os.path.join(settings.MEDIA_QUIZCATEGORY_LOGO_URL, os.path.basename(str(self.logo))) if self.logo else ""
+
+    def __unicode__(self):
+        return self.name
 
 
 class Quiz(models.Model):
@@ -23,6 +42,8 @@ class Quiz(models.Model):
         ('P', 'Public'),
         ('L', 'Lesson')
     }
+
+    category = models.ForeignKey(QuizCategory)
 
     name = models.CharField(max_length=100)
     number_of_questions = models.IntegerField(default=5)
