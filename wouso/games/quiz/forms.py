@@ -79,6 +79,9 @@ class AddQuizForm(forms.ModelForm):
         self.fields['time_limit'].label = "Time limit (seconds)"
         self.fields['another_chance'].label = "Retake quiz after (days)"
 
+        for t in Tag.objects.filter(category__name='quiz'):
+            self.fields['tag_%s' % t] = forms.IntegerField(label=unicode(t), initial=0)
+
     def save(self, commit=True):
         data = self.cleaned_data
 
