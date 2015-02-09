@@ -217,7 +217,10 @@ class UserToQuiz(models.Model):
         # player will not be bonused in case of new highscore
         self.state = 'P'
         self._give_bonus(points, gold)
-        self.attempts.create(str(results), points, gold)
+        a = QuizAttempt.objects.create(results=str(results),
+                                       points=points,
+                                       gold=gold)
+        self.attempts.add(a)
         self.save()
 
     @property
@@ -248,8 +251,8 @@ class QuizAttempt(models.Model):
     """
      Stores information about each quiz attempt
     """
-    user_to_quiz = models.ForeignKey(UserToQuiz, related_name='attempts')
-    date = models.DateTimeField(auto_now_add=True)
+    user_to_quiz = models.ForeignKey(UserToQuiz, related_name='attempts', blank=True, null=True)
+    date = models.DateTimeField(auto_now_add=True, default=True, null=True)
     results = models.TextField(blank=True, null=True)
     points = models.IntegerField(default=-1)
     gold = models.IntegerField(default=0)
