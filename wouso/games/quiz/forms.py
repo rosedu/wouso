@@ -59,9 +59,6 @@ class QuizForm(forms.Form):
 
 
 class AddQuizForm(forms.ModelForm):
-    tags = forms.ModelMultipleChoiceField(
-            queryset=Tag.objects.filter(category__name='quiz'))
-
     class Meta:
         model = Quiz
 
@@ -72,12 +69,6 @@ class AddQuizForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AddQuizForm, self).__init__(*args, **kwargs)
-
-        self.fields['start'].label = "Starts on"
-        self.fields['end'].label = "Ends on"
-        self.fields['tags'].label = "Question tags"
-        self.fields['time_limit'].label = "Time limit (seconds)"
-        self.fields['another_chance'].label = "Retake quiz after (days)"
 
         for t in Tag.objects.filter(category__name='quiz'):
             self.fields['tag_%s' % t] = forms.IntegerField(label=unicode(t), initial=0)

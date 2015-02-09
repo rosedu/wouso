@@ -46,7 +46,6 @@ class Quiz(models.Model):
     category = models.ForeignKey(QuizCategory, null=True, blank=True)
 
     name = models.CharField(max_length=100)
-    number_of_questions = models.IntegerField(default=5)
     time_limit = models.IntegerField(default=300)
 
     type = models.CharField(max_length=1, choices=TYPES)
