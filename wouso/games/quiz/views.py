@@ -27,6 +27,7 @@ def index(request):
 
     return render_to_response('quiz/index.html',
                               {'active_quizzes': quiz_user.active_quizzes,
+                               'inactive_quizzes': quiz_user.inactive_quizzes,
                                'expired_quizzes': quiz_user.expired_quizzes,
                                'played_quizzes': quiz_user.played_quizzes},
                               context_instance=RequestContext(request))

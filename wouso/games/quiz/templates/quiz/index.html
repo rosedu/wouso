@@ -8,7 +8,20 @@
 {% block sectioncontent %}
 
 {% if active_quizzes or expired_quizzes %}
-    <h3>{% trans 'Active Quizzes' %}</h3>
+    {% if request.user.is_staff %}
+    <p><i>{% trans 'Note: Inactive quizzes are only visible by staff members' %}</i></p>
+    <h3>{% trans 'Inactive quizzes' %}</h3>
+    <ul>
+        {% for t in inactive_quizzes %}
+            <li>
+                <a href="{% url quiz_view t.quiz.id %}" onclick="return confirm('Are you sure you want to take this quiz?')">
+                    {{ t.quiz.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <h3>{% trans 'Active quizzes' %}</h3>
     <ul>
         {% for t in active_quizzes %}
             <li>
@@ -19,7 +32,7 @@
         {% endfor %}
     </ul>
 
-    <h3>{% trans 'Expired Quizzes' %}</h3>
+    <h3>{% trans 'Expired quizzes' %}</h3>
     <ul>
         {% for t in expired_quizzes %}
             <li>{{ t.quiz.name }}</li>

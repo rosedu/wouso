@@ -131,6 +131,12 @@ class QuizUser(Player):
         return active_quizzes
 
     @property
+    def inactive_quizzes(self):
+        through = UserToQuiz.objects.filter(user=self)
+        inactive_quizzes = [t for t in through if t.quiz.is_inactive() and t.quiz.is_public()]
+        return inactive_quizzes
+
+    @property
     def expired_quizzes(self):
         through = UserToQuiz.objects.filter(user=self)
         expired_quizzes = [t for t in through if t.quiz.is_expired()]
