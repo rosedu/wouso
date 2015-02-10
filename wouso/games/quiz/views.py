@@ -6,33 +6,49 @@ from django.template.loader import render_to_string
 from django.views.generic import View
 from django.shortcuts import render_to_response, redirect, get_object_or_404
 from django.http import HttpResponseRedirect
+from django.views.generic import ListView
 
-from models import Quiz, QuizUser, QuizGame, UserToQuiz
+from models import Quiz, QuizUser, QuizGame, UserToQuiz, QuizCategory
 from forms import QuizForm
 from wouso.core.ui import register_sidebar_block
 
 
-@login_required
-def index(request):
-    """ Shows all quizzes related to the current user """
-    profile = request.user.get_profile()
-    quiz_user = profile.get_extension(QuizUser)
+class QuizIndexView(ListView):
+    model = QuizCategory
+    context_object_name = 'categories'
+    template_name = 'quiz/index.html'
 
-    for q in Quiz.objects.all():
-        if not q.is_expired():
-            q.update_status()
-        try:
-            obj = UserToQuiz.objects.get(user=quiz_user, quiz=q)
-        except UserToQuiz.DoesNotExist:
-            obj = UserToQuiz(user=quiz_user, quiz=q)
-            obj.save()
 
-    return render_to_response('quiz/index.html',
-                              {'active_quizzes': quiz_user.active_quizzes,
-                               'inactive_quizzes': quiz_user.inactive_quizzes,
-                               'expired_quizzes': quiz_user.expired_quizzes,
-                               'played_quizzes': quiz_user.played_quizzes},
-                              context_instance=RequestContext(request))
+index = login_required(QuizIndexView.as_view())
+
+
+class QuizCategoryView(ListView):
+    model = Quiz
+    template_name = 'quiz/category.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(QuizCategoryView, self).get_context_data(**kwargs)
+        profile = self.request.user.get_profile()
+        quiz_user = profile.get_extension(QuizUser)
+
+        for q in Quiz.objects.all():
+            if not q.is_expired():
+                q.update_status()
+            try:
+                obj = UserToQuiz.objects.get(user=quiz_user, quiz=q)
+            except UserToQuiz.DoesNotExist:
+                obj = UserToQuiz(user=quiz_user, quiz=q)
+                obj.save()
+
+        context['active_quizzes'] = quiz_user.active_quizzes
+        context['inactive_quizzes'] = quiz_user.inactive_quizzes
+        context['expired_quizzes'] = quiz_user.expired_quizzes
+        context['played_quizzes'] = quiz_user.played_quizzes
+
+        return context
+
+
+category = login_required(QuizCategoryView.as_view())
 
 
 class QuizView(View):
