@@ -1,5 +1,5 @@
 from datetime import date
-from hashlib import md5
+
 from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
@@ -9,6 +9,7 @@ from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.html import strip_tags
+
 from wouso.core.god import God
 from wouso.core.magic.models import Spell, PlayerSpellDue
 from wouso.core.scoring.models import History
@@ -24,11 +25,14 @@ def player_points_history(request, id):
     player = get_object_or_404(Player, pk=id)
     hist = History.objects.filter(user=player).order_by('-timestamp')[:500]
     return render_to_response('profile/points_history.html',
-                            {'pplayer': player, 'history': hist},
+                              {'pplayer': player, 'history': hist},
                               context_instance=RequestContext(request))
+
+
 @login_required
 def set_profile(request):
     user = request.user.get_profile()
+
     class SForm(forms.ModelForm):
         class Meta:
             model = Player
@@ -50,8 +54,9 @@ def set_profile(request):
         form = SForm(instance=user)
 
     return render_to_response('profile/set_profile.html',
-            {'profile': user, 'form': form},
-        context_instance=RequestContext(request))
+                              {'profile': user, 'form': form},
+                              context_instance=RequestContext(request))
+
 
 @login_required
 def save_profile(request):
@@ -111,6 +116,7 @@ def user_profile(request, id, page=u'1'):
                                'specialquest_button': specialquest_button,
                                'message': message},
                               context_instance=RequestContext(request))
+
 
 @login_required
 def player_group(request, id, page=u'1'):
@@ -192,7 +198,6 @@ def groups_index(request):
                               context_instance=RequestContext(request))
 
 
-
 @login_required
 def magic_summary(request):
     """ Display a summary of spells cast by me or on me """
@@ -204,6 +209,7 @@ def magic_summary(request):
                               {'cast': cast_spells,
                               'theowner': player},
                               context_instance=RequestContext(request))
+
 
 @login_required
 def magic_spell(request):
