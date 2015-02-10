@@ -19,6 +19,8 @@ def index(request):
     quiz_user = profile.get_extension(QuizUser)
 
     for q in Quiz.objects.all():
+        if not q.is_expired():
+            q.update_status()
         try:
             obj = UserToQuiz.objects.get(user=quiz_user, quiz=q)
         except UserToQuiz.DoesNotExist:

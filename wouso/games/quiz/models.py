@@ -89,6 +89,14 @@ class Quiz(models.Model):
     def is_public(self):
         return self.type == 'P'
 
+    def update_status(self):
+        now = datetime.now()
+        if self.start <= now <= self.end:
+            self.status = 'A'
+        elif self.end < now:
+            self.status = 'E'
+        self.save()
+
     @property
     def qtype(self):
         if self.type == 'L':
