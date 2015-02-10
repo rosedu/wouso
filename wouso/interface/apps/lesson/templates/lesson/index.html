@@ -7,22 +7,24 @@
 
 {% block sectioncontent %}
 
-{% if categories %}
-    <ul>
-        {% for c in categories %}
+    {% if categories %}
+        <ul>
+            {% for c in categories %}
             <h3>{{ c }}</h3>
-            {% if c.lessons %}
             <ol>
-                {% for l in c.active_lessons %}
-                <li><a href="{% url lesson_view l.id %}">{{ l }}</a></li>
+                {% for t in c.tags.all %}
+                <li>{{ t }}</li>
+                    <ul>
+                        {% for l in t.active_lessons %}
+                        <li><a href="{% url lesson_view l.id %}">{{ l }}</a></li>
+                        {% endfor %}
+                    </ul>
                 {% endfor %}
             </ol>
-            {% endif %}
-        {% endfor %}
-    </ul>
-{% else %}
-    {% trans 'No lessons have been added.' %}
-{% endif %}
-
+            {% endfor %}
+        </ul>
+    {% else %}
+        {% trans 'No lessons have been added.' %}
+    {% endif %}
 
 {% endblock %}

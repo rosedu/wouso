@@ -124,7 +124,7 @@ class EditQuestionForm(forms.Form):
         self.fields['tags'] = MultipleField(
             choices=[(tag.name, tag.name) for tag in tags],
             widget=forms.SelectMultiple, required=False,
-            initial=[t.name for t in instance.tags.all()] if instance else {}
+            initial=[t.name for t in instance.tags.all()] if instance else []
         )
 
         self.fields['active'] = forms.BooleanField(required=False, initial=instance.active if instance else False)

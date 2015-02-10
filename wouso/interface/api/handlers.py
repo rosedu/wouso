@@ -23,6 +23,7 @@ from wouso.interface.activity.models import Activity
 from wouso.interface.api.c2dm.models import register_device
 from wouso.interface.apps.messaging.models import Message, MessagingUser
 from wouso.interface.top.models import TopUser, GroupHistory
+from wouso.interface.apps.lesson.models import LessonCategory, LessonTag
 
 from . import API_VERSION
 
@@ -532,6 +533,15 @@ class CategoryTagsHandler(BaseHandler):
     def read(self, request, category):
         category = get_object_or_404(Category, name=category)
         tags = category.tag_set.all()
+        return tags
+
+
+class LessonCategoryTagsHandler(BaseHandler):
+    allowed_methods = ('GET',)
+
+    def read(self, request, category):
+        category = get_object_or_404(LessonCategory, name=category)
+        tags = category.tags.all()
         return tags
 
 

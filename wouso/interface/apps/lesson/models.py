@@ -12,17 +12,24 @@ class LessonCategory(models.Model):
     def lessons(self):
         """ Get lessons in specified order """
         if not self.order:
-            return self.lesson_set.all()
+            return self.get_unordered_lessons()
         else:
             order = [int(i) for i in self.order.split(',')]
             ls = {}
-            for l in self.lesson_set.all():
+            for l in self.get_unordered_lessons():
                 ls[l.id] = l
             return [ls[i] for i in order]
 
     @property
     def active_lessons(self):
         return [l for l in self.lessons if l.active]
+
+    def get_unordered_lessons(self):
+        lessons = []
+        for t in self.tags.all():
+            for l in t.lessons.all():
+                lessons.append(l)
+        return lessons
 
     def reorder(self, order):
         self.order = ''
@@ -35,6 +42,22 @@ class LessonCategory(models.Model):
         return self.name
 
 
+class LessonTag(models.Model):
+    name = models.CharField(max_length=100)
+    category = models.ForeignKey(LessonCategory, blank=True, null=True, related_name='tags')
+
+    @property
+    def number_of_lessons(self):
+        return self.lessons.count()
+
+    @property
+    def active_lessons(self):
+        return [l for l in self.category.active_lessons if l.tag.name == self.name]
+
+    def __unicode__(self):
+        return self.name
+
+
 class Lesson(models.Model, App):
     """
      Lesson module
@@ -42,7 +65,7 @@ class Lesson(models.Model, App):
     name = models.CharField(max_length=100)
     youtube_url = models.URLField(blank=True, null=True)
     content = RichTextField()
-    category = models.ForeignKey(LessonCategory)
+    tag = models.ForeignKey(LessonTag, blank=True, null=True, related_name='lessons')
     quiz = models.ForeignKey(Quiz, blank=True, null=True)
     quiz_show_time = models.IntegerField(default=5)
     active = models.BooleanField()

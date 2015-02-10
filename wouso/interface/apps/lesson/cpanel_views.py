@@ -3,11 +3,12 @@ from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response, redirect
 from django.template import RequestContext
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView
 
 from core.decorators import staff_required
-from interface.apps.lesson.forms import LessonForm, CategoryForm
-from interface.apps.lesson.models import Lesson, LessonCategory
+from interface.apps.lesson.forms import CategoryForm, TagForm, AddLessonForm, EditLessonForm
+from interface.apps.lesson.models import Lesson, LessonCategory, LessonTag
+from games.quiz.models import Quiz
 
 
 class LessonsView(ListView):
@@ -25,25 +26,45 @@ class LessonsView(ListView):
 lessons = staff_required(LessonsView.as_view())
 
 
-class AddLessonView(CreateView):
-    form_class = LessonForm
-    success_url = reverse_lazy('lessons')
+class AddLessonView(FormView):
+    form_class = AddLessonForm
     template_name = 'lesson/cpanel/add_lesson.html'
+
+    def get_form_kwargs(self):
+        return dict(data=self.request.POST)
+
+    def form_valid(self, form):
+        form.save()
+        return redirect('lessons')
+
+    def get_context_data(self, **kwargs):
+        context = super(AddLessonView, self).get_context_data(**kwargs)
+        categories = [(c.name.capitalize(), c.name) for c in LessonCategory.objects.all()]
+        context['categories'] = categories
+        return context
 
 
 add_lesson = permission_required('config.change_setting')(
     AddLessonView.as_view())
 
 
-class EditLessonView(UpdateView):
-    model = Lesson
-    form_class = LessonForm
-    success_url = reverse_lazy('lessons')
-    template_name = 'lesson/cpanel/edit_lesson.html'
+@permission_required('config.change_setting')
+def edit_lesson(request, id):
+    lesson = get_object_or_404(Lesson, pk=id)
+    categories = [(c.name, c.name.capitalize()) for c in LessonCategory.objects.all()]
+    lesson_quizzes = Quiz.objects.filter(type='L')
 
+    if request.method == 'POST':
+        form = EditLessonForm(request.POST, instance=lesson)
+        if form.is_valid():
+            new_lesson = form.save()
+            return redirect('lessons')
+    else:
+        form = EditLessonForm(instance=lesson)
 
-edit_lesson = permission_required('config.change_setting')(
-    EditLessonView.as_view())
+    return render_to_response('lesson/cpanel/edit_lesson.html',
+                              {'lesson': lesson, 'form': form, 'categories': categories, 'lesson_quizzes': lesson_quizzes},
+                              context_instance=RequestContext(request))
 
 
 class DeleteLessonView(DeleteView):
@@ -101,6 +122,49 @@ delete_category = permission_required('config.change_setting')(
     DeleteCategoryView.as_view())
 
 
+class ManageTagsView(ListView):
+    model = LessonTag
+    context_object_name = 'tags'
+    template_name = 'lesson/cpanel/manage_tags.html'
+
+
+manage_tags = permission_required('config.change_setting')(
+    ManageTagsView.as_view())
+
+
+class AddTagView(CreateView):
+    form_class = TagForm
+    success_url = reverse_lazy('manage_lesson_tags')
+    template_name = 'lesson/cpanel/tag.html'
+
+
+add_tag = permission_required('config.change_setting')(
+    AddTagView.as_view())
+
+
+class EditTagView(UpdateView):
+    model = LessonTag
+    form_class = TagForm
+    success_url = reverse_lazy('manage_lesson_tags')
+    template_name = 'lesson/cpanel/tag.html'
+
+
+edit_tag = permission_required('config.change_setting')(
+    EditTagView.as_view())
+
+
+class DeleteTagView(DeleteView):
+    model = LessonTag
+    success_url = reverse_lazy('manage_lesson_tags')
+
+    def get(self, *args, **kwargs):
+        return self.delete(*args, **kwargs)
+
+
+delete_tag = permission_required('config.change_setting')(
+    DeleteTagView.as_view())
+
+
 @permission_required('config.change_setting')
 def sort_lessons(request, id):
     category = get_object_or_404(LessonCategory, pk=id)
@@ -110,7 +174,6 @@ def sort_lessons(request, id):
         if neworder:
             # convert str to array
             order = [i[1] for i in map(lambda a: a.split('='), neworder.split('&'))]
-            print order
             category.reorder(order)
             return HttpResponseRedirect(reverse('manage_lesson_categories'))
 
