@@ -1,0 +1,76 @@
+{% extends 'interface/section_base.html'%}
+
+{% load i18n %}
+
+{% block title %}{% trans 'Quizzes' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Quizzes' %}{% endblock %}
+
+{% block sectioncontent %}
+
+{% if request.user.is_staff %}
+    <p><i>{% trans 'Note: Inactive quizzes are only visible by staff members' %}</i></p>
+    <h3>{% trans 'Inactive quizzes' %}</h3>
+    <ul>
+        {% for t in inactive_quizzes %}
+            <li>
+                <a href="{% url quiz_view t.quiz.id %}" onclick="return confirm('Are you sure you want to take this quiz?')">
+                    {{ t.quiz.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if active_quizzes or expired_quizzes %}
+    <h3>{% trans 'Active quizzes' %}</h3>
+    <ul>
+        {% for t in active_quizzes %}
+            <li>
+                <a href="{% url quiz_view t.quiz.id %}" onclick="return confirm('Are you sure you want to take this quiz?')">
+                    {{ t.quiz.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h3>{% trans 'Expired quizzes' %}</h3>
+    <ul>
+        {% for t in expired_quizzes %}
+            <li>{{ t.quiz.name }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>{% trans 'No quizzes have been published. Come back later.' %}</p>
+{% endif %}
+
+<h3>{% trans 'Your results' %}</h3>
+{% if played_quizzes %}
+    <table>
+        <tr>
+            <th rowspan="2">#</th>
+            <th rowspan="2">{% trans 'Quiz' %}</th>
+            <th colspan="2">{% trans 'Best Score' %}</th>
+            <th colspan="2">{% trans 'Last Score' %}</th>
+        </tr>
+        <tr>
+            <th>{% trans 'Date' %}</th>
+            <th>{% trans 'Score' %}</th>
+            <th>{% trans 'Date' %}</th>
+            <th>{% trans 'Result' %}</th>
+        </tr>
+        {% for t in played_quizzes %}
+            <tr style="text-align: center">
+                <td>{{ forloop.counter }}</td>
+                <td>{{ t.quiz.name }}</td>
+                <td>{{ t.best_attempt.date }}</td>
+                <td>{{ t.best_attempt.points }}</td>
+                <td>{{ t.last_attempt.date }}</td>
+                <td>{{ t.last_attempt.points }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p> {% trans "You haven't run any quiz yet." %} </p>
+{% endif %}
+
+{% endblock %}
