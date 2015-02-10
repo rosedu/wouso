@@ -78,8 +78,12 @@ class QuizView(View):
         points, gold = self.quiz.calculate_reward(results)
         self.through.set_played(results, points, gold)
 
+        grade = float(points) / self.quiz.points_reward * 10
+
         return render_to_response('quiz/result.html',
-                                  {'quiz': self.quiz, 'points': points},
+                                  {'quiz': self.quiz,
+                                   'points': points,
+                                   'grade': grade},
                                   context_instance=RequestContext(request))
 
 
