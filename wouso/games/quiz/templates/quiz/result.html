@@ -7,7 +7,7 @@
 
 {% block sectioncontent %}
 
-<p>{% trans 'You scored:' %} {{ points }} out of {{ quiz.points_reward }}!</p>
+<p>{% trans 'Your grade is' %} {{ grade }}. {% trans 'You scored:' %} {{ points }} {% trans '(out of' %} {{ quiz.points_reward }})!</p>
 
 <a href="{% url quiz_index_view %}">{% trans 'Back to quizzes' %}</a>
 

@@ -7,8 +7,7 @@
 
 {% block sectioncontent %}
 
-{% if active_quizzes or expired_quizzes %}
-    {% if request.user.is_staff %}
+{% if request.user.is_staff %}
     <p><i>{% trans 'Note: Inactive quizzes are only visible by staff members' %}</i></p>
     <h3>{% trans 'Inactive quizzes' %}</h3>
     <ul>
@@ -20,7 +19,9 @@
             </li>
         {% endfor %}
     </ul>
-    {% endif %}
+{% endif %}
+
+{% if active_quizzes or expired_quizzes %}
     <h3>{% trans 'Active quizzes' %}</h3>
     <ul>
         {% for t in active_quizzes %}

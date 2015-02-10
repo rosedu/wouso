@@ -19,6 +19,8 @@ def index(request):
     quiz_user = profile.get_extension(QuizUser)
 
     for q in Quiz.objects.all():
+        if not q.is_expired():
+            q.update_status()
         try:
             obj = UserToQuiz.objects.get(user=quiz_user, quiz=q)
         except UserToQuiz.DoesNotExist:
@@ -76,8 +78,12 @@ class QuizView(View):
         points, gold = self.quiz.calculate_reward(results)
         self.through.set_played(results, points, gold)
 
+        grade = float(points) / self.quiz.points_reward * 10
+
         return render_to_response('quiz/result.html',
-                                  {'quiz': self.quiz, 'points': points},
+                                  {'quiz': self.quiz,
+                                   'points': points,
+                                   'grade': grade},
                                   context_instance=RequestContext(request))
 
 

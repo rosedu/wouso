@@ -75,8 +75,11 @@ class AddQuizForm(forms.ModelForm):
         self.fields['time_limit'].label = "Time limit (seconds)"
         self.fields['another_chance'].label = "Retake quiz after (days)"
 
+        tags = pickle.loads(self.instance.tags) if self.instance.tags else {}
+
         for t in Tag.objects.filter(category__name='quiz'):
-            self.fields['tag_%s' % t] = forms.IntegerField(label=unicode(t), initial=0)
+            initial = tags[t.name] if t.name in tags else 0
+            self.fields['tag_%s' % t] = forms.IntegerField(label=unicode(t), initial=initial)
 
     def save(self, commit=True):
         data = self.cleaned_data
