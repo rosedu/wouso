@@ -74,6 +74,7 @@ urlpatterns += patterns('',
     url(r'^race/(?P<race_id>\d+)/groups/$', Resource(handler=GroupsHandler, **ad)),
 
     url(r'^category/(?P<category>\w+)/tags$', Resource(handler=CategoryTagsHandler)),
+    url(r'^lesson_category/(?P<category>\w+)/lesson_tags$', Resource(handler=LessonCategoryTagsHandler)),
 )
 
 for g in get_games():

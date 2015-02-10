@@ -1,30 +1,72 @@
 {% extends 'lesson/cpanel/list_lessons.html' %}
 
+{% load i18n %}
 {% load user %}
+{% load cpanel %}
 {% load bootstrap %}
 {% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Add lesson{% endblock %}
 
 {% block breadcrumbs %}
-	  {{ block.super }}
+    {{ block.super }}
     {% breadcrumb "Add lesson" "add_lesson" %}
 {% endblock %}
 
+{% block bottomscripts %}
+    <script type="text/javascript" src="{{ basepath }}/static/js/cpanel/lesson/lesson_tags.js/"></script>
+{% endblock %}
+
 {% block sectioncontent %}
+    <form class="form-horizontal" method="post">
+        <div class="form-group">
+            <label for="name" class="control-label col-sm-2">Name</label>
+            <input id="name" name="name" class="form-control" type="text" maxlength="100">
+        </div>
 
-    <div class="col-md-8">
-        {% if form.errors %}
-            <p style="color: red;">
-                Please correct the error{{ form.errors|pluralize }} below.
-            </p>
-        {% endif %}
+        <div class="form-group">
+            <label for="select-category" class="control-label col-sm-2">Category</label>
+            <select name="category" id="select-category" class="form-control col-sm-2">
+                {% for c in categories %}
+                <option value="{{c.1}}">{{c.0}}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-        <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
-            {{ form|bootstrap_horizontal }}
-            <input class="btn btn-primary" type="submit" value="Submit">
-            {% csrf_token %}
-        </form>
-    </div>
+        <div class="form-group">
+            <label for="select-tag" class="control-label col-sm-2">Tag</label>
+            <select class="form-control col-sm-2" name="tag" id="select-tag"></select>
+        </div>
 
+        <div class="form-group">
+            <label for="youtube-url" class="control-label col-sm-2">Youtube url</label>
+            <input id="youtube-url" name="youtube_url" class="form-control" type="text" maxlength="500">
+        </div>
+
+        <div class="form-group">
+            <label for="content" class="control-label col-sm-2">Content</label>
+            <div id="content" class="col-sm-2">{{ form.content }}</div>
+        </div>
+
+        <div class="form-group">
+            <label for="select-quiz" class="control-label col-sm-2">Quiz</label>
+            <div id="select-quiz">{{ form.quiz|add_css:"form-control col-sm-2"}}</div>
+        </div>
+
+        <div class="form-group">
+            <label for="quiz-show-time" class="control-label col-sm-2">Show quiz after (minutes)</label>
+            <input id="quiz-show-time" name="quiz_show_time" class="form-control" type="number" value="5">
+        </div>
+
+        <div class="form-group">
+            <label for="active" class="control-label col-sm-2">Mark lesson as active</label>
+            <div id="active">{{ form.active|add_css:"form-control col-sm-2" }}</div>
+        </div>
+
+        <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
+        <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
+        <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
+
+        {% csrf_token %}
+    </form>
 {% endblock %}

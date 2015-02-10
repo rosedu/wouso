@@ -1,6 +1,7 @@
 {% extends 'lesson/cpanel/list_lessons.html' %}
 
 {% load i18n %}
+{% load cpanel %}
 {% load django_bootstrap_breadcrumbs %}
 {% load bootstrap %}
 
@@ -9,13 +10,71 @@
     {% breadcrumb "Edit lesson" "edit_lesson" lesson.id %}
 {% endblock %}
 
+{% block bottomscripts %}
+    <script type="text/javascript" src="{{ basepath }}/static/js/cpanel/lesson/lesson_tags.js/"></script>
+{% endblock %}
+
 {% block sectioncontent %}
-     <form method="post" role="form" class="form-horizontal" action="">
-        <table>
-        {{ form|bootstrap_horizontal}}
-        </table>
+    <form class="form-horizontal" method="post">
+        <p style="color: red;">{{ form.errors }}</p>
+
+        <div class="form-group">
+            <label for="name" class="control-label col-sm-2">Name</label>
+            <div id="name">{{ form.name|add_css:"form-control col-sm-2" }}</div>
+        </div>
+
+        <div class="form-group">
+            <label for="select-category" class="control-label col-sm-2">Category</label>
+            <select name="category" id="select-category" class="form-control col-sm-2">
+                {% for c in categories %}
+                <option value="{{c.1}}" {% if c.1 == lesson.tag.category.name %} selected {% endif %}>{{c.0}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="select-tag" class="control-label col-sm-2">Tag</label>
+            <select name="tag" id="select-tag" class="form-control col-sm-2">
+                {% for t in lesson.tag.category.tags.all %}
+                <option value="{{t.name}}" {% if t.name == lesson.tag.name %} selected {% endif %}>{{t.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="youtube-url" class="control-label col-sm-2">Youtube url</label>
+            <div id="youtube-url">{{ form.youtube_url|add_css:"form-control col-sm-2" }}</div>
+        </div>
+
+        <div class="form-group">
+            <label for="content" class="control-label col-sm-2">Content</label>
+            <div id="content" class="col-sm-2">{{ form.content }}</div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">Quiz</label>
+            <select name="quiz" class="form-control col-sm-2">
+                <option value="--None--">--None--</option>
+                {% for q in lesson_quizzes %}
+                <option value="{{q.name}}" {% if q.name == lesson.quiz.name %} selected {% endif %}>{{q.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="quiz-show-time" class="control-label col-sm-2">Show quiz after (minutes)</label>
+            <div id="quiz-show-time">{{ form.quiz_show_time|add_css:"form-control col-sm-2" }}</div>
+        </div>
+
+        <div class="form-group">
+            <label for="active" class="control-label col-sm-2">Mark lesson as active</label>
+            <div id="active">{{ form.active|add_css:"form-control col-sm-2"}}</div>
+        </div>
+
+        <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
+        <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
+        <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
+
         {% csrf_token %}
-        <a class="btn btn-warning" href="{% url lessons %}">{% trans 'Back' %}</a>
-        <button class="btn btn-primary" type="submit">{% trans 'Submit' %}</button>
     </form>
 {% endblock %}

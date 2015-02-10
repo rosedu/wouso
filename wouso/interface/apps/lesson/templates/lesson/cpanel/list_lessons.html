@@ -9,7 +9,10 @@
         <a class="btn btn-primary" href="{% url add_lesson %}">
             <span class="glyphicon glyphicon-plus"></span>{% trans 'Add lesson' %}
         </a>
-            <a class="btn btn-success" href="{% url manage_lesson_categories %}">
+        <a class="btn btn-success" href="{% url manage_lesson_tags %}">
+            <span class="glyphicon glyphicon-edit"></span>{% trans 'Manage tags' %}
+        </a>
+        <a class="btn btn-success" href="{% url manage_lesson_categories %}">
             <span class="glyphicon glyphicon-edit"></span>{% trans 'Manage categories' %}
         </a>
     </div>
@@ -104,6 +107,7 @@
             <th colspan="2">#</th>
             <th>Name</th>
             <th>Category</th>
+            <th>Tag</th>
             <th>Quiz</th>
             <th>Show quiz after (minutes)</th>
             <th>Active</th>
@@ -111,10 +115,11 @@
         </tr>
             {% for l in lessons %}
             <tr>
-                <td><input type="checkbox" id="{{ l.id }}" class="select_all {{ l.category.id }}"/></td>
+                <td><input type="checkbox" id="{{ l.id }}" class="select_all {{ l.tag.category.id }}"/></td>
                 <td>{{ l.id }}</td>
                 <td>{{ l.name }}</td>
-                <td>{{ l.category }}</td>
+                <td>{{ l.tag.category }}</td>
+                <td>{{ l.tag }}</td>
                 <td>{{ l.quiz }}</td>
                 <td>{{ l.quiz_show_time }}</td>
                 <td>
