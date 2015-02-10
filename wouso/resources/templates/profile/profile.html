@@ -79,6 +79,10 @@
                title="{% trans 'Invite in my Special Quest group' %}">{% trans 'Invite' %}</a>
         {% endif %}
 
+        {% if profile.user.id == user.id and user.has_usable_password %}
+            <a class="button" href="{% url password_change %}" title="{% trans 'Change password' %}">Change password</a>
+        {% endif %}
+
         <a class="button" href="{% url report_player profile.id%}" title="Report this player to the game administators">Report</a>
     </div>
 
