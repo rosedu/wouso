@@ -7,18 +7,45 @@ from django.template.loader import render_to_string
 from django.views.generic import View
 
 from wouso.core.ui import register_sidebar_block
+from django.views.generic import TemplateView, ListView
 from games.quiz.models import QuizUser, UserToQuiz
-from models import Lesson, LessonCategory
+from models import Lesson, LessonCategory, LessonTag
 
 
-@login_required
-def index(request):
-    """ Shows all lessons related to the current user """
-    categories = LessonCategory.objects.all()
+class LessonIndexView(ListView):
+    """Shows all categories"""
+    model = LessonCategory
+    context_object_name = 'categories'
+    template_name = 'lesson/index.html'
 
-    return render_to_response('lesson/index.html',
-                              {'categories': categories},
-                              context_instance=RequestContext(request))
+
+index = login_required(LessonIndexView.as_view())
+
+
+class LessonCategoryView(ListView):
+    """ Shows all tags related to the current category"""
+    model = LessonCategory
+    context_object_name = 'category'
+    template_name = 'lesson/category.html'
+
+    def get_queryset(self):
+        return LessonCategory.objects.get(id=self.kwargs['id'])
+
+
+category = login_required(LessonCategoryView.as_view())
+
+
+class LessonTagView(ListView):
+    """ Shows all lessons related to the current category"""
+    model = LessonTag
+    context_object_name = 'tag'
+    template_name = 'lesson/tag.html'
+
+    def get_queryset(self):
+        return LessonTag.objects.get(id=self.kwargs['id'])
+
+
+tag = login_required(LessonTagView.as_view())
 
 
 class LessonView(View):

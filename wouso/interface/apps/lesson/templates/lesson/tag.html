@@ -1,0 +1,18 @@
+{% extends 'interface/section_base.html'%}
+
+{% load i18n %}
+
+{% block title %}{% trans 'Lesson' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Lesson' %}{% endblock %}
+
+{% block sectioncontent %}
+
+    {% for l in tag.active_lessons %}
+        <ul>
+            <h3><a href="{% url lesson_view l.id %}">{{ l }}</a></h3>
+        </ul>
+    {% empty %}
+        {% trans 'No tags have been added.' %}
+    {% endfor %}
+
+{% endblock %}

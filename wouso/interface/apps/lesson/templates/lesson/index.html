@@ -2,29 +2,17 @@
 
 {% load i18n %}
 
-{% block title %}{% trans 'Lessons' %}{% endblock %}
-{% block sectiontitle %}{% trans 'Lessons' %}{% endblock %}
+{% block title %}{% trans 'Categories' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Categories' %}{% endblock %}
 
 {% block sectioncontent %}
 
-    {% if categories %}
-        <ul>
-            {% for c in categories %}
-            <h3>{{ c }}</h3>
-            <ol>
-                {% for t in c.tags.all %}
-                <li>{{ t }}</li>
-                    <ul>
-                        {% for l in t.active_lessons %}
-                        <li><a href="{% url lesson_view l.id %}">{{ l }}</a></li>
-                        {% endfor %}
-                    </ul>
-                {% endfor %}
-            </ol>
-            {% endfor %}
-        </ul>
-    {% else %}
+    {% for c in categories %}
+    <ul>
+        <h3><a href="{% url lesson_category_view c.id %}">{{ c }}</a></h3>
+    </ul>
+    {% empty %}
         {% trans 'No lessons have been added.' %}
-    {% endif %}
+    {% endfor %}
 
 {% endblock %}
