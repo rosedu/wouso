@@ -2,6 +2,15 @@
 {% load i18n %}
 {% load django_bootstrap_breadcrumbs %}
 
+{% block sectiontitle %}
+    Manage tags
+    <div class="pull-right">
+        <a class="btn btn-primary" href="{% url add_lesson_tag %}">
+            <span class="glyphicon glyphicon-plus"></span>{% trans 'Add tag' %}
+        </a>
+    </div>
+{% endblock %}
+
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Manage tags" "manage_tags" %}

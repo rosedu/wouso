@@ -1,8 +1,17 @@
-{% extends 'lesson/cpanel/list_lessons.html' %}
+{% extends 'lesson/cpanel/manage_tags.html' %}
 
 {% load i18n %}
 {% load django_bootstrap_breadcrumbs %}
 {% load bootstrap %}
+
+{% block sectiontitle %}
+    Tag
+    <div class="pull-right">
+        <a class="btn btn-primary" href="{% url add_lesson_tag %}">
+            <span class="glyphicon glyphicon-plus"></span>{% trans 'Add tag' %}
+        </a>
+    </div>
+{% endblock %}
 
 {% block breadcrumbs %}
     {{ block.super }}
