@@ -4,14 +4,14 @@
 
 {% block sectiontitle %}
     Manage categories
-    <a class="btn btn-primary pull-right" href="{% url add_category %}">
+    <a class="btn btn-primary pull-right" href="{% url add_file_category %}">
         <span class="glyphicon glyphicon-plus"></span>{% trans 'Add category' %}
     </a>
 {% endblock %}
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Manage categories" "manage_categories" %}
+    {% breadcrumb "Manage categories" "manage_file_categories" %}
 {% endblock %}
 
 {% block sectioncontent %}
@@ -24,10 +24,10 @@
         <tr>
             <td>{{ c.name }}</td>
             <td>
-                <a class="btn btn-success" href="{% url edit_category c.id %}">
+                <a class="btn btn-success" href="{% url edit_file_category c.id %}">
                     <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                 </a>
-                <a class="btn btn-danger" href="{% url delete_category c.id %}">
+                <a class="btn btn-danger" href="{% url delete_file_category c.id %}">
                     <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
                 </a>
             </td>
