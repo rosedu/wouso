@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 
 urlpatterns = patterns('wouso.interface.apps.lesson.cpanel_views',
     url(r'^$', 'lessons', name='lessons'),
-    url(r'^/page(?P<page>[0-9]+)/$', 'lessons', name='lessons_page'),
+    url(r'^page/(?P<page>[0-9]+)/$', 'lessons', name='lessons_page'),
     url(r'^add_lesson/$', 'add_lesson', name='add_lesson'),
     url(r'^edit_lesson/(?P<id>\d+)/$', 'edit_lesson', name='edit_lesson'),
     url(r'^delete_lesson/(?P<pk>\d+)/$', 'delete_lesson', name='delete_lesson'),
