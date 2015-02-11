@@ -1,5 +1,9 @@
+import os
+
 from ckeditor.fields import RichTextField
 from django.db import models
+from django.conf import settings
+
 from wouso.games.quiz.models import Quiz
 from wouso.core.common import App
 
@@ -7,6 +11,11 @@ from wouso.core.common import App
 class LessonCategory(models.Model):
     name = models.CharField(max_length=100)
     order = models.CharField(max_length=1000, default="", blank=True)
+    logo = models.ImageField(upload_to=settings.MEDIA_ARTIFACTS_DIR, null=True, blank=True)
+
+    @property
+    def logo_url(self):
+        return os.path.join(settings.MEDIA_ARTIFACTS_URL, os.path.basename(str(self.logo))) if self.logo else ""
 
     @property
     def lessons(self):
@@ -51,6 +60,11 @@ class LessonCategory(models.Model):
 class LessonTag(models.Model):
     name = models.CharField(max_length=100)
     category = models.ForeignKey(LessonCategory, blank=True, null=True, related_name='tags')
+    logo = models.ImageField(upload_to=settings.MEDIA_ARTIFACTS_DIR, null=True, blank=True)
+
+    @property
+    def logo_url(self):
+        return os.path.join(settings.MEDIA_ARTIFACTS_URL, os.path.basename(str(self.logo))) if self.logo else ""
 
     @property
     def number_of_lessons(self):

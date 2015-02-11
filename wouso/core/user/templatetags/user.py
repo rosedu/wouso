@@ -123,4 +123,4 @@ def player_input(name, id=None):
 
 @register.simple_tag()
 def race_logo(race):
-    return os.path.join(settings.MEDIA_RACE_LOGO_URL, os.path.basename(str(race.logo)))
+    return os.path.join(settings.MEDIA_ARTIFACTS_URL, os.path.basename(str(race.logo)))
