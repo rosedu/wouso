@@ -15,6 +15,7 @@ class CategoryForm(forms.ModelForm):
 class TagForm(forms.ModelForm):
     class Meta:
         model = LessonTag
+        exclude = ('order')
 
 
 class AddLessonForm(forms.Form):

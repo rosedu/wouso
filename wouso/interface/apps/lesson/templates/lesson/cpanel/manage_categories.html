@@ -2,9 +2,18 @@
 {% load i18n %}
 {% load django_bootstrap_breadcrumbs %}
 
+{% block sectiontitle %}
+    Manage categories
+    <div class="pull-right">
+        <a class="btn btn-primary" href="{% url add_lesson_category %}">
+            <span class="glyphicon glyphicon-plus"></span>{% trans 'Add category' %}
+        </a>
+    </div>
+{% endblock %}
+
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Manage categories" "manage_categories" %}
+    {% breadcrumb "Manage categories" "manage_lesson_categories" %}
 {% endblock %}
 
 {% block sectioncontent %}
@@ -19,8 +28,8 @@
             <td><img src="{{ c.logo_url }}" class="logo"/></td>
             <td>{{ c.name }}</td>
             <td>
-                <a class="btn btn-info" href="{% url sort_lessons c.id %}">
-                    <span class="glyphicon glyphicon-sort"></span>{% trans 'Sort Lessons' %}
+                <a class="btn btn-info" href="{% url sort_lesson_tags c.id %}">
+                    <span class="glyphicon glyphicon-sort"></span>{% trans 'Sort Tags' %}
                 </a>
                 <a class="btn btn-success" href="{% url edit_lesson_category c.id %}">
                     <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}

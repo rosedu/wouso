@@ -7,12 +7,12 @@
 
 {% block sectioncontent %}
 
-    {% for t in category.tags.all %}
+    {% for t in category.get_tags %}
         <ul>
             <h3><a href="{% url lesson_tag_view t.id %}">{{ t }}</a></h3>
         </ul>
     {% empty %}
-        {% trans 'No lessons have been added.' %}
+        {% trans 'No tags have been added.' %}
     {% endfor %}
 
 {% endblock %}

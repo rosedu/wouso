@@ -62,7 +62,7 @@ manage_categories = permission_required('config.change_setting')(
 
 class AddCategoryView(CreateView):
     form_class = CategoryForm
-    success_url = reverse_lazy('manage_categories')
+    success_url = reverse_lazy('manage_file_categories')
     template_name = 'files/cpanel/category.html'
 
 
@@ -73,7 +73,7 @@ add_category = permission_required('config.change_setting')(
 class EditCategoryView(UpdateView):
     model = FileCategory
     form_class = CategoryForm
-    success_url = reverse_lazy('manage_categories')
+    success_url = reverse_lazy('manage_file_categories')
     template_name = 'files/cpanel/category.html'
 
 
@@ -83,7 +83,7 @@ edit_category = permission_required('config.change_setting')(
 
 class DeleteCategoryView(DeleteView):
     model = FileCategory
-    success_url = reverse_lazy('manage_categories')
+    success_url = reverse_lazy('manage_file_categories')
 
     def get(self, *args, **kwargs):
         return self.delete(*args, **kwargs)

@@ -1,8 +1,17 @@
-{% extends 'lesson/cpanel/list_lessons.html' %}
+{% extends 'lesson/cpanel/manage_categories.html' %}
 
 {% load i18n %}
 {% load django_bootstrap_breadcrumbs %}
 {% load bootstrap %}
+
+{% block sectiontitle %}
+    Category
+    <div class="pull-right">
+        <a class="btn btn-primary" href="{% url add_lesson_category %}">
+            <span class="glyphicon glyphicon-plus"></span>{% trans 'Add category' %}
+        </a>
+    </div>
+{% endblock %}
 
 {% block breadcrumbs %}
     {{ block.super }}
