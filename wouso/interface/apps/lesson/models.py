@@ -18,35 +18,27 @@ class LessonCategory(models.Model):
         return os.path.join(settings.MEDIA_ARTIFACTS_URL, os.path.basename(str(self.logo))) if self.logo else ""
 
     @property
-    def lessons(self):
-        """ Get lessons in specified order """
+    def get_tags(self):
+        """
+        Get a list of all tags inside a category.
+        If there is an order provided in self.order then the tags will be ordered accordingly,
+        otherwise they will be in their natural order.
+        Note: self.order contains a list of tag IDs separated by comma as a string.
+        """
         if not self.order:
-            return self.get_unordered_lessons()
-        else:
-            order = [int(i) for i in self.order.split(',')]
-            ls = {}
-            for l in self.get_unordered_lessons():
-                ls[l.id] = l
-            first = [ls[i] for i in order]
-            full_ls = []
-            full_ls.extend(first)
-            for l in self.get_unordered_lessons():
-                if l not in first:
-                    full_ls.append(l)
-            return full_ls
+            return self.tags.all()
 
-    @property
-    def active_lessons(self):
-        return [l for l in self.lessons if l.active]
+        order = [int(k) for k in self.order.split(',')]
+        id_map = {}
+        for tag in self.tags.all():
+            id_map[tag.id] = tag
 
-    def get_unordered_lessons(self):
-        lessons = []
-        for t in self.tags.all():
-            for l in t.lessons.all():
-                lessons.append(l)
-        return lessons
+        tags_list = [id_map[k] for k in order]
+        # Append any other remaining tags if there are
+        tags_list.extend([tag for tag in self.tags.all() if tag not in tags_list])
+        return tags_list
 
-    def reorder(self, order):
+    def set_order(self, order):
         self.order = ''
         for i in order:
             self.order += i + ','
@@ -60,6 +52,7 @@ class LessonCategory(models.Model):
 class LessonTag(models.Model):
     name = models.CharField(max_length=100)
     category = models.ForeignKey(LessonCategory, blank=True, null=True, related_name='tags')
+    order = models.CharField(max_length=1000, default="", blank=True)
     logo = models.ImageField(upload_to=settings.MEDIA_ARTIFACTS_DIR, null=True, blank=True)
 
     @property
@@ -70,9 +63,35 @@ class LessonTag(models.Model):
     def number_of_lessons(self):
         return self.lessons.count()
 
-    @property
-    def active_lessons(self):
-        return [l for l in self.category.active_lessons if l.tag.name == self.name]
+    def get_lessons(self):
+        """
+        Get a list of all lessons (active + inactive) inside a tag.
+        If there is an order provided in self.order then the lessons will be ordered accordingly,
+        otherwise they will be in their natural order.
+        Note: self.order contains a list of lesson IDs separated by comma as a string.
+        """
+        if not self.order:
+            return self.lessons.all()
+
+        order = [int(k) for k in self.order.split(',')]
+        id_map = {}
+        for lesson in self.lessons.all():
+            id_map[lesson.id] = lesson
+
+        lessons_list = [id_map[k] for k in order]
+        # Append any other remaining lessons if there are
+        lessons_list.extend([lesson for lesson in self.lessons.all() if lesson not in lessons_list])
+        return lessons_list
+
+    def get_active_lessons(self):
+        return [l for l in self.get_lessons() if l.active]
+
+    def set_order(self, order):
+        self.order = ''
+        for i in order:
+            self.order += i + ','
+        self.order = self.order[:-1]
+        self.save()
 
     def __unicode__(self):
         return self.name

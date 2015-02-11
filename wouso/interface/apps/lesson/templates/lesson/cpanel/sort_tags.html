@@ -1,4 +1,4 @@
-{% extends 'lesson/cpanel/manage_tags.html' %}
+{% extends 'lesson/cpanel/manage_categories.html' %}
 
 {% load i18n %}
 {% load django_bootstrap_breadcrumbs %}
@@ -8,10 +8,10 @@
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery-ui-1.8.16.custom.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#lessons-list').sortable({
+            $('#tags-list').sortable({
                 handle: '.handle',
                 update: function() {
-                    var order = $('#lessons-list').sortable('serialize');
+                    var order = $('#tags-list').sortable('serialize');
                     $('#order-input').val(order);
                 }
             });
@@ -20,28 +20,28 @@
 {% endblock %}
 
 {% block sectiontitle %}
-    Sort lessons
+    Sort tags
     <div class="pull-right">
-        <a class="btn btn-primary" href="{% url add_lesson_tag %}">
-            <span class="glyphicon glyphicon-plus"></span>{% trans 'Add tag' %}
+        <a class="btn btn-primary" href="{% url add_lesson_category %}">
+            <span class="glyphicon glyphicon-plus"></span>{% trans 'Add category' %}
         </a>
     </div>
 {% endblock %}
 
 {% block breadcrumbs %}
     {{ block.super }}
-    {% breadcrumb "Sort lessons" "sort_lessons" %}
+    {% breadcrumb "Sort tags" "sort_lesson_tags" %}
 {% endblock %}
 
 {% block sectioncontent %}
-    <h3>{% trans 'Sort lessons in' %} {{ tag }} tag</h3>
-    <p>Drag and drop the bullets to reorder lessons:</p>
+    <h3>{% trans 'Sort tags in' %} {{ category }} category</h3>
+    <p>Drag and drop the bullets to reorder tags:</p>
 
     <form method="post">
         <input id="order-input" name="order" value="" type="hidden" />
-        <ol id="lessons-list" class="sort-list">
-            {% for lesson in tag.get_lessons %}
-            <li id="listItem_{{lesson.id}}"><span class="handle">&bull;</span>{{lesson}}</li>
+        <ol id="tags-list" class="sort-list">
+            {% for tag in category.get_tags %}
+            <li id="listItem_{{tag.id}}"><span class="handle">&bull;</span>{{tag}}</li>
             {% endfor %}
         </ol>
 

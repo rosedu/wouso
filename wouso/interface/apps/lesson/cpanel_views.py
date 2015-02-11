@@ -63,7 +63,8 @@ def edit_lesson(request, id):
         form = EditLessonForm(instance=lesson)
 
     return render_to_response('lesson/cpanel/edit_lesson.html',
-                              {'lesson': lesson, 'form': form, 'categories': categories, 'lesson_quizzes': lesson_quizzes},
+                              {'lesson': lesson, 'form': form, 'categories': categories,
+                               'lesson_quizzes': lesson_quizzes},
                               context_instance=RequestContext(request))
 
 
@@ -167,19 +168,33 @@ delete_tag = permission_required('config.change_setting')(
 
 @permission_required('config.change_setting')
 def sort_lessons(request, id):
+    tag = get_object_or_404(LessonTag, pk=id)
+
+    if request.method == 'POST':
+        new_order = request.POST.get('order')
+        if new_order:
+            order = [i[1] for i in map(lambda a: a.split('='), new_order.split('&'))]
+            tag.set_order(order)
+            return HttpResponseRedirect(reverse('manage_lesson_tags'))
+
+    return render_to_response('lesson/cpanel/sort_lessons.html',
+                              {'tag': tag, 'module': 'tag'},
+                              context_instance=RequestContext(request))
+
+
+@permission_required('config.change_setting')
+def sort_tags(request, id):
     category = get_object_or_404(LessonCategory, pk=id)
 
     if request.method == 'POST':
-        neworder = request.POST.get('order')
-        if neworder:
-            # convert str to array
-            order = [i[1] for i in map(lambda a: a.split('='), neworder.split('&'))]
-            category.reorder(order)
+        new_order = request.POST.get('order')
+        if new_order:
+            order = [i[1] for i in map(lambda a: a.split('='), new_order.split('&'))]
+            category.set_order(order)
             return HttpResponseRedirect(reverse('manage_lesson_categories'))
 
-    return render_to_response('lesson/cpanel/sort_lessons.html',
-                              {'category': category,
-                               'module': 'category'},
+    return render_to_response('lesson/cpanel/sort_tags.html',
+                              {'category': category, 'module': 'category'},
                               context_instance=RequestContext(request))
 
 
