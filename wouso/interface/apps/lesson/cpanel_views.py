@@ -13,7 +13,7 @@ from games.quiz.models import Quiz
 
 class LessonsView(ListView):
     model = Lesson
-    paginate_by = 50
+    paginate_by = 20
     context_object_name = 'lessons'
     template_name = 'lesson/cpanel/list_lessons.html'
 

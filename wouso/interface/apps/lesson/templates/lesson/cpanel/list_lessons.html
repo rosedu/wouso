@@ -100,7 +100,20 @@
         <option value="inactive">Set inactive</option>
     </select>
 
-    <br/> <br/>
+    <br/>
+
+    {% if is_paginated %}
+        <div class="pagination">
+            Pages:
+            {% for i in page_obj.paginator.page_range %}
+                {% if page_obj.number == i %}
+                    <strong>{{i}}</strong>
+                {% else %}
+                    <a href="{% url lessons_page i %}">{{i}}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
 
     <table class="table table-bordered table-hover table-condensed">
         <tr>
