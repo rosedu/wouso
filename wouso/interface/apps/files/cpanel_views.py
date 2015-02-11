@@ -9,7 +9,7 @@ from interface.apps.files.models import File, FileCategory
 
 class FilesView(ListView):
     model = File
-    paginate_by = 50
+    paginate_by = 20
     context_object_name = 'files'
     template_name = 'files/cpanel/list_files.html'
 
