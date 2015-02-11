@@ -2,13 +2,6 @@
 {% load i18n %}
 {% load django_bootstrap_breadcrumbs %}
 
-{% block sectiontitle %}
-    Manage categories
-    <a class="btn btn-primary pull-right" href="{% url add_lesson_category %}">
-        <span class="glyphicon glyphicon-plus"></span>{% trans 'Add category' %}
-    </a>
-{% endblock %}
-
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Manage categories" "manage_categories" %}
@@ -17,11 +10,13 @@
 {% block sectioncontent %}
     <table class="table table-bordered table-hover table-condensed">
         <tr>
+            <th>Logo</th>
             <th>Name</th>
             <th>Manage</th>
         </tr>
         {% for c in categories %}
         <tr>
+            <td><img src="{{ c.logo_url }}" class="logo"/></td>
             <td>{{ c.name }}</td>
             <td>
                 <a class="btn btn-info" href="{% url sort_lessons c.id %}">

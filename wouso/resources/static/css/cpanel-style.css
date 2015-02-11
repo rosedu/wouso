@@ -19,10 +19,9 @@
 }
 
 .logo {
-    width: 84px;
-    height: 84px;
-    margin: 0 10px 0 0;
-    border: 3px solid #323232
+    width: 32px;
+    height: 32px;
+    border: 1px solid #323232
 }
 
 /* Quest and Lesson */

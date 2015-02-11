@@ -19,10 +19,6 @@
     </script>
 {% endblock %}
 
-{% block sectiontitle %}
-    Sort lessons in {{ category }}
-{% endblock %}
-
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Sort lessons" "sort_lessons" %}
@@ -30,7 +26,7 @@
 
 
 {% block sectioncontent %}
-
+    <h3>{% trans 'Sort lessons in' %} {{ category }}</h3>
     <p>Drag and drop the bullets to reorder lessons:</p>
 
     <form method="post">
