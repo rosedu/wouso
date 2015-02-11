@@ -9,7 +9,7 @@ from wouso.games.quiz.models import Quiz, QuizCategory
 
 class ListQuizzes(ListView):
     model = Quiz
-    paginate_by = 50
+    paginate_by = 20
     context_object_name = 'quizzes'
     template_name = 'quiz/cpanel/list_quizzes.html'
 

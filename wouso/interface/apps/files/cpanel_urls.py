@@ -2,6 +2,7 @@ from django.conf.urls import patterns, url
 
 urlpatterns = patterns('wouso.interface.apps.files.cpanel_views',
     url(r'^$', 'files', name='files'),
+    url(r'^/page(?P<page>[0-9]+)/$', 'files', name='files_page'),
     url(r'^add_file/$', 'add_file', name='add_file'),
     url(r'^edit_file/(?P<pk>\d+)/$', 'edit_file', name='edit_file'),
     url(r'^delete_file/(?P<pk>\d+)/$', 'delete_file', name='delete_file'),
