@@ -18,7 +18,13 @@ class LessonCategory(models.Model):
             ls = {}
             for l in self.get_unordered_lessons():
                 ls[l.id] = l
-            return [ls[i] for i in order]
+            first = [ls[i] for i in order]
+            full_ls = []
+            full_ls.extend(first)
+            for l in self.get_unordered_lessons():
+                if l not in first:
+                    full_ls.append(l)
+            return full_ls
 
     @property
     def active_lessons(self):
