@@ -58,8 +58,6 @@ def login_at_start(player, start_hour, start_day, start_month, hour_offset):
     day = first_seen[0].timestamp.day
     hour = first_seen[0].timestamp.hour
     first_login = datetime(2014, month, day, hour)
-    print first_login
-    print start
     if day == start_day:
         return True
 
