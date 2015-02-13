@@ -25,16 +25,23 @@
 <div class="col-md-12">
 
     {% if is_paginated %}
-        <div class="pagination">
-            Pages:
-            {% for i in page_obj.paginator.page_range %}
-                {% if page_obj.number == i %}
-                    <strong>{{i}}</strong>
-                {% else %}
-                    <a href="{% url quizzes_page i %}">{{i}}</a>
-                {% endif %}
-            {% endfor %}
-        </div>
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <li><a href="{% url quizzes_page page_obj.previous_page_number %}">&laquo;</a></li>
+        {% else %}
+            <li class="disabled"><span>&laquo;</span></li>
+        {% endif %}
+
+        {% for i in page_obj.paginator.page_range %}
+            <li {% if i == page_obj.number %} class="active" {% endif %}><a href="{% url quizzes_page i %}">{{i}}</a></li>
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <li><a href="{% url quizzes_page page_obj.next_page_number %}">&raquo;</a></li>
+        {% else %}
+            <li class="disabled"><span>&raquo;</span></li>
+        {% endif %}
+    </ul>
     {% endif %}
 
     <table class="table table-bordered table-hover table-condensed">
