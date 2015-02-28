@@ -17,7 +17,7 @@ from wouso.core.qpool.models import Question, Tag
 
 
 class QuizCategory(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     logo = models.ImageField(upload_to=settings.MEDIA_ARTIFACTS_DIR, null=True, blank=True)
 
     @property
