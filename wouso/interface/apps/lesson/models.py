@@ -9,7 +9,7 @@ from wouso.core.common import App
 
 
 class LessonCategory(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     order = models.CharField(max_length=1000, default="", blank=True)
     logo = models.ImageField(upload_to=settings.MEDIA_ARTIFACTS_DIR, null=True, blank=True)
 
@@ -104,7 +104,7 @@ class Lesson(models.Model, App):
     name = models.CharField(max_length=100)
     youtube_url = models.URLField(blank=True, null=True)
     content = RichTextField()
-    tag = models.ForeignKey(LessonTag, blank=True, null=True, related_name='lessons')
+    tag = models.ForeignKey(LessonTag, blank=True, null=True, related_name='lessons', unique=True)
     quiz = models.ForeignKey(Quiz, blank=True, null=True)
     quiz_show_time = models.IntegerField(default=5)
     active = models.BooleanField()
