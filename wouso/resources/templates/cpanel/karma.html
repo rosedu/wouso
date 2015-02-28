@@ -22,6 +22,8 @@
                     {% endfor %}
                 </ul>
             {% endif %}
+        {% empty %}
+            <h5>No player races have been added yet.</h5>
         {% endfor %}
     </ul>
 {% endblock %}
