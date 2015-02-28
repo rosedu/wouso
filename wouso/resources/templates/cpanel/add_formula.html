@@ -2,6 +2,7 @@
 
 {% load user %}
 {% load bootstrap %}
+{% load i18n %}
 {% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Add Formula{% endblock %}
@@ -23,6 +24,8 @@
 
         <form class="form-horizontal" role="form" action="" method="post">
             {{ form|bootstrap_horizontal }}
+            <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
+            <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
             <input class="btn btn-primary" type="submit" value="Submit">
             {% csrf_token %}
         </form>
