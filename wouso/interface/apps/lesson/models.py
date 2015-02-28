@@ -9,7 +9,7 @@ from wouso.core.common import App
 
 
 class LessonCategory(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     order = models.CharField(max_length=1000, default="", blank=True)
     logo = models.ImageField(upload_to=settings.MEDIA_ARTIFACTS_DIR, null=True, blank=True)
 
