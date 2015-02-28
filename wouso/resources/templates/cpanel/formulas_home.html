@@ -33,7 +33,7 @@
         <td>{{ p.owner }}</td>
         <td nowrap>
             <a class="btn btn-success" href="{% url edit_formula p.id %}">
-                {% trans 'Edit '%}<span class="glyphicon glyphicon-edit"></span>
+                <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit '%}
             </a>
             <a class="btn btn-danger" href="{% url formula_del p.id %}" onClick="return confirm('Realy?');">
                 <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
