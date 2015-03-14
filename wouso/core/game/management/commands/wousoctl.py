@@ -12,7 +12,7 @@ def update_all_display_names():
     qs = Player.objects.all()
     for u in qs:
         update_display_name(u)
-    print "Updated ", qs.count(), "players."
+    print 'Updated ', qs.count(), 'players.'
 
 
 class Command(BaseCommand):
