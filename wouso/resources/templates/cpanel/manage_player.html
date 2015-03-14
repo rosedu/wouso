@@ -27,6 +27,9 @@
             <span style="color: red">OFF</span>
         {% endif %}
     </a>
+    <a class="btn btn-primary" href="{% url change_password player.id %}">
+        {% trans 'Change Password ' %}
+    </a>
     <a class="btn btn-success" href="{% url artifact_set player.id %}">
         {% trans 'Artifacts ' %}
     </a>
