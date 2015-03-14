@@ -4,6 +4,13 @@
 
 World of USO is a quiz game framework. It has been used since 2007 as a support game for the Introduction to Operating Systems class (USO) by 1st year students at the Faculty of Automatic Control and Computers, University POLITEHNICA of Bucharest.
 
+## Easy install
+
+On a Debian-based system run the install script:
+
+    ./install.sh
+    
+If everything installs succesfully go to step 9 to start the server.
 
 ## Requirements
 
