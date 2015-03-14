@@ -1,3 +1,5 @@
+import subprocess
+
 from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError
 from django.core.management.commands.dumpdata import Command as DumpdataCommand
@@ -12,7 +14,7 @@ def update_all_display_names():
     qs = Player.objects.all()
     for u in qs:
         update_display_name(u)
-    print "Updated ", qs.count(), "players."
+    print 'Updated ', qs.count(), 'players.'
 
 
 class Command(BaseCommand):
@@ -78,10 +80,13 @@ class Command(BaseCommand):
 
         elif options['setup']:
             if options['noinput']:
-                call_command('syncdb', interactive=False)
+                # YOLO: call_command does not work if I call the syncdb command
+                # with the 'all' parameter, so we use subprocess
+                subprocess.call(['python', 'manage.py', 'syncdb', '--all',
+                                 '--noinput'])
             else:
-                call_command('syncdb')
-            call_command('migrate')
+                subprocess.call(['python', 'manage.py', 'syncdb', '--all'])
+            call_command('migrate', fake=True)
 
             self.stdout.write('Setting up scoring...')
             setup_scoring()
