@@ -1,4 +1,4 @@
- extends 'cpanel/index.html' %}
+{% extends 'cpanel/index.html' %}
 {% load user %}
 {% load i18n %}
 {% load django_bootstrap_breadcrumbs %}
@@ -57,7 +57,7 @@
 </tr>
     {% empty %}
     <tr>
-        <td colspan="100%" class="text-center">No spells yet. Please use the Add player button to add new players.</td>
+        <td colspan="0" class="text-center">No spells yet. Please use the Add player button to add new players.</td>
     </tr>
 {% endfor %}
 </table>
