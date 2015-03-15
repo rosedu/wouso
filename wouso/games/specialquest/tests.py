@@ -132,3 +132,28 @@ class SpecialquestTest(TestCase):
 
     def test_user_accept_invite(self):
         pass
+
+
+class SpecialQuestGroupTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create(username='_test_head')
+        self.special_user = self.user.get_profile().get_extension(SpecialQuestUser)
+
+    def test_remove_user(self):
+        group = SpecialQuestGroup.create(head=self.special_user, name='le group')
+
+        p = User.objects.create(username='_test_member')
+        p.special_user = p.get_profile().get_extension(SpecialQuestUser)
+        p.special_user.add_to_group(group)
+
+        group = SpecialQuestGroup.objects.get(name='le group')
+        self.assertTrue(p.get_profile() in group.players.all())
+
+        group.remove(p.special_user)
+        p = User.objects.get(username='_test_member')
+        p.special_user = p.get_profile().get_extension(SpecialQuestUser)
+        self.assertTrue(p.special_user.group == None)
+
+        group = SpecialQuestGroup.objects.get(name='le group')
+        self.assertFalse(p.get_profile() in group.players.all())
+        self.assertTrue(group.players.count() == 1)

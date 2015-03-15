@@ -63,6 +63,8 @@ class SpecialQuestGroup(PlayerGroup):
         handled separately somewhere else, so no need to worry about it.
         """
         if user != self.head:
+            user.group = None
+            user.save()
             self.players.remove(user)
 
     def __unicode__(self):
