@@ -40,8 +40,8 @@ from wouso.middleware.impersonation import ImpersonateMiddleware
 from wouso.utils.import_questions import import_from_file
 from forms import TagsForm, UserForm, SpellForm, AddTagForm,\
     EditReportForm, RaceForm, PlayerGroupForm, RoleForm, \
-    StaticPageForm, NewsForm, KarmaBonusForm, AddQuestionForm, EditQuestionForm
-from forms import FormulaForm, TagForm
+    StaticPageForm, NewsForm, KarmaBonusForm, AddQuestionForm, EditQuestionForm, \
+    FormulaForm, TagForm, ChangePasswordForm, AddUserForm
 
 
 class StatusView(TemplateView):
@@ -915,7 +915,7 @@ players = permission_required('config.change_setting')(PlayersView.as_view())
 
 class AddPlayerView(CreateView):
     template_name = 'cpanel/add_player.html'
-    form_class = UserForm
+    form_class = AddUserForm
     success_url = reverse_lazy('all_players')
 
     def form_valid(self, form):
@@ -933,15 +933,20 @@ class ManagePlayerView(UpdateView):
     form_class = UserForm
     success_url = reverse_lazy('all_players')
 
-    def get_form(self, form_class):
-        form = form_class(**self.get_form_kwargs())
-        form.fields['password'].required = False
-        form.fields['confirm_password'].required = False
-        return form
-
 
 manage_player = permission_required('config.change_setting')(
     ManagePlayerView.as_view())
+
+
+class ChangePasswordView(UpdateView):
+    template_name = 'cpanel/change_password.html'
+    model = User
+    form_class = ChangePasswordForm
+    success_url = reverse_lazy('all_players')
+
+
+change_password = permission_required('config.change_setting')(
+    ChangePasswordView.as_view())
 
 
 @staff_required

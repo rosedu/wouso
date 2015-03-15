@@ -1,3 +1,4 @@
+from django.core.cache import cache
 import unittest
 from datetime import datetime
 from django.contrib.auth.models import User, Group, Permission
@@ -277,23 +278,46 @@ class CpanelViewsTest(WousoTest):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'testuser1')
         self.assertContains(response, 'Username')
-        self.assertContains(response, 'Password')
 
     def test_manage_player_view_post(self):
         p1 = self._get_player(1)
 
         # Check the view with a valid form
-        data = {'username': 'testuser_updated', 'password': p1.user.password, 'confirm_password': p1.user.password}
+        data = {'username': 'testuser_updated', 'first_name': 'testuser_name'}
         response = self.client.post(reverse('manage_player', args=[p1.pk]), data)
         self.assertEqual(response.status_code, 302)
         p1 = User.objects.get(pk=p1.pk)
         self.assertEqual(p1.username, 'testuser_updated')
+        self.assertEqual(p1.first_name, 'testuser_name')
 
         # Check the view with an invalid form
         data = {}
         response = self.client.post(reverse('manage_player', args=[p1.pk]), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'This field is required')
+
+    def test_change_password_view_get(self):
+        p1 = self._get_player(1)
+        response = self.client.get(reverse('change_password', args=[p1.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Password')
+        self.assertContains(response, 'Confirm password')
+
+    def test_change_password_view_post(self):
+        p1 = self._get_player(1)
+
+        # Check the view with a valid form
+        data = {'password': 'secret', 'confirm_password': 'secret'}
+        response = self.client.post(reverse('change_password', args=[p1.pk]), data)
+        p1 = self._get_player(1)
+        self.assertTrue(p1.user.check_password('secret'))
+
+         # Check the view with an invalid form
+        data = {'password': 'test'}
+        response = self.client.post(reverse('change_password', args=[p1.pk]), data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'This field is required')
+
 
     def test_races_groups_view(self):
         """ Test adds races and groups and verifies the

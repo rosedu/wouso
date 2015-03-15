@@ -198,7 +198,7 @@ class AddTagForm(forms.ModelForm):
         model = Tag
 
 
-class UserForm(forms.ModelForm):
+class AddUserForm(forms.ModelForm):
     confirm_password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
@@ -209,12 +209,75 @@ class UserForm(forms.ModelForm):
         fields = ['username', 'first_name', 'last_name', 'email',
                   'password', 'confirm_password', 'is_active']
 
+        def clean(self):
+            password1 = self.cleaned_data.get('password')
+            password2 = self.cleaned_data.get('confirm_password')
+            if password1 != password2:
+                raise forms.ValidationError("Passwords don't match")
+            return self.cleaned_data
+
+        def save(self):
+            self.instance.set_password(self.cleaned_data.get('password'))
+            self.instance.save()
+            return self.instance
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email',
+                  'is_active']
+
+
+class ChangePasswordForm(forms.ModelForm):
+    confirm_password = forms.CharField(widget=forms.PasswordInput())
+    password = forms.CharField(widget=forms.PasswordInput())
+
+    class Meta:
+        model = User
+        fields = ['password', 'confirm_password']
+
+        def clean(self):
+            password1 = self.cleaned_data.get('password')
+            password2 = self.cleaned_data.get('confirm_password')
+            if password1 != password2:
+                raise forms.ValidationError("Passwords don't match")
+            return self.cleaned_data
+
+        def save(self):
+            self.instance.set_password(self.cleaned_data.get('password'))
+            self.instance.save()
+            return self.instance
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email',
+                  'is_active']
+
+
+class ChangePasswordForm(forms.ModelForm):
+    confirm_password = forms.CharField(widget=forms.PasswordInput())
+
+    class Meta:
+        model = User
+        widgets = {
+            'password': forms.PasswordInput(),
+        }
+        fields = ['password', 'confirm_password']
+
     def clean(self):
         password1 = self.cleaned_data.get('password')
         password2 = self.cleaned_data.get('confirm_password')
         if password1 != password2:
             raise forms.ValidationError("Passwords don't match")
         return self.cleaned_data
+
+    def save(self):
+        self.instance.set_password(self.cleaned_data.get('password'))
+        self.instance.save()
+        return self.instance
 
 
 class SpellForm(forms.ModelForm):

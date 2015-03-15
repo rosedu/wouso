@@ -8,8 +8,9 @@ class WousoTest(TestCase):
 
     def _get_player(self, index=0):
         user, new = User.objects.get_or_create(username='testuser%d' % index)
-        user.set_password('test')
-        user.save()
+        if new == True:
+            user.set_password('test')
+            user.save()
         return user.get_profile()
 
     def _get_superuser(self):

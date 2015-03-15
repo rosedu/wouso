@@ -70,6 +70,7 @@ upat = [
     url(r'^players/infractions_clear/(?P<user_id>\d+)/(?P<infraction_id>\d+)/$', 'wouso.interface.cpanel.views.infraction_clear', name='infraction_clear'),
     url(r'^players/infractions_recheck/$', 'wouso.interface.cpanel.views.infraction_recheck', name='infraction_recheck'),
     url(r'^players/manage_player/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.manage_player', name='manage_player'),
+    url(r'^players/change_password/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.change_password', name='change_password'),
 
     url(r'^races/all/$', 'wouso.interface.cpanel.views.races_groups', name='races_groups'),
     url(r'^races/add/$', 'wouso.interface.cpanel.views.races_add', name='races_add'),
