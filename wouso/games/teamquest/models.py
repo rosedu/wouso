@@ -6,7 +6,7 @@ from wouso.core.user.models import Player, PlayerGroup
 
 class TeamQuestUser(Player):
     group = models.ForeignKey('TeamQuestGroup', null=True, blank=True, default=None, related_name='users')
-	
+
     def is_head(self):
         if self.group is None:
             return False
@@ -15,6 +15,7 @@ class TeamQuestUser(Player):
 
 class TeamQuest(models.Model):
 	pass
+
 
 class TeamQuestGame(Game):
 	pass
@@ -40,19 +41,19 @@ class TeamQuestGroup(PlayerGroup):
         new_group.users.add(head)
         return new_group
 
-    def add(self, user):
+    def add_user(self, user):
         self.users.add(user)
 
-    def remove(self, user):
+    def remove_user(self, user):
         self.users.remove(user)
         if user is self.head:
             if self.is_empty() is True:
                 self.delete()
             else:
-                self.promote(self.members[0])
+                self.promote_to_head(self.members[0])
                 self.save()
 
-    def promote(self, user):
+    def promote_to_head(self, user):
         self.head = user
         self.head.save()
 
@@ -61,10 +62,19 @@ class TeamQuestGroup(PlayerGroup):
 
 
 class TeamQuestStatus(models.Model):
-	pass
+    pass
 
 class TeamQuestInvitation(models.Model):
-	pass
+    from_group = models.ForeignKey('TeamQuestGroup', null=True, blank=False)
+    to_user = models.ForeignKey('TeamQuestUser', null=True, blank=False)
+
+    def __unicode__(self):
+        return u"Invitation from %s to %s" % (self.from_group.head, self.to_user)
+
 
 class TeamQuestInvitationRequest(models.Model):
-	pass
+    to_group = models.ForeignKey('TeamQuestGroup', null=True, blank=False)
+    from_user = models.ForeignKey('TeamQuestUser', null=True, blank=False)
+
+    def __unicode__(self):
+        return u"Request from %s to %s" % (self.from_user, self.to_group.head)
