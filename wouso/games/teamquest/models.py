@@ -3,8 +3,13 @@ from django.db import models
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player, PlayerGroup
 
+
 class TeamQuestUser(Player):
-	pass
+    group = models.ForeignKey('TeamQuestGroup', null=True, blank=True, default=None, related_name='users')
+	
+    def is_head(self):
+        return self.group.head == self
+
 
 class TeamQuest(models.Model):
 	pass
@@ -12,8 +17,10 @@ class TeamQuest(models.Model):
 class TeamQuestGame(Game):
 	pass
 
+
 class TeamQuestGroup(PlayerGroup):
-	pass
+	head = models.OneToOneField('TeamQuestUser', null=False, blank=False)
+
 
 class TeamQuestStatus(models.Model):
 	pass
