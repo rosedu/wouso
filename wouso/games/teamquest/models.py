@@ -23,13 +23,41 @@ class TeamQuestGame(Game):
 class TeamQuestGroup(PlayerGroup):
     head = models.OneToOneField('TeamQuestUser', null=True, blank=False)
 
+    @property
+    def members(self):
+        return [p.get_extension(TeamQuestUser) for p in self.users.all()]
+
+    @property
+    def members_except_first(self):
+        return [p.get_extension(TeamQuestUser) for p in self.users.all()[1:]]
+
+    def is_empty(self):
+        return self.users.count() < 1
+
     @classmethod
     def create(cls, head, name):
         new_group = cls.objects.create(name=name, head=head)
         new_group.users.add(head)
-        head.group = new_group
-        head.save()
         return new_group
+
+    def add(self, user):
+        self.users.add(user)
+
+    def remove(self, user):
+        self.users.remove(user)
+        if user is self.head:
+            if self.is_empty() is True:
+                self.delete()
+            else:
+                self.promote(self.members[0])
+                self.save()
+
+    def promote(self, user):
+        self.head = user
+        self.head.save()
+
+    def __unicode__(self):
+        return u"%s [%d]" % (self.name, self.users.count())
 
 
 class TeamQuestStatus(models.Model):
