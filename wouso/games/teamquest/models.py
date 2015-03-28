@@ -2,13 +2,19 @@ from django.db import models
 
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player, PlayerGroup
+from wouso.core.qpool.models import Question
 
 
 class TeamQuestUser(Player):
     pass
 
+
 class TeamQuest(models.Model):
-	pass
+    start = models.DateTimeField()
+    end = models.DateTimeField()
+    title = models.CharField(default="", max_length=100)
+    questions = models.ManyToManyField(Question)
+    registered = models.BooleanField(default=False)
 
 
 class TeamQuestGame(Game):
@@ -27,15 +33,22 @@ class TeamQuestGame(Game):
         super(TeamQuestGame, self).__init__(*args, **kwargs)
 
 
-
 class TeamQuestGroup(PlayerGroup):
     pass
 
+
 class TeamQuestStatus(models.Model):
-	pass
+    group = models.ForeignKey('TeamQuestGroup', null=True, blank=True, related_name='quests')
+    quest = models.ForeignKey('TeamQuest', null=True, blank=True, related_name='participants')
+    current_level = models.IntegerField(default=0, blank=True)
+    started_time = models.DateTimeField(default=datetime.datetime.now, blank=True, null=True)
+    finished_time = models.DateTimeField(default=None, blank=True, null=True)
+    finished = models.BooleanField(default=False, blank=True)
+
 
 class TeamQuestInvitation(models.Model):
-	pass
+    pass
 
 class TeamQuestInvitationRequest(models.Model):
-	pass
+    pass
+
