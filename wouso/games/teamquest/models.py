@@ -1,7 +1,10 @@
+import datetime
+
 from django.db import models
 
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player, PlayerGroup
+from wouso.core.qpool.models import Question
 
 
 class TeamQuestUser(Player):
@@ -13,9 +16,31 @@ class TeamQuestUser(Player):
         return self.group.head == self
 
 
+class TeamQuestLevel(models.Model):
+    questions = models.ManyToManyField(Question)
+    quest = models.ForeignKey('TeamQuest', null=True, blank=True, related_name='levels')
+    bonus = models.IntegerField(default=0)
+
+    @classmethod
+    def create(cls, quest, bonus, questions):
+        new_level = cls.objects.create(quest=quest, bonus=bonus)
+        for q in questions:
+            new_level.questions.add(q)
+        return new_level
+
+    def add_question(self, question):
+        self.questions.add(question)
+
+    def remove_question(self, question):
+        if question in self.questions.all():
+            self.questions.remove(question)
+
+    def set_quest(self, quest):
+        self.quest = quest
+
+
 class TeamQuest(models.Model):
 	pass
-
 
 class TeamQuestGame(Game):
     """ Each game must extend Game """
@@ -31,7 +56,6 @@ class TeamQuestGame(Game):
         # the url field takes as value only a named url from module's urls.py
         # TODO
         super(TeamQuestGame, self).__init__(*args, **kwargs)
-
 
 
 class TeamQuestGroup(PlayerGroup):
