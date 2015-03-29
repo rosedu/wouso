@@ -14,9 +14,9 @@ class TeamQuestUser(Player):
 
 
 class TeamQuest(models.Model):
-    start_time = models.DateTimeField(default=None, blank=True, null=True)
-    end_time = models.DateTimeField(default=None, blank=True, null=True)
-    title = models.CharField(default="", max_length=100, blank=True, null=True)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    title = models.CharField(default="", max_length=100)
     questions = models.ManyToManyField(Question)
 
 
@@ -77,10 +77,10 @@ class TeamQuestGroup(PlayerGroup):
 
 
 class TeamQuestStatus(models.Model):
-    group = models.ForeignKey('TeamQuestGroup', null=True, blank=True)
-    quest = models.ForeignKey('TeamQuest', null=True, blank=True)
+    group = models.ForeignKey('TeamQuestGroup')
+    quest = models.ForeignKey('TeamQuest')
     current_level = models.IntegerField(default=0, blank=True, null=True)
-    time_started = models.DateTimeField(default=datetime.datetime.now, blank=True, null=True)
+    time_started = models.DateTimeField(default=datetime.datetime.now)
     time_finished = models.DateTimeField(default=None, blank=True, null=True)
 
 
