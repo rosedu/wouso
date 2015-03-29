@@ -104,7 +104,7 @@ class TeamQuestGroup(PlayerGroup):
 class TeamQuestStatus(models.Model):
     group = models.ForeignKey('TeamQuestGroup')
     quest = models.ForeignKey('TeamQuest')
-    current_level = models.IntegerField(default=0, blank=True, null=True)
+    highest_level = models.IntegerField(default=0, blank=True, null=True)
     time_started = models.DateTimeField(default=datetime.datetime.now)
     time_finished = models.DateTimeField(default=None, blank=True, null=True)
 

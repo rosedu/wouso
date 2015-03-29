@@ -94,3 +94,33 @@ class TeamQuestLevelTest(TestCase):
 
         level.remove_question(self.question1)
         self.assertTrue(self.question1 not in level.questions.all())
+
+
+class TeamQuestTest(TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_quest_create_default(self):
+        pass
+
+    def test_quest_create(self):
+        pass
+
+    def test_quest_end_time_before_start_time(self):
+        pass
+
+
+class TeamQuestStatusTest(TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_quest_status_create_default(self):
+        pass
+
+    def test_quest_status_create(self):
+        pass
+
+    def test_quest_status_time_finished_before_time_started(self):
+        pass
