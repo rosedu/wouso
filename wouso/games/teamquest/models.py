@@ -40,7 +40,10 @@ class TeamQuestLevel(models.Model):
 
 
 class TeamQuest(models.Model):
-	pass
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    title = models.CharField(default="", max_length=100)
+    questions = models.ManyToManyField(Question)
 
 class TeamQuestGame(Game):
     """ Each game must extend Game """
@@ -99,7 +102,12 @@ class TeamQuestGroup(PlayerGroup):
 
 
 class TeamQuestStatus(models.Model):
-    pass
+    group = models.ForeignKey('TeamQuestGroup')
+    quest = models.ForeignKey('TeamQuest')
+    current_level = models.IntegerField(default=0, blank=True, null=True)
+    time_started = models.DateTimeField(default=datetime.datetime.now)
+    time_finished = models.DateTimeField(default=None, blank=True, null=True)
+
 
 class TeamQuestInvitation(models.Model):
     from_group = models.ForeignKey('TeamQuestGroup', null=True, blank=False)
