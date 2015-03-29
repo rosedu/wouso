@@ -10,10 +10,10 @@ from wouso.core.qpool.models import Question
 class TeamQuestUser(Player):
     group = models.ForeignKey('TeamQuestGroup', null=True, blank=True, default=None, related_name='users')
 
-    def is_head(self):
+    def is_group_owner(self):
         if self.group is None:
             return False
-        return self.group.head == self
+        return self.group.group_owner == self
 
 
 class TeamQuestLevel(models.Model):
@@ -34,9 +34,6 @@ class TeamQuestLevel(models.Model):
     def remove_question(self, question):
         if question in self.questions.all():
             self.questions.remove(question)
-
-    def set_quest(self, quest):
-        self.quest = quest
 
 
 class TeamQuest(models.Model):
@@ -62,23 +59,15 @@ class TeamQuestGame(Game):
 
 
 class TeamQuestGroup(PlayerGroup):
-    head = models.OneToOneField('TeamQuestUser', null=True, blank=False)
-
-    @property
-    def members(self):
-        return [p.get_extension(TeamQuestUser) for p in self.users.all()]
-
-    @property
-    def members_except_first(self):
-        return [p.get_extension(TeamQuestUser) for p in self.users.all()[1:]]
+    group_owner = models.OneToOneField('TeamQuestUser', null=True)
 
     def is_empty(self):
         return self.users.count() < 1
 
     @classmethod
-    def create(cls, head, name):
-        new_group = cls.objects.create(name=name, head=head)
-        new_group.users.add(head)
+    def create(cls, group_owner, name):
+        new_group = cls.objects.create(name=name, group_owner=group_owner)
+        new_group.users.add(group_owner)
         return new_group
 
     def add_user(self, user):
@@ -86,16 +75,15 @@ class TeamQuestGroup(PlayerGroup):
 
     def remove_user(self, user):
         self.users.remove(user)
-        if user is self.head:
+        if user == self.group_owner:
             if self.is_empty() is True:
                 self.delete()
             else:
-                self.promote_to_head(self.members[0])
-                self.save()
+                self.promote_to_group_owner(self.users.all()[0])
 
-    def promote_to_head(self, user):
-        self.head = user
-        self.head.save()
+    def promote_to_group_owner(self, user):
+        self.group_owner = user
+        self.save()
 
     def __unicode__(self):
         return u"%s [%d]" % (self.name, self.users.count())
@@ -114,7 +102,7 @@ class TeamQuestInvitation(models.Model):
     to_user = models.ForeignKey('TeamQuestUser', null=True, blank=False)
 
     def __unicode__(self):
-        return u"Invitation from %s to %s" % (self.from_group.head, self.to_user)
+        return u"Invitation from %s to %s" % (self.from_group.group_owner, self.to_user)
 
 
 class TeamQuestInvitationRequest(models.Model):
@@ -122,4 +110,4 @@ class TeamQuestInvitationRequest(models.Model):
     from_user = models.ForeignKey('TeamQuestUser', null=True, blank=False)
 
     def __unicode__(self):
-        return u"Request from %s to %s" % (self.from_user, self.to_group.head)
+        return u"Request from %s to %s" % (self.from_user, self.to_group.group_owner)
