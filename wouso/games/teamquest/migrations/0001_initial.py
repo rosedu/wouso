@@ -11,42 +11,67 @@ class Migration(SchemaMigration):
         # Adding model 'TeamQuestUser'
         db.create_table('teamquest_teamquestuser', (
             ('player_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['user.Player'], unique=True, primary_key=True)),
+            ('group', self.gf('django.db.models.fields.related.ForeignKey')(default=None, related_name='users', null=True, blank=True, to=orm['teamquest.TeamQuestGroup'])),
         ))
         db.send_create_signal('teamquest', ['TeamQuestUser'])
+
+        # Adding model 'TeamQuestLevel'
+        db.create_table('teamquest_teamquestlevel', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('quest', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='levels', null=True, to=orm['teamquest.TeamQuest'])),
+            ('bonus', self.gf('django.db.models.fields.IntegerField')(default=0)),
+        ))
+        db.send_create_signal('teamquest', ['TeamQuestLevel'])
+
+        # Adding M2M table for field questions on 'TeamQuestLevel'
+        m2m_table_name = db.shorten_name('teamquest_teamquestlevel_questions')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('teamquestlevel', models.ForeignKey(orm['teamquest.teamquestlevel'], null=False)),
+            ('question', models.ForeignKey(orm['qpool.question'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['teamquestlevel_id', 'question_id'])
 
         # Adding model 'TeamQuest'
         db.create_table('teamquest_teamquest', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('start_time', self.gf('django.db.models.fields.DateTimeField')()),
+            ('end_time', self.gf('django.db.models.fields.DateTimeField')()),
+            ('title', self.gf('django.db.models.fields.CharField')(default='', max_length=100)),
         ))
         db.send_create_signal('teamquest', ['TeamQuest'])
-
-        # Adding model 'TeamQuestGame'
-        db.create_table('teamquest_teamquestgame', (
-            ('game_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['game.Game'], unique=True, primary_key=True)),
-        ))
-        db.send_create_signal('teamquest', ['TeamQuestGame'])
 
         # Adding model 'TeamQuestGroup'
         db.create_table('teamquest_teamquestgroup', (
             ('playergroup_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['user.PlayerGroup'], unique=True, primary_key=True)),
+            ('group_owner', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['teamquest.TeamQuestUser'], unique=True, null=True)),
         ))
         db.send_create_signal('teamquest', ['TeamQuestGroup'])
 
         # Adding model 'TeamQuestStatus'
         db.create_table('teamquest_teamqueststatus', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('group', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['teamquest.TeamQuestGroup'])),
+            ('quest', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['teamquest.TeamQuest'])),
+            ('highest_level', self.gf('django.db.models.fields.IntegerField')(default=0, null=True, blank=True)),
+            ('time_started', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+            ('time_finished', self.gf('django.db.models.fields.DateTimeField')(default=None, null=True, blank=True)),
         ))
         db.send_create_signal('teamquest', ['TeamQuestStatus'])
 
         # Adding model 'TeamQuestInvitation'
         db.create_table('teamquest_teamquestinvitation', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('from_group', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['teamquest.TeamQuestGroup'], null=True)),
+            ('to_user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['teamquest.TeamQuestUser'], null=True)),
         ))
         db.send_create_signal('teamquest', ['TeamQuestInvitation'])
 
         # Adding model 'TeamQuestInvitationRequest'
         db.create_table('teamquest_teamquestinvitationrequest', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('to_group', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['teamquest.TeamQuestGroup'], null=True)),
+            ('from_user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['teamquest.TeamQuestUser'], null=True)),
         ))
         db.send_create_signal('teamquest', ['TeamQuestInvitationRequest'])
 
@@ -55,11 +80,14 @@ class Migration(SchemaMigration):
         # Deleting model 'TeamQuestUser'
         db.delete_table('teamquest_teamquestuser')
 
+        # Deleting model 'TeamQuestLevel'
+        db.delete_table('teamquest_teamquestlevel')
+
+        # Removing M2M table for field questions on 'TeamQuestLevel'
+        db.delete_table(db.shorten_name('teamquest_teamquestlevel_questions'))
+
         # Deleting model 'TeamQuest'
         db.delete_table('teamquest_teamquest')
-
-        # Deleting model 'TeamQuestGame'
-        db.delete_table('teamquest_teamquestgame')
 
         # Deleting model 'TeamQuestGroup'
         db.delete_table('teamquest_teamquestgroup')
@@ -177,32 +205,77 @@ class Migration(SchemaMigration):
             'title': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'type': ('django.db.models.fields.CharField', [], {'default': "'o'", 'max_length': '1'})
         },
+        'qpool.category': {
+            'Meta': {'object_name': 'Category'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})
+        },
+        'qpool.question': {
+            'Meta': {'object_name': 'Question'},
+            'active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'answer_type': ('django.db.models.fields.CharField', [], {'default': "'C'", 'max_length': '1'}),
+            'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['qpool.Category']", 'null': 'True'}),
+            'code': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
+            'date_added': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'date_changed': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'endorsed_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'qpool_question_endorsedby_related'", 'null': 'True', 'to': "orm['auth.User']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'proposed_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'qpool_question_proposedby_related'", 'null': 'True', 'to': "orm['auth.User']"}),
+            'rich_text': ('ckeditor.fields.RichTextField', [], {'default': "''", 'null': 'True', 'blank': 'True'}),
+            'tags': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['qpool.Tag']", 'symmetrical': 'False', 'blank': 'True'}),
+            'text': ('django.db.models.fields.TextField', [], {'default': "''", 'null': 'True', 'blank': 'True'}),
+            'type': ('django.db.models.fields.CharField', [], {'default': "'S'", 'max_length': '1'})
+        },
+        'qpool.tag': {
+            'Meta': {'object_name': 'Tag'},
+            'active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['qpool.Category']", 'null': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '256'})
+        },
         'teamquest.teamquest': {
             'Meta': {'object_name': 'TeamQuest'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
-        },
-        'teamquest.teamquestgame': {
-            'Meta': {'object_name': 'TeamQuestGame', '_ormbases': ['game.Game']},
-            'game_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['game.Game']", 'unique': 'True', 'primary_key': 'True'})
+            'end_time': ('django.db.models.fields.DateTimeField', [], {}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'start_time': ('django.db.models.fields.DateTimeField', [], {}),
+            'title': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '100'})
         },
         'teamquest.teamquestgroup': {
             'Meta': {'object_name': 'TeamQuestGroup', '_ormbases': ['user.PlayerGroup']},
+            'group_owner': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['teamquest.TeamQuestUser']", 'unique': 'True', 'null': 'True'}),
             'playergroup_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['user.PlayerGroup']", 'unique': 'True', 'primary_key': 'True'})
         },
         'teamquest.teamquestinvitation': {
             'Meta': {'object_name': 'TeamQuestInvitation'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
+            'from_group': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['teamquest.TeamQuestGroup']", 'null': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'to_user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['teamquest.TeamQuestUser']", 'null': 'True'})
         },
         'teamquest.teamquestinvitationrequest': {
             'Meta': {'object_name': 'TeamQuestInvitationRequest'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
+            'from_user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['teamquest.TeamQuestUser']", 'null': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'to_group': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['teamquest.TeamQuestGroup']", 'null': 'True'})
+        },
+        'teamquest.teamquestlevel': {
+            'Meta': {'object_name': 'TeamQuestLevel'},
+            'bonus': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'quest': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'levels'", 'null': 'True', 'to': "orm['teamquest.TeamQuest']"}),
+            'questions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['qpool.Question']", 'symmetrical': 'False'})
         },
         'teamquest.teamqueststatus': {
             'Meta': {'object_name': 'TeamQuestStatus'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
+            'group': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['teamquest.TeamQuestGroup']"}),
+            'highest_level': ('django.db.models.fields.IntegerField', [], {'default': '0', 'null': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'quest': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['teamquest.TeamQuest']"}),
+            'time_finished': ('django.db.models.fields.DateTimeField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),
+            'time_started': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'})
         },
         'teamquest.teamquestuser': {
             'Meta': {'object_name': 'TeamQuestUser', '_ormbases': ['user.Player']},
+            'group': ('django.db.models.fields.related.ForeignKey', [], {'default': 'None', 'related_name': "'users'", 'null': 'True', 'blank': 'True', 'to': "orm['teamquest.TeamQuestGroup']"}),
             'player_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['user.Player']", 'unique': 'True', 'primary_key': 'True'})
         },
         'user.player': {
