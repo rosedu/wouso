@@ -43,7 +43,7 @@ class TeamQuest(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     title = models.CharField(default="", max_length=100)
-    questions = models.ManyToManyField(Question)
+
 
 class TeamQuestGame(Game):
     """ Each game must extend Game """
