@@ -19,7 +19,7 @@ class TeamQuestUser(Player):
 class TeamQuestLevel(models.Model):
     questions = models.ManyToManyField(Question)
     quest = models.ForeignKey('TeamQuest', null=True, blank=True, related_name='levels')
-    bonus = models.IntegerField()
+    bonus = models.IntegerField(default=0)
 
     @classmethod
     def create(cls, quest, bonus, questions):
@@ -56,7 +56,7 @@ class TeamQuestGame(Game):
 
 
 class TeamQuestGroup(PlayerGroup):
-    group_owner = models.OneToOneField('TeamQuestUser', null=True, blank=False)
+    group_owner = models.OneToOneField('TeamQuestUser', null=True)
 
     def is_empty(self):
         return self.users.count() < 1
@@ -72,7 +72,7 @@ class TeamQuestGroup(PlayerGroup):
 
     def remove_user(self, user):
         self.users.remove(user)
-        if user is self.group_owner:
+        if user == self.group_owner:
             if self.is_empty() is True:
                 self.delete()
             else:
@@ -80,7 +80,7 @@ class TeamQuestGroup(PlayerGroup):
 
     def promote_to_group_owner(self, user):
         self.group_owner = user
-        self.group_owner.save()
+        self.save()
 
     def __unicode__(self):
         return u"%s [%d]" % (self.name, self.users.count())
