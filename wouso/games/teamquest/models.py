@@ -2,7 +2,6 @@ from django.db import models
 
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player, PlayerGroup
-from wouso.core.qpool.models import Question
 
 
 class TeamQuestUser(Player):
@@ -15,11 +14,10 @@ class TeamQuestUser(Player):
 
 
 class TeamQuest(models.Model):
-    start = models.DateTimeField()
-    end = models.DateTimeField()
-    title = models.CharField(default="", max_length=100)
+    start_time = models.DateTimeField(default=None, blank=True, null=True)
+    end_time = models.DateTimeField(default=None, blank=True, null=True)
+    title = models.CharField(default="", max_length=100, blank=True, null=True)
     questions = models.ManyToManyField(Question)
-    registered = models.BooleanField(default=False)
 
 
 class TeamQuestGame(Game):
@@ -79,12 +77,11 @@ class TeamQuestGroup(PlayerGroup):
 
 
 class TeamQuestStatus(models.Model):
-    group = models.ForeignKey('TeamQuestGroup', null=True, blank=True, related_name='quests')
-    quest = models.ForeignKey('TeamQuest', null=True, blank=True, related_name='participants')
-    current_level = models.IntegerField(default=0, blank=True)
-    started_time = models.DateTimeField(default=datetime.datetime.now, blank=True, null=True)
-    finished_time = models.DateTimeField(default=None, blank=True, null=True)
-    finished = models.BooleanField(default=False, blank=True)
+    group = models.ForeignKey('TeamQuestGroup', null=True, blank=True)
+    quest = models.ForeignKey('TeamQuest', null=True, blank=True)
+    current_level = models.IntegerField(default=0, blank=True, null=True)
+    time_started = models.DateTimeField(default=datetime.datetime.now, blank=True, null=True)
+    time_finished = models.DateTimeField(default=None, blank=True, null=True)
 
 
 class TeamQuestInvitation(models.Model):
