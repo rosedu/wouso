@@ -41,6 +41,13 @@ class TeamQuest(models.Model):
     end_time = models.DateTimeField()
     title = models.CharField(default="", max_length=100)
 
+    @classmethod
+    def create(cls, title, start_time, end_time, levels):
+        new_quest = cls.objects.create(title=title, start_time=start_time, end_time=end_time)
+        for l in levels:
+            new_quest.levels.add(l)
+        return new_quest
+
 
 class TeamQuestGame(Game):
     """ Each game must extend Game """

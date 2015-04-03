@@ -121,13 +121,30 @@ class TeamQuestLevelTest(TestCase):
 class TeamQuestTest(TestCase):
 
     def setUp(self):
-        pass
+        category = Category.add('quest')
+        self.question1 = Question.objects.create(text='question1', answer_type='F',
+                                           category=category, active=True)
+        self.answer1 = Answer.objects.create(text='first answer', correct=True, question=self.question1)
+        self.question2 = Question.objects.create(text='question2', answer_type='F',
+                                           category=category, active=True)
+        self.answer2 = Answer.objects.create(text='second answer', correct=True, question=self.question2)
+        self.level1 = TeamQuestLevel.create(quest=None, bonus=50, questions=[self.question1])
+        self.level2 = TeamQuestLevel.create(quest=None, bonus=50, questions=[self.question2])
+        self.levels = [self.level1, self.level2]
 
     def test_quest_create_default(self):
         pass
 
     def test_quest_create(self):
-        pass
+        quest = TeamQuest.create(title="_test_quest", start_time=datetime.datetime.now(),
+                                 end_time=datetime.datetime.now(), levels=self.levels)
+        quest = TeamQuest.objects.get(title="_test_quest")
+        self.assertTrue(self.level1 in quest.levels.all())
+        self.assertTrue(self.level2 in quest.levels.all())
+
+        levels = TeamQuestLevel.objects.filter(quest=quest)
+        self.assertTrue(self.level1 in levels)
+        self.assertTrue(self.level2 in levels)
 
     def test_quest_end_time_before_start_time(self):
         pass
