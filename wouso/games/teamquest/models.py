@@ -101,7 +101,7 @@ class TeamQuestQuestion(models.Model):
         ('U', 'UNANSWERED'),
         ('A', 'ANSWERED'),
     }
-    state = models.CharField(max_length=1, default='U', choices=CHOICES)
+    state = models.CharField(default='U', max_length=1, choices=CHOICES)
     level = models.ForeignKey('TeamQuestLevelStatus', null=True, blank=False, related_name='questions')
     question = models.ForeignKey(Question, null=True, blank=False)
 
