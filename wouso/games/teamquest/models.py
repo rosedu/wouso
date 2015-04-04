@@ -16,6 +16,37 @@ class TeamQuestUser(Player):
         return self.group.group_owner == self
 
 
+class TeamQuestGroup(PlayerGroup):
+    group_owner = models.OneToOneField('TeamQuestUser', null=True)
+
+    def is_empty(self):
+        return self.users.count() < 1
+
+    @classmethod
+    def create(cls, group_owner, name):
+        new_group = cls.objects.create(name=name, group_owner=group_owner)
+        new_group.users.add(group_owner)
+        return new_group
+
+    def add_user(self, user):
+        self.users.add(user)
+
+    def remove_user(self, user):
+        self.users.remove(user)
+        if user == self.group_owner:
+            if self.is_empty() is True:
+                self.delete()
+            else:
+                self.promote_to_group_owner(self.users.all()[0])
+
+    def promote_to_group_owner(self, user):
+        self.group_owner = user
+        self.save()
+
+    def __unicode__(self):
+        return u"%s [%d]" % (self.name, self.users.count())
+
+
 class TeamQuestLevel(models.Model):
     questions = models.ManyToManyField(Question)
     quest = models.ForeignKey('TeamQuest', null=True, blank=True, related_name='levels')
@@ -65,43 +96,45 @@ class TeamQuestGame(Game):
         super(TeamQuestGame, self).__init__(*args, **kwargs)
 
 
-class TeamQuestGroup(PlayerGroup):
-    group_owner = models.OneToOneField('TeamQuestUser', null=True)
-
-    def is_empty(self):
-        return self.users.count() < 1
+class TeamQuestQuestion(models.Model):
+    CHOICES = {
+        ('U', 'UNANSWERED'),
+        ('A', 'ANSWERED'),
+    }
+    state = models.CharField(max_length=1, default='U', choices=CHOICES)
+    level = models.ForeignKey('TeamQuestLevelStatus', null=True, blank=False, related_name='questions')
+    question = models.ForeignKey(Question, null=True, blank=False)
 
     @classmethod
-    def create(cls, group_owner, name):
-        new_group = cls.objects.create(name=name, group_owner=group_owner)
-        new_group.users.add(group_owner)
-        return new_group
+    def create(cls, level, question):
+        new_question = cls.objects.create(level=level, question=question)
+        return new_question
 
-    def add_user(self, user):
-        self.users.add(user)
 
-    def remove_user(self, user):
-        self.users.remove(user)
-        if user == self.group_owner:
-            if self.is_empty() is True:
-                self.delete()
-            else:
-                self.promote_to_group_owner(self.users.all()[0])
+class TeamQuestLevelStatus(models.Model):
+    level = models.ForeignKey('TeamQuestLevel', null=False, blank=False, related_name='actives')
+    quest_status = models.ForeignKey('TeamQuestStatus', null=False, blank=False, related_name='levels')
 
-    def promote_to_group_owner(self, user):
-        self.group_owner = user
-        self.save()
-
-    def __unicode__(self):
-        return u"%s [%d]" % (self.name, self.users.count())
+    @classmethod
+    def create(cls, status, level):
+        new_level_status = cls.objects.create(level=level, quest_status=status)
+        for question in level.questions.all():
+            new_level_status.questions.add(TeamQuestQuestion.create(level=new_level_status, question=question))
+        return new_level_status
 
 
 class TeamQuestStatus(models.Model):
     group = models.ForeignKey('TeamQuestGroup')
     quest = models.ForeignKey('TeamQuest')
-    highest_level = models.IntegerField(default=0, blank=True, null=True)
-    time_started = models.DateTimeField(default=datetime.datetime.now)
+    time_started = models.DateTimeField(default=datetime.datetime.now())
     time_finished = models.DateTimeField(default=None, blank=True, null=True)
+
+    @classmethod
+    def create(cls, group, quest):
+        new_status = cls.objects.create(group=group, quest=quest)
+        for level in quest.levels.all():
+            new_status.levels.add(TeamQuestLevelStatus.create(status=new_status, level=level))
+        return new_status
 
 
 class TeamQuestInvitation(models.Model):
