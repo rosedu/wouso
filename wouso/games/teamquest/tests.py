@@ -121,13 +121,30 @@ class TeamQuestLevelTest(TestCase):
 class TeamQuestTest(TestCase):
 
     def setUp(self):
-        pass
+        category = Category.add('quest')
+        self.question1 = Question.objects.create(text='question1', answer_type='F',
+                                           category=category, active=True)
+        self.answer1 = Answer.objects.create(text='first answer', correct=True, question=self.question1)
+        self.question2 = Question.objects.create(text='question2', answer_type='F',
+                                           category=category, active=True)
+        self.answer2 = Answer.objects.create(text='second answer', correct=True, question=self.question2)
+        self.level1 = TeamQuestLevel.create(quest=None, bonus=50, questions=[self.question1])
+        self.level2 = TeamQuestLevel.create(quest=None, bonus=50, questions=[self.question2])
+        self.levels = [self.level1, self.level2]
 
     def test_quest_create_default(self):
         pass
 
     def test_quest_create(self):
-        pass
+        quest = TeamQuest.create(title="_test_quest", start_time=datetime.datetime.now(),
+                                 end_time=datetime.datetime.now(), levels=self.levels)
+        quest = TeamQuest.objects.get(title="_test_quest")
+        self.assertTrue(self.level1 in quest.levels.all())
+        self.assertTrue(self.level2 in quest.levels.all())
+
+        levels = TeamQuestLevel.objects.filter(quest=quest)
+        self.assertTrue(self.level1 in levels)
+        self.assertTrue(self.level2 in levels)
 
     def test_quest_end_time_before_start_time(self):
         pass
@@ -136,13 +153,47 @@ class TeamQuestTest(TestCase):
 class TeamQuestStatusTest(TestCase):
 
     def setUp(self):
-        pass
+        self.owner = User.objects.create(username='_test_user')
+        self.owner = self.owner.get_profile().get_extension(TeamQuestUser)
+        self.group = TeamQuestGroup.create(group_owner=self.owner, name='_test_group')
+        category = Category.add('quest')
+        self.question1 = Question.objects.create(text='question1', answer_type='F',
+                                           category=category, active=True)
+        self.answer1 = Answer.objects.create(text='first answer', correct=True, question=self.question1)
+        self.question2 = Question.objects.create(text='question2', answer_type='F',
+                                           category=category, active=True)
+        self.answer2 = Answer.objects.create(text='second answer', correct=True, question=self.question2)
+        level1 = TeamQuestLevel.create(quest=None, bonus=50, questions=[self.question1])
+        level2 = TeamQuestLevel.create(quest=None, bonus=50, questions=[self.question2])
+        self.levels = [level1, level2]
+        self.quest = TeamQuest.create(title="_test_quest", start_time=datetime.datetime.now(),
+                                 end_time=datetime.datetime.now(), levels=self.levels)
 
     def test_quest_status_create_default(self):
         pass
 
     def test_quest_status_create(self):
-        pass
+        """Testing the cascade creation of a Team Quest Status"""
+        # When a status is created, for each level a level status is created
+        # and for each level status a team quest question is created
+        status = TeamQuestStatus.create(group=self.group, quest=self.quest)
+        status = TeamQuestStatus.objects.get(group=self.group, quest=self.quest)
+
+        self.assertEqual(self.group, status.group)
+        self.assertEqual(self.quest, status.quest)
+
+        # For each level status I check that the level it points to exists in
+        # the levels of the quest
+        for level_status in status.levels.all():
+            self.assertEqual(level_status.quest_status, status)
+            self.assertTrue(level_status.level in self.quest.levels.all())
+
+            # For each team quest question I check that the question it points
+            # to exists in the questions of the level (pointed by status)
+            for team_quest_question in level_status.questions.all():
+                self.assertEqual(team_quest_question.level, level_status)
+                self.assertTrue(team_quest_question.question in level_status.level.questions.all())
+
 
     def test_quest_status_time_finished_before_time_started(self):
         pass
