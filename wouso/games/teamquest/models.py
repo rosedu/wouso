@@ -95,6 +95,15 @@ class TeamQuestGame(Game):
         # TODO
         super(TeamQuestGame, self).__init__(*args, **kwargs)
 
+    @classmethod
+    def get_current(cls):
+        """ Returns the active Team Quest instance, or None, if there is no active quest. """
+        try:
+            quest = TeamQuest.objects.get(start_time__lte=datetime.datetime.now(), end_time__gte=datetime.datetime.now())
+        except:
+            quest = None
+        return quest
+
 
 class TeamQuestQuestion(models.Model):
     STATE_CHOICES = {
@@ -149,7 +158,7 @@ class TeamQuestLevelStatus(models.Model):
     def index(self):
         """ Unique index of a level in a quest """
         total_levels = self.quest_status.levels.all().count()
-        return total_levels - self.questions.all().count()
+        return total_levels - self.questions.all().count() + 1
 
     @property
     def next_level(self):
