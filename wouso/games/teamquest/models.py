@@ -97,17 +97,22 @@ class TeamQuestGame(Game):
 
 
 class TeamQuestQuestion(models.Model):
-    CHOICES = {
+    STATE_CHOICES = {
         ('U', 'UNANSWERED'),
         ('A', 'ANSWERED'),
     }
-    state = models.CharField(default='U', max_length=1, choices=CHOICES)
+    LOCK_CHOICES = {
+        ('L', 'LOCKED'),
+        ('U', 'UNLOCKED'),
+    }
+    state = models.CharField(default='U', max_length=1, choices=STATE_CHOICES)
+    locked = models.CharField(default='L', max_length=1, choices=LOCK_CHOICES)
     level = models.ForeignKey('TeamQuestLevelStatus', null=True, blank=False, related_name='questions')
     question = models.ForeignKey(Question, null=True, blank=False)
 
     @classmethod
-    def create(cls, level, question):
-        new_question = cls.objects.create(level=level, question=question)
+    def create(cls, level, question, locked):
+        new_question = cls.objects.create(level=level, question=question, locked=locked)
         return new_question
 
 
