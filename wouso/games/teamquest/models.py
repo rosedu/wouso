@@ -134,7 +134,7 @@ class TeamQuestLevelStatus(models.Model):
 
     @property
     def index(self):
-        """ Index of a level in a quest """
+        """ Unique index of a level in a quest """
         total_levels = self.quest_status.levels.all().count()
         return total_levels - self.questions.all().count() + 1
 
@@ -155,7 +155,7 @@ class TeamQuestLevelStatus(models.Model):
     @property
     def unlocked_questions(self):
         """ Returns the list of unlocked questions from a level """
-        return TeamQuestQuestion.objects.filter(level=self, locked='U')
+        return TeamQuestQuestion.objects.filter(level=self, lock='U')
 
     @property
     def completed(self):
@@ -181,6 +181,26 @@ class TeamQuestStatus(models.Model):
         for level in quest.levels.all():
             new_status.levels.add(TeamQuestLevelStatus.create(status=new_status, level=level))
         return new_status
+
+    @property
+    def total_points(self):
+        points = 0
+        count = self.levels.all().count()
+        for level in self.levels.all():
+            if level.questions.all().count():
+                points += count * 1.0 / level.questions.all().count() * 100.0
+        return points
+
+    @property
+    def progress(self):
+        points = 0
+        for level in self.levels.all():
+            questions = TeamQuestQuestion.objects.filter(level=level, state='A')
+            points += questions.count() * level.points_per_question
+        return points
+
+    def __unicode__(self):
+        return u"%s [%s]" % (self.quest.title, self.group.name)
 
 
 class TeamQuestInvitation(models.Model):
