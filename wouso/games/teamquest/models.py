@@ -115,6 +115,19 @@ class TeamQuestQuestion(models.Model):
         new_question = cls.objects.create(level=level, question=question, lock=lock)
         return new_question
 
+    @property
+    def index(self):
+        """ Define unique index of a question inside a quest """
+        index = 1
+        for level in self.level.quest_status.levels.all():
+            for question in level.questions.all():
+                if question == self:
+                    return index
+                index += 1
+
+    def __unicode__(self):
+        return u'[%s] - %s - Question %d' % (self.level.level.quest.title, self.level.quest_status.group.name, self.index)
+
 
 class TeamQuestLevelStatus(models.Model):
     level = models.ForeignKey('TeamQuestLevel', null=False, blank=False, related_name='actives')
@@ -136,7 +149,7 @@ class TeamQuestLevelStatus(models.Model):
     def index(self):
         """ Unique index of a level in a quest """
         total_levels = self.quest_status.levels.all().count()
-        return total_levels - self.questions.all().count() + 1
+        return total_levels - self.questions.all().count()
 
     @property
     def next_level(self):
