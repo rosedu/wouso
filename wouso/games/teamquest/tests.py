@@ -191,6 +191,12 @@ class TeamQuestStatusTest(TestCase):
             # For each team quest question I check that the question it points
             # to exists in the questions of the level (pointed by status)
             for team_quest_question in level_status.questions.all():
+                # Check if the questions on the start level are unlocked and the rest are locked
+                if level_status.questions.all().count() == status.levels.all().count():
+                    self.assertTrue(team_quest_question.lock == 'U')
+                else:
+                    self.assertTrue(team_quest_question.lock == 'L')
+
                 self.assertEqual(team_quest_question.level, level_status)
                 self.assertTrue(team_quest_question.question in level_status.level.questions.all())
 
