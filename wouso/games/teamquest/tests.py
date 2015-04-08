@@ -157,15 +157,23 @@ class TeamQuestStatusTest(TestCase):
         self.owner = self.owner.get_profile().get_extension(TeamQuestUser)
         self.group = TeamQuestGroup.create(group_owner=self.owner, name='_test_group')
         category = Category.add('quest')
-        self.question1 = Question.objects.create(text='question1', answer_type='F',
-                                           category=category, active=True)
-        self.answer1 = Answer.objects.create(text='first answer', correct=True, question=self.question1)
-        self.question2 = Question.objects.create(text='question2', answer_type='F',
-                                           category=category, active=True)
-        self.answer2 = Answer.objects.create(text='second answer', correct=True, question=self.question2)
-        level1 = TeamQuestLevel.create(quest=None, bonus=50, questions=[self.question1])
-        level2 = TeamQuestLevel.create(quest=None, bonus=50, questions=[self.question2])
-        self.levels = [level1, level2]
+
+        number_of_levels = 5
+        self.questions = []
+        for index in range(number_of_levels * (number_of_levels + 1) / 2):
+            question = Question.objects.create(text='question'+str(index+1), answer_type='F',
+                                               category=category, active=True)
+            self.questions.append(question)
+            answer = Answer.objects.create(text='answer'+str(index+1), correct=True, question=question)
+
+        self.levels = []
+        base = 0
+        for index in range(number_of_levels):
+            level = TeamQuestLevel.create(quest=None, bonus=0,
+                                          questions=self.questions[base:base+number_of_levels-index])
+            self.levels.append(level)
+            base += number_of_levels - index
+
         self.quest = TeamQuest.create(title="_test_quest", start_time=datetime.datetime.now(),
                                  end_time=datetime.datetime.now(), levels=self.levels)
 
@@ -200,6 +208,17 @@ class TeamQuestStatusTest(TestCase):
                 self.assertEqual(team_quest_question.level, level_status)
                 self.assertTrue(team_quest_question.question in level_status.level.questions.all())
 
+    def test_quest_status_progress(self):
+        status = TeamQuestStatus.create(group=self.group, quest=self.quest)
+        self.assertTrue(status.progress == 0)
+
+        for level in status.levels.all():
+            for question in level.questions.all():
+                question.state = 'A'
+                question.save()
+            self.assertTrue(level.completed)
+
+        self.assertEqual(status.progress, status.total_points)
 
     def test_quest_status_time_finished_before_time_started(self):
         pass
