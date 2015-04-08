@@ -106,13 +106,13 @@ class TeamQuestQuestion(models.Model):
         ('U', 'UNLOCKED'),
     }
     state = models.CharField(default='U', max_length=1, choices=STATE_CHOICES)
-    locked = models.CharField(default='L', max_length=1, choices=LOCK_CHOICES)
+    lock = models.CharField(default='L', max_length=1, choices=LOCK_CHOICES)
     level = models.ForeignKey('TeamQuestLevelStatus', null=True, blank=False, related_name='questions')
     question = models.ForeignKey(Question, null=True, blank=False)
 
     @classmethod
-    def create(cls, level, question, locked):
-        new_question = cls.objects.create(level=level, question=question, locked=locked)
+    def create(cls, level, question, lock):
+        new_question = cls.objects.create(level=level, question=question, lock=lock)
         return new_question
 
 
@@ -123,8 +123,13 @@ class TeamQuestLevelStatus(models.Model):
     @classmethod
     def create(cls, status, level):
         new_level_status = cls.objects.create(level=level, quest_status=status)
+        lock = 'L'
+        # The start level of a quest is the one that has as many questions as the levels of the quest
+        # All the questions but the ones on the start level should be locked
+        if level.questions.all().count() == level.quest.levels.all().count():
+            lock = 'U'
         for question in level.questions.all():
-            new_level_status.questions.add(TeamQuestQuestion.create(level=new_level_status, question=question))
+            TeamQuestQuestion.create(level=new_level_status, question=question, lock=lock)
         return new_level_status
 
 
