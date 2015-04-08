@@ -15,6 +15,13 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('teamquest', ['TeamQuestUser'])
 
+        # Adding model 'TeamQuestGroup'
+        db.create_table('teamquest_teamquestgroup', (
+            ('playergroup_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['user.PlayerGroup'], unique=True, primary_key=True)),
+            ('group_owner', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['teamquest.TeamQuestUser'], unique=True, null=True)),
+        ))
+        db.send_create_signal('teamquest', ['TeamQuestGroup'])
+
         # Adding model 'TeamQuestLevel'
         db.create_table('teamquest_teamquestlevel', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -41,20 +48,30 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('teamquest', ['TeamQuest'])
 
-        # Adding model 'TeamQuestGroup'
-        db.create_table('teamquest_teamquestgroup', (
-            ('playergroup_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['user.PlayerGroup'], unique=True, primary_key=True)),
-            ('group_owner', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['teamquest.TeamQuestUser'], unique=True, null=True)),
+        # Adding model 'TeamQuestQuestion'
+        db.create_table('teamquest_teamquestquestion', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('state', self.gf('django.db.models.fields.CharField')(default='U', max_length=1)),
+            ('lock', self.gf('django.db.models.fields.CharField')(default='L', max_length=1)),
+            ('level', self.gf('django.db.models.fields.related.ForeignKey')(related_name='questions', null=True, to=orm['teamquest.TeamQuestLevelStatus'])),
+            ('question', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['qpool.Question'], null=True)),
         ))
-        db.send_create_signal('teamquest', ['TeamQuestGroup'])
+        db.send_create_signal('teamquest', ['TeamQuestQuestion'])
+
+        # Adding model 'TeamQuestLevelStatus'
+        db.create_table('teamquest_teamquestlevelstatus', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('level', self.gf('django.db.models.fields.related.ForeignKey')(related_name='actives', to=orm['teamquest.TeamQuestLevel'])),
+            ('quest_status', self.gf('django.db.models.fields.related.ForeignKey')(related_name='levels', to=orm['teamquest.TeamQuestStatus'])),
+        ))
+        db.send_create_signal('teamquest', ['TeamQuestLevelStatus'])
 
         # Adding model 'TeamQuestStatus'
         db.create_table('teamquest_teamqueststatus', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('group', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['teamquest.TeamQuestGroup'])),
             ('quest', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['teamquest.TeamQuest'])),
-            ('highest_level', self.gf('django.db.models.fields.IntegerField')(default=0, null=True, blank=True)),
-            ('time_started', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+            ('time_started', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2015, 4, 8, 0, 0))),
             ('time_finished', self.gf('django.db.models.fields.DateTimeField')(default=None, null=True, blank=True)),
         ))
         db.send_create_signal('teamquest', ['TeamQuestStatus'])
@@ -80,6 +97,9 @@ class Migration(SchemaMigration):
         # Deleting model 'TeamQuestUser'
         db.delete_table('teamquest_teamquestuser')
 
+        # Deleting model 'TeamQuestGroup'
+        db.delete_table('teamquest_teamquestgroup')
+
         # Deleting model 'TeamQuestLevel'
         db.delete_table('teamquest_teamquestlevel')
 
@@ -89,8 +109,11 @@ class Migration(SchemaMigration):
         # Deleting model 'TeamQuest'
         db.delete_table('teamquest_teamquest')
 
-        # Deleting model 'TeamQuestGroup'
-        db.delete_table('teamquest_teamquestgroup')
+        # Deleting model 'TeamQuestQuestion'
+        db.delete_table('teamquest_teamquestquestion')
+
+        # Deleting model 'TeamQuestLevelStatus'
+        db.delete_table('teamquest_teamquestlevelstatus')
 
         # Deleting model 'TeamQuestStatus'
         db.delete_table('teamquest_teamqueststatus')
@@ -264,14 +287,27 @@ class Migration(SchemaMigration):
             'quest': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'levels'", 'null': 'True', 'to': "orm['teamquest.TeamQuest']"}),
             'questions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['qpool.Question']", 'symmetrical': 'False'})
         },
+        'teamquest.teamquestlevelstatus': {
+            'Meta': {'object_name': 'TeamQuestLevelStatus'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'level': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'actives'", 'to': "orm['teamquest.TeamQuestLevel']"}),
+            'quest_status': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'levels'", 'to': "orm['teamquest.TeamQuestStatus']"})
+        },
+        'teamquest.teamquestquestion': {
+            'Meta': {'object_name': 'TeamQuestQuestion'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'level': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'questions'", 'null': 'True', 'to': "orm['teamquest.TeamQuestLevelStatus']"}),
+            'lock': ('django.db.models.fields.CharField', [], {'default': "'L'", 'max_length': '1'}),
+            'question': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['qpool.Question']", 'null': 'True'}),
+            'state': ('django.db.models.fields.CharField', [], {'default': "'U'", 'max_length': '1'})
+        },
         'teamquest.teamqueststatus': {
             'Meta': {'object_name': 'TeamQuestStatus'},
             'group': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['teamquest.TeamQuestGroup']"}),
-            'highest_level': ('django.db.models.fields.IntegerField', [], {'default': '0', 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'quest': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['teamquest.TeamQuest']"}),
             'time_finished': ('django.db.models.fields.DateTimeField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),
-            'time_started': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'})
+            'time_started': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2015, 4, 8, 0, 0)'})
         },
         'teamquest.teamquestuser': {
             'Meta': {'object_name': 'TeamQuestUser', '_ormbases': ['user.Player']},
