@@ -132,6 +132,42 @@ class TeamQuestLevelStatus(models.Model):
             TeamQuestQuestion.create(level=new_level_status, question=question, lock=lock)
         return new_level_status
 
+    @property
+    def index(self):
+        """ Index of a level in a quest """
+        total_levels = self.quest_status.levels.all().count()
+        return total_levels - self.questions.all().count() + 1
+
+    @property
+    def next_level(self):
+        """ Returns the next_level of a level """
+        for level in self.quest_status.levels.all():
+            if level.index == self.index + 1:
+                return level
+        return None
+
+    @property
+    def points_per_question(self):
+        """ Calculates the rewarded points for a question on a level """
+        total = self.quest_status.levels.all().count() * 1.0 / self.questions.all().count() * 100
+        return total / self.questions.all().count()
+
+    @property
+    def unlocked_questions(self):
+        """ Returns the list of unlocked questions from a level """
+        return TeamQuestQuestion.objects.filter(level=self, locked='U')
+
+    @property
+    def completed(self):
+        """ Checks if a level is completed """
+        for question in self.questions.all():
+            if question.state == 'U':
+                return False
+        return True
+
+    def __unicode__(self):
+        return u'[%s] - %s - Level %d' % (self.level.quest.title, self.quest_status.group.name, self.index)
+
 
 class TeamQuestStatus(models.Model):
     group = models.ForeignKey('TeamQuestGroup')
