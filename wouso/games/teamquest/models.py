@@ -59,6 +59,18 @@ class TeamQuestLevel(models.Model):
             new_level.questions.add(q)
         return new_level
 
+    @property
+    def points_per_question(self):
+        """ Calculates the rewarded points for a question on a level """
+        total = self.quest.levels.all().count() * 1.0 / self.questions.all().count() * 100
+        return int(total / self.questions.all().count())
+
+    @property
+    def index(self):
+        """ Unique index of a level in a quest """
+        total_levels = self.quest.levels.all().count()
+        return total_levels - self.questions.all().count() + 1
+
     def add_question(self, question):
         self.questions.add(question)
 
@@ -78,6 +90,14 @@ class TeamQuest(models.Model):
         for l in levels:
             new_quest.levels.add(l)
         return new_quest
+
+    @property
+    def total_points(self):
+        points = 0
+        count = self.levels.all().count()
+        for level in self.levels.all():
+            points += level.questions.all().count() * level.points_per_question
+        return points
 
 
 class TeamQuestGame(Game):
@@ -155,24 +175,12 @@ class TeamQuestLevelStatus(models.Model):
         return new_level_status
 
     @property
-    def index(self):
-        """ Unique index of a level in a quest """
-        total_levels = self.quest_status.levels.all().count()
-        return total_levels - self.questions.all().count() + 1
-
-    @property
     def next_level(self):
         """ Returns the next_level of a level """
-        for level in self.quest_status.levels.all():
-            if level.index == self.index + 1:
-                return level
+        for level_status in self.quest_status.levels.all():
+            if level_status.level.index == self.level.index + 1:
+                return level_status
         return None
-
-    @property
-    def points_per_question(self):
-        """ Calculates the rewarded points for a question on a level """
-        total = self.quest_status.levels.all().count() * 1.0 / self.questions.all().count() * 100
-        return int(total / self.questions.all().count())
 
     @property
     def unlocked_questions(self):
@@ -188,7 +196,7 @@ class TeamQuestLevelStatus(models.Model):
         return True
 
     def __unicode__(self):
-        return u'[%s] - %s - Level %d' % (self.level.quest.title, self.quest_status.group.name, self.index)
+        return u'[%s] - %s - Level %d' % (self.level.quest.title, self.quest_status.group.name, self.level.index)
 
 
 class TeamQuestStatus(models.Model):
@@ -205,18 +213,11 @@ class TeamQuestStatus(models.Model):
         return new_status
 
     @property
-    def total_points(self):
-        points = 0
-        count = self.levels.all().count()
-        for level in self.levels.all():
-            points += level.questions.all().count() * level.points_per_question
-        return points
-
-    @property
     def progress(self):
         points = 0
-        for level in self.levels.all():
-            questions = TeamQuestQuestion.objects.filter(level=level, state='A')
+        for level in self.quest.levels.all():
+            level_status = TeamQuestLevelStatus.objects.get(level=level, quest_status=self)
+            questions = TeamQuestQuestion.objects.filter(level=level_status, state='A')
             points += questions.count() * level.points_per_question
         return points
 
