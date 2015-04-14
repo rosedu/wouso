@@ -209,6 +209,15 @@ class TeamQuestStatusTest(TestCase):
                 self.assertEqual(team_quest_question.level, level_status)
                 self.assertTrue(team_quest_question.question in level_status.level.questions.all())
 
+    def test_quest_status_total_points(self):
+        status = TeamQuestStatus.create(group=self.group, quest=self.quest)
+
+        total_points = 0
+        for level in status.levels.all():
+            total_points += level.points_per_question * level.questions.all().count()
+
+        self.assertEqual(total_points, status.total_points)
+
     def test_quest_status_progress_partial(self):
         status = TeamQuestStatus.create(group=self.group, quest=self.quest)
         self.assertEqual(status.progress, 0)
