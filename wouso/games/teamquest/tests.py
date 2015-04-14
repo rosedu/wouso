@@ -167,6 +167,7 @@ class TeamQuestStatusTest(TestCase):
             answer = Answer.objects.create(text='answer'+str(index+1), correct=True, question=question)
 
         self.levels = []
+        # The start index of the questions sequence that goes in a level
         base = 0
         for index in range(number_of_levels):
             level = TeamQuestLevel.create(quest=None, bonus=0,
@@ -175,7 +176,7 @@ class TeamQuestStatusTest(TestCase):
             base += number_of_levels - index
 
         self.quest = TeamQuest.create(title="_test_quest", start_time=datetime.datetime.now(),
-                                 end_time=datetime.datetime.now(), levels=self.levels)
+                                 end_time=datetime.datetime(2030,12,25), levels=self.levels)
 
     def test_quest_status_create_default(self):
         pass
@@ -208,9 +209,9 @@ class TeamQuestStatusTest(TestCase):
                 self.assertEqual(team_quest_question.level, level_status)
                 self.assertTrue(team_quest_question.question in level_status.level.questions.all())
 
-    def test_quest_status_progress(self):
+    def test_quest_status_progress_100(self):
         status = TeamQuestStatus.create(group=self.group, quest=self.quest)
-        self.assertTrue(status.progress == 0)
+        self.assertEqual(status.progress, 0)
 
         for level in status.levels.all():
             for question in level.questions.all():
@@ -220,5 +221,69 @@ class TeamQuestStatusTest(TestCase):
 
         self.assertEqual(status.progress, status.total_points)
 
+    def test_level_status_index(self):
+        status = TeamQuestStatus.create(group=self.group, quest=self.quest)
+        total_levels = status.levels.all().count()
+        level_indexes = []
+
+        for level in status.levels.all():
+            level_questions = level.questions.all().count()
+            # Test that the index is calculated properly
+            self.assertEqual(level.index, total_levels - level_questions + 1)
+            # Test that the index is unique
+            self.assertTrue(level.index not in level_indexes)
+            level_indexes.append(level.index)
+
+    def test_question_index(self):
+        status = TeamQuestStatus.create(group=self.group, quest=self.quest)
+        question_indexes = []
+        total_levels = status.levels.all().count()
+
+        # Precalculate the index range for questions
+        lower_boundary = 1
+        upper_boundary = total_levels * (total_levels + 1) / 2
+        index_range = range(lower_boundary, upper_boundary + 1)
+
+        for level in status.levels.all():
+            for question in level.questions.all():
+                # Test index unicity
+                self.assertTrue(question.index not in question_indexes)
+                # Test index in inside the range
+                self.assertTrue(question.index in index_range)
+                question_indexes.append(question.index)
+
     def test_quest_status_time_finished_before_time_started(self):
         pass
+
+class TeamQuestGameTest(TestCase):
+    def setUp(self):
+        category = Category.add('quest')
+        number_of_levels = 5
+        self.questions = []
+        for index in range(number_of_levels * (number_of_levels + 1) / 2):
+            question = Question.objects.create(text='question'+str(index+1), answer_type='F',
+                                               category=category, active=True)
+            self.questions.append(question)
+            answer = Answer.objects.create(text='answer'+str(index+1), correct=True, question=question)
+
+        self.levels = []
+        # The start index of the questions sequence that goes in a level
+        base = 0
+        for index in range(number_of_levels):
+            level = TeamQuestLevel.create(quest=None, bonus=0,
+                                          questions=self.questions[base:base+number_of_levels-index])
+            self.levels.append(level)
+            base += number_of_levels - index
+
+        self.quest = TeamQuest.create(title="_test_quest", start_time=datetime.datetime.now(),
+                                 end_time=datetime.datetime(2030,12,25), levels=self.levels)
+
+    def test_get_current_game(self):
+        quest = TeamQuestGame.get_current()
+        self.assertEqual(quest, self.quest)
+
+        self.quest.end_time = datetime.datetime(2010,12,25)
+        self.quest.save()
+
+        quest = TeamQuestGame.get_current()
+        self.assertEqual(quest, None)
