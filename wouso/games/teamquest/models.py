@@ -172,7 +172,7 @@ class TeamQuestLevelStatus(models.Model):
     def points_per_question(self):
         """ Calculates the rewarded points for a question on a level """
         total = self.quest_status.levels.all().count() * 1.0 / self.questions.all().count() * 100
-        return total / self.questions.all().count()
+        return int(total / self.questions.all().count())
 
     @property
     def unlocked_questions(self):
@@ -209,8 +209,7 @@ class TeamQuestStatus(models.Model):
         points = 0
         count = self.levels.all().count()
         for level in self.levels.all():
-            if level.questions.all().count():
-                points += count * 1.0 / level.questions.all().count() * 100.0
+            points += level.questions.all().count() * level.points_per_question
         return points
 
     @property

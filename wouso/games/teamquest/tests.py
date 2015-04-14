@@ -209,6 +209,24 @@ class TeamQuestStatusTest(TestCase):
                 self.assertEqual(team_quest_question.level, level_status)
                 self.assertTrue(team_quest_question.question in level_status.level.questions.all())
 
+    def test_quest_status_progress_partial(self):
+        status = TeamQuestStatus.create(group=self.group, quest=self.quest)
+        self.assertEqual(status.progress, 0)
+
+        for level in status.levels.all():
+            for question in level.questions.all():
+                # Progress before answering a question
+                initial_progress = status.progress
+
+                question.state = 'A'
+                question.save()
+
+                # Progress after answering a question
+                later_progress = status.progress
+                points_per_question = later_progress - initial_progress
+
+                self.assertEqual(points_per_question, level.points_per_question)
+
     def test_quest_status_progress_100(self):
         status = TeamQuestStatus.create(group=self.group, quest=self.quest)
         self.assertEqual(status.progress, 0)
@@ -283,6 +301,18 @@ class TeamQuestStatusTest(TestCase):
                     question.save()
                     # Check if it now is in unlocked_questions
                     self.assertTrue(question in level.unlocked_questions)
+
+    def test_level_status_completed(self):
+        status = TeamQuestStatus.create(group=self.group, quest=self.quest)
+
+        for level in status.levels.all():
+            # Check that a level is completed only after all the questions are answered
+            for question in level.questions.all():
+                self.assertEqual(level.completed, False)
+                question.state = 'A'
+                question.save()
+
+            self.assertEqual(level.completed, True)
 
     def test_quest_status_time_finished_before_time_started(self):
         pass
