@@ -252,6 +252,38 @@ class TeamQuestStatusTest(TestCase):
                 self.assertTrue(question.index in index_range)
                 question_indexes.append(question.index)
 
+    def test_level_status_next_level(self):
+        status = TeamQuestStatus.create(group=self.group, quest=self.quest)
+        total_levels = status.levels.all().count()
+
+        for level in status.levels.all():
+            if level.index != total_levels:
+                # If not the last level, check next level by index
+                self.assertEqual(level.next_level.index - 1, level.index)
+            else:
+                # If last level, check next_level is none
+                self.assertEqual(level.next_level, None)
+
+    def test_level_status_unlocked_questions(self):
+        status = TeamQuestStatus.create(group=self.group, quest=self.quest)
+        total_levels = status.levels.all().count()
+
+        for level in status.levels.all():
+            # The first level is a special case, as all the questions are unlocked
+            if level.index == 1:
+                for question in level.questions.all():
+                    self.assertTrue(question in level.unlocked_questions)
+
+            else:
+                for question in level.questions.all():
+                    # Check if question is not in unlocked_questions
+                    self.assertTrue(question not in level.unlocked_questions)
+                    # Unlock current question
+                    question.lock = 'U'
+                    question.save()
+                    # Check if it now is in unlocked_questions
+                    self.assertTrue(question in level.unlocked_questions)
+
     def test_quest_status_time_finished_before_time_started(self):
         pass
 
