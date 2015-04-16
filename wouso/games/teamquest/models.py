@@ -59,6 +59,18 @@ class TeamQuestLevel(models.Model):
             new_level.questions.add(q)
         return new_level
 
+    @property
+    def points_per_question(self):
+        """ Calculates the rewarded points for a question on a level """
+        total = self.quest.levels.all().count() * 1.0 / self.questions.all().count() * 100
+        return int(total / self.questions.all().count())
+
+    @property
+    def index(self):
+        """ Unique index of a level in a quest """
+        total_levels = self.quest.levels.all().count()
+        return total_levels - self.questions.all().count() + 1
+
     def add_question(self, question):
         self.questions.add(question)
 
@@ -79,6 +91,14 @@ class TeamQuest(models.Model):
             new_quest.levels.add(l)
         return new_quest
 
+    @property
+    def total_points(self):
+        points = 0
+        count = self.levels.all().count()
+        for level in self.levels.all():
+            points += level.questions.all().count() * level.points_per_question
+        return points
+
 
 class TeamQuestGame(Game):
     """ Each game must extend Game """
@@ -94,6 +114,15 @@ class TeamQuestGame(Game):
         # the url field takes as value only a named url from module's urls.py
         # TODO
         super(TeamQuestGame, self).__init__(*args, **kwargs)
+
+    @classmethod
+    def get_current(cls):
+        """ Returns the active Team Quest instance, or None, if there is no active quest. """
+        try:
+            quest = TeamQuest.objects.get(start_time__lte=datetime.datetime.now(), end_time__gte=datetime.datetime.now())
+        except:
+            quest = None
+        return quest
 
 
 class TeamQuestQuestion(models.Model):
@@ -115,6 +144,19 @@ class TeamQuestQuestion(models.Model):
         new_question = cls.objects.create(level=level, question=question, lock=lock)
         return new_question
 
+    @property
+    def index(self):
+        """ Define unique index of a question inside a quest """
+        index = 1
+        for level in self.level.quest_status.levels.all():
+            for question in level.questions.all():
+                if question == self:
+                    return index
+                index += 1
+
+    def __unicode__(self):
+        return u'[%s] - %s - Question %d' % (self.level.level.quest.title, self.level.quest_status.group.name, self.index)
+
 
 class TeamQuestLevelStatus(models.Model):
     level = models.ForeignKey('TeamQuestLevel', null=False, blank=False, related_name='actives')
@@ -132,6 +174,30 @@ class TeamQuestLevelStatus(models.Model):
             TeamQuestQuestion.create(level=new_level_status, question=question, lock=lock)
         return new_level_status
 
+    @property
+    def next_level(self):
+        """ Returns the next_level of a level """
+        for level_status in self.quest_status.levels.all():
+            if level_status.level.index == self.level.index + 1:
+                return level_status
+        return None
+
+    @property
+    def unlocked_questions(self):
+        """ Returns the list of unlocked questions from a level """
+        return TeamQuestQuestion.objects.filter(level=self, lock='U')
+
+    @property
+    def completed(self):
+        """ Checks if a level is completed """
+        for question in self.questions.all():
+            if question.state == 'U':
+                return False
+        return True
+
+    def __unicode__(self):
+        return u'[%s] - %s - Level %d' % (self.level.quest.title, self.quest_status.group.name, self.level.index)
+
 
 class TeamQuestStatus(models.Model):
     group = models.ForeignKey('TeamQuestGroup')
@@ -145,6 +211,18 @@ class TeamQuestStatus(models.Model):
         for level in quest.levels.all():
             new_status.levels.add(TeamQuestLevelStatus.create(status=new_status, level=level))
         return new_status
+
+    @property
+    def progress(self):
+        points = 0
+        for level in self.quest.levels.all():
+            level_status = TeamQuestLevelStatus.objects.get(level=level, quest_status=self)
+            questions = TeamQuestQuestion.objects.filter(level=level_status, state='A')
+            points += questions.count() * level.points_per_question
+        return points
+
+    def __unicode__(self):
+        return u"%s [%s]" % (self.quest.title, self.group.name)
 
 
 class TeamQuestInvitation(models.Model):
