@@ -1,0 +1,124 @@
+{% extends 'interface/section_base.html'%}
+
+{% load i18n %}
+
+{% block title %}{% trans 'Team Quest' %}{% endblock %}
+
+{% block scripts %}
+
+	<script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
+
+{% endblock %}
+
+{% block sectioncontent %}
+
+	{% if quest %}
+
+		{% if group %}
+
+			{% if status %}
+
+				{% if status.progress < quest.total_points %}
+
+				<br>
+				<h3>
+				<p> You are now adventuring in quest "{{ quest.title }}". </p>
+				<p> Your steadfast group {{ group.name }} have aquired {{ status.progress|floatformat:0 }} experience points. </p>
+				</h3>
+				<br>
+
+				<ul class="tabs">
+
+				{% for l in levels %}
+
+					{% if l.unlocked_questions.count %}
+
+						 <li><a href="#level{{ l.level.index }}" id="level{{ l.level.index }}-click" class="no-redir">Stage {{ l.level.roman_index }}</a></li>
+
+					{% endif %}
+
+				{% endfor %}
+
+				</ul>
+
+				<div class="tab_container">
+
+					{% for l in levels %}
+
+						{% if l.unlocked_questions.count %}
+
+							{% if l.completed %}
+
+								<div id="level{{ l.level.index }}" class="tab_content">
+
+								<br>
+								<p> You have completed this level. Spot on! </p>
+
+								</div>
+
+							{% else %}
+
+								<div id="level{{ l.level.index }}" class="tab_content">
+
+								{% for q in l.unlocked_questions.all %}
+
+									<br>
+									<h3> {{ q.question.text }}  </h3>
+									{% if q.state == 'U' %}
+
+									<form method="post" action="{% url teamquest_index_view %}" id="{{ q.index }}">
+
+										<table>
+		                        			<input type="text" name="form{{ q.index }}">
+		                    			</table>
+
+		                    			{% csrf_token %}
+
+										<div class="actions">
+					                        <button type="submit" class="default">{% trans 'Answer' %}</button>
+					                    </div>
+					                </form>
+
+					                {% else %}
+
+					                <p> You have answered this question. </p>
+
+					                {% endif %}
+
+								{% endfor %}
+
+								</div>
+
+							{% endif %}	
+
+						{% endif %}
+
+					{% endfor %}
+
+					{% else %}
+
+					<p> You have finished this quest. </p>
+
+					{% endif %}
+
+				</div>
+
+			{% else %}
+				<p> You haven't started this quest yet. </p>
+			{% endif %}
+
+		{% else %}
+
+			<p> You need a group to participate in this quest. </p>
+
+		{% endif %}
+
+	{% else %}
+
+		<p> There is no active quest. </p>
+
+	{% endif %}
+
+{% endblock %}

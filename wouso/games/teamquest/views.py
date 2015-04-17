@@ -12,6 +12,68 @@ from django.http import HttpResponseRedirect, HttpResponse
 
 from models import *
 
+class TeamQuestIndexView(ListView):
+    model = TeamQuestStatus
+    context_object_name = 'status'
+    template_name = 'teamquest/index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(TeamQuestIndexView, self).get_context_data(**kwargs)
+        quest = TeamQuestGame.get_current()
+        quest_user = self.request.user.get_profile().get_extension(TeamQuestUser)
+        status = None
+
+        if quest and quest_user.group:
+            status = TeamQuestStatus.objects.get_or_create(quest=quest, group=quest_user.group)
+            context['levels'] = status.levels.all()
+
+        context['status'] = status
+        context['quest'] = quest
+        context['group'] = quest_user.group
+
+        return context
+
+    def post(self, request, **kwargs):
+        quest = TeamQuestGame.get_current()
+        quest_user = request.user.get_profile().get_extension(TeamQuestUser)
+        status = TeamQuestStatus.objects.get(quest=quest, group=quest_user.group)
+
+        for level in status.levels.all():
+            for question in level.questions.all():
+                answer = request.POST.get('form'+str(question.index))
+
+                if answer == str(question.question.answer):
+                    if question.level.questions.all().count() == 1:
+                        question.state = 'A'
+                        question.save()
+                        messages.success(request, 'Congratulations! You have finished this quest on position #%d!' % level.level.times)
+                        status.time_finished = datetime.datetime.now()
+                        status.save()
+
+                    else:
+                        question.state = 'A'
+                        question.save()
+
+                        if level.completed:
+                            messages.success(request, 'Congratulations! You have finished this level on position #%d!' % level.level.times_completed)
+
+                        other_questions = TeamQuestQuestion.objects.filter(level=question.level, state='A')
+                        if other_questions.count() > 1:
+                            unlocked_question = TeamQuestQuestion.objects.filter(level=level.next_level, lock='L')
+                            unlocked_question = unlocked_question[0]
+                            unlocked_question.lock = 'U'
+                            unlocked_question.save()
+                            messages.success(request, 'Correct answer! You unlocked a question on Level %d!' % level.next_level.level.index)
+                        else:
+                            messages.success(request, 'Correct answer!')
+                    
+                    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+        messages.error(request, 'Wrong answer!')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+
+index = login_required(TeamQuestIndexView.as_view())
 
 def sidebar_widget(context):
     user = context.get('user', None)
@@ -25,7 +87,10 @@ def sidebar_widget(context):
     status = TeamQuestStatus.objects.filter(group=group, quest=quest)
     if status.count():
         status = status[0]
-        progress = status.progress * 1.0 / quest.total_points * 100
+        if quest.total_points:
+            progress = status.progress * 1.0 / quest.total_points * 100
+        else:
+            progress = 0
     else:
         progress = 0
         status = None
