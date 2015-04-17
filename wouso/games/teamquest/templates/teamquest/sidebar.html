@@ -18,12 +18,12 @@
         <p><a href="">{% trans 'Start quest' %} </a></p>
     {% endif %}
 {% elif quest and not group %}
-    <p> {% trans 'There is an active quest, but you need a team to play' %} </p>
+    <p> {% trans 'There is an active quest, but you need a team to play.' %} </p>
 {% else %}
-    <p> {% trans 'There is no active quest' %} </p>
+    <p> {% trans 'There is no active quest.' %} </p>
 {% endif %}
 
 
-<p><a href="">{% trans 'Team hub' %}</a></p>
+<p><a href="">{% trans 'Team Hub' %}</a></p>
 
 {% endblock %}
