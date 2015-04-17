@@ -2,11 +2,36 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils.translation import ugettext as _
+from django.test.client import Client
 
 from wouso.core.qpool.models import Question, Answer, Category
+from wouso.core.tests import WousoTest
 
 from models import *
+from views import *
 
+def _create_quest(number_of_levels):
+    category = Category.add('quest')
+
+    questions = []
+    for index in range(number_of_levels * (number_of_levels + 1) / 2):
+        question = Question.objects.create(text='question'+str(index+1), answer_type='F',
+                                           category=category, active=True)
+        questions.append(question)
+        answer = Answer.objects.create(text='answer'+str(index+1), correct=True, question=question)
+
+    levels = []
+    # The start index of the questions sequence that goes in a level
+    base = 0
+    for index in range(number_of_levels):
+        level = TeamQuestLevel.create(quest=None, bonus=0,
+                                      questions=questions[base:base+number_of_levels-index])
+        levels.append(level)
+        base += number_of_levels - index
+
+    quest = TeamQuest.create(title="_test_quest", start_time=datetime.datetime.now(),
+                             end_time=datetime.datetime(2030,12,25), levels=levels)
+    return quest
 
 class TeamQuestGroupTest(TestCase):
 
@@ -158,25 +183,7 @@ class TeamQuestStatusTest(TestCase):
         self.group = TeamQuestGroup.create(group_owner=self.owner, name='_test_group')
         category = Category.add('quest')
 
-        number_of_levels = 5
-        self.questions = []
-        for index in range(number_of_levels * (number_of_levels + 1) / 2):
-            question = Question.objects.create(text='question'+str(index+1), answer_type='F',
-                                               category=category, active=True)
-            self.questions.append(question)
-            answer = Answer.objects.create(text='answer'+str(index+1), correct=True, question=question)
-
-        self.levels = []
-        # The start index of the questions sequence that goes in a level
-        base = 0
-        for index in range(number_of_levels):
-            level = TeamQuestLevel.create(quest=None, bonus=0,
-                                          questions=self.questions[base:base+number_of_levels-index])
-            self.levels.append(level)
-            base += number_of_levels - index
-
-        self.quest = TeamQuest.create(title="_test_quest", start_time=datetime.datetime.now(),
-                                 end_time=datetime.datetime(2030,12,25), levels=self.levels)
+        self.quest = _create_quest(5)
 
     def test_quest_status_create_default(self):
         pass
@@ -326,6 +333,7 @@ class TeamQuestStatusTest(TestCase):
     def test_quest_status_time_finished_before_time_started(self):
         pass
 
+
 class TeamQuestGameTest(TestCase):
     def setUp(self):
         category = Category.add('quest')
@@ -341,3 +349,44 @@ class TeamQuestGameTest(TestCase):
 
         quest = TeamQuestGame.get_current()
         self.assertEqual(quest, None)
+
+
+class TeamQuestViewsTest(WousoTest):
+
+    def setUp(self):
+        super(TeamQuestViewsTest, self).setUp()
+        self.player1 = self._get_player(1).get_extension(TeamQuestUser)
+        self.player2 = self._get_player(2).get_extension(TeamQuestUser)
+        self.c = Client()
+        self.c.login(username='testuser1', password='test')
+        self.quest = _create_quest(5)
+        self.group = TeamQuestGroup.create(group_owner=self.player2, name='_test_group')
+
+    def test_sidebar_view_no_quest(self):
+        context = {'user': self.player1.user}
+
+        self.quest.end_time = datetime.datetime(1234,12,25)
+        self.quest.save()
+
+        sidebar = sidebar_widget(context)
+        self.assertTrue("There is no active quest" in sidebar)
+
+    def test_sidebar_view_quest_no_group(self):
+        context = {'user': self.player1.user}
+
+        sidebar = sidebar_widget(context)
+        self.assertTrue("There is an active quest, but you need a team to play" in sidebar)
+
+    def test_sidebar_view_not_started(self):
+        context = {'user': self.player2.user}
+        
+        sidebar = sidebar_widget(context)
+        self.assertTrue("Start quest" in sidebar)
+
+    def test_sidebar_view_started(self):
+        context = {'user': self.player2.user}
+
+        status = TeamQuestStatus.create(quest=self.quest, group=self.group)
+
+        sidebar = sidebar_widget(context)
+        self.assertTrue("Play quest" in sidebar)
