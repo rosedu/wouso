@@ -2,10 +2,37 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils.translation import ugettext as _
+from django.test.client import Client
 
 from wouso.core.qpool.models import Question, Answer, Category
+from wouso.core.tests import WousoTest
 
 from models import *
+from views import *
+
+
+def _create_quest(number_of_levels):
+    category = Category.add('quest')
+
+    questions = []
+    for index in range(number_of_levels * (number_of_levels + 1) / 2):
+        question = Question.objects.create(text='question'+str(index+1), answer_type='F',
+                                           category=category, active=True)
+        questions.append(question)
+        answer = Answer.objects.create(text='answer'+str(index+1), correct=True, question=question)
+
+    levels = []
+    # The start index of the questions sequence that goes in a level
+    base = 0
+    for index in range(number_of_levels):
+        level = TeamQuestLevel.create(quest=None, bonus=0,
+                                      questions=questions[base:base+number_of_levels-index])
+        levels.append(level)
+        base += number_of_levels - index
+
+    quest = TeamQuest.create(title="_test_quest", start_time=datetime.datetime.now(),
+                             end_time=datetime.datetime(2030,12,25), levels=levels)
+    return quest
 
 
 class TeamQuestGroupTest(TestCase):
@@ -16,73 +43,55 @@ class TeamQuestGroupTest(TestCase):
         self.owner = User.objects.create(username="_test_group_owner")
         self.owner = self.owner.get_profile().get_extension(TeamQuestUser)
 
-    def test_is_group_owner(self):
+    def test_user_is_group_owner(self):
         group = TeamQuestGroup.create(group_owner=self.user, name='_test_group')
-        self.user = User.objects.get(username='_test_user')
-        self.user = self.user.get_profile().get_extension(TeamQuestUser)
+
         self.assertTrue(self.user.is_group_owner())
 
-    def test_is_added(self):
+    def test_add_user_to_group(self):
         group = TeamQuestGroup.create(group_owner=self.owner, name='_test_group')
-        group.add_user(self.user)
 
-        group = TeamQuestGroup.objects.get(name='_test_group')
-        self.user = User.objects.get(username='_test_user')
-        self.user = self.user.get_profile().get_extension(TeamQuestUser)
+        group.add_user(self.user)
 
         self.assertTrue(self.user.group == group)
         self.assertTrue(self.user in group.users.all())
 
-    def test_is_removed(self):
+    def test_remove_user_from_group(self):
         group = TeamQuestGroup.create(group_owner=self.owner, name='_test_group')
+
         group.add_user(self.user)
-
-        group = TeamQuestGroup.objects.get(name='_test_group')
-        self.user = User.objects.get(username='_test_user')
-        self.user = self.user.get_profile().get_extension(TeamQuestUser)
-
-        self.assertTrue(self.user in group.users.all())
-
         group.remove_user(self.user)
-
-        group = TeamQuestGroup.objects.get(name='_test_group')
-        self.user = User.objects.get(username='_test_user')
-        self.user = self.user.get_profile().get_extension(TeamQuestUser)
 
         self.assertTrue(self.user not in group.users.all())
         self.assertTrue(self.user.group is None)
 
-    def test_is_deleted(self):
+    def test_delete_group(self):
         group = TeamQuestGroup.create(group_owner=self.owner, name='_test_group')
+
         group.remove_user(self.owner)
-        check = 1
 
-        try:
-            group = TeamQuestGroup.objects.get(name='_test_group')
-            check = 0
-        except TeamQuestGroup.DoesNotExist:
-            self.owner = User.objects.get(username="_test_group_owner")
-            self.owner = self.owner.get_profile().get_extension(TeamQuestUser)
-            self.assertTrue(self.owner.group is None)
+        self.assertEqual(TeamQuestGroup.objects.filter(name='_test_group').count(), 0)
 
-        self.assertEqual(check, 1)
-
-    def test_is_promoted(self):
+    def test_no_owner_for_deleted_group(self):
         group = TeamQuestGroup.create(group_owner=self.owner, name='_test_group')
-        group.add_user(self.user)
-        group = TeamQuestGroup.objects.get(name='_test_group')
 
+        group.remove_user(self.owner)
+
+        self.assertTrue(self.owner.group is None)
+
+    def test_user_is_promoted(self):
+        group = TeamQuestGroup.create(group_owner=self.owner, name='_test_group')
+
+        group.add_user(self.user)
         group.promote_to_group_owner(self.user)
-        self.user = User.objects.get(username='_test_user')
-        self.user = self.user.get_profile().get_extension(TeamQuestUser)
-        group = TeamQuestGroup.objects.get(name='_test_group')
+
         self.assertTrue(self.user.is_group_owner())
 
-        group.remove_user(self.user)
+    def test_user_is_promoted_on_owner_removal(self):
+        group = TeamQuestGroup.create(group_owner=self.user, name='_test_group')
 
-        self.owner = User.objects.get(username="_test_group_owner")
-        self.owner = self.owner.get_profile().get_extension(TeamQuestUser)
-        group = TeamQuestGroup.objects.get(name='_test_group')
+        group.add_user(self.owner)
+        group.remove_user(self.user)
 
         self.assertTrue(self.owner.is_group_owner())
 
@@ -98,7 +107,7 @@ class TeamQuestLevelTest(TestCase):
                                            category=category, active=True)
         self.answer2 = Answer.objects.create(text='second answer', correct=True, question=self.question2)
 
-    def test_level_creation(self):
+    def test_create_level(self):
         level = TeamQuestLevel.create(quest=None, bonus=50, questions=[self.question1, self.question2])
 
         self.assertEqual(level.bonus, 50)
@@ -106,15 +115,18 @@ class TeamQuestLevelTest(TestCase):
         self.assertTrue(self.question1 in level.questions.all())
         self.assertTrue(self.question2 in level.questions.all())
 
-    def test_level_add_and_remove(self):
+    def test_add_question_to_level(self):
         level = TeamQuestLevel.create(quest=None, bonus=50, questions=[self.question1])
 
-        level = TeamQuestLevel.objects.get(quest=None)
         level.add_question(self.question2)
+
         self.assertTrue(self.question2 in level.questions.all())
 
-        level = TeamQuestLevel.objects.get(quest=None)
+    def test_remove_question_from_level(self):
+        level = TeamQuestLevel.create(quest=None, bonus=50, questions=[self.question1, self.question2])
+
         level.remove_question(self.question1)
+
         self.assertTrue(self.question1 not in level.questions.all())
 
 
@@ -138,13 +150,9 @@ class TeamQuestTest(TestCase):
     def test_quest_create(self):
         quest = TeamQuest.create(title="_test_quest", start_time=datetime.datetime.now(),
                                  end_time=datetime.datetime.now(), levels=self.levels)
-        quest = TeamQuest.objects.get(title="_test_quest")
+
         self.assertTrue(self.level1 in quest.levels.all())
         self.assertTrue(self.level2 in quest.levels.all())
-
-        levels = TeamQuestLevel.objects.filter(quest=quest)
-        self.assertTrue(self.level1 in levels)
-        self.assertTrue(self.level2 in levels)
 
     def test_quest_end_time_before_start_time(self):
         pass
@@ -156,27 +164,8 @@ class TeamQuestStatusTest(TestCase):
         self.owner = User.objects.create(username='_test_user')
         self.owner = self.owner.get_profile().get_extension(TeamQuestUser)
         self.group = TeamQuestGroup.create(group_owner=self.owner, name='_test_group')
-        category = Category.add('quest')
 
-        number_of_levels = 5
-        self.questions = []
-        for index in range(number_of_levels * (number_of_levels + 1) / 2):
-            question = Question.objects.create(text='question'+str(index+1), answer_type='F',
-                                               category=category, active=True)
-            self.questions.append(question)
-            answer = Answer.objects.create(text='answer'+str(index+1), correct=True, question=question)
-
-        self.levels = []
-        # The start index of the questions sequence that goes in a level
-        base = 0
-        for index in range(number_of_levels):
-            level = TeamQuestLevel.create(quest=None, bonus=0,
-                                          questions=self.questions[base:base+number_of_levels-index])
-            self.levels.append(level)
-            base += number_of_levels - index
-
-        self.quest = TeamQuest.create(title="_test_quest", start_time=datetime.datetime.now(),
-                                 end_time=datetime.datetime(2030,12,25), levels=self.levels)
+        self.quest = _create_quest(5)
 
     def test_quest_status_create_default(self):
         pass
@@ -186,7 +175,6 @@ class TeamQuestStatusTest(TestCase):
         # When a status is created, for each level a level status is created
         # and for each level status a team quest question is created
         status = TeamQuestStatus.create(group=self.group, quest=self.quest)
-        status = TeamQuestStatus.objects.get(group=self.group, quest=self.quest)
 
         self.assertEqual(self.group, status.group)
         self.assertEqual(self.quest, status.quest)
@@ -211,16 +199,20 @@ class TeamQuestStatusTest(TestCase):
 
     def test_quest_status_total_points(self):
         status = TeamQuestStatus.create(group=self.group, quest=self.quest)
-
         total_points = 0
+
         for level_status in status.levels.all():
             total_points += level_status.level.points_per_question * level_status.questions.all().count()
 
         self.assertEqual(total_points, status.quest.total_points)
 
+    def test_quest_initial_progress_is_zero(self):
+        status = TeamQuestStatus.create(group=self.group, quest=self.quest)
+
+        self.assertEqual(status.progress, 0)
+
     def test_quest_status_progress_partial(self):
         status = TeamQuestStatus.create(group=self.group, quest=self.quest)
-        self.assertEqual(status.progress, 0)
 
         for level_status in status.levels.all():
             for question in level_status.questions.all():
@@ -238,13 +230,11 @@ class TeamQuestStatusTest(TestCase):
 
     def test_quest_status_progress_100(self):
         status = TeamQuestStatus.create(group=self.group, quest=self.quest)
-        self.assertEqual(status.progress, 0)
 
         for level_status in status.levels.all():
             for question in level_status.questions.all():
                 question.state = 'A'
                 question.save()
-            self.assertTrue(level_status.completed)
 
         self.assertEqual(status.progress, status.quest.total_points)
 
@@ -279,7 +269,7 @@ class TeamQuestStatusTest(TestCase):
                 self.assertTrue(question.index in index_range)
                 question_indexes.append(question.index)
 
-    def test_level_status_next_level(self):
+    def test_level_status_reveal_next_level(self):
         status = TeamQuestStatus.create(group=self.group, quest=self.quest)
         total_levels = status.levels.all().count()
 
@@ -291,7 +281,7 @@ class TeamQuestStatusTest(TestCase):
                 # If last level, check next_level is none
                 self.assertEqual(level_status.next_level, None)
 
-    def test_level_status_unlocked_questions(self):
+    def test_level_status_unlock_questions(self):
         status = TeamQuestStatus.create(group=self.group, quest=self.quest)
         total_levels = status.levels.all().count()
 
@@ -311,7 +301,7 @@ class TeamQuestStatusTest(TestCase):
                     # Check if it now is in unlocked_questions
                     self.assertTrue(question in level_status.unlocked_questions)
 
-    def test_level_status_completed(self):
+    def test_level_status_is_completed(self):
         status = TeamQuestStatus.create(group=self.group, quest=self.quest)
 
         for level_status in status.levels.all():
@@ -326,18 +316,64 @@ class TeamQuestStatusTest(TestCase):
     def test_quest_status_time_finished_before_time_started(self):
         pass
 
+
 class TeamQuestGameTest(TestCase):
     def setUp(self):
         category = Category.add('quest')
         self.quest = TeamQuest.create(title="_test_quest", start_time=datetime.datetime.now(),
                                  end_time=datetime.datetime(2030,12,25), levels=[])
 
-    def test_get_current_game(self):
+    def test_active_quest_exists(self):
         quest = TeamQuestGame.get_current()
         self.assertEqual(quest, self.quest)
 
+    def test_no_active_quest(self):
         self.quest.end_time = datetime.datetime(2010,12,25)
         self.quest.save()
 
         quest = TeamQuestGame.get_current()
+
         self.assertEqual(quest, None)
+
+
+class TeamQuestViewsTest(WousoTest):
+
+    def setUp(self):
+        super(TeamQuestViewsTest, self).setUp()
+        self.player1 = self._get_player(1).get_extension(TeamQuestUser)
+        self.player2 = self._get_player(2).get_extension(TeamQuestUser)
+        self.c = Client()
+        self.c.login(username='testuser1', password='test')
+        self.quest = _create_quest(5)
+        self.group = TeamQuestGroup.create(group_owner=self.player2, name='_test_group')
+
+    def test_sidebar_view_end_time_has_passed(self):
+        context = {'user': self.player1.user}
+
+        self.quest.end_time = datetime.datetime(1234,12,25)
+        self.quest.save()
+        sidebar = sidebar_widget(context)
+
+        self.assertTrue("There is no active quest." in sidebar)
+
+    def test_sidebar_view_quest_no_group(self):
+        context = {'user': self.player1.user}
+
+        sidebar = sidebar_widget(context)
+
+        self.assertTrue("There is an active quest, but you need a team to play." in sidebar)
+
+    def test_sidebar_view_not_started(self):
+        context = {'user': self.player2.user}
+        
+        sidebar = sidebar_widget(context)
+
+        self.assertTrue("Start quest" in sidebar)
+
+    def test_sidebar_view_started(self):
+        context = {'user': self.player2.user}
+
+        status = TeamQuestStatus.create(quest=self.quest, group=self.group)
+        sidebar = sidebar_widget(context)
+
+        self.assertTrue("Play quest" in sidebar)
