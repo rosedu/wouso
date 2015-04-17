@@ -1,0 +1,29 @@
+{% extends 'interface/sidebar_widget.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Team Quest' %}{% endblock %}
+
+{% block content %}
+
+{% if quest and group %}
+    <p> {{ quest.title }} </p>
+    {% if status %}
+        {% if status.progress < quest.total_points %}
+            <div class="progress-bar">
+                <div class="progress" style="width: {{ progress|floatformat:0 }}%"></div>
+            </div>
+            <p><a href="">{% trans 'Play quest' %}</a></p>
+        {% endif %}
+    {% else %}
+        <p><a href="">{% trans 'Start quest' %} </a></p>
+    {% endif %}
+{% elif quest and not group %}
+    <p> {% trans 'There is an active quest, but you need a team to play' %} </p>
+{% else %}
+    <p> {% trans 'There is no active quest' %} </p>
+{% endif %}
+
+
+<p><a href="">{% trans 'Team hub' %}</a></p>
+
+{% endblock %}
