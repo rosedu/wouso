@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Install operating system dependencies
 sudo apt-get install python2.7 python-pip python-django python-dev python-virtualenv libldap2-dev libsasl2-dev libssl-dev
@@ -20,4 +20,6 @@ cd ..; rm -r django-piston-0.2.3
 cp wouso/settings.py.example wouso/settings.py
 
 # Setup the database
-./wouso/manage.py wousoctl --setup
+cd wouso
+./manage.py wousoctl --setup
+cd ..
