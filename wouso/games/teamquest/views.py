@@ -24,7 +24,7 @@ class TeamQuestIndexView(ListView):
         status = None
 
         if quest and quest_user.group:
-            status = TeamQuestStatus.objects.get_or_create(quest=quest, group=quest_user.group)
+            status, created = TeamQuestStatus.get_or_create(quest=quest, group=quest_user.group)
             context['levels'] = status.levels.all()
 
         context['status'] = status
@@ -42,35 +42,36 @@ class TeamQuestIndexView(ListView):
             for question in level.questions.all():
                 answer = request.POST.get('form'+str(question.index))
 
-                if answer == str(question.question.answer):
-                    if question.level.questions.all().count() == 1:
-                        question.state = 'A'
-                        question.save()
-                        messages.success(request, 'Congratulations! You have finished this quest on position #%d!' % level.level.times)
-                        status.time_finished = datetime.datetime.now()
-                        status.save()
+                if answer == None:
+                    continue
 
-                    else:
-                        question.state = 'A'
-                        question.save()
-
-                        if level.completed:
-                            messages.success(request, 'Congratulations! You have finished this level on position #%d!' % level.level.times_completed)
-
-                        other_questions = TeamQuestQuestion.objects.filter(level=question.level, state='A')
-                        if other_questions.count() > 1:
-                            unlocked_question = TeamQuestQuestion.objects.filter(level=level.next_level, lock='L')
-                            unlocked_question = unlocked_question[0]
-                            unlocked_question.lock = 'U'
-                            unlocked_question.save()
-                            messages.success(request, 'Correct answer! You unlocked a question on Level %d!' % level.next_level.level.index)
-                        else:
-                            messages.success(request, 'Correct answer!')
-                    
+                if answer != str(question.question.answer):
+                    messages.error(request, 'Wrong answer!')
+                    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+                if question.state == 'A':
+                    messages.error(request, "Puny human, don't try to cheat!")
                     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-        messages.error(request, 'Wrong answer!')
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+                question.state = 'A'
+                question.save()
+
+                if question.level.questions.all().count() == 1:
+                    messages.success(request, 'Congratulations! You have finished this quest on position #%d!' % level.level.times_completed)
+                    status.time_finished = datetime.datetime.now()
+                    status.save()
+
+                else:
+
+                    if level.completed:
+                        messages.success(request, 'Congratulations! You have finished this level on position #%d!' % level.level.times_completed)
+
+                    other_questions = TeamQuestQuestion.objects.filter(level=question.level, state='A')
+                    if other_questions.count() > 1:
+                        messages.success(request, 'Correct answer! You unlocked a question on Level %d!' % level.next_level.level.index)
+                    else:
+                        messages.success(request, 'Correct answer!')
+
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 index = login_required(TeamQuestIndexView.as_view())
@@ -84,13 +85,11 @@ def sidebar_widget(context):
     quest = TeamQuestGame.get_current()
 
     group = quest_user.group
+    status = None
     status = TeamQuestStatus.objects.filter(group=group, quest=quest)
     if status.count():
         status = status[0]
-        if quest.total_points:
-            progress = status.progress * 1.0 / quest.total_points * 100
-        else:
-            progress = 0
+        progress = status.progress * 1.0 / quest.total_points * 100
     else:
         progress = 0
         status = None
