@@ -13,6 +13,7 @@ from django.utils.translation import ugettext as _
 
 from models import *
 
+
 class TeamQuestIndexView(ListView):
     model = TeamQuestStatus
     context_object_name = 'status'
@@ -43,7 +44,7 @@ class TeamQuestIndexView(ListView):
             for question in level.questions.all():
                 answer = request.POST.get('form' + str(question.index))
 
-                if answer == None:
+                if answer is None:
                     continue
 
                 if answer != str(question.question.answer):
@@ -78,6 +79,7 @@ class TeamQuestIndexView(ListView):
 
 index = login_required(TeamQuestIndexView.as_view())
 
+
 def sidebar_widget(context):
     user = context.get('user', None)
     if not user or not user.is_authenticated():
@@ -98,7 +100,7 @@ def sidebar_widget(context):
 
     return render_to_string('teamquest/sidebar.html',
                             {'quest': quest, 'tquser': quest_user,
-                             'group': quest_user.group, 'status':status,
+                             'group': quest_user.group, 'status': status,
                              'progress': progress,
                              })
 

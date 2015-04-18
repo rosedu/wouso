@@ -75,7 +75,7 @@ class TeamQuestLevel(models.Model):
     def times_completed(self):
         total = 0
         for level_status in self.actives.all():
-            if level_status.completed == True:
+            if level_status.completed is True:
                 total += 1
         return total
 
@@ -229,7 +229,7 @@ class TeamQuestLevelStatus(models.Model):
     def unlocked_questions(self):
         """ Returns the list of unlocked questions from a level """
         previous_level = self.previous_level
-        if previous_level == None:
+        if previous_level is None:
             return self.questions.all()
         max_number_of_questions = TeamQuestQuestion.objects.filter(level=previous_level, state='A').count() - 1
         if max_number_of_questions < 0:

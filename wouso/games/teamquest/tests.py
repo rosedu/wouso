@@ -393,7 +393,7 @@ class TeamQuestViewsTest(WousoTest):
 
     def test_sidebar_view_not_started(self):
         context = {'user': self.player2.user}
-        
+
         sidebar = sidebar_widget(context)
 
         self.assertTrue("Start quest" in sidebar)
