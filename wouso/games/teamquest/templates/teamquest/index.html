@@ -24,8 +24,8 @@
 
 				<br>
 				<h3>
-				<p> You are now adventuring in quest "{{ quest.title }}". </p>
-				<p> Your steadfast group {{ group.name }} have aquired {{ status.progress|floatformat:0 }} experience points. </p>
+				<p>{% blocktrans with title=quest.title %} You are now adventuring in quest "{{ title }}". {% endblocktrans %}</p>
+				<p>{% blocktrans with name=group.name progress=status.progress %} Your steadfast group {{name }} have aquired {{ progress }} experience points. {% endblocktrans %}</p>
 				</h3>
 				<br>
 
@@ -35,7 +35,7 @@
 
 					{% if l.unlocked_questions.count %}
 
-						 <li><a href="#level{{ l.level.index }}" id="level{{ l.level.index }}-click" class="no-redir">Stage {{ l.level.roman_index }}</a></li>
+						 <li><a href="#level{{ l.level.index }}" id="level{{ l.level.index }}-click" class="no-redir">{% blocktrans with index=l.level.roman_index %} Stage {{ index }} {% endblocktrans %}</a></li>
 
 					{% endif %}
 
@@ -54,7 +54,7 @@
 								<div id="level{{ l.level.index }}" class="tab_content">
 
 								<br>
-								<p> You have completed this level. Spot on! </p>
+								<p> {% trans 'You have completed this level. Spot on!' %} </p>
 
 								</div>
 
@@ -83,7 +83,7 @@
 
 					                {% else %}
 
-					                <p> You have answered this question. </p>
+					                <p>{% trans 'You have answered this question.' %}</p>
 
 					                {% endif %}
 
@@ -99,25 +99,25 @@
 
 					{% else %}
 
-					<p> You have finished this quest. </p>
+					<p>{% trans 'You have finished this quest.' %}</p>
 
 					{% endif %}
 
 				</div>
 
 			{% else %}
-				<p> You haven't started this quest yet. </p>
+				<p>{% trans "You haven't started this quest yet." %}</p>
 			{% endif %}
 
 		{% else %}
 
-			<p> You need a group to participate in this quest. </p>
+			<p>{% trans 'You need a group to participate in this quest.' %}</p>
 
 		{% endif %}
 
 	{% else %}
 
-		<p> There is no active quest. </p>
+		<p>{% trans 'There is no active quest.' %}</p>
 
 	{% endif %}
 

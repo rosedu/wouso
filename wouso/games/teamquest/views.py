@@ -9,6 +9,7 @@ from wouso.core.ui import register_sidebar_block
 from wouso.core.user.models import Player
 from wouso.core.qpool.models import Question, Answer, Category
 from django.http import HttpResponseRedirect, HttpResponse
+from django.utils.translation import ugettext as _
 
 from models import *
 
@@ -40,36 +41,37 @@ class TeamQuestIndexView(ListView):
 
         for level in status.levels.all():
             for question in level.questions.all():
-                answer = request.POST.get('form'+str(question.index))
+                answer = request.POST.get('form' + str(question.index))
 
                 if answer == None:
                     continue
 
                 if answer != str(question.question.answer):
-                    messages.error(request, 'Wrong answer!')
+                    messages.error(request, _('Wrong answer!'))
                     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
                 if question.state == 'A':
-                    messages.error(request, "Puny human, don't try to cheat!")
+                    messages.error(request, _("Puny human, don't try to cheat!"))
                     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
                 question.state = 'A'
                 question.save()
 
                 if question.level.questions.all().count() == 1:
-                    messages.success(request, 'Congratulations! You have finished this quest on position #%d!' % level.level.times_completed)
+                    messages.success(request, _('Congratulations! You have finished this quest on position #%(tc)d!') % {'tc': level.level.times_completed})
                     status.time_finished = datetime.datetime.now()
                     status.save()
 
                 else:
 
                     if level.completed:
-                        messages.success(request, 'Congratulations! You have finished this level on position #%d!' % level.level.times_completed)
+                        messages.success(request, _('Congratulations! You have finished this level on position #%(tc)d!') % {'tc': level.level.times_completed})
 
                     other_questions = TeamQuestQuestion.objects.filter(level=question.level, state='A')
                     if other_questions.count() > 1:
-                        messages.success(request, 'Correct answer! You unlocked a question on Level %d!' % level.next_level.level.index)
+                        messages.success(request, _('Correct answer! You unlocked a question on Level %(nl)d!') % {'nl': level.next_level.level.index})
                     else:
-                        messages.success(request, 'Correct answer!')
+                        messages.success(request, _('Correct answer!'))
 
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
