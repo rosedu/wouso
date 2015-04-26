@@ -5,6 +5,7 @@ from django.db import models
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player, PlayerGroup
 from wouso.core.qpool.models import Question
+from wouso.core.scoring.sm import score_simple
 
 
 class TeamQuestUser(Player):
@@ -14,6 +15,11 @@ class TeamQuestUser(Player):
         if self.group is None:
             return False
         return self.group.group_owner == self
+
+    def score(self, amount):
+        for quest_user in self.group.users.all():
+            score_simple(player=quest_user, coin='points', amount=amount, game=TeamQuestGame, formula=None,
+                         external_id=None, percents=100)
 
 
 class TeamQuestGroup(PlayerGroup):
@@ -279,6 +285,10 @@ class TeamQuestStatus(models.Model):
             questions = TeamQuestQuestion.objects.filter(level=level_status, state='A')
             points += questions.count() * level.points_per_question
         return points
+
+    def finish(self):
+        self.time_finished = datetime.datetime.now()
+        self.save()
 
     def __unicode__(self):
         return u"%s [%s]" % (self.quest.title, self.group.name)

@@ -57,16 +57,23 @@ class TeamQuestIndexView(ListView):
 
                 question.state = 'A'
                 question.save()
+                quest_user.score(amount=level.level.points_per_question)
 
                 if question.level.questions.all().count() == 1:
                     messages.success(request, _('Congratulations! You have finished this quest on position #%(tc)d!') % {'tc': level.level.times_completed})
-                    status.time_finished = datetime.datetime.now()
-                    status.save()
+                    if level.level.times_completed == 1:
+                        messages.success(request, _('For being the first to complete this quest, your team is awarded %(tc)d points.') % {'tc': level.level.bonus})
+                        quest_user.score(amount=level.level.bonus)
+
+                    status.finish()
 
                 else:
 
                     if level.completed:
                         messages.success(request, _('Congratulations! You have finished this level on position #%(tc)d!') % {'tc': level.level.times_completed})
+                        if level.level.times_completed == 1:
+                            messages.success(request, _('For being the first to complete this level, your team is awarded %(tc)d points.') % {'tc': level.level.bonus})
+                            quest_user.score(amount=level.level.bonus)
 
                     other_questions = TeamQuestQuestion.objects.filter(level=question.level, state='A')
                     if other_questions.count() > 1:
