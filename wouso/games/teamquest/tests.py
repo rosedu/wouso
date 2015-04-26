@@ -318,7 +318,6 @@ class TeamQuestStatusTest(TestCase):
         pass
 
 
-<<<<<<< HEAD
 class TeamQuestGameTest(TestCase):
     def setUp(self):
         category = Category.add('quest')
@@ -367,7 +366,7 @@ class TeamQuestViewsTest(WousoTest):
 
     def test_sidebar_view_not_started(self):
         context = {'user': self.player2.user}
-        
+
         sidebar = sidebar_widget(context)
 
         self.assertTrue("Start quest" in sidebar)
@@ -379,7 +378,8 @@ class TeamQuestViewsTest(WousoTest):
         sidebar = sidebar_widget(context)
 
         self.assertTrue("Play quest" in sidebar)
-=======
+
+
 class TeamQuestCpanelViewsTest(WousoTest):
 
     def setUp(self):
@@ -411,4 +411,3 @@ class TeamQuestCpanelViewsTest(WousoTest):
         response = self.c.get(reverse('teamquest_home'))
         self.assertContains(response, 'TeamQuest no.1')
         self.assertContains(response, 'TeamQuest no.2')
->>>>>>> 5d98a74a9bb8322b307a5d683b2aa9fdce93e6e2
