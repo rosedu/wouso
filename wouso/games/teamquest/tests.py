@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+from django.test import Client
 from django.utils.translation import ugettext as _
 from django.test.client import Client
 
@@ -317,6 +318,7 @@ class TeamQuestStatusTest(TestCase):
         pass
 
 
+<<<<<<< HEAD
 class TeamQuestGameTest(TestCase):
     def setUp(self):
         category = Category.add('quest')
@@ -377,3 +379,36 @@ class TeamQuestViewsTest(WousoTest):
         sidebar = sidebar_widget(context)
 
         self.assertTrue("Play quest" in sidebar)
+=======
+class TeamQuestCpanelViewsTest(WousoTest):
+
+    def setUp(self):
+        self.admin = self._get_superuser()
+        self.c = Client()
+        self.c.login(username='admin', password='admin')
+
+    def test_cpanel_home_view_basic(self):
+        response = self.c.get(reverse('teamquest_home'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Add team quest')
+        self.assertContains(response, 'Quests')
+        self.assertContains(response, 'Groups')
+        self.assertContains(response, 'Name')
+        self.assertContains(response, 'Manage')
+
+    def test_cpanel_home_view_no_teamquests(self):
+        response = self.c.get(reverse('teamquest_home'))
+        self.assertContains(response, 'No Team Quests added yet!')
+
+    def test_cpanel_home_view_list_teamquests(self):
+        now = datetime.datetime.now()
+        TeamQuest.objects.create(start_time=now, end_time=now+timedelta(days=1),
+                                 title='TeamQuest no.1')
+        TeamQuest.objects.create(start_time=now+timedelta(days=1), end_time=now+timedelta(days=2),
+                                 title='TeamQuest no.2')
+        # Check if Team Quest are displayed
+        response = self.c.get(reverse('teamquest_home'))
+        self.assertContains(response, 'TeamQuest no.1')
+        self.assertContains(response, 'TeamQuest no.2')
+>>>>>>> 5d98a74a9bb8322b307a5d683b2aa9fdce93e6e2

@@ -11,7 +11,9 @@ def get_games():
     from wouso.games.quiz.models import QuizGame
     from wouso.games.specialchallenge.models import SpecialChallengeGame
     from wouso.games.specialquest.models import SpecialQuestGame
+    from wouso.games.teamquest.models import TeamQuestGame
     from wouso.games.workshop.models import WorkshopGame
 
     return [ChallengeGame, GrandChallengeGame, QotdGame, QuestGame,
-            QuizGame, SpecialChallengeGame, SpecialQuestGame, WorkshopGame]
+            QuizGame, SpecialChallengeGame, SpecialQuestGame, TeamQuestGame,
+            WorkshopGame]
