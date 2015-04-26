@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.test import Client
 from django.utils.translation import ugettext as _
 from django.test.client import Client
+from datetime import timedelta
 
 from wouso.core.qpool.models import Question, Answer, Category
 from wouso.core.tests import WousoTest
