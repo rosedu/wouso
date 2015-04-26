@@ -195,6 +195,13 @@ class TeamQuestQuestion(models.Model):
                     return index
                 index += 1
 
+    def is_answered(self):
+        return self.state == 'A'
+
+    def answer(self):
+        self.state = 'A'
+        self.save()
+
     def __unicode__(self):
         return u'[%s] - %s - Question %d' % (self.level.level.quest.title, self.level.quest_status.group.name, self.index)
 

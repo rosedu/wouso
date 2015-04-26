@@ -51,12 +51,11 @@ class TeamQuestIndexView(ListView):
                     messages.error(request, _('Wrong answer!'))
                     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-                if question.state == 'A':
+                if question.is_answered():
                     messages.error(request, _("Puny human, don't try to cheat!"))
                     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-                question.state = 'A'
-                question.save()
+                question.answer()
                 quest_user.score(amount=level.level.points_per_question)
 
                 if question.level.questions.all().count() == 1:
