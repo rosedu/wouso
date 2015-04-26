@@ -1,0 +1,34 @@
+{% extends 'cpanel/index.html' %}
+{% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %}
+    Team Quests
+    <div class="pull-right">
+        <a class="btn btn-primary" href="#">
+            <span class="glyphicon glyphicon-plus"></span>{% trans 'Add team quest' %}
+        </a>
+    </div>
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Team quest" "teamquest_home" %}
+    {% breadcrumb "Groups" "teamquest_groups" %}
+{% endblock %}
+
+{% block sectioncontent %}
+<ul class="nav nav-tabs">
+    <li ><a href="{% url teamquest_home %}">Quests</a></li>
+    <li class="active"><a href="#">Groups</a></li>
+</ul>
+
+{% block tabcontent %}
+
+<table class="table table-hover table-condensed table-bordered">
+    
+</table>
+
+{% endblock %}
+
+{% endblock %}

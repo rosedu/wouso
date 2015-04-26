@@ -14,12 +14,13 @@
 {% block breadcrumbs %}
     {{ block.super }}
     {% breadcrumb "Team quests" "teamquest_home" %}
+    {% breadcrumb "Quests" "teamquest_home" %}
 {% endblock %}
 
 {% block sectioncontent %}
 <ul class="nav nav-tabs">
     <li class="active"><a href="#">Quests</a></li>
-    <li ><a href="#">Groups</a></li>
+    <li ><a href="{% url teamquest_groups %}">Groups</a></li>
 </ul>
 
 {% block tabcontent %}
