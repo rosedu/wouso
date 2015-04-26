@@ -101,7 +101,7 @@ def status():
         print "There is no category with name %s." % ('teamquest')
 
 
-def cleanup():
+def delete():
     """Delete items. If more than one item (should not be the case)
        delete all of them."""
     user = User.objects.filter(username='_sample_teamquest_user')
@@ -125,8 +125,8 @@ def main():
     if args.create:
         create()
 
-    if args.cleanup:
-        cleanup()
+    if args.delete:
+        delete()
 
     if args.status:
         status()
