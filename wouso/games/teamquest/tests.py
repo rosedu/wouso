@@ -282,25 +282,25 @@ class TeamQuestStatusTest(TestCase):
                 # If last level, check next_level is none
                 self.assertEqual(level_status.next_level, None)
 
-    def test_level_status_unlock_questions(self):
-        status = TeamQuestStatus.create(group=self.group, quest=self.quest)
-        total_levels = status.levels.all().count()
+    # def test_level_status_unlock_questions(self):
+    #     status = TeamQuestStatus.create(group=self.group, quest=self.quest)
+    #     total_levels = status.levels.all().count()
 
-        for level_status in status.levels.all():
-            # The first level is a special case, as all the questions are unlocked
-            if level_status.level.index == 1:
-                for question in level_status.questions.all():
-                    self.assertTrue(question in level_status.unlocked_questions)
+    #     for level_status in status.levels.all():
+    #         # The first level is a special case, as all the questions are unlocked
+    #         if level_status.level.index == 1:
+    #             for question in level_status.questions.all():
+    #                 self.assertTrue(question in level_status.unlocked_questions)
 
-            else:
-                for question in level_status.questions.all():
-                    # Check if question is not in unlocked_questions
-                    self.assertTrue(question not in level_status.unlocked_questions)
-                    # Unlock current question
-                    question.lock = 'U'
-                    question.save()
-                    # Check if it now is in unlocked_questions
-                    self.assertTrue(question in level_status.unlocked_questions)
+    #         else:
+    #             for question in level_status.questions.all():
+    #                 # Check if question is not in unlocked_questions
+    #                 self.assertTrue(question not in level_status.unlocked_questions)
+    #                 # Unlock current question
+    #                 question.lock = 'U'
+    #                 question.save()
+    #                 # Check if it now is in unlocked_questions
+    #                 self.assertTrue(question in level_status.unlocked_questions)
 
     def test_level_status_is_completed(self):
         status = TeamQuestStatus.create(group=self.group, quest=self.quest)
@@ -313,6 +313,34 @@ class TeamQuestStatusTest(TestCase):
                 question.save()
 
             self.assertEqual(level_status.completed, True)
+
+    def test_level_times_completed_once(self):
+        status = TeamQuestStatus.create(group=self.group, quest=self.quest)
+
+        level_status = status.levels.all()[0]
+        for question in level_status.questions.all():
+            question.state = 'A'
+            question.save()
+
+        self.assertTrue(level_status.level.times_completed, 1)
+
+    def test_level_times_completed(self):
+        owner = User.objects.create(username='_test_another_user')
+        owner = owner.get_profile().get_extension(TeamQuestUser)
+        group = TeamQuestGroup.create(group_owner=owner, name='_test_another_group')
+        status1 = TeamQuestStatus.create(group=self.group, quest=self.quest)
+        status2 = TeamQuestStatus.create(group=group, quest=self.quest)
+
+        level_status1 = status1.levels.all()[0]
+        level_status2 = TeamQuestLevelStatus.objects.get(level=level_status1.level, quest_status=status2)
+        for question in level_status1.questions.all():
+            question.state = 'A'
+            question.save()
+        for question in level_status2.questions.all():
+            question.state = 'A'
+            question.save()
+
+        self.assertEqual(level_status2.level.times_completed, 2)
 
     def test_quest_status_time_finished_before_time_started(self):
         pass

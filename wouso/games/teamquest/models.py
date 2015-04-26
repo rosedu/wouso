@@ -5,6 +5,7 @@ from django.db import models
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player, PlayerGroup
 from wouso.core.qpool.models import Question
+from wouso.core.scoring.sm import score_simple
 
 
 class TeamQuestUser(Player):
@@ -14,6 +15,11 @@ class TeamQuestUser(Player):
         if self.group is None:
             return False
         return self.group.group_owner == self
+
+    def score(self, amount):
+        for quest_user in self.group.users.all():
+            score_simple(player=quest_user, coin='points', amount=amount, game=TeamQuestGame, formula=None,
+                         external_id=None, percents=100)
 
 
 class TeamQuestGroup(PlayerGroup):
@@ -71,6 +77,38 @@ class TeamQuestLevel(models.Model):
         total_levels = self.quest.levels.all().count()
         return total_levels - self.questions.all().count() + 1
 
+    @property
+    def times_completed(self):
+        total = 0
+        for level_status in self.actives.all():
+            if level_status.completed is True:
+                total += 1
+        return total
+
+    @property
+    def roman_index(self):
+        index = self.index
+        if index == 1:
+            return 'I'
+        elif index == 2:
+            return 'II'
+        elif index == 3:
+            return 'III'
+        elif index == 4:
+            return 'IV'
+        elif index == 5:
+            return 'V'
+        elif index == 6:
+            return 'VI'
+        elif index == 7:
+            return 'VII'
+        elif index == 8:
+            return 'VIII'
+        elif index == 9:
+            return 'IX'
+        elif index == 10:
+            return 'X'
+
     def add_question(self, question):
         self.questions.add(question)
 
@@ -98,6 +136,9 @@ class TeamQuest(models.Model):
         for level in self.levels.all():
             points += level.questions.all().count() * level.points_per_question
         return points
+
+    def __unicode__(self):
+        return self.title
 
 
 class TeamQuestGame(Game):
@@ -154,6 +195,13 @@ class TeamQuestQuestion(models.Model):
                     return index
                 index += 1
 
+    def is_answered(self):
+        return self.state == 'A'
+
+    def answer(self):
+        self.state = 'A'
+        self.save()
+
     def __unicode__(self):
         return u'[%s] - %s - Question %d' % (self.level.level.quest.title, self.level.quest_status.group.name, self.index)
 
@@ -176,16 +224,30 @@ class TeamQuestLevelStatus(models.Model):
 
     @property
     def next_level(self):
-        """ Returns the next_level of a level """
+        """ Returns the next level of a level """
         for level_status in self.quest_status.levels.all():
             if level_status.level.index == self.level.index + 1:
                 return level_status
         return None
 
     @property
+    def previous_level(self):
+        """ Returns the previous level of a level """
+        for level_status in self.quest_status.levels.all():
+            if level_status.level.index == self.level.index - 1:
+                return level_status
+        return None
+
+    @property
     def unlocked_questions(self):
         """ Returns the list of unlocked questions from a level """
-        return TeamQuestQuestion.objects.filter(level=self, lock='U')
+        previous_level = self.previous_level
+        if previous_level is None:
+            return self.questions.all()
+        max_number_of_questions = TeamQuestQuestion.objects.filter(level=previous_level, state='A').count() - 1
+        if max_number_of_questions < 0:
+            return []
+        return self.questions.all()[:max_number_of_questions]
 
     @property
     def completed(self):
@@ -212,6 +274,16 @@ class TeamQuestStatus(models.Model):
             new_status.levels.add(TeamQuestLevelStatus.create(status=new_status, level=level))
         return new_status
 
+    @classmethod
+    def get_or_create(cls, quest, group):
+        try:
+            status = cls.objects.get(quest=quest, group=group)
+            created = False
+        except:
+            status = cls.create(quest=quest, group=group)
+            created = True
+        return status, created
+
     @property
     def progress(self):
         points = 0
@@ -220,6 +292,10 @@ class TeamQuestStatus(models.Model):
             questions = TeamQuestQuestion.objects.filter(level=level_status, state='A')
             points += questions.count() * level.points_per_question
         return points
+
+    def finish(self):
+        self.time_finished = datetime.datetime.now()
+        self.save()
 
     def __unicode__(self):
         return u"%s [%s]" % (self.quest.title, self.group.name)

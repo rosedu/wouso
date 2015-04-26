@@ -1,0 +1,77 @@
+{% extends 'interface/section_base.html'%}
+
+{% load i18n %}
+
+{% block title %}{% trans 'Team Quest' %}{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
+{% endblock %}
+
+{% block sectioncontent %}
+
+
+{% if not quest %}
+    <p>{% trans 'There is no active quest.' %}</p>
+{% elif not group %}
+    <p>{% trans 'You need a group to participate in this quest.' %}</p>
+{% else %}
+    {% if status.progress < quest.total_points %}
+        <br>
+        <h3>
+        <p>{% blocktrans with title=quest.title %} You are now adventuring in quest "{{ title }}". {% endblocktrans %}</p>
+        <p>{% blocktrans with name=group.name progress=status.progress %} Your steadfast group {{name }} have aquired {{ progress }} experience points. {% endblocktrans %}</p>
+        </h3>
+        <br>
+
+        <ul class="tabs">
+        {% for l in levels %}
+            {% if l.unlocked_questions.count %}
+                 <li>
+                    <a href="#level{{ l.level.index }}" id="level{{ l.level.index }}-click" class="no-redir">
+                        {% blocktrans with index=l.level.roman_index %} Stage {{ index }} {% endblocktrans %}
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+
+        <div class="tab_container">
+        {% for l in levels %}
+            {% if l.unlocked_questions.count %}
+                {% if l.completed %}
+                    <div id="level{{ l.level.index }}" class="tab_content">
+                        <br>
+                        <p> {% trans 'You have completed this level. Spot on!' %} </p>
+                    </div>
+                {% else %}
+                    <div id="level{{ l.level.index }}" class="tab_content">
+                    {% for q in l.unlocked_questions.all %}
+                        <br>
+                        <h3> {{ q.question.text }}  </h3>
+                        {% if q.state == 'U' %}
+                        <form method="post" action="{% url teamquest_index_view %}" id="{{ q.index }}">
+                            {% csrf_token %}
+                            <table>
+                                <input type="text" name="form{{ q.index }}">
+                            </table>
+                            <div class="actions">
+                                <button type="submit" class="default">{% trans 'Answer' %}</button>
+                            </div>
+                        </form>
+                        {% else %}
+                            <p>{% trans 'You have answered this question.' %}</p>
+                        {% endif %}
+                    {% endfor %}
+                    </div>
+                {% endif %} 
+            {% endif %}
+        {% endfor %}
+        </div>
+    {% else %}
+        <p>{% trans 'You have finished this quest.' %}</p>
+    {% endif %}
+{% endif %}
+
+{% endblock %}

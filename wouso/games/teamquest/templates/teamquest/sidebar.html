@@ -12,10 +12,10 @@
             <div class="progress-bar">
                 <div class="progress" style="width: {{ progress|floatformat:0 }}%"></div>
             </div>
-            <p><a href="">{% trans 'Play quest' %}</a></p>
+            <p><a href="{% url teamquest_index_view %}">{% trans 'Play quest' %}</a></p>
         {% endif %}
     {% else %}
-        <p><a href="">{% trans 'Start quest' %} </a></p>
+        <p><a href="{% url teamquest_index_view %}">{% trans 'Start quest' %} </a></p>
     {% endif %}
 {% elif quest and not group %}
     <p> {% trans 'There is an active quest, but you need a team to play.' %} </p>
