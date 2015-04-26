@@ -207,7 +207,7 @@ class TeamQuestStatusTest(TestCase):
         pass
 
 
-class TeamQuestViewsTest(WousoTest):
+class TeamQuestCpanelViewsTest(WousoTest):
 
     def setUp(self):
         self.admin = self._get_superuser()
