@@ -218,14 +218,11 @@ class TeamQuestViewsTest(WousoTest):
         response = self.c.get(reverse('teamquest_home'))
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, '<span class="glyphicon glyphicon-plus"></span>{% trans 'Add team quest' %}')
-        self.assertContains(response, '<li class="active"><a href="#">Quests</a></li>')
-        self.assertContains(response, '<li ><a href="#">Groups</a></li>')
-        self.assertContains(response, '<th>#</th>')
-        self.assertContains(response, '<th>Name</th>')
-        self.assertContains(response, '<th>Start time</th>')
-        self.assertContains(response, '<th>End time</th>')
-        self.assertContains(response, '<th>Manage</th>')
+        self.assertContains(response, 'Add team quest')
+        self.assertContains(response, 'Quests')
+        self.assertContains(response, 'Groups')
+        self.assertContains(response, 'Name')
+        self.assertContains(response, 'Manage')
 
     def test_cpanel_home_view_no_teamquests(self):
         response = self.c.get(reverse('teamquest_home'))
