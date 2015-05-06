@@ -18,12 +18,24 @@
     <p>{% trans 'You need a group to participate in this quest.' %}</p>
 {% else %}
     {% if status.progress == quest.total_points %}
-        <p>{% blocktrans with position=status.finish_position time_taken=status.time_taken %} You have finished this quest on position #{{ position }} and it took you {{ time_taken}}. {% endblocktrans %}</p>
+        <p>
+        {% blocktrans with position=status.finish_position time_taken=status.time_taken %}
+            You have finished this quest on position #{{ position }} and it took you {{ time_taken}}.
+        {% endblocktrans %}
+        </p>
     {% else %}
         <br>
         <h3>
-        <p>{% blocktrans with title=quest.title %} You are now adventuring in quest "{{ title }}". {% endblocktrans %}</p>
-        <p>{% blocktrans with name=group.name progress=status.progress %} Your steadfast group {{name }} have aquired {{ progress }} experience points. {% endblocktrans %}</p>
+        <p>
+        {% blocktrans with title=quest.title %}
+            You are now adventuring in quest "{{ title }}".
+        {% endblocktrans %}
+        </p>
+        <p>
+        {% blocktrans with name=group.name progress=status.progress %}
+            Your steadfast group {{name }} have aquired {{ progress }} experience points.
+        {% endblocktrans %}
+        </p>
         </h3>
     {% endif %}
     <br>
@@ -45,9 +57,17 @@
         {% if l.unlocked_questions.count %}
             <div id="level{{ l.level.index }}" class="tab_content">
             <br>
-            <p>{% blocktrans with points=l.progress %} You have obtained {{ points }} points on this level. {% endblocktrans %}</p>
+            <p>
+            {% blocktrans with points=l.progress %}
+                You have obtained {{ points }} points on this level.
+            {% endblocktrans %}
+            </p>
             {% if l.completed %}
-                <p>{%blocktrans with position=l.finish_position %} You have completed this level on position #{{ position }}. Spot on! {% endblocktrans %} </p>
+                <p>
+                {%blocktrans with position=l.finish_position %}
+                    You have completed this level on position #{{ position }}. Spot on!
+                {% endblocktrans %}
+                </p>
             {% else %}
                 {% for q in l.unlocked_questions.all %}
                     <br>
@@ -63,7 +83,11 @@
                         </div>
                     </form>
                     {% else %}
-                        <p>{% blocktrans with points=l.level.points_per_question %} You have answered this question and received {{ points }} experience points. {% endblocktrans %}</p>
+                        <p>
+                        {% blocktrans with points=l.level.points_per_question %}
+                            You have answered this question and received {{ points }} experience points.
+                        {% endblocktrans %}
+                        </p>
                     {% endif %}
                 {% endfor %}
             {% endif %}

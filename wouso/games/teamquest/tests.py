@@ -349,7 +349,6 @@ class TeamQuestStatusTest(TestCase):
         for level_status in status.levels.all():
             self.assertEqual(level_status.finish_position, -1)
 
-
     def test_level_status_finish_incorrect(self):
         status = TeamQuestStatus.create(group=self.group, quest=self.quest)
 
@@ -387,8 +386,6 @@ class TeamQuestStatusTest(TestCase):
         status = TeamQuestStatus.objects.get(group=self.group, quest=self.quest)
 
         self.assertEqual(status.finish_position, 1)
-        print status.time_taken
-        self.assertEqual(1, 2)
 
     def test_quest_status_time_finished_before_time_started(self):
         pass
