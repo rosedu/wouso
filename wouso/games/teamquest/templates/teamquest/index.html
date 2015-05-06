@@ -17,61 +17,60 @@
 {% elif not group %}
     <p>{% trans 'You need a group to participate in this quest.' %}</p>
 {% else %}
-    {% if status.progress < quest.total_points %}
+    {% if status.progress == quest.total_points %}
+        <p>{% blocktrans with position=status.finish_position time_taken=status.time_taken %} You have finished this quest on position #{{ position }} and it took you {{ time_taken}}. {% endblocktrans %}</p>
+    {% else %}
         <br>
         <h3>
         <p>{% blocktrans with title=quest.title %} You are now adventuring in quest "{{ title }}". {% endblocktrans %}</p>
         <p>{% blocktrans with name=group.name progress=status.progress %} Your steadfast group {{name }} have aquired {{ progress }} experience points. {% endblocktrans %}</p>
         </h3>
-        <br>
-
-        <ul class="tabs">
-        {% for l in levels %}
-            {% if l.unlocked_questions.count %}
-                 <li>
-                    <a href="#level{{ l.level.index }}" id="level{{ l.level.index }}-click" class="no-redir">
-                        {% blocktrans with index=l.level.roman_index %} Stage {{ index }} {% endblocktrans %}
-                    </a>
-                </li>
-            {% endif %}
-        {% endfor %}
-        </ul>
-
-        <div class="tab_container">
-        {% for l in levels %}
-            {% if l.unlocked_questions.count %}
-                {% if l.completed %}
-                    <div id="level{{ l.level.index }}" class="tab_content">
-                        <br>
-                        <p> {% trans 'You have completed this level. Spot on!' %} </p>
-                    </div>
-                {% else %}
-                    <div id="level{{ l.level.index }}" class="tab_content">
-                    {% for q in l.unlocked_questions.all %}
-                        <br>
-                        <h3> {{ q.question.text }}  </h3>
-                        {% if q.state == 'U' %}
-                        <form method="post" action="{% url teamquest_index_view %}" id="{{ q.index }}">
-                            {% csrf_token %}
-                            <table>
-                                <input type="text" name="form{{ q.index }}">
-                            </table>
-                            <div class="actions">
-                                <button type="submit" class="default">{% trans 'Answer' %}</button>
-                            </div>
-                        </form>
-                        {% else %}
-                            <p>{% blocktrans with points=l.level.points_per_question %} You have answered this question and received {{ points }} experience points. {% endblocktrans %}</p>
-                        {% endif %}
-                    {% endfor %}
-                    </div>
-                {% endif %} 
-            {% endif %}
-        {% endfor %}
-        </div>
-    {% else %}
-        <p>{% trans 'You have finished this quest.' %}</p>
     {% endif %}
+    <br>
+
+    <ul class="tabs">
+    {% for l in levels %}
+        {% if l.unlocked_questions.count %}
+             <li>
+                <a href="#level{{ l.level.index }}" id="level{{ l.level.index }}-click" class="no-redir">
+                    {% blocktrans with index=l.level.roman_index %} Stage {{ index }} {% endblocktrans %}
+                </a>
+            </li>
+        {% endif %}
+    {% endfor %}
+    </ul>
+
+    <div class="tab_container">
+    {% for l in levels %}
+        {% if l.unlocked_questions.count %}
+            <div id="level{{ l.level.index }}" class="tab_content">
+            <br>
+            <p>{% blocktrans with points=l.progress %} You have obtained {{ points }} points on this level. {% endblocktrans %}</p>
+            {% if l.completed %}
+                <p>{%blocktrans with position=l.finish_position %} You have completed this level on position #{{ position }}. Spot on! {% endblocktrans %} </p>
+            {% else %}
+                {% for q in l.unlocked_questions.all %}
+                    <br>
+                    <h3> {{ q.question.text }}  </h3>
+                    {% if q.state == 'U' %}
+                    <form method="post" action="{% url teamquest_index_view %}" id="{{ q.index }}">
+                        {% csrf_token %}
+                        <table>
+                            <input type="text" name="form{{ q.index }}">
+                        </table>
+                        <div class="actions">
+                            <button type="submit" class="default">{% trans 'Answer' %}</button>
+                        </div>
+                    </form>
+                    {% else %}
+                        <p>{% blocktrans with points=l.level.points_per_question %} You have answered this question and received {{ points }} experience points. {% endblocktrans %}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            </div>
+        {% endif %}
+    {% endfor %}
+    </div>
 {% endif %}
 
 {% endblock %}

@@ -308,6 +308,19 @@ class TeamQuestStatus(models.Model):
             points += questions.count() * level.points_per_question
         return points
 
+    @property
+    def time_taken(self):
+        time_taken = ""
+        if self.time_finished is None:
+            return time_taken
+        interval = self.time_finished - self.time_started
+        if interval.days:
+            time_taken += str(interval.days) + " day(s) "
+        if interval.seconds:
+            time_taken += str(interval.seconds / 3600) + " hour(s) "
+            time_taken += str(interval.seconds % 3600 / 60) + " minute(s)"
+        return time_taken
+
     def __unicode__(self):
         return u"%s [%s]" % (self.quest.title, self.group.name)
 
