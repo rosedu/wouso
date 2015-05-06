@@ -61,7 +61,7 @@
                             </div>
                         </form>
                         {% else %}
-                            <p>{% trans 'You have answered this question.' %}</p>
+                            <p>{% blocktrans with points=l.level.points_per_question %} You have answered this question and received {{ points }} experience points. {% endblocktrans %}</p>
                         {% endif %}
                     {% endfor %}
                     </div>
