@@ -209,6 +209,7 @@ class TeamQuestQuestion(models.Model):
 class TeamQuestLevelStatus(models.Model):
     level = models.ForeignKey('TeamQuestLevel', null=False, blank=False, related_name='actives')
     quest_status = models.ForeignKey('TeamQuestStatus', null=False, blank=False, related_name='levels')
+    finish_position = models.IntegerField(default=-1)
 
     @classmethod
     def create(cls, status, level):
@@ -221,6 +222,19 @@ class TeamQuestLevelStatus(models.Model):
         for question in level.questions.all():
             TeamQuestQuestion.create(level=new_level_status, question=question, lock=lock)
         return new_level_status
+
+    def finish(self):
+        if self.completed:
+            self.finish_position = self.level.times_completed
+            self.save()
+            if self.questions.all().count() == 1:
+                self.quest_status.time_finished = datetime.datetime.now()
+                self.quest_status.finish_position = self.finish_position
+                self.quest_status.save()
+
+    @property
+    def progress(self):
+        return TeamQuestQuestion.objects.filter(level=self, state='A').count() * self.level.points_per_question
 
     @property
     def next_level(self):
@@ -266,6 +280,7 @@ class TeamQuestStatus(models.Model):
     quest = models.ForeignKey('TeamQuest')
     time_started = models.DateTimeField(default=datetime.datetime.now())
     time_finished = models.DateTimeField(default=None, blank=True, null=True)
+    finish_position = models.IntegerField(default=-1)
 
     @classmethod
     def create(cls, group, quest):
@@ -292,10 +307,6 @@ class TeamQuestStatus(models.Model):
             questions = TeamQuestQuestion.objects.filter(level=level_status, state='A')
             points += questions.count() * level.points_per_question
         return points
-
-    def finish(self):
-        self.time_finished = datetime.datetime.now()
-        self.save()
 
     def __unicode__(self):
         return u"%s [%s]" % (self.quest.title, self.group.name)
