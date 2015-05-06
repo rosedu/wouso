@@ -343,6 +343,53 @@ class TeamQuestStatusTest(TestCase):
 
         self.assertEqual(level_status2.level.times_completed, 2)
 
+    def test_level_finish_position_default(self):
+        status = TeamQuestStatus.create(group=self.group, quest=self.quest)
+
+        for level_status in status.levels.all():
+            self.assertEqual(level_status.finish_position, -1)
+
+
+    def test_level_status_finish_incorrect(self):
+        status = TeamQuestStatus.create(group=self.group, quest=self.quest)
+
+        for level_status in status.levels.all():
+            level_status.finish()
+
+        for level_status in status.levels.all():
+            self.assertEqual(level_status.finish_position, -1)
+
+    def test_level_status_finish_correct(self):
+        status = TeamQuestStatus.create(group=self.group, quest=self.quest)
+
+        for level_status in status.levels.all():
+            for question in level_status.questions.all():
+                question.state = 'A'
+                question.save()
+            level_status.finish()
+
+        for level_status in status.levels.all():
+            self.assertEqual(level_status.finish_position, 1)
+
+    def test_quest_status_finish_position_default(self):
+        status = TeamQuestStatus.create(group=self.group, quest=self.quest)
+
+        self.assertEqual(status.finish_position, -1)
+
+    def test_quest_status_finish_position(self):
+        status = TeamQuestStatus.create(group=self.group, quest=self.quest)
+
+        for level_status in status.levels.all():
+            for question in level_status.questions.all():
+                question.state = 'A'
+                question.save()
+            level_status.finish()
+        status = TeamQuestStatus.objects.get(group=self.group, quest=self.quest)
+
+        self.assertEqual(status.finish_position, 1)
+        print status.time_taken
+        self.assertEqual(1, 2)
+
     def test_quest_status_time_finished_before_time_started(self):
         pass
 
