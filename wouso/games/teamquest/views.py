@@ -59,26 +59,37 @@ class TeamQuestIndexView(ListView):
                 quest_user.score(amount=level.level.points_per_question)
 
                 if question.level.questions.all().count() == 1:
-                    messages.success(request, _('Congratulations! You have finished this quest on position #%(tc)d!') % {'tc': level.level.times_completed})
-                    if level.level.times_completed == 1:
-                        messages.success(request, _('For being the first to complete this quest, your team is awarded %(tc)d points.') % {'tc': level.level.bonus})
+                    level.finish()
+                    messages.success(request,
+                        _('Congratulations! You have completed this quest on position #%(fp)d!')
+                        % {'fp': level.finish_position})
+                    if level.level.bonus and level.finish_position == 1:
+                        messages.success(request,
+                            _('For being the first to complete this quest, your team is awarded %(lb)d experience points.')
+                            % {'lb': level.level.bonus})
                         quest_user.score(amount=level.level.bonus)
-
-                    status.finish()
 
                 else:
 
                     if level.completed:
-                        messages.success(request, _('Congratulations! You have finished this level on position #%(tc)d!') % {'tc': level.level.times_completed})
-                        if level.level.times_completed == 1:
-                            messages.success(request, _('For being the first to complete this level, your team is awarded %(tc)d points.') % {'tc': level.level.bonus})
+                        level.finish()
+                        messages.success(request,
+                            _('Congratulations! You have completed this level on position #%(fp)d!')
+                            % {'fp': level.finish_position})
+                        if level.level.bonus and level.finish_position == 1:
+                            messages.success(request,
+                                _('For being the first to complete this level, your team is awarded %(lb)d experience points.')
+                                % {'lb': level.level.bonus})
                             quest_user.score(amount=level.level.bonus)
 
                     other_questions = TeamQuestQuestion.objects.filter(level=question.level, state='A')
+                    messages.success(request,
+                        _('Correct answer! Your team is awarded %(pt)d experience  points.')
+                        % {'pt': level.level.points_per_question})
                     if other_questions.count() > 1:
-                        messages.success(request, _('Correct answer! You unlocked a question on Level %(nl)d!') % {'nl': level.next_level.level.index})
-                    else:
-                        messages.success(request, _('Correct answer!'))
+                        messages.success(request,
+                            _('You unlocked a question on Level %(in)d!')
+                            % {'in': level.next_level.level.index})
 
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
