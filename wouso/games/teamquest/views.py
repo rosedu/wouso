@@ -42,7 +42,22 @@ teamhub = login_required(TeamHubView.as_view())
 
 @login_required
 def setup_create(request):
-    pass
+    user = request.user.get_profile().get_extension(TeamQuestUser)
+    group = user.group
+    if group:
+        messages.error(request, _("Puny human, you already have a team!"))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+    form = CreateGroupForm(request.POST)
+    if form.is_valid():
+        name = form.cleaned_data['name']
+        if TeamQuestGroup.objects.filter(name=name).count():
+            messages.error(request, _("Unfortunately you were not the first to think of that name. Choose another!"))            
+            return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+        ng = TeamQuestGroup.create(group_owner=user, name=name)
+
+        messages.success(request, _("You are now the leader of the team %(gn)s. Good luck in your adventures!") % {'gn': name})
+
+    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
 
 @login_required
