@@ -17,6 +17,57 @@ from models import *
 from forms import *
 
 
+class TeamHubView(ListView):
+    pass
+
+
+teamhub = login_required(TeamHubView.as_view())
+
+
+@login_required
+def setup_create(request):
+    pass
+
+
+@login_required
+def setup_invite(request):
+    pass
+
+
+@login_required
+def setup_accept_invitation(request, *args, **kwargs):
+    pass
+
+
+@login_required
+def setup_decline_invitation(request, *args, **kwargs):
+    pass
+
+
+@login_required
+def setup_request(request, *args, **kwargs):
+    pass
+
+
+@login_required
+def setup_accept_request(request, *args, **kwargs):
+    pass
+
+
+@login_required
+def setup_decline_request(request, *args, **kwargs):
+    pass
+
+@login_required
+def setup_leave(request):
+    pass
+
+
+@login_required
+def setup_kick(request, *args, **kwargs):
+    pass
+
+
 class TeamQuestIndexView(ListView):
     model = TeamQuestStatus
     context_object_name = 'status'
