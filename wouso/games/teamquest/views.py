@@ -53,7 +53,7 @@ def setup_create(request):
         if TeamQuestGroup.objects.filter(name=name).count():
             messages.error(request, _("Unfortunately you were not the first to think of that name. Choose another!"))            
             return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
-        ng = TeamQuestGroup.create(group_owner=user, name=name)
+        TeamQuestGroup.create(group_owner=user, name=name)
 
         messages.success(request, _("You are now the leader of the team %(gn)s. Good luck in your adventures!") % {'gn': name})
 

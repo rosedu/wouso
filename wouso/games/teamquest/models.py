@@ -32,10 +32,16 @@ class TeamQuestGroup(PlayerGroup):
     def create(cls, group_owner, name):
         new_group = cls.objects.create(name=name, group_owner=group_owner)
         new_group.users.add(group_owner)
+        TeamQuestInvitation.objects.filter(to_user=group_owner).delete()
+        TeamQuestInvitationRequest.objects.filter(from_user=group_owner).delete()
         return new_group
 
     def add_user(self, user):
+        TeamQuestInvitation.objects.filter(to_user=user).delete()
         self.users.add(user)
+        if self.users.all().count() == 4:
+            TeamQuestInvitationRequest.objects.filter(to_group=self).delete()
+            TeamQuestInvitation.objects.filter(from_group=self).delete()
 
     def remove_user(self, user):
         self.users.remove(user)
@@ -330,7 +336,7 @@ class TeamQuestInvitation(models.Model):
     to_user = models.ForeignKey('TeamQuestUser', null=True, blank=False)
 
     def __unicode__(self):
-        return u"Invitation from %s to %s" % (self.from_group.group_owner, self.to_user)
+        return u"%s invited you to join their team \"%s\"" % (self.from_group.group_owner, self.from_group.name)
 
 
 class TeamQuestInvitationRequest(models.Model):
@@ -338,4 +344,4 @@ class TeamQuestInvitationRequest(models.Model):
     from_user = models.ForeignKey('TeamQuestUser', null=True, blank=False)
 
     def __unicode__(self):
-        return u"Request from %s to %s" % (self.from_user, self.to_group.group_owner)
+        return u"%s requested to join your team." % (self.from_user)
