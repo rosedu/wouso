@@ -62,7 +62,35 @@ def setup_create(request):
 
 @login_required
 def setup_invite(request):
-    pass
+    user = request.user.get_profile().get_extension(TeamQuestUser)
+    group = user.group
+    if group is None or not user.is_group_owner():
+        messages.error(request, _("Puny human, you can not invite someone to join your team!"))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+
+    form = InvitePlayerForm(request.POST)
+    if form.is_valid():
+        invited_user = form.cleaned_data['to_user']
+
+        if TeamQuestInvitation.objects.filter(to_user=invited_user, from_group=group).count():
+            messages.error(request,
+                _("Puny human, you already invited %(pn)s to join your team. Be patient!")
+                % {'pn': invited_user.nickname})
+            return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+
+        if invited_user.group is not None:
+            messages.error(request, _("This player already has a team."))
+            return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+
+        TeamQuestInvitation.objects.create(to_user=invited_user, from_group=group)
+        messages.success(request,
+            _("You have invited %(pn)s to join your team!")
+            % {'pn': invited_user.nickname})
+
+    else:
+        messages.error(request, _("Puny human, you need to select somebody!"))
+
+    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
 
 @login_required
