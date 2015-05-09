@@ -18,7 +18,23 @@ from forms import *
 
 
 class TeamHubView(ListView):
-    pass
+    model = TeamQuestGroup
+    template_name = 'teamquest/teamhub.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(TeamHubView, self).get_context_data(**kwargs)
+        quest_user = self.request.user.get_profile().get_extension(TeamQuestUser)
+        context['user'] = quest_user
+        context['group'] = quest_user.group
+        context['ownership'] = quest_user.is_group_owner()
+        if quest_user.group is None:
+            context['invitations'] = TeamQuestInvitation.objects.filter(to_user=quest_user)
+            context['create_form'] = CreateGroupForm()
+            context['request_form'] = RequestToJoinForm()
+        if quest_user.is_group_owner():
+            context['requests'] = TeamQuestInvitationRequest.objects.filter(to_group=quest_user.group)
+            context['invite_form'] = InvitePlayerForm()
+        return context
 
 
 teamhub = login_required(TeamHubView.as_view())
