@@ -58,6 +58,7 @@ def setup_accept_request(request, *args, **kwargs):
 def setup_decline_request(request, *args, **kwargs):
     pass
 
+
 @login_required
 def setup_leave(request):
     pass
