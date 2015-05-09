@@ -10,8 +10,11 @@ from wouso.core.user.models import Player
 from wouso.core.qpool.models import Question, Answer, Category
 from django.http import HttpResponseRedirect, HttpResponse
 from django.utils.translation import ugettext as _
+from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 
 from models import *
+from forms import *
 
 
 class TeamQuestIndexView(ListView):
@@ -49,11 +52,11 @@ class TeamQuestIndexView(ListView):
 
                 if answer != str(question.question.answer):
                     messages.error(request, _('Wrong answer!'))
-                    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+                    return HttpResponseRedirect(reverse('teamquest_index_view') + '#stage' + str(level.level.index))
 
                 if question.is_answered():
                     messages.error(request, _("Puny human, don't try to cheat!"))
-                    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+                    return HttpResponseRedirect(reverse('teamquest_index_view') + '#stage' + str(level.level.index))
 
                 question.answer()
                 quest_user.score(amount=level.level.points_per_question)
@@ -90,8 +93,9 @@ class TeamQuestIndexView(ListView):
                         messages.success(request,
                             _('You unlocked a question on Level %(in)d!')
                             % {'in': level.next_level.level.index})
+                        return HttpResponseRedirect(reverse('teamquest_index_view') + '#stage' + str(level.next_level.level.index))
 
-                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+                return HttpResponseRedirect(reverse('teamquest_index_view') + '#stage' + str(level.level.index))
 
 
 index = login_required(TeamQuestIndexView.as_view())

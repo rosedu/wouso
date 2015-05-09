@@ -44,7 +44,7 @@
     {% for l in levels %}
         {% if l.unlocked_questions.count %}
              <li>
-                <a href="#level{{ l.level.index }}" id="level{{ l.level.index }}-click" class="no-redir">
+                <a href="#stage{{ l.level.index }}" id="stage{{ l.level.index }}-click" class="no-redir">
                     {% blocktrans with index=l.level.roman_index %} Stage {{ index }} {% endblocktrans %}
                 </a>
             </li>
@@ -55,7 +55,7 @@
     <div class="tab_container">
     {% for l in levels %}
         {% if l.unlocked_questions.count %}
-            <div id="level{{ l.level.index }}" class="tab_content">
+            <div id="stage{{ l.level.index }}" class="tab_content">
             <br>
             <p>
             {% blocktrans with points=l.progress %}
