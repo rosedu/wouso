@@ -1,7 +1,9 @@
 from django.contrib.auth.decorators import permission_required
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView
+from django.core.urlresolvers import reverse_lazy
 
 from wouso.games.teamquest.models import TeamQuest, TeamQuestGroup
+from wouso.games.teamquest.forms import AddTeamQuest
 
 
 class QuestsView(ListView):
@@ -20,3 +22,12 @@ class GroupsView(ListView):
 
 
 groups = permission_required('config.change_setting')(GroupsView.as_view())
+
+
+class AddTeamQuestView(CreateView):
+    form_class = AddTeamQuest
+    success_url = reverse_lazy('teamquest_home')
+    template_name = 'teamquest/cpanel/add_teamquest.html'
+
+
+add_teamquest = permission_required('config.change_setting')(AddTeamQuestView.as_view())

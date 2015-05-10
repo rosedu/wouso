@@ -118,9 +118,9 @@ class TeamQuestLevel(models.Model):
 
 
 class TeamQuest(models.Model):
+    title = models.CharField(default="", max_length=100)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    title = models.CharField(default="", max_length=100)
 
     @classmethod
     def create(cls, title, start_time, end_time, levels):

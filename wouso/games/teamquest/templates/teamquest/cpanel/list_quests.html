@@ -5,7 +5,7 @@
 {% block sectiontitle %}
     Team Quests
     <div class="pull-right">
-        <a class="btn btn-primary" href="#">
+        <a class="btn btn-primary" href="{% url teamquest_add %}">
             <span class="glyphicon glyphicon-plus"></span>{% trans 'Add team quest' %}
         </a>
     </div>
@@ -35,6 +35,7 @@
     </tr>
     {% for q in quests %}
     <tr>
+        <td>{{ q.id }}</td>
         <td>{{ q.title }}</td>
         <td>{{ q.start_time|date:"d/m/Y H:i" }}</td>
         <td>{{ q.end_time|date:"d/m/Y H:i" }}</td>
