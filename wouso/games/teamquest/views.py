@@ -151,7 +151,28 @@ def setup_request(request, *args, **kwargs):
 
 @login_required
 def setup_accept_request(request, *args, **kwargs):
-    pass
+    user = request.user.get_profile().get_extension(TeamQuestUser)
+    group = user.group
+    if group is None or not user.is_group_owner():
+        messages.error(request, _("Puny human, you are not able to accept requests from other players!"))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+
+    request_to_join = TeamQuestInvitationRequest.objects.filter(id=kwargs['request_id'])
+    if not request_to_join.count():
+        messages.error(request, _("Puny human, that is not a valid request!"))
+    request_to_join = request_to_join[0]
+    new_user = request_to_join.from_user
+
+    if group.is_full():
+        messages.error(request, _("Sorry, your team is already full."))
+        request_to_join.delete()
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+
+    group.add_user(new_user)
+    request_to_join.delete()
+    messages.success(request, _("You have successfully added %(pn)s to your team!") % {'pn': new_user.nickname})
+
+    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
 
 @login_required
