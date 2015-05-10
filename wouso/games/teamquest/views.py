@@ -54,7 +54,9 @@ def setup_create(request):
             return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
         TeamQuestGroup.create(group_owner=user, name=name)
 
-        messages.success(request, _("You are now the leader of the team %(gn)s. Good luck in your adventures!") % {'gn': name})
+        messages.success(request,
+            _("You are now the leader of the team %(gn)s. Good luck in your adventures!")
+            % {'gn': name})
 
     return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
@@ -113,7 +115,9 @@ def setup_accept_invitation(request, *args, **kwargs):
         return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
     new_group.add_user(user)
-    messages.success(request, _("You have successfully joined the team %(gn)s!") % {'gn': new_group.name})
+    messages.success(request,
+        _("You have successfully joined the team %(gn)s!")
+        % {'gn': new_group.name})
 
     return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 

@@ -1,0 +1,118 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Team Hub' %}{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
+{% endblock %}
+
+{% block sectiontitle %}{% trans 'Team Hub' %}{% endblock %}
+{% block sectioncontent %}
+    
+    <ul class="tabs">
+        {% if group %}
+            <li>
+                <a href="#team" id="group-click" class="no-redir">
+                    {% blocktrans with name=group.name %} {{name}} {% endblocktrans %}
+                </a>
+            </li>
+        {% else %}
+            <li>
+                <a href="#create_team" id="create_group-click" class="no-redir">
+                    {% trans 'Find a group' %}
+                </a>
+            </li>                        
+            <li>
+                <a href="#invitations" id="invitations-click" class="no-redir">
+                    {% trans 'Invitations' %}
+                </a>
+            </li>
+        {% endif %}
+        {% if ownership %}
+        <li>
+            <a href="#requests" id="requests-click" class="no-redir">
+                {% trans 'Requests' %}
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+    <div class="spacer"></div>
+    <div class="tab_container">
+        {% if group %}
+        <div id="team" class="tab_content">
+            <div class="spacer"></div>
+            <a class="btn btn-info pull-right" href="{% url setup_leave %}" onclick="return confirm('Do you really want to abandon team {{group.name}}?');"> Leave Team </a>
+            {% for player in group.users.all %}
+                <p>
+                {% if ownership %}
+                    <h2> {{player}} </h2>
+                {% else %}
+                    <h3> {{player}} </h3>
+                {% endif %}
+                {% if ownership and not player.is_group_owner %}
+                     <a class="btn btn-info" href="{% url setup_kick player.id %}" onclick="return confirm('Do you really want to banish player {{player.nickname}}?');"> {% trans 'Banish' %} </a>
+                {% endif %}
+
+                </p>
+            {% endfor %}
+            {% if ownership %}
+                <form method = "post" action="{% url setup_invite %}">
+                    {% csrf_token %}
+                    <div class="spacer"></div>
+                    <p> {% trans 'Invite player to join your team:' %} </p>
+                    <div class="fieldWrapper">
+                        <label for="{{ invite_form.to_user.id_for_label }}">  </label>
+                        {{ invite_form.to_user }}
+                        <button type="submit" onclick="return confirm('Do you really want to invite this player to join your team?');"> {% trans 'Invite player' %} </button>
+                    </div>
+                </form>
+            {% endif %}           
+        </div>
+        {% if ownership %}
+            <div id="requests" class="tab_content">
+            {% for req in requests %}
+                <div class="spacer"></div>
+                <p>{{ req }}</p>
+                <a class="btn btn-info" href="{% url setup_accept_request req.id %}" onclick="return confirm('Do you really want to accept player {{ req.from_user }} in your team?');" > {% trans 'Accept request' %} </a>
+                <div class="spacer"></div>
+            {% endfor %}
+            </div>
+        {% endif %}
+        {% else %}
+        <div id="create_team" class="tab_content">
+            <div class="spacer"></div>
+            <h3> Create a team </h3>
+            <form method = "post" action="{% url setup_create %}">
+                {% csrf_token %}
+                <p> {% trans 'How would you like your steadfast team to be named?' %} </p>
+                <div class="fieldWrapper">
+                    <label for="{{ create_form.name.id_for_label }}">{% trans 'Name' %}</label>
+                    {{ create_form.name }}
+                    <button type="submit" onclick="return confirm('Do you have what it takes to be a mighty leader? Confirm the creation of your new team.');"> {% trans 'Create team' %} </button>
+                </div>
+            </form>
+            <h3> {% trans 'Join an existing team' %} </h3>
+            <form method = "post" action="{% url setup_request %}">
+                {% csrf_token %}
+                <p> {% trans 'Which mighty team are you willing to join?' %} </p>
+                <div class="fieldWrapper">
+                    <label for="{{ request_form.to_group.id_for_label }}"> Team </label>
+                    {{ request_form.to_group }}
+                    <button type="submit" onclick="return confirm('Do you really want to join the selected team?');"> {% trans 'Request to join' %} </button>
+                </div>
+            </form>
+        </div>
+        <div id="invitations" class="tab_content">
+            {% for inv in invitations %}
+                <div class="spacer"></div>
+                <p>{{ inv }}</p>
+                <a class="btn btn-info" href="{% url setup_accept_invitation inv.id %}" onclick="return confirm('Do you really want to join team {{inv.from_group.name}}? You will not be able to leave if there is an active quest.');" > Accept invitation </a>
+                <div class="spacer"></div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+{% endblock %}
