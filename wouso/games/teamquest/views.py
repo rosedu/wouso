@@ -17,13 +17,13 @@ from models import *
 from forms import *
 
 
-class TeamHubView(ListView):
-    model = TeamQuestGroup
+class TeamHubView(DetailView):
+    model = TeamQuestUser
     template_name = 'teamquest/teamhub.html'
 
     def get_context_data(self, **kwargs):
         context = super(TeamHubView, self).get_context_data(**kwargs)
-        quest_user = self.request.user.get_profile().get_extension(TeamQuestUser)
+        quest_user = self.get_object()
         context['user'] = quest_user
         context['group'] = quest_user.group
         context['ownership'] = quest_user.is_group_owner()
@@ -35,7 +35,6 @@ class TeamHubView(ListView):
             context['requests'] = TeamQuestInvitationRequest.objects.filter(to_group=quest_user.group)
             context['invite_form'] = InvitePlayerForm()
         return context
-
 
 teamhub = login_required(TeamHubView.as_view())
 
@@ -95,7 +94,28 @@ def setup_invite(request):
 
 @login_required
 def setup_accept_invitation(request, *args, **kwargs):
-    pass
+    user = request.user.get_profile().get_extension(TeamQuestUser)
+    group = user.group
+    if group:
+        messages.error(request, _("Puny human, you already have a team!"))
+        TeamQuestInvitation.objects.filter(to_user=user).delete()
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+
+    invitation = TeamQuestInvitation.objects.filter(id=kwargs['invitation_id'])
+    if not invitation.count():
+        messages.error(request, _("Puny human, that is not a valid invitation!"))
+    invitation = invitation[0]
+    new_group = invitation.from_group
+
+    if new_group.is_full():
+        messages.error(request, _("Sorry, that team is already full."))
+        invitation.delete()
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+
+    new_group.add_user(user)
+    messages.success(request, _("You have successfully joined the team %(gn)s!") % {'gn': new_group.name})
+
+    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
 
 @login_required

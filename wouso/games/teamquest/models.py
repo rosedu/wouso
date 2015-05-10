@@ -28,6 +28,9 @@ class TeamQuestGroup(PlayerGroup):
     def is_empty(self):
         return self.users.count() < 1
 
+    def is_full(self):
+        return self.users.count() == 4
+
     @classmethod
     def create(cls, group_owner, name):
         new_group = cls.objects.create(name=name, group_owner=group_owner)
@@ -39,7 +42,7 @@ class TeamQuestGroup(PlayerGroup):
     def add_user(self, user):
         TeamQuestInvitation.objects.filter(to_user=user).delete()
         self.users.add(user)
-        if self.users.all().count() == 4:
+        if self.is_full():
             TeamQuestInvitationRequest.objects.filter(to_group=self).delete()
             TeamQuestInvitation.objects.filter(from_group=self).delete()
 
