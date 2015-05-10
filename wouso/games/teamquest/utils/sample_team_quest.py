@@ -1,7 +1,11 @@
 #!/usr/bin/env/python
 
 # To test, run from wouso folder using commands such as:
-# PYTHONPATH=../:. python games/teamquest/utils/create_sample_team_quest.py
+# PYTHONPATH=../:. python games/teamquest/utils/sample_team_quest.py --help
+#
+# Use --create option to create a setup with sample entries.
+# Use --delete to remove sample entries.
+# Use --status to show a status of team quest specific items.
 
 import argparse
 import sys
@@ -130,6 +134,9 @@ def main():
 
     if args.status:
         status()
+
+    if not args.create and not args.delete and not args.status:
+        parser.print_help()
 
 
 if __name__ == "__main__":
