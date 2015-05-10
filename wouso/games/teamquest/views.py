@@ -182,7 +182,22 @@ def setup_decline_request(request, *args, **kwargs):
 
 @login_required
 def setup_leave(request):
-    pass
+    quest = TeamQuestGame.get_current()
+    user = request.user.get_profile().get_extension(TeamQuestUser)
+    group = user.group
+    if group is None:
+        messages.error(request, _("Puny human, you do not have a team to leave!"))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+
+    if quest is not None:
+        if TeamQuestStatus.objects.filter(quest=quest, group=group).count():
+            messages.error(request, _("Puny human, you cannot leave your team while venturing in a quest!"))
+            return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+
+    messages.success(request, _("You have left the team %(gn)s. Good luck in your adventures!") % {'gn': group.name})
+    group.remove_user(user)
+
+    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
 
 @login_required
