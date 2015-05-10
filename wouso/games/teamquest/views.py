@@ -69,6 +69,11 @@ def setup_invite(request):
         messages.error(request, _("Puny human, you can not invite someone to join your team!"))
         return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
+    if group.is_active():
+        messages.error(request,
+            _("Puny human, you can not invite someone to join your team while venturing in a quest!"))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+
     form = InvitePlayerForm(request.POST)
     if form.is_valid():
         invited_user = form.cleaned_data['to_user']
@@ -101,6 +106,12 @@ def setup_accept_invitation(request, *args, **kwargs):
     if group:
         messages.error(request, _("Puny human, you already have a team!"))
         TeamQuestInvitation.objects.filter(to_user=user).delete()
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+
+    if group.is_active():
+        messages.error(request,
+            _("The group %(gn)s is currently venturing in a quest. You have to wait until it is over to accept the invitation.")
+            % {'gn': new_group.name})
         return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
     invitation = TeamQuestInvitation.objects.filter(id=kwargs['invitation_id'], to_user=user)
@@ -157,7 +168,9 @@ def setup_request(request, *args, **kwargs):
         requested_group = form.cleaned_data['to_group']
 
         if TeamQuestInvitationRequest.objects.filter(from_user=user, to_group=requested_group).count():
-            messages.error(request, _("Puny human, you already requested to join %(gn)s. Be patient!") % {'gn': requested_group.name})
+            messages.error(request,
+                _("Puny human, you already requested to join %(gn)s. Be patient!")
+                % {'gn': requested_group.name})
             return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
         if requested_group.is_full():
@@ -165,7 +178,9 @@ def setup_request(request, *args, **kwargs):
             return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
         TeamQuestInvitationRequest.objects.create(to_group=requested_group, from_user=user)
-        messages.success(request, _("You have sent a request to join %(gn)s!") % {'gn': requested_group.name})
+        messages.success(request,
+            _("You have sent a request to join %(gn)s!")
+            % {'gn': requested_group.name})
 
     return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
@@ -187,6 +202,10 @@ def setup_accept_request(request, *args, **kwargs):
     if group.is_full():
         messages.error(request, _("Sorry, your team is already full."))
         request_to_join.delete()
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+
+    if group.is_active():
+        messages.error(request, _("Puny human, you can not accept a request while venturing in a quest"))
         return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
     group.add_user(new_user)
@@ -226,10 +245,9 @@ def setup_leave(request):
         messages.error(request, _("Puny human, you do not have a team to leave!"))
         return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
-    if quest is not None:
-        if TeamQuestStatus.objects.filter(quest=quest, group=group).count():
-            messages.error(request, _("Puny human, you cannot leave your team while venturing in a quest!"))
-            return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+    if group.is_active():
+        messages.error(request, _("Puny human, you cannot leave your team while venturing in a quest!"))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
     messages.success(request, _("You have left the team %(gn)s. Good luck in your adventures!") % {'gn': group.name})
     group.remove_user(user)
@@ -247,10 +265,9 @@ def setup_kick(request, *args, **kwargs):
         messages.error(request, _("Puny human, you do not have the rights to kick a player!"))
         return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
-    if quest is not None:
-        if TeamQuestStatus.objects.filter(quest=quest, group=group).count():
-            messages.error(request, _("Puny human, you can not kick a team member while venturing in a quest!"))
-            return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+    if group.is_active():
+        messages.error(request, _("Puny human, you can not kick a team member while venturing in a quest!"))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
     messages.success(request, _("You have exiled %(pn)s from the realm of your team.") % {'pn': kicked_user.nickname})
     group.remove_user(kicked_user)

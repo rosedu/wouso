@@ -31,6 +31,14 @@ class TeamQuestGroup(PlayerGroup):
     def is_full(self):
         return self.users.count() == 4
 
+    def is_active(self):
+        quest = TeamQuestGame.get_current()
+        if quest is None:
+            return False
+        if TeamQuestStatus.objects.filter(group=self, quest=quest).count():
+            return True
+        return False
+
     @classmethod
     def create(cls, group_owner, name):
         new_group = cls.objects.create(name=name, group_owner=group_owner)
@@ -348,3 +356,18 @@ class TeamQuestInvitationRequest(models.Model):
 
     def __unicode__(self):
         return u"%s requested to join your team." % (self.from_user)
+
+
+class TeamQuestNotification(models.Model):
+    text = models.CharField(null=True, blank=False, max_length=100)
+    user = models.ForeignKey('TeamQuestUser', null=True, blank=False, related_name='notifications')
+
+    @classmethod
+    def create(cls, text, user):
+        new_notification = cls.objects.create(text=text, user=user)
+        return new_status
+
+    def post(self):
+        display_text = self.text
+        self.delete()
+        return display_text
