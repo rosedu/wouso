@@ -29,12 +29,15 @@ class TeamHubView(DetailView):
         context['ownership'] = quest_user.is_group_owner()
         if quest_user.group is None:
             context['invitations'] = TeamQuestInvitation.objects.filter(to_user=quest_user)
+            context['sent_requests'] = TeamQuestInvitationRequest.objects.filter(from_user=quest_user)
             context['create_form'] = CreateGroupForm()
             context['request_form'] = RequestToJoinForm()
         if quest_user.is_group_owner():
             context['requests'] = TeamQuestInvitationRequest.objects.filter(to_group=quest_user.group)
+            context['sent_invitations'] = TeamQuestInvitation.objects.filter(from_group=quest_user.group)
             context['invite_form'] = InvitePlayerForm()
         return context
+
 
 teamhub = login_required(TeamHubView.as_view())
 
@@ -45,20 +48,20 @@ def setup_create(request):
     group = user.group
     if group:
         messages.error(request, _("Puny human, you already have a team!"))
-        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#team')
     form = CreateGroupForm(request.POST)
     if form.is_valid():
         name = form.cleaned_data['name']
         if TeamQuestGroup.objects.filter(name=name).count():
             messages.error(request, _("Unfortunately you were not the first to think of that name. Choose another!"))            
-            return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+            return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#find_team')
         TeamQuestGroup.create(group_owner=user, name=name)
 
         messages.success(request,
             _("You are now the leader of the team %(gn)s. Good luck in your adventures!")
             % {'gn': name})
 
-    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#team')
 
 
 @login_required
@@ -72,7 +75,7 @@ def setup_invite(request):
     if group.is_active():
         messages.error(request,
             _("Puny human, you can not invite someone to join your team while venturing in a quest!"))
-        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#team')
 
     form = InvitePlayerForm(request.POST)
     if form.is_valid():
@@ -82,11 +85,11 @@ def setup_invite(request):
             messages.error(request,
                 _("Puny human, you already invited %(pn)s to join your team. Be patient!")
                 % {'pn': invited_user.nickname})
-            return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+            return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#team')
 
         if invited_user.group is not None:
             messages.error(request, _("This player already has a team."))
-            return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+            return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#team')
 
         TeamQuestInvitation.objects.create(to_user=invited_user, from_group=group)
         messages.success(request,
@@ -96,7 +99,25 @@ def setup_invite(request):
     else:
         messages.error(request, _("Puny human, you need to select somebody!"))
 
-    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#team')
+
+
+@login_required
+def setup_cancel_invitation(request, *args, **kwargs):
+    user = request.user.get_profile().get_extension(TeamQuestUser)
+    group = user.group
+
+    invitation = TeamQuestInvitation.objects.filter(id=kwargs['invitation_id'], from_group=group)
+    if not invitation.count():
+        messages.error(request, _("Puny human, that is not a valid invitation!"))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+
+    invitation = invitation[0]
+    messages.success(request,
+        _("You have successfully cancelled an invitation to player %(pn)s.")
+        % {'pn': invitation.to_user})
+    invitation.delete()
+    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#invitations')
 
 
 @login_required
@@ -112,7 +133,7 @@ def setup_accept_invitation(request, *args, **kwargs):
         messages.error(request,
             _("The group %(gn)s is currently venturing in a quest. You have to wait until it is over to accept the invitation.")
             % {'gn': new_group.name})
-        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#invitations')
 
     invitation = TeamQuestInvitation.objects.filter(id=kwargs['invitation_id'], to_user=user)
     if not invitation.count():
@@ -123,14 +144,14 @@ def setup_accept_invitation(request, *args, **kwargs):
     if new_group.is_full():
         messages.error(request, _("Sorry, that team is already full."))
         invitation.delete()
-        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#invitations')
 
     new_group.add_user(user)
     messages.success(request,
         _("You have successfully joined the team %(gn)s!")
         % {'gn': new_group.name})
 
-    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#team')
 
 
 @login_required
@@ -140,7 +161,7 @@ def setup_decline_invitation(request, *args, **kwargs):
     if group:
         messages.error(request, _("Puny human, you already have a team!"))
         TeamQuestInvitation.objects.filter(to_user=user).delete()
-        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#team')
 
     invitation = TeamQuestInvitation.objects.filter(id=kwargs['invitation_id'], to_user=user)
     if not invitation.count():
@@ -152,7 +173,7 @@ def setup_decline_invitation(request, *args, **kwargs):
         _("You have successfully declined an invitation from the team %(gn)s.")
         % {'gn': invitation.from_group.name})
     invitation.delete()
-    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#invitations')
 
 
 @login_required
@@ -161,7 +182,7 @@ def setup_request(request, *args, **kwargs):
     group = user.group
     if group:
         messages.error(request, _("Puny human, you already have a team!"))
-        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#team')
 
     form = RequestToJoinForm(request.POST)
     if form.is_valid():
@@ -171,18 +192,35 @@ def setup_request(request, *args, **kwargs):
             messages.error(request,
                 _("Puny human, you already requested to join %(gn)s. Be patient!")
                 % {'gn': requested_group.name})
-            return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+            return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#find_team')
 
         if requested_group.is_full():
             messages.error(request, _("The team you requested to join is full."))
-            return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+            return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#find_team')
 
         TeamQuestInvitationRequest.objects.create(to_group=requested_group, from_user=user)
         messages.success(request,
             _("You have sent a request to join %(gn)s!")
             % {'gn': requested_group.name})
 
-    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#find_team')
+
+
+@login_required
+def setup_cancel_request(request, *args, **kwargs):
+    user = request.user.get_profile().get_extension(TeamQuestUser)
+
+    request_to_join = TeamQuestInvitationRequest.objects.filter(id=kwargs['request_id'], from_user=user)
+    if not request_to_join.count():
+        messages.error(request, _("Puny human, that is not a valid request!"))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+    request_to_join = request_to_join[0]
+
+    messages.success(request,
+        _("You have successfully cancelled a request to join group %(gn)s.")
+        % {'gn': request_to_join.to_group})
+    request_to_join.delete()
+    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#invitations')
 
 
 @login_required
@@ -202,7 +240,7 @@ def setup_accept_request(request, *args, **kwargs):
     if group.is_full():
         messages.error(request, _("Sorry, your team is already full."))
         request_to_join.delete()
-        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#invitations')
 
     if group.is_active():
         messages.error(request, _("Puny human, you can not accept a request while venturing in a quest"))
@@ -212,7 +250,7 @@ def setup_accept_request(request, *args, **kwargs):
     request_to_join.delete()
     messages.success(request, _("You have successfully added %(pn)s to your team!") % {'pn': new_user.nickname})
 
-    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#team')
 
 
 @login_required
@@ -226,14 +264,14 @@ def setup_decline_request(request, *args, **kwargs):
     request_to_join = TeamQuestInvitationRequest.objects.filter(id=kwargs['request_id'], to_group=group)
     if not request_to_join.count():
         messages.error(request, _("Puny human, that is not a valid request!"))
-        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#invitations')
     request_to_join = request_to_join[0]
 
     messages.success(request,
         _("You have successfully declined a request from player %(pn)s.")
-        % {'gn': reuqest_to_join.from_group})
+        % {'pn': request_to_join.from_user})
     request_to_join.delete()
-    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#invitations')
 
 
 @login_required
@@ -243,16 +281,16 @@ def setup_leave(request):
     group = user.group
     if group is None:
         messages.error(request, _("Puny human, you do not have a team to leave!"))
-        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#find_team')
 
     if group.is_active():
         messages.error(request, _("Puny human, you cannot leave your team while venturing in a quest!"))
-        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#team')
 
     messages.success(request, _("You have left the team %(gn)s. Good luck in your adventures!") % {'gn': group.name})
     group.remove_user(user)
 
-    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#find_team')
 
 
 @login_required
@@ -267,12 +305,12 @@ def setup_kick(request, *args, **kwargs):
 
     if group.is_active():
         messages.error(request, _("Puny human, you can not kick a team member while venturing in a quest!"))
-        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#team')
 
     messages.success(request, _("You have exiled %(pn)s from the realm of your team.") % {'pn': kicked_user.nickname})
     group.remove_user(kicked_user)
 
-    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#team')
 
 
 class TeamQuestIndexView(ListView):
