@@ -125,7 +125,28 @@ def setup_decline_invitation(request, *args, **kwargs):
 
 @login_required
 def setup_request(request, *args, **kwargs):
-    pass
+    user = request.user.get_profile().get_extension(TeamQuestUser)
+    group = user.group
+    if group:
+        messages.error(request, _("Puny human, you already have a team!"))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+
+    form = RequestToJoinForm(request.POST)
+    if form.is_valid():
+        requested_group = form.cleaned_data['to_group']
+
+        if TeamQuestInvitationRequest.objects.filter(from_user=user, to_group=requested_group).count():
+            messages.error(request, _("Puny human, you already requested to join %(gn)s. Be patient!") % {'gn': requested_group.name})
+            return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+
+        if requested_group.users.all().count() > 3:
+            messages.error(request, _("The team you requested to join is full."))
+            return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+
+        TeamQuestInvitationRequest.objects.create(to_group=requested_group, from_user=user)
+        messages.success(request, _("You have sent a request to join %(gn)s!") % {'gn': requested_group.name})
+
+    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
 
 @login_required
