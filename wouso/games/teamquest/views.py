@@ -20,11 +20,11 @@ from forms import *
 class TeamHubView(DetailView):
     model = TeamQuestUser
     template_name = 'teamquest/teamhub.html'
+    context_object_name = 'user'
 
     def get_context_data(self, **kwargs):
         context = super(TeamHubView, self).get_context_data(**kwargs)
         quest_user = self.get_object()
-        context['user'] = quest_user
         context['group'] = quest_user.group
         context['ownership'] = quest_user.is_group_owner()
         if quest_user.group is None:
@@ -202,7 +202,23 @@ def setup_leave(request):
 
 @login_required
 def setup_kick(request, *args, **kwargs):
-    pass
+    quest = TeamQuestGame.get_current()
+    user = request.user.get_profile().get_extension(TeamQuestUser)
+    group = user.group
+    kicked_user = TeamQuestUser.objects.get(id=kwargs['user_id'])
+    if group is None or not user.is_group_owner():
+        messages.error(request, _("Puny human, you do not have the rights to kick a player!"))
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+
+    if quest is not None:
+        if TeamQuestStatus.objects.filter(quest=quest, group=group).count():
+            messages.error(request, _("Puny human, you can not kick a team member while venturing in a quest!"))
+            return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+
+    messages.success(request, _("You have exiled %(pn)s from the realm of your team.") % {'pn': kicked_user.nickname})
+    group.remove_user(kicked_user)
+
+    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
 
 class TeamQuestIndexView(ListView):
