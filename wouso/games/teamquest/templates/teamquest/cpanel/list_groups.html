@@ -1,0 +1,60 @@
+{% extends 'cpanel/index.html' %}
+{% load i18n %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %}
+    Team Quests
+    <div class="pull-right">
+        <a class="btn btn-primary" href="{% url teamquest_add %}">
+            <span class="glyphicon glyphicon-plus"></span>{% trans 'Add team quest' %}
+        </a>
+    </div>
+{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Team quest" "teamquest_home" %}
+    {% breadcrumb "Groups" "teamquest_groups" %}
+{% endblock %}
+
+{% block sectioncontent %}
+<ul class="nav nav-tabs">
+    <li ><a href="{% url teamquest_home %}">Quests</a></li>
+    <li class="active"><a href="#">Groups</a></li>
+</ul>
+
+{% block tabcontent %}
+
+<table class="table table-hover table-condensed table-bordered">
+    <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Owner</th>
+    </tr>
+    {% for g in groups %}
+    <tr>
+        <td>{{ g.id }}</td>
+        <td>
+            <div class="text-left">
+                <span class="question_preview" onclick="$('#qc_{{g.id}}').toggle();" title="Click for players">{{ g.name }}</span>
+                <div id="qc_{{ g.id }}" class="collapse">
+                    <ul>
+                    {% for u in g.users.all %}
+                        <li>{{ u }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </td>
+        <td>{{ g.group_owner }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5">No team quest groups created yet!</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
+
+{% endblock %}
