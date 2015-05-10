@@ -124,7 +124,23 @@ def setup_accept_invitation(request, *args, **kwargs):
 
 @login_required
 def setup_decline_invitation(request, *args, **kwargs):
-    pass
+    user = request.user.get_profile().get_extension(TeamQuestUser)
+    group = user.group
+    if group:
+        messages.error(request, _("Puny human, you already have a team!"))
+        TeamQuestInvitation.objects.filter(to_user=user).delete()
+        return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
+
+    invitation = TeamQuestInvitation.objects.filter(id=kwargs['invitation_id'])
+    if not invitation.count():
+        messages.error(request, _("Puny human, that is not a valid invitation!"))
+
+    invitation = invitation[0]
+    messages.success(request,
+        _("You have successfully declined an invitation from the team %(gn)s!")
+        % {'gn': invitation.from_group.name})
+    invitation.delete()
+    return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
 
 @login_required
@@ -143,7 +159,7 @@ def setup_request(request, *args, **kwargs):
             messages.error(request, _("Puny human, you already requested to join %(gn)s. Be patient!") % {'gn': requested_group.name})
             return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
-        if requested_group.users.all().count() > 3:
+        if requested_group.is_full():
             messages.error(request, _("The team you requested to join is full."))
             return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
