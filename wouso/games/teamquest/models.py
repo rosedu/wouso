@@ -48,11 +48,34 @@ class TeamQuestGroup(PlayerGroup):
         return new_group
 
     def add_user(self, user):
-        TeamQuestInvitation.objects.filter(to_user=user).delete()
+        for invitation in TeamQuestInvitation.objects.filter(to_user=user):
+            TeamQuestNotification.create(user=invitation.from_group.group_owner,
+                text=_("The player %(pn)s joined another team, so your invitation to them was automatically declined.")
+                    % {'pn': user.nickname})
+            invitation.delete()
+
+        for request_to_join in TeamQuestInvitationRequest.objects.filter(from_user=user):
+            TeamQuestNotification.create(user=request_to_join.to_group.group_owner,
+                text=_("The player %(pn)s joined another team, so their request to join your team was automatically declined.")
+                    % {'pn': user.nickname})
+            request_to_join.delete()
+
         self.users.add(user)
-        if self.is_full():
-            TeamQuestInvitationRequest.objects.filter(to_group=self).delete()
-            TeamQuestInvitation.objects.filter(from_group=self).delete()
+
+        if not self.is_full():
+            return
+
+        for invitation in TeamQuestInvitation.objects.filter(from_group=self):
+            TeamQuestNotification.create(user=invitation.to_user,
+                text=_("The team %(gn)s became full, so their invitation to you was automatically declined.")
+                    % {'gn': self.name})
+            invitation.delete()
+
+        for request_to_join in TeamQuestInvitationRequest.objects.filter(to_group=self):
+            TeamQuestNotification.create(user=request_to_join.from_user,
+                text=_("The team %(gn)s became full, so your request to join them was automatically declined.")
+                    % {'gn': self.name})
+            request_to_join.delete()
 
     def remove_user(self, user):
         self.users.remove(user)
@@ -370,5 +393,6 @@ class TeamQuestNotification(models.Model):
 
     def post(self):
         display_text = self.text
-        self.delete()
+        if (self.date_created - datetime.datetime.now()).days >= 2:
+            self.delete()
         return display_text
