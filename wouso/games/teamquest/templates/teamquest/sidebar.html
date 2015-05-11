@@ -24,6 +24,6 @@
 {% endif %}
 
 
-<p><a href="">{% trans 'Team Hub' %}</a></p>
+<p><a href="{% url team_hub_view tquser.id %}">{% trans 'Team Hub' %}</a></p>
 
 {% endblock %}

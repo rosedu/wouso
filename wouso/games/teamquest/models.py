@@ -361,11 +361,12 @@ class TeamQuestInvitationRequest(models.Model):
 class TeamQuestNotification(models.Model):
     text = models.CharField(null=True, blank=False, max_length=100)
     user = models.ForeignKey('TeamQuestUser', null=True, blank=False, related_name='notifications')
+    date_created = models.DateTimeField(default=datetime.datetime.now())
 
     @classmethod
     def create(cls, text, user):
         new_notification = cls.objects.create(text=text, user=user)
-        return new_status
+        return new_notification
 
     def post(self):
         display_text = self.text
