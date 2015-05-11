@@ -30,6 +30,11 @@
                 {% trans 'Invitations' %}
             </a>
         </li>
+        <li>
+            <a href="#notifications" id="group-click" class="no-redir">
+                {% trans 'Notifications' %}
+            </a>
+        </li>
     </ul>
     <div class="spacer"></div>
     <div class="tab_container">
@@ -61,7 +66,7 @@
                         <button type="submit" onclick="return confirm('Do you really want to invite this player to join your team?');"> {% trans 'Invite player' %} </button>
                     </div>
                 </form>
-            {% endif %}           
+            {% endif %}
         </div>
         {% else %}
         <div id="find_team" class="tab_content">
@@ -127,9 +132,19 @@
                     <a class="btn btn-info" href="{% url setup_cancel_request req.id %}" onclick="return confirm('Do you really want to cancel your request to join team {{ req.to_group.name }}?');" > {% trans 'Cancel request' %} </a>
                     <div class="spacer"></div>
                 {% empty %}
-                    <p> {% trans 'You have requested to join any team.' %} </p>
+                    <p> {% trans 'You have not requested to join any team.' %} </p>
                 {% endfor %}
             {% endif %}
+        </div>
+        <div id="notifications" class="tab_content">
+            <div class="spacer"></div>
+            <div class="spacer"></div>
+            {% for note in notifications %}
+                <p>[{{ note.date_created }}] {{ note.post }} </p>
+                <div class="spacer"></div>
+            {% empty %}
+                {% trans 'You have no notifications.' %}
+            {% endfor %}
         </div>
     </div>
 
