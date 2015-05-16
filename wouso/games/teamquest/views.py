@@ -104,8 +104,8 @@ def setup_invite(request):
             % {'pn': invited_user.nickname})
 
         TeamQuestNotification.create(user=user,
-        text=_("You invited player %(pn)s to join your team.")
-             % {'pn': invited_user.nickname})
+        text=_("You invited player %(pn)s to join your team %(gn)s.")
+             % {'pn': invited_user.nickname, 'gn': group.name})
 
         TeamQuestNotification.create(user=invited_user,
         text=_("The team %(gn)s invited you to join them.")
@@ -173,13 +173,15 @@ def setup_accept_invitation(request, *args, **kwargs):
 
     for existing_user in new_group.users.all():
         TeamQuestNotification.create(user=existing_user,
-        text=_("The player %(pn)s joined your team.")
-             % {'pn': user.nickname})
+        text=_("The player %(pn)s joined your team %(gn)s.")
+             % {'pn': user.nickname, 'gn': new_group.name})
 
     TeamQuestNotification.create(user=user,
         text=_("You accepted the invitation to join team %(gn)s.")
-             % {'gn': group.name})
+             % {'gn': new_group.name})
 
+    invitation.delete()
+    TeamQuestInvitationRequest.objects.filter(from_user=user, to_group=new_group).delete()
     new_group.add_user(user)
     messages.success(request,
         _("You have successfully joined the team %(gn)s!")
@@ -246,12 +248,12 @@ def setup_request(request, *args, **kwargs):
              % {'gn': requested_group.name})
 
         TeamQuestNotification.create(user=requested_group.group_owner,
-        text=_("The player %(pn)s requested to join your team.")
-             % {'pn': requested_group.group_owner.nickname})
+        text=_("The player %(pn)s requested to join your team %(gn)s.")
+             % {'pn': user, 'gn': requested_group.name})
 
         TeamQuestInvitationRequest.objects.create(to_group=requested_group, from_user=user)
         messages.success(request,
-            _("You have sent a request to join %(gn)s!")
+            _("You have requested to join %(gn)s!")
             % {'gn': requested_group.name})
 
     return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#find_team')
@@ -272,8 +274,8 @@ def setup_cancel_request(request, *args, **kwargs):
              % {'gn': request_to_join.to_group.name})
 
     TeamQuestNotification.create(user=request_to_join.to_group.group_owner,
-        text=_("The player %(pn)s cancelled the request to join your team.")
-             % {'pn': request_to_join.to_group.group_owner.nickname})
+        text=_("The player %(pn)s cancelled their request to join your team.")
+             % {'pn': user})
 
     messages.success(request,
         _("You have successfully cancelled a request to join team %(gn)s.")
@@ -305,15 +307,18 @@ def setup_accept_request(request, *args, **kwargs):
         messages.error(request, _("Puny human, you can not accept a request while venturing in a quest"))
         return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]))
 
+    new_user = request_to_join.from_user
     for existing_user in group.users.all():
         TeamQuestNotification.create(user=existing_user,
-        text=_("The player %(pn)s joined your team.")
-             % {'pn': new_user.nickname})
+        text=_("The player %(pn)s joined your team %(gn)s.")
+             % {'pn': new_user.nickname, 'gn': group.name})
 
     TeamQuestNotification.create(user=new_user,
         text=_("Your request to join team %(gn)s was accepted.")
              % {'gn': group.name})
 
+    request_to_join.delete()
+    TeamQuestInvitation.objects.filter(from_group=group, to_user=new_user).delete()
     group.add_user(new_user)
     messages.success(request, _("You have successfully added %(pn)s to your team!") % {'pn': new_user.nickname})
 
@@ -335,8 +340,8 @@ def setup_decline_request(request, *args, **kwargs):
     request_to_join = request_to_join[0]
 
     TeamQuestNotification.create(user=user,
-        text=_("You declined player %(pn)s's request to join your team.")
-             % {'pn': request_to_join.from_user})
+        text=_("You declined player %(pn)s's request to join your team %(gn)s.")
+             % {'pn': request_to_join.from_user, 'gn': group.name})
 
     TeamQuestNotification.create(user=request_to_join.from_user,
         text=_("The team %(gn)s declined your request to join them.")
@@ -363,16 +368,17 @@ def setup_leave(request):
         return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#team')
 
     messages.success(request, _("You have left the team %(gn)s. Good luck in your adventures!") % {'gn': group.name})
-    group.remove_user(user)
+    deleted = group.remove_user(user)
 
-    for existing_user in group.users.all():
-        TeamQuestNotification.create(user=existing_user,
-        text=_("The player %(pn)s left your team.")
-             % {'pn': user.nickname})
-
-    TeamQuestNotification.create(user=request_to_join.from_user,
+    TeamQuestNotification.create(user=user,
         text=_("You left team %(gn)s.")
              % {'gn': group.name})
+
+    if not deleted:
+        for existing_user in group.users.all():
+            TeamQuestNotification.create(user=existing_user,
+            text=_("The player %(pn)s left your team %(gn)s.")
+                 % {'pn': user.nickname, 'gn': group.name})
 
     return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#find_team')
 
@@ -392,12 +398,13 @@ def setup_kick(request, *args, **kwargs):
         return HttpResponseRedirect(reverse('team_hub_view', args=[user.id]) + '#team')
 
     messages.success(request, _("You have exiled %(pn)s from the realm of your team.") % {'pn': kicked_user.nickname})
-    group.remove_user(kicked_user)
+    deleted = group.remove_user(kicked_user)
 
-    for existing_user in group.users.all():
-        TeamQuestNotification.create(user=existing_user,
-        text=_("The player %(pn)s was banished from your team.")
-             % {'pn': kicked_user.nickname})
+    if not deleted:
+        for existing_user in group.users.all():
+            TeamQuestNotification.create(user=existing_user,
+            text=_("The player %(pn)s was banished from your team %(gn)s.")
+                 % {'pn': kicked_user.nickname, 'gn': group.name})
 
     TeamQuestNotification.create(user=kicked_user,
         text=_("You were banished from team %(gn)s.")

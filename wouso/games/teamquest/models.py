@@ -1,6 +1,7 @@
 import datetime
 
 from django.db import models
+from django.utils.translation import ugettext as _
 
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player, PlayerGroup
@@ -24,12 +25,13 @@ class TeamQuestUser(Player):
 
 class TeamQuestGroup(PlayerGroup):
     group_owner = models.OneToOneField('TeamQuestUser', null=True)
+    max_users = 4
 
     def is_empty(self):
         return self.users.count() < 1
 
     def is_full(self):
-        return self.users.count() == 4
+        return self.users.count() == self.max_users
 
     def is_active(self):
         quest = TeamQuestGame.get_current()
@@ -78,12 +80,16 @@ class TeamQuestGroup(PlayerGroup):
             request_to_join.delete()
 
     def remove_user(self, user):
+        deleted = False
         self.users.remove(user)
         if user == self.group_owner:
             if self.is_empty() is True:
+                empty = self
                 self.delete()
+                deleted = True
             else:
                 self.promote_to_group_owner(self.users.all()[0])
+        return deleted
 
     def promote_to_group_owner(self, user):
         self.group_owner = user
@@ -384,15 +390,15 @@ class TeamQuestInvitationRequest(models.Model):
 class TeamQuestNotification(models.Model):
     text = models.CharField(null=True, blank=False, max_length=100)
     user = models.ForeignKey('TeamQuestUser', null=True, blank=False, related_name='notifications')
-    date_created = models.DateTimeField(default=datetime.datetime.now())
+    date_created = models.DateTimeField(null=True, blank=False)
 
     @classmethod
     def create(cls, text, user):
-        new_notification = cls.objects.create(text=text, user=user)
+        new_notification = cls.objects.create(text=text, user=user, date_created=datetime.datetime.now())
         return new_notification
 
     def post(self):
         display_text = self.text
-        if (self.date_created - datetime.datetime.now()).days >= 2:
+        if (datetime.datetime.now() - self.date_created).days >= 2:
             self.delete()
         return display_text
