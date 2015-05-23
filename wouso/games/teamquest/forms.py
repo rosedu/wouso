@@ -34,3 +34,12 @@ class RequestToJoinForm(forms.ModelForm):
 	class Meta:
 		model = TeamQuestInvitationRequest
 		fields = ('to_group',)
+
+
+class EditTeamQuestForm(forms.ModelForm):
+    class Meta:
+        model = TeamQuest
+        widgets = {
+                'start_time': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"}),
+                'end_time': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"})
+                }

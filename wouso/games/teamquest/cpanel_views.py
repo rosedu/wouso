@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import render_to_response
 
 from wouso.games.teamquest.models import TeamQuest, TeamQuestGroup, TeamQuestQuestion
-from wouso.games.teamquest.forms import AddTeamQuestForm
+from wouso.games.teamquest.forms import AddTeamQuestForm, EditTeamQuestForm
 
 
 class QuestsView(ListView):
@@ -23,6 +23,16 @@ class GroupsView(ListView):
 
 
 groups = permission_required('config.change_setting')(GroupsView.as_view())
+
+
+class EditTeamQuestView(UpdateView):
+    model = TeamQuest
+    form_class = EditTeamQuestForm
+    success_url = reverse_lazy('teamquest_home')
+    template_name = 'teamquest/cpanel/edit_teamquest.html'
+
+
+edit_teamquest = permission_required('config.change_setting')(EditTeamQuestView.as_view())
 
 
 class DeleteTeamQuestView(DeleteView):
@@ -47,10 +57,3 @@ class AddTeamQuestView(TemplateView):
 
 
 add_teamquest = permission_required('config.change_setting')(AddTeamQuestView.as_view())
-
-
-# @login_required
-# def add_teamquestquestions(request):
-#     n = request.POST['number_of_levels']
-#     form = AddTeamQuestLevelForm(number_of_levels=n)
-#     return render_to_response('teamquest/cpanel/add_teamquestquestions.html', {'form': form})
