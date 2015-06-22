@@ -1,6 +1,6 @@
 from django import forms
 
-from models import TeamQuest
+from models import TeamQuest, TeamQuestGroup, TeamQuestInvitation, TeamQuestInvitationRequest
 from bootstrap3_datetime import widgets
 
 
