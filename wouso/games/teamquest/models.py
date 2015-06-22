@@ -1,6 +1,7 @@
 import datetime
 
 from django.db import models
+from django.utils.translation import ugettext as _
 
 from wouso.core.game.models import Game
 from wouso.core.user.models import Player, PlayerGroup
@@ -24,26 +25,71 @@ class TeamQuestUser(Player):
 
 class TeamQuestGroup(PlayerGroup):
     group_owner = models.OneToOneField('TeamQuestUser', null=True)
+    max_users = 4
 
     def is_empty(self):
         return self.users.count() < 1
+
+    def is_full(self):
+        return self.users.count() == self.max_users
+
+    def is_active(self):
+        quest = TeamQuestGame.get_current()
+        if quest is None:
+            return False
+        if TeamQuestStatus.objects.filter(group=self, quest=quest).count():
+            return True
+        return False
 
     @classmethod
     def create(cls, group_owner, name):
         new_group = cls.objects.create(name=name, group_owner=group_owner)
         new_group.users.add(group_owner)
+        TeamQuestInvitation.objects.filter(to_user=group_owner).delete()
+        TeamQuestInvitationRequest.objects.filter(from_user=group_owner).delete()
         return new_group
 
     def add_user(self, user):
+        for invitation in TeamQuestInvitation.objects.filter(to_user=user):
+            TeamQuestNotification.create(user=invitation.from_group.group_owner,
+                text=_("The player %(pn)s joined another team, so your invitation to them was automatically declined.")
+                    % {'pn': user.nickname})
+            invitation.delete()
+
+        for request_to_join in TeamQuestInvitationRequest.objects.filter(from_user=user):
+            TeamQuestNotification.create(user=request_to_join.to_group.group_owner,
+                text=_("The player %(pn)s joined another team, so their request to join your team was automatically declined.")
+                    % {'pn': user.nickname})
+            request_to_join.delete()
+
         self.users.add(user)
 
+        if not self.is_full():
+            return
+
+        for invitation in TeamQuestInvitation.objects.filter(from_group=self):
+            TeamQuestNotification.create(user=invitation.to_user,
+                text=_("The team %(gn)s became full, so their invitation to you was automatically declined.")
+                    % {'gn': self.name})
+            invitation.delete()
+
+        for request_to_join in TeamQuestInvitationRequest.objects.filter(to_group=self):
+            TeamQuestNotification.create(user=request_to_join.from_user,
+                text=_("The team %(gn)s became full, so your request to join them was automatically declined.")
+                    % {'gn': self.name})
+            request_to_join.delete()
+
     def remove_user(self, user):
+        deleted = False
         self.users.remove(user)
         if user == self.group_owner:
             if self.is_empty() is True:
+                empty = self
                 self.delete()
+                deleted = True
             else:
                 self.promote_to_group_owner(self.users.all()[0])
+        return deleted
 
     def promote_to_group_owner(self, user):
         self.group_owner = user
@@ -330,7 +376,7 @@ class TeamQuestInvitation(models.Model):
     to_user = models.ForeignKey('TeamQuestUser', null=True, blank=False)
 
     def __unicode__(self):
-        return u"Invitation from %s to %s" % (self.from_group.group_owner, self.to_user)
+        return u"%s invited you to join their team \"%s\"" % (self.from_group.group_owner, self.from_group.name)
 
 
 class TeamQuestInvitationRequest(models.Model):
@@ -338,4 +384,21 @@ class TeamQuestInvitationRequest(models.Model):
     from_user = models.ForeignKey('TeamQuestUser', null=True, blank=False)
 
     def __unicode__(self):
-        return u"Request from %s to %s" % (self.from_user, self.to_group.group_owner)
+        return u"%s requested to join your team." % (self.from_user)
+
+
+class TeamQuestNotification(models.Model):
+    text = models.CharField(null=True, blank=False, max_length=100)
+    user = models.ForeignKey('TeamQuestUser', null=True, blank=False, related_name='notifications')
+    date_created = models.DateTimeField(null=True, blank=False)
+
+    @classmethod
+    def create(cls, text, user):
+        new_notification = cls.objects.create(text=text, user=user, date_created=datetime.datetime.now())
+        return new_notification
+
+    def post(self):
+        display_text = self.text
+        if (datetime.datetime.now() - self.date_created).days >= 2:
+            self.delete()
+        return display_text

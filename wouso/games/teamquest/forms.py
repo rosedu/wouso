@@ -1,4 +1,5 @@
 from django import forms
+
 from models import TeamQuest
 from bootstrap3_datetime import widgets
 
@@ -12,3 +13,24 @@ class AddTeamQuest(forms.ModelForm):
                 'start_time': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"}),
                 'end_time': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"})
                 }
+
+
+class CreateGroupForm(forms.ModelForm):
+
+	class Meta:
+		model = TeamQuestGroup
+		fields = ('name',)
+
+
+class InvitePlayerForm(forms.ModelForm):
+
+	class Meta:
+		model = TeamQuestInvitation
+		fields = ('to_user',)
+
+
+class RequestToJoinForm(forms.ModelForm):
+
+	class Meta:
+		model = TeamQuestInvitationRequest
+		fields = ('to_group',)
