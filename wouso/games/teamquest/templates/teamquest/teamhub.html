@@ -1,0 +1,156 @@
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Team Hub' %}{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
+{% endblock %}
+
+{% block sectiontitle %}{% trans 'Team Hub' %}{% endblock %}
+{% block sectioncontent %}
+    
+    <ul class="tabs">
+        {% if group %}
+            <li>
+                <a href="#team" id="group-click" class="no-redir">
+                    {% trans 'Team' %}
+                </a>
+            </li>
+        {% else %}
+            <li>
+                <a href="#find_team" id="create_group-click" class="no-redir">
+                    {% trans 'Teams' %}
+                </a>
+            </li>
+        {% endif %}                 
+        <li>
+            <a href="#invitations" id="invitations-click" class="no-redir">
+                {% trans 'Invitations' %}
+            </a>
+        </li>
+        <li>
+            <a href="#notifications" id="group-click" class="no-redir">
+                {% trans 'Notifications' %}
+            </a>
+        </li>
+    </ul>
+    <div class="spacer"></div>
+    <div class="tab_container">
+        {% if group %}
+        <div id="team" class="tab_content">
+            <div class="spacer"></div>
+            <a class="btn btn-info pull-right" href="{% url setup_leave %}" onclick="return confirm('Do you really want to abandon team {{group.name}}?');"> {% trans 'Leave team' %} </a>
+            <h1> {{ group.name }} </h1>
+            {% for player in group.users.all %}
+                <p>
+                {% if player.is_group_owner %}
+                    <strong> {{ player }} </strong> {% trans '[owner]' %}
+                {% else %}
+                    <em> {{ player }} </em>
+                {% endif %}
+                {% if ownership and not player.is_group_owner %}
+                     <a class="btn btn-info" href="{% url setup_kick player.id %}" onclick="return confirm('Do you really want to banish player {{player.nickname}}?');"> {% trans 'Banish' %} </a>
+                {% endif %}
+
+                </p>
+            {% endfor %}
+            {% if ownership %}
+                <form method = "post" action="{% url setup_invite %}">
+                    {% csrf_token %}
+                    <div class="spacer"></div>
+                    <p> {% trans 'Invite player to join your team:' %} </p>
+                    <div class="fieldWrapper">
+                        <label for="{{ invite_form.to_user.id_for_label }}">  </label>
+                        {{ invite_form.to_user }}
+                        <button type="submit" onclick="return confirm('Do you really want to invite this player to join your team?');"> {% trans 'Invite player' %} </button>
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+        {% else %}
+        <div id="find_team" class="tab_content">
+            <div class="spacer"></div>
+            <h3> Create a team </h3>
+            <form method = "post" action="{% url setup_create %}">
+                {% csrf_token %}
+                <p> {% trans 'How would you like your steadfast team to be named?' %} </p>
+                <div class="fieldWrapper">
+                    <label for="{{ create_form.name.id_for_label }}">{% trans 'Name' %}</label>
+                    {{ create_form.name }}
+                    <button type="submit" onclick="return confirm('Do you have what it takes to be a mighty leader? Confirm the creation of your new team.');"> {% trans 'Create team' %} </button>
+                </div>
+            </form>
+            <h3> {% trans 'Join an existing team' %} </h3>
+            <form method = "post" action="{% url setup_request %}">
+                {% csrf_token %}
+                <p> {% trans 'Which mighty team are you willing to join?' %} </p>
+                <div class="fieldWrapper">
+                    <label for="{{ request_form.to_group.id_for_label }}"> {% trans 'Team' %} </label>
+                    {{ request_form.to_group }}
+                    <button type="submit" onclick="return confirm('Do you really want to join the selected team?');"> {% trans 'Request to join' %} </button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+        <div id="invitations" class="tab_content">
+            {% if ownership %}
+                <h2> {% trans 'Requests' %} </h2>
+                {% for req in requests %}
+                    <p>{{ req }}</p>
+                    <a class="btn btn-info" href="{% url setup_accept_request req.id %}" onclick="return confirm('Do you really want to accept player {{ req.from_user }} in your team?');" > {% trans 'Accept request' %} </a>
+                    <div class="spacer"></div>
+                    <a class="btn btn-info" href="{% url setup_decline_request req.id %}" onclick="return confirm('Do you really want to decline player {{ req.from_user }}\'s request to join your team?');" > {% trans 'Decline request' %} </a>
+                    <div class="spacer"></div>
+                {% empty %}
+                    <p> {% trans 'You did not receive any invitation request.' %} </p>
+                {% endfor %}
+                <h2> {% trans 'Invitations sent' %} </h2>
+                {% for inv in sent_invitations %}
+                    {% blocktrans with player_name=inv.to_user %}
+                    <p> You invited player {{ player_name }} to join your team. </p>
+                    {% endblocktrans %}
+                    <a class="btn btn-info" href="{% url setup_cancel_invitation inv.id %}" onclick="return confirm('Do you really want to cancel your invitation to {{ inv.to_user }}?');" > Cancel invitation </a>                        
+                    <div class="spacer"></div>
+                {% empty %}
+                    <p> {% trans 'You did not invite any player to join your team.' %} </p>
+                {% endfor %}
+            {% else %}
+                <h2> {% trans 'Invitations' %} </h2>
+                {% for inv in invitations %}
+                    <p>{{ inv }}</p>
+                    <a class="btn btn-info" href="{% url setup_accept_invitation inv.id %}" onclick="return confirm('Do you really want to join team {{inv.from_group.name}}? You will not be able to leave if there is an active quest.');" > {% trans 'Accept invitation' %} </a>
+                    <div class="spacer"></div>
+                    <a class="btn btn-info" href="{% url setup_decline_invitation inv.id %}" onclick="return confirm('Do you really want to decline the invitation to team {{inv.from_group.name}}?');"> {% trans 'Decline invitation' %} </a>
+                    <div class="spacer"></div>
+                {% empty %}
+                    <p> {% trans 'You did not receive any invitation.' %} </p>
+                {% endfor %}
+                <h2> {% trans 'Requests sent' %} </h2>
+                 {% for req in sent_requests %}
+                    {% blocktrans with team_name=req.to_group.name %}
+                    <p> You requested to join team {{ team_name }}.</p>
+                    {% endblocktrans %}
+                    <a class="btn btn-info" href="{% url setup_cancel_request req.id %}" onclick="return confirm('Do you really want to cancel your request to join team {{ req.to_group.name }}?');" > {% trans 'Cancel request' %} </a>
+                    <div class="spacer"></div>
+                {% empty %}
+                    <p> {% trans 'You have not requested to join any team.' %} </p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div id="notifications" class="tab_content">
+            <div class="spacer"></div>
+            <div class="spacer"></div>
+            {% for note in notifications %}
+                {% blocktrans with date_created=note.date_created post=note.post %}
+                <p>[{{ date_created }}] {{ post }} </p>
+                {% endblocktrans %}
+                <div class="spacer"></div>
+            {% empty %}
+                {% trans 'You have no notifications.' %}
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}
