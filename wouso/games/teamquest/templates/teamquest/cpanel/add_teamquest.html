@@ -1,0 +1,27 @@
+{% extends 'cpanel/index.html' %}
+{% load django_bootstrap_breadcrumbs %}
+{% load bootstrap %}
+
+{% block sectiontitle %}Team Quests{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Team quest" "teamquest_home" %}
+    {% breadcrumb "Add quest" "teamquest_add" %}
+{% endblock %}
+
+{% block sectioncontent %}
+
+<h3>New quest</h3>
+
+<form method="post" role="form" class="form-horizontal" action="#">
+    {{ form|bootstrap_horizontal }}
+
+<div class="actions">
+    <button onclick="history.back(); return false;" class="btn btn-warning">Cancel</button>
+    <button type="reset" class="btn btn-danger">Reset</button>
+    <button type="submit" class="btn btn-primary">Next</button>
+</div>
+    {% csrf_token %}
+</form>
+{% endblock %}

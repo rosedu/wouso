@@ -40,10 +40,10 @@
         <td>{{ q.start_time|date:"d/m/Y H:i" }}</td>
         <td>{{ q.end_time|date:"d/m/Y H:i" }}</td>
         <td>
-            <a href="#" class="btn btn-success">
+            <a href="{% url teamquest_edit q.id %}" class="btn btn-success">
                 <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
             </a>
-            <a href="#" class="btn btn-danger">
+            <a href="{% url delete_teamquest q.id %}" class="btn btn-danger" onclick="return confirm('Are you sure?');">
                 <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
             </a>
         </td>

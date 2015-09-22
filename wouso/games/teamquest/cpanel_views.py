@@ -1,9 +1,10 @@
-from django.contrib.auth.decorators import permission_required
-from django.views.generic import ListView, CreateView
+from django.contrib.auth.decorators import permission_required, login_required
+from django.views.generic import ListView, TemplateView, DeleteView, UpdateView
 from django.core.urlresolvers import reverse_lazy
+from django.shortcuts import render_to_response
 
-from wouso.games.teamquest.models import TeamQuest, TeamQuestGroup
-from wouso.games.teamquest.forms import AddTeamQuest
+from wouso.games.teamquest.models import TeamQuest, TeamQuestGroup, TeamQuestQuestion
+from wouso.games.teamquest.forms import AddTeamQuestForm, EditTeamQuestForm
 
 
 class QuestsView(ListView):
@@ -24,10 +25,35 @@ class GroupsView(ListView):
 groups = permission_required('config.change_setting')(GroupsView.as_view())
 
 
-class AddTeamQuestView(CreateView):
-    form_class = AddTeamQuest
+class EditTeamQuestView(UpdateView):
+    model = TeamQuest
+    form_class = EditTeamQuestForm
     success_url = reverse_lazy('teamquest_home')
+    template_name = 'teamquest/cpanel/edit_teamquest.html'
+
+
+edit_teamquest = permission_required('config.change_setting')(EditTeamQuestView.as_view())
+
+
+class DeleteTeamQuestView(DeleteView):
+    model = TeamQuest
+    success_url = reverse_lazy('teamquest_home')
+
+    def get(self, *args, **kwargs):
+        return self.delete(*args, **kwargs)
+
+
+delete_teamquest = permission_required('config.change_setting')(
+    DeleteTeamQuestView.as_view())
+
+
+class AddTeamQuestView(TemplateView):
     template_name = 'teamquest/cpanel/add_teamquest.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(AddTeamQuestView, self).get_context_data(**kwargs)
+        context['form'] = AddTeamQuestForm()
+        return context
 
 
 add_teamquest = permission_required('config.change_setting')(AddTeamQuestView.as_view())
