@@ -9,12 +9,12 @@ def setup_user_groups():
     cpanel_perm = Permission.objects.get(codename='change_setting')
     staff.permissions.add(cpanel_perm)
 
-    # Default entry race, 'Others'
-    others = Race.objects.get_or_create(name='Others')[0]
-    others.can_play = False
-    others.save()
+    # Default entry race, 'Unaffiliated'
+    unaffiliated = Race.objects.get_or_create(name='Unaffiliated')[0]
+    unaffiliated.can_play = False
+    unaffiliated.save()
     default_race = Setting.get('default_race')
-    default_race.set_value(str(others.pk))
+    default_race.set_value(str(unaffiliated.pk))
 
 def setup_staff_groups():
     for g in get_games():
