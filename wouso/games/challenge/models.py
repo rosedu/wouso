@@ -653,8 +653,13 @@ class DefaultChallengeManager(ChallengeManager):
                 else:
                     u.percents = 100
 
+            # Check for charge
             if self.challenge.user_won.user.magic.has_modifier('challenge-affect-scoring-won'):
                 self.challenge.user_won.percents += self.challenge.user_won.user.magic.modifier_percents('challenge-affect-scoring-won') - 100
+
+            # Check for weakness
+            if self.challenge.user_won.user.magic.has_modifier('challenge-affect-scoring-lost'):
+                self.challenge.user_won.percents += self.challenge.user_won.user.magic.modifier_percents('challenge-affect-scoring-lost') - 100
 
             if self.challenge.WARRANTY:
                 # warranty not affected by percents

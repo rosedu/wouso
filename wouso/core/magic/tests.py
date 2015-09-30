@@ -301,36 +301,36 @@ class SpellTestCase(WousoTest):
 
     def test_weakness(self):
         """
-         Test for weakness
+         Test for Weakness spell
         """
-
         initial_points = 10
 
-        player = self._get_player()
-        player2 = self._get_player(2)
-        chall_user = player.get_extension(ChallengeUser)
+        player_weakness = self._get_player(1).get_extension(ChallengeUser)
+        player_no_weakness = self._get_player(2).get_extension(ChallengeUser)
+        player_dummy = self._get_player(3).get_extension(ChallengeUser)
 
         scoring.setup_scoring()
         Coin.add('points')
-        scoring.score_simple(chall_user, 'points', initial_points)
-        self.assertEqual(player.points, initial_points)
+        scoring.score_simple(player_no_weakness, 'points', initial_points)
+        scoring.score_simple(player_weakness, 'points', initial_points)
 
-        # Points won before Weakness is applied
-        chall = Challenge.create(user_from=chall_user, user_to=player2, ignore_questions=True)
-        chall.set_won_by_player(chall_user)
-        points_no_weakness = player.points
+        # Apply weakness
+        weakness = Spell.objects.create(name='challenge-affect-scoring-won', available=True, price=10, percents=-66, type='p')
+        obs = PlayerSpellDue.objects.create(player=player_weakness, source=player_weakness, spell=weakness, due=datetime.now() + timedelta(days=1))
 
-        # Applying Weakness
-        weakness = Spell.objects.create(name='challenge-affect-scoring', available=True, price=10, percents=-66, type='n')
-        obs = PlayerSpellDue.objects.create(player=chall_user, source=chall_user, spell=weakness, due=datetime.now() + timedelta(days=1))
-        self.assertTrue(chall_user.magic.has_modifier('challenge-affect-scoring'))
+        # Win challenge with player_no_weakness
+        chall = Challenge.create(user_from=player_no_weakness, user_to=player_dummy, ignore_questions=True)
+        chall.set_won_by_player(player_no_weakness)
 
-        player.points = initial_points
-        chall = Challenge.create(user_from=chall_user, user_to=player2, ignore_questions=True)
-        chall.set_won_by_player(chall_user)
+        # Win challenge with player_weakness
+        chall = Challenge.create(user_from=player_weakness, user_to=player_dummy, ignore_questions=True)
+        chall.set_won_by_player(player_weakness)
+
+        no_weakness_points = player_no_weakness.get_extension(Player).points
+        weakness_points = player_weakness.get_extension(Player).points
 
         # Player should win 66% less points with weakness applied
-        self.assertEqual(player.points, points_no_weakness - 0.66 * (points_no_weakness - initial_points))
+        self.assertEqual (no_weakness_points - 0.66 * (no_weakness_points - initial_points), weakness_points)
 
     def test_charge(self):
         """
