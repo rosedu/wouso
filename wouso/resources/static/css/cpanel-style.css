@@ -120,3 +120,19 @@ div.second {
 .form-control {
     width: 40%;
 }
+/* Groups */
+.btn-toggle{
+    margin-bottom: 10px;
+}
+.ctr-number{
+    font-weight: bold;
+}
+.label-3{
+    margin: 0px;
+}
+.group-row{
+    background: #CCFFCC;
+}
+.hidden{
+    display: none;
+}

@@ -22,45 +22,189 @@ Races and groups
 {% endblock %}
 
 {% block sectioncontent %}
-<ul>
+<div class="text-right">
+    <button class="btn btn-sm btn-default btn-toggle" id="toggle_all_groups" data-show="true">
+        {% trans 'Show all groups' %}
+    </button>
+</div>
+
+<table class="table table-hover table-bordered table-condensed">
+    <tr>
+        <th>#</th>
+        <th>{% trans 'Race name' %}</th>
+        <th>{% trans 'Race title' %}</th>
+        <th>{% trans 'Number of groups' %}</th>
+        <th>{% trans 'Can play' %}</th>
+        <th>{% trans 'Actions' %}</th>
+    </tr>
     {% for r in races %}
-    <li>
-        {{ r }} {% if r.can_play %}[can play]{% endif %}
-        <a href="{% url admin:user_race_change r.id %}"
-            style="color: green" title="Edit">
-            <span class="glyphicon glyphicon-edit"></span>
-        </a>
-        <ul>
-            {% for g in r.children %}
-            <li>
-	        {{ g.name}} {{ g }}
-                <a href="{% url admin:user_playergroup_change g.id %}"
-                   style="color: green" title="Edit">
-                    <span class="glyphicon glyphicon-edit"></span>
-                </a>
-                <a href="{% url system_message_group g.id %}"
-                   title="Send a message to this group">{% trans 'Message' %}
-                </a>
-            </li>
-            {% endfor %}
-        </ul>
-    </li>
-    {% endfor %}
-    <li>Orphans
-      <ul>
-        {% for g in orphan_groups %}
-          <li>
-              {{ g }}
-              <a href="{% url admin:user_playergroup_change g.id %}"
-                 style="color: green" title="Edit">
-                  <span class="glyphicon glyphicon-edit"></span>
-              </a>
-              <a href="{% url system_message_group g.id %}"
-                 title="Send a message to this group">{% trans 'Message' %}
-              </a>
-          </li>
+        <tr>
+            <td class="ctr-number">{{ forloop.counter0 }}</td>
+            <td>{{ r.name }}</td>
+            <td>{{ r.title }}</td>
+            <td>{{ r.children.count }}</td>
+            <td>
+                {% if r.can_play %}
+                    <h3 class='label-3'><span class="label label-success label-sm">{% trans 'yes' %}</span></h3>
+                {% else %}
+                    <h3 class='label-3'><span class="label label-danger label-sm">{% trans 'no' %}</span></h3>
+                {% endif %}
+            </td>
+            <td>
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-5 text-right">
+                        <a class="btn btn-success btn-sm" href="{% url admin:user_race_change r.id %}">
+                            <span class="glyphicon glyphicon-edit"></span> {% trans 'Edit '%}
+                        </a>
+                    </div>
+                    <div class="col-md-5">
+                        {% if r.children.count %}
+                            <a class="btn btn-warning btn-sm toggle_groups btn-block" data-show="true" data-race="race-{{r.id}}">
+                                <span class="glyphicon glyphicon-eye-open"></span> {% trans 'Show groups' %}
+                            </a>
+                        {% else %}
+                            <a class="btn btn-warning btn-sm disabled btn-block">
+                                <span class="glyphicon glyphicon-eye-open"></span> {% trans 'Show groups' %}
+                            </a>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-1"></div>
+                </div>
+            </td>
+        </tr>
+        {% for g in r.children %}
+            <tr class="group-row hidden group race-{{r.id}}">
+                <td>{{ forloop.parentloop.counter0 }}.{{ forloop.counter0 }}</td>
+                <td>{{ g.name }}</td>
+                <td>{{ g.title }}</td>
+                <td>n/a</td>
+                <td></td>
+                <td>
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-5 text-right">
+                            <a href="{% url admin:user_playergroup_change g.id %}" class="btn btn-success btn-sm">
+                                <span class="glyphicon glyphicon-edit"></span> {% trans 'Edit '%}
+                            </a>
+                        </div>
+                        <div class="col-md-5">
+                            <a href="{% url system_message_group g.id %}" class="btn btn-info btn-sm btn-block">
+                                <span class="glyphicon glyphicon-envelope"></span> {% trans 'Send message' %}
+                            </a>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                </td>
+            </tr>
         {% endfor %}
-      </ul>
-    </li>
-</ul>
+    {% endfor %}
+
+    <!-- Display orphan race -->
+    <tr>
+        <td class="ctr-number">{{ races.count }}</td>
+        <td>{% trans 'Orphans' %}</td>
+        <td></td>
+        <td>{{ orphan_groups.count }}</td>
+        <td></td>
+        <td>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-5 text-right">
+                    <a class="btn btn-success btn-sm disabled">
+                        <span class="glyphicon glyphicon-edit"></span> {% trans 'Edit '%}
+                    </a>
+                </div>
+                <div class="col-md-5">
+                    {% if orphan_groups.count %}
+                        <a class="toggle_groups btn btn-warning btn-sm btn-block" data-show="true" data-race="race-orphans">
+                            <span class="glyphicon glyphicon-eye-open"></span> {% trans 'Show groups' %}
+                        </a>
+                    {% else %}
+                        <a class="btn btn-warning btn-sm disabled btn-block">
+                            <span class="glyphicon glyphicon-eye-open"></span> {% trans 'Show groups' %}
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+        </td>
+    </tr>
+    <!-- Display orphan groups -->
+    {% for g in orphan_groups %}
+        <tr class="group group-row hidden race-orphans">
+            <td>{{ races.count }}.{{ forloop.counter0 }}</td>
+            <td>{{ g }}</td>
+            <td>{{ g.title }}</td>
+            <td>n/a</td>
+            <td></td>
+            <td>
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-5 text-right">
+                        <a href="{% url admin:user_playergroup_change g.id %}" class="btn btn-success btn-sm">
+                            <span class="glyphicon glyphicon-edit"></span> {% trans 'Edit '%}
+                        </a>
+                    </div>
+                    <div class="col-md-5">
+                        <a href="{% url system_message_group g.id %}" class="btn btn-info btn-sm btn-block"> 
+                            <span class="glyphicon glyphicon-envelope"></span> {% trans 'Send message' %}
+                        </a>
+                    </div>
+                    <div class="col-md-1"></div>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+
+<script>
+$(document).ready(function() {
+    $(document).on("click",".toggle_groups",function() {
+        var race = $(this).data('race');
+        var show = $(this).data('show');
+
+        var class_race = '.' + race;
+        var $group_rows = $(class_race);
+
+        if(show)
+        {
+            $(this).html("<span class=\"glyphicon glyphicon-eye-close\"></span> {% trans 'Hide groups' %}");
+            $group_rows.removeClass('hidden');
+            $(this).data('show', false);
+        }
+        else
+        {
+            $(this).html("<span class=\"glyphicon glyphicon-eye-open\"></span> {% trans 'Show groups' %}");
+            $group_rows.addClass('hidden');
+            $(this).data('show', true);
+        }
+    });
+
+    $(document).on("click", "#toggle_all_groups", function() {
+        var show = $(this).data('show');
+        var $group_rows = $('.group');
+        var $toggle_buttons = $('.toggle_groups');
+
+        if(show)
+        {
+            $(this).html("{% trans 'Hide all groups' %}");
+            $group_rows.removeClass('hidden');
+
+            $toggle_buttons.html("<span class=\"glyphicon glyphicon-eye-close\"></span> {% trans 'Hide groups' %}");
+            $toggle_buttons.data('show', false);
+            $(this).data('show', false);
+        }
+        else
+        {
+            $(this).html("{% trans 'Show all groups' %}");
+            $group_rows.addClass('hidden');
+
+            $toggle_buttons.html("<span class=\"glyphicon glyphicon-eye-open\"></span> {% trans 'Show groups' %}");
+            $toggle_buttons.data('show', true);
+            $(this).data('show', true);
+        }
+    });
+});
+</script>
 {% endblock %}
