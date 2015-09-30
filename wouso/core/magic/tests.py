@@ -377,6 +377,37 @@ class SpellTestCase(WousoTest):
         # Player should have 33% more points with charge applied
         self.assertEqual (no_charge_points + 0.33 * (no_charge_points - initial_points), charge_points)
 
+    def test_weakness_and_charge(self):
+        """
+         If both Weakness and Charge are active, a player should win 33% less points after a victory
+        """
+        initial_points = 10
+        win_points = 6
+
+        player = self._get_player(1).get_extension(ChallengeUser)
+        player_dummy = self._get_player(2).get_extension(ChallengeUser)
+
+        scoring.setup_scoring()
+        Coin.add('points')
+        scoring.score_simple(player, 'points', initial_points)
+
+        formula = Formula.get('chall-won')
+        formula.expression = 'points=' + str(win_points)
+        formula.save()
+
+        # Apply charge
+        charge = Spell.objects.create(name='challenge-affect-scoring-won', available=True, price=10, percents=33, type='p')
+        obs = PlayerSpellDue.objects.create(player=player, source=player, spell=charge, due=datetime.now() + timedelta(days=1))
+
+        # Apply weakness
+        weakness = Spell.objects.create(name='challenge-affect-scoring-won', available=True, price=10, percents=-66, type='p')
+        obs = PlayerSpellDue.objects.create(player=player, source=player, spell=weakness, due=datetime.now() + timedelta(days=1))
+
+        chall = Challenge.create(user_from=player, user_to=player_dummy, ignore_questions=True)
+        chall.set_won_by_player(player)
+
+        self.assertEqual(player.player_ptr.points, initial_points + win_points - (0.33 * win_points))
+
     def test_blind(self):
         """
         Test for Blind spell
