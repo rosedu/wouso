@@ -167,6 +167,18 @@ class SpellTestCase(WousoTest):
         player.magic.cast_spell(dispell, player, datetime.now())
         self.assertFalse(player.magic.spells) # No spells should be active on player after dispell
 
+    def test_dispell_no_due(self):
+        """
+         Dispell should not remain active on player after cast
+        """
+        player = self._get_player()
+
+        dispell = Spell.objects.create(name='dispell', available=True, price=20, type='o')
+        player.magic.add_spell(dispell)
+
+        player.magic.cast_spell(dispell, player)
+        self.assertEqual(PlayerSpellDue.objects.filter(player=player).__len__(), 0)
+
     def test_cure(self):
         """
          Test if cure works on a player
@@ -424,7 +436,7 @@ class TestMagicViews(WousoTest):
         data = {'points': 10}
         response = self.c.post(reverse('bazaar_exchange'), data)
         self.assertContains(response, _('Converted successfully'))
-        
+
     def test_bazaar_exchange_error_message(self):
         data = {'points': 1000}
         response = self.c.post(reverse('bazaar_exchange'), data)
