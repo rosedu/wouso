@@ -338,31 +338,32 @@ class SpellTestCase(WousoTest):
         """
         initial_points = 10
 
-        player = self._get_player()
-        player2 = self._get_player(2)
-        chall_user = player.get_extension(ChallengeUser)
+        player_charge = self._get_player(1).get_extension(ChallengeUser)
+        player_no_charge = self._get_player(2).get_extension(ChallengeUser)
+        player_dummy = self._get_player(3).get_extension(ChallengeUser)
 
         scoring.setup_scoring()
         Coin.add('points')
-        scoring.score_simple(chall_user, 'points', initial_points)
-        self.assertEqual(player.points, initial_points)
+        scoring.score_simple(player_no_charge, 'points', initial_points)
+        scoring.score_simple(player_charge, 'points', initial_points)
 
-        # Points won before Charge is applied
-        chall = Challenge.create(user_from=chall_user, user_to=player2, ignore_questions=True)
-        chall.set_won_by_player(chall_user)
-        points_no_charge = player.points
+        # Apply charge
+        charge = Spell.objects.create(name='challenge-affect-scoring-won', available=True, price=10, percents=33, type='p')
+        obs = PlayerSpellDue.objects.create(player=player_charge, source=player_charge, spell=charge, due=datetime.now() + timedelta(days=1))
 
-        # Apply Charge
-        charge = Spell.objects.create(name='challenge-affect-scoring', available=True, price=10, percents=33, type='p')
-        obs = PlayerSpellDue.objects.create(player=chall_user, source=chall_user, spell=charge, due=datetime.now() + timedelta(days=1))
-        self.assertTrue(chall_user.magic.has_modifier('challenge-affect-scoring'))
+        # Win challenge with player_no_charge
+        chall = Challenge.create(user_from=player_no_charge, user_to=player_dummy, ignore_questions=True)
+        chall.set_won_by_player(player_no_charge)
 
-        player.points = initial_points
-        chall = Challenge.create(user_from=chall_user, user_to=player2, ignore_questions=True)
-        chall.set_won_by_player(chall_user)
+        # Win challenge with player_charge
+        chall = Challenge.create(user_from=player_charge, user_to=player_dummy, ignore_questions=True)
+        chall.set_won_by_player(player_charge)
+
+        no_charge_points = player_no_charge.get_extension(Player).points
+        charge_points = player_charge.get_extension(Player).points
 
         # Player should have 33% more points with charge applied
-        self.assertEqual(player.points, points_no_charge + 0.33 * (points_no_charge - initial_points))
+        self.assertEqual (no_charge_points + 0.33 * (no_charge_points - initial_points), charge_points)
 
     def test_blind(self):
         """
