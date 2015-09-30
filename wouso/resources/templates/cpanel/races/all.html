@@ -22,103 +22,102 @@ Races and groups
 {% endblock %}
 
 {% block sectioncontent %}
-<div style="text-align: right;">
-    <button class="btn btn-sm btn-default" style="margin-bottom: 10px;" id="toggle_all_groups" data-show="1">
-        Show all groups
+<div class="text-right">
+    <button class="btn btn-sm btn-default btn-toggle" id="toggle_all_groups" data-show="true">
+        {% trans 'Show all groups' %}
     </button>
 </div>
 
 <table class="table table-hover table-bordered table-condensed">
     <tr>
         <th>#</th>
-        <th>Race name</th>
-        <th>Race title</th>
-        <th>Number of groups</th>
-        <th>Can play</th>
-        <th>Actions</th>
+        <th>{% trans 'Race name' %}</th>
+        <th>{% trans 'Race title' %}</th>
+        <th>{% trans 'Number of groups' %}</th>
+        <th>{% trans 'Can play' %}</th>
+        <th>{% trans 'Actions' %}</th>
     </tr>
     {% for r in races %}
-    <tr>
-        <td style="font-weight: bold;">{{ forloop.counter0 }}</td>
-        <td>{{ r.name }}</td>
-        <td>{{ r.title }}</td>
-        <td>{{ r.children.count }}</td>
-        <td>
-            {% if r.can_play %}
-                <h3 style="margin: 0px;"><span class="label label-success label-sm">{% trans 'yes' %}</span></h3>
-            {% else %}
-                <h3 style="margin: 0px;"><span class="label label-danger label-sm">{% trans 'no' %}</span></h3>
-            {% endif %}
-        </td>
-        <td>
-            <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-5" style="text-align: right;">
-                    <a class="btn btn-success btn-sm" href="{% url admin:user_race_change r.id %}">
-                        <span class="glyphicon glyphicon-edit"></span> {% trans 'Edit '%}
-                    </a>
-                </div>
-                <div class="col-md-5">
-                    {% if r.children.count %}
-                        <a class="btn btn-warning btn-sm toggle_groups btn-block" data-show="1" data-race="race-{{r.id}}">
-                            <span class="glyphicon glyphicon-eye-open"></span> {% trans 'Show groups' %}
-                        </a>
-                    {% else %}
-                        <a class="btn btn-warning btn-sm disabled btn-block">
-                            <span class="glyphicon glyphicon-eye-open"></span> {% trans 'Show groups' %}
-                        </a>
-                    {% endif %}
-                </div>
-                <div class="col-md-1"></div>
-            </div>
-        </td>
-    </tr>
-    {% for g in r.children %}
-        <tr style="display: none; background: #CCFFCC;" class="group race-{{r.id}}">
-            <td>{{forloop.parentloop.counter0}}.{{forloop.counter0}}</td>
-            <td>{{ g.name }}</td>
-            <td>{{ g.title }}</td>
-            <td>n/a</td>
-            <td></td>
+        <tr>
+            <td class="ctr-number">{{ forloop.counter0 }}</td>
+            <td>{{ r.name }}</td>
+            <td>{{ r.title }}</td>
+            <td>{{ r.children.count }}</td>
+            <td>
+                {% if r.can_play %}
+                    <h3 class='label-3'><span class="label label-success label-sm">{% trans 'yes' %}</span></h3>
+                {% else %}
+                    <h3 class='label-3'><span class="label label-danger label-sm">{% trans 'no' %}</span></h3>
+                {% endif %}
+            </td>
             <td>
                 <div class="row">
                     <div class="col-md-1"></div>
-                    <div class="col-md-5" style="text-align: right;">
-                        <a href="{% url admin:user_playergroup_change g.id %}" class="btn btn-success btn-sm">
+                    <div class="col-md-5 text-right">
+                        <a class="btn btn-success btn-sm" href="{% url admin:user_race_change r.id %}">
                             <span class="glyphicon glyphicon-edit"></span> {% trans 'Edit '%}
                         </a>
                     </div>
                     <div class="col-md-5">
-                        <a href="{% url system_message_group g.id %}" class="btn btn-info btn-sm btn-block">
-                            <span class="glyphicon glyphicon-envelope"></span> {% trans 'Send message' %}
-                        </a>
+                        {% if r.children.count %}
+                            <a class="btn btn-warning btn-sm toggle_groups btn-block" data-show="true" data-race="race-{{r.id}}">
+                                <span class="glyphicon glyphicon-eye-open"></span> {% trans 'Show groups' %}
+                            </a>
+                        {% else %}
+                            <a class="btn btn-warning btn-sm disabled btn-block">
+                                <span class="glyphicon glyphicon-eye-open"></span> {% trans 'Show groups' %}
+                            </a>
+                        {% endif %}
                     </div>
                     <div class="col-md-1"></div>
                 </div>
             </td>
         </tr>
-    {% endfor %}
-    
+        {% for g in r.children %}
+            <tr class="group-row hidden group race-{{r.id}}">
+                <td>{{ forloop.parentloop.counter0 }}.{{ forloop.counter0 }}</td>
+                <td>{{ g.name }}</td>
+                <td>{{ g.title }}</td>
+                <td>n/a</td>
+                <td></td>
+                <td>
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-5 text-right">
+                            <a href="{% url admin:user_playergroup_change g.id %}" class="btn btn-success btn-sm">
+                                <span class="glyphicon glyphicon-edit"></span> {% trans 'Edit '%}
+                            </a>
+                        </div>
+                        <div class="col-md-5">
+                            <a href="{% url system_message_group g.id %}" class="btn btn-info btn-sm btn-block">
+                                <span class="glyphicon glyphicon-envelope"></span> {% trans 'Send message' %}
+                            </a>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
     {% endfor %}
 
     <!-- Display orphan race -->
     <tr>
-        <td style="font-weight: bold;">{{races.count}}</td>
-        <td>Orphans</td>
+        <td class="ctr-number">{{ races.count }}</td>
+        <td>{% trans 'Orphans' %}</td>
         <td></td>
-        <td>{{orphan_groups.count}}</td>
+        <td>{{ orphan_groups.count }}</td>
         <td></td>
         <td>
             <div class="row">
                 <div class="col-md-1"></div>
-                <div class="col-md-5" style="text-align: right;">
+                <div class="col-md-5 text-right">
                     <a class="btn btn-success btn-sm disabled">
                         <span class="glyphicon glyphicon-edit"></span> {% trans 'Edit '%}
                     </a>
                 </div>
                 <div class="col-md-5">
                     {% if orphan_groups.count %}
-                        <a class="toggle_groups btn btn-warning btn-sm btn-block" data-show="1" data-race="race-orphans">
+                        <a class="toggle_groups btn btn-warning btn-sm btn-block" data-show="true" data-race="race-orphans">
                             <span class="glyphicon glyphicon-eye-open"></span> {% trans 'Show groups' %}
                         </a>
                     {% else %}
@@ -133,16 +132,16 @@ Races and groups
     </tr>
     <!-- Display orphan groups -->
     {% for g in orphan_groups %}
-        <tr style="display: none; background: #CCFFCC;" class="group race-orphans">
-            <td>{{races.count}}.{{forloop.counter0}}</td>
-            <td>{{g}}</td>
-            <td>{{g.title}}</td>
+        <tr class="group group-row hidden race-orphans">
+            <td>{{ races.count }}.{{ forloop.counter0 }}</td>
+            <td>{{ g }}</td>
+            <td>{{ g.title }}</td>
             <td>n/a</td>
             <td></td>
             <td>
                 <div class="row">
                     <div class="col-md-1"></div>
-                    <div class="col-md-5" style="text-align: right;">
+                    <div class="col-md-5 text-right">
                         <a href="{% url admin:user_playergroup_change g.id %}" class="btn btn-success btn-sm">
                             <span class="glyphicon glyphicon-edit"></span> {% trans 'Edit '%}
                         </a>
@@ -159,9 +158,7 @@ Races and groups
     {% endfor %}
 </table>
 
-<script type="text/javascript" src="{{ basepath }}/static/js/jquery-ui-1.8.16.custom.min.js"></script>
 <script>
-
 $(document).ready(function() {
     $(document).on("click",".toggle_groups",function() {
         var race = $(this).data('race');
@@ -173,14 +170,15 @@ $(document).ready(function() {
         if(show)
         {
             $(this).html("<span class=\"glyphicon glyphicon-eye-close\"></span> {% trans 'Hide groups' %}");
-            $group_rows.show();
+            $group_rows.removeClass('hidden');
+            $(this).data('show', false);
         }
         else
         {
             $(this).html("<span class=\"glyphicon glyphicon-eye-open\"></span> {% trans 'Show groups' %}");
-            $group_rows.hide();
+            $group_rows.addClass('hidden');
+            $(this).data('show', true);
         }
-        $(this).data('show', 1 - show); //toggle
     });
 
     $(document).on("click", "#toggle_all_groups", function() {
@@ -190,21 +188,22 @@ $(document).ready(function() {
 
         if(show)
         {
-            $(this).html("Hide all groups");
-            $group_rows.show();
+            $(this).html("{% trans 'Hide all groups' %}");
+            $group_rows.removeClass('hidden');
 
             $toggle_buttons.html("<span class=\"glyphicon glyphicon-eye-close\"></span> {% trans 'Hide groups' %}");
-            $toggle_buttons.data('show', 0);
+            $toggle_buttons.data('show', false);
+            $(this).data('show', false);
         }
         else
         {
-            $(this).html("Show all groups");
-            $group_rows.hide();
+            $(this).html("{% trans 'Show all groups' %}");
+            $group_rows.addClass('hidden');
 
             $toggle_buttons.html("<span class=\"glyphicon glyphicon-eye-open\"></span> {% trans 'Show groups' %}");
-            $toggle_buttons.data('show', 1);
+            $toggle_buttons.data('show', true);
+            $(this).data('show', true);
         }
-        $(this).data('show', 1 - show);//toggle
     });
 });
 </script>
