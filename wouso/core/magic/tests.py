@@ -179,23 +179,35 @@ class SpellTestCase(WousoTest):
         player.magic.cast_spell(dispell, player)
         self.assertEqual(PlayerSpellDue.objects.filter(player=player).__len__(), 0)
 
-    def test_cure(self):
+    def test_cure_negative(self):
         """
-         Test if cure works on a player
+         Test if cure works on a negative spell
         """
         player = self._get_player()
-        player2 = self._get_player(2)
 
         spell = Spell.objects.create(name='test-spell', available=True, price=10, type='n')
         cure = Spell.objects.create(name='cure', available=True, price=10)
         obs = PlayerSpellDue.objects.create(player=player, source=player, spell=spell, due=datetime.now() + timedelta(days=1))
 
-        self.assertTrue(player.magic.spells) # There is test-spell cast on myself
+        player.magic.add_spell(cure)
+        player.magic.cast_spell(cure, player, datetime.now() + timedelta(days=1))
 
-        player2.magic.add_spell(cure)
-        player.magic.cast_spell(cure, player2, datetime.now() + timedelta(days=1))
+        self.assertEqual(len(PlayerSpellDue.objects.filter(player=player)), 0) # There isn't any spell left
 
-        self.assertFalse(player.magic.spells) # There isn't any spell left
+    def test_cure_positive(self):
+        """
+         Cure should not remove positive spells
+        """
+        player = self._get_player()
+
+        spell = Spell.objects.create(name='test-spell', available=True, price=10, type='p')
+        cure = Spell.objects.create(name='cure', available=True, price=10)
+        obs = PlayerSpellDue.objects.create(player=player, source=player, spell=spell, due=datetime.now() + timedelta(days=1))
+
+        player.magic.add_spell(cure)
+        player.magic.cast_spell(cure, player, datetime.now() + timedelta(days=1))
+
+        self.assertEqual(len(PlayerSpellDue.objects.filter(player=player)), 1) # The spell is still present
 
     def test_disguise_simple(self):
         """
