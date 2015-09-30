@@ -23,7 +23,7 @@ Races and groups
 
 {% block sectioncontent %}
 <div style="text-align: right;">
-    <button class="btn btn-sm btn-default" style="margin-bottom: 10px;" id="toggle_groups" data-show="1">
+    <button class="btn btn-sm btn-default" style="margin-bottom: 10px;" id="toggle_all_groups" data-show="1">
         Show all groups
     </button>
 </div>
@@ -159,55 +159,52 @@ Races and groups
     {% endfor %}
 </table>
 
+<script type="text/javascript" src="{{ basepath }}/static/js/jquery-ui-1.8.16.custom.min.js"></script>
 <script>
+
 $(document).ready(function() {
     $(document).on("click",".toggle_groups",function() {
-        var table_rows = document.getElementsByClassName(this.dataset.race);
+        var race = $(this).data('race');
+        var show = $(this).data('show');
 
-        if(this.dataset.show == 1)
+        var class_race = '.' + race;
+        var $group_rows = $(class_race);
+
+        if(show)
         {
-            this.innerHTML = "<span class=\"glyphicon glyphicon-eye-close\"></span> {% trans 'Hide groups' %}";
-            for (var i = 0; i < table_rows.length; i++)
-                table_rows[i].style.display = '';
+            $(this).html("<span class=\"glyphicon glyphicon-eye-close\"></span> {% trans 'Hide groups' %}");
+            $group_rows.show();
         }
         else
         {
-            this.innerHTML = "<span class=\"glyphicon glyphicon-eye-open\"></span> {% trans 'Show groups' %}";
-            for (var i = 0; i < table_rows.length; i++)
-                table_rows[i].style.display = 'none';
+            $(this).html("<span class=\"glyphicon glyphicon-eye-open\"></span> {% trans 'Show groups' %}");
+            $group_rows.hide();
         }
-        this.dataset.show = 1 - this.dataset.show; //toggle
+        $(this).data('show', 1 - show); //toggle
     });
 
-    $(document).on("click", "#toggle_groups", function() {
-        var table_rows = document.getElementsByClassName("group");
-        var x = document.getElementsByClassName("toggle_groups");
+    $(document).on("click", "#toggle_all_groups", function() {
+        var show = $(this).data('show');
+        var $group_rows = $('.group');
+        var $toggle_buttons = $('.toggle_groups');
 
-        if(this.dataset.show == 1)
+        if(show)
         {
-            this.innerHTML = "Hide all groups";
-            for (var i = 0; i < table_rows.length; i++)
-                table_rows[i].style.display = '';
+            $(this).html("Hide all groups");
+            $group_rows.show();
 
-            for (var i = 0; i < x.length; i++)
-            {
-                x[i].innerHTML = "<span class=\"glyphicon glyphicon-eye-close\"></span> {% trans 'Hide groups' %}";
-                x[i].dataset.show = 0;
-            }
+            $toggle_buttons.html("<span class=\"glyphicon glyphicon-eye-close\"></span> {% trans 'Hide groups' %}");
+            $toggle_buttons.data('show', 0);
         }
         else
         {
-            this.innerHTML = "Show all groups";
-            for (var i = 0; i < table_rows.length; i++)
-                table_rows[i].style.display = 'none';
+            $(this).html("Show all groups");
+            $group_rows.hide();
 
-            for (var i = 0; i < x.length; i++)
-            {
-                x[i].innerHTML = "<span class=\"glyphicon glyphicon-eye-open\"></span> {% trans 'Show groups' %}";
-                x[i].dataset.show = 1;
-            }
+            $toggle_buttons.html("<span class=\"glyphicon glyphicon-eye-open\"></span> {% trans 'Show groups' %}");
+            $toggle_buttons.data('show', 1);
         }
-        this.dataset.show = 1 - this.dataset.show; //toggle
+        $(this).data('show', 1 - show);//toggle
     });
 });
 </script>
