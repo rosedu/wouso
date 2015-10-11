@@ -177,7 +177,7 @@ class SpellTestCase(WousoTest):
         player.magic.add_spell(dispell)
 
         player.magic.cast_spell(dispell, player)
-        self.assertEqual(PlayerSpellDue.objects.filter(player=player).__len__(), 0)
+        self.assertFalse(PlayerSpellDue.objects.filter(player=player))
 
     def test_cure_negative(self):
         """
@@ -192,7 +192,7 @@ class SpellTestCase(WousoTest):
         player.magic.add_spell(cure)
         player.magic.cast_spell(cure, player, datetime.now() + timedelta(days=1))
 
-        self.assertEqual(len(PlayerSpellDue.objects.filter(player=player)), 0) # There isn't any spell left
+        self.assertFalse(PlayerSpellDue.objects.filter(player=player)) # There isn't any spell left
 
     def test_cure_positive(self):
         """
@@ -207,7 +207,7 @@ class SpellTestCase(WousoTest):
         player.magic.add_spell(cure)
         player.magic.cast_spell(cure, player, datetime.now() + timedelta(days=1))
 
-        self.assertEqual(len(PlayerSpellDue.objects.filter(player=player)), 1) # The spell is still present
+        self.assertTrue(PlayerSpellDue.objects.filter(player=player)) # The spell is still present
 
     def test_disguise_simple(self):
         """
@@ -315,19 +315,15 @@ class SpellTestCase(WousoTest):
         """
          Test for Weakness spell
         """
-        initial_points = 10
-
         player_weakness = self._get_player(1).get_extension(ChallengeUser)
         player_no_weakness = self._get_player(2).get_extension(ChallengeUser)
         player_dummy = self._get_player(3).get_extension(ChallengeUser)
 
         scoring.setup_scoring()
         Coin.add('points')
-        scoring.score_simple(player_no_weakness, 'points', initial_points)
-        scoring.score_simple(player_weakness, 'points', initial_points)
 
         # Apply weakness
-        weakness = Spell.objects.create(name='challenge-affect-scoring-won', available=True, price=10, percents=-66, type='p')
+        weakness = Spell.objects.create(name='challenge-affect-scoring-lost', available=True, price=10, percents=-66, type='n')
         obs = PlayerSpellDue.objects.create(player=player_weakness, source=player_weakness, spell=weakness, due=datetime.now() + timedelta(days=1))
 
         # Win challenge with player_no_weakness
@@ -341,23 +337,21 @@ class SpellTestCase(WousoTest):
         no_weakness_points = player_no_weakness.get_extension(Player).points
         weakness_points = player_weakness.get_extension(Player).points
 
+        target_weakness_points = no_weakness_points + weakness.percents / 100.0 * no_weakness_points
+
         # Player should win 66% less points with weakness applied
-        self.assertEqual (no_weakness_points - 0.66 * (no_weakness_points - initial_points), weakness_points)
+        self.assertEqual (target_weakness_points, weakness_points)
 
     def test_charge(self):
         """
          Test for Charge spell
         """
-        initial_points = 10
-
         player_charge = self._get_player(1).get_extension(ChallengeUser)
         player_no_charge = self._get_player(2).get_extension(ChallengeUser)
         player_dummy = self._get_player(3).get_extension(ChallengeUser)
 
         scoring.setup_scoring()
         Coin.add('points')
-        scoring.score_simple(player_no_charge, 'points', initial_points)
-        scoring.score_simple(player_charge, 'points', initial_points)
 
         # Apply charge
         charge = Spell.objects.create(name='challenge-affect-scoring-won', available=True, price=10, percents=33, type='p')
@@ -374,14 +368,15 @@ class SpellTestCase(WousoTest):
         no_charge_points = player_no_charge.get_extension(Player).points
         charge_points = player_charge.get_extension(Player).points
 
+        target_charge_points = no_charge_points + charge.percents / 100.0 * no_charge_points
+
         # Player should have 33% more points with charge applied
-        self.assertEqual (no_charge_points + 0.33 * (no_charge_points - initial_points), charge_points)
+        self.assertEqual (target_charge_points, charge_points)
 
     def test_weakness_and_charge(self):
         """
          If both Weakness and Charge are active, a player should win 33% less points after a victory
         """
-        initial_points = 10
         win_points = 6
 
         player = self._get_player(1).get_extension(ChallengeUser)
@@ -389,7 +384,6 @@ class SpellTestCase(WousoTest):
 
         scoring.setup_scoring()
         Coin.add('points')
-        scoring.score_simple(player, 'points', initial_points)
 
         formula = Formula.get('chall-won')
         formula.expression = 'points=' + str(win_points)
@@ -406,7 +400,10 @@ class SpellTestCase(WousoTest):
         chall = Challenge.create(user_from=player, user_to=player_dummy, ignore_questions=True)
         chall.set_won_by_player(player)
 
-        self.assertEqual(player.player_ptr.points, initial_points + win_points - (0.33 * win_points))
+        percents = (charge.percents + weakness.percents) / 100.0
+        target_points = win_points + percents * win_points
+
+        self.assertEqual(player.player_ptr.points, target_points)
 
     def test_blind(self):
         """
