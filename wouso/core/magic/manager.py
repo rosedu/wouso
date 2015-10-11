@@ -75,6 +75,7 @@ class MagicManager(object):
         res = PlayerSpellDue.objects.filter(player=self.player, spell__name=modifier)
         for a in res:
             percents += a.spell.percents
+
         return percents
 
     def use_modifier(self, modifier, amount):

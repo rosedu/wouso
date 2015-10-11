@@ -636,13 +636,6 @@ class DefaultChallengeManager(ChallengeManager):
         if not self.challenge.SCORING:
             return
 
-        for u in (self.challenge.user_to, self.challenge.user_from):
-            # affect bonuses
-            if u.user.magic.has_modifier('challenge-affect-scoring'):
-                u.percents = u.user.magic.modifier_percents('challenge-affect-scoring')
-            else:
-                u.percents = 100
-
         if self.challenge.status == 'D':
             scoring.score(self.challenge.user_to.user, ChallengeGame, 'chall-draw', percents=self.challenge.user_to.percents)
             scoring.score(self.challenge.user_from.user, ChallengeGame, 'chall-draw', percents=self.challenge.user_from.percents)
@@ -654,8 +647,19 @@ class DefaultChallengeManager(ChallengeManager):
             winner_points = self.challenge.user_won.user.points
             loser_points = self.challenge.user_lost.user.points
 
+            for u in (self.challenge.user_to, self.challenge.user_from):
+                if u.user.magic.has_modifier('challenge-affect-scoring'):
+                    u.percents += u.user.magic.modifier_percents('challenge-affect-scoring')
+                else:
+                    u.percents = 100
+
+            # Check for charge
             if self.challenge.user_won.user.magic.has_modifier('challenge-affect-scoring-won'):
-                self.challenge.user_won.percents += self.challenge.user_won.user.magic.modifier_percents('challenge-affect-scoring-won')
+                self.challenge.user_won.percents += self.challenge.user_won.user.magic.modifier_percents('challenge-affect-scoring-won') - 100
+
+            # Check for weakness
+            if self.challenge.user_won.user.magic.has_modifier('challenge-affect-scoring-lost'):
+                self.challenge.user_won.percents += self.challenge.user_won.user.magic.modifier_percents('challenge-affect-scoring-lost') - 100
 
             if self.challenge.WARRANTY:
                 # warranty not affected by percents

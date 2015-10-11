@@ -11,7 +11,7 @@ from wouso.core.tests import WousoTest
 from wouso.games.challenge.models import ChallengeUser, Challenge, ChallengeGame
 from wouso.core.user.models import Player, Race
 from wouso.core import scoring
-from wouso.core.scoring.models import Formula
+from wouso.core.scoring.models import Formula, Coin
 from wouso.games.challenge.views import challenge_random, launch
 
 Challenge.LIMIT = 5
@@ -135,6 +135,57 @@ class ChallengeTestCase(WousoTest):
         formula.expression = 'points=10 + min(10, int(3 * {winner_points}/{loser_points}))'
         formula.save()
         chall.played()
+
+    def test_scoring_win(self):
+        initial_points = 10
+        winner = self._get_player(1).get_extension(ChallengeUser)
+        loser = self._get_player(2).get_extension(ChallengeUser)
+
+        # Setup scoring
+        scoring.setup_scoring()
+        Coin.add('points')
+
+        # Give initial points
+        scoring.score_simple(winner, 'points', initial_points)
+        scoring.score_simple(loser, 'points', initial_points)
+
+        # Set formula
+        win_points = 6
+        formula = Formula.get('chall-won')
+        formula.expression = 'points=' + str(win_points)
+        formula.save()
+
+        # Play challenge
+        chall = Challenge.create(user_from=winner, user_to=loser, ignore_questions=True)
+        chall.set_won_by_player(winner)
+
+        self.assertEqual(winner.player_ptr.points, initial_points + win_points)
+
+    def test_scoring_loss(self):
+        initial_points = 10
+        winner = self._get_player(1).get_extension(ChallengeUser)
+        loser = self._get_player(2).get_extension(ChallengeUser)
+
+        # Setup scoring
+        scoring.setup_scoring()
+        Coin.add('points')
+
+        # Give initial points
+        scoring.score_simple(winner, 'points', initial_points)
+        scoring.score_simple(loser, 'points', initial_points)
+
+        # Set formula
+        loss_points = -2
+        formula = Formula.get('chall-lost')
+        formula.expression = 'points=' + str(loss_points)
+        formula.save()
+
+        # Play challenge
+        chall = Challenge.create(user_from=winner, user_to=loser, ignore_questions=True)
+        chall.set_won_by_player(winner)
+
+        self.assertEqual(loser.player_ptr.points, initial_points + loss_points) # loss_points is negative
+
 
     def test_variable_timer(self):
         formula = Formula.add('chall-timer')
@@ -349,7 +400,7 @@ class TestChallengeViews(WousoTest):
         # Test if both challenges are displayed
         self.assertContains(response, 'testuser1</a> vs')
         self.assertContains(response, 'testuser2</a> vs')
-    
+
     def test_challenge_is_not_runnable_when_it_is_not_accepted(self):
         # Challenge is launched but not accepted
         self.ch.status = 'L'
@@ -373,7 +424,7 @@ class TestChallengeViews(WousoTest):
         participant.save()
         response = self.c.get(reverse('view_challenge', args=[self.ch.id]), follow=True)
         self.assertContains(response, _('You have already submitted this challenge'))
-    
+
     def test_challenge_is_runnable(self):
         # Challenge is accepted, display the challenge
         self.ch.status = 'A'
