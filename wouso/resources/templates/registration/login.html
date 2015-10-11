@@ -26,7 +26,7 @@ button {
 {% endif %}
 
 <h2>{% trans 'Authentication' %}</h2>
-<form method="post" action="{% url wouso.interface.views.login_view %}">
+<form method="post" {% if not config_login %}action="{% url wouso.interface.views.login_view %}"{% else %}action="/"{% endif %}>
 <table align=center>
 <tr>
     <td>{{ form.username.label_tag }}</td>
@@ -37,12 +37,16 @@ button {
     <td>{{ form.password }}</td>
 </tr>
 <tr><td colspan="2">
+{% if not config_login %}
 <button type="submit">{% trans 'Enter' %}</button>
+{% endif %}
 </td></tr>
 </table>
 
 {% load url from future %}
+{% if not config_login %}
 <a href="{% url 'social:begin' "clef" %}">Log in with your Phone</a>
+{% endif %}
 
 <input type="hidden" name="next" value="{{ next }}" />
 {% csrf_token %}
