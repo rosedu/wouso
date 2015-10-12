@@ -48,17 +48,12 @@ def login_between(time, first, second):
     return False
 
 
-def login_at_start(player, start_hour, start_day, start_month, hour_offset):
-    # Get game's start time
-    start = datetime(2014, start_month, start_day, start_hour, 0)
-
+def login_at_start(player, start_day, start_month):
     # Get player's first login
     first_seen = Activity.objects.filter(action__contains='login', user_to=player).order_by('timestamp')[:1]
     month = first_seen[0].timestamp.month
     day = first_seen[0].timestamp.day
-    hour = first_seen[0].timestamp.hour
-    first_login = datetime(2014, month, day, hour)
-    if day == start_day:
+    if day == start_day && month == start_month:
         return True
 
     return False
@@ -390,13 +385,12 @@ class Achievements(App):
                     cls.earn_achievement(player, 'ach-gold-300')
 
         if 'login' in action:
-            # # Check if player got a head start login
+            # Check if player got a head start login
             if not player.magic.has_modifier('ach-head-start'):
                 # (player, start_hour, start_day, start_month, hour_offset)
                 # server start date: hour, day, month
                 # hour_offset = offset from start date when player will be rewarded
-                if login_at_start(player, start_hour=20, start_day=13, start_month=10, hour_offset=2):
-                    scoring.score(player, None, 'head-start', None)
+                if login_at_start(player, start_day=12, start_month=10):
                     cls.earn_achievement(player, 'ach-head-start')
 
 
