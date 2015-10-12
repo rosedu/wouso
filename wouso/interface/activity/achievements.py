@@ -53,7 +53,7 @@ def login_at_start(player, start_day, start_month):
     first_seen = Activity.objects.filter(action__contains='login', user_to=player).order_by('timestamp')[:1]
     month = first_seen[0].timestamp.month
     day = first_seen[0].timestamp.day
-    if day == start_day && month == start_month:
+    if day == start_day and month == start_month:
         return True
 
     return False
