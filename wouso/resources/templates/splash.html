@@ -12,7 +12,7 @@
         <div id="logo"></div>
 
         <div id="side">
-            <form {% if not config_login %}action="{% url wouso.interface.views.login_view %}"{% else %}action="/"{% endif %} method="post">
+            <form {% ifequal config_login "True" %}action="{% url wouso.interface.views.login_view %}"{% else %}action="/"{% endifequal %} method="post">
                 <label for="username">{% trans 'username' %}:</label>
                 <input size="10" name="username" id="username" class="big" />
                 <label for="password">{% trans 'password' %}:</label>
@@ -24,9 +24,9 @@
             </form>
 
             {% load url from future %}
-            {% if not config_login %}
+            {% ifequal config_login "True" %}
             <a href="{% url 'social:begin' "clef" %}">Log in with your Phone</a>
-            {% endif %}
+            {% endifequal %}
 		</div>
 
         <div id="content">
