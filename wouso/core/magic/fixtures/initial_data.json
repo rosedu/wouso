@@ -1,0 +1,469 @@
+[
+  {
+    "pk": 1,
+    "model": "magic.spell",
+    "fields": {
+      "due_days": 5,
+      "available": true,
+      "description": "Po\u021bi schimba punctajul afi\u0219at, alter\u00e2ndu-l cu -25% din valoarea real\u0103",
+      "title": "Disguise -25%",
+      "level_required": 1,
+      "image": "",
+      "mass": false,
+      "percents": 25,
+      "type": "s",
+      "price": 25,
+      "name": "top-disguise"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "magic.spell",
+    "fields": {
+      "due_days": 5,
+      "available": true,
+      "description": "Po\u021bi schimba punctajul afi\u0219at, alter\u00e2ndu-l cu 25% din valoarea real\u0103",
+      "title": "Disguise 25%",
+      "level_required": 1,
+      "image": "",
+      "mass": false,
+      "percents": 25,
+      "type": "s",
+      "price": 25,
+      "name": "top-disguise"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "magic.spell",
+    "fields": {
+      "due_days": 5,
+      "available": true,
+      "description": "Nu po\u021bi lansa provoc\u0103ri (dar po\u021bi primi)",
+      "title": "Paralyze",
+      "level_required": 1,
+      "image": "",
+      "mass": false,
+      "percents": 100,
+      "type": "n",
+      "price": 10.0,
+      "name": "challenge-cannot-challenge"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "magic.spell",
+    "fields": {
+      "due_days": 5,
+      "available": true,
+      "description": "C\u00e2\u0219tigi mai pu\u021bin cu 66% din provoc\u0103rile c\u00e2\u0219tigate",
+      "title": "Weakness",
+      "level_required": 1,
+      "image": "",
+      "mass": false,
+      "percents": -66,
+      "type": "n",
+      "price": 15.0,
+      "name": "challenge-affect-scoring-lost"
+    }
+  },
+  {
+    "pk": 5,
+    "model": "magic.spell",
+    "fields": {
+      "due_days": 5,
+      "available": true,
+      "description": "C\u00e2\u0219tigi mai mult cu 33% din provoc\u0103rile c\u00e2\u0219tigate",
+      "title": "Charge",
+      "level_required": 1,
+      "image": "",
+      "mass": false,
+      "percents": 33,
+      "type": "p",
+      "price": 50.0,
+      "name": "challenge-affect-scoring-won"
+    }
+  },
+  {
+    "pk": 6,
+    "model": "magic.spell",
+    "fields": {
+      "due_days": 5,
+      "available": true,
+      "description": "C\u00e2\u0219tigi cu 66% din provoc\u0103rile c\u00e2\u0219tigate \u0219i pierzi cu 66% mai mult din provoc\u0103rile pierdute",
+      "title": "Frenzy",
+      "level_required": 1,
+      "image": "",
+      "mass": false,
+      "percents": 66,
+      "type": "o",
+      "price": 30.0,
+      "name": "challenge-affect-scoring"
+    }
+  },
+  {
+    "pk": 7,
+    "model": "magic.spell",
+    "fields": {
+      "due_days": 5,
+      "available": true,
+      "description": "Elimin\u0103 vr\u0103ijle negative",
+      "title": "Cure",
+      "level_required": 1,
+      "image": "",
+      "mass": false,
+      "percents": 100,
+      "type": "p",
+      "price": 25.0,
+      "name": "cure"
+    }
+  },
+  {
+    "pk": 8,
+    "model": "magic.spell",
+    "fields": {
+      "due_days": 5,
+      "available": true,
+      "description": "Elimin\u0103 toate vr\u0103jile",
+      "title": "Dispell",
+      "level_required": 1,
+      "image": "",
+      "mass": false,
+      "percents": 100,
+      "type": "o",
+      "price": 20.0,
+      "name": "dispell"
+    }
+  },
+  {
+    "pk": 9,
+    "model": "magic.spell",
+    "fields": {
+      "due_days": 5,
+      "available": true,
+      "description": "Nu po\u021bi lansa question of the day",
+      "title": "Blind",
+      "level_required": 1,
+      "image": "",
+      "mass": false,
+      "percents": 100,
+      "type": "n",
+      "price": 10.0,
+      "name": "qotd-blind"
+    }
+  },
+  {
+    "pk": 10,
+    "model": "magic.spell",
+    "fields": {
+      "due_days": 5,
+      "available": true,
+      "description": "Ai 20% \u0219ans\u0103 s\u0103 nu \u021bi se ia puncte \u00een urma pierderii unei provoc\u0103ri",
+      "title": "Evade",
+      "level_required": 1,
+      "image": "",
+      "mass": false,
+      "percents": 20,
+      "type": "p",
+      "price": 25.0,
+      "name": "challenge-evade"
+    }
+  },
+  {
+    "pk": 11,
+    "model": "magic.spell",
+    "fields": {
+      "due_days": 5,
+      "available": true,
+      "description": "Nu po\u021bi lansa provoc\u0103ri (dar po\u021bi primi)",
+      "title": "Paralyze(Mass)",
+      "level_required": 2,
+      "image": "",
+      "mass": true,
+      "percents": 100,
+      "type": "n",
+      "price": 20.0,
+      "name": "challenge-cannot-challenge"
+    }
+  },
+  {
+    "pk": 12,
+    "model": "magic.spell",
+    "fields": {
+      "due_days": 5,
+      "available": true,
+      "description": "C\u00e2\u0219tigi mai pu\u021bin cu 66% din provoc\u0103rile c\u00e2\u0219tigate",
+      "title": "Weakness(Mass)",
+      "level_required": 1,
+      "image": "",
+      "mass": true,
+      "percents": -66,
+      "type": "n",
+      "price": 30.0,
+      "name": "challenge-affect-scoring"
+    }
+  },
+  {
+    "pk": 14,
+    "model": "magic.spell",
+    "fields": {
+      "due_days": 5,
+      "available": true,
+      "description": "C\u00e2\u0219tigi mai mult cu 33% din provoc\u0103rile c\u00e2\u0219tigate",
+      "title": "Charge(Mass)",
+      "level_required": 2,
+      "image": "",
+      "mass": true,
+      "percents": 3,
+      "type": "p",
+      "price": 60.0,
+      "name": "challenge-affect-scoring"
+    }
+  },
+  {
+    "pk": 15,
+    "model": "magic.spell",
+    "fields": {
+      "due_days": 5,
+      "available": true,
+      "description": "C\u00e2\u0219tigi cu 66% din provoc\u0103rile c\u00e2\u0219tigate \u0219i pierzi cu 66% mai mult din provoc\u0103rile pierdute",
+      "title": "Frenzy(Mass)",
+      "level_required": 2,
+      "image": "",
+      "mass": true,
+      "percents": 66,
+      "type": "o",
+      "price": 50.0,
+      "name": "challenge-affect-scoring"
+    }
+  },
+  {
+    "pk": 16,
+    "model": "magic.spell",
+    "fields": {
+      "due_days": 5,
+      "available": true,
+      "description": "Nu po\u021bi lansa question of the day",
+      "title": "Blind(Mass)",
+      "level_required": 2,
+      "image": "",
+      "mass": true,
+      "percents": 100,
+      "type": "n",
+      "price": 20.0,
+      "name": "qotd-blind"
+    }
+  },
+  {
+    "pk": 17,
+    "model": "magic.spell",
+    "fields": {
+      "due_days": 5,
+      "available": true,
+      "description": "Ai 20% \u0219ans\u0103 s\u0103 nu \u021bi se ia puncte \u00een urma pierderii unei provoc\u0103ri",
+      "title": "Evade(Mass)",
+      "level_required": 2,
+      "image": "",
+      "mass": true,
+      "percents": 20,
+      "type": "p",
+      "price": 50.0,
+      "name": "challenge-evade"
+    }
+  },
+  {
+    "pk": 1,
+    "model": "magic.artifact",
+    "fields": {
+      "group": 1,
+      "description": "Login daily, for 14 days in a row",
+      "title": "Vegeta",
+      "image": "",
+      "full_name": "ach-login-10-default-100",
+      "percents": 100,
+      "name": "ach-login-10"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "magic.artifact",
+    "fields": {
+      "group": 1,
+      "description": "Login between 3-5 AM for 3 days (not in a row)",
+      "title": "Morpheus",
+      "image": "",
+      "full_name": "ach-night-owl-default-100",
+      "percents": 100,
+      "name": "ach-night-owl"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "magic.artifact",
+    "fields": {
+      "group": 1,
+      "description": "Login between 6-8 AM for 3 days (not in a row)",
+      "title": "Eos",
+      "image": "",
+      "full_name": "ach-early-bird-default-100",
+      "percents": 100,
+      "name": "ach-early-bird"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "magic.artifact",
+    "fields": {
+      "group": 1,
+      "description": "Get messages from 5 different persons in 15 mins",
+      "title": "Elvis",
+      "image": "",
+      "full_name": "ach-popularity-default-100",
+      "percents": 100,
+      "name": "ach-popularity"
+    }
+  },
+  {
+    "pk": 5,
+    "model": "magic.artifact",
+    "fields": {
+      "group": 1,
+      "description": "Answer qotd correctly 10 times in a row",
+      "title": "Hawkeye",
+      "image": "",
+      "full_name": "ach-qotd-10-default-100",
+      "percents": 100,
+      "name": "ach-qotd-10"
+    }
+  },
+  {
+    "pk": 6,
+    "model": "magic.artifact",
+    "fields": {
+      "group": 1,
+      "description": "Win 10 challenges in a row",
+      "title": "Hercules",
+      "image": "",
+      "full_name": "ach-chall-won-10-default-100",
+      "percents": 100,
+      "name": "ach-chall-won-10"
+    }
+  },
+  {
+    "pk": 7,
+    "model": "magic.artifact",
+    "fields": {
+      "group": 1,
+      "description": "Defeat 5 better players (level difference > 2)",
+      "title": "David",
+      "image": "",
+      "full_name": "ach-chall-def-big-default-100",
+      "percents": 100,
+      "name": "ach-chall-def-big"
+    }
+  },
+  {
+    "pk": 8,
+    "model": "magic.artifact",
+    "fields": {
+      "group": 1,
+      "description": "Win a challenge in less than a minute",
+      "title": "Flash",
+      "image": "",
+      "full_name": "ach-win-fast-default-100",
+      "percents": 100,
+      "name": "ach-win-fast"
+    }
+  },
+  {
+    "pk": 9,
+    "model": "magic.artifact",
+    "fields": {
+      "group": 1,
+      "description": "Play a total of 100 challenges or more",
+      "title": "Gambit",
+      "image": "",
+      "full_name": "ach-chall-100-default-100",
+      "percents": 100,
+      "name": "ach-chall-100"
+    }
+  },
+  {
+    "pk": 10,
+    "model": "magic.artifact",
+    "fields": {
+      "group": 1,
+      "description": "Accept all incoming challenges in the last 7 days (min 5 challenges)",
+      "title": "Juggernaut",
+      "image": "",
+      "full_name": "ach-this-is-sparta-default-100",
+      "percents": 100,
+      "name": "ach-this-is-sparta"
+    }
+  },
+  {
+    "pk": 11,
+    "model": "magic.artifact",
+    "fields": {
+      "group": 1,
+      "description": "Win a challenge with 500 points",
+      "title": "Einstein",
+      "image": "",
+      "full_name": "ach-flawless-victory-default-100",
+      "percents": 100,
+      "name": "ach-flawless-victory"
+    }
+  },
+  {
+    "pk": 12,
+    "model": "magic.artifact",
+    "fields": {
+      "group": 1,
+      "description": "Win all challenges and answer correctly to all questions of the day 5 days in a row (min 5 challenges, all questions of the day answered)",
+      "title": "Akira",
+      "image": "",
+      "full_name": "ach-god-mode-on-default-100",
+      "percents": 100,
+      "name": "ach-god-mode-on"
+    }
+  },
+  {
+    "pk": 13,
+    "model": "magic.artifact",
+    "fields": {
+      "group": 1,
+      "description": "Play a total of 10 challenges in a day",
+      "title": "Maverick",
+      "image": "",
+      "full_name": "ach-chall-10-a-day-default-100",
+      "percents": 100,
+      "name": "ach-chall-10-a-day"
+    }
+  },
+  {
+    "pk": 14,
+    "model": "magic.artifact",
+    "fields": {
+      "group": 1,
+      "description": "Be affected by 5 spells simultaneously",
+      "title": "Illidan",
+      "image": "",
+      "full_name": "ach-spell-5-default-100",
+      "percents": 100,
+      "name": "ach-spell-5"
+    }
+  },
+  {
+    "pk": 15,
+    "model": "magic.artifact",
+    "fields": {
+      "group": 1,
+      "description": "Log in the head start period",
+      "title": "Head Start",
+      "image": "",
+      "full_name": "ach-head-start-default-100",
+      "percents": 100,
+      "name": "ach-head-start"
+    }
+  }
+]
