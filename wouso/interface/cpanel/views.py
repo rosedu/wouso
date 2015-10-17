@@ -1,4 +1,5 @@
 import datetime
+import json
 from django import forms
 from django.conf import settings
 from django.contrib import messages
@@ -1047,13 +1048,21 @@ group_add = permission_required('config.change_setting')(
 )
 
 @permission_required('config.change_setting')
-def race_toggle_can_play(request, id):
-    race = get_object_or_404(Race, pk=id)
+def race_toggle_can_play(request):
+    try:
+        race_pk = int(request.GET.get('id', None))
+    except:
+        raise Http404
+
+    race = get_object_or_404(Race, pk=race_pk)
 
     race.can_play = not race.can_play
     race.save()
 
-    return HttpResponseRedirect(reverse('races_groups'))
+    data = {}
+    data['can_play'] = race.can_play
+
+    return HttpResponse(json.dumps(data))
 
 class RolesView(ListView):
     template_name = 'cpanel/roles.html'

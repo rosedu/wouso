@@ -45,9 +45,9 @@ Races and groups
             <td>{{ r.children.count }}</td>
             <td>
                 {% if r.can_play %}
-                    <a class="btn btn-success btn-sm" href="{% url race_toggle_can_play r.pk %}">{% trans 'Yes' %}</a>
+                    <button class="btn btn-success btn-sm race_can_play_toggle" data-race_pk="{{ r.pk }}">{% trans 'Yes' %}</button>
                 {% else %}
-                    <a class="btn btn-danger btn-sm" href="{% url race_toggle_can_play r.pk %}">{% trans 'No' %}</a>
+                    <button class="btn btn-danger btn-sm race_can_play_toggle" data-race_pk="{{ r.pk }}">{% trans 'No' %}</button>
                 {% endif %}
             </td>
             <td>
@@ -204,6 +204,27 @@ $(document).ready(function() {
             $toggle_buttons.data('show', true);
             $(this).data('show', true);
         }
+    });
+
+    $(document).on("click", ".race_can_play_toggle", function() {
+        var race_pk = $(this).data('race_pk');
+        var button = $(this);
+
+        $.ajax({
+            url: '{% url race_toggle_can_play %}' + '?id=' + race_pk,
+            dataType: 'json',
+            success: function(data) {
+                if(data.can_play){
+                    button.html("{% trans 'Yes' %}");
+                    button.removeClass('btn-danger');
+                    button.addClass('btn-success');
+                }else{
+                    button.html("{% trans 'No' %}");
+                    button.removeClass('btn-success');
+                    button.addClass('btn-danger');
+                }
+            }
+        });
     });
 });
 </script>
