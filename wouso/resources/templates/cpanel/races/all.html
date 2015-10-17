@@ -45,9 +45,9 @@ Races and groups
             <td>{{ r.children.count }}</td>
             <td>
                 {% if r.can_play %}
-                    <h3 class='label-3'><span class="label label-success label-sm">{% trans 'yes' %}</span></h3>
+                    <a class="btn btn-success btn-sm" href="{% url race_toggle_can_play r.pk %}">{% trans 'Yes' %}</a>
                 {% else %}
-                    <h3 class='label-3'><span class="label label-danger label-sm">{% trans 'no' %}</span></h3>
+                    <a class="btn btn-danger btn-sm" href="{% url race_toggle_can_play r.pk %}">{% trans 'No' %}</a>
                 {% endif %}
             </td>
             <td>

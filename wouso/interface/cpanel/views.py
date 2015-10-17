@@ -1046,6 +1046,14 @@ group_add = permission_required('config.change_setting')(
     GroupsAdd.as_view()
 )
 
+@permission_required('config.change_setting')
+def race_toggle_can_play(request, id):
+    race = get_object_or_404(Race, pk=id)
+
+    race.can_play = not race.can_play
+    race.save()
+
+    return HttpResponseRedirect(reverse('races_groups'))
 
 class RolesView(ListView):
     template_name = 'cpanel/roles.html'
