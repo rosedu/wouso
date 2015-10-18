@@ -368,7 +368,7 @@ def user_post_save(sender, instance, **kwargs):
 
         # XXX: give points
         from wouso.core.scoring import score
-        score(profile, None, 'start-points')
+        score(instance.get_profile(), None, 'start-points')
 
     update_display_name(profile)
 
