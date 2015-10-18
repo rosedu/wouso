@@ -26,7 +26,7 @@ button {
 {% endif %}
 
 <h2>{% trans 'Authentication' %}</h2>
-<form method="post" {% ifequal config_login "True" %}action="{% url wouso.interface.views.login_view %}"{% else %}action="/"{% endifequal %}>
+<form method="post" action="{% url wouso.interface.views.login_view %}">
 <table align=center>
 <tr>
     <td>{{ form.username.label_tag }}</td>
@@ -37,9 +37,7 @@ button {
     <td>{{ form.password }}</td>
 </tr>
 <tr><td colspan="2">
-{% if not config_login %}
 <button type="submit">{% trans 'Enter' %}</button>
-{% endif %}
 </td></tr>
 </table>
 
