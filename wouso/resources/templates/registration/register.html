@@ -1,0 +1,10 @@
+{% extends "interface/simple_base.html" %}
+{% load i18n %}
+
+{% block content %}
+    <form action='' method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Register">
+    </form>
+{% endblock %}

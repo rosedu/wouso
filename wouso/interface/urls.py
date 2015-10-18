@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     url(r'^division/$', 'wouso.interface.views.division_view', name='division'),
 
     url(r'^user/login/$','wouso.interface.views.login_view', name='login_view'),
+    url(r'^user/register/$', 'wouso.interface.views.register_view', name='register_view'),
     url(r'^user/logout/$','wouso.interface.views.logout_view', name='logout_view'),
 
     url(r'^player/(?P<id>\d+)/$', 'wouso.interface.profile.views.user_profile', name='player_profile'),

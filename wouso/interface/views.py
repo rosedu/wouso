@@ -2,6 +2,7 @@ import datetime
 import logging
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
@@ -37,6 +38,23 @@ def get_wall(page=u'1'):
 
 def anonymous_homepage(request):
     return render_to_response('splash.html', context_instance=RequestContext(request))
+
+
+def register_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            from django.contrib.auth import authenticate, login
+            user = authenticate(username=form.cleaned_data.get('username'), password=form.cleaned_data.get('password1'))
+            login(request, user)
+            return HttpResponseRedirect("/player/set")
+    else:
+        form = UserCreationForm()
+
+    return render_to_response('registration/register.html', {
+        'form': form,
+        }, context_instance=RequestContext(request))
 
 
 def login_view(request):
