@@ -24,7 +24,7 @@ class AddQuestionForm(forms.Form):
     text = forms.CharField(required=False, max_length=2000, widget=forms.Textarea)
     rich_text = forms.CharField(required=False, widget=CKEditorWidget())
     active = forms.BooleanField(required=False)
-    schedule = forms.DateField(required=False, input_formats=['%d.%m.%Y', '%Y-%m-%d'], help_text='dd.mm.yyyy')
+    schedule = forms.DateField(required=False, input_formats=['%d.%m.%Y', '%Y-%m-%d'], help_text='yyyy-mm-dd')
     category = forms.CharField(max_length=100)
 
     def __init__(self, data=None, instance=None):
@@ -100,7 +100,7 @@ class EditQuestionForm(forms.Form):
     text = forms.CharField(required=False, max_length=2000, widget=forms.Textarea)
     rich_text = forms.CharField(required=False, widget=CKEditorWidget())
     active = forms.BooleanField(required=False)
-    schedule = forms.DateField(required=False, input_formats=['%d.%m.%Y', '%Y-%m-%d'], help_text='dd.mm.yyyy')
+    schedule = forms.DateField(required=False, input_formats=['%d.%m.%Y', '%Y-%m-%d'], help_text='yyyy-mm-dd')
     category = forms.CharField(max_length=100)
 
     def __init__(self, data=None, instance=None):
@@ -132,7 +132,10 @@ class EditQuestionForm(forms.Form):
             choices=(("C", "multiple choice"), ("R", "single choice"), ("F", "free text")),
             initial=instance.answer_type if instance else None)
 
-        self.fields['schedule'] = forms.DateField(required=False, initial=instance.schedule if instance.category.name == 'qotd' else None)
+        try:
+            self.fields['schedule'] = forms.DateField(required=False, initial=instance.schedule if instance.category.name == 'qotd' else None)
+        except Schedule.DoesNotExist:
+            self.fields['schedule'] = forms.DateField(required=False, initial=None)
 
         self.fields['text'] = forms.CharField(required=False, widget=forms.Textarea, initial=instance.text)
         self.fields['rich_text'] = forms.CharField(required=False, widget=CKEditorWidget(), initial=instance.rich_text)
@@ -169,7 +172,7 @@ class EditQuestionForm(forms.Form):
 
         # Schedule for qotd
         if self.instance.category.name == 'qotd':
-            sched = get_object_or_404(Schedule, question=self.instance)
+            sched, created = Schedule.objects.get_or_create(question=self.instance)
             sched.day = data['schedule']
             sched.save()
 
