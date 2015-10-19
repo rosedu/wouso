@@ -91,11 +91,15 @@ class BoolSetting(Setting):
     def form(self):
         return """
         <div class="form-group">
-            <label for="%s" class="col-sm-2 control-label">%s</label>
-            <div class="col-sm-1">
-                <input type="checkbox" name="%s" id="%s" %s value="True" class="form-control"/>
+            <label for"%s" class="col-sm-2 control-label">%s<span class="help-block">%s</span></label>
+            <div class="col-sm-10">
+                <div class="checkbox">
+                    <input type="checkbox" name="%s" id="%s" %s value="True"></input>
+                </div>
             </div>
-        </div>""" % (self.name, self.title, self.name, self.name, '' if self.get_value() else 'checked')
+        </div>
+        """ % (self.name, self.title, self.help_text if hasattr(self, 'help_text') else '',
+               self.name, self.name, '' if self.get_value() else 'checked')
 
 
 class ChoicesSetting(Setting):

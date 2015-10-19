@@ -1,5 +1,4 @@
-import warnings
-import logging
+import warnings, logging, sys
 from functools import wraps
 
 from django.contrib import messages
@@ -34,4 +33,5 @@ def block_if_not_staff(sender, user, request, **kwargs):
         messages.error(request, _('Only staff members can log in'))
         logout(request)
 
-user_logged_in.connect(block_if_not_staff)
+if not 'test' in sys.argv:
+    user_logged_in.connect(block_if_not_staff)

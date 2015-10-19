@@ -43,7 +43,9 @@ class Switchboard(ConfigGroup):
                   'MessageApp', 'File'):
             p.append(BoolSetting.get('disable-%s' % a))
 
-        p.append(BoolSetting.get('login'))
+        login = BoolSetting.get('login')
+        login.help_text = 'Staff only login?'
+        p.append(login)
         p.append(BoolSetting.get('header_autoreload'))
         p.append(BoolSetting.get('random_challenge'))
         coin_tops = Setting.get('top-coins')
