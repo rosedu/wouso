@@ -6,4 +6,4 @@ HERE=`dirname $0`/..
 
 export PYTHONPATH=$HERE:$HERE/wouso/:$PYTHONPATH
 
-python $HERE/wouso/manage.py wousocron >> /home/wouso/log/wousocron.log 2>&1
+python $HERE/wouso/manage.py wousocron >> ../log/wousocron.log 2>&1
