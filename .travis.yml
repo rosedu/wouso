@@ -3,6 +3,7 @@ python:
   - "2.7"
 env:
   - DJANGO=1.4
+sudo: false
 install:
   - pip install -r requirements-pip
   - pip install -r requirements-extra
