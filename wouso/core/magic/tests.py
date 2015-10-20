@@ -341,7 +341,7 @@ class SpellTestCase(WousoTest):
         # Player should win frenzy.percents more points with frenzy applied
         target_points = initial_points + win_points + frenzy.percents / 100.0 * win_points
 
-        self.assertEqual (player_frenzy.player_ptr.points, target_points)
+        self.assertEqual(player_frenzy.player_ptr.points, target_points)
 
     def test_frenzy_loss(self):
         """
@@ -377,7 +377,7 @@ class SpellTestCase(WousoTest):
         # Player should lose frenzy.percents more points with frenzy applied
         target_points = initial_points + loss_points + frenzy.percents / 100.0 * loss_points + warranty_points
 
-        self.assertEqual (player_frenzy.player_ptr.points, target_points)
+        self.assertEqual(player_frenzy.player_ptr.points, target_points)
 
     def test_weakness(self):
         """
@@ -407,7 +407,7 @@ class SpellTestCase(WousoTest):
 
         # Player should win weakness.percents less points with weakness applied
         target_points = initial_points + win_points + weakness.percents / 100.0 * win_points
-        self.assertEqual (player_weakness.player_ptr.points, target_points)
+        self.assertEqual(player_weakness.player_ptr.points, target_points)
 
     def test_charge(self):
         """
