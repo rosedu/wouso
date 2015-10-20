@@ -186,7 +186,6 @@ class ChallengeTestCase(WousoTest):
 
         self.assertEqual(loser.player_ptr.points, initial_points + loss_points) # loss_points is negative
 
-
     def test_variable_timer(self):
         formula = Formula.add('chall-timer')
         formula.expression = 'tlimit=10'
