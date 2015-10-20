@@ -341,8 +341,8 @@ class Challenge(models.Model):
             self.user_from.score = 1
             self.user_to.score = 0
         else:
-            self.user_from.score = 1
-            self.user_to.score = 0
+            self.user_from.score = 0
+            self.user_to.score = 1
 
         self.user_from.played = True
         self.user_to.played = True
@@ -636,6 +636,9 @@ class DefaultChallengeManager(ChallengeManager):
         if not self.challenge.SCORING:
             return
 
+        for u in (self.challenge.user_to, self.challenge.user_from):
+                u.percents = 100
+
         if self.challenge.status == 'D':
             scoring.score(self.challenge.user_to.user, ChallengeGame, 'chall-draw', percents=self.challenge.user_to.percents)
             scoring.score(self.challenge.user_from.user, ChallengeGame, 'chall-draw', percents=self.challenge.user_from.percents)
@@ -647,12 +650,6 @@ class DefaultChallengeManager(ChallengeManager):
             winner_points = self.challenge.user_won.user.points
             loser_points = self.challenge.user_lost.user.points
 
-            for u in (self.challenge.user_to, self.challenge.user_from):
-                if u.user.magic.has_modifier('challenge-affect-scoring'):
-                    u.percents += u.user.magic.modifier_percents('challenge-affect-scoring')
-                else:
-                    u.percents = 100
-
             # Check for charge
             if self.challenge.user_won.user.magic.has_modifier('challenge-affect-scoring-won'):
                 self.challenge.user_won.percents += self.challenge.user_won.user.magic.modifier_percents('challenge-affect-scoring-won') - 100
@@ -660,6 +657,10 @@ class DefaultChallengeManager(ChallengeManager):
             # Check for weakness
             if self.challenge.user_won.user.magic.has_modifier('challenge-affect-scoring-lost'):
                 self.challenge.user_won.percents += self.challenge.user_won.user.magic.modifier_percents('challenge-affect-scoring-lost') - 100
+
+            # Check for frenzy on the winning player
+            if self.challenge.user_won.user.magic.has_modifier('challenge-affect-scoring'):
+                self.challenge.user_won.percents += self.challenge.user_won.user.magic.modifier_percents('challenge-affect-scoring') - 100
 
             if self.challenge.WARRANTY:
                 # warranty not affected by percents
@@ -671,6 +672,11 @@ class DefaultChallengeManager(ChallengeManager):
                           different_race=diff_race, different_class=diff_class,
                           winner_points=winner_points, loser_points=loser_points,
             )
+
+            # Check for frenzy on the losing player
+            if self.challenge.user_lost.user.magic.has_modifier('challenge-affect-scoring'):
+                self.challenge.user_lost.percents += self.challenge.user_lost.user.magic.modifier_percents('challenge-affect-scoring') - 100
+
             #Check for spell evade
             if self.challenge.user_lost.user.magic.has_modifier('challenge-evade'):
                 random.seed()
@@ -680,7 +686,8 @@ class DefaultChallengeManager(ChallengeManager):
                     Message.send(sender=None, receiver=self.challenge.user_lost.user, subject="Challenge evaded", text="You have just evaded losing points in a challenge")
 
             scoring.score(self.challenge.user_lost.user, ChallengeGame, 'chall-lost',
-                          external_id=self.challenge.id, points=self.challenge.user_lost.score, points2=self.challenge.user_lost.score)
+                          external_id=self.challenge.id, percents=self.challenge.user_lost.percents,
+                          points=self.challenge.user_lost.score, points2=self.challenge.user_lost.score)
 
 
 class ChallengeGame(Game):
