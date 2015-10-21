@@ -167,11 +167,12 @@ class Player(models.Model):
 
     def get_division(self, count):
         base_query = Player.objects.exclude(user__is_superuser=True)\
-                                   .exclude(race__can_play=False)
-        all_users = list(base_query.order_by('-points'))
+                                   .exclude(race__can_play=False)\
+                                   .order_by('points', 'id')
+        all_users = list(base_query)
 
         try:
-            position = all_users.index(self)
+            position = all_users.index(Player.objects.get(id=self.id))
         except ValueError:
             return []
 

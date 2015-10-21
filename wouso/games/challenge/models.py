@@ -52,10 +52,12 @@ class ChallengeUser(Player):
         return self.points >= REQ_POINTS
 
     def in_same_division(self, user):
-        from wouso.interface.top.models import TopUser
-        position_diff = abs(self.get_extension(TopUser).position - user.get_extension(TopUser).position)
-        if position_diff <= 20:
-          return True
+        division = self.get_division(20)
+
+        #division is a list of Player objects
+        #user is a ChallengeUser object
+        if Player.objects.get(id=user.id) in division:
+            return True
         return False
 
     def can_challenge(self, user):
