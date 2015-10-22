@@ -139,49 +139,42 @@ def unset(user, game, formula, external_id=None, **params):
     user.save()
     update_points(user, game)
 
-def rollback(user, game, formula, external_id=None, **params):
-    if game is not None:
-        game = game.get_instance()
-    formula = Formula.get(formula)
-    user = user.user.get_profile() # make sure you are working on fresh Player
-    for history in History.objects.filter(user=user, game=game, formula=formula, external_id=external_id):
-        if history.coin.name == 'points':
-            user.points -= history.amount
-        history.delete()
-    user.save()
-
 def update_points(player, game):
     level = God.get_level_for_points(player.points)
-    if level != player.level_no:
-        if level < player.level_no:
-            amount = calculate('level-gold', level=player.level_no).get('gold', 0)
-            action_msg = 'gold-lost'
-            signal_msg = ugettext_noop("downgraded to level {level} and lost {amount} gold")
-            rollback(player, None, 'level-gold', external_id=player.level_no)
-            signals.addActivity.send(sender=None, user_from=player,
-                                user_to=player, message=signal_msg,
-                                arguments=dict(level=level, amount=amount),
-                                game=game, action=action_msg)
-        else:
 
-            amount = calculate('level-gold', level=level)
-            # Check if the user has previously reached this level
-            if level > player.max_level:
-                # Update the maximum reached level
-                player.max_level = level
-                # Offer the corresponding amount of gold
-                score(player, None, 'level-gold', external_id=level, level=level)
-            else:
-                # The user should not receive additional gold
-                amount['gold'] = 0
+    if level == player.level_no:
+        return
+
+    if level < player.level_no:
+        action_msg = 'level-downgrade'
+        signal_msg = ugettext_noop("downgraded to level {level}")
+        signals.addActivity.send(sender=None, user_from=player,
+                            user_to=player, message=signal_msg,
+                            arguments=dict(level=level),
+                            game=game, action=action_msg)
+    else:
+        action_msg = 'level-upgrade'
+        arguments = dict(level=level)
+        # Check if the user has previously reached this level
+        if level > player.max_level:
+            # Update the maximum reached level
+            player.max_level = level
+            # Offer the corresponding amount of gold
+            score(player, None, 'level-gold', external_id=level, level=level)
+
             signal_msg = ugettext_noop("upgraded to level {level} and received {amount} gold")
-            action_msg = 'gold-won'
-            signals.addActivity.send(sender=None, user_from=player,
-                    user_to=player, message=signal_msg,
-                                arguments=dict(level=level, amount=amount['gold']),
-                                game=None, action=action_msg)
-        player.level_no = level
-        player.save()
+            amount = calculate('level-gold', level=level).get('gold', 0)
+            arguments['amount'] = amount
+        else:
+            # The user should not receive additional gold
+            signal_msg = ugettext_noop("upgraded back to level {level}")
+
+        signals.addActivity.send(sender=None, user_from=player,
+                                 user_to=player, message=signal_msg,
+                                 arguments=arguments, game=None, 
+                                 action=action_msg)
+    player.level_no = level
+    player.save()
 
 
 def score_simple(player, coin, amount, game=None, formula=None,

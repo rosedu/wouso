@@ -94,26 +94,62 @@ class ScoringTestCase(TestCase):
 
 
 class UpdateScoringTest(WousoTest):
-    def testUpdatePoints(self):
-        IntegerListSetting.get('level_limits').set_value("80 125 180 245 320 450")
-
+    def test_update_points_level_upgrade_first_time(self):
+        level_up_points = 80
+        IntegerListSetting.get('level_limits').set_value(str(level_up_points))
         Coin.add('points')
         Coin.add('gold')
         Formula.add('level-gold', expression='gold=10*{level}', owner=None)
+        # Upgrade player's level
         player = self._get_player()
-        player.points = 82
+        player.points = level_up_points + 1
         player.level_no = 1
         player.save()
         update_points(player, None)
         coins = History.user_coins(player.user)
-        self.assertIn('gold', coins)
-        self.assertEqual(coins['gold'], 20)
-        player.points = 10
+        self.assertEqual(coins['gold'], 10 * player.max_level)
+
+    def test_update_points_level_downgrade(self):
+        level_up_points = 80
+        IntegerListSetting.get('level_limits').set_value(str(level_up_points))
+        Coin.add('points')
+        Coin.add('gold')
+        Formula.add('level-gold', expression='gold=10*{level}', owner=None)
+        # Upgrade player's level
+        player = self._get_player()
+        player.points = level_up_points + 1
+        player.level_no = 1
+        player.save()
+        update_points(player, None)
+        # Downgrade player's level
+        player.points = level_up_points - 1
         player.save()
         update_points(player, None)
         coins = History.user_coins(player.user)
-        self.assertIn('gold', coins)
-        self.assertEqual(coins['gold'], 0)
+        self.assertEqual(coins['gold'], 10 * player.max_level)
+
+    def test_update_points_level_upgrade_back(self):
+        level_up_points = 80
+        IntegerListSetting.get('level_limits').set_value(str(level_up_points))
+        Coin.add('points')
+        Coin.add('gold')
+        Formula.add('level-gold', expression='gold=10*{level}', owner=None)
+        # Upgrade player's level
+        player = self._get_player()
+        player.points = level_up_points + 1
+        player.level_no = 1
+        player.save()
+        update_points(player, None)
+        # Downgrade player's level
+        player.points = level_up_points - 1
+        player.save()
+        update_points(player, None)
+        #Upgrade player's level back
+        player.points = level_up_points + 1
+        player.save()
+        update_points(player, None)
+        coins = History.user_coins(player.user)
+        self.assertEqual(coins['gold'], 10 * player.max_level)
 
 
 class ScoringHistoryTest(WousoTest):
