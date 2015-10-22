@@ -166,24 +166,17 @@ class Player(models.Model):
         return players
 
     def get_division(self, count):
-        base_query = Player.objects.exclude(user__is_superuser=True)\
-                                   .exclude(race__can_play=False)\
-                                   .order_by('points', 'id')
-        all_users = list(base_query)
+        from wouso.interface.top.models import TopUser
+        all_users = list(TopUser.objects.all())
 
         try:
-            position = all_users.index(Player.objects.get(id=self.id))
-        except ValueError:
+            curr_user = TopUser.objects.get(id=self.id)
+        except Exception:
             return []
 
-        # Division's start should be (position - count) if position is greater
-        # than count (start position is positive) or 0 if is negative
-        start = max(position - count, 0)
+        curr_user_pos = curr_user.position
 
-        # Division's end should be (position + count) if it doesn't exceed
-        end = min(position + count, all_users.__len__())
-
-        division = all_users[start:end]
+        division = [user for user in all_users if abs(curr_user.position - user.position) < 20]
         shuffle(division)
 
         return division
