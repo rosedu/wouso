@@ -58,15 +58,19 @@ msgstr "Se aștepta formular POST"
 msgid "Invalid number of days"
 msgstr "Număr de zile nevalid"
 
-#: core/scoring/sm.py:159
-msgid "downgraded to level {level} and lost {amount} gold"
-msgstr "a coborât la nivelul {level} și a pierdut {amount} aur"
+#: core/scoring/sm.py:150
+msgid "downgraded to level {level}"
+msgstr "a coborât la nivelul {level}"
 
-#: core/scoring/sm.py:177
+#: core/scoring/sm.py:165
 msgid "upgraded to level {level} and received {amount} gold"
 msgstr "a promovat la nivelul {level} și a primit {amount} aur"
 
-#: core/scoring/sm.py:286
+#: core/scoring/sm.py:170
+msgid "upgraded back to level {level}"
+msgstr "a promovat înapoi la nivelul {level}"
+
+#: core/scoring/sm.py:279
 msgid "joined the game."
 msgstr "a intrat în joc."
 
