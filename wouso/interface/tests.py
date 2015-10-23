@@ -20,7 +20,7 @@ class TestInterface(WousoTest):
         response = self.client.get(reverse('player_profile', kwargs=dict(id=admin.id)))
         self.assertEqual(response.status_code, 200)
 
-    def test_achievements_link(safe):
+    def test_achievements_link(self):
         player = self._get_player()
         self.client.login(username=player.user.username, password='test')
         response = self.client.get('/hub/')
