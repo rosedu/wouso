@@ -11,6 +11,7 @@ from wouso.core.qpool.models import Schedule, Answer, Question
 
 # Qotd uses questions from qpool
 
+
 class QotdUser(Player):
     """ Extension of the User object, customized for qotd """
     last_answered = models.DateTimeField(null=True, blank=True, default=None)
@@ -38,14 +39,15 @@ class QotdUser(Player):
 
     def set_answered(self, choice, correct):
         if not self.has_answered:
-            self.last_answer = choice # answer id
+            self.last_answer = choice  # answer id
             self.last_answer_correct = correct
             self.last_answered = datetime.now()
             self.save()
             # send signal
             if correct:
                 action_msg = "qotd-correct"
-                signal_msg = ugettext_noop('has given a correct answer to QotD.')
+                signal_msg = ugettext_noop('has given \
+                                            a correct answer to QotD.')
             else:
                 action_msg = "qotd-wrong"
                 signal_msg = ugettext_noop('has given a wrong answer to QotD.')
@@ -106,14 +108,14 @@ class QotdGame(Game):
                     correct = True
                 break
 
-        user.set_answered(choice, correct) # answer id
+        user.set_answered(choice, correct)  # answer id
 
         if correct:
             now = datetime.now()
 
             pr = randint(0, 99)
 
-            scoring.score(user, QotdGame, 'qotd-ok', hour=now.hour);
+            scoring.score(user, QotdGame, 'qotd-ok', hour=now.hour)
             if pr < settings.QOTD_BONUS_PROB:
                 scoring.score(user, QotdGame, 'qotd-ok-bonus', hour=now.hour)
 
@@ -123,15 +125,15 @@ class QotdGame(Game):
         fs = []
         qotd_game = kls.get_instance()
         fs.append(dict(name='qotd-ok',
-            expression='points=4 + (1 if {hour} < 12 else -1)',
-            owner=qotd_game.game,
-            description='Points earned on a correct answer in the morning')
-        )
+                  expression='points=4 + (1 if {hour} < 12 else -1)',
+                  owner=qotd_game.game,
+                  description='Points earned on a correct \
+                  answer in the morning'))
         fs.append(dict(name="qotd-ok-bonus",
-            expression='points=2',
-            owner=qotd_game.game,
-            description='Points earned in case of bonus')
-        )
+                  expression='points=2',
+                  owner=qotd_game.game,
+                  description='Points earned in case of bonus')
+                  )
         return fs
 
     @classmethod
@@ -141,7 +143,7 @@ class QotdGame(Game):
 
     @classmethod
     def get_modifiers(cls):
-        return ['qotd-blind', #player cannot launch QuestionOfTheDay
+        return ['qotd-blind',  # player cannot launch QuestionOfTheDay
                 ]
 
     @classmethod
