@@ -43,6 +43,11 @@ function selectItem(li) {
     document.location = url_base + '/player/' + id + '/';
 }
 
+function manageItem(li) {
+    id = getSelectedPlayer(li);
+    document.location = url_base + '/cpanel/players/manage_player/' + id + '/';
+}
+
 function selectItemMessaging(li) {
     var text = li.innerHTML;
     var name = text.substr(0, text.indexOf("<"));

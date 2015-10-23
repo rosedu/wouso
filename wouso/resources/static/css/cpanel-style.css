@@ -136,3 +136,11 @@ div.second {
 .hidden{
     display: none;
 }
+.input-search{
+    position: relative;
+}
+.input-search-glyph{
+    position: absolute;
+    right: 7px;
+    top: 10px;
+}

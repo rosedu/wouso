@@ -15,12 +15,30 @@
 {% endblock %}
 
 {% block sectioncontent %}
-<form class="pull-left form-inline" role="form" action="{% url manage_fwd %}" method="post">
-    <input class="form-control" type="text" name="player" value="{{ player_input}}">
+<form class="pull-left form-inline" role="form" method="post">
+    <div class="input-search">
+    <input id="query" class="form-control" type="text" name="player" value="{{player_input}}">
     {% csrf_token %}
-    <button class="btn btn-primary" type="submit">{% trans 'Search' %}</button>
+    <span class="glyphicon glyphicon-search input-search-glyph"></span>
+    </div>
     <hr/>
 </form>
+<script type="text/javascript">
+            var myID = '{{player.id}}'
+            var myName = '{{player.nickname}}'
+            $(document).ready(function() {
+            $("#query").autocomplete( "{% url manage_instant_search %}",
+                { 
+                    minChars: 3,
+                    matchSubset: 1,
+                    matchContains: 1,
+                    cacheLength: 10,
+                    formatItem: formatItem,
+                    onItemSelect: manageItem,
+                    selectOnly: 1
+                });
+            });
+</script>
 
 <table class="table table-bordered table table-hover">
 <tr>
