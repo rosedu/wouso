@@ -9,6 +9,7 @@ from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render_to_response
 from django.template import RequestContext
@@ -35,6 +36,7 @@ from wouso.interface.apps.messaging.models import Message
 from wouso.interface.apps.pages.models import StaticPage, NewsItem
 from wouso.interface.cpanel.models import Customization, Switchboard, \
     GamesSwitchboard
+from wouso.interface.forms import InstantSearchForm
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.middleware.impersonation import ImpersonateMiddleware
 from wouso.utils.import_questions import import_from_file
@@ -1326,6 +1328,22 @@ def fwd(request):
         player = get_object_or_404(Player, pk=request.POST.get('player'))
         return redirect('manage_player', pk=player.pk)
     return redirect('all_players')
+
+
+def instant_search(request):
+    """ Perform instant search """
+    form = InstantSearchForm(request.GET)
+    if form.is_valid():
+        query = form.cleaned_data['q']
+        users = User.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(username__icontains=query))
+        user_ids = [u.id for u in users]
+        searchresults = Player.objects.filter(Q(user__in=user_ids) | Q(full_name__icontains=query) | Q(nickname__icontains=query))
+        return render_to_response('interface/instant_search_results.txt',
+                                  {'searchresults': searchresults},
+                                  context_instance=RequestContext(request))
+
+    else:
+        return HttpResponse('') 
 
 
 @permission_required('config.change_setting')
