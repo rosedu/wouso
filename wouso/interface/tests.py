@@ -12,8 +12,13 @@ class TestInterface(WousoTest):
         player = self._get_player()
         self.client.login(username=player.user.username, password='test')
         response = self.client.get('/hub/')
-
+	indentifier = player.user.get_full_name()
+	if len(indentifier) == 0:
+		indentifier = player.user.username
+	self.assertTrue(indentifier in response.content)
         self.assertTrue('Logout' in response.content)
+        if player.user.is_superuser:
+		self.assertTrue('Control Panel' in response.content)
 
     def test_online_player(self):
         player = self._get_player()
