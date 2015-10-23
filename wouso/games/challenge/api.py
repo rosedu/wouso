@@ -14,7 +14,8 @@ class ChallengesHandler(BaseHandler):
                      user_from=unicode(c.user_from.user),
                      user_from_id=c.user_from.user.id,
                      user_to=unicode(c.user_to.user),
-                     user_to_id=c.user_to.user.id) for c in ChallengeGame.get_active(challuser)]
+                     user_to_id=c.user_to.user.id)
+                for c in ChallengeGame.get_active(challuser)]
 
 
 class ChallengeGetRandom(BaseHandler):
@@ -78,7 +79,10 @@ class ChallengeHandler(BaseHandler):
                 challenge.set_start(player)
 
             if challenge.is_expired_for_user(player):
-                return {'success': False, 'error': 'Challenge expired for this user'}
+                return {
+                    'success': False,
+                    'error': 'Challenge expired for this user'
+                    }
 
             return {'success': True,
                     'status': challenge.status,
@@ -87,28 +91,42 @@ class ChallengeHandler(BaseHandler):
                     'date': challenge.date,
                     'seconds': challenge.time_for_user(challuser),
                     'questions': dict(
-                        [(q.id, {'text': q, 'answers': dict([(a.id, a) for a in q.answers])}) for q in
-                         challenge.questions.all()]),
-            }
+                        [
+                            (q.id, {
+                                'text': q,
+                                'answers': dict([(a.id, a) for a in q.answers])
+                            })for q in challenge.questions.all()
+                        ]),
+                    }
 
         if action == 'refuse':
             if challenge.user_to.user == challuser and challenge.is_launched():
                 challenge.refuse()
                 return {'success': True}
             else:
-                return {'success': False, 'error': 'Cannot refuse this challenge'}
+                return {
+                    'success': False,
+                    'error': 'Cannot refuse this challenge'
+                }
         if action == 'cancel':
-            if challenge.user_from.user == challuser and challenge.is_launched():
-                challenge.cancel()
-                return {'success': True}
+            if challenge.user_from.user == challuser and\
+               challenge.is_launched():
+                    challenge.cancel()
+                    return {'success': True}
             else:
-                return {'success': False, 'error': 'Cannot cancel this challenge'}
+                    return {
+                        'success': False,
+                        'error': 'Cannot cancel this challenge'
+                    }
         if action == 'accept':
             if challenge.user_to.user == challuser and challenge.is_launched():
                 challenge.accept()
                 return {'success': True}
             else:
-                return {'success': False, 'error': 'Cannot accept this challenge'}
+                return {
+                    'success': False,
+                    'error': 'Cannot accept this challenge'
+                }
 
         return {'success': False, 'error': 'Unknown action'}
 
@@ -134,7 +152,11 @@ class ChallengeHandler(BaseHandler):
         responses = {}
         try:
             for q in challenge.questions.all():
-                responses[q.id] = [int(a) if a else '' for a in data.get(str(q.id), '').split(',')]
+                responses[q.id] = [
+                    int(a)
+                    if a
+                    else ''
+                    for a in data.get(str(q.id), '').split(',')]
         except (IndexError, ValueError):
             return {'success': False, 'error': 'Unable to parse answers'}
 
