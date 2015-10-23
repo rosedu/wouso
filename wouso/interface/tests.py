@@ -29,3 +29,36 @@ class TestInterface(WousoTest):
         self._client_superuser()
         response = self.client.get(reverse('player_profile', kwargs=dict(id=admin.id)))
         self.assertEqual(response.status_code, 200)
+
+    # def test_special_challenges(self):
+    #     player = self._get_player()
+    #     self.client.login(username=player.user.username, password='test')
+
+    #     response = self.client.get('/hub/')
+
+    #     self.assertTrue('Challenges' in response.content)
+
+    # def test_messages_button(self):
+    #     player = self._get_player()
+    #     self.client.login(username=player.user.username, password='test')
+
+    #     response = self.client.get('/hub/')
+
+    #     self.assertTrue('Messages' in response.content)
+
+    # def test_magic_button(self):
+    #     player = self._get_player()
+    #     self.client.login(username=player.user.username, password='test')
+
+    #     response = self.client.get('/hub/')
+
+    #     self.assertTrue('Magic' in response.content)
+
+    # def test_special_button(self):
+    #     player = self._get_player()
+    #     self.client.login(username=player.user.username, password='test')
+
+    #     response = self.client.get('/hub/')
+
+    #     self.assertTrue('Special' in response.content)
+    
