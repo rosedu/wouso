@@ -372,7 +372,7 @@ class DetailedChallengeStatsView(ListView, PlayerViewMixin):
     context_object_name = 'chall_total'
 
     def get_queryset(self):
-        self.target_user = get_object_or_404(ChallengeUser, user__id=self.kwargs['target_id'])
+        self.target_user = get_object_or_404(ChallengeUser, id=self.kwargs['target_id'])
         return self.get_player().get_related_challenges(self.target_user)
 
     def get_context_data(self, **kwargs):
