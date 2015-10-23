@@ -17,6 +17,3 @@ class TestInterface(WousoTest):
         self._client_superuser()
         response = self.client.get(reverse('player_profile', kwargs=dict(id=admin.id)))
         self.assertEqual(response.status_code, 200)
-
-    def test_jenkins(self):
-        self.assertTrue(True)
