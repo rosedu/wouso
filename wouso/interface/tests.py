@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from wouso.core.tests import WousoTest
+from wouso.core.config.models import BoolSetting
 
 class TestInterface(WousoTest):
     def test_homepage_anonymous(self):
@@ -52,3 +53,22 @@ class TestInterface(WousoTest):
 
     #     self.assertTrue('Special' in response.content)
     
+    def test_challenge_top_link_appears(self):
+        player = self._get_player()
+        self.client.login(username=player.user.username, password='test')
+        setting = BoolSetting('disable-Challenge-Top')
+        BoolSetting.set_value(setting, False)
+
+        response = self.client.get('/hub/')
+        
+        self.assertTrue('Challenge Top' in response.content)
+
+    def test_challenge_top_link_appears(self):
+        player = self._get_player()
+        self.client.login(username=player.user.username, password='test')
+        setting = BoolSetting('disable-Challenge-Top')
+        BoolSetting.set_value(setting, True)
+
+        response = self.client.get('/hub/')
+        
+        self.assertTrue('Challenge Top' not in response.content)
