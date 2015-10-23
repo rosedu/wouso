@@ -22,8 +22,8 @@ class QotdView(View):
 
         if self.qotd_user.magic.has_modifier('qotd-blind'):
             messages.error(request, _(
-                "You have been blinded, you cannot \
-                answer to the Question of the Day"))
+                "You have been blinded, you cannot "
+                "answer to the Question of the Day"))
             return redirect('games.qotd.views.history')
         elif not self.qotd_user.has_question:
             self.qotd = QotdGame.get_for_today()
