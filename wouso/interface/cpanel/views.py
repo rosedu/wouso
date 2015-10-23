@@ -1048,21 +1048,16 @@ group_add = permission_required('config.change_setting')(
 )
 
 @permission_required('config.change_setting')
-def race_toggle_can_play(request):
-    try:
-        race_pk = int(request.GET.get('id', None))
-    except:
-        raise Http404
+def race_toggle_can_play(request, id):
+    if request.is_ajax() and request.method == 'PUT':
+        race = get_object_or_404(Race, pk=id)
 
-    race = get_object_or_404(Race, pk=race_pk)
+        race.can_play = not race.can_play
+        race.save()
 
-    race.can_play = not race.can_play
-    race.save()
-
-    data = {}
-    data['can_play'] = race.can_play
-
-    return HttpResponse(json.dumps(data))
+        return HttpResponse(json.dumps({'can_play': race.can_play}))
+    
+    return HttpResponseBadRequest()
 
 class RolesView(ListView):
     template_name = 'cpanel/roles.html'
