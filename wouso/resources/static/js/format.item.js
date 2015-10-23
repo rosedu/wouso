@@ -45,7 +45,7 @@ function selectItem(li) {
 
 function manageItem(li) {
     id = getSelectedPlayer(li);
-    document.location = '/cpanel/players/manage_player/' + id + '/';
+    document.location = url_base + '/cpanel/players/manage_player/' + id + '/';
 }
 
 function selectItemMessaging(li) {

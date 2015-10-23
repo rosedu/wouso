@@ -1323,21 +1323,18 @@ def bonus(request, player_id):
                               context_instance=RequestContext(request))
 
 
-def fwd(request):
-    if request.method == 'POST':
-        player = get_object_or_404(Player, pk=request.POST.get('player'))
-        return redirect('manage_player', pk=player.pk)
-    return redirect('all_players')
-
-
 def instant_search(request):
     """ Perform instant search """
     form = InstantSearchForm(request.GET)
     if form.is_valid():
         query = form.cleaned_data['q']
-        users = User.objects.filter(Q(first_name__icontains=query) | Q(last_name__icontains=query) | Q(username__icontains=query))
+        users = User.objects.filter(Q(first_name__icontains=query) |
+                                    Q(last_name__icontains=query) |
+                                    Q(username__icontains=query))
         user_ids = [u.id for u in users]
-        searchresults = Player.objects.filter(Q(user__in=user_ids) | Q(full_name__icontains=query) | Q(nickname__icontains=query))
+        searchresults = Player.objects.filter(Q(user__in=user_ids) |
+                                              Q(full_name__icontains=query) |
+                                              Q(nickname__icontains=query))
         return render_to_response('interface/instant_search_results.txt',
                                   {'searchresults': searchresults},
                                   context_instance=RequestContext(request))

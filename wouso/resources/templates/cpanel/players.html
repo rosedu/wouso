@@ -15,9 +15,9 @@
 {% endblock %}
 
 {% block sectioncontent %}
-<form class="pull-left form-inline" role="form" action="{% url manage_fwd %}" method="post">
-    <div class="search-glyph">
-    <input id="query" class="form-control" type="text" name="player" value="{{ player_input}}">
+<form class="pull-left form-inline" role="form" method="post">
+    <div class="input-search">
+    <input id="query" class="form-control" type="text" name="player" value="{{player_input}}">
     {% csrf_token %}
     <span class="glyphicon glyphicon-search input-search-glyph"></span>
     </div>
@@ -27,7 +27,16 @@
             var myID = '{{player.id}}'
             var myName = '{{player.nickname}}'
             $(document).ready(function() {
-            $("#query").autocomplete( "{% url manage_instant_search %}", { minChars:3, matchSubset:1, matchContains:1, cacheLength:10, formatItem:formatItem, onItemSelect:manageItem, selectOnly:1 });
+            $("#query").autocomplete( "{% url manage_instant_search %}",
+                { 
+                    minChars: 3,
+                    matchSubset: 1,
+                    matchContains: 1,
+                    cacheLength: 10,
+                    formatItem: formatItem,
+                    onItemSelect: manageItem,
+                    selectOnly: 1
+                });
             });
 </script>
 

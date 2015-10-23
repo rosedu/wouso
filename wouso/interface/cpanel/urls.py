@@ -63,7 +63,6 @@ upat = [
     url(r'^staff/toggle/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.stafftoggle', name='staff_toggle'),
 
     url(r'^players/$', 'wouso.interface.cpanel.views.players', name='all_players'),
-    url(r'^players/fwd/$', 'wouso.interface.cpanel.views.fwd', name='manage_fwd'),
     url(r'^players/instant_search/$', 'wouso.interface.cpanel.views.instant_search', name='manage_instant_search'),
     url(r'^players/(?P<player_id>\d+)/bonus/$', 'wouso.interface.cpanel.views.bonus', name='bonus'),
     url(r'^players/add_player/$', 'wouso.interface.cpanel.views.add_player', name='add_player'),
