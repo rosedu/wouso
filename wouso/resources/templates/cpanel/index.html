@@ -208,29 +208,35 @@
                 </table>
             </div>
         </div>
-        <div class="panel panel-info col-md-4 col-md-offset-1">
-            <div class="panel-heading">Django & WoUSO Information</div>
-            <div class="panel-body">
-                <p>Django version: {{ django_version }}</p>
-                <p>Database: {{ database_name }} [{{ database_engine }}]</p>
-                <p>WoUSO version: {{ wouso_version }}</p>
-                <p>WoUSOcron last run: {{ last_run }}</p>
+        <div class="col-md-4 col-md-offset-1 nopadding">
+            <div class="panel panel-info">
+                <div class="panel-heading">Django & WoUSO Information</div>
+                <div class="panel-body">
+                    <p>Django version: {{ django_version }}</p>
+                    <p>Database: {{ database_name }} [{{ database_engine }}]</p>
+                    <p>WoUSO version: {{ wouso_version }}</p>
+                    <p>WoUSOcron last run: {{ last_run }}</p>
+                </div>
             </div>
         </div>
-        <div class="panel panel-info col-md-4 col-md-offset-1">
-            <div class="panel-heading">Staff</div>
-            <div class="panel-body">
-                {% for u in staff.user_set.all %}
-                    {% player_simple u.get_profile %}
-                {% endfor %}
+        <div class="col-md-4 col-md-offset-1 nopadding">
+            <div class="panel panel-info">
+                <div class="panel-heading">Staff</div>
+                <div class="panel-body">
+                    {% for u in staff.user_set.all %}
+                        {% player_simple u.get_profile %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
-        <div class="panel panel-info col-md-4 col-md-offset-1">
-            <div class="panel-heading">Online Users</div>
-            <div class="panel-body">
-                {% for u in online_users %}
-                {% player u%}
-                {% endfor %}
+        <div class="col-md-4 col-md-offset-1 nopadding">
+            <div class="panel panel-info">
+                <div class="panel-heading">Online Users</div>
+                <div class="panel-body">
+                    {% for u in online_users %}
+                    {% player u%}
+                    {% endfor %}
+                </div>
             </div>
         </div>
         {% endblock %}
