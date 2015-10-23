@@ -32,6 +32,8 @@
     {% endif %}
     <a href="{% url quest_history %}" class="goto">{% trans 'Quest History' %}</a>
     <br/>
+    <a href="{% url qotd_history_view %}" class="goto">{% trans 'Qotd History' %}</a>
+    <br/>
     <a href="{% url artifact_hof %}" class="goto">{% trans 'Achievements' %}</a>
     <br/>
     {% if not config_disable_top_pyramid %}
