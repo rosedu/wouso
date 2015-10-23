@@ -13,6 +13,8 @@ class TestInterface(WousoTest):
         response = self.client.get('/hub/')
 
         self.assertTrue('Logout' in response.content)
+        if player.user.is_superuser:
+		self.assertTrue('Control Panel' in response.content)
 
     def test_profile_page(self):
         admin = self._get_superuser()
