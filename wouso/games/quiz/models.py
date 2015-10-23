@@ -246,15 +246,15 @@ class UserToQuiz(models.Model):
                 gold = gold - self.best_attempt.gold
                 scoring.score(self.user, None, 'bonus-points', points=points)
                 scoring.score(self.user, None, 'bonus-gold', gold=gold)
-                add_activity(self.user, _('received {points} points and \
-                	{gold} gold bonus'' for beating his/her\
-                	highscore at quiz {quiz_name}'),
+                add_activity(self.user, _('received {points} points and '
+                	'{gold} gold bonus'' for beating his/her '
+                	'highscore at quiz {quiz_name}'),
                              points=points, gold=gold, quiz_name=self.quiz.name)
         else:
             scoring.score(self.user, None, 'bonus-points', points=points)
             scoring.score(self.user, None, 'bonus-gold', gold=gold)
-            add_activity(self.user, _('received {points}\
-            	points and {gold} gold bonus'
+            add_activity(self.user, _('received {points} points'
+                ' and {gold} gold bonus'
                 ' for submitting quiz {quiz_name}'),
                          points=points, gold=gold, quiz_name=self.quiz.name)
 
