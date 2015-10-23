@@ -12,13 +12,15 @@ from wouso.core import scoring
 from wouso.core.signals import add_activity
 from wouso.core.user.models import Player
 from wouso.core.game.models import Game
-from wouso.core.qpool import register_category, get_questions_with_tag_and_category
+from wouso.core.qpool import register_category,\
+get_questions_with_tag_and_category
 from wouso.core.qpool.models import Question, Tag
 
 
 class QuizCategory(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    logo = models.ImageField(upload_to=settings.MEDIA_ARTIFACTS_DIR, null=True, blank=True)
+    logo = models.ImageField(upload_to=\
+    	settings.MEDIA_ARTIFACTS_DIR, null=True, blank=True)
 
     @property
     def quizzes(self):
@@ -26,7 +28,8 @@ class QuizCategory(models.Model):
 
     @property
     def logo_url(self):
-        return os.path.join(settings.MEDIA_ARTIFACTS_URL, os.path.basename(str(self.logo))) if self.logo else ""
+        return os.path.join(settings.MEDIA_ARTIFACTS_URL,\
+        os.path.basename(str(self.logo))) if self.logo else ""
 
     def __unicode__(self):
         return self.name
@@ -107,7 +110,8 @@ class Quiz(models.Model):
         """
          Response contains a dict with question id and checked answers ids.
          Example:
-            {1 : [14,], ...}, - has answered answer with id 14 at the question with id 1
+            {1 : [14,], ...}, - has answered answer
+            with id 14 at the question with id 1
         """
         if len(responses) == 0:
             return 0, 0
@@ -117,7 +121,8 @@ class Quiz(models.Model):
 
         for question_id, checked_answer_id in responses.iteritems():
             question = Question.objects.get(id=question_id)
-            correct_answer_id = [ans.id for ans in question.answers if ans.correct]
+            correct_answer_id = [ans.id \
+            for ans in question.answers if ans.correct]
             if checked_answer_id == correct_answer_id:
                 correct_count += 1
 
@@ -156,13 +161,15 @@ class QuizUser(Player):
     def active_quizzes(self):
         # Active public quizzes
         through = UserToQuiz.objects.filter(user=self)
-        active_quizzes = [t for t in through if t.quiz.is_active() and t.quiz.is_public()]
+        active_quizzes = [t for t in through \
+        if t.quiz.is_active() and t.quiz.is_public()]
         return active_quizzes
 
     @property
     def inactive_quizzes(self):
         through = UserToQuiz.objects.filter(user=self)
-        inactive_quizzes = [t for t in through if t.quiz.is_inactive() and t.quiz.is_public()]
+        inactive_quizzes = [t for t in through \
+        if t.quiz.is_inactive() and t.quiz.is_public()]
         return inactive_quizzes
 
     @property
@@ -206,7 +213,8 @@ class UserToQuiz(models.Model):
     def best_attempt(self):
         if self.all_attempts.count() == 0:
             return None
-        return sorted(self.all_attempts, key=lambda x: x.points, reverse=True)[0]
+        return sorted(self.all_attempts, \
+        	key=lambda x: x.points, reverse=True)[0]
 
     @property
     def last_attempt(self):
@@ -238,14 +246,16 @@ class UserToQuiz(models.Model):
                 gold = gold - self.best_attempt.gold
                 scoring.score(self.user, None, 'bonus-points', points=points)
                 scoring.score(self.user, None, 'bonus-gold', gold=gold)
-                add_activity(self.user, _('received {points} points and {gold} gold bonus'
-                                          ' for beating his/her highscore at quiz {quiz_name}'),
+                add_activity(self.user, _('received {points} points and \
+                	{gold} gold bonus'' for beating his/her\
+                	highscore at quiz {quiz_name}'),
                              points=points, gold=gold, quiz_name=self.quiz.name)
         else:
             scoring.score(self.user, None, 'bonus-points', points=points)
             scoring.score(self.user, None, 'bonus-gold', gold=gold)
-            add_activity(self.user, _('received {points} points and {gold} gold bonus'
-                                      ' for submitting quiz {quiz_name}'),
+            add_activity(self.user, _('received {points}\
+            	points and {gold} gold bonus'
+                ' for submitting quiz {quiz_name}'),
                          points=points, gold=gold, quiz_name=self.quiz.name)
 
     def time_left(self):
@@ -282,21 +292,24 @@ class UserToQuiz(models.Model):
 
     def can_play_again(self):
         if self.all_attempts.count():
-            return (datetime.now() - self.last_attempt.date).days >= self.quiz.another_chance
+            return (datetime.now() - self.last_attempt.date).days\
+            >= self.quiz.another_chance
         return True
 
     @property
     def days_until_can_replay(self):
         if self.can_play_again():
             return 0
-        return self.quiz.another_chance - (datetime.now() - self.last_attempt.date).days
+        return self.quiz.another_chance - \
+        (datetime.now() - self.last_attempt.date).days
 
 
 class QuizAttempt(models.Model):
     """
      Stores information about each quiz attempt
     """
-    user_to_quiz = models.ForeignKey(UserToQuiz, related_name='attempts', blank=True, null=True)
+    user_to_quiz = models.ForeignKey(UserToQuiz, \
+    	related_name='attempts', blank=True, null=True)
     date = models.DateTimeField(auto_now_add=True, default=True, null=True)
     results = models.TextField(blank=True, null=True)
     points = models.IntegerField(default=-1)
