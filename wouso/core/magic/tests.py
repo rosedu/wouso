@@ -106,27 +106,6 @@ class ArtifactTestCase(TestCase):
 
 
 class SpellTestCase(WousoTest):
-
-    def test_buy_spell(self):
-        Coin.add('gold')
-        Formula.add('buy-spell', expression="gold=-{price}")
-        spell = Spell.objects.create(name='test-spell', available=True, price=10)
-        player = User.objects.create_user('test', 'test@a.ro', password='test').get_profile()
-
-        scoring.score_simple(player, 'gold', 100)
-        self.assertEqual(player.coins['gold'], 100)
-
-        # TODO: interface test should not be here
-        response = self.client.get(reverse('bazaar_home'))
-        self.assertTrue('test-spell' in response.content)
-
-        self.client.login(username='test', password='test')
-        response = self.client.get(reverse('bazaar_buy', kwargs={'spell': spell.id}))
-        self.assertFalse('error' in response.content)
-
-        player = Player.objects.get(user__username='test')
-        self.assertEqual(player.coins['gold'], 90)
-
     def test_expired(self):
         player = self._get_player()
         spell = Spell.objects.create(name='test-spell', available=True, price=10)
@@ -529,6 +508,24 @@ class TestMagicViews(WousoTest):
         self.activity = Activity.objects.create(user_from=self.p1, user_to=self.p2,
                                                 action='gold-won')
         scoring.setup_scoring()
+    def test_buy_spell(self):
+         Coin.add('gold')
+         Formula.add('buy-spell', expression="gold=-{price}")
+         spell = Spell.objects.create(name='test-spell', available=True, price=10)
+         player = User.objects.create_user('test', 'test@a.ro', password='test').get_profile()
+
+         scoring.score_simple(player, 'gold', 100)
+         self.assertEqual(player.coins['gold'], 100)
+
+         response = self.client.get(reverse('bazaar_home'))
+         self.assertTrue('test-spell' in response.content)
+
+         self.client.login(username='test', password='test')
+         response = self.client.get(reverse('bazaar_buy', kwargs={'spell': spell.id}))
+         self.assertFalse('error' in response.content)
+
+         player = Player.objects.get(user__username='test')
+         self.assertEqual(player.coins['gold'], 90)
 
     def test_bazaar_view(self):
         response = self.c.get(reverse('bazaar_home'))
