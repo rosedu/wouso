@@ -1027,6 +1027,15 @@ class RacesAdd(CreateView):
         return reverse('races_groups')
 
 
+class RacesEdit(UpdateView):
+    model = Race
+    template_name = 'cpanel/races/edit_race.html'
+    form_class = RaceForm
+
+    def get_success_url(self):
+        return reverse('races_groups')
+
+
 class GroupsAdd(CreateView):
     model = PlayerGroup
     template_name = 'cpanel/races/group_create.html'
@@ -1044,6 +1053,9 @@ races_add = permission_required('config.change_setting')(
 )
 group_add = permission_required('config.change_setting')(
     GroupsAdd.as_view()
+)
+races_edit = permission_required('config.change_setting')(
+    RacesEdit.as_view()
 )
 
 

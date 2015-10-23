@@ -75,6 +75,7 @@ upat = [
     url(r'^races/all/$', 'wouso.interface.cpanel.views.races_groups', name='races_groups'),
     url(r'^races/add/$', 'wouso.interface.cpanel.views.races_add', name='races_add'),
     url(r'^races/groups/add/$', 'wouso.interface.cpanel.views.group_add', name='group_add'),
+    url(r'^races/edit/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.races_edit', name='races_edit'),
 
     url(r'^roles/$', 'wouso.interface.cpanel.views.roles', name='roles'),
     url(r'^roles/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.roles_update', name='roles_update'),
