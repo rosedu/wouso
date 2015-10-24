@@ -29,6 +29,7 @@ class TestInterface(WousoTest):
         self.assertTrue('Achievements' in response.content)
 
     def test_exchange_button_appear(self):
+
         player = self._get_player()
         self.client.login(username=player.user.username, password='test')
         setting = BoolSetting('disable-Bazaar-Exchange')
