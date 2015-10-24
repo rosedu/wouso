@@ -1,0 +1,30 @@
+{% extends 'cpanel/index.html' %}
+
+{% load user %}
+{% load bootstrap %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %}Edit group{% endblock %}
+
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% breadcrumb "Groups" "races_groups" %}
+{% endblock %}
+
+{% block sectioncontent %}
+
+    <div class="col-md-8">
+        {% if form.errors %}
+            <p style="color: red;">
+                Please correct the error{{ form.errors|pluralize }} below.
+            </p>
+        {% endif %}
+
+        <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
+            {{ form|bootstrap_horizontal }}
+            <input type="submit" class="btn btn-primary" value="Submit">
+            {% csrf_token %}
+        </form>
+    </div>
+
+{% endblock %}
