@@ -11,8 +11,8 @@ class Seen:
                 profile = None
 
             if profile:
-                if not profile.last_seen or profile.last_seen.day != datetime.now().day:
-                    # Signal a new day seen
+                if not profile.last_seen or profile.last_seen.hour != datetime.now().hour:
+                    # Signal a new hour seen
                     signals.addActivity.send(sender=None,
                         game=None,
                         user_from=profile,
