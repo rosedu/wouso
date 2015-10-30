@@ -1,12 +1,13 @@
 # Create your views here.
-from wouso.core.scoring import Coin
-from wouso.core.user.models import  Race
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import Http404
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+
+from wouso.core.scoring import Coin
+from wouso.core.user.models import Race
 from wouso.core.user.models import PlayerGroup
-from wouso.interface.top.models import  TopUser, Top, NewHistory
+from wouso.interface.top.models import TopUser, Top, NewHistory
 
 PERPAGE = 20
 TOPGROUPS_NO = 5
