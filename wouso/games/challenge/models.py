@@ -123,7 +123,7 @@ class ChallengeUser(Player):
         return self.get_all_challenges().filter(winner=self)
 
     def get_lost_challenges(self):
-        return self.get_all_challenges().exclude(winner=self)
+        return self.get_all_challenges().exclude(winner=self).exclude(status=u'R').exclude(status=u'D')
 
     def get_random_opponent(self):
         players = ChallengeUser.objects.exclude(user=self.user)
