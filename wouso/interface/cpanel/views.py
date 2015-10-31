@@ -1140,6 +1140,7 @@ edit_report = staff_required(EditReportView.as_view())
 class ActivityMonitorView(ListView):
     template_name = 'cpanel/activity_monitor.html'
     model = Activity
+    paginate_by = 50
 
     def get_queryset(self):
         objects = self.model.objects.all()
@@ -1352,7 +1353,7 @@ def instant_search(request):
                                   context_instance=RequestContext(request))
 
     else:
-        return HttpResponse('') 
+        return HttpResponse('')
 
 
 @permission_required('config.change_setting')
