@@ -10,6 +10,7 @@ from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.template import RequestContext
 from django.utils.html import strip_tags
 
+from wouso.core.config.models import BoolSetting
 from wouso.core.god import God
 from wouso.core.magic.models import Spell, PlayerSpellDue
 from wouso.core.scoring.models import History
@@ -106,6 +107,7 @@ def user_profile(request, id, page=u'1'):
     challenge_launched_recently = Challenge.exist_last_day(date.today(),
                                         request.user.get_profile(), profile)
     specialquest_button = SpecialQuestGame.get_specialquest_user_button(request, profile)
+    config_disable_magic = BoolSetting.get('disable-Magic').get_value()
 
     return render_to_response('profile/profile.html',
                               {'profile': profile,
@@ -114,6 +116,7 @@ def user_profile(request, id, page=u'1'):
                                'scoring': history,
                                'challenge_launched_recently': challenge_launched_recently,
                                'specialquest_button': specialquest_button,
+                               'config_disable_magic': config_disable_magic,
                                'message': message},
                               context_instance=RequestContext(request))
 
