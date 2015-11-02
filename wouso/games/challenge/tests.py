@@ -13,6 +13,7 @@ from wouso.core.user.models import Player, Race
 from wouso.core import scoring
 from wouso.core.scoring.models import Formula, Coin
 from wouso.games.challenge.views import challenge_random, launch
+from wouso.interface.top.models import Top, TopUser, History
 
 Challenge.LIMIT = 5
 
@@ -197,6 +198,71 @@ class ChallengeTestCase(WousoTest):
         formula.save()
 
         self.assertEqual(scoring.timer(self.chall_user, ChallengeGame, 'chall-timer', level=self.chall_user.level_no), self.chall_user.level_no)
+
+    def test_in_same_division(self):
+        n = 100
+        points_offset = 10000
+        division_range = 20
+
+        players = [self._get_player(i).get_extension(ChallengeUser) for i in xrange(n)]
+
+        # Add an offset value to every user's points in order to avoid top overlapping with other test users.
+        for i in xrange(n):
+            scoring.score_simple(players[i], 'points', points_offset + i * 10)
+
+        # Update players top.
+        for i, u in enumerate(Player.objects.all().order_by('-points')):
+            topuser = u.get_extension(TopUser)
+            position = i + 1
+            hs, created = History.objects.get_or_create(user=topuser, date=datetime.now().date(), relative_to=None)
+            hs.position, hs.points = position, u.points
+            hs.save()
+
+        # Check first player.
+        self.assertTrue(players[n-1].in_same_division(players[n-2]))
+        self.assertTrue(players[n-1].in_same_division(players[max(0, n-1-division_range)]))
+
+        # Check last player.
+        self.assertTrue(players[0].in_same_division(players[1]))
+        self.assertTrue(players[0].in_same_division(players[min(n-1, division_range)]))
+
+        # Check middle player.
+        t = n / 2
+        self.assertTrue(players[t].in_same_division(players[max(0, t-division_range)]))
+        self.assertTrue(players[t].in_same_division(players[min(n-1, t+division_range)]))
+        self.assertTrue(players[t].in_same_division(players[t-1]))
+        self.assertTrue(players[t].in_same_division(players[t+1]))
+
+    def test_not_in_same_division(self):
+        n = 100
+        points_offset = 10000
+        division_range = 20
+
+        players = [self._get_player(i).get_extension(ChallengeUser) for i in xrange(n)]
+
+        # Add an offset value to every user's points in order to avoid top overlapping with other test users.
+        for i in xrange(n):
+            scoring.score_simple(players[i], 'points', points_offset + i*10)
+
+        # Update players top.
+        for i, u in enumerate(Player.objects.all().order_by('-points')):
+            topuser = u.get_extension(TopUser)
+            position = i + 1
+            hs, created = History.objects.get_or_create(user=topuser, date=datetime.now().date(), relative_to=None)
+            hs.position, hs.points = position, u.points
+            hs.save()
+
+        # Check first player.
+        self.assertFalse(players[n-1].in_same_division(players[max(0, n-1-division_range-1)]))
+
+        # Check last player.
+        self.assertFalse(players[0].in_same_division(players[min(n-1, division_range+1)]))
+
+        # Check middle player.
+        t = n / 2
+        self.assertFalse(players[t].in_same_division(players[max(0, t-division_range-1)]))
+        self.assertFalse(players[t].in_same_division(players[min(n-1, t+division_range+1)]))
+
 
 class ChallengeApi(WousoTest):
     def setUp(self):
@@ -581,3 +647,4 @@ class TestChallengeViews(WousoTest):
         response = self.c.get(reverse('player_profile', args=[self.ch_player2.pk]))
         self.assertContains(response,
                     '<a class="button" href="%s">%s</a>' % (url, _('Challenges')))
+
