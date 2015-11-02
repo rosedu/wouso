@@ -22,8 +22,9 @@
         <th>&nbsp;</th>
         <th width = "100%" align=left>{% trans 'Player' %}</th>
         <th> <a href="{% url challenge_top %}0/1/">{% trans 'Won' %}</a> </th>
-        <th nowrap> <a href="{% url challenge_top %}1/1/">{% trans 'Won %' %}</a> </th>
         <th> <a href="{% url challenge_top %}2/1/">{% trans 'Lost' %}</a> </th>
+        <th> <a href="{% url challenge_top %}3/1/">{% trans 'Draw' %}</a> </th>
+        <th nowrap> <a href="{% url challenge_top %}1/1/">{% trans 'Won %' %}</a> </th>
         <th nowrap> {% trans 'Last seen' %} </th>
     </tr>
 
@@ -38,8 +39,9 @@
         {% endfor %}
         </td>
         <td> {{ user.won_challenges }} </td>
-        <td> {{ user.won_perc_challenges|floatformat:"-2" }}%</td>
         <td> {{ user.lost_challenges }} </td>
+        <td> {{ user.draw_challenges }} </td>
+        <td> {{ user.win_percentage|floatformat:"-2" }}%</td>
         <td nowrap> {% if user.last_seen %}{{ user.last_seen }}{% else %}{% trans 'Never' %}{% endif %} </td>
     </tr>
     {% endfor %}

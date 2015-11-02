@@ -65,11 +65,12 @@ class TopUser(ObjectHistory, Player):
         return self.get_extension(ChallengeUser).get_lost_challenges().count()
 
     @property
-    def won_perc_challenges(self):
-        n = self.played_challenges
-        if n == 0:
-            return 0
-        return float(self.won_challenges) / n * 100.0
+    def draw_challenges(self):
+        return self.get_extension(ChallengeUser).get_draw_challenges().count()
+
+    @property
+    def win_percentage(self):
+        return self.get_extension(ChallengeUser).get_win_percentage()
 
     @property
     def weeklyprogress(self):
@@ -235,7 +236,7 @@ class History(models.Model): # TODO: deprecate (maybe), check if NewHistory cove
 
 
 class Top(App):
-       
+
     @classmethod
     def get_sidebar_widget(kls, context):
         if kls.disabled():

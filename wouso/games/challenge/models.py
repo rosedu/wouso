@@ -116,14 +116,26 @@ class ChallengeUser(Player):
         self.save()
 
     def get_all_challenges(self):
-        chall_total = Challenge.objects.exclude(status=u'L').filter(Q(user_from__user=self) | Q(user_to__user=self))
-        return chall_total
+        return Challenge.objects.exclude(status=u'L').filter(Q(user_from__user=self) | Q(user_to__user=self))
 
     def get_won_challenges(self):
         return self.get_all_challenges().filter(winner=self)
 
     def get_lost_challenges(self):
         return self.get_all_challenges().exclude(winner=self).exclude(status=u'R').exclude(status=u'D')
+
+    def get_draw_challenges(self):
+        return self.get_all_challenges().filter(status=u'D')
+
+    def get_refused_challenges(self):
+        return self.get_all_challenges().filter(status=u'R')
+
+    def get_win_percentage(self):
+        w = self.get_won_challenges().count()
+        d = self.get_draw_challenges().count()
+        l = self.get_lost_challenges().count()
+        # 1 draw counts as 1/2 win, 1/2 loss
+        return 0 if w + d == 0 else (w + d / 2.0) / (w + l + d)
 
     def get_random_opponent(self):
         players = ChallengeUser.objects.exclude(user=self.user)
@@ -145,17 +157,16 @@ class ChallengeUser(Player):
         return chall_total
 
     def get_stats(self):
-        chall_total = Challenge.objects.filter(Q(user_from__user=self) |
-                Q(user_to__user=self)).exclude(status=u'L')
+        chall_total = self.get_all_challenges()
+        chall_won = self.get_won_challenges()
         chall_sent = chall_total.filter(user_from__user=self)
         chall_rec = chall_total.filter(user_to__user=self)
-        chall_won = chall_total.filter(winner=self)
 
         n_chall_sent = chall_sent.count()
         n_chall_rec = chall_rec.count()
         n_chall_played = chall_sent.count() + chall_rec.count()
         n_chall_won = chall_won.count()
-        n_chall_ref = chall_total.filter(status=u'R').count()
+        n_chall_ref = self.get_refused_challenges().count()
         all_participation = Participant.objects.filter(user=self)
 
         opponents_from = list(set(map(lambda x : x.user_to.user, chall_sent)))
@@ -182,11 +193,7 @@ class ChallengeUser(Player):
         if average_time == None : average_time = 0
         if average_score == None : average_score = 0
 
-        win_percentage = 0
-        if n_chall_played > 0:
-            win_percentage = float(n_chall_won) / n_chall_played * 100
-        # Pretty print the float for the template
-        win_percentage = '%.1f' % win_percentage
+        win_percentage = self.get_win_percentage()
 
         stats = dict(n_chall_played=n_chall_played, n_chall_won=n_chall_won,
                      n_chall_sent=n_chall_sent, n_chall_rec=n_chall_rec,

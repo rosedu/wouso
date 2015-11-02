@@ -117,9 +117,12 @@ def challenge_top(request, sortcritno='0', pageno=1):
     if sortcritno == '0':
         allUsers = sorted(base_query, key=lambda x: -x.won_challenges)
     elif sortcritno == '1':
-        allUsers = sorted(base_query, key=lambda x: -x.won_perc_challenges)
-    else :
+        allUsers = sorted(base_query, key=lambda x: -x.win_percentage)
+    elif sortcritno == '2':
         allUsers = sorted(base_query, key=lambda x: -x.lost_challenges)
+    else:
+        allUsers = sorted(base_query, key=lambda x: -x.draw_challenges)
+
 
     paginator = Paginator(allUsers, PERPAGE)
     try:
