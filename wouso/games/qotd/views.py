@@ -12,6 +12,7 @@ from wouso.core.ui import register_sidebar_block
 
 
 class QotdView(View):
+
     def dispatch(self, request, *args, **kwargs):
         if QotdGame.disabled():
             return redirect('wouso.interface.views.homepage')
@@ -94,10 +95,9 @@ def done(request):
 
 @login_required
 def history(request):
-    return render_to_response(
-        'qotd/history.html',
-        {'history': QotdGame.get_history()},
-        context_instance=RequestContext(request))
+    return render_to_response('qotd/history.html',
+                              {'history': QotdGame.get_history()},
+                              context_instance=RequestContext(request))
 
 
 def sidebar_widget(context):
@@ -126,5 +126,6 @@ def sidebar_widget(context):
                              'quser': qotd_user,
                              'qotd': QotdGame,
                              'id': 'qotd'})
+
 
 register_sidebar_block('qotd', sidebar_widget)
