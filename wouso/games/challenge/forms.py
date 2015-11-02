@@ -6,8 +6,7 @@ class ChallengeForm(forms.Form):
         super(ChallengeForm, self).__init__(data)
 
         for q in challenge.questions.all():
-            CSM = forms.CheckboxSelectMultiple
-            field = forms.MultipleChoiceField (widget=CSM, label=q)
+            field = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, label=q)
             field.choices = [(a.id, a) for a in q.shuffled_answers]
             self.fields['answer_{id}'.format(id=q.id)] = field
         self.data = data
@@ -23,9 +22,10 @@ class ChallengeForm(forms.Form):
         adding an empty list to dic in this case"""
         for field in self.visible_fields():
             id = int(field.html_name[len('answer_'):])
-            if not id in res:
+            if not res.has_key(id):
                 res[id] = []
         return res
+
 
     def check_self_boxes(self):
         for i in range(len(self.visible_fields())):
@@ -34,14 +34,13 @@ class ChallengeForm(forms.Form):
             for j in range(len(field.field.choices)):
                 choice = field.field.choices[j]
                 if str(choice[0]) in checked_boxes:
-                    self.visible_fields()[i].field.choices[j] = (choice[0],
-                                                                 choice[1],
-                                                                 True)
+                    self.visible_fields()[i].field.choices[j] = (choice[0], choice[1], True)
 
     def get_results_in_order(self, results):
         """ Assign question feedback with according question """
         v = []
         for field in self.visible_fields():
             id = int(field.html_name[len('answer_'):])
-            v.append(results[id])
+            v.append( results[id] )
         return v
+
