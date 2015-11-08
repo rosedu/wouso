@@ -11,9 +11,10 @@
 <p> {% trans 'Challenges sent: ' %} {{ n_chall_sent }}</p>
 <p> {% trans 'Challenges received: ' %} {{ n_chall_rec }}</p>
 <p> {% trans 'Challenges refused: ' %} {{ n_chall_ref }}</p>
-<p> {% trans 'Win percentage: ' %} {{ win_percentage }}%</p>
+<p> {% trans 'Win percentage: ' %} {{ win_percentage|floatformat:"-2" }}%</p>
 <p> {% trans 'Average time taken: ' %} {{ average_time }} {% trans 's' %} </p>
 <p> {% trans 'Average score: ' %} {{ average_score }} </p>
+<p><i> {% trans 'Note: 1 draw counts as 1/2 win and 1/2 loss when calculating win percentage.' %} </i></p>
 <table>
     <tr align=center>
         <td><b>Opponent</b></td>

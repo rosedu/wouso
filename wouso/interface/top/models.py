@@ -36,7 +36,7 @@ class GroupHistory(ObjectHistory):
         """ :return: list of pairs (index, position) for the last week """
         hs = History.objects.filter(group=self.group, relative_to=relative_to).order_by('-date')[:7]
         tot = len(hs)
-        return [(tot - i, h.position) for (i,h) in enumerate(hs)]
+        return [(tot - i, h.position) for (i, h) in enumerate(hs)]
 
 
 class TopUser(ObjectHistory, Player):
@@ -65,17 +65,18 @@ class TopUser(ObjectHistory, Player):
         return self.get_extension(ChallengeUser).get_lost_challenges().count()
 
     @property
-    def won_perc_challenges(self):
-        n = self.played_challenges
-        if n == 0:
-            return 0
-        return float(self.won_challenges) / n * 100.0
+    def draw_challenges(self):
+        return self.get_extension(ChallengeUser).get_draw_challenges().count()
+
+    @property
+    def win_percentage(self):
+        return self.get_extension(ChallengeUser).get_win_percentage()
 
     @property
     def weeklyprogress(self):
         hs = self.history()
         try:
-            yesterday     = hs[0]
+            yesterday = hs[0]
             day1weekprior = hs[-1]
         except Exception as e:
             logging.exception(e)
@@ -119,13 +120,13 @@ class TopUser(ObjectHistory, Player):
         else:
             hs = self.history().filter(relative_to=relative_to).order_by('-date')[:7]
         tot = len(hs)
-        return [(tot - i, h.position) for (i,h) in enumerate(hs)]
+        return [(tot - i, h.position) for (i, h) in enumerate(hs)]
 
     def week_points_evolution(self):
         """ :return: list of pairs (index, points) for the last week """
         hs = self.history()
         tot = len(hs)
-        return [(tot - i, h.points) for (i,h) in enumerate(hs)]
+        return [(tot - i, h.points) for (i, h) in enumerate(hs)]
 
 
 Player.register_extension('top', TopUser)
@@ -146,8 +147,11 @@ class NewHistory(models.Model):
     @classmethod
     def record(cls, obj, date, relative_to=None):
         relative_to_id = relative_to.id if relative_to else None
-        return cls.objects.get_or_create(object=obj.id, object_type=cls._get_type(obj), date=date,
-                                  relative_to=relative_to_id, relative_to_type=cls._get_type(relative_to))[0]
+        return cls.objects.get_or_create(object=obj.id,
+                                         object_type=cls._get_type(obj),
+                                         date=date,
+                                         relative_to=relative_to_id,
+                                         relative_to_type=cls._get_type(relative_to))[0]
 
     @classmethod
     def get_obj_position(cls, obj, relative_to=None):
@@ -163,9 +167,9 @@ class NewHistory(models.Model):
     @classmethod
     def get_children_top(cls, obj, type):
         date = datetime.today().date()
-        return type.objects.filter(id__in=cls.objects.filter(object_type=cls._get_type(type), date=date, relative_to=obj.id,
-                                                      relative_to_type=cls._get_type(obj)).order_by('position').values_list('object')
-        )
+        return type.objects.filter(id__in=cls.objects.filter(object_type=cls._get_type(type),
+                                   date=date, relative_to=obj.id,
+                                   relative_to_type=cls._get_type(obj)).order_by('position').values_list('object'))
 
     @classmethod
     def get_user_position(cls, player, relative_to=None):
@@ -202,7 +206,7 @@ class NewHistory(models.Model):
         return None
 
 
-class History(models.Model): # TODO: deprecate (maybe), check if NewHistory covers usage
+class History(models.Model):  # TODO: deprecate (maybe), check if NewHistory covers usage
     user = models.ForeignKey('TopUser', blank=True, null=True)
     group = models.ForeignKey(PlayerGroup, blank=True, null=True)
     relative_to = models.ForeignKey(PlayerGroup, blank=True, null=True, related_name='relativeto')
@@ -213,7 +217,7 @@ class History(models.Model): # TODO: deprecate (maybe), check if NewHistory cove
     @classmethod
     def get_user_position(kls, user, relative_to=None):
         try:
-            history = History.objects.filter(user=user,relative_to=relative_to).order_by('-date')[0]
+            history = History.objects.filter(user=user, relative_to=relative_to).order_by('-date')[0]
             return history.position
         except IndexError:
             return 0
@@ -231,11 +235,11 @@ class History(models.Model): # TODO: deprecate (maybe), check if NewHistory cove
             return 0
 
     def __unicode__(self):
-        return u"%s %s at %s, position: %d, points: %f" % ('[%s]' % self.relative_to if self.relative_to else '',self.user if self.user else self.group, self.date, self.position, self.points)
+        return u"%s %s at %s, position: %d, points: %f" % ('[%s]' % self.relative_to if self.relative_to else '', self.user if self.user else self.group, self.date, self.position, self.points)
 
 
 class Top(App):
-       
+
     @classmethod
     def get_sidebar_widget(kls, context):
         if kls.disabled():
@@ -243,17 +247,16 @@ class Top(App):
 
         top5 = TopUser.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
         top5 = top5.order_by('-points')[:10]
-        #is_top = request.get_full_path().startswith('/top/')
+        # is_top = request.get_full_path().startswith('/top/')
         is_top = context.get('top', False)
 
         return render_to_string('top/sidebar.html',
-            {'topusers': top5,
-             'is_top': is_top,
-             'top': Top,
-             'coin_top_setting': kls.coin_top_settings(),
-             'config_disable_challenge_top': BoolSetting.get('disable-Challenge-Top').get_value(),
-            }
-        )
+                                {'topusers': top5,
+                                 'is_top': is_top,
+                                 'top': Top,
+                                 'coin_top_setting': kls.coin_top_settings(),
+                                 'config_disable_challenge_top': BoolSetting.get('disable-Challenge-Top').get_value()
+                                })
 
     @classmethod
     def management_task(cls, now=None, stdout=sys.stdout):
@@ -262,7 +265,7 @@ class Top(App):
 
         # Global ladder
         stdout.write(' Updating players...\n')
-        for i,u in enumerate(Player.objects.all().order_by('-points')):
+        for i, u in enumerate(Player.objects.all().order_by('-points')):
             topuser = u.get_extension(TopUser)
             position = i + 1
             hs, new = History.objects.get_or_create(user=topuser, date=today, relative_to=None)
@@ -283,7 +286,7 @@ class Top(App):
         stdout.write(' Updating race history...\n')
         race_data = [(race, race.points) for race in Race.objects.all() if race.can_play]
         # sort by number of points, decreasing order
-        race_data = sorted(race_data, key=lambda r:r[1], reverse=True)
+        race_data = sorted(race_data, key=lambda r: r[1], reverse=True)
         for i, rd in enumerate(race_data):
             hs = NewHistory.record(rd[0], today, relative_to=None)
             hs.position, hs.points = i + 1, rd[1]
@@ -323,7 +326,7 @@ class Top(App):
 
         stdout.write(' Calculating coin %s top...' % coin)
         players = list(Player.objects.filter(race__can_play=True))
-        players.sort(lambda b,a: a.coins.get(coin) - b.coins.get(coin))
+        players.sort(lambda b, a: a.coins.get(coin) - b.coins.get(coin))
         for i, p in enumerate(players):
             hs = NewHistory.record(p, now, relative_to=coin_obj)
             hs.position, hs.points = i + 1, p.coins.get(coin_obj.name)
@@ -347,7 +350,7 @@ class Top(App):
 
 
 register_sidebar_block('top', Top.get_sidebar_widget)
-#def user_post_save(sender, instance, **kwargs):
+# def user_post_save(sender, instance, **kwargs):
 #    profile = instance.get_profile()
 #    profile.get_extension(TopUser)
-#models.signals.post_save.connect(user_post_save, User)
+# models.signals.post_save.connect(user_post_save, User)

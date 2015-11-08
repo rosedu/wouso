@@ -1,12 +1,12 @@
 # Create your views here.
 from wouso.core.scoring import Coin
-from wouso.core.user.models import  Race
+from wouso.core.user.models import Race
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import Http404
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from wouso.core.user.models import PlayerGroup
-from wouso.interface.top.models import  TopUser, Top, NewHistory
+from wouso.interface.top.models import TopUser, Top, NewHistory
 
 PERPAGE = 20
 TOPGROUPS_NO = 5
@@ -63,6 +63,7 @@ TOPGROUPS_NO = 5
 #                             'top': Top},
 #                            context_instance=RequestContext(request))
 
+
 def pyramid(request):
     s = []
     for r in Race.objects.exclude(can_play=False).order_by('name'):
@@ -79,8 +80,9 @@ def pyramid(request):
         s.append(r)
 
     return render_to_response('top/pyramid.html',
-                            {'series': s, 'top': Top},
-                            context_instance=RequestContext(request))
+                              {'series': s, 'top': Top},
+                              context_instance=RequestContext(request))
+
 
 def topclasses(request):
     # top classes
@@ -98,28 +100,34 @@ def topclasses(request):
     # append cannotplay_classes to classes
     classes.extend(cannotplay_classes)
 
-    return render_to_response('top/classes.html', {'classes':classes, 'top':Top},
+    return render_to_response('top/classes.html',
+                              {'classes': classes, 'top': Top},
                               context_instance=RequestContext(request))
+
 
 def topraces(request):
     # top races
     races = list(Race.objects.exclude(can_play=False))
     races.sort(key=lambda a: a.points, reverse=True)
-    return render_to_response('top/races.html', {'races':races, 'top':Top},
-                                context_instance=RequestContext(request))
+    return render_to_response('top/races.html',
+                              {'races': races, 'top': Top},
+                              context_instance=RequestContext(request))
+
 
 def challenge_top(request, sortcritno='0', pageno=1):
-    #sortcrit = 0 descending order of wins
-    #sortcrit = 1 descending order of % wins
-    #sortcrit = 2 descending order of losses
+    # sortcrit = 0 descending order of wins
+    # sortcrit = 1 descending order of % wins
+    # sortcrit = 2 descending order of losses
     base_query = TopUser.objects.exclude(user__is_superuser=True).exclude(race__can_play=False)
 
     if sortcritno == '0':
         allUsers = sorted(base_query, key=lambda x: -x.won_challenges)
     elif sortcritno == '1':
-        allUsers = sorted(base_query, key=lambda x: -x.won_perc_challenges)
-    else :
+        allUsers = sorted(base_query, key=lambda x: -x.win_percentage)
+    elif sortcritno == '2':
         allUsers = sorted(base_query, key=lambda x: -x.lost_challenges)
+    else:
+        allUsers = sorted(base_query, key=lambda x: -x.draw_challenges)
 
     paginator = Paginator(allUsers, PERPAGE)
     try:
@@ -137,14 +145,16 @@ def challenge_top(request, sortcritno='0', pageno=1):
     topgroups.sort(key=lambda obj: obj.live_points, reverse=True)
     topgroups = topgroups[:TOPGROUPS_NO]
 
-    return render_to_response('top/challenge_top.html', {
-                    'allUsers': users,
-                    'sortcritno': sortcritno,
-                    'topgroups': topgroups,
-                    'topseries': topseries,
-                    'is_top': True,
-                    'top': Top
-                    }, context_instance=RequestContext(request))
+    return render_to_response('top/challenge_top.html',
+                              {'allUsers': users,
+                               'sortcritno': sortcritno,
+                               'topgroups': topgroups,
+                               'topseries': topseries,
+                               'is_top': True,
+                               'top': Top
+                               },
+                              context_instance=RequestContext(request))
+
 
 def topcoin(request, coin):
     coin_obj = Coin.get(coin)
@@ -161,8 +171,6 @@ def topcoin(request, coin):
         pageno = 1
         topcoin = paginator.page(pageno)
 
-
     return render_to_response('top/coin_top.html',
-                {'top': topcoin, 'coin': coin_obj, 'page_start': (pageno - 1)* PERPAGE},
-                context_instance=RequestContext(request)
-    )
+                              {'top': topcoin, 'coin': coin_obj, 'page_start': (pageno - 1) * PERPAGE},
+                              context_instance=RequestContext(request))
