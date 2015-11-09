@@ -136,7 +136,7 @@ class ChallengeUser(Player):
         d = self.get_draw_challenges().count()
         l = self.get_lost_challenges().count()
         # 1 draw counts as 1/2 win, 1/2 loss
-        return 0 if w + d == 0 else (w + d / 2.0) / (w + l + d)
+        return 0 if w + d == 0 else (w + d / 2.0) / (w + l + d) * 100
 
     def get_random_opponent(self):
         players = ChallengeUser.objects.exclude(user=self.user)
