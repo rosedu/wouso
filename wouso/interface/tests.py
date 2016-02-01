@@ -38,3 +38,21 @@ class TestInterface(WousoTest):
         self._client_superuser()
         response = self.client.get(reverse('player_profile', kwargs=dict(id=admin.id)))
         self.assertEqual(response.status_code, 200)
+
+    def test_exchange_button_appear(self):
+        player = self._get_player()
+        self.client.login(username=player.user.username, password='test')
+        setting = BoolSetting('disable-Bazaar-Exchange')
+        setting.set_value(False)
+
+        response = self.client.get('/bazaar/')
+        self.assertTrue('Exchange' in response.content)
+
+    def test_exchange_button_not_appear(self):
+        player = self._get_player()
+        self.client.login(username=player.user.username, password='test')
+        setting = BoolSetting('disable-Bazaar-Exchange')
+        setting.set_value(True)
+
+        response = self.client.get('/bazaar/')
+        self.assertFalse('Exchange' in response.content)
