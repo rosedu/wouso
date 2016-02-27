@@ -1,6 +1,7 @@
 {% extends 'cpanel/index.html' %}
 
 {% load user %}
+{% load i18n %}
 {% load bootstrap %}
 {% load django_bootstrap_breadcrumbs %}
 
@@ -23,8 +24,8 @@
 
         <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
             {{ form|bootstrap_horizontal }}
-            <input class="btn btn-primary" type="submit" value="Submit">
-            {% csrf_token %}
+          <input class="btn btn-primary" type="submit" value="Submit">
+          <button type="submit" class="btn btn-primary" onclick="history.back(); return false;">{% trans 'Cancel' %}</button> {% csrf_token %}
         </form>
     </div>
 

@@ -175,7 +175,7 @@ edit_spell = permission_required('config.change_setting')(
 class AddSpellView(CreateView):
     template_name = 'cpanel/add_spell.html'
     form_class = SpellForm
-    success_url = reverse_lazy('add_spell')
+    success_url = reverse_lazy('spells')
 
 
 add_spell = permission_required('config.change_setting')(AddSpellView.as_view())
