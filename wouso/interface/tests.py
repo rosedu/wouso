@@ -24,15 +24,6 @@ class TestInterface(WousoTest):
 
         self.assertTrue(player.user.username in str(last10_div))
 
-    def test_online_player(self):
-        player = self._get_player()
-        self.client.login(username=player.user.username, password='test')
-        response = self.client.get('/hub/')
-        soup = BeautifulSoup(response.content, "html.parser")
-        last10_div = soup.find_all(class_="widget")[0]
-
-        self.assertTrue(player.user.username in str(last10_div))
-
     def test_profile_page(self):
         admin = self._get_superuser()
         self._client_superuser()
