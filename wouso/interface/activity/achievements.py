@@ -23,9 +23,6 @@ def consecutive_days_seen(player, timestamp):
 
     activities = Activity.get_private_activity(player).filter(action='seen').order_by('-timestamp')[0:maximum_times_seen]
 
-
-    print activities
-
     last_day = timestamp.date()
     consecutive_days = 1
 

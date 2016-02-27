@@ -22,7 +22,6 @@ class AchievementTest(WousoTest):
         for i in range(100):
             timestamp = datetime.now() - timedelta(hours=i*16)
             Activity.objects.create(timestamp=timestamp, user_from=player, action='seen', public=False)
-        #print(consecutive_days_seen(player, datetime.now()))
         self.assertGreaterEqual(consecutive_days_seen(player, datetime.now()), 14)
 
     def test_login_10(self):
@@ -46,7 +45,6 @@ class AchievementTest(WousoTest):
         for i in range(20):
             timestamp = datetime.now() - timedelta(hours=i*7)
             Activity.objects.create(timestamp=timestamp, user_from=player, action='seen', public=False)
-        #print(consecutive_days_seen(player, datetime.now()))
         self.assertLess(consecutive_days_seen(player, datetime.now()), 14)
 
 
