@@ -6,7 +6,8 @@ class QuestionForm(forms.Form):
 
     text = forms.CharField(max_length=500, widget=forms.Textarea)
     answer_type = forms.ChoiceField(choices=(('R', 'Single'), ('C','Multiple')))
-    category = forms.ChoiceField(choices=[(cat.name, cat.name) for cat in Category.objects.all().exclude(name='proposed')])
+    category = forms.ChoiceField(choices=[(cat.name, cat.name) for cat in Category.objects.all().exclude(name='proposed')], widget=forms.Select(attrs={
+        'id': 'select-category'}))
 
     def __init__(self, nr_ans=6, data=None):
         super(QuestionForm, self).__init__(data)
@@ -18,7 +19,8 @@ class QuestionForm(forms.Form):
         alltags = Tag.objects.all().exclude(name__in=['qotd', 'challenge', 'quest'])
         self.fields['tags'] = forms.MultipleChoiceField(
                         choices=[(tag.name, tag.name) for tag in alltags],
-                        widget=forms.SelectMultiple, required=False)
+                        widget=forms.SelectMultiple(attrs={
+                            'id': 'select-tags'}), required=False)
 
     def clean(self):
         cleaned_data = self.cleaned_data
