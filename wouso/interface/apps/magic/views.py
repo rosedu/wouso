@@ -34,6 +34,7 @@ class BazaarView(ListView):
 
         # Disable exchange for real
         exchange_disabled = BoolSetting.get('disable-Bazaar-Exchange').get_value()
+        import pdb; pdb.set_trace()
         try:
             rate = scoring.calculate('gold-points-rate', gold=1)['points']
             rate2 = round(1/scoring.calculate('points-gold-rate', points=1)['gold'])
