@@ -30,7 +30,7 @@ class StaticPage(models.Model):
 
 class NewsItem(models.Model):
     title = models.CharField(max_length=100)
-    text = models.CharField(max_length=500)
+    text = models.TextField(max_length=500)
     author = models.ForeignKey(Player)
     date_pub = models.DateField(default=datetime.date.today)
 
