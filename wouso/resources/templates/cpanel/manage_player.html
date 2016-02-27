@@ -17,57 +17,57 @@
 
 {% block buttons %}
 {% with object.get_profile as player %}
-<h3 class="page-header">Player: {{ player.full_name }}
-<div class="pull-right">
-    <a class="btn btn-primary" href="{% url staff_toggle player.id %}">
-        Staff:
-        {% if player.in_staff_group %}
-            <span style="color: green">ON</span>
-        {% else %}
-            <span style="color: red">OFF</span>
-        {% endif %}
-    </a>
-    <a class="btn btn-primary" href="{% url change_password player.id %}">
-        {% trans 'Change Password ' %}
-    </a>
-    <a class="btn btn-success" href="{% url artifact_set player.id %}">
-        {% trans 'Artifacts ' %}
-    </a>
-    <a class="btn btn-success" href="{% url group_set player.id %}">
-        {% trans 'Groups ' %}
-    </a>
-    <a class="btn btn-success" href="{% url bonus player.id %}">
-        {% trans 'Bonus ' %}
-    </a>
-    <a class="btn btn-success" href="{% url impersonate player.id %}">
-        {% trans 'Impersonate ' %}
-    </a>
-    <a class="btn btn-success" href="{% url specialquest_manage player.id %}">
-        {% trans 'Special Quest ' %}
-    </a>
-    </div>
-</h3>
+<h3 class="page-header">Player: {{ player.full_name }}</h3>
 
-    <div class="col-md-8">
-        <h4>Manage:</h4>
+<div class="col-md-8">
+    <h4>Manage:</h4>
 
-        {% endwith %}
-        {% endblock %}
+    {% endwith %}
+    {% endblock %}
 
-        {% if form.errors %}
-            <p style="color: red;">
-                Please correct the error{{ form.errors|pluralize }} below.
-            </p>
-        {% endif %}
+    {% if form.errors %}
+        <p style="color: red;">
+            Please correct the error{{ form.errors|pluralize }} below.
+        </p>
+    {% endif %}
 
-        <form class="form-horizontal" role="form" action="" method="post">
-            {{ form|bootstrap_horizontal }}
+    <form class="form-horizontal" role="form" action="" method="post">
+        {{ form|bootstrap_horizontal }}
+            <a class="btn btn-warning" href="{% url all_players %}">{% trans 'Cancel' %}</a>
+            <input class="btn btn-danger" type="reset" value="Reset">
             <input class="btn btn-primary" type="submit" value="Submit">
-            {% csrf_token %}
-        </form>
+        {% csrf_token %}
+    </form>
+    <br>
 
-        <br>
-        <a class="btn btn-warning" href="{% url all_players %}">{% trans 'Cancel' %}</a>
+    <div class="pull-left">
+        <a class="btn btn-primary" href="{% url staff_toggle player.id %}">
+            Staff:
+            {% if player.in_staff_group %}
+                <span style="color: green">ON</span>
+            {% else %}
+                <span style="color: red">OFF</span>
+            {% endif %}
+        </a>
+        <a class="btn btn-primary" href="{% url change_password player.id %}">
+            {% trans 'Change Password ' %}
+        </a>
+        <a class="btn btn-success" href="{% url artifact_set player.id %}">
+            {% trans 'Artifacts ' %}
+        </a>
+        <a class="btn btn-success" href="{% url group_set player.id %}">
+            {% trans 'Groups ' %}
+        </a>
+        <a class="btn btn-success" href="{% url bonus player.id %}">
+            {% trans 'Bonus ' %}
+        </a>
+        <a class="btn btn-success" href="{% url impersonate player.id %}">
+            {% trans 'Impersonate ' %}
+        </a>
+        <a class="btn btn-success" href="{% url specialquest_manage player.id %}">
+            {% trans 'Special Quest ' %}
+        </a>
     </div>
+</div>
 
 {% endblock %}
