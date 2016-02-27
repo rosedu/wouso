@@ -193,6 +193,9 @@ SOCIAL_AUTH_CLEF_SECRET = 'afd676fe8fb07a00513b02941b4cee5d'
 
 AUTH_PROFILE_MODULE = 'user.Player'
 
+#Refreshes the Session Cookie so it does no expire
+SESSION_SAVE_EVERY_REQUEST = True
+
 MEDIA_ARTIFACTS_DIR = os.path.dirname(__file__) + "/resources/static/upload/"
 MEDIA_ARTIFACTS_URL = "/static/upload/"
 
