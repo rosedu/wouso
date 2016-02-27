@@ -39,7 +39,7 @@ class ManagerTestCase(WousoTest):
         self.assertEqual(self.player.magic.spell_amounts.count(), 0)
 
         self.assertFalse(self.player.magic.has_modifier('inexistent-modifier'))
-        self.assertEqual(self.player.magic.modifier_percents('inexistent-modifier'), 100) # should return 0
+        self.assertEqual(self.player.magic.modifier_percents('inexistent-modifier'), 100)  # should return 0
 
     def test_manager_use_modifier(self):
         Artifact.objects.create(name='modifier-name')
@@ -53,8 +53,8 @@ class ManagerTestCase(WousoTest):
         spell1 = Spell.objects.create(name='le-spell')
         spell2 = Spell.objects.create(name='le-spell2', mass=True, type='o')
         v = []
-        for i in range(0,7):
-            player = self._get_player(i+2)
+        for i in range(0, 7):
+            player = self._get_player(i + 2)
             player.points = 10-i
             player.save()
             v.append(player)
@@ -141,10 +141,10 @@ class SpellTestCase(WousoTest):
 
         obs = PlayerSpellDue.objects.create(player=player, source=player, spell=pos_spell, due=datetime.now() + timedelta(days=1))
         obs = PlayerSpellDue.objects.create(player=player, source=player, spell=neg_spell, due=datetime.now() + timedelta(days=1))
-        self.assertTrue(player.magic.spells) # Check if there is an active spell on player
+        self.assertTrue(player.magic.spells)  # Check if there is an active spell on player
 
         player.magic.cast_spell(dispell, player, datetime.now())
-        self.assertFalse(player.magic.spells) # No spells should be active on player after dispell
+        self.assertFalse(player.magic.spells)  # No spells should be active on player after dispell
 
     def test_dispell_no_due(self):
         """
@@ -171,7 +171,7 @@ class SpellTestCase(WousoTest):
         player.magic.add_spell(cure)
         player.magic.cast_spell(cure, player, datetime.now() + timedelta(days=1))
 
-        self.assertFalse(PlayerSpellDue.objects.filter(player=player)) # There isn't any spell left
+        self.assertFalse(PlayerSpellDue.objects.filter(player=player))  # There isn't any spell left
 
     def test_cure_positive(self):
         """
@@ -186,7 +186,7 @@ class SpellTestCase(WousoTest):
         player.magic.add_spell(cure)
         player.magic.cast_spell(cure, player, datetime.now() + timedelta(days=1))
 
-        self.assertTrue(PlayerSpellDue.objects.filter(player=player)) # The spell is still present
+        self.assertTrue(PlayerSpellDue.objects.filter(player=player))  # The spell is still present
 
     def test_disguise_simple(self):
         """
@@ -271,9 +271,9 @@ class SpellTestCase(WousoTest):
 
         # Get 'chall-lost' expression. By default you still win 2 points when losing a challenge
         formulas = ChallengeGame.get_formulas()
-        exp = formulas[1]['expression'] # this will be 'points=XX'
-        index = exp.find('=') + 1 # get position of '='
-        points = int(exp[index:]) # get XX (nr of points won when losing challenge)
+        exp = formulas[1]['expression']  # this will be 'points=XX'
+        index = exp.find('=') + 1  # get position of '='
+        points = int(exp[index:])  # get XX (nr of points won when losing challenge)
 
         # Create challenge and make first player lose it
         chall = Challenge.create(user_from=player2, user_to=player, ignore_questions=True)
@@ -508,24 +508,25 @@ class TestMagicViews(WousoTest):
         self.activity = Activity.objects.create(user_from=self.p1, user_to=self.p2,
                                                 action='gold-won')
         scoring.setup_scoring()
+
     def test_buy_spell(self):
-         Coin.add('gold')
-         Formula.add('buy-spell', expression="gold=-{price}")
-         spell = Spell.objects.create(name='test-spell', available=True, price=10)
-         player = User.objects.create_user('test', 'test@a.ro', password='test').get_profile()
+        Coin.add('gold')
+        Formula.add('buy-spell', expression="gold=-{price}")
+        spell = Spell.objects.create(name='test-spell', available=True, price=10)
+        player = User.objects.create_user('test', 'test@a.ro', password='test').get_profile()
 
-         scoring.score_simple(player, 'gold', 100)
-         self.assertEqual(player.coins['gold'], 100)
+        scoring.score_simple(player, 'gold', 100)
+        self.assertEqual(player.coins['gold'], 100)
 
-         response = self.client.get(reverse('bazaar_home'))
-         self.assertTrue('test-spell' in response.content)
+        response = self.client.get(reverse('bazaar_home'))
+        self.assertTrue('test-spell' in response.content)
 
-         self.client.login(username='test', password='test')
-         response = self.client.get(reverse('bazaar_buy', kwargs={'spell': spell.id}))
-         self.assertFalse('error' in response.content)
+        self.client.login(username='test', password='test')
+        response = self.client.get(reverse('bazaar_buy', kwargs={'spell': spell.id}))
+        self.assertFalse('error' in response.content)
 
-         player = Player.objects.get(user__username='test')
-         self.assertEqual(player.coins['gold'], 90)
+        player = Player.objects.get(user__username='test')
+        self.assertEqual(player.coins['gold'], 90)
 
     def test_bazaar_view(self):
         response = self.c.get(reverse('bazaar_home'))

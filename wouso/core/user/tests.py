@@ -7,6 +7,7 @@ from wouso.core.magic.models import Artifact
 from wouso.core.tests import WousoTest
 from wouso.core.user.models import Race, PlayerGroup
 
+
 class PlayerTestCase(TestCase):
     def testModifierPercents(self):
         artif = Artifact.objects.create(name='test', group=None, percents=50)
@@ -28,10 +29,10 @@ class PlayerTestCase(TestCase):
 
     def test_player_neighbours(self):
         v = []
-        for i in range(0,7):
+        for i in range(0, 7):
             user = User.objects.create(username='test' + repr(i))
             player = user.get_profile()
-            player.points = 10*(10-i)
+            player.points = 10 * (10 - i)
             player.save()
             v.append(player)
 
@@ -44,14 +45,14 @@ class PlayerTestCase(TestCase):
         #check neighbours for middle player in top
         players = v[3].get_neighbours_from_top(2)
         self.assertEqual(len(players), 5)
-        for i in range(0,5):
-            self.assertEqual(players[i],v[i+1])
+        for i in range(0, 5):
+            self.assertEqual(players[i], v[i + 1])
 
         #check neighbours for last player in top
         players = v[6].get_neighbours_from_top(2)
         self.assertEqual(len(players), 5)
-        for i in range(0,5):
-            self.assertEqual(players[i], v[i+2])
+        for i in range(0, 5):
+            self.assertEqual(players[i], v[i + 2])
 
 
 class PlayerCacheTest(WousoTest):

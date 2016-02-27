@@ -5,12 +5,13 @@ from wouso.core.magic.models import SpellHistory, PlayerArtifactAmount, PlayerSp
 from wouso.core.user.models import (Player, PlayerGroup,
                                     Race)
 
+
 class UserProfileInline(admin.StackedInline):
     model = Player
 
 
 class UserAdmin(OldUserAdmin):
-    inlines = [ UserProfileInline ]
+    inlines = [UserProfileInline]
 
 
 class SHAdmin(admin.ModelAdmin):
