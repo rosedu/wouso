@@ -132,10 +132,26 @@
                 {% url forum as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url forum %}">Forum</a></li>
             <!-- Games !-->
-                <h4 class="text-center">Games</h4>
-                {% for u, game in games_list.items %}
-                    <li {% if u in request.path %}class="active"{% endif %}><a href="{% url status %}{{u}}">{{game}}</a></li>
-                {% endfor %}
+            <h4 class="text-center">Games</h4>
+            {% for u, game in games_list.items %}
+                {% ifnotequal game "Quest" %}
+                    {% ifnotequal game "Special Quest" %}
+                        <li {% if u in request.path %}class="active"{% endif %}><a href="{% url status %}{{u}}">{{game}}</a></li>
+                    {% else %}
+                        {% if perms.specialquest.change_specialquest %}
+                            <li {% if u in request.path %}class="active"{% endif %}><a href="{% url status %}{{u}}">{{game}}</a></li>
+                        {% else %}
+                            <li {% if u in request.path %}class="active"{% endif %}><a href="#" onclick="alert('You need specialquest permission!')">{{game}}</a></li>
+                        {% endif %}
+                    {% endifnotequal %}
+                {% else %}
+                    {% if perms.quest.change_questuser %}
+                        <li {% if u in request.path %}class="active"{% endif %}><a href="{% url status %}{{u}}">{{game}}</a></li>
+                    {% else %}
+                        <li {% if u in request.path %}class="active"{% endif %}><a href="#" onclick="alert('You need quest permission!')">{{game}}</a></li>
+                    {% endif %}
+                {% endifnotequal %}
+            {% endfor %}
             <!-- Customization !-->
             {% if user.is_staff or user.is_superuser %}
                 <h4 class="text-center">Configuration</h4>
