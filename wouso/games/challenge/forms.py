@@ -1,6 +1,5 @@
 from django import forms
 
-
 class ChallengeForm(forms.Form):
     def __init__(self, challenge, data=None):
         super(ChallengeForm, self).__init__(data)
@@ -8,7 +7,7 @@ class ChallengeForm(forms.Form):
         for q in challenge.questions.all():
             field = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, label=q)
             field.choices = [(a.id, a) for a in q.shuffled_answers]
-            self.fields['answer_{id}'.format(id=q.id)] = field
+            self.fields['answer_{id}'.format(id = q.id)] = field
         self.data = data
 
     def get_response(self):
@@ -22,10 +21,10 @@ class ChallengeForm(forms.Form):
         adding an empty list to dic in this case"""
         for field in self.visible_fields():
             id = int(field.html_name[len('answer_'):])
-            if not res.has_key(id):
+            
+            if not id in res:
                 res[id] = []
         return res
-
 
     def check_self_boxes(self):
         for i in range(len(self.visible_fields())):
@@ -41,6 +40,5 @@ class ChallengeForm(forms.Form):
         v = []
         for field in self.visible_fields():
             id = int(field.html_name[len('answer_'):])
-            v.append( results[id] )
+            v.append(results[id])
         return v
-
