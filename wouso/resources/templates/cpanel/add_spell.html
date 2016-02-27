@@ -8,7 +8,7 @@
 {% block sectiontitle %}Add Spell{% endblock %}
 
 {% block breadcrumbs %}
-	{{ block.super }}
+    {{ block.super }}
     {% breadcrumb "Spells" "spells" %}
     {% breadcrumb "Add spell" "add_spell" %}
 {% endblock %}
@@ -24,8 +24,10 @@
 
         <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
             {{ form|bootstrap_horizontal }}
-          <input class="btn btn-primary" type="submit" value="Submit">
-          <button type="submit" class="btn btn-primary" onclick="history.back(); return false;">{% trans 'Cancel' %}</button> {% csrf_token %}
+            <button class="btn btn-warning" onclick="history.back(); return false;">Cancel</button>
+            <input class="btn btn-danger" type="reset" value="Reset">
+            <input class="btn btn-primary" type="submit" value="Submit">
+            {% csrf_token %}
         </form>
     </div>
 
