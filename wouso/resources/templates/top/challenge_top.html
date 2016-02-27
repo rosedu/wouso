@@ -24,19 +24,26 @@
         <th> <a href="{% url challenge_top %}0/1/">{% trans 'Won' %}</a> </th>
         <th> <a href="{% url challenge_top %}2/1/">{% trans 'Lost' %}</a> </th>
         <th> <a href="{% url challenge_top %}3/1/">{% trans 'Draw' %}</a> </th>
-        <th nowrap> <a href="{% url challenge_top %}1/1/">{% trans 'Won %' %}</a> </th>
+        <th nowrap> <a href="{% url challenge_top %}1/1/">{% trans 'Won %' %}</a></th>
         <th nowrap> {% trans 'Last seen' %} </th>
     </tr>
 
     {% for user in allUsers.object_list %}
     <tr>
         <td>{% artifact user.level %}</td>
-        <td><a href="{% url player_profile user.id %}" rel="{{u.nickname}},{{user.user.first_name}},{{user.points}},{% player_avatar user%},{{ user.level_no }},{{user.id}},1" class="cplayer">{{ user }}</a>
-        {% for artf in user.artifacts.all %}
-            <div class = "artifacts">
-            {% artifact artf %}
-            </div>
-        {% endfor %}
+        <td>
+            <table>
+                <tbody >
+                <tr><td><a href="{% url player_profile user.id %}" rel="{{u.nickname}},{{user.user.first_name}},{{user.points}},{% player_avatar user%},{{ user.level_no }},{{user.id}},1" class="cplayer">{{ user }}</a></td></tr>
+                <tr><td>
+                        {% for artf in user.artifacts.all %}
+                            <div class = "artifacts">
+                            {% artifact artf %}
+                            </div>
+                        {% endfor %}
+                </td></tr>
+                </tbody>
+            </table>
         </td>
         <td> {{ user.won_challenges }} </td>
         <td> {{ user.lost_challenges }} </td>
