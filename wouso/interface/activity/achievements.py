@@ -13,18 +13,29 @@ from models import Activity
 from wouso.core.signals import addActivity, messageSignal
 
 
-def consecutive_seens(player, timestamp):
+def consecutive_days_seen(player, timestamp):
     """
      Return the count of consecutive seens for a player, until timestamp
     """
-    activities = Activity.get_private_activity(player).filter(action='seen').order_by('-timestamp')[0:100]
-    today = timestamp.date()
+
+    # The maximum number of seens in the last 15 days is 24 * 15 ( we have a new 'seen' activity each hour ).
+    maximum_times_seen = 15 * 24
+
+    activities = Activity.get_private_activity(player).filter(action='seen').order_by('-timestamp')[0:maximum_times_seen]
+
+    last_day = timestamp.date()
+    consecutive_days = 1
+
     for i, activity in enumerate(activities):
         date = activity.timestamp.date()
-        if date != today + timedelta(days=-i):
-            return i
 
-    return len(activities)
+        if date == last_day + timedelta(days=-1):
+            last_day = date
+            consecutive_days = consecutive_days + 1
+        elif last_day - date >= timedelta(days=2):
+            break
+
+    return consecutive_days
 
 
 def consecutive_qotd_correct(player):
@@ -342,7 +353,7 @@ class Achievements(App):
                 if check_for_god_mode(player, 5, 5):
                     cls.earn_achievement(player, 'ach-god-mode-on')
             # Check previous 10 seens
-            if consecutive_seens(player, datetime.now()) >= 14:
+            if consecutive_days_seen(player, datetime.now()) >= 14:
                 if not player.magic.has_modifier('ach-login-10'):
                     cls.earn_achievement(player, 'ach-login-10')
 

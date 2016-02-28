@@ -7,20 +7,46 @@ from wouso.core.scoring.models import Coin
 from wouso.games.qotd.models import QotdGame
 from wouso.games.challenge.models import ChallengeGame, ChallengeUser, Challenge
 from wouso.interface.apps.messaging.models import Message, MessagingUser
-from achievements import consecutive_seens, consecutive_qotd_correct, consecutive_chall_won, challenge_count, \
+from achievements import consecutive_days_seen, consecutive_qotd_correct, consecutive_chall_won, challenge_count, \
                 refused_challenges, get_challenge_time, unique_users_pm, wrong_first_qotd, get_chall_score, \
                 challenges_played_today, check_for_god_mode, spell_count, spent_gold, gold_amount, \
                 Achievements
 from models import Activity
 
 class AchievementTest(WousoTest):
+    def test_login_with_multiple_seens(self):
+        """
+        Multiple seens every day for more than 14 days in a row.
+        """
+        player = self._get_player()
+        for i in range(100):
+            timestamp = datetime.now() - timedelta(hours=i*16)
+            Activity.objects.create(timestamp=timestamp, user_from=player, action='seen', public=False)
+        self.assertGreaterEqual(consecutive_days_seen(player, datetime.now()), 14)
+
     def test_login_10(self):
+        """
+        One seen every day for 14 days in a row.
+        """
         player = self._get_player()
         for i in range(14):
             timestamp = datetime.now() + timedelta(days=-i)
-            a = Activity.objects.create(timestamp=timestamp, user_from=player, action='seen', public=False)
+            Activity.objects.create(timestamp=timestamp, user_from=player, action='seen', public=False)
 
-        self.assertEqual(consecutive_seens(player, datetime.now()), 14)
+        self.assertEqual(consecutive_days_seen(player, datetime.now()), 14)
+
+
+    def test_login_10_less(self):
+        """
+        Multiple seens every day for less than 14 days in a row.
+        """
+
+        player = self._get_player()
+        for i in range(20):
+            timestamp = datetime.now() - timedelta(hours=i*7)
+            Activity.objects.create(timestamp=timestamp, user_from=player, action='seen', public=False)
+        self.assertLess(consecutive_days_seen(player, datetime.now()), 14)
+
 
     def test_login_10_wrong(self):
         player = self._get_player()
@@ -28,9 +54,9 @@ class AchievementTest(WousoTest):
             timestamp = datetime.now() + timedelta(days=-i)
             if i == 5:
                 continue
-            a = Activity.objects.create(timestamp=timestamp, user_from=player, action='seen', public=False)
+            Activity.objects.create(timestamp=timestamp, user_from=player, action='seen', public=False)
 
-        self.assertEqual(consecutive_seens(player, datetime.now()), 5)
+        self.assertEqual(consecutive_days_seen(player, datetime.now()), 5)
 
     def test_login_10_activity(self):
         Artifact.objects.create(group=None, name='ach-login-10')
