@@ -22,7 +22,9 @@
 
         <form class="form-horizontal" role="form" action="" method="post">
             {{ form|bootstrap_horizontal }}
-            <input class="btn btn-primary" type="submit" value="Submit">
+            <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
+            <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
+            <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
             {% csrf_token %}
         </form>
     </div>
