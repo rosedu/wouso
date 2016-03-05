@@ -24,6 +24,8 @@
 
         <form class="form-horizontal" action="" role="form" method="post">
             {{ form|bootstrap_horizontal }}
+            <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
+            <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
             <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
             {% csrf_token %}
         </form>
