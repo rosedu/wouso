@@ -1770,8 +1770,8 @@ msgid "System"
 msgstr "Sistem"
 
 #: interface/apps/messaging/models.py:55
-msgid "from {{sender}} to {{receiver}} @ {{date}}"
-msgstr "de la {{sender}} la {{receiver}} @ {{date}}"
+msgid "from {sender} to {receiver} @ {date}"
+msgstr "de la {sender} la {receiver} @ {date}"
 
 #: interface/apps/messaging/models.py:87
 msgid "Cannot send message."
