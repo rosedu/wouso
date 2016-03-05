@@ -52,7 +52,7 @@ class Message(models.Model):
     def __unicode__(self):
         sender = _('System') if not self.sender else self.sender.__unicode__()
 
-        return _(u"from {{sender}} to {{receiver}} @ {{date}}").format(sender=sender,
+        return _(u"from {sender} to {receiver} @ {date}").format(sender=sender,
                                                                        receiver=self.receiver.__unicode__(),
                                                                        date=self.timestamp.strftime("%A, %d %B %Y %I:%M %p"))
 
