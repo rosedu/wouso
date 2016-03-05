@@ -24,8 +24,9 @@
 
         <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data">
             {{ form|bootstrap_horizontal }}
-          <input class="btn btn-primary" type="submit" value="Submit">
-          <button type="submit" class="btn btn-primary" onclick="history.back(); return false;">{% trans 'Cancel' %}</button> {% csrf_token %}
+            <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
+            <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
+            <button type="submit" class="btn btn-primary">{% trans 'Submit' %}</button>
         </form>
     </div>
 
