@@ -4,8 +4,6 @@ python:
 env:
   - DJANGO=1.4
 sudo: false
-before_install:
-  - pip install codecov
 install:
   - pip install -r requirements-pip
   - pip install -r requirements-extra
@@ -15,6 +13,6 @@ before_script:
   - cd django-piston-0.2.3; python setup.py install
   - cd ..; rm -r django-piston-0.2.3
 script:
-  - python wouso/manage.py test wouso
+  - python wouso/manage.py test wouso --with-coverage
 after_success:
-  - codecov
+  - coveralls
