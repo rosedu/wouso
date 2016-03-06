@@ -1,0 +1,6 @@
+exclude_paths:
+- "**/migrations/**/*"
+
+engines:
+  pep8:
+    enabled: true
