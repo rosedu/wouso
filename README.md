@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/rosedu/wouso.svg?branch=master)](https://travis-ci.org/rosedu/wouso)
 [![Coverage Status](https://coveralls.io/repos/github/rosedu/wouso/badge.svg?branch=master)](https://coveralls.io/github/rosedu/wouso?branch=master)
+[![Code Climate](https://codeclimate.com/github/rosedu/wouso/badges/gpa.svg)](https://codeclimate.com/github/rosedu/wouso)
 
 # World of USO
 
