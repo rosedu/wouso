@@ -64,7 +64,7 @@ class Question(models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
 
     answer_type = models.CharField(max_length=1, choices=(("C", "multiple choice"), ("R", "single choice"),
-        ("F", "free text")), default="C")
+                                   ("F", "free text")), default="C")
     # a dynamic question would have its code run before returning it to the caller
     type = models.CharField(max_length=1, choices=(("S", "static"), ("D", "dynamic")), default="S")
     code = models.TextField(blank=True, validators=[validate_dynq_code],

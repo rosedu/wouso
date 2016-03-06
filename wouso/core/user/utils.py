@@ -3,6 +3,7 @@ from wouso.core.config.models import Setting
 from wouso.core.game import get_games
 from models import Race
 
+
 def setup_user_groups():
     # Assistants group, 'Staff'
     staff = Group.objects.get_or_create(name='Staff')[0]
@@ -15,6 +16,7 @@ def setup_user_groups():
     unaffiliated.save()
     default_race = Setting.get('default_race')
     default_race.set_value(str(unaffiliated.pk))
+
 
 def setup_staff_groups():
     for g in get_games():

@@ -6,8 +6,14 @@ from wouso.core import signals
 from wouso.core.god import God
 from wouso.core.magic.models import PlayerSpellDue, PlayerSpellAmount, PlayerArtifactAmount
 
-class MagicException(Exception): pass
-class InsufficientAmount(MagicException): pass
+
+class MagicException(Exception):
+    pass
+
+
+class InsufficientAmount(MagicException):
+    pass
+
 
 class MagicManager(object):
     def __init__(self, player):
@@ -41,7 +47,7 @@ class MagicManager(object):
 
     def filter_players_by_spell(self, players, spell):
         if spell.type == 's':
-            return [ self.player ]
+            return [self.player]
         elif spell.type == 'n':
             try:
                 players.remove(self.player)

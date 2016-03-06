@@ -1,13 +1,10 @@
 import unittest
-
 from django.contrib.auth.models import User
 from django.test import TestCase
-
 from wouso.core.config.models import IntegerListSetting
 from wouso.core.magic.models import NoArtifactLevel
 from wouso.core.user.models import PlayerGroup, Race
 from wouso.games.challenge.models import ChallengeGame
-
 from . import get_god
 
 
@@ -67,7 +64,6 @@ class GodTestCase(TestCase):
         self.player.save()
         self.assertTrue(god.user_is_eligible(self.player, ChallengeGame))
 
-
     def test_user_can_interact_with_users(self):
         user2 = User.objects.create(username='testgod2')
         player2 = user2.get_profile()
@@ -75,7 +71,6 @@ class GodTestCase(TestCase):
         god = get_god()
 
         self.assertTrue(god.user_can_interact_with(self.player, player2))
-
 
     @unittest.expectedFailure
     def test_user_can_interact_with_unaffiliated(self):
@@ -87,4 +82,3 @@ class GodTestCase(TestCase):
         god = get_god()
 
         self.assertFalse(god.user_can_interact_with(self.player, player2))
-

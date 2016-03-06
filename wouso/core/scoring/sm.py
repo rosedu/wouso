@@ -9,20 +9,33 @@ from wouso.core.scoring.models import Coin, Formula, History
 from wouso.core.god import God
 from wouso.core.game import get_games, Game
 
-class NotSetupError(Exception): pass
-class InvalidFormula(Exception): pass
+
+class NotSetupError(Exception):
+    pass
+
+
+class InvalidFormula(Exception):
+    pass
+
+
 class FormulaParsingError(Exception):
     def __init__(self, formula):
         super(FormulaParsingError, self).__init__()
         self.formula = formula
+
     def __unicode__(self):
         return unicode(self.formula)
-class InvalidScoreCall(Exception): pass
+
+
+class InvalidScoreCall(Exception):
+    pass
+
 
 CORE_POINTS = ('points', 'gold', 'penalty')
 
 # Utility functions
 PHI = (1 + 5**0.5) / 2
+
 
 def fib(n):
     return int(round((PHI**n - (1-PHI)**n) / 5**0.5))
@@ -123,7 +136,7 @@ def timer(user, game, formula, default=300, **params):
         return default
 
     values = calculate(formula, **params)
-    if values.has_key('tlimit'):
+    if 'tlimit' in values:
         return values['tlimit']
     return default
 
@@ -131,13 +144,14 @@ def timer(user, game, formula, default=300, **params):
 def unset(user, game, formula, external_id=None, **params):
     """ Remove all history records by the external_id, formula and game given to the user """
     formula = Formula.get(formula)
-    user = user.user.get_profile() # make sure you are working on fresh Player
+    user = user.user.get_profile()  # make sure you are working on fresh Player
     for history in History.objects.filter(user=user, game=game.get_instance(), formula=formula, external_id=external_id):
         if history.coin.name == 'points':
             user.points -= history.amount
         history.delete()
     user.save()
     update_points(user, game)
+
 
 def update_points(player, game):
     level = God.get_level_for_points(player.points)
@@ -149,9 +163,9 @@ def update_points(player, game):
         action_msg = 'level-downgrade'
         signal_msg = ugettext_noop("downgraded to level {level}")
         signals.addActivity.send(sender=None, user_from=player,
-                            user_to=player, message=signal_msg,
-                            arguments=dict(level=level),
-                            game=game, action=action_msg)
+                                 user_to=player, message=signal_msg,
+                                 arguments=dict(level=level),
+                                 game=game, action=action_msg)
     else:
         action_msg = 'level-upgrade'
         arguments = dict(level=level)
@@ -171,14 +185,15 @@ def update_points(player, game):
 
         signals.addActivity.send(sender=None, user_from=player,
                                  user_to=player, message=signal_msg,
-                                 arguments=arguments, game=None, 
+                                 arguments=arguments, game=None,
                                  action=action_msg)
     player.level_no = level
     player.save()
 
 
 def score_simple(player, coin, amount, game=None, formula=None,
-    external_id=None, percents=100):
+                 external_id=None, percents=100):
+
     """ Give amount of coin to the player.
     """
     if not isinstance(game, Game) and game is not None:
@@ -196,7 +211,7 @@ def score_simple(player, coin, amount, game=None, formula=None,
 
     computed_amount = 1.0 * amount * percents / 100
     hs = History.add(user=user, coin=coin, amount=computed_amount,
-            game=game, formula=formula, external_id=external_id, percents=percents)
+                     game=game, formula=formula, external_id=external_id, percents=percents)
 
     # update user.points asap
     if coin.name == 'points':
@@ -244,7 +259,7 @@ def user_coins(user):
 
 def real_points(player):
     coin = Coin.get('points')
-    result = History.objects.filter(user=player.user,coin=coin).aggregate(total=models.Sum('amount'))
+    result = History.objects.filter(user=player.user, coin=coin).aggregate(total=models.Sum('amount'))
     return result['total'] if result['total'] is not None else 0
 
 
@@ -252,7 +267,7 @@ def sync_user(player):
     """ Synchronise user points with database
     """
     coin = Coin.get('points')
-    result = History.objects.filter(user=player.user,coin=coin).aggregate(total=models.Sum('amount'))
+    result = History.objects.filter(user=player.user, coin=coin).aggregate(total=models.Sum('amount'))
     points = result['total'] if result['total'] is not None else 0
     if player.points != points and not player.magic.has_modifier('top-disguise'):
         logging.debug('%s had %d instead of %d points' % (player, player.points, points))
@@ -279,9 +294,9 @@ def first_login_check(sender, **kwargs):
         signal_msg = ugettext_noop('joined the game.')
 
         signals.addActivity.send(sender=None, user_from=player,
-            user_to=player,
-            message=signal_msg,
-            game=None)
+                                 user_to=player,
+                                 message=signal_msg,
+                                 game=None)
 
         # give some bonus points
         try:

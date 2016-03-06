@@ -24,6 +24,7 @@ def get_questions_with_tags(tlist, select='any', active_only=True, endorsed_only
         result = result.exclude(endorsed_by__isnull=True)
     return result
 
+
 def get_questions_with_category(category='all', active_only=True, endorsed_only=False):
     ''' can be called with all, string for category name or instance of Category '''
     if category == 'all':
@@ -61,6 +62,7 @@ def get_questions_with_tag_for_day(tag, select):
             if q.day == select:
                 return q
         return None
+
 
 # Public API
 def register_category(category_name, game=None):
