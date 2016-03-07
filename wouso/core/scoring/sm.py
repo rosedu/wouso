@@ -145,16 +145,13 @@ def update_points(player, game):
     if level == player.level_no:
         return
 
+	arguments = dict(level=level)
     if level < player.level_no:
         action_msg = 'level-downgrade'
         signal_msg = ugettext_noop("downgraded to level {level}")
-        signals.addActivity.send(sender=None, user_from=player,
-                            user_to=player, message=signal_msg,
-                            arguments=dict(level=level),
-                            game=game, action=action_msg)
-    else:
+		this_game = game
+	else:
         action_msg = 'level-upgrade'
-        arguments = dict(level=level)
         # Check if the user has previously reached this level
         if level > player.max_level:
             # Update the maximum reached level
@@ -168,17 +165,19 @@ def update_points(player, game):
         else:
             # The user should not receive additional gold
             signal_msg = ugettext_noop("upgraded back to level {level}")
+		this_game = None
 
-        signals.addActivity.send(sender=None, user_from=player,
-                                 user_to=player, message=signal_msg,
-                                 arguments=arguments, game=None, 
-                                 action=action_msg)
+	signals.addActivity.send(sender=None, user_from=player,
+                            user_to=player, message=signal_msg,
+                            arguments=dict(level=level),
+                            game=game, action=action_msg)
+
     player.level_no = level
     player.save()
 
 
 def score_simple(player, coin, amount, game=None, formula=None,
-    external_id=None, percents=100):
+    external_id=None, percents=100 ):
     """ Give amount of coin to the player.
     """
     if not isinstance(game, Game) and game is not None:
@@ -252,8 +251,7 @@ def sync_user(player):
     """ Synchronise user points with database
     """
     coin = Coin.get('points')
-    result = History.objects.filter(user=player.user,coin=coin).aggregate(total=models.Sum('amount'))
-    points = result['total'] if result['total'] is not None else 0
+    points = real_points(player) 
     if player.points != points and not player.magic.has_modifier('top-disguise'):
         logging.debug('%s had %d instead of %d points' % (player, player.points, points))
         player.points = points
