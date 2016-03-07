@@ -3,7 +3,6 @@ from django.core.management.base import BaseCommand, CommandError
 from wouso.core.game import get_games
 from wouso.core.config.models import Setting
 
-
 class Command(BaseCommand):
     help = 'Wouso repetitive tasks (cron)'
 

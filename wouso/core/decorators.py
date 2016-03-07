@@ -4,7 +4,6 @@ from django.http import Http404
 import inspect
 import logging
 
-
 def staff_required(function=None, login_url=None):
     """
     Require current user to be logged in, have a profile, and be in staff group.
@@ -16,7 +15,6 @@ def staff_required(function=None, login_url=None):
     if function:
         return actual_decorator(function)
     return actual_decorator
-
 
 def api_enabled_required(function=None):
 
@@ -42,7 +40,7 @@ def api_enabled_required(function=None):
 def _get_cache_key(function, *args, **kwargs):
     params = inspect.getargspec(function)[0]
     cache_key = 'F-%s-' % function.__name__
-    for i, param_name in enumerate(params):
+    for i,param_name in enumerate(params):
         if i < len(args):
             value = args[i]
         else:

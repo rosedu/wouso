@@ -1,9 +1,7 @@
 import django
 from wouso.core.magic.models import Spell, PlayerArtifactAmount, PlayerSpellAmount, PlayerSpellDue
 
-
 register = django.template.Library()
-
 
 @register.simple_tag
 def artifact(artifact):
@@ -40,13 +38,11 @@ def artifact(artifact):
     else:
         return html
 
-
 @register.simple_tag
 def artifact_full(artif):
     if not artif:
         return ''
     return artifact(artif) + artif.title
-
 
 @register.simple_tag
 def spell_due(psd):
@@ -54,7 +50,6 @@ def spell_due(psd):
 
     return '<span class="artifact-container" title="%s until %s">%s<span class="sup">*</span></span>' % \
                 (psd.spell.title, psd.due, html)
-
 
 @register.simple_tag
 def spell_unknown(spell=None):
