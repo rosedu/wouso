@@ -2,6 +2,7 @@ from django.contrib import admin
 from wouso.core.scoring.models import *
 from django import forms
 
+
 class FormulaForm(forms.ModelForm):
     formula = forms.CharField(widget=forms.Textarea)
 

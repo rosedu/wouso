@@ -20,8 +20,8 @@ class Modifier(models.Model):
         abstract = True
 
     name = models.CharField(max_length=100)
-    title = models.CharField(max_length=100) # Maturator
-    description = models.TextField(max_length=2000, null=True, blank=True) # Extended description
+    title = models.CharField(max_length=100)  # Maturator
+    description = models.TextField(max_length=2000, null=True, blank=True)  # Extended description
     image = models.ImageField(upload_to=settings.MEDIA_ARTIFACTS_DIR, blank=True, null=True)
 
     percents = models.IntegerField(default=100)
@@ -34,7 +34,7 @@ class Modifier(models.Model):
             return os.path.join(settings.MEDIA_ARTIFACTS_URL, os.path.basename(str(self.image)))
 
         if hasattr(self, 'group'):
-            return ("%s-%s" %  (self.group if self.group else 'default', self.name)).lower()
+            return ("%s-%s" % (self.group if self.group else 'default', self.name)).lower()
 
         return self.name.lower()
 
@@ -47,6 +47,7 @@ class ArtifactGroup(CachedItem, models.Model):
 
     def __unicode__(self):
         return self.name
+
 
 class Artifact(CachedItem, Modifier):
     """ The generic artifact model. This should contain the name (identifier) and group,
@@ -86,12 +87,12 @@ class Spell(Modifier):
     TYPES = (('o', 'neutral'), ('p', 'positive'), ('n', 'negative'), ('s', 'self'))
 
     type = models.CharField(max_length=1, choices=TYPES, default='o')
-    due_days = models.IntegerField(default=5) # How many days may the spell be active
-    mass = models.BooleanField(default=False) # Apply spell on many players at once
+    due_days = models.IntegerField(default=5)  # How many days may the spell be active
+    mass = models.BooleanField(default=False)  # Apply spell on many players at once
 
-    price = models.FloatField(default=10)       # Spell price in gold.
-    level_required = models.IntegerField(default=0) # Level required for buying this spell
-    available = models.BooleanField(default=True)   # Spell can be bought in Bazaar
+    price = models.FloatField(default=10)  # Spell price in gold.
+    level_required = models.IntegerField(default=0)  # Level required for buying this spell
+    available = models.BooleanField(default=True)  # Spell can be bought in Bazaar
 
     @property
     def group(self):
@@ -229,7 +230,7 @@ class PlayerSpellDue(models.Model):
     source = models.ForeignKey('user.Player', related_name='spell_source')
     due = models.DateTimeField()
 
-    seen = models.BooleanField(default=False, blank=True) # if the target have seen it
+    seen = models.BooleanField(default=False, blank=True)  # if the target have seen it
 
     @staticmethod
     def get_expired(date):

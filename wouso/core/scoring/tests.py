@@ -1,13 +1,11 @@
 from django.test import TestCase
 from django.db.models.query import QuerySet
 from django.contrib.auth.models import User
-
 from wouso.core.config.models import IntegerListSetting
 from wouso.core.game.models import Game
 from wouso.core import scoring, signals
 from wouso.core.tests import WousoTest
 from wouso.core.user.models import Player
-
 from models import Formula, Coin, History
 from sm import FormulaParsingError, setup_scoring, CORE_POINTS, check_setup, update_points, calculate
 
@@ -25,7 +23,7 @@ class ScoringTestCase(TestCase):
 
     def testHistoryFor(self):
         no_history = scoring.history_for(self.user, self.game, external_id=999)
-        self.assertEqual(len(no_history), 0 )
+        self.assertEqual(len(no_history), 0)
 
     def testScoreSimple(self):
         scoring.score_simple(self.user.get_profile(), self.coin, game=self.game, external_id=2, amount=10)
@@ -41,7 +39,7 @@ class ScoringTestCase(TestCase):
 
     def testCalculate(self):
         formula = Formula.add('_test_formula',
-            expression='_test=5', owner=self.game)
+                              expression='_test=5', owner=self.game)
 
         # Call by name
         ret = scoring.calculate('_test_formula')
@@ -53,14 +51,14 @@ class ScoringTestCase(TestCase):
         self.assertEqual(ret['_test'], 5)
 
         formula2 = Formula.add('_test_formula2',
-            expression='_test=5*3', owner=self.game)
+                               expression='_test=5*3', owner=self.game)
 
         ret = scoring.calculate(formula2)
         self.assertTrue(isinstance(ret, dict))
         self.assertEqual(ret['_test'], 15)
 
         # Multiple coins
-        formula2.expression='_test=5*3; points=4'
+        formula2.expression = '_test=5*3; points=4'
 
         ret = scoring.calculate(formula2)
         self.assertTrue(isinstance(ret, dict))
@@ -68,7 +66,7 @@ class ScoringTestCase(TestCase):
         self.assertEqual(ret['points'], 4)
 
         # Fail safe
-        formula2.expression='_test=5*cucu'
+        formula2.expression = '_test=5*cucu'
         try:
             ret = scoring.calculate(formula2)
             # no error? wtf
@@ -78,10 +76,10 @@ class ScoringTestCase(TestCase):
 
     def testScore(self):
         formula = Formula.add('_test_formula_sc',
-            expression='_test=13', owner=self.game)
+                              expression='_test=13', owner=self.game)
 
         scoring.score(self.user.get_profile(), self.game, formula,
-            external_id=3)
+                      external_id=3)
 
         hs = scoring.history_for(self.user, self.game, external_id=3)
         self.assertTrue(isinstance(hs, QuerySet))
@@ -167,8 +165,8 @@ class ScoringHistoryTest(WousoTest):
         scoring.score_simple(player, 'points', 10)
 
         up = History.user_points(user=player.user)
-        self.assertTrue(up.has_key('wouso'))
-        self.assertTrue(up['wouso'].has_key(coin.name))
+        self.assertTrue('wouso' in up)
+        self.assertTrue(coin.name in up['wouso'])
         self.assertEqual(up['wouso'][coin.name], 10)
 
     def test_accessors(self):
@@ -201,6 +199,7 @@ class ScoringSetupTest(TestCase):
         for c in CORE_POINTS:
             self.assertTrue(Coin.get(c))
 
+
 class ScoringFirstLogin(WousoTest):
     def test_first_login_points(self):
         f = Formula.add('start-points', expression='points=10')
@@ -212,7 +211,7 @@ class ScoringFirstLogin(WousoTest):
         # this won't work, since the activity is sent in our custom view
         #self.client.login(username=player.user.username, password='test')
         # using this instead
-        signals.addActivity.send(sender=None, user_from=player, action="login", game = None, public=False)
+        signals.addActivity.send(sender=None, user_from=player, action="login", game=None, public=False)
 
         player = Player.objects.get(pk=player.pk)
         self.assertEqual(player.points, 10)
@@ -222,12 +221,25 @@ class ScoringTestFunctions(TestCase):
     def test_fibbonaci_formula(self):
         formula = Formula.add('test-fib', expression='points=fib(0)')
         value = calculate(formula)['points']
+
         self.assertEqual(value, 0)
-        formula.expression = 'points=fib(1)'; formula.save(); value = calculate(formula)['points']
+        formula.expression = 'points=fib(1)'
+        formula.save()
+        value = calculate(formula)['points']
+
         self.assertEqual(value, 1)
-        formula.expression = 'points=fib(2)'; formula.save(); value = calculate(formula)['points']
+        formula.expression = 'points=fib(2)'
+        formula.save()
+        value = calculate(formula)['points']
+
         self.assertEqual(value, 1)
-        formula.expression = 'points=fib(3)'; formula.save(); value = calculate(formula)['points']
+        formula.expression = 'points=fib(3)'
+        formula.save()
+        value = calculate(formula)['points']
+
         self.assertEqual(value, 2)
-        formula.expression = 'points=fib(4)'; formula.save(); value = calculate(formula)['points']
+        formula.expression = 'points=fib(4)'
+        formula.save()
+        value = calculate(formula)['points']
+
         self.assertEqual(value, 3)
