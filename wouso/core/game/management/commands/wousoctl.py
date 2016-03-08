@@ -22,47 +22,47 @@ class Command(BaseCommand):
     help = 'Wouso management tasks'
     option_list = DumpdataCommand.option_list + (
         make_option('--check-setup',
-            action='store_true',
-            dest='check_setup',
-            default=False,
-            help='Check the current instance for scoring, artifacts and other running requirements.'
-        ),
+                    action='store_true',
+                    dest='check_setup',
+                    default=False,
+                    help='Check the current instance for scoring, artifacts and other running requirements.'
+                    ),
         make_option('--setup',
-            action='store_true',
-            dest='setup',
-            default=False,
-            help='Setup the current instance, including a syncdb.'
-        ),
+                    action='store_true',
+                    dest='setup',
+                    default=False,
+                    help='Setup the current instance, including a syncdb.'
+                    ),
         make_option('--noinput',
-            action='store_true',
-            dest='noinput',
-            default=False,
-            help='Don\'t ask for input'
-        ),
+                    action='store_true',
+                    dest='noinput',
+                    default=False,
+                    help='Don\'t ask for input'
+                    ),
         make_option('--load',
-            action='store',
-            dest='load',
-            default=False,
-            help='Load game configuration.'
-        ),
+                    action='store',
+                    dest='load',
+                    default=False,
+                    help='Load game configuration.'
+                    ),
         make_option('--save',
-            action='store',
-            dest='save',
-            default=False,
-            help='Save game configuration to a file.'
-        ),
+                    action='store',
+                    dest='save',
+                    default=False,
+                    help='Save game configuration to a file.'
+                    ),
         make_option('--reset',
-            action='store_true',
-            dest='reset',
-            default=False,
-            help='Reset scoring and artifacts'
-        ),
+                    action='store_true',
+                    dest='reset',
+                    default=False,
+                    help='Reset scoring and artifacts'
+                    ),
         make_option('--update-display',
-            action='store_true',
-            dest='updatedisplay',
-            default=False,
-            help='Update display names according to config'
-        ),
+                    action='store_true',
+                    dest='updatedisplay',
+                    default=False,
+                    help='Update display names according to config'
+                    ),
     )
 
     def handle(self, *args, **options):

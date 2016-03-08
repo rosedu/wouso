@@ -1,6 +1,7 @@
 from django.db.models import get_models
 from models import Game
 
+
 def get_games():
     """Get a list of available games. This needs to be updated each time
     a game is added."""

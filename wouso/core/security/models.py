@@ -19,14 +19,14 @@ class Report(models.Model):
     text      = models.CharField(max_length=250)
     extra     = models.CharField(max_length=250, blank=True)
 
-    def set_dibs(self,user_dibs):
+    def set_dibs(self, user_dibs):
         self.dibs = user_dibs.get_extension(Player)
         self.save()
 
-    def set_status(self, status = "R"):
+    def set_status(self, status="R"):
         self.status = status
         self.save()
-    
+
     def set_extra(self, text=""):
         self.extra = text
         self.save()

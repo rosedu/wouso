@@ -19,7 +19,7 @@ class SecurityRulesTest(WousoTest):
         #run a challenge
         Challenge.WARRANTY = False
         chall = Challenge.create(user_from=self.chall_user,
-                    user_to=self.chall_user2, ignore_questions=True)
+                                 user_to=self.chall_user2, ignore_questions=True)
 
         chall.user_from.seconds_took = 10
         chall.user_from.score = 100
@@ -32,4 +32,4 @@ class SecurityRulesTest(WousoTest):
         #test penalty points
         #20 is the default formula value for a chall-was-set-up
         self.assertEqual(20,
-                scoring.History.user_coins(self.user2.player_related.get())['penalty'])
+                         scoring.History.user_coins(self.user2.player_related.get())['penalty'])

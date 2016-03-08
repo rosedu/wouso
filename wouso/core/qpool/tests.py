@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from models import *
 from wouso.core.qpool import get_questions_with_tags
 
+
 class QpoolTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create(username='_test')
@@ -15,13 +16,13 @@ class QpoolTestCase(TestCase):
 
     def _get_foo_question(self):
         q = Question.objects.create(text='Cati ani ai',
-            proposed_by=self.user,
-            endorsed_by=self.user,
-            active=True)
+                                    proposed_by=self.user,
+                                    endorsed_by=self.user,
+                                    active=True)
         q.save()
         answers = [Answer.objects.create(question=q,
-            text=str(i),
-            correct=False if i != 2 else True) for i in range(4)]
+                                         text=str(i),
+                                         correct=False if i != 2 else True) for i in range(4)]
         [a.save() for a in answers]
         return q
 
@@ -63,9 +64,9 @@ class QpoolTestCase(TestCase):
     def testQuestionWithoutAnswersIsNotValid(self):
         user = User.objects.all()[0]
         other_question = Question.objects.create(text='Unde locuiesti',
-            proposed_by=user,
-            endorsed_by=user,
-            active=True)
+                                                 proposed_by=user,
+                                                 endorsed_by=user,
+                                                 active=True)
 
         other_question.answer_type = 'R'
         other_question.save()
@@ -83,6 +84,7 @@ class QpoolTestCase(TestCase):
         q.tags.create(name="bbb")
 
         self.assertEqual(q.tags_nice, "aaa, bbb")
+
 
 class TagTests(TestCase):
     def test_tag_set_active(self):
@@ -108,6 +110,7 @@ class TagTests(TestCase):
 
         q = Question.objects.get(pk=q.id)
         self.assertFalse(q.active)
+
 
 class QuestionTest(TestCase):
     def test_question_schedule(self):
@@ -150,6 +153,7 @@ class QuestionTest(TestCase):
 
         q.tags.add(t)
         self.assertEqual(q.tags_nice, 'name')
+
 
 class ScheduleTest(TestCase):
     def test_schedule_automatic(self):

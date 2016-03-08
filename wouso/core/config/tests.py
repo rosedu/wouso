@@ -2,12 +2,13 @@ from django.test import TestCase
 from django.core.cache import cache
 from models import Setting, BoolSetting, HTMLSetting, ChoicesSetting
 
+
 class TestSettings(TestCase):
     def setUp(self):
         cache.clear()
 
     def test_setting_type(self):
-        a = BoolSetting.get('test-name') # automatically created
+        a = BoolSetting.get('test-name')  # automatically created
 
         self.assertTrue(a)
         self.assertIsInstance(a, Setting)

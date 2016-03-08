@@ -1,5 +1,6 @@
 import sys
-sys.path.append('..');sys.path.append('.')
+sys.path.append('..')
+sys.path.append('.')
 
 from django.core.management import setup_environ
 import settings
@@ -8,6 +9,7 @@ setup_environ(settings)
 from wouso.core import magic
 from wouso.core.magic.models import *
 from wouso.core.user.models import Player
+
 
 if __name__ == '__main__':
     print 'Setting up the Artifacts...',
@@ -23,8 +25,8 @@ if __name__ == '__main__':
     # Create a default group
     default_group, new = ArtifactGroup.objects.get_or_create(name='Default')
     for i in range(7):
-        name='level-%d' % (i + 1)
-        title='Level %d' % (i + 1)
+        name = 'level-%d' % (i + 1)
+        title = 'Level %d' % (i + 1)
         for g in (default_group, ca, cb, cc):
             Artifact.objects.get_or_create(
                 name=name,

@@ -1,6 +1,7 @@
 from django.core.cache import cache
 import sys
 
+
 class App:
     """ Interface extended by Game and by Top and Qproposal Activity"""
 
@@ -78,7 +79,7 @@ class App:
         """
         pass
 
-    management_task = None # Disable it by default
+    management_task = None  # Disable it by default
 
 
 class Item(object):
