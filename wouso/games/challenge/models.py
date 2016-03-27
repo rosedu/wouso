@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404
 from wouso.core.user.models import Player
 from wouso.core.magic.manager import InsufficientAmount
 from wouso.core.qpool.models import Question
-from wouso.core.qpool import get_questions_with_category
+from wouso.core.qpool import get_questions_with_category, register_category
 from wouso.core.game.models import Game
 from wouso.core import scoring, signals
 from wouso.core.god import God
@@ -706,6 +706,8 @@ class ChallengeGame(Game):
     class Meta:
         proxy = True
 
+    QPOOL_CATEGORY = 'challenge'
+
     def __init__(self, *args, **kwargs):
         # Set parent's fields
         self._meta.get_field('verbose_name').default = "Challenges"
@@ -808,6 +810,9 @@ class ChallengeGame(Game):
     @classmethod
     def get_manager(cls, challenge):
         return DefaultChallengeManager(challenge)
+
+
+register_category(ChallengeGame.QPOOL_CATEGORY, ChallengeGame)
 
 
 # Hack for having participants in sync
