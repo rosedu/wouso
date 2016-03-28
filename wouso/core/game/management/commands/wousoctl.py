@@ -86,7 +86,11 @@ class Command(BaseCommand):
                                  '--noinput'])
             else:
                 subprocess.call(['python', 'manage.py', 'syncdb', '--all'])
+            # Call migrations as fake because some conflicts after moving to
+            # South
             call_command('migrate', fake=True)
+            # Call migrations here, because we want fixtures to be loaded
+            call_command('migrate')
 
             self.stdout.write('Setting up scoring...')
             setup_scoring()
