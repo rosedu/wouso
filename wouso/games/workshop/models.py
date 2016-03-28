@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.conf import settings
 from wouso.core.game.models import Game
+from wouso.core.qpool import register_category
 from wouso.core.qpool.models import Tag, Question, Category
 from wouso.core.ui import register_sidebar_block
 from wouso.core.user.models import PlayerGroup, Player
@@ -374,6 +375,8 @@ class WorkshopGame(Game):
     class Meta:
         proxy = True
 
+    QPOOL_CATEGORY = 'workshop'
+
     def __init__(self, *args, **kwargs):
         self._meta.get_field('verbose_name').default = "Workshop"
         self._meta.get_field('short_name').default = ""
@@ -562,3 +565,4 @@ class WorkshopGame(Game):
                  'id': 'workshop'})
 
 register_sidebar_block('workshop', WorkshopGame.get_sidebar_widget)
+register_category(WorkshopGame.QPOOL_CATEGORY, WorkshopGame)

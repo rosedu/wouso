@@ -7,6 +7,7 @@ from random import randint, shuffle
 from wouso.core.user.models import Player
 from wouso.core.game.models import Game
 from wouso.core import scoring, signals
+from wouso.core.qpool import register_category
 from wouso.core.qpool.models import Schedule, Answer, Question
 
 # Qotd uses questions from qpool
@@ -81,6 +82,8 @@ class QotdGame(Game):
         # A Game extending core.game.models.Game should be set as proxy
         proxy = True
 
+    QPOOL_CATEGORY = 'qotd'
+
     def __init__(self, *args, **kwargs):
         # Set parent's fields
         self._meta.get_field('verbose_name').default = "Question of the Day"
@@ -151,3 +154,5 @@ class QotdGame(Game):
         today = datetime.now()
         qs = Schedule.objects.filter(day__lte=today).order_by('-day')[:7]
         return qs
+
+register_category(QotdGame.QPOOL_CATEGORY, QotdGame)

@@ -12,6 +12,7 @@ from wouso.core.game.models import Game
 from wouso.core import scoring, signals
 from wouso.core.scoring import History
 from wouso.core.scoring.models import Formula
+from wouso.core.qpool import register_category
 from wouso.core.qpool.models import Question
 
 
@@ -298,6 +299,8 @@ class QuestGame(Game):
     class Meta:
         proxy = True
 
+    QPOOL_CATEGORY = 'quest'
+
     def __init__(self, *args, **kwargs):
         # Set parent's fields
         self._meta.get_field('verbose_name').default = "Weekly Quest"
@@ -363,6 +366,8 @@ class QuestGame(Game):
             return FinalQuest.objects.all()[0]
         except IndexError:
             return None
+
+register_category(QuestGame.QPOOL_CATEGORY, QuestGame)
 
 class FinalQuest(Quest):
     def give_level_bonus(self):
