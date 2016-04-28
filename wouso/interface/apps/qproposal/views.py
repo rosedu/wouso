@@ -10,7 +10,7 @@ from models import Qproposal
 
 def propose(request):
 
-    MAX_ANSWERS = 6
+    MAX_ANSWERS = 2
 
     if request.method == 'POST':
         form = QuestionForm(nr_ans=MAX_ANSWERS, data=request.POST)
@@ -20,16 +20,20 @@ def propose(request):
             qdict['text'] = form.cleaned_data['text']
             qdict['answer_type'] = form.cleaned_data['answer_type']
             qdict['proposed_by'] = request.user
-            qdict['category'] = Category.objects.filter(name='proposed')[0]
+            #qdict['category'] = Category.objects.filter(name='proposed')[0]
+            qdict['category'], created  = Category.objects.get_or_create(name='proposed-'+form.cleaned_data['category'])
             q = Question(**qdict)
             q.save()
 
-            tag = Tag.objects.filter(name=form.cleaned_data['category'])[0]
+            #tag = Tag.objects.filter(name=form.cleaned_data['category'])[0]
+            tag, created = Tag.objects.get_or_create(name=q.category)
+            tag_prefix = q.category
             q.tags.add(tag)
 
             # add the tags
             for tag_name in form.cleaned_data['tags']:
-                tag = Tag.objects.filter(name=tag_name)[0]
+                #tag = Tag.objects.filter(name=tag_name)[0]
+                tag, created = Tag.objects.get_or_create(name=tag_prefix+tag_name)
                 q.tags.add(tag)
             q.save()
 

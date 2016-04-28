@@ -1,20 +1,68 @@
-{% extends 'site_base.html' %}
+{% extends 'interface/section_base.html' %}
+{% load i18n %}
+{% load user %}
 
-{% block title %}Propose question{% endblock %}
+{% block title %}{% trans 'Propose a question' %}{% endblock %}
+{% block sectiontitle %}{% trans 'Propose a question' %}{% endblock %}
+
+{% block scripts %}
+    <script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
+{% endblock %}
 
 {% block bottomscripts %}
 <script type="text/javascript" src="{{ basepath }}/static/js/cpanel/qpool/add_question.js"></script>
 <script src="{{ basepath }}/static/js/jquery-1.11.1.min.js"></script>
 {% endblock %}
 
-{% block content %}
+{% block sectioncontent %}
 
 
-<h1> Propose question </h1>
+<!--
+<h1> Propose a question </h1>
 
 <form action="/qproposal/" method="post">{% csrf_token %}
 {{ form.as_p }}
 <input type="submit" value="Submit" />
 </form>
+-->
+<ul class="tabs">
+        <li><a href="#propose" id="propose-click" class="no-redir">{% trans 'Propose' %}</a></li>
+        <li><a href="#history" id="history-click" class="no-redir">{% trans 'History' %}</a></li>
+    </ul>
 
+<div class="tab_container">
+    <div id="propose" class="tab_content">
+        <br/>
+    	<!-- <form action="/qproposal/" method="post">{% csrf_token %}
+		{{ form.as_p }}
+		<input type="submit" value="Submit" />
+		</form> -->
+		<button id="my-button" onclick="myFunction()">Add question</button>
+		  <!--<div id="id-button-content" class="button-content">
+		  	<form action="/qproposal/" method="post">{% csrf_token %}
+			{{ form.as_p }}
+			<input type="submit" value="Submit" />
+			</form>
+		  </div>-->
+</div>
+
+    	<script>
+    	//document.getElementById("my-button").onclick = function () {myFunction() };
+    	function myFunction() {
+    		//document.getElementById("id-button-content");
+    		 document.getElementById("my-button").style.color = "red";
+    		<form action="/qproposal/" method="post">{% csrf_token %}
+			{{ form.as_p }}
+			<input type="submit" value="Submit" />
+			</form>
+    	}
+       	</script>
+    </div>
+
+    <div id="history" class="tab_content">
+        <br/>
+    
+
+    </div>
 {% endblock %}
