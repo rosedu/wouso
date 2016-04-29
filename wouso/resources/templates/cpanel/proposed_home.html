@@ -1,1 +1,56 @@
-Test
+{% extends 'cpanel/index.html' %}
+{% load i18n %}
+{% load user %}
+{% load django_bootstrap_breadcrumbs %}
+
+{% block sectiontitle %}
+    Proposed Question
+
+   
+
+{% block breadcrumbs %}
+	
+    {{ block.super }}
+    {% breadcrumb "Proposed Questions" "proposed_home" %}
+{% endblock %}
+
+{% endblock %}
+
+{% block sectioncontent %}
+<div class="container">
+  <ul class="nav nav-tabs">
+
+    <li class=active ><a href="#workshop">Workshop</a></li>
+    <li><a href="#quest">Quest</a></li>
+    <li><a href="#special_challange">Special Challenge</a></li>
+    <li><a href="#qotd">Question of the Day</a></li>
+    <li><a href="#challange">Challange</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="workshop" class="tab-pane fade in active">
+      <p>Workshop</p>
+    </div>
+    <div id="quest" class="tab-pane fade">
+      <p>quest</p>
+    </div>
+    <div id="special_challange" class="tab-pane fade">
+        <p>Special Challange</p>
+    </div>
+    <div id="qotd" class="tab-pane fade">
+      <p>Question of the Day</p>
+    </div>
+  	<div id="challange" class="tab-pane fade">
+      <p>challange</p>  
+    </div>
+  </div>
+</div>
+<script>
+$(document).ready(function(){
+    $(".nav-tabs a").click(function(){
+        $(this).tab('show');
+    });
+});
+</script>
+
+{% endblock %}
