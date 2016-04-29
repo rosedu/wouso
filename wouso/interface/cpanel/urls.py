@@ -107,6 +107,8 @@ name='roles_create'),
     url(r'^news/add_news/$', 'wouso.interface.cpanel.views.add_news', name='add_news'),
     url(r'^news/edit_news/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.edit_news', name='edit_news'),
     url(r'^news/del_news/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.del_news', name='del_news'),
+
+    url(r'^proposed_home/$','wouso.interface.cpanel.views.proposed', name='proposed_home'),
 ]
 
 for g, trash in get_cpanel_games().items():

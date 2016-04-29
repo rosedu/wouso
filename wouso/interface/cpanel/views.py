@@ -1409,3 +1409,16 @@ def karma_group_view(request, id):
     return render_to_response('cpanel/karma_group.html',
                               {'form': form, 'group': group},
                               context_instance=RequestContext(request))
+
+class ProposedView(TemplateView):
+
+    template_name = 'cpanel/proposed_home.html'
+
+    def get_context_data(self, **kwargs):
+       context = super(ProposedView, self).get_context_data(**kwargs)
+       
+       return context
+
+
+proposed = permission_required('config.change_setting')(
+    ProposedView.as_view())
