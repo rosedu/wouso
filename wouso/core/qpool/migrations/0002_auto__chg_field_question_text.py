@@ -97,7 +97,19 @@ class Migration(SchemaMigration):
             'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['qpool.Category']", 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '256'})
+        },
+        'qpool.proposedquestion': {
+        'Meta': {'object_name' : 'ProposedQuestion'},
+        'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+        'text': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True', 'default': "''"}),
+        'proposed_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'qpool_question_proposedby_related'", 'null': 'True', 'to': "orm['auth.User']"}),
+        'active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+        'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['qpool.Category']", 'null': 'True'}),
+        'tags': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['qpool.Tag']", 'symmetrical': 'False', 'blank': 'True'}),
+        'date_proposed': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+        'answers': ('django.db.models.fields.TextField', [], {'null' : 'True', 'blank' : 'True', 'default': "''"})
         }
+
     }
 
     complete_apps = ['qpool']
