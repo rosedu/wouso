@@ -51,7 +51,7 @@ def propose(request):
                                       context_instance=RequestContext(request))
     else:
         form = QuestionForm(MAX_ANSWERS)
-    return render_to_response('qproposal/propose.html',
+    return render_to_response('qproposal/propose_content.html',
                               {'form': form},
                               context_instance=RequestContext(request))
 
