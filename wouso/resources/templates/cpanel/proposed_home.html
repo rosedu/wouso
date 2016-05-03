@@ -20,31 +20,159 @@
 <div class="container">
   <ul class="nav nav-tabs">
 
-    <li class=active ><a href="#workshop">Workshop</a></li>
+    <li><a href="#workshop">Workshop</a></li>
     <li><a href="#quest">Quest</a></li>
-    <li><a href="#special_challange">Special Challenge</a></li>
-    <li><a href="#qotd">Question of the Day</a></li>
-    <li><a href="#challange">Challange</a></li>
+    <li><a href="#special_challenge">Special Challenge</a></li>
+    <li class="active"><a href="#qotd">Question of the Day</a></li>
+    <li><a href="#challenge">Challange</a></li>
+    <li><a href="#quiz">Quiz</a></li>
   </ul>
 
   <div class="tab-content">
+   	 
     <div id="workshop" class="tab-pane fade in active">
-      <p>Workshop</p>
-    </div>
-    <div id="quest" class="tab-pane fade">
-      <p>quest</p>
-    </div>
-    <div id="special_challange" class="tab-pane fade">
-        <p>Special Challange</p>
-    </div>
-    <div id="qotd" class="tab-pane fade">
-      <p>Question of the Day</p>
-    </div>
-  	<div id="challange" class="tab-pane fade">
-      <p>challange</p>  
-    </div>
+   		<table  class="table table-bordered table-striped">
+			{% for question, answers in questions_workshop.items %}
+				<tr>
+  	 				 <td>{{ question.text }}</td>
+  	  				 {% for answer in answers %}
+  	 				 <td>{{ answer.text }}</td>
+  	 				 {% endfor %}
+					 <td> <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#{{ question.id }}">Simple collapsible</button></td>
+	 			</tr>
+				<tr>
+				 <td>
+				 	<div id="{{ question.id }}" class="collapse">
+ 	   					formul de completat
+      				</div>
+      			 </td>
+      			</tr>
+     
+     		{% endfor %}
+		</table>
+	</div>
+    
+	<div id="quest" class="tab-pane fade in active">
+   		<table  class="table table-bordered table-striped">
+			{% for question, answers in questions_quest.items %}
+				<tr>
+  	 				 <td>{{ question.text }}</td>
+  	  				 {% for answer in answers %}
+  	 				 <td>{{ answer.text }}</td>
+  	 				 {% endfor %}
+					 <td> <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#{{ question.id }}">Simple collapsible</button></td>
+	 			</tr>
+				<tr>
+				 <td>
+				 	<div id="{{ question.id }}" class="collapse">
+ 	   					formul de completat
+      				</div>
+      			 </td>
+      			</tr>
+     
+     		{% endfor %}
+		</table>
+	</div>
+    
+
+
+
+      <div id="special_challenge" class="tab-pane fade in active">
+   		<table  class="table table-bordered table-striped">
+			{% for question, answers in questions_schallenge.items %}
+				<tr>
+  	 				 <td>{{ question.text }}</td>
+  	  				 {% for answer in answers %}
+  	 				 <td>{{ answer.text }}</td>
+  	 				 {% endfor %}
+					 <td> <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#{{ question.id }}">Simple collapsible</button></td>
+	 			</tr>
+				<tr>
+				 <td>
+				 	<div id="{{ question.id }}" class="collapse">
+ 	   					formul de completat
+      				</div>
+      			 </td>
+      			</tr>
+     
+     		{% endfor %}
+		</table>
+	</div>
+    
+
+      <div id="qotd" class="tab-pane fade in active">
+   		<table  class="table table-bordered table-striped">
+			{% for question, answers in questions_qotd.items %}
+				<tr>
+  	 				 <td>{{ question.text }}</td>
+  	  				 {% for answer in answers %}
+  	 				 <td>{{ answer.text }}</td>
+  	 				 {% endfor %}
+					 <td> <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#{{ question.id }}">Simple collapsible</button></td>
+	 			</tr>
+				<tr>
+				 <td>
+				 	<div id="{{ question.id }}" class="collapse">
+ 	   					formul de completat
+      				</div>
+      			 </td>
+      			</tr>
+     
+     		{% endfor %}
+		</table>
+	</div>
+    
+    
+     <div id="challenge" class="tab-pane fade in active">
+   		<table  class="table table-bordered table-striped">
+			{% for question, answers in questions_challenge.items %}
+				<tr>
+  	 				 <td>{{ question.text }}</td>
+  	  				 {% for answer in answers %}
+  	 				 <td>{{ answer.text }}</td>
+  	 				 {% endfor %}
+					 <td> <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#{{ question.id }}">Simple collapsible</button></td>
+	 			</tr>
+				<tr>
+				 <td>
+				 	<div id="{{ question.id }}" class="collapse">
+ 	   					formul de completat
+      				</div>
+      			 </td>
+      			</tr>
+     
+     		{% endfor %}
+		</table>
+	</div>
+    
+       <div id="quiz" class="tab-pane fade in active">
+   		<table  class="table table-bordered table-striped">
+			{% for question, answers in questions_quiz.items %}
+				<tr>
+  	 				 <td>{{ question.text }}</td>
+  	  				 {% for answer in answers %}
+  	 				 <td>{{ answer.text }}</td>
+  	 				 {% endfor %}
+					 <td> <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#{{ question.id }}">Simple collapsible</button></td>
+	 			</tr>
+				<tr>
+				 <td>
+				 	<div id="{{ question.id }}" class="collapse">
+ 	   					formul de completat
+      				</div>
+      			 </td>
+      			</tr>
+     
+     		{% endfor %}
+		</table>
+	</div>
+    
+  
   </div>
+
 </div>
+
+
 <script>
 $(document).ready(function(){
     $(".nav-tabs a").click(function(){
@@ -54,3 +182,12 @@ $(document).ready(function(){
 </script>
 
 {% endblock %}
+<!--<div class="container">
+  <h2>Simple Collapsible</h2>
+  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Simple collapsible</button>
+  <div id="demo" class="collapse">
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+  </div>
+</div>-->

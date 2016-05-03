@@ -23,7 +23,7 @@ from wouso.core.decorators import staff_required
 from wouso.core.ui import get_sidebar
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
-from wouso.core.qpool.models import Schedule, Question, Tag, Category, Answer
+from wouso.core.qpool.models import Schedule, Question, Tag, Category, Answer, ProposedQuestion
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
 from wouso.core import scoring
@@ -1413,12 +1413,51 @@ def karma_group_view(request, id):
 class ProposedView(TemplateView):
 
     template_name = 'cpanel/proposed_home.html'
-
     def get_context_data(self, **kwargs):
-       context = super(ProposedView, self).get_context_data(**kwargs)
+        context = super(ProposedView, self).get_context_data(**kwargs)
+     
+    """    workshop_proposed_question_list = Question.objects.filter(tags__name="workshop_proposed")
+        qotd_proposed_question_list = Question.objects.filter(tags__name="qotd_proposed")
+        quiz_proposed_question_list = Question.objects.filter(tags__name="quiz_proposed")
+        quest_proposed_question_list = Question.objects.filter(tags__name="quest_propsoed")
+        challenge_proposed_question_list = Question.objects.filter(tags__name="challenge_proposed")
+        schallenge_proposed_question_list = Question.objects.filter(tags__name="schallenge_prposed")
+        questions_qotd = {}
+        questions_workshop = {}
+        questions_quest = {}
+        questions_quiz = {}
+        questions_challenge = {}
+        questions_schallenge = {}
 
-       return context
+        for question in workshop_proposed_question_list:
+            questions_workshop[question] = Answer.objects.filter(question=question)
+        for question in qotd_proposed_question_list:
+            questions_qotd[question] = Answer.objects.filter(question=question)
+        for question in quest_proposed_question_list:
+            questions_quest[question] = Answer.objects.filter(question=question) 
+        for question in quiz_proposed_question_list:
+            questions_quiz[question] = Answer.objects.filter(question=question)
+        for question in challenge_proposed_question_list:
+            questions_challenge[question] = Answer.objects.filter(question=question)
+        for question in schallenge_proposed_question_list:
+            questions_schallenge[question] = Answer.objects.filter(question=question)
+
+        context.update({
+        'questions_qotd':questions_qotd,
+        'questions_quiz':questions_quiz,
+        'questions_schallenge':questions_schallenge,
+        'questions_challenge':questions_challenge,
+        'questions_workshop':questions_workshop,
+        'questions_quest':questions_quest,
+
+
+        })
+        return context
 
 
 proposed = permission_required('config.change_setting')(
     ProposedView.as_view())
+{{ question.text }}
+    {% for answer in answers %}
+    {{ answer.text }}
+    {% endfor %}"""

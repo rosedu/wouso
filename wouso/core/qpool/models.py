@@ -191,3 +191,20 @@ class Schedule(models.Model):
 
     def __unicode__(self):
         return str(self.day)
+
+class ProposedQuestion(models.Model):
+    """ A proposed question has text and a variable number of answers
+    (stored as strings),category and tags, proposing user and a feedback field
+    """ 
+
+    text = models.TextField(null=True, blank=True, default="")
+    proposed_by = models.ForeignKey(User, null=True, blank=True, related_name="%(app_label)s_%(class)s_proposedby_related")
+    active = models.BooleanField()
+    category = models.ForeignKey(Category, null=True)
+    tags = models.ManyToManyField(Tag, blank=True)
+    date_proposed = models.DateTimeField(auto_now_add=True)
+    answers = models.TextField(null=True, blank=True, default="")
+
+
+
+# json.dumps([{'text': 'My answer', 'correct': False}]),[{"text": "My answer", "correct": false}])
