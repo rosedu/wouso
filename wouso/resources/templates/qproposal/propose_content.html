@@ -1,0 +1,33 @@
+{% extends 'interface/content_base.html' %}
+{% load i18n %}
+{% block scripts %}
+<script src="{{ basepath }}/static/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
+<script type="text/javascript" src="{{ basepath }}/static/js/cpanel/qpool/add_question.js"></script>
+{% endblock %}
+
+{% block sectiontitle %}{% trans 'Propose a question' %}{% endblock %}
+
+{% block sectioncontent %}
+<ul class="tabs">
+        <li><a href="#propose" id="propose-click" class="no-redir">{% trans 'Propose' %}</a></li>
+        <li><a href="#history" id="history-click" class="no-redir">{% trans 'History' %}</a></li>
+    </ul>
+
+<div class="tab_container">
+    <div id="propose" class="tab_content">
+        <br/>
+    	<form action="/qproposal/" method="post">{% csrf_token %}
+		{{ form.as_p }}
+		<input type="submit" value="Submit" />
+		</form> 
+</div>
+    </div>
+
+    <div id="history" class="tab_content">
+        <br/>
+    
+
+    </div>
+{% endblock %}
