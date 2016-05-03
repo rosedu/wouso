@@ -44,7 +44,8 @@ from forms import TagsForm, UserForm, SpellForm, AddTagForm,\
     EditReportForm, RaceForm, PlayerGroupForm, RoleForm, \
     StaticPageForm, NewsForm, KarmaBonusForm, AddQuestionForm, EditQuestionForm, \
     FormulaForm, TagForm, ChangePasswordForm, AddUserForm
-
+from StringIO import StringIO
+import json
 
 class StatusView(TemplateView):
     template_name = 'cpanel/index.html'
@@ -1415,7 +1416,60 @@ class ProposedView(TemplateView):
     template_name = 'cpanel/proposed_home.html'
     def get_context_data(self, **kwargs):
         context = super(ProposedView, self).get_context_data(**kwargs)
-     
+        quest = Category.objects.get(name = 'quest')
+        quiz = Category.objects.get(name = 'quiz')
+        workshop = Category.objects.get(name = 'workshop')
+        challenge = Category.objects.get(name = 'challenge')
+        specialchallenge = Category.objects.get(name = 'specialchallenge')
+        qotd = Category.objects.get(name = 'qotd')
+
+        question_list_qotd = ProposedQuestion.objects.filter(category=qotd)
+        question_list_workshop = ProposedQuestion.objects.filter(category=workshop)
+        question_list_quest = ProposedQuestion.objects.filter(category=quest)
+        question_list_quiz = ProposedQuestion.objects.filter(category=quiz)
+        question_list_challenge = ProposedQuestion.objects.filter(category=challenge)
+        question_list_specialchallenge = ProposedQuestion.objects.filter(category=specialchallenge)
+        
+        questions_qotd = {}
+        questions_workshop = {}
+        questions_quest = {}
+        questions_quiz = {}
+        questions_challenge = {}
+        questions_schallenge = {}
+
+        for question in question_list_workshop:
+            answer_IO = StringIO(str(question.answers))
+            questions_workshop[question] = json.load(answer_IO)
+        for question in question_list_qotd:
+            answer_IO = StringIO(str(question.answers))
+            questions_qotd[question] = json.load(answer_IO)
+        for question in question_list_quest:
+            answer_IO = StringIO(str(question.answers))
+            questions_quest[question] = json.load(answer_IO)
+        for question in question_list_quiz:
+            answer_IO = StringIO(str(question.answers))
+            questions_quiz[question] = json.load(answer_IO)
+        for question in question_list_challenge:
+            answer_IO = StringIO(str(question.answers))
+            questions_challenge[question] = json.load(answer_IO)
+        for question in question_list_specialchallenge:
+            answer_IO = StringIO(str(question.answers))
+            questions_schallenge[question] = json.load(answer_IO)
+
+      
+        context.update({
+        'questions_qotd':questions_qotd,
+        'questions_quiz':questions_quiz,
+        'questions_schallenge':questions_schallenge,
+        'questions_challenge':questions_challenge,
+        'questions_workshop':questions_workshop,
+        'questions_quest':questions_quest,
+
+
+        })
+        return context
+
+
     """    workshop_proposed_question_list = Question.objects.filter(tags__name="workshop_proposed")
         qotd_proposed_question_list = Question.objects.filter(tags__name="qotd_proposed")
         quiz_proposed_question_list = Question.objects.filter(tags__name="quiz_proposed")
@@ -1454,10 +1508,6 @@ class ProposedView(TemplateView):
         })
         return context
 
-
+"""
 proposed = permission_required('config.change_setting')(
     ProposedView.as_view())
-{{ question.text }}
-    {% for answer in answers %}
-    {{ answer.text }}
-    {% endfor %}"""
