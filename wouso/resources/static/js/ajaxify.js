@@ -1,7 +1,7 @@
 /* convert all links with class ajaxify in smth smarter */
 var url_base = '';
-
-/* reload header */
+/*
+// reload header 
 function reload_header() {
     $.ajax({
         url: url_base + '/ajax/do/header/',
@@ -9,13 +9,13 @@ function reload_header() {
             $('#topbar').html(data);
         },
         error: function(data) {
-            /* pass */
+            // pass 
         }
     })
 }
 
 $(document).ready(function (){
-    /* button links */
+    // button links 
     $('.ajaxify').bind('click', function () {
         url = url_base + this;
         $.ajax({
@@ -31,3 +31,21 @@ $(document).ready(function (){
         return false;
     });
 });
+*/
+
+$(document).ready(function(){
+    $('.ajaxify').bind('click', function(){
+        var url = url_base + $(this).attr('href');
+        $.ajax({
+            success: function(event){
+                $("div#content").load(url);
+                event.preventDefault();
+            },
+            error: function(data) {
+                document.location = url;
+            }
+        });
+        return false;
+    });
+});
+
