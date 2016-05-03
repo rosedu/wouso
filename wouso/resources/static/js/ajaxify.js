@@ -39,12 +39,14 @@ $(document).ready(function(){
         $.ajax({
             success: function(event){
                 $("div#content").load(url);
-                event.preventDefault();
+                $('title').text($('.section h2').text());
+                //event.preventDefault();
             },
             error: function(data) {
                 document.location = url;
             }
         });
+
         return false;
     });
 });
