@@ -4,8 +4,9 @@ from wouso.core.ui import register_footer_link
 from wouso.interface.apps.qproposal.forms import ProposedQuestionForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from wouso.core.qpool.models import Question, Tag, Answer, Category
+from wouso.core.qpool.models import Question, Tag, Answer, Category, ProposedQuestion
 from models import Qproposal
+import json
 
 
 def propose(request):
@@ -21,7 +22,7 @@ def propose(request):
             qdict['proposed_by'] = request.user
             qdict['category'] = Category.objects.filter(name=form.cleaned_data['category'])[0]
             
-            q = Question(**qdict)
+            q = ProposedQuestion(**qdict)
             q.save()
 
             #tag = Tag.objects.filter(name=form.cleaned_data['category'])[0]
@@ -37,14 +38,18 @@ def propose(request):
             q.save()
 
             # add the answers
-            for i in range(form.nr_ans):
+            answers_data = []
+            for i in range (form.nr_ans):
                 ansdict = {}
                 if not form.cleaned_data['answer_%d' % i]:
                     continue
                 ansdict['text'] = form.cleaned_data['answer_%d' % i]
                 ansdict['correct'] = form.cleaned_data['correct_%d' % i]
-                ans = Answer(question=q, **ansdict)
-                ans.save()
+                answers_data.append(ansdict)
+
+
+            q.answers = json.dumps(answers_data)
+            q.save()
 
             return render_to_response('qproposal/thanks.html',
                                       context_instance=RequestContext(request))

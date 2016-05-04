@@ -204,3 +204,6 @@ class ProposedQuestion(models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
     date_proposed = models.DateTimeField(auto_now_add=True)
     answers = models.TextField(null=True, blank=True, default="")
+
+    def __unicode__(self):
+        return self.text
