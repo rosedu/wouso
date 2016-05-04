@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from wouso.core.ui import register_footer_link
-from wouso.interface.apps.qproposal.forms import QuestionForm
+from wouso.interface.apps.qproposal.forms import ProposedQuestionForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from wouso.core.qpool.models import Question, Tag, Answer, Category
@@ -10,18 +10,17 @@ from models import Qproposal
 
 def propose(request):
 
-    MAX_ANSWERS = 2
+    MAX_ANSWERS = 6
 
     if request.method == 'POST':
-        form = QuestionForm(nr_ans=MAX_ANSWERS, data=request.POST)
+        form = ProposedQuestionForm(nr_ans=MAX_ANSWERS, data=request.POST)
         if form.is_valid():
             # create and save the question
             qdict = {}
             qdict['text'] = form.cleaned_data['text']
-            qdict['answer_type'] = form.cleaned_data['answer_type']
             qdict['proposed_by'] = request.user
-            #qdict['category'] = Category.objects.filter(name='proposed')[0]
-            qdict['category'], created  = Category.objects.get_or_create(name='proposed-'+form.cleaned_data['category'])
+            qdict['category'] = Category.objects.filter(name=form.cleaned_data['category'])[0]
+            
             q = Question(**qdict)
             q.save()
 
@@ -50,17 +49,9 @@ def propose(request):
             return render_to_response('qproposal/thanks.html',
                                       context_instance=RequestContext(request))
     else:
-        form = QuestionForm(MAX_ANSWERS)
+        form = ProposedQuestionForm(MAX_ANSWERS)
     return render_to_response('qproposal/propose_content.html',
                               {'form': form},
                               context_instance=RequestContext(request))
 
 
-def footer_link(context):
-    if Qproposal.disabled():
-        return ''
-    url = reverse('propose')
-    return '<a href="%s">' % url + _('Propose question') + '</a>'
-
-
-register_footer_link('qproposal', footer_link)
