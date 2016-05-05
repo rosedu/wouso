@@ -6,17 +6,18 @@
 {% block sectiontitle %}
     Proposed Question
 
-   
-
 {% block breadcrumbs %}
-	
-    {{ block.super }}
-    {% breadcrumb "Proposed Questions" "proposed_home" %}
+
+   {{ block.super }}
+
+   {% breadcrumb "Proposed Questions" "proposed_home" %}
+
 {% endblock %}
 
 {% endblock %}
 
 {% block sectioncontent %}
+
 <div class="container">
   <ul class="nav nav-tabs">
 
@@ -24,150 +25,264 @@
     <li><a href="#quest">Quest</a></li>
     <li><a href="#special_challenge">Special Challenge</a></li>
     <li class="active"><a href="#qotd">Question of the Day</a></li>
-    <li><a href="#challenge">Challange</a></li>
+    <li><a href="#challenge">Challenge</a></li>
     <li><a href="#quiz">Quiz</a></li>
   </ul>
 
-  <div class="tab-content">
-   	 
+  <div class="tab-content">   
+
     <div id="workshop" class="tab-pane fade in active">
-   		<table  class="table table-bordered table-striped">
+
 			{% for question, answers in questions_workshop.items %}
+			<table  class="table table-bordered table-striped">	
+				<tr><td style="text-align: left">Question:<br>{{ question.text }}</td></tr>
+  	  			{% for answer in answers %}
+  	 				 <tr><td style="text-align: left{% if answer.correct %};background-color: #00FF99 {% endif %}">Answer:<br>{{ answer.text }}</td></tr>
+  	 			{% endfor %}
+					 <tr> <td><button type="button" class="btn btn-info" data-toggle="collapse" data-target="#td_{{ question.id }}">Details</button></td></tr>
+
 				<tr>
-  	 				 <td>{{ question.text }}</td>
-  	  				 {% for answer in answers %}
-  	 				 <td>{{ answer.text }}</td>
-  	 				 {% endfor %}
-					 <td> <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#{{ question.id }}">Details</button></td>
-	 			</tr>
-				<tr>
-				 <td>
-				 	<div id="{{ question.id }}" class="collapse">
- 	   					formul de completat
-      				</div>
-      			 </td>
+					<td  id="td_{{ question.id }}" class="collapse" style="text-align: left">
+				 		<div id="div_{{ question.id }}">
+				 			<form id="{{ question.id }}" action="" method="POST">
+				 				{% csrf_token %}
+	   							{{form.as_p}}
+ 	   							 <button class="postBtn_{{ question.id }}" type="submit" formmethod="post"  style="background-color: #00FF99" >Accept</button>
+ 	   							 <button class="postBtn_{{ question.id }}" type="submit" formmethod="post"  style="background-color: #ad232e;" >Decline</button>
+ 	   						</form>
+      					</div>
+      			 	</td>
       			</tr>
-     
-     		{% endfor %}
-		</table>
+     		</table>
+
+     		<script type="text/javascript">
+    $('.postBtn_{{ question.id }}').click(function() {
+    var str = $('#{{question.id}}').serialize();
+    $('#div_{{ question.id }}').html(str);
+
+    $.post('',
+          str,
+          function(data){
+              $('#div_{{ question.id }}').html(data);
+          });
+ 		});
+			</script>
+
+			{% endfor %}
+
 	</div>
-    
-	<div id="quest" class="tab-pane fade in active">
-   		<table  class="table table-bordered table-striped">
+
+
+ <div id="quest" class="tab-pane fade in active">
+
 			{% for question, answers in questions_quest.items %}
+			<table  class="table table-bordered table-striped">	
+				<tr><td style="text-align: left">Question:<br>{{ question.text }}</td></tr>
+  	  			{% for answer in answers %}
+  	 				 <tr><td style="text-align: left{% if answer.correct %};background-color: #00FF99 {% endif %}">Answer:<br>{{ answer.text }}</td></tr>
+  	 			{% endfor %}
+					 <tr> <td><button type="button" class="btn btn-info" data-toggle="collapse" data-target="#td_{{ question.id }}">Details</button></td></tr>
+
 				<tr>
-  	 				 <td>{{ question.text }}</td>
-  	  				 {% for answer in answers %}
-  	 				 <td>{{ answer.text }}</td>
-  	 				 {% endfor %}
-					 <td> <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#{{ question.id }}">Details</button></td>
-	 			</tr>
-				<tr>
-				 <td>
-				 	<div id="{{ question.id }}" class="collapse">
- 	   					formul de completat
-      				</div>
-      			 </td>
+					<td  id="td_{{ question.id }}" class="collapse" style="text-align: left">
+				 		<div id="div_{{ question.id }}">
+				 			<form id="{{ question.id }}" action="" method="POST">
+				 				{% csrf_token %}
+	   							{{form.as_p}}
+ 	   							 <button class="postBtn_{{ question.id }}" type="submit" formmethod="post"  style="background-color: #00FF99" >Accept</button>
+ 	   							 <button class="postBtn_{{ question.id }}" type="submit" formmethod="post"  style="background-color: #ad232e;" >Decline</button>
+ 	   						</form>
+      					</div>
+      			 	</td>
       			</tr>
-     
-     		{% endfor %}
-		</table>
+     		</table>
+
+     		<script type="text/javascript">
+    $('.postBtn_{{ question.id }}').click(function() {
+    var str = $('#{{question.id}}').serialize();
+    $('#div_{{ question.id }}').html(str);
+
+    $.post('',
+          str,
+          function(data){
+              $('#div_{{ question.id }}').html(data);
+          });
+ 		});
+			</script>
+
+			{% endfor %}
+
 	</div>
-    
 
+     <div id="special_challenge" class="tab-pane fade in active">
 
-
-      <div id="special_challenge" class="tab-pane fade in active">
-   		<table  class="table table-bordered table-striped">
 			{% for question, answers in questions_schallenge.items %}
-				<tr>
-  	 				 <td>{{ question.text }}</td>
-  	  				 {% for answer in answers %}
-  	 				 <td>{{ answer.text }}</td>
-  	 				 {% endfor %}
-					 <td> <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#{{ question.id }}">Details</button></td>
-	 			</tr>
-				<tr>
-				 <td>
-				 	<div id="{{ question.id }}" class="collapse">
- 	   					formul de completat
-      				</div>
-      			 </td>
-      			</tr>
-     
-     		{% endfor %}
-		</table>
-	</div>
-    
+			<table  class="table table-bordered table-striped">	
+				<tr><td style="text-align: left">Question:<br>{{ question.text }}</td></tr>
+  	  			{% for answer in answers %}
+  	 				 <tr><td style="text-align: left{% if answer.correct %};background-color: #00FF99 {% endif %}">Answer:<br>{{ answer.text }}</td></tr>
+  	 			{% endfor %}
+					 <tr> <td><button type="button" class="btn btn-info" data-toggle="collapse" data-target="#td_{{ question.id }}">Details</button></td></tr>
 
-      <div id="qotd" class="tab-pane fade in active">
-   		<table  class="table table-bordered table-striped">
+				<tr>
+					<td  id="td_{{ question.id }}" class="collapse" style="text-align: left">
+				 		<div id="div_{{ question.id }}">
+				 			<form id="{{ question.id }}" action="" method="POST">
+				 				{% csrf_token %}
+	   							{{form.as_p}}
+ 	   							 <button class="postBtn_{{ question.id }}" type="submit" formmethod="post"  style="background-color: #00FF99" >Accept</button>
+ 	   							 <button class="postBtn_{{ question.id }}" type="submit" formmethod="post"  style="background-color: #ad232e;" >Decline</button>
+ 	   						</form>
+      					</div>
+      			 	</td>
+      			</tr>
+     		</table>
+
+     		<script type="text/javascript">
+    $('.postBtn_{{ question.id }}').click(function() {
+    var str = $('#{{question.id}}').serialize();
+    $('#div_{{ question.id }}').html(str);
+
+    $.post('',
+          str,
+          function(data){
+              $('#div_{{ question.id }}').html(data);
+          });
+ 		});
+			</script>
+
+			{% endfor %}
+
+	</div>
+
+
+     <div id="qotd" class="tab-pane fade in active">
+   		
 			{% for question, answers in questions_qotd.items %}
+			<table  class="table table-bordered table-striped">	
+				<tr><td style="text-align: left">Question:<br>{{ question.text }}</td></tr>
+  	  			{% for answer in answers %}
+  	 				 <tr><td style="text-align: left{% if answer.correct %};background-color: #00FF99 {% endif %}">Answer:<br>{{ answer.text }}</td></tr>
+  	 			{% endfor %}
+					 <tr> <td><button type="button" class="btn btn-info" data-toggle="collapse" data-target="#td_{{ question.id }}">Details</button></td></tr>
+
 				<tr>
-  	 				 <td>{{ question.text }}</td>
-  	  				 {% for answer in answers %}
-  	 				 <td>{{ answer.text }}</td>
-  	 				 {% endfor %}
-					 <td> <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#{{ question.id }}">Details</button></td>
-	 			</tr>
-				<tr>
-				 <td>
-				 	<div id="{{ question.id }}" class="collapse">
- 	   					formul de completat
-      				</div>
-      			 </td>
+					<td  id="td_{{ question.id }}" class="collapse" style="text-align: left">
+				 		<div id="div_{{ question.id }}">
+				 			<form id="{{ question.id }}" action="" method="POST">
+				 				{% csrf_token %}
+	   							{{form.as_p}}
+ 	   							 <button class="postBtn_{{ question.id }}" type="submit" formmethod="post"  style="background-color: #00FF99" >Accept</button>
+ 	   							 <button class="postBtn_{{ question.id }}" type="submit" formmethod="post"  style="background-color: #ad232e;" >Decline</button>
+ 	   						</form>
+      					</div>
+      			 	</td>
       			</tr>
-     
-     		{% endfor %}
-		</table>
+     		</table>
+
+     		<script type="text/javascript">
+    $('.postBtn_{{ question.id }}').click(function() {
+    var str = $('#{{question.id}}').serialize();
+    $('#div_{{ question.id }}').html(str);
+
+    $.post('',
+          str,
+          function(data){
+              $('#div_{{ question.id }}').html(data);
+          });
+ 		});
+			</script>
+
+			{% endfor %}
+
 	</div>
-    
-    
-     <div id="challenge" class="tab-pane fade in active">
-   		<table  class="table table-bordered table-striped">
+
+
+    <div id="challenge" class="tab-pane fade in active">
+
 			{% for question, answers in questions_challenge.items %}
+			<table  class="table table-bordered table-striped">	
+				<tr><td style="text-align: left">Question:<br>{{ question.text }}</td></tr>
+  	  			{% for answer in answers %}
+  	 				 <tr><td style="text-align: left{% if answer.correct %};background-color: #00FF99 {% endif %}">Answer:<br>{{ answer.text }}</td></tr>
+  	 			{% endfor %}
+					 <tr> <td><button type="button" class="btn btn-info" data-toggle="collapse" data-target="#td_{{ question.id }}">Details</button></td></tr>
+
 				<tr>
-  	 				 <td>{{ question.text }}</td>
-  	  				 {% for answer in answers %}
-  	 				 <td>{{ answer.text }}</td>
-  	 				 {% endfor %}
-					 <td> <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#{{ question.id }}">Details</button></td>
-	 			</tr>
-				<tr>
-				 <td>
-				 	<div id="{{ question.id }}" class="collapse">
- 	   					formul de completat
-      				</div>
-      			 </td>
+					<td  id="td_{{ question.id }}" class="collapse" style="text-align: left">
+				 		<div id="div_{{ question.id }}">
+				 			<form id="{{ question.id }}" action="" method="POST">
+				 				{% csrf_token %}
+	   							{{form.as_p}}
+ 	   							 <button class="postBtn_{{ question.id }}" type="submit" formmethod="post"  style="background-color: #00FF99" >Accept</button>
+ 	   							 <button class="postBtn_{{ question.id }}" type="submit" formmethod="post"  style="background-color: #ad232e;" >Decline</button>
+ 	   						</form>
+      					</div>
+      			 	</td>
       			</tr>
-     
-     		{% endfor %}
-		</table>
+     		</table>
+
+     		<script type="text/javascript">
+    $('.postBtn_{{ question.id }}').click(function() {
+    var str = $('#{{question.id}}').serialize();
+    $('#div_{{ question.id }}').html(str);
+
+    $.post('',
+          str,
+          function(data){
+              $('#div_{{ question.id }}').html(data);
+          });
+ 		});
+			</script>
+
+			{% endfor %}
+
 	</div>
-    
-       <div id="quiz" class="tab-pane fade in active">
-   		<table  class="table table-bordered table-striped">
+
+
+    <div id="quiz" class="tab-pane fade in active">
+
 			{% for question, answers in questions_quiz.items %}
+			<table  class="table table-bordered table-striped">	
+				<tr><td style="text-align: left">Question:<br>{{ question.text }}</td></tr>
+  	  			{% for answer in answers %}
+  	 				 <tr><td style="text-align: left{% if answer.correct %};background-color: #00FF99 {% endif %}">Answer:<br>{{ answer.text }}</td></tr>
+  	 			{% endfor %}
+					 <tr> <td><button type="button" class="btn btn-info" data-toggle="collapse" data-target="#td_{{ question.id }}">Details</button></td></tr>
+
 				<tr>
-  	 				 <td>{{ question.text }}</td>
-  	  				 {% for answer in answers %}
-  	 				 <td>{{ answer.text }}</td>
-  	 				 {% endfor %}
-					 <td> <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#{{ question.id }}">Details</button></td>
-	 			</tr>
-				<tr>
-				 <td>
-				 	<div id="{{ question.id }}" class="collapse">
- 	   					formul de completat
-      				</div>
-      			 </td>
+					<td  id="td_{{ question.id }}" class="collapse" style="text-align: left">
+				 		<div id="div_{{ question.id }}">
+				 			<form id="{{ question.id }}" action="" method="POST">
+				 				{% csrf_token %}
+	   							{{form.as_p}}
+ 	   							 <button class="postBtn_{{ question.id }}" type="submit" formmethod="post"  style="background-color: #00FF99" >Accept</button>
+ 	   							 <button class="postBtn_{{ question.id }}" type="submit" formmethod="post"  style="background-color: #ad232e;" >Decline</button>
+ 	   						</form>
+      					</div>
+      			 	</td>
       			</tr>
-     
-     		{% endfor %}
-		</table>
+     		</table>
+
+     		<script type="text/javascript">
+    $('.postBtn_{{ question.id }}').click(function() {
+    var str = $('#{{question.id}}').serialize();
+    $('#div_{{ question.id }}').html(str);
+
+    $.post('',
+          str,
+          function(data){
+              $('#div_{{ question.id }}').html(data);
+          });
+ 		});
+			</script>
+
+			{% endfor %}
+
 	</div>
-    
-  
+
+
+
   </div>
 
 </div>
@@ -182,12 +297,3 @@ $(document).ready(function(){
 </script>
 
 {% endblock %}
-<!--<div class="container">
-  <h2>Simple Collapsible</h2>
-  <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Simple collapsible</button>
-  <div id="demo" class="collapse">
-    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-  </div>
-</div>-->

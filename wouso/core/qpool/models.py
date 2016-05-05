@@ -204,7 +204,3 @@ class ProposedQuestion(models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
     date_proposed = models.DateTimeField(auto_now_add=True)
     answers = models.TextField(null=True, blank=True, default="")
-
-
-
-# json.dumps([{'text': 'My answer', 'correct': False}]),[{"text": "My answer", "correct": false}])

@@ -37,6 +37,7 @@ from wouso.interface.apps.pages.models import StaticPage, NewsItem
 from wouso.interface.cpanel.models import Customization, Switchboard, \
     GamesSwitchboard
 from wouso.interface.forms import InstantSearchForm
+from wouso.interface.cpanel.forms import ProposedQuestionReviewForm
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.middleware.impersonation import ImpersonateMiddleware
 from wouso.utils.import_questions import import_from_file
@@ -46,6 +47,7 @@ from forms import TagsForm, UserForm, SpellForm, AddTagForm,\
     FormulaForm, TagForm, ChangePasswordForm, AddUserForm
 from StringIO import StringIO
 import json
+
 
 class StatusView(TemplateView):
     template_name = 'cpanel/index.html'
@@ -1464,50 +1466,15 @@ class ProposedView(TemplateView):
         'questions_challenge':questions_challenge,
         'questions_workshop':questions_workshop,
         'questions_quest':questions_quest,
-
-
-        })
-        return context
-
-
-    """    workshop_proposed_question_list = Question.objects.filter(tags__name="workshop_proposed")
-        qotd_proposed_question_list = Question.objects.filter(tags__name="qotd_proposed")
-        quiz_proposed_question_list = Question.objects.filter(tags__name="quiz_proposed")
-        quest_proposed_question_list = Question.objects.filter(tags__name="quest_propsoed")
-        challenge_proposed_question_list = Question.objects.filter(tags__name="challenge_proposed")
-        schallenge_proposed_question_list = Question.objects.filter(tags__name="schallenge_prposed")
-        questions_qotd = {}
-        questions_workshop = {}
-        questions_quest = {}
-        questions_quiz = {}
-        questions_challenge = {}
-        questions_schallenge = {}
-
-        for question in workshop_proposed_question_list:
-            questions_workshop[question] = Answer.objects.filter(question=question)
-        for question in qotd_proposed_question_list:
-            questions_qotd[question] = Answer.objects.filter(question=question)
-        for question in quest_proposed_question_list:
-            questions_quest[question] = Answer.objects.filter(question=question) 
-        for question in quiz_proposed_question_list:
-            questions_quiz[question] = Answer.objects.filter(question=question)
-        for question in challenge_proposed_question_list:
-            questions_challenge[question] = Answer.objects.filter(question=question)
-        for question in schallenge_proposed_question_list:
-            questions_schallenge[question] = Answer.objects.filter(question=question)
-
-        context.update({
-        'questions_qotd':questions_qotd,
-        'questions_quiz':questions_quiz,
-        'questions_schallenge':questions_schallenge,
-        'questions_challenge':questions_challenge,
-        'questions_workshop':questions_workshop,
-        'questions_quest':questions_quest,
-
+        'form':ProposedQuestionReviewForm()
 
         })
         return context
 
-"""
+    def post(self,request):
+
+        return HttpResponse("Post")
+
+
 proposed = permission_required('config.change_setting')(
     ProposedView.as_view())
