@@ -1416,6 +1416,7 @@ def karma_group_view(request, id):
 class ProposedView(TemplateView):
 
     template_name = 'cpanel/proposed_home.html'
+
     def get_context_data(self, **kwargs):
         context = super(ProposedView, self).get_context_data(**kwargs)
         quest = Category.objects.get(name = 'quest')
@@ -1425,13 +1426,13 @@ class ProposedView(TemplateView):
         specialchallenge = Category.objects.get(name = 'specialchallenge')
         qotd = Category.objects.get(name = 'qotd')
 
-        question_list_qotd = ProposedQuestion.objects.filter(category=qotd)
-        question_list_workshop = ProposedQuestion.objects.filter(category=workshop)
-        question_list_quest = ProposedQuestion.objects.filter(category=quest)
-        question_list_quiz = ProposedQuestion.objects.filter(category=quiz)
-        question_list_challenge = ProposedQuestion.objects.filter(category=challenge)
-        question_list_specialchallenge = ProposedQuestion.objects.filter(category=specialchallenge)
-        
+        question_list_qotd = ProposedQuestion.objects.filter(category=qotd, active=True)
+        question_list_workshop = ProposedQuestion.objects.filter(category=workshop, active=True)
+        question_list_quest = ProposedQuestion.objects.filter(category=quest, active=True)
+        question_list_quiz = ProposedQuestion.objects.filter(category=quiz, active=True)
+        question_list_challenge = ProposedQuestion.objects.filter(category=challenge, active=True)
+        question_list_specialchallenge = ProposedQuestion.objects.filter(category=specialchallenge, active=True)
+
         questions_qotd = {}
         questions_workshop = {}
         questions_quest = {}
@@ -1458,7 +1459,7 @@ class ProposedView(TemplateView):
             answer_IO = StringIO(str(question.answers))
             questions_schallenge[question] = json.load(answer_IO)
 
-      
+
         context.update({
         'questions_qotd':questions_qotd,
         'questions_quiz':questions_quiz,
@@ -1466,9 +1467,10 @@ class ProposedView(TemplateView):
         'questions_challenge':questions_challenge,
         'questions_workshop':questions_workshop,
         'questions_quest':questions_quest,
-        'form':ProposedQuestionReviewForm()
+        'form':ProposedQuestionReviewForm(),
 
         })
+
         return context
 
     def post(self,request):
