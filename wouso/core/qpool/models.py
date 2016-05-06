@@ -192,6 +192,9 @@ class Schedule(models.Model):
     def __unicode__(self):
         return str(self.day)
 
+
+
+
 class ProposedQuestion(models.Model):
     """ A proposed question has text and a variable number of answers
     (stored as strings),category and tags, proposing user and a feedback field
@@ -205,3 +208,44 @@ class ProposedQuestion(models.Model):
     date_proposed = models.DateTimeField(auto_now_add=True)
     answers = models.TextField(null=True, blank=True, default="")
     feedback = models.TextField(null=True, blank=True, default="")
+
+    def toQuestion(self, answer_type):
+        #In progress
+
+        qdict = {}
+        qdict['text'] = text
+        qdict['answer_type'] = answerType()
+        qdict['proposed_by'] = proposed_by
+        qdict['category'] = category
+        q = Question(**qdict)
+        q.save()
+
+        """
+         # add the tags
+        for tag_name in form.cleaned_data['tags']:
+            tag = Tag.objects.filter(name=tag_name)[0]
+            q.tags.add(tag)
+            q.save()
+        """
+
+        # add the answers
+        answers_IO = StringIO(str(answers))
+        answers_json = json.load(answer_IO)
+
+
+        for answer in answers_json:
+            ans = Answer(question=q, **answer)
+            ans.save()
+
+    def answerType(self):
+
+        answers_IO = StringIO(str(answers))
+        answers_json = json.load(answer_IO)
+        count = 0
+        for answer in answers_json:
+            if answer['correct']:
+                count += 1
+
+        if count > 1:
+            return 'C'
+        return 'R'
