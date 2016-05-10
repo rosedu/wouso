@@ -144,3 +144,9 @@ div.second {
     right: 7px;
     top: 10px;
 }
+table.pq-review td{
+    text-align: left !important;
+}
+.correct-answer{
+    background-color: #00FFFF  ;
+}

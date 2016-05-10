@@ -2,7 +2,6 @@
 {% load i18n %}
 {% load user %}
 {% load django_bootstrap_breadcrumbs %}
-
 {% block sectiontitle %}
     Proposed Question
 
@@ -34,14 +33,14 @@
                     {% for question in category.proposed_questions.all %}
                         {% with status="P" %}
                             {% if question.status = status %}
-                                <table  class="table table-bordered table-striped">
+                                <table  class="table table-bordered table-striped pq-review">
                                     <tr><td>Question:<br>{{ question.text }}</td></tr>
                                     {% for answer in question.answers %}
-                                         <tr><td>Answer:<br>{{ answer.text }}</td></tr>
+                                         <tr><td {% if answer.correct %} class="correct-answer" {% endif %}>Answer:<br>{{ answer.text }}</td></tr>
                                     {% endfor %}
                                     <tr> <td><button type="button" class="btn btn-info" data-toggle="collapse" data-target="#td_{{ question.id }}">Details</button></td></tr>
                                     <tr>
-                                        <td  id="td_{{ question.id }}" class="collapse">
+                                        <td id="td_{{ question.id }}" class="collapse">
                                             <div id="div_{{ question.id }}">
                                                 <form action="" method="POST">
                                                     {% csrf_token %}
