@@ -45,6 +45,7 @@ from forms import TagsForm, UserForm, SpellForm, AddTagForm,\
     EditReportForm, RaceForm, PlayerGroupForm, RoleForm, \
     StaticPageForm, NewsForm, KarmaBonusForm, AddQuestionForm, EditQuestionForm, \
     FormulaForm, TagForm, ChangePasswordForm, AddUserForm
+from django.db.models import Q
 from StringIO import StringIO
 import json
 
@@ -1418,59 +1419,14 @@ class ProposedView(TemplateView):
     template_name = 'cpanel/proposed_home.html'
 
     def get_context_data(self, **kwargs):
+
         context = super(ProposedView, self).get_context_data(**kwargs)
-        quest = Category.objects.get(name = 'quest')
-        quiz = Category.objects.get(name = 'quiz')
-        workshop = Category.objects.get(name = 'workshop')
-        challenge = Category.objects.get(name = 'challenge')
-        specialchallenge = Category.objects.get(name = 'specialchallenge')
-        qotd = Category.objects.get(name = 'qotd')
-
-        question_list_qotd = ProposedQuestion.objects.filter(category=qotd, active=True)
-        question_list_workshop = ProposedQuestion.objects.filter(category=workshop, active=True)
-        question_list_quest = ProposedQuestion.objects.filter(category=quest, active=True)
-        question_list_quiz = ProposedQuestion.objects.filter(category=quiz, active=True)
-        question_list_challenge = ProposedQuestion.objects.filter(category=challenge, active=True)
-        question_list_specialchallenge = ProposedQuestion.objects.filter(category=specialchallenge, active=True)
-
-        questions_qotd = {}
-        questions_workshop = {}
-        questions_quest = {}
-        questions_quiz = {}
-        questions_challenge = {}
-        questions_schallenge = {}
-
-        for question in question_list_workshop:
-            answer_IO = StringIO(str(question.answers))
-            questions_workshop[question] = json.load(answer_IO)
-        for question in question_list_qotd:
-            answer_IO = StringIO(str(question.answers))
-            questions_qotd[question] = json.load(answer_IO)
-        for question in question_list_quest:
-            answer_IO = StringIO(str(question.answers))
-            questions_quest[question] = json.load(answer_IO)
-        for question in question_list_quiz:
-            answer_IO = StringIO(str(question.answers))
-            questions_quiz[question] = json.load(answer_IO)
-        for question in question_list_challenge:
-            answer_IO = StringIO(str(question.answers))
-            questions_challenge[question] = json.load(answer_IO)
-        for question in question_list_specialchallenge:
-            answer_IO = StringIO(str(question.answers))
-            questions_schallenge[question] = json.load(answer_IO)
-
-
+        categories = Category.objects.filter(~Q(name='proposed'))
         context.update({
-        'questions_qotd':questions_qotd,
-        'questions_quiz':questions_quiz,
-        'questions_schallenge':questions_schallenge,
-        'questions_challenge':questions_challenge,
-        'questions_workshop':questions_workshop,
-        'questions_quest':questions_quest,
-        'form':ProposedQuestionReviewForm(),
-
-        })
-
+            'form':ProposedQuestionReviewForm(),
+            'categories':categories
+            })
+        a = categories[0].proposed_questions
         return context
 
     def post(self,request):
