@@ -1,13 +1,17 @@
+import json
+
 from random import shuffle
 from datetime import datetime, date, timedelta
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.functional import cached_property
 
 from utils import validate_dynq_code
 from ckeditor.fields import RichTextField
 
 from wouso.core.common import Item
+
 
 
 class Category(Item, models.Model):
@@ -202,11 +206,12 @@ class ProposedQuestion(models.Model):
 
     text = models.TextField(null=True, blank=True, default="")
     proposed_by = models.ForeignKey(User, null=True, blank=True, related_name="%(app_label)s_%(class)s_proposedby_related")
-    active = models.BooleanField()
-    category = models.ForeignKey(Category, null=True)
+    status = models.CharField(max_length=1, choices=(("A", "Accepted"), ("D", "Declined"),
+                                   ("P", "Pending")), default="P")
+    category = models.ForeignKey(Category, null=True, related_name="proposed_questions")
     tags = models.ManyToManyField(Tag, blank=True)
     date_proposed = models.DateTimeField(auto_now_add=True)
-    answers = models.TextField(null=True, blank=True, default="")
+    answers_json = models.TextField(null=True, blank=True, default="")
     feedback = models.TextField(null=True, blank=True, default="")
 
     def toQuestion(self, answer_type):
@@ -229,23 +234,22 @@ class ProposedQuestion(models.Model):
         """
 
         # add the answers
-        answers_IO = StringIO(str(answers))
-        answers_json = json.load(answer_IO)
-
-
+        answers_json = answers()
         for answer in answers_json:
             ans = Answer(question=q, **answer)
             ans.save()
 
     def answerType(self):
 
-        answers_IO = StringIO(str(answers))
-        answers_json = json.load(answer_IO)
-        count = 0
-        for answer in answers_json:
+        answers_list = json.loads(self.answers_json)
+        for answer in answers_list:
             if answer['correct']:
                 count += 1
-
         if count > 1:
             return 'C'
         return 'R'
+
+
+    @cached_property
+    def answers(self):
+        return json.loads(self.answers_json)
