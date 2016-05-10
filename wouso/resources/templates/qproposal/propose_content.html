@@ -18,9 +18,9 @@
 <div class="tab_container">
     <div id="propose" class="tab_content">
         <br/>
-    	<form action="/qproposal/propose" method="post">{% csrf_token %}
+    	<form action="/qproposal/" method="post">{% csrf_token %}
 
-		<!--{{ form.as_p }}-->
+		
 
         <p id="category_p">
         <label id="category_label" for="{{ for.category.id_for_label }}">Category:</label>
@@ -115,15 +115,24 @@
         });
         </script>
 		</form> 
+        
 </div>
     </div>
 
     <div id="history" class="tab_content">
         <br/>
+        
         <form action="/qproposal/" method="post">{% csrf_token %}
-        {% for q in proposed_questions %}
-            <p>{{ q.text }}</p>
-        {% endfor %}
+        {% if prop_questions %}
+        <ul>
+            {% for q in prop_questions %}
+                <li>{{ q.text }}</li>
+                <br/>
+            {% endfor %}
+            </ul>
+        {% else %}
+            {% trans "You haven't proposed any questions yet." %}
+        {% endif %}
     
     </div>
 {% endblock %}

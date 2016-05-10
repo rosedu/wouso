@@ -4,13 +4,13 @@ from wouso.core.ui import register_footer_link
 from wouso.interface.apps.qproposal.forms import ProposedQuestionForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.views.generic import ListView
 from wouso.core.qpool.models import Question, Tag, Answer, Category, ProposedQuestion
 from models import Qproposal
 import json
 
 
 def propose(request):
-
     MAX_ANSWERS = 6
 
     if request.method == 'POST':
@@ -48,15 +48,19 @@ def propose(request):
                 answers_data.append(ansdict)
 
 
-            q.answers = json.dumps(answers_data)
+            q.answers_json = json.dumps(answers_data)
             q.save()
 
             return render_to_response('qproposal/thanks.html',
                                       context_instance=RequestContext(request))
     else:
         form = ProposedQuestionForm(MAX_ANSWERS)
+
+    player = request.user.get_profile() if request.user.is_authenticated() else None
+    prop_questions = ProposedQuestion.objects.all().filter(proposed_by=player).order_by('-date_proposed')
+
     return render_to_response('qproposal/propose_content.html',
-                              {'form': form},
+                              {'form': form, 'prop_questions' : prop_questions},
                               context_instance=RequestContext(request))
 
 
