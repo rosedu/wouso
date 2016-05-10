@@ -21,217 +21,52 @@
     <div class="container">
 
         <ul class="nav nav-tabs">
-            <li><a href="#workshop">Workshop</a></li>
-            <li><a href="#quest">Quest</a></li>
-            <li><a href="#special_challenge">Special Challenge</a></li>
-            <li class="active"><a href="#qotd">Question of the Day</a></li>
-            <li><a href="#challenge">Challenge</a></li>
-            <li><a href="#quiz">Quiz</a></li>
+            {% for category in categories %}
+                <li><a href="#{{ category.name }}">{{ category.name }}</a></li>
+            {% endfor %}
         </ul>
 
 
         <div class="tab-content">
+            {% for category in categories %}
+                <div id="{{ category.name }}" class="tab-pane fade in active">
 
-            <div id="workshop" class="tab-pane fade in active">
-
-            {% for question, answers in questions_workshop.items %}
-
-                <table  class="table table-bordered table-striped">
-                    <tr><td style="text-align: left">Question:<br>{{ question.text }}</td></tr>
-                    {% for answer in answers %}
-                            <tr><td style="text-align: left{% if answer.correct %};background-color: #00FF99 {% endif %}">Answer:<br>{{ answer.text }}</td></tr>
-                        {% endfor %}
-                    <tr> <td><button type="button" class="btn btn-info" data-toggle="collapse" data-target="#td_{{ question.id }}">Details</button></td></tr>
-
-                    <tr>
-                        <td  id="td_{{ question.id }}" class="collapse" style="text-align: left">
-                            <div id="div_{{ question.id }}">
-
-                                <form action="" method="POST">
-                                    {% csrf_token %}
-                                    {{form.as_p}}
-                                    <button id="acceptBtn" type="submit" style="background-color: #00FF99" >Accept</button>
-                                    <button id="declineBtn" type="submit" style="background-color: #ad232e;" >Decline</button>
-                                </form>
-
-                             </div>
-                        </td>
-                    </tr>
-                </table>
-
+                    {% for question in category.proposed_questions.all %}
+                        {% with status="P" %}
+                            {% if question.status = status %}
+                                <table  class="table table-bordered table-striped">
+                                    <tr><td>Question:<br>{{ question.text }}</td></tr>
+                                    {% for answer in question.answers %}
+                                         <tr><td>Answer:<br>{{ answer.text }}</td></tr>
+                                    {% endfor %}
+                                    <tr> <td><button type="button" class="btn btn-info" data-toggle="collapse" data-target="#td_{{ question.id }}">Details</button></td></tr>
+                                    <tr>
+                                        <td  id="td_{{ question.id }}" class="collapse">
+                                            <div id="div_{{ question.id }}">
+                                                <form action="" method="POST">
+                                                    {% csrf_token %}
+                                                    {{form.as_p}}
+                                                    <button id="acceptBtn" type="submit">Accept</button>
+                                                    <button id="declineBtn" type="submit">Decline</button>
+                                                </form>
+                                           </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            {% endif %}
+                        {% endwith %}
+                    {% endfor %}
+                    
+                </div>
             {% endfor %}
-
-            </div>
-
-            <div id="quest" class="tab-pane fade in active">
-
-            {% for question, answers in questions_quest.items %}
-
-                <table  class="table table-bordered table-striped">
-                    <tr><td style="text-align: left">Question:<br>{{ question.text }}</td></tr>
-                    {% for answer in answers %}
-                            <tr><td style="text-align: left{% if answer.correct %};background-color: #00FF99 {% endif %}">Answer:<br>{{ answer.text }}</td></tr>
-                        {% endfor %}
-                    <tr> <td><button type="button" class="btn btn-info" data-toggle="collapse" data-target="#td_{{ question.id }}">Details</button></td></tr>
-
-                    <tr>
-                        <td  id="td_{{ question.id }}" class="collapse" style="text-align: left">
-                            <div id="div_{{ question.id }}">
-
-                                <form action="" method="POST">
-                                    {% csrf_token %}
-                                    {{form.as_p}}
-                                    <button id="acceptBtn" type="submit" style="background-color: #00FF99" >Accept</button>
-                                    <button id="declineBtn" type="submit" style="background-color: #ad232e;" >Decline</button>
-                                </form>
-
-                             </div>
-                        </td>
-                    </tr>
-                </table>
-
-            {% endfor %}
-
-            </div>
-
-
-            <div id="special_challenge" class="tab-pane fade in active">
-
-            {% for question, answers in questions_schallenge.items %}
-
-                <table  class="table table-bordered table-striped">
-                    <tr><td style="text-align: left">Question:<br>{{ question.text }}</td></tr>
-                    {% for answer in answers %}
-                            <tr><td style="text-align: left{% if answer.correct %};background-color: #00FF99 {% endif %}">Answer:<br>{{ answer.text }}</td></tr>
-                        {% endfor %}
-                    <tr> <td><button type="button" class="btn btn-info" data-toggle="collapse" data-target="#td_{{ question.id }}">Details</button></td></tr>
-
-                    <tr>
-                        <td  id="td_{{ question.id }}" class="collapse" style="text-align: left">
-                            <div id="div_{{ question.id }}">
-
-                                <form action="" method="POST">
-                                    {% csrf_token %}
-                                    {{form.as_p}}
-                                    <button id="acceptBtn" type="submit" style="background-color: #00FF99" >Accept</button>
-                                    <button id="declineBtn" type="submit" style="background-color: #ad232e;" >Decline</button>
-                                </form>
-
-                             </div>
-                        </td>
-                    </tr>
-                </table>
-
-            {% endfor %}
-
-            </div>
-
-
-            <div id="qotd" class="tab-pane fade in active">
-
-            {% for question, answers in questions_qotd.items %}
-
-                <table  class="table table-bordered table-striped">
-                    <tr><td style="text-align: left">Question:<br>{{ question.text }}</td></tr>
-                    {% for answer in answers %}
-                            <tr><td style="text-align: left{% if answer.correct %};background-color: #00FF99 {% endif %}">Answer:<br>{{ answer.text }}</td></tr>
-                        {% endfor %}
-                    <tr> <td><button type="button" class="btn btn-info" data-toggle="collapse" data-target="#td_{{ question.id }}">Details</button></td></tr>
-
-                    <tr>
-                        <td  id="td_{{ question.id }}" class="collapse" style="text-align: left">
-                            <div id="div_{{ question.id }}">
-
-                                <form action="" method="POST">
-                                    {% csrf_token %}
-                                    {{form.as_p}}
-                                    <button id="acceptBtn" type="submit" style="background-color: #00FF99" >Accept</button>
-                                    <button id="declineBtn" type="submit" style="background-color: #ad232e;" >Decline</button>
-                                </form>
-
-                             </div>
-                        </td>
-                    </tr>
-                </table>
-
-            {% endfor %}
-
-            </div>
-
-            <div id="challenge" class="tab-pane fade in active">
-
-            {% for question, answers in questions_challenge.items %}
-
-                <table  class="table table-bordered table-striped">
-                    <tr><td style="text-align: left">Question:<br>{{ question.text }}</td></tr>
-                    {% for answer in answers %}
-                            <tr><td style="text-align: left{% if answer.correct %};background-color: #00FF99 {% endif %}">Answer:<br>{{ answer.text }}</td></tr>
-                        {% endfor %}
-                    <tr> <td><button type="button" class="btn btn-info" data-toggle="collapse" data-target="#td_{{ question.id }}">Details</button></td></tr>
-
-                    <tr>
-                        <td  id="td_{{ question.id }}" class="collapse" style="text-align: left">
-                            <div id="div_{{ question.id }}">
-
-                                <form action="" method="POST">
-                                    {% csrf_token %}
-                                    {{form.as_p}}
-                                    <button id="acceptBtn" type="submit" style="background-color: #00FF99" >Accept</button>
-                                    <button id="declineBtn" type="submit" style="background-color: #ad232e;" >Decline</button>
-                                </form>
-
-                             </div>
-                        </td>
-                    </tr>
-                </table>
-
-            {% endfor %}
-
-            </div>
-
-            <div id="quiz" class="tab-pane fade in active">
-
-            {% for question, answers in questions_quiz.items %}
-
-                <table  class="table table-bordered table-striped">
-                    <tr><td style="text-align: left">Question:<br>{{ question.text }}</td></tr>
-                    {% for answer in answers %}
-                            <tr><td style="text-align: left{% if answer.correct %};background-color: #00FF99 {% endif %}">Answer:<br>{{ answer.text }}</td></tr>
-                        {% endfor %}
-                    <tr> <td><button type="button" class="btn btn-info" data-toggle="collapse" data-target="#td_{{ question.id }}">Details</button></td></tr>
-
-                    <tr>
-                        <td  id="td_{{ question.id }}" class="collapse" style="text-align: left">
-                            <div id="div_{{ question.id }}">
-
-                                <form action="" method="POST">
-                                    {% csrf_token %}
-                                    {{form.as_p}}
-                                    <button id="acceptBtn" type="submit" style="background-color: #00FF99" >Accept</button>
-                                    <button id="declineBtn" type="submit" style="background-color: #ad232e;" >Decline</button>
-                                </form>
-
-                             </div>
-                        </td>
-                    </tr>
-                </table>
-
-            {% endfor %}
-
-            </div>
-
-
         </div>
-    </div>
-
-
 
     <script>
-    $(document).ready(function(){
-        $(".nav-tabs a").click(function(){
-            $(this).tab('show');
+        $(document).ready(function(){
+            $(".nav-tabs a").click(function(){
+                $(this).tab('show');
+            });
         });
-    });
     </script>
 
 {% endblock %}
