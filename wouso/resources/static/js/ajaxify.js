@@ -1,6 +1,6 @@
 /* convert all links with class ajaxify in smth smarter */
 var url_base = '';
-/*
+
 // reload header 
 function reload_header() {
     $.ajax({
@@ -13,7 +13,7 @@ function reload_header() {
         }
     })
 }
-
+/*
 $(document).ready(function (){
     // button links 
     $('.ajaxify').bind('click', function () {
@@ -32,15 +32,15 @@ $(document).ready(function (){
     });
 });
 */
-
 $(document).ready(function(){
-    $('.ajaxify').bind('click', function(){
+    $('.ajaxify_content').bind('click', function(){
         var url = url_base + $(this).attr('href');
         $.ajax({
-            success: function(event){
-                $("div#content").load(url);
+            url : url,
+            type : "GET",
+            success: function(data){
+                $("div#content").html(data);
                 $('title').text($('.section h2').text());
-                //event.preventDefault();
             },
             error: function(data) {
                 document.location = url;
