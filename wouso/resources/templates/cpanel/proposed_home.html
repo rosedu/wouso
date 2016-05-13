@@ -42,11 +42,11 @@
                                     <tr>
                                         <td id="td_{{ question.id }}" class="collapse">
                                             <div id="div_{{ question.id }}">
-                                                <form action="" method="POST">
+                                                <form id="{{ question.id }}" action="" method="POST">
                                                     {% csrf_token %}
                                                     {{form.as_p}}
-                                                    <button id="acceptBtn" type="submit">Accept</button>
-                                                    <button id="declineBtn" type="submit">Decline</button>
+                                                    <button class="sub-button" id="acceptBtn">Accept</button>
+                                                    <button class="sub-button" id="declineBtn">Decline</button>
                                                 </form>
                                            </div>
                                         </td>
@@ -59,13 +59,54 @@
                 </div>
             {% endfor %}
         </div>
+    
 
-    <script>
+
+
+
+
+
+
+    <script type="text/javascript">
+       
+        $("button").click(function(event){
+                event.preventDefault();
+                var button_id = $(this).attr('id');
+                var question_id = $(this).parent().attr('id');
+                var div_id = $(this).parent().parent().attr('id');
+  
+            $.ajax({
+                    type:"POST",
+                    data: { 
+                        button_id : button_id,
+                        question_id : question_id,
+                        data: $(this).parent('form').serialize(),
+                    }
+
+                , success: function(result){
+                $("#"+div_id).html(result);
+            }});
+        });            
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script>
         $(document).ready(function(){
             $(".nav-tabs a").click(function(){
                 $(this).tab('show');
             });
         });
     </script>
-
 {% endblock %}

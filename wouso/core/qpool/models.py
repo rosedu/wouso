@@ -214,34 +214,29 @@ class ProposedQuestion(models.Model):
     answers_json = models.TextField(null=True, blank=True, default="")
     feedback = models.TextField(null=True, blank=True, default="")
 
-    def toQuestion(self, answer_type):
+    def toQuestion(self):
         #In progress
 
         qdict = {}
-        qdict['text'] = text
-        qdict['answer_type'] = answerType()
-        qdict['proposed_by'] = proposed_by
-        qdict['category'] = category
+        qdict['text'] = self.text
+        qdict['answer_type'] = self.answerType
+        qdict['proposed_by'] = self.proposed_by
+        qdict['category'] = self.category
+        qdict['tags'] = self.tags
         q = Question(**qdict)
         q.save()
 
-        """
-         # add the tags
-        for tag_name in form.cleaned_data['tags']:
-            tag = Tag.objects.filter(name=tag_name)[0]
-            q.tags.add(tag)
-            q.save()
-        """
-
         # add the answers
-        answers_json = answers()
-        for answer in answers_json:
+        for answer in answers:
             ans = Answer(question=q, **answer)
             ans.save()
-
+    
+    
+    @cached_property
     def answerType(self):
 
-        answers_list = json.loads(self.answers_json)
+        answers_list = self.answers
+        count = 0
         for answer in answers_list:
             if answer['correct']:
                 count += 1

@@ -1426,13 +1426,19 @@ class ProposedView(TemplateView):
             'form':ProposedQuestionReviewForm(),
             'categories':categories
             })
-        a = categories[0].proposed_questions
         return context
 
     def post(self,request):
 
-        return HttpResponse("Post")
+        if('accept' in request.POST['button_id']):
+            print "Accept"
+
+        else:
+            print "Decline"
 
 
-proposed = permission_required('config.change_setting')(
+        return HttpResponse(request.POST['data'])
+
+
+proposed = permission_required("",'config.change_setting')(
     ProposedView.as_view())
