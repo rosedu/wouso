@@ -8,6 +8,8 @@ from django.utils.functional import cached_property
 from utils import validate_dynq_code
 from ckeditor.fields import RichTextField
 
+import json
+
 from wouso.core.common import Item
 
 
