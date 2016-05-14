@@ -60,7 +60,7 @@ def propose(request):
     prop_questions = ProposedQuestion.objects.all().filter(proposed_by=player).order_by('-date_proposed')
 
     return render_to_response('qproposal/propose_content.html',
-                              {'form': form, 'prop_questions' : prop_questions},
+                              {'form': form, 'prop_questions' : prop_questions, 'max_answers' : MAX_ANSWERS},
                               context_instance=RequestContext(request))
 
 

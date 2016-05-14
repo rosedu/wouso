@@ -2,6 +2,7 @@
 {% load i18n %}
 {% block scripts %}
 <script src="{{ basepath }}/static/js/jquery-1.11.1.min.js"></script>
+<script src="{{ basepath }}/static/js/ajaxify.js"></script>
 <script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
 <link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
 <script type="text/javascript" src="{{ basepath }}/static/js/cpanel/qpool/add_question.js"></script>
@@ -18,121 +19,80 @@
 <div class="tab_container">
     <div id="propose" class="tab_content">
         <br/>
-    	<form action="/qproposal/" method="post">{% csrf_token %}
-
-		
-
-        <p id="category_p">
-        <label id="category_label" for="{{ for.category.id_for_label }}">Category:</label>
-        {{ form.category }}
-        </p>
+        <form action="/qproposal/" method="post">{% csrf_token %}
+        
+        <div id="category">
+            <label id="category_label" for="{{ form.category.id_for_label }}">Category:</label>
+            {{ form.category }}
+        </div>
         <br/>
         
-        <p id="text_p">
-        <label id="text_label" for="{{ for.text.id_for_label }}" >Question:</label>
-        {{ form.text }}
-        </p>
+        <div id="text">
+            <label id="text_label" for="{{ form.text.id_for_label }}" >Question:</label>
+            {{ form.text }}
+        </div>
         <br/>
 
-        <p id="answer_0_p">
-        <label id ="answer_0_label" for="id_answer_0">Answer 1:</label> 
-        <textarea id="id_answer_0" rows="10" cols="40" name="answer_0"></textarea>
-        <br/>
-        <label id="id_correct_0_label" for="id_correct_0">Correct?</label>
-        <input id="id_correct_0" name="correct_0" type="checkbox"></input>
-        </p>
-        <br/>
+        <div id="answers" data-max-answers="{{ max_answers }}">
 
-        <p id="answer_1_p">
-        <label id ="answer_1_label" for="id_answer_1">Answer 2:</label> 
-        <textarea id="id_answer_1" rows="10" cols="40" name="answer_1"></textarea>
-        <br/>
-        <label id="id_correct_1_label" for="id_correct_1">Correct?</label>
-        <input id="id_correct_1" name="correct_0" type="checkbox"></input>
-        </p>
-        <br/>
+            <div id="answer_0">
+                <label for="id_answer_0"v>Answer 1:</label> 
+                <textarea id="id_answer_0" rows="10" cols="40" name="answer_0"></textarea>
+                <br/>
 
-        <p id="answer_2_p" hidden>
-        <label id ="answer_2_label" for="id_answer_2">Answer 3:</label> 
-        <textarea id="id_answer_2" rows="10" cols="40" name="answer_2"></textarea>
-        <br/>
-        <label id="id_correct_2_label" for="id_correct_2">Correct?</label>
-        <input id="id_correct_2" name="correct_2" type="checkbox"></input>
-        </p> 
-        <br/>
+                <label for="id_correct_0">Correct?</label>
+                <input id="id_correct_0" name="correct_0" type="checkbox"></input>
+            </div>
 
-        <p id="answer_3_p" hidden>
-        <label id ="answer_3_label" for="id_answer_3">Answer 4:</label> 
-        <textarea id="id_answer_3" rows="10" cols="40" name="answer_3"></textarea>
-        <br/>
-        <label id="id_correct_3_label" for="id_correct_3">Correct?</label>
-        <input id="id_correct_3" name="correct_3" type="checkbox"></input>
-        </p>
-        <br/>
+            <br/>
 
-        <p id="answer_4_p" hidden>
-        <label id ="answer_4_label" for="id_answer_4">Answer 5:</label> 
-        <textarea id="id_answer_4" rows="10" cols="40" name="answer_4"></textarea>
-        <br/>
-        <label id="id_correct_4_label" for="id_correct_4">Correct?</label>
-        <input id="id_correct_4" name="correct_4" type="checkbox"></input>
-        </p>
-        <br/>
+            <div id="answer_1">
+                <label for="id_answer_1">Answer 2:</label> 
+                <textarea id="id_answer_1" rows="10" cols="40" name="answer_1"></textarea>
+                <br/>
 
-        <p id="answer_5_p" hidden>
-        <label id ="answer_5_label" for="id_answer_5">Answer 6:</label> 
-        <textarea id="id_answer_5" rows="10" cols="40" name="answer_5"></textarea>
-        <br/>
-        <label id="id_correct_5_label" for="id_correct_5">Correct?</label>
-        <input id="id_correct_5" name="correct_5" type="checkbox"></input>
-        </p>
+                <label for="id_correct_1">Correct?</label>
+                <input id="id_correct_1" name="correct_0" type="checkbox"></input>
+            </div>
+            <br/>
+        </div>
+  
         <br/>
         <button id="add_button" type="button">Add another answer</button>
 
-        <p id="tags_p"
-        <label id="tags_label" for="select-tags">Tags:</label>
-        <select multiple="multiple" id="select-tags" name="tags"></select>
-        </p>
+        <div id="tags"
+            <label id="tags_label" for="select-tags">Tags:</label>
+            <select multiple="multiple" id="select-tags" name="tags"></select>
+        </div>
         <br/>
         
-		<input id="submit" type="submit" value="Submit" />
+        <input id="submit" type="submit" value="Submit" />
 
-        <script>
-
-        $(document).ready(function(){
-            var answer_count= 1;
-            $("#add_button").click(function(){
-                answer_count++;
-                if (answer_count < 6){
-                var answer_id = "#answer_" + answer_count.toString() + "_p"
-                $(answer_id).show();
-                if(answer_count == 5){
-                    $("#add_button").hide();
-                }
-            }
-
-            });
-        });
-        </script>
-		</form> 
+        </form> 
         
 </div>
     </div>
 
     <div id="history" class="tab_content">
         <br/>
-        
-        <form action="/qproposal/" method="post">{% csrf_token %}
         {% if prop_questions %}
         <ul>
             {% for q in prop_questions %}
-                <li>{{ q.text }}</li>
+                <li class="proposed_question"> 
+                    <a id="question_{{ forloop.counter }}">{{ q.text }}</a>
+                    <ul id="question_{{ forloop.counter }}_answers">
+                        {% for ans in q.answers %}
+                            <li> {{ ans.text }} </li>
+                        {% endfor %}
+                    </ul>
+                </li>
                 <br/>
             {% endfor %}
             </ul>
         {% else %}
             {% trans "You haven't proposed any questions yet." %}
         {% endif %}
-    
+
     </div>
 {% endblock %}
+
