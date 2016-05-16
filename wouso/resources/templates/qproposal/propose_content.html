@@ -1,10 +1,13 @@
 {% extends 'interface/content_base.html' %}
 {% load i18n %}
 {% block scripts %}
+<link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
+<link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/propose-style.css" />
+<link rel-"stylesheet" type="text/css" href="{{ basepath}}/static/css/cpanel-qpool.css" />
 <script src="{{ basepath }}/static/js/jquery-1.11.1.min.js"></script>
 <script src="{{ basepath }}/static/js/ajaxify.js"></script>
 <script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
-<link rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/tabs.css" />
+<script type="text/javascript" src="{{ basepath }}/static/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="{{ basepath }}/static/js/cpanel/qpool/add_question.js"></script>
 {% endblock %}
 
@@ -19,55 +22,61 @@
 <div class="tab_container">
     <div id="propose" class="tab_content">
         <br/>
-        <form action="/qproposal/" method="post">{% csrf_token %}
+        <form class="form-horizontal" action="/qproposal/" method="post">{% csrf_token %}
         
-        <div id="category">
-            <label id="category_label" for="{{ form.category.id_for_label }}">Category:</label>
+        <div class="form-group" id="category">
+            <label class="control-label col-sm-3" id="category_label" for="{{ form.category.id_for_label }}">Category:
+            </label>
             {{ form.category }}
         </div>
         <br/>
         
-        <div id="text">
-            <label id="text_label" for="{{ form.text.id_for_label }}" >Question:</label>
+        <div class="form-group" id="text">
+            <label class="control-label col-sm-3" id="text_label" for="{{ form.text.id_for_label }}" >Question:</label>
             {{ form.text }}
         </div>
         <br/>
 
         <div id="answers" data-max-answers="{{ max_answers }}">
 
-            <div id="answer_0">
-                <label for="id_answer_0"v>Answer 1:</label> 
+            <div id="answer_0" class="form-group">
+                <label class="control-label col-sm-3" for="id_answer_0">Answer 1:</label> 
                 <textarea id="id_answer_0" rows="10" cols="40" name="answer_0"></textarea>
                 <br/>
 
-                <label for="id_correct_0">Correct?</label>
+                <label class="control-label col-sm-3" for="id_correct_0">Correct?</label>
                 <input id="id_correct_0" name="correct_0" type="checkbox"></input>
             </div>
 
             <br/>
 
-            <div id="answer_1">
-                <label for="id_answer_1">Answer 2:</label> 
+            <div id="answer_1" class="form-group">
+                <label class="control-label col-sm-3" for="id_answer_1">Answer 2:</label> 
                 <textarea id="id_answer_1" rows="10" cols="40" name="answer_1"></textarea>
                 <br/>
 
-                <label for="id_correct_1">Correct?</label>
+                <label class="control-label col-sm-3" for="id_correct_1">Correct?</label>
                 <input id="id_correct_1" name="correct_0" type="checkbox"></input>
             </div>
             <br/>
         </div>
   
         <br/>
-        <button id="add_button" type="button">Add another answer</button>
-
-        <div id="tags"
-            <label id="tags_label" for="select-tags">Tags:</label>
+        <div style="text-align: center;">
+            <button id="add_button" type="button" class="btn btn-info">Add another answer</button>
+        </div>
+        <br/>
+        <br/>
+        <div id="tags" class="form-group">
+            <label id="tags_label" for="select-tags" class="control-label col-sm-3">Tags:</label>
             <select multiple="multiple" id="select-tags" name="tags"></select>
         </div>
         <br/>
-        
-        <input id="submit" type="submit" value="Submit" />
-
+        <div style="text-align: center;">
+            <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
+            <div class="divider"/>
+            <input id="submit" type="submit" class="btn btn-submit" value="Submit" />
+        </div>
         </form> 
         
 </div>
@@ -75,23 +84,40 @@
 
     <div id="history" class="tab_content">
         <br/>
-        {% if prop_questions %}
-        <ul>
-            {% for q in prop_questions %}
-                <li class="proposed_question"> 
-                    <a id="question_{{ forloop.counter }}">{{ q.text }}</a>
-                    <ul id="question_{{ forloop.counter }}_answers">
-                        {% for ans in q.answers %}
-                            <li> {{ ans.text }} </li>
-                        {% endfor %}
-                    </ul>
-                </li>
-                <br/>
-            {% endfor %}
-            </ul>
-        {% else %}
-            {% trans "You haven't proposed any questions yet." %}
-        {% endif %}
+
+        <div id="proposed_history" class="tab-pane fade in active">
+            <table class="table table-striped">
+                {% for q in prop_questions %}
+                    <tr>
+                        <td> {{ q.text }} </td>
+                        <td data-status="{{ q.status }}"> 
+                            {% if q.status = "P" %} 
+                                {% trans 'Pending' %}
+                            {% elif q.status = "A" %}
+                                {% trans 'Accepted' %}
+                            {% else %}
+                                {% trans 'Declined' %}
+                            {% endif %}
+                        </td>
+                        <td> <button type="button" class="btn btn-primary" 
+                            data-toggle="collapse" data-target="#answers_{{ forloop.counter }}">
+                            Details </button> 
+                        </td>
+                    </tr>
+                    <tr class="collapse td-tab-table" id="answers_{{ forloop.counter }}">
+                        <td>
+                            
+                                <table class="table table-striped">
+                                    {% for ans in q.answers %}
+                                        <tr> <td>{{ ans.text }}</td> </tr>
+                                    {% endfor %}
+                                </table>
+                            
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
 
     </div>
 {% endblock %}

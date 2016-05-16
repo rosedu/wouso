@@ -52,10 +52,11 @@ $(document).ready(function(){
     var max = $("#answers").data("max-answers");
 
     function answer_element_template(i){
-        return "<div id=\"answer_" +  i + "\">" + 
-                "<label for=\"id_answer_" + i + "\">Answer " + (i+1).toString() + ":</label>" + 
-                "<textarea id=\"id_answer_" + i + "\" rows=\"10\" cols=\"40\" name=\"answer_" + i +
-                "\"></textarea>" + "<br/>" + "<label for=\"id_correct_ " + i + "\">Correct?</label>" +
+        return "<div id=\"answer_" +  i + "\" class=\"form-group\">" + 
+                "<label class=\"control-label col-sm-3\" for=\"id_answer_" + i + "\">Answer " + 
+                (i+1).toString() + ":</label>" + "<textarea id=\"id_answer_" + i + 
+                "\" rows=\"10\" cols=\"40\" name=\"answer_" + i +"\"></textarea>" + "<br/>" + 
+                "<label class=\"control-label col-sm-3\" for=\"id_correct_ " + i + "\">Correct?</label>" +
                 "<input id=\"id_correct_" + i + "\" name=\"correct_" + i + "\" type=\"checkbox\">" + 
                 "</input></div><br/>";
     }
@@ -88,11 +89,12 @@ $(document).ready(function(){
             },
             success: function(data){
                 $("div#content").html(data);
-                $('title').text($('.section h2').text());
+                $('title').text($('.section h2').text());/*
                 $(".proposed_question").click(function(event){
                     console.log("ahaha");
                     $(this).find("ul").toggle();
                 });
+                */
             },
             error: function(data) {
                 document.location = url;
