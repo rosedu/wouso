@@ -117,16 +117,17 @@ table {
   opacity: 0;
 }
 [data-status="P"]{
+  color: #fff;
 	background-color: #D3EBF2;
-	color: #D3EBF2;
+	
 }
 [data-status="A"]{
 	background-color: #76DB3B;
-	color: #76DB3B;
+	color: #fff;
 }
 [data-status="D"]{
 	background-color: #ED3A26;
-	color: #ED3A26;
+	color: #fff;
 }
 .btn-primary {
   color: #fff;
