@@ -197,12 +197,10 @@ class Schedule(models.Model):
         return str(self.day)
 
 
-
-
 class ProposedQuestion(models.Model):
     """ A proposed question has text and a variable number of answers
     (stored as strings),category and tags, proposing user and a feedback field
-    """ 
+    """
 
     text = models.TextField(null=True, blank=True, default="")
     proposed_by = models.ForeignKey(User, null=True, blank=True, related_name="%(app_label)s_%(class)s_proposedby_related")
@@ -215,25 +213,34 @@ class ProposedQuestion(models.Model):
     feedback = models.TextField(null=True, blank=True, default="")
 
     def toQuestion(self):
-        #In progress
+        """ Create a Question object based on ProposedQuestion
+            object's fields and save it in database
+        """
 
         qdict = {}
         qdict['text'] = self.text
         qdict['answer_type'] = self.answerType
         qdict['proposed_by'] = self.proposed_by
         qdict['category'] = self.category
-        qdict['tags'] = self.tags
         q = Question(**qdict)
-        q.save()
+        q.save() # Before adding ManyToMany fields, objects need to be saved in database
 
-        # add the answers
-        for answer in answers:
+        # Add tags
+        for tag in self.tags.all():
+            q.tags.add(tag)
+            q.save()
+
+
+        # Create the answers
+        for answer in self.answers:
             ans = Answer(question=q, **answer)
             ans.save()
-    
-    
+
+
     @cached_property
     def answerType(self):
+        """ Returns the answer type of the question
+        """
 
         answers_list = self.answers
         count = 0
@@ -247,4 +254,7 @@ class ProposedQuestion(models.Model):
 
     @cached_property
     def answers(self):
+        """ Returns a list of answers in json format
+        """
+
         return json.loads(self.answers_json)
