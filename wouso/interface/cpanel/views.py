@@ -14,6 +14,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render_to_response
 from django.template import RequestContext
 from django.template.defaultfilters import slugify
+import time
 from django.utils.translation import ugettext_noop
 from django.utils.translation import ugettext as _
 from django.views.generic import UpdateView, CreateView, ListView, FormView, \
@@ -1415,6 +1416,9 @@ def karma_group_view(request, id):
                               context_instance=RequestContext(request))
 
 class ProposedView(TemplateView):
+    """ Handle the get requests for Proposed
+        Question menu - control panel
+    """
 
     template_name = 'cpanel/proposed_home.html'
 
@@ -1428,17 +1432,49 @@ class ProposedView(TemplateView):
             })
         return context
 
-    def post(self,request):
-
-        if('accept' in request.POST['button_id']):
-            print "Accept"
-
-        else:
-            print "Decline"
-
-
-        return HttpResponse(request.POST['data'])
-
-
 proposed = permission_required("",'config.change_setting')(
     ProposedView.as_view())
+
+@permission_required('config.change_setting')
+def accept_question(request,id):
+    """ Handle the requests for accepted questions
+    """
+
+    form = ProposedQuestionReviewForm(data=request.POST)
+    if form.is_valid():
+        feedback_dict = {}
+        pq = ProposedQuestion.objects.get(id=id)
+        feedback_text = str(request.POST['feedback'])
+        feedback_dict.update({
+                            'text':feedback_text,
+                            'time': str(time.strftime("%d/%m/%Y")) + " " +  str(time.strftime("%H:%M:%S")),
+                            })
+        pq.feedback = pq.feedback + ',' + str(feedback_dict)
+        pq.status = "A"
+        pq.save()
+        pq.toQuestion()
+        return HttpResponse("Question Accepted")
+
+    return HttpResponse("Error!")
+
+
+@permission_required('config.change_setting')
+def decline_question(request,id):
+    """ Handle the requests for declined questions
+    """
+
+    form = ProposedQuestionReviewForm(data=request.POST)
+    if form.is_valid():
+        feedback_dict = {}
+        pq = ProposedQuestion.objects.get(id=id)
+        feedback_text = str(request.POST['feedback'])
+        feedback_dict.update({
+                            'text':feedback_text,
+                            'time': str(time.strftime("%d/%m/%Y")) + " " +  str(time.strftime("%H:%M:%S")),
+                            })
+        pq.feedback = pq.feedback + ',' + str(feedback_dict)
+        pq.status = "D"
+        pq.save()
+        return HttpResponse("Question Declined")
+
+    return HttpResponse("Error!")
