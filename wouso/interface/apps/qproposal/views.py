@@ -5,6 +5,7 @@ from wouso.interface.apps.qproposal.forms import ProposedQuestionForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic import ListView
+from django.http import HttpResponse, Http404
 from wouso.core.qpool.models import Question, Tag, Answer, Category, ProposedQuestion
 from models import Qproposal
 import json
@@ -58,9 +59,10 @@ def propose(request):
 
     player = request.user.get_profile() if request.user.is_authenticated() else None
     prop_questions = ProposedQuestion.objects.all().filter(proposed_by=player).order_by('-date_proposed')
-
-    return render_to_response('qproposal/propose_content.html',
+    if request.is_ajax():
+        return render_to_response('qproposal/propose_content.html',
                               {'form': form, 'prop_questions' : prop_questions, 'max_answers' : MAX_ANSWERS},
                               context_instance=RequestContext(request))
-
+    else:
+        raise Http404
 
