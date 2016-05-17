@@ -15,8 +15,7 @@ function reload_header() {
 }
 
 function toggle_visibility(id) {
-    console.log(id);
-    $("#" + id).toggle();
+    $("#" + id).toggle("slow");
 };  
 
 /*
