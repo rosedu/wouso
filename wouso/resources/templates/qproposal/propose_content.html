@@ -89,8 +89,8 @@
             <table class="table table-striped">
                 {% for q in prop_questions %}
                     <tr>
-                        <td> {{ q.text }} </td>
-                        <td data-status="{{ q.status }}"> 
+                        <td colspan="4"> {{ q.text }} </td>
+                        <td colspan="4" data-status="{{ q.status }}"> 
                             {% if q.status = "P" %} 
                                 {% trans 'Pending' %}
                             {% elif q.status = "A" %}
@@ -99,21 +99,53 @@
                                 {% trans 'Declined' %}
                             {% endif %}
                         </td>
-                        <td> <button type="button" class="btn btn-primary" 
-                            onclick="toggle_visibility('answers_{{ forloop.counter }}')">
+                        <td colspan="4"> <button type="button" class="btn btn-primary" 
+                            onclick="toggle_visibility('details_{{ forloop.counter }}')">
                             Details </button> 
                         </td>
                     </tr>
-                    <tr class="td-tab-table" id="answers_{{ forloop.counter }}" style="display: none;">
-                        <td>
-                            
-                                <table class="table table-striped">
-                                    {% for ans in q.answers %}
-                                        <tr> <td>{{ ans.text }}</td> </tr>
-                                    {% endfor %}
-                                </table>
-                            
+                    <tr id="details_{{ forloop.counter }}" style="display: none;">
+                     
+                        <td colspan="3">
+                            <table>
+                                <tr>
+                                    <th>Possible answers</th>
+                                </tr>
+                                {% for ans in q.answers %}
+                                    <tr><td data-correct="{{ ans.correct }}"> {{ ans.text }} </td></tr>
+                                {% endfor %}
+                            </table>
                         </td>
+                        <td colspan="3">
+                            <table>
+                                <tr>
+                                    <th>Category</th>
+                                </tr>
+                                <tr><td> {{ q.category.name }}</td></tr>
+                            </table>
+                        </td>
+                        <td colspan="3">
+                            <table>
+                                <tr>
+                                    <th>Date proposed</th>
+                                </tr>
+                                <tr><td> {{ q.date_proposed }}</td></tr>
+                            </table>
+                        </td>
+                        <td colspan="3">
+                            <table>
+                                <tr>
+                                    <th>Feedback</th>
+                                </tr>
+                                {% if q.feedback and q.feedback.strip %}
+                                    <tr><td> {{ q.feedback }} </td></tr>
+                                {% else %}
+                                    <tr><td> {% trans "No feedback yet." %}
+                                {% endif %}
+                                
+                            </table>
+                        </td>
+
                     </tr>
                 {% endfor %}
             </table>

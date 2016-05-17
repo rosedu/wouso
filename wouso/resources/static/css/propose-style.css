@@ -129,6 +129,12 @@ table {
 	background-color: #ED3A26;
 	color: #fff;
 }
+[data-correct="True"]{
+  color: #48B048;
+}
+[data-correct="False"]{
+  color: #CC210A;
+}
 .btn-primary {
   color: #fff;
   background-color: #F2AB11;
@@ -284,3 +290,39 @@ fieldset[disabled] .btn-danger.active {
 .form-horizontal .form-group:after{
   clear: both;
 }
+  .col-sm-12 {
+    width: 100%;
+  }
+  .col-sm-11 {
+    width: 91.66666667%;
+  }
+  .col-sm-10 {
+    width: 83.33333333%;
+  }
+  .col-sm-9 {
+    width: 75%;
+  }
+  .col-sm-8 {
+    width: 66.66666667%;
+  }
+  .col-sm-7 {
+    width: 58.33333333%;
+  }
+  .col-sm-6 {
+    width: 50%;
+  }
+  .col-sm-5 {
+    width: 41.66666667%;
+  }
+  .col-sm-4 {
+    width: 33.33333333%;
+  }
+  .col-sm-3 {
+    width: 25%;
+  }
+  .col-sm-2 {
+    width: 16.66666667%;
+  }
+  .col-sm-1 {
+    width: 8.33333333%;
+  }
