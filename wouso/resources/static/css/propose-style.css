@@ -29,7 +29,7 @@ table {
   width: 100%;
   max-width: 100%;
   margin-bottom: 20px;
-
+  table-layout: fixed;
   background-color: #fff;
 }
 .table td, th {
