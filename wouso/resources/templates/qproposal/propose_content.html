@@ -100,11 +100,11 @@
                             {% endif %}
                         </td>
                         <td> <button type="button" class="btn btn-primary" 
-                            data-toggle="collapse" data-target="#answers_{{ forloop.counter }}">
+                            onclick="toggle_visibility('answers_{{ forloop.counter }}')">
                             Details </button> 
                         </td>
                     </tr>
-                    <tr class="collapse td-tab-table" id="answers_{{ forloop.counter }}">
+                    <tr class="td-tab-table" id="answers_{{ forloop.counter }}">
                         <td>
                             
                                 <table class="table table-striped">
@@ -118,6 +118,7 @@
                 {% endfor %}
             </table>
         </div>
+
 
     </div>
 {% endblock %}

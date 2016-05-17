@@ -13,6 +13,12 @@ function reload_header() {
         }
     })
 }
+
+function toggle_visibility(id) {
+    console.log(id);
+    $("#" + id).toggle();
+};  
+
 /*
 $(document).ready(function (){
     // button links 
@@ -61,10 +67,11 @@ $(document).ready(function(){
                 "</input></div><br/>";
     }
 
-    $("#add_button").click(function(){
+    $("#add_button").unbind('click').bind('click',function(){
         answer_count++;
         if (answer_count < max){
-            $("#answers").append(answer_element_template(answer_count));           
+            $("#answers").append(answer_element_template(answer_count));
+            console.log(answer_count);           
             if(answer_count == max - 1){
                 $("#add_button").hide();
                 }
