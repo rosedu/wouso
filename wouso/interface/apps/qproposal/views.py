@@ -64,5 +64,6 @@ def propose(request):
                               {'form': form, 'prop_questions' : prop_questions, 'max_answers' : MAX_ANSWERS},
                               context_instance=RequestContext(request))
     else:
-        raise Http404
+        return render_to_response('qproposal/404_error.html',
+                              context_instance=RequestContext(request))
 

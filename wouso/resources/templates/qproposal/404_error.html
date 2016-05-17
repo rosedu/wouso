@@ -1,0 +1,62 @@
+{% load user %}
+{% load ui %}
+{% load artifacts %}
+{% load i18n %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<HEAD>
+    <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <TITLE>{% block title %}{{config_title}}{% endblock %}</TITLE>
+    <LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/css/style.css" />
+    <style type="text/css">
+        @import url("{{ basepath }}/static/css/autocomplete.css");
+        {% if config_logo %}
+        div#logo {
+            background: url({{ config_logo}}) no-repeat;
+        }
+        {% endif %}
+        {% block css %}{% endblock %}
+
+        .main_404{
+            position: absolute;
+            margin: auto;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            width: 100px;
+            height: 100px;
+        }
+
+        .main_404 p.headline{
+            font-size: 4.3em;
+            margin: 0;
+        }
+
+        .main_404 p.404_message{
+            font-size: 1.3em;
+            margin: 0;
+        }
+    </style>
+    
+    {% if config_header_autoreload %}
+    <script type="text/javascript">
+        $(document).ready(function (){$(document).everyTime(10000, reload_header);});
+    </script>
+    {% endif %}
+
+    {% block scripts %}{% endblock %}
+    {% if config_theme %}
+    <LINK rel="stylesheet" type="text/css" href="{{ basepath }}/static/themes/{{ config_theme }}/styles.css" />
+    {% endif %}
+</HEAD>
+
+<BODY>
+    <div class="main_404">
+        <p class="headline">404</p>
+        <p class="404_message">Page Not Found.</p>
+    </div>
+    
+</BODY>
+</HTML>
