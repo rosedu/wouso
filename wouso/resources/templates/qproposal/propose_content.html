@@ -161,6 +161,8 @@
                             </table>
                         </td>
                     </tr>
+                {% empty %}
+                    {% trans "You haven't proposed any questions yet." %}
                 {% endfor %}
             </table>
         </div>
