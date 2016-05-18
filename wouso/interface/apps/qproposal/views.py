@@ -2,10 +2,10 @@ from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 from wouso.core.ui import register_footer_link
 from wouso.interface.apps.qproposal.forms import ProposedQuestionForm
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.template import RequestContext
 from django.views.generic import ListView
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseForbidden
 from wouso.core.qpool.models import Question, Tag, Answer, Category, ProposedQuestion
 from models import Qproposal
 import json
@@ -64,6 +64,5 @@ def propose(request):
                               {'form': form, 'prop_questions' : prop_questions, 'max_answers' : MAX_ANSWERS},
                               context_instance=RequestContext(request))
     else:
-        return render_to_response('qproposal/404_error.html',
-                              context_instance=RequestContext(request))
+        return render(request,'qproposal/403_error.html',status=403)
 
