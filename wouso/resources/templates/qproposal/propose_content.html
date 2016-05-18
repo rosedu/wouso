@@ -19,67 +19,72 @@
         <li><a href="#history" id="history-click" class="no-redir">{% trans 'History' %}</a></li>
     </ul>
 
-<div class="tab_container">
-    <div id="propose" class="tab_content">
-        <br/>
-        <form class="form-horizontal" action="/qproposal/" method="post">{% csrf_token %}
-        
-        <div class="form-group" id="category">
-            <label class="control-label col-sm-3" id="category_label" for="{{ form.category.id_for_label }}">Category:
-            </label>
-            {{ form.category }}
-        </div>
-        <br/>
-        
-        <div class="form-group" id="text">
-            <label class="control-label col-sm-3" id="text_label" for="{{ form.text.id_for_label }}" >Question:</label>
-            {{ form.text }}
-        </div>
-        <br/>
-
-        <div id="answers" data-max-answers="{{ max_answers }}">
-
-            <div id="answer_0" class="form-group">
-                <label class="control-label col-sm-3" for="id_answer_0">Answer 1:</label> 
-                <textarea id="id_answer_0" rows="10" cols="40" name="answer_0"></textarea>
-                <br/>
-
-                <label class="control-label col-sm-3" for="id_correct_0">Correct?</label>
-                <input id="id_correct_0" name="correct_0" type="checkbox"></input>
-            </div>
-
+    <div class="tab_container">
+        <div id="propose" class="tab_content">
             <br/>
-
-            <div id="answer_1" class="form-group">
-                <label class="control-label col-sm-3" for="id_answer_1">Answer 2:</label> 
-                <textarea id="id_answer_1" rows="10" cols="40" name="answer_1"></textarea>
-                <br/>
-
-                <label class="control-label col-sm-3" for="id_correct_1">Correct?</label>
-                <input id="id_correct_1" name="correct_0" type="checkbox"></input>
+            <form class="form-horizontal" action="/qproposal/" method="post">{% csrf_token %}
+            
+            <div class="form-group" id="category">
+                <label class="control-label col-sm-3" id="category_label" for="{{ form.category.id_for_label }}">
+                    Category:
+                </label>
+                {{ form.category }}
             </div>
             <br/>
+            
+            <div class="form-group" id="text">
+                <label class="control-label col-sm-3" id="text_label" for="{{ form.text.id_for_label }}">
+                    Question:
+                </label>
+                {{ form.text }}
+            </div>
+            <br/>
+
+            <div id="answers" data-max-answers="{{ max_answers }}">
+
+                <div id="answer_0" class="form-group">
+                    <label class="control-label col-sm-3" for="id_answer_0">Answer 1:</label> 
+                    <textarea id="id_answer_0" rows="10" cols="40" name="answer_0"></textarea>
+                    <br/>
+
+                    <label class="control-label col-sm-3" for="id_correct_0">Correct?</label>
+                    <input id="id_correct_0" name="correct_0" type="checkbox"></input>
+                </div>
+
+                <br/>
+
+                <div id="answer_1" class="form-group">
+                    <label class="control-label col-sm-3" for="id_answer_1">Answer 2:</label> 
+                    <textarea id="id_answer_1" rows="10" cols="40" name="answer_1"></textarea>
+                    <br/>
+
+                    <label class="control-label col-sm-3" for="id_correct_1">Correct?</label>
+                    <input id="id_correct_1" name="correct_0" type="checkbox"></input>
+                </div>
+                <br/>
+            </div>
+            <br/>
+
+            <div style="text-align: center;">
+                <button id="add_button" type="button" class="btn btn-info">Add another answer</button>
+            </div>
+            <br/>
+            <br/>
+
+            <div id="tags" class="form-group">
+                <label id="tags_label" for="select-tags" class="control-label col-sm-3">Tags:</label>
+                <select multiple="multiple" id="select-tags" name="tags"></select>
+            </div>
+            <br/>
+
+            <div style="text-align: center;">
+                <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
+                <div class="divider"/>
+                <input id="submit" type="submit" class="btn btn-submit" value="Submit" />
+            </div>
+            </form> 
+            
         </div>
-  
-        <br/>
-        <div style="text-align: center;">
-            <button id="add_button" type="button" class="btn btn-info">Add another answer</button>
-        </div>
-        <br/>
-        <br/>
-        <div id="tags" class="form-group">
-            <label id="tags_label" for="select-tags" class="control-label col-sm-3">Tags:</label>
-            <select multiple="multiple" id="select-tags" name="tags"></select>
-        </div>
-        <br/>
-        <div style="text-align: center;">
-            <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
-            <div class="divider"/>
-            <input id="submit" type="submit" class="btn btn-submit" value="Submit" />
-        </div>
-        </form> 
-        
-</div>
     </div>
 
     <div id="history" class="tab_content">
@@ -99,31 +104,38 @@
                                 {% trans 'Declined' %}
                             {% endif %}
                         </td>
-                        <td colspan="4"> <button type="button" class="btn btn-primary" 
-                            onclick="toggle_visibility('details_{{ forloop.counter }}')">
-                            Details </button> 
+                        <td colspan="4"> 
+                            <button type="button" class="btn btn-primary" 
+                                onclick="toggle_visibility('details_{{ forloop.counter }}')">Details 
+                            </button> 
                         </td>
                     </tr>
+
                     <tr id="details_{{ forloop.counter }}" style="display: none;">
-                     
                         <td colspan="3">
                             <table>
                                 <tr>
                                     <th>Possible answers</th>
                                 </tr>
                                 {% for ans in q.answers %}
-                                    <tr><td data-correct="{{ ans.correct }}"> {{ ans.text }} </td></tr>
+                                    <tr>
+                                        <td data-correct="{{ ans.correct }}"> {{ ans.text }} </td>
+                                    </tr>
                                 {% endfor %}
                             </table>
                         </td>
+
                         <td colspan="3">
                             <table>
                                 <tr>
                                     <th>Category</th>
                                 </tr>
-                                <tr><td> {{ q.category.name }}</td></tr>
+                                <tr>
+                                    <td>{{ q.category.name }}</td>
+                                </tr>
                             </table>
                         </td>
+
                         <td colspan="3">
                             <table>
                                 <tr>
@@ -138,19 +150,20 @@
                                     <th>Feedback</th>
                                 </tr>
                                 {% if q.feedback and q.feedback.strip %}
-                                    <tr><td> {{ q.feedback }} </td></tr>
+                                    <tr>
+                                        <td>{{ q.feedback }}</td>
+                                    </tr>
                                 {% else %}
-                                    <tr><td> {% trans "No feedback yet." %}
+                                    <tr>
+                                        <td>{% trans "No feedback yet." %}</td>
+                                    </tr>
                                 {% endif %}
-                                
                             </table>
                         </td>
-
                     </tr>
                 {% endfor %}
             </table>
         </div>
-
 
     </div>
 {% endblock %}
