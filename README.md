@@ -167,3 +167,13 @@ In case of issues, you may need to update the pip packages, by running the comma
 
     pip install -r requirements-pip
     pip install -r requirements-extra
+
+## Troubleshooting
+
+### TemplateDoesNotExist at /admin/index.html
+
+    rsync -a -v --ignore-existing src dst
+
+Where:
+* **`src`** is `/yourvirtualenv/django/` (i.e. `$PATH_TO_WOUSO_REPOSITORY/sandbox/django/`)
+* **`dst`** is `/yourvirtualenv/lib/python2.7/site-packages/django/` (i.e. `$PATH_TO_WOUSO_REPOSITORY/sandbox/lib/python2.7/site-packages/django/`)
