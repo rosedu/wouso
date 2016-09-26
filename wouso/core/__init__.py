@@ -28,8 +28,8 @@ def deprecated(message):
 
 
 def block_if_not_staff(sender, user, request, **kwargs):
-    only_staff = not BoolSetting.get('login').get_value()
-    if only_staff and not user.is_staff:
+    staff_only_login = BoolSetting.get('staff-only-login').get_value()
+    if staff_only_login and not user.is_staff:
         messages.error(request, _('Only staff members can log in'))
         logout(request)
 
