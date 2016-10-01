@@ -8,11 +8,13 @@ World of USO is a quiz game framework. It has been used since 2007 as a support 
 
 ## Easy install
 
-On a Debian-based system run the install script:
+On a Mint/Ubuntu/Fedora system run the install script:
 
     ./install.sh
 
-If everything installs succesfully go to step 9 to start the server.
+During the installation you will be asked to enter an username and password for the administrative user. You will use those to do the first login into World of USO and use full privileges for administrative actions.
+
+If everything installs successfully go to step 9 to start the server.
 
 ## Requirements
 
@@ -39,9 +41,10 @@ On a **Fedora 21 or lower** system run the command:
 
     sudo yum -y install python-pip python-django python-devel python-virtualenv openldap-devel libgsasl-devel openssl-devel
 
-In case of MySQL support:
-
-    sudo apt-get install mysql-server mysql-client libmysqlclient-dev
+Optional packages (in case of MySQL support):
+* mysql-server
+* mysql-client
+* libmysqlclient-dev
 
 
 ## Installing WoUSO
@@ -118,7 +121,7 @@ In case of MySQL support:
 
         ./manage.py wousoctl --setup
 
-    You will be requested for an username and password for the administrative user. You will use those to first login into World of USO and use full priviliges for administrative actions.
+    You will be asked to enter an username and password for the administrative user. You will use those to do the first login into World of USO and use full privileges for administrative actions.
 
 9. Run the server:
 
