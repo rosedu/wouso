@@ -28,39 +28,99 @@ Races and groups
     </button>
 </div>
 
-<table class="table table-hover table-bordered table-condensed">
-    <tr>
-        <th>#</th>
-        <th>{% trans 'Race name' %}</th>
-        <th>{% trans 'Race title' %}</th>
-        <th>{% trans 'Number of groups' %}</th>
-        <th>{% trans 'Can play' %}</th>
-        <th>{% trans 'Actions' %}</th>
-    </tr>
-    {% for r in races %}
+<table class="table table-hover table-bordered table-condensed sortable">
+    <thead>
         <tr>
-            <td class="ctr-number">{{ forloop.counter0 }}</td>
-            <td>{{ r.name }}</td>
-            <td>{{ r.title }}</td>
-            <td>{{ r.children.count }}</td>
-            <td>
-                {% if r.can_play %}
-                    <h3 class='label-3'><span class="label label-success label-sm">{% trans 'yes' %}</span></h3>
-                {% else %}
-                    <h3 class='label-3'><span class="label label-danger label-sm">{% trans 'no' %}</span></h3>
-                {% endif %}
-            </td>
+            <th>#</th>
+            <th>{% trans 'Race name' %}</th>
+            <th>{% trans 'Race title' %}</th>
+            <th>{% trans 'Number of groups' %}</th>
+            <th>{% trans 'Can play' %}</th>
+            <th data-defaultsort="disabled">{% trans 'Actions' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in races %}
+            <tr>
+                <td class="ctr-number">{{ forloop.counter0 }}</td>
+                <td>{{ r.name }}</td>
+                <td>{{ r.title }}</td>
+                <td>{{ r.children.count }}</td>
+                <td>
+                    {% if r.can_play %}
+                        <h3 class='label-3'><span class="label label-success label-sm">{% trans 'yes' %}</span></h3>
+                    {% else %}
+                        <h3 class='label-3'><span class="label label-danger label-sm">{% trans 'no' %}</span></h3>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-5 text-right">
+                            <a class="btn btn-success btn-sm" href="{% url races_edit r.id %}">
+                                <span class="glyphicon glyphicon-edit"></span> {% trans 'Edit '%}
+                            </a>
+                        </div>
+                        <div class="col-md-5">
+                            {% if r.children.count %}
+                                <a class="btn btn-warning btn-sm toggle_groups btn-block" data-show="true" data-race="race-{{r.id}}">
+                                    <span class="glyphicon glyphicon-eye-open"></span> {% trans 'Show groups' %}
+                                </a>
+                            {% else %}
+                                <a class="btn btn-warning btn-sm disabled btn-block">
+                                    <span class="glyphicon glyphicon-eye-open"></span> {% trans 'Show groups' %}
+                                </a>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                </td>
+            </tr>
+            {% for g in r.children %}
+                <tr class="group-row hidden group race-{{r.id}}">
+                    <td>{{ forloop.parentloop.counter0 }}.{{ forloop.counter0 }}</td>
+                    <td>{{ g.name }}</td>
+                    <td>{{ g.title }}</td>
+                    <td>n/a</td>
+                    <td></td>
+                    <td>
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-5 text-right">
+                                <a href="{% url group_edit g.id %}" class="btn btn-success btn-sm">
+                                    <span class="glyphicon glyphicon-edit"></span> {% trans 'Edit '%}
+                                </a>
+                            </div>
+                            <div class="col-md-5">
+                                <a href="{% url system_message_group g.id %}" class="btn btn-info btn-sm btn-block">
+                                    <span class="glyphicon glyphicon-envelope"></span> {% trans 'Send message' %}
+                                </a>
+                            </div>
+                            <div class="col-md-1"></div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+
+        <!-- Display orphan race -->
+        <tr>
+            <td class="ctr-number">{{ races.count }}</td>
+            <td>{% trans 'Orphans' %}</td>
+            <td></td>
+            <td>{{ orphan_groups.count }}</td>
+            <td></td>
             <td>
                 <div class="row">
                     <div class="col-md-1"></div>
                     <div class="col-md-5 text-right">
-                        <a class="btn btn-success btn-sm" href="{% url races_edit r.id %}">
+                        <a class="btn btn-success btn-sm disabled">
                             <span class="glyphicon glyphicon-edit"></span> {% trans 'Edit '%}
                         </a>
                     </div>
                     <div class="col-md-5">
-                        {% if r.children.count %}
-                            <a class="btn btn-warning btn-sm toggle_groups btn-block" data-show="true" data-race="race-{{r.id}}">
+                        {% if orphan_groups.count %}
+                            <a class="toggle_groups btn btn-warning btn-sm btn-block" data-show="true" data-race="race-orphans">
                                 <span class="glyphicon glyphicon-eye-open"></span> {% trans 'Show groups' %}
                             </a>
                         {% else %}
@@ -73,10 +133,11 @@ Races and groups
                 </div>
             </td>
         </tr>
-        {% for g in r.children %}
-            <tr class="group-row hidden group race-{{r.id}}">
-                <td>{{ forloop.parentloop.counter0 }}.{{ forloop.counter0 }}</td>
-                <td>{{ g.name }}</td>
+        <!-- Display orphan groups -->
+        {% for g in orphan_groups %}
+            <tr class="group group-row hidden race-orphans">
+                <td>{{ races.count }}.{{ forloop.counter0 }}</td>
+                <td>{{ g }}</td>
                 <td>{{ g.title }}</td>
                 <td>n/a</td>
                 <td></td>
@@ -84,12 +145,12 @@ Races and groups
                     <div class="row">
                         <div class="col-md-1"></div>
                         <div class="col-md-5 text-right">
-                            <a href="{% url group_edit g.id %}" class="btn btn-success btn-sm">
+                            <a href="{% url admin:user_playergroup_change g.id %}" class="btn btn-success btn-sm">
                                 <span class="glyphicon glyphicon-edit"></span> {% trans 'Edit '%}
                             </a>
                         </div>
                         <div class="col-md-5">
-                            <a href="{% url system_message_group g.id %}" class="btn btn-info btn-sm btn-block">
+                            <a href="{% url system_message_group g.id %}" class="btn btn-info btn-sm btn-block"> 
                                 <span class="glyphicon glyphicon-envelope"></span> {% trans 'Send message' %}
                             </a>
                         </div>
@@ -98,64 +159,7 @@ Races and groups
                 </td>
             </tr>
         {% endfor %}
-    {% endfor %}
-
-    <!-- Display orphan race -->
-    <tr>
-        <td class="ctr-number">{{ races.count }}</td>
-        <td>{% trans 'Orphans' %}</td>
-        <td></td>
-        <td>{{ orphan_groups.count }}</td>
-        <td></td>
-        <td>
-            <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-5 text-right">
-                    <a class="btn btn-success btn-sm disabled">
-                        <span class="glyphicon glyphicon-edit"></span> {% trans 'Edit '%}
-                    </a>
-                </div>
-                <div class="col-md-5">
-                    {% if orphan_groups.count %}
-                        <a class="toggle_groups btn btn-warning btn-sm btn-block" data-show="true" data-race="race-orphans">
-                            <span class="glyphicon glyphicon-eye-open"></span> {% trans 'Show groups' %}
-                        </a>
-                    {% else %}
-                        <a class="btn btn-warning btn-sm disabled btn-block">
-                            <span class="glyphicon glyphicon-eye-open"></span> {% trans 'Show groups' %}
-                        </a>
-                    {% endif %}
-                </div>
-                <div class="col-md-1"></div>
-            </div>
-        </td>
-    </tr>
-    <!-- Display orphan groups -->
-    {% for g in orphan_groups %}
-        <tr class="group group-row hidden race-orphans">
-            <td>{{ races.count }}.{{ forloop.counter0 }}</td>
-            <td>{{ g }}</td>
-            <td>{{ g.title }}</td>
-            <td>n/a</td>
-            <td></td>
-            <td>
-                <div class="row">
-                    <div class="col-md-1"></div>
-                    <div class="col-md-5 text-right">
-                        <a href="{% url admin:user_playergroup_change g.id %}" class="btn btn-success btn-sm">
-                            <span class="glyphicon glyphicon-edit"></span> {% trans 'Edit '%}
-                        </a>
-                    </div>
-                    <div class="col-md-5">
-                        <a href="{% url system_message_group g.id %}" class="btn btn-info btn-sm btn-block"> 
-                            <span class="glyphicon glyphicon-envelope"></span> {% trans 'Send message' %}
-                        </a>
-                    </div>
-                    <div class="col-md-1"></div>
-                </div>
-            </td>
-        </tr>
-    {% endfor %}
+    </tbody>
 </table>
 
 <script>

@@ -22,37 +22,41 @@
 </ul>
     {% block tabcontent %}
     <div class=" col-md-10">
-    <table class="table table-bordered table-condensed table-hover">
-        <tr>
-            <th>Name</th>
-            <th>Owner</th>
-            <th>Members</th>
-            <th>Active</th>
-        </tr>
-        {% for t in groups %}
+    <table class="table table-bordered table-condensed table-hover sortable">
+        <thead>
             <tr>
-                <td>{{ t.name }}</td>
-                <td>{% player t.head %}</td>
-                <td>{{ t.players.count }}</td>
-                <td>
-                    <a class="btn btn-primary" href="{% url specialquest_cpanel_group_toggle t.id %}">
-                        <span{% if not t.active %} class="wrong"{% endif %}>{{ t.active }}</span>
-                    </a>
-                </td>
-                <td>
-                    
-                    <a href="{% url specialquest_group_edit t.pk %}" class="btn btn-success">
-                        <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
-                    </a>
-                    <a href="{% url specialquest_cpanel_group_delete t.id %}" onclick="return confirm('really?');"
-                        class="btn btn-danger">
-                        <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
-                    </a>
-                </td>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>Members</th>
+                <th>Active</th>
             </tr>
-        {% empty %}
-        <tr><td colspan="0">No groups</td></tr>
-        {% endfor %}
+        </thead>
+        <tbody>
+            {% for t in groups %}
+                <tr>
+                    <td>{{ t.name }}</td>
+                    <td>{% player t.head %}</td>
+                    <td>{{ t.players.count }}</td>
+                    <td>
+                        <a class="btn btn-primary" href="{% url specialquest_cpanel_group_toggle t.id %}">
+                            <span{% if not t.active %} class="wrong"{% endif %}>{{ t.active }}</span>
+                        </a>
+                    </td>
+                    <td>
+                        
+                        <a href="{% url specialquest_group_edit t.pk %}" class="btn btn-success">
+                            <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                        </a>
+                        <a href="{% url specialquest_cpanel_group_delete t.id %}" onclick="return confirm('really?');"
+                            class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+                        </a>
+                    </td>
+                </tr>
+            {% empty %}
+            <tr><td colspan="0">No groups</td></tr>
+            {% endfor %}
+        </tbody>
     </table>
     </div>
     <div class="panel panel-primary col-md-2">

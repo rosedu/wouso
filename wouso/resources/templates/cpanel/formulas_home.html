@@ -17,30 +17,34 @@
 
 {% block sectioncontent %}
 
-<table class="table table-bordered table-condensed table-hover">
-    <tr>
-        <th>Name</th>
-        <th>Expression</th>
-        <th>Description</th>
-        <th>Owner</th>
-        <th>Manage</th>
-    </tr>
-    {% for p in formulas %}
-    <tr>
-        <td>{{ p.name }}</td>
-        <td>{{ p.expression }}</td>
-        <td>{{ p.description }}</td>
-        <td>{{ p.owner }}</td>
-        <td nowrap>
-            <a class="btn btn-success" href="{% url edit_formula p.id %}">
-                <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit '%}
-            </a>
-            <a class="btn btn-danger" href="{% url formula_del p.id %}" onClick="return confirm('Realy?');">
-                <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
-            </a>
-        </td>
-    </tr>
-    {% endfor %}
+<table class="table table-bordered table-condensed table-hover sortable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Expression</th>
+            <th>Description</th>
+            <th>Owner</th>
+            <th data-defaultsort="disabled">Manage</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in formulas %}
+        <tr>
+            <td>{{ p.name }}</td>
+            <td>{{ p.expression }}</td>
+            <td>{{ p.description }}</td>
+            <td>{{ p.owner }}</td>
+            <td nowrap>
+                <a class="btn btn-success" href="{% url edit_formula p.id %}">
+                    <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit '%}
+                </a>
+                <a class="btn btn-danger" href="{% url formula_del p.id %}" onClick="return confirm('Realy?');">
+                    <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 
 {% endblock %}

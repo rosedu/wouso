@@ -26,13 +26,16 @@
 
     {% include 'cpanel/pagination.html' %}
 
-    <table class="table table-bordered table-hover table-condensed">
-        <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Manage</th>
-        </tr>
+    <table class="table table-bordered table-hover table-condensed sortable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th data-defaultsort="disabled">Manage</th>
+            </tr>
+        </thead>
+        <tbody>
             {% for f in files %}
             <tr>
                 <td>{{ forloop.counter }}</td>
@@ -48,10 +51,11 @@
                 </td>
             </tr>
             {% empty %}
-                <tr>
-                    <td colspan="10">No files have been uploaded.</td>
-                </tr>
+            <tr>
+                <td colspan="10">No files have been uploaded.</td>
+            </tr>
             {% endfor %}
+        </tbody>
     </table>
 </div>
 

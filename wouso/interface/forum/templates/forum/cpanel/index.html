@@ -96,43 +96,47 @@
 
         <br/> <br/>
 
-        <table class="table table-bordered table-hover table-condensed">
-            <tr>
-                <th colspan="2">#</th>
-                <th>Forum</th>
-                <th>Category</th>
-                <th>Description</th>
-                <th>Closed</th>
-                <th>Manage</th>
-            </tr>
-            {% for f in forums %}
-            <tr>
-                <td><input type="checkbox" id="{{ f.id }}" class="select_all {{ f.category.id }}"/></td>
-                <td>{{ f.id }}</td>
-                <td>{{ f }}</td>
-                <td>{{ f.category }}</td>
-                <td>{{ f.description }}</td>
-                <td>
-                    {% if f.is_closed %}
-                        <a class="btn btn-danger btn-xs" href="{% url forum_switch_closed f.id %}">{% trans 'Yes' %}</a>
-                    {% else %}
-                        <a class="btn btn-success btn-xs" href="{% url forum_switch_closed f.id %}">{% trans 'No' %}</a>
-                    {% endif %}
-                </td>
-                <td>
-                    <a class="btn btn-success" href="{% url edit_forum f.id %}">
-                        <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
-                    </a>
-                    <a class="btn btn-danger" href="{% url delete_forum f.id %}">
-                        <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
-                    </a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="10">No forums have been created yet.</td>
-            </tr>
-            {% endfor %}
+        <table class="table table-bordered table-hover table-condensed sortable">
+            <thead>
+                <tr>
+                    <th colspan="2" data-mainsort="1">#</th>
+                    <th>Forum</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Closed</th>
+                    <th data-defaultsort="disabled">Manage</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in forums %}
+                <tr>
+                    <td><input type="checkbox" id="{{ f.id }}" class="select_all {{ f.category.id }}"/></td>
+                    <td>{{ f.id }}</td>
+                    <td>{{ f }}</td>
+                    <td>{{ f.category }}</td>
+                    <td>{{ f.description }}</td>
+                    <td>
+                        {% if f.is_closed %}
+                            <a class="btn btn-danger btn-xs" href="{% url forum_switch_closed f.id %}">{% trans 'Yes' %}</a>
+                        {% else %}
+                            <a class="btn btn-success btn-xs" href="{% url forum_switch_closed f.id %}">{% trans 'No' %}</a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a class="btn btn-success" href="{% url edit_forum f.id %}">
+                            <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                        </a>
+                        <a class="btn btn-danger" href="{% url delete_forum f.id %}">
+                            <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10">No forums have been created yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
     </div>
 {% endblock %}
