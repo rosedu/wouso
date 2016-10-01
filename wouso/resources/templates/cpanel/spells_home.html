@@ -18,80 +18,88 @@
 
 {% block sectioncontent %}
 
-<table class="table table-bordered table table-hover">
-    <tr>
-        <th></th>
-        <th>Name</th>
-        <th>Title</th>
-        <th>Type</th>
-        <th>Mass</th>
-        <th>Price</th>
-        <th>Due Days</th>
-        <th>Active</th>
-        <th>Manage</th>
-    </tr>
-    {% for p in spells %}
-    <tr>
-        <td>{% artifact p %}</td>
-        <td> {{ p.name }} </td>
-        <td> {{ p.title}} </td>
-        <td> {{ p.type }} </td>
-        <td> {{ p.mass }} </td>
-        <td> {{ p.price }} </td>
-        <td> {{ p.due_days }} </td>
-        <td>
-            {% if p.available %}
-                <a class="btn btn-success btn-xs" href="{% url spell_switch_active p.id %}">{% trans 'Yes' %}</a>
-            {% else %}
-                <a class="btn btn-danger btn-xs" href="{% url spell_switch_active p.id %}">{% trans 'No' %}</a>
-            {% endif %}
+<table class="table table-bordered table table-hover sortable">
+    <thead>
+        <tr>
+            <th data-defaultsort="disabled"></th>
+            <th>Name</th>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Mass</th>
+            <th>Price</th>
+            <th>Due Days</th>
+            <th>Active</th>
+            <th data-defaultsort="disabled">Manage</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in spells %}
+        <tr>
+            <td>{% artifact p %}</td>
+            <td> {{ p.name }} </td>
+            <td> {{ p.title}} </td>
+            <td> {{ p.type }} </td>
+            <td> {{ p.mass }} </td>
+            <td> {{ p.price }} </td>
+            <td> {{ p.due_days }} </td>
+            <td>
+                {% if p.available %}
+                    <a class="btn btn-success btn-xs" href="{% url spell_switch_active p.id %}">{% trans 'Yes' %}</a>
+                {% else %}
+                    <a class="btn btn-danger btn-xs" href="{% url spell_switch_active p.id %}">{% trans 'No' %}</a>
+                {% endif %}
+                    </a>
+            </td>
+            <td nowrap>
+                <a class="btn btn-success" href="{% url edit_spell p.id %}">
+                     <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
                 </a>
-        </td>
-        <td nowrap>
-            <a class="btn btn-success" href="{% url edit_spell p.id %}">
-                 <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
-            </a>
-            <a class="btn btn-danger" href="{% url spell_dell p.id %}" onclick="return confirm('Realy?');">
-                <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
-            </a>
-        </td>
-    </tr>
+                <a class="btn btn-danger" href="{% url spell_dell p.id %}" onclick="return confirm('Realy?');">
+                    <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+                </a>
+            </td>
+        </tr>
         {% empty %}
-            <tr>
-                <td colspan="0" class="text-center" >No spells yet. Please use the Add spell button to add new spells.</td>
-            </tr>
-    {% endfor %}
+        <tr>
+            <td colspan="0" class="text-center" >No spells yet. Please use the Add spell button to add new spells.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 <br />
 <h3 class="page-header">Spell History</h3>
 
-<table class="table table-bordered table table-hover">
-    <tr>
-        <th>Name</th>
-        <th>Mass</th>
-        <th>Bought</th>
-        <th>Used</th>
-        <th>Cleaned</th>
-        <th>Expired</th>
-    </tr>
-    {% for p in spells %}
-    <tr>
-        <td> {{ p.name }} </td>
-        <td> {{ p.mass }} </td>
-        <td> {{ p.history_bought }} </td>
-        <td> {{ p.history_used }} </td>
-        <td> {{ p.history_cleaned }} </td>
-        <td> {{ p.history_expired }} </td>
-    </tr>
-    {% endfor %}
+<table class="table table-bordered table table-hover sortable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Mass</th>
+            <th>Bought</th>
+            <th>Used</th>
+            <th>Cleaned</th>
+            <th>Expired</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in spells %}
+        <tr>
+            <td> {{ p.name }} </td>
+            <td> {{ p.mass }} </td>
+            <td> {{ p.history_bought }} </td>
+            <td> {{ p.history_used }} </td>
+            <td> {{ p.history_cleaned }} </td>
+            <td> {{ p.history_expired }} </td>
+        </tr>
+        {% endfor %}
 
-    <tr>
-        <td><b>Total</b></td>
-        <td></td>
-        <td> {{ spells_bought }} </td>
-        <td> {{ spells_used }} </td>
-        <td> {{ spells_cleaned }} </td>
-        <td> {{ spells_expired }} </td>
-    </tr>
+        <tr>
+            <td><b>Total</b></td>
+            <td></td>
+            <td> {{ spells_bought }} </td>
+            <td> {{ spells_used }} </td>
+            <td> {{ spells_cleaned }} </td>
+            <td> {{ spells_expired }} </td>
+        </tr>
+    </tbody>
 </table>
 {% endblock %}

@@ -104,17 +104,20 @@
 
     {% include 'cpanel/pagination.html' %}
 
-    <table class="table table-bordered table-hover table-condensed">
-        <tr>
-            <th colspan="2">#</th>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Tag</th>
-            <th>Quiz</th>
-            <th>Show quiz after (minutes)</th>
-            <th>Active</th>
-            <th>Manage</th>
-        </tr>
+    <table class="table table-bordered table-hover table-condensed sortable">
+        <thead>
+            <tr>
+                <th colspan="2" data-mainsort="1">#</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Tag</th>
+                <th>Quiz</th>
+                <th>Show quiz after (minutes)</th>
+                <th>Active</th>
+                <th data-defaultsort="disabled">Manage</th>
+            </tr>
+        </thead>
+        <tbody>
             {% for l in lessons %}
             <tr>
                 <td><input type="checkbox" id="{{ l.id }}" class="select_all {{ l.tag.category.id }}"/></td>
@@ -142,10 +145,11 @@
                 </td>
             </tr>
             {% empty %}
-                <tr>
-                    <td colspan="10">No lessons added yet</td>
-                </tr>
+            <tr>
+                <td colspan="10">No lessons added yet</td>
+            </tr>
             {% endfor %}
+        </tbody>
     </table>
 </div>
 

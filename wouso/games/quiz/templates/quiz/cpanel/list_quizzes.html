@@ -26,48 +26,52 @@
 
     {% include 'cpanel/pagination.html' %}
 
-    <table class="table table-bordered table-hover table-condensed">
-        <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Type</th>
-            <th>Time limit (seconds)</th>
-            <th>Points</th>
-            <th>Gold</th>
-            <th>Replay after (days)</th>
-            <th>From</th>
-            <th>Until</th>
-            <th>Manage</th>
-        </tr>
-        {% for q in quizzes %}
-        <tr>
-            <td>{{ q.id }}</td>
-            <td>{{ q.name }}</td>
-            <td>{{ q.category }}</td>
-            <td>
-                {% if q.type == "P" %} Public {% else %} Lesson {% endif %}
-            </td>
-            <td>{{ q.time_limit }}</td>
-            <td>{{ q.points_reward }}</td>
-            <td>{{ q.gold_reward }}</td>
-            <td>{{ q.another_chance }}</td>
-            <td nowrap>{{ q.start }}</td>
-            <td nowrap>{{ q.end }}</td>
-            <td nowrap>
-               <a class="btn btn-success" href="{% url edit_quiz q.id %}">
-                    <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
-                </a>
-                <a class="btn btn-danger" href="{% url delete_quiz q.id %}" onclick="return confirm('Really?');">
-                    <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
-                </a>
-            </td>
-        </tr>
-        {% empty %}
+    <table class="table table-bordered table-hover table-condensed sortable">
+        <thead>
             <tr>
-                <td colspan="12">No quizzes added yet</td>
+                <th>#</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Type</th>
+                <th>Time limit (seconds)</th>
+                <th>Points</th>
+                <th>Gold</th>
+                <th>Replay after (days)</th>
+                <th>From</th>
+                <th>Until</th>
+                <th data-defaultsort="disabled">Manage</th>
             </tr>
-        {% endfor %}
+        </thead>
+        <tbody>
+            {% for q in quizzes %}
+            <tr>
+                <td>{{ q.id }}</td>
+                <td>{{ q.name }}</td>
+                <td>{{ q.category }}</td>
+                <td>
+                    {% if q.type == "P" %} Public {% else %} Lesson {% endif %}
+                </td>
+                <td>{{ q.time_limit }}</td>
+                <td>{{ q.points_reward }}</td>
+                <td>{{ q.gold_reward }}</td>
+                <td>{{ q.another_chance }}</td>
+                <td nowrap>{{ q.start }}</td>
+                <td nowrap>{{ q.end }}</td>
+                <td nowrap>
+                   <a class="btn btn-success" href="{% url edit_quiz q.id %}">
+                        <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                    </a>
+                    <a class="btn btn-danger" href="{% url delete_quiz q.id %}" onclick="return confirm('Really?');">
+                        <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="12">No quizzes added yet</td>
+                </tr>
+            {% endfor %}
+        </tbody>
     </table>
 </div>
 

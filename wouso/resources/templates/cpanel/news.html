@@ -15,29 +15,35 @@
 {% endblock %}
 
 {% block sectioncontent %}
-<table class="table table-bordered table-hover table-condensed">
-    <tr>
-        <th>Title</th>
-        <th>Author</th>
-        <th>Publication date</th>
-        <th>Manage</th>
-    </tr>
-    {% for n in news %}
-    <tr>
-        <td>{{ n.title }}</td>
-        <td>{{ n.author }}</td>
-        <td>{{ n.date_pub }}</td>
-        <td>
-            <a class="btn btn-success" href="{% url edit_news n.pk %}">
-                <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
-            </a>
-            <a class="btn btn-danger" href="{% url del_news n.pk %}">
-                <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
-            </a>
-        </td>
-    </tr>
-    {% empty %}
-        <td colspan="0">No news items.</td>
-    {% endfor %}
+<table class="table table-bordered table-hover table-condensed sortable">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Publication date</th>
+            <th data-defaultsort="disabled">Manage</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for n in news %}
+        <tr>
+            <td>{{ n.title }}</td>
+            <td>{{ n.author }}</td>
+            <td>{{ n.date_pub }}</td>
+            <td>
+                <a class="btn btn-success" href="{% url edit_news n.pk %}">
+                    <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                </a>
+                <a class="btn btn-danger" href="{% url del_news n.pk %}">
+                    <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+                </a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="0">No news items.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endblock %}

@@ -17,26 +17,30 @@
 {% endblock %}
 
 {% block sectioncontent %}
-<table class="table table-bordered table-hover table-condensed">
-    <tr>
-        <th>Role</th>
-        <th>Permissions</th>
-        <th>Members</th>
-        <th>Manage</th>
-    </tr>
-    {% for r in roles %}
-    <tr>
-        <td>{{ r }}</td>
-        <td>
-            {{ r.permissions.all|join:"," }}
-        </td>
-        <td>{{ r.user_set.all.count }}</td>
-        <td>
-            <a href="{% url roles_update r.id %}" class="btn btn-success">
-                <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
-            </a>
-        </td>
-    </tr>
-    {% endfor %}
+<table class="table table-bordered table-hover table-condensed sortable">
+    <thead>
+        <tr>
+            <th>Role</th>
+            <th>Permissions</th>
+            <th>Members</th>
+            <th data-defaultsort="disabled">Manage</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in roles %}
+        <tr>
+            <td>{{ r }}</td>
+            <td>
+                {{ r.permissions.all|join:"," }}
+            </td>
+            <td>{{ r.user_set.all.count }}</td>
+            <td>
+                <a href="{% url roles_update r.id %}" class="btn btn-success">
+                    <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endblock %}

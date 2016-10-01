@@ -22,15 +22,18 @@
 
 {% block tabcontent %}
 <div class="col-md-9">
-<table class="table table-bordered table-hover">
-    <tr>
-        <th></th>
-        <th>Identifier</th>
-        <th>Title</th>
-        <th>Path</th>
-        <th>Manage</th>
-    </tr>
-    {% for a in artifacts %}
+<table class="table table-bordered table-hover sortable">
+    <thead>
+        <tr>
+            <th data-defaultsort="disabled"></th>
+            <th>Identifier</th>
+            <th>Title</th>
+            <th>Path</th>
+            <th data-defaultsort="disabled">Manage</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for a in artifacts %}
         <tr>
             <td>{% artifact a %}</td>
             <td>{{ a.name }}</td>
@@ -45,9 +48,12 @@
                 </a>
             </td>
         </tr>
-    {% empty %}
-        <tr><td colspan="0">No artifacts added.</td></tr>
-    {% endfor %}
+        {% empty %}
+        <tr>
+            <td colspan="0">No artifacts added.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 </div>
 <div class="panel panel-default col-md-3">

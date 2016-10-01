@@ -15,27 +15,31 @@
 {% endblock %}
 
 {% block sectioncontent %}
-<table class="table table-bordered table-condensed table-hover">
-    <tr>
-        <th>Name</th>
-        <th>Title</th>
-        <th>Hidden</th>
-        <th>Manage</th>
-    </tr>
-    {% for p in pages %}
-    <tr>
-        <td>{{ p.name }}</td>
-        <td>{{ p.title }}</td>
-        <td>{{ p.hidden }}</td>
-        <td>
-            <a class="btn btn-success" href="{% url edit_static_page p.pk %}">
-                <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
-            </a>
-            <a class="btn btn-danger" href="{% url del_static_page p.pk %}">
-                <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
-            </a>
-        </td>
-    </tr>
-    {% endfor %}
+<table class="table table-bordered table-condensed table-hover sortable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Title</th>
+            <th>Hidden</th>
+            <th data-defaultsort="disabled">Manage</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for p in pages %}
+        <tr>
+            <td>{{ p.name }}</td>
+            <td>{{ p.title }}</td>
+            <td>{{ p.hidden }}</td>
+            <td>
+                <a class="btn btn-success" href="{% url edit_static_page p.pk %}">
+                    <span class="glyphicon glyphicon-edit"></span>{% trans 'Edit' %}
+                </a>
+                <a class="btn btn-danger" href="{% url del_static_page p.pk %}">
+                    <span class="glyphicon glyphicon-remove"></span>{% trans 'Delete' %}
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endblock %}
