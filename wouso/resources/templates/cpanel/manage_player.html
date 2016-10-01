@@ -22,9 +22,6 @@
 <div class="col-md-8">
     <h4>Manage:</h4>
 
-    {% endwith %}
-    {% endblock %}
-
     {% if form.errors %}
         <p style="color: red;">
             Please correct the error{{ form.errors|pluralize }} below.
@@ -69,5 +66,7 @@
         </a>
     </div>
 </div>
+{% endwith %}
+{% endblock %}
 
 {% endblock %}
