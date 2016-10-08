@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db import models
 from django.core.cache import cache
 
@@ -156,3 +158,30 @@ class IntegerListSetting(Setting):
 
     def form(self):
         return ''
+
+
+class DatetimeSetting(Setting):
+    """ Setting storing datetime values as strings """
+    class Meta:
+        proxy = True
+
+    help_text = """The date used for the ach-head-start achievement.
+                Format: dd/mm/yyyy."""
+
+    def validate(self, v):
+        try:
+            datetime.strptime(v, "%d/%m/%Y")
+            return True
+        except ValueError:
+            return False
+
+    def set_value(self, v):
+        if self.validate(v):
+            self.value = unicode(v)
+            self.save()
+
+    def get_value(self):
+        try:
+            return datetime.strptime(self.value, "%d/%m/%Y")
+        except:
+            return datetime.now()

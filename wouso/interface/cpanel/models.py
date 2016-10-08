@@ -25,11 +25,12 @@ class Customization(ConfigGroup):
         default_race.choices = [(unicode(g), str(g.id)) for g in Race.objects.all()]
 
         question_number_of_answers = IntegerSetting.get('question_number_of_answers')
-
         level_limits = IntegerListSetting.get('level_limits')
+        head_start_date = DatetimeSetting.get('head_start_date')
 
-        return [title, intro, theme, logo, hf, default_group, default_race, einfo, question_number_of_answers,
-                level_limits]
+        return [title, intro, theme, logo, hf, einfo,
+                default_group, default_race,
+                question_number_of_answers, level_limits, head_start_date]
 
 
 class Switchboard(ConfigGroup):
