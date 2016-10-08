@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_noop
 from core import scoring
 from core.scoring.sm import score
 from wouso.core.common import App
+from wouso.core.god import God
 from wouso.core.user.models import Player
 from wouso.core.scoring.models import History
 from wouso.interface.apps.messaging.models import Message
@@ -401,7 +402,8 @@ class Achievements(App):
                 # (player, start_hour, start_day, start_month, hour_offset)
                 # server start date: hour, day, month
                 # hour_offset = offset from start date when player will be rewarded
-                if login_at_start(player, start_day=12, start_month=10):
+                head_start_date = God.get_head_start_date()
+                if login_at_start(player, start_day=head_start_date.day, start_month=head_start_date.month):
                     cls.earn_achievement(player, 'ach-head-start')
 
 

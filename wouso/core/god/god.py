@@ -2,7 +2,7 @@ from django.utils.translation import ugettext as _
 from wouso.core import signals
 from wouso.core.magic.models import Artifact, ArtifactGroup, SpellHistory, NoArtifactLevel
 from wouso.core.game import get_games
-from wouso.core.config.models import IntegerListSetting
+from wouso.core.config.models import DatetimeSetting, IntegerListSetting
 
 
 class DefaultGod:
@@ -14,6 +14,9 @@ class DefaultGod:
 
     def get_level_limits(self):
         return IntegerListSetting.get('level_limits').get_value()
+
+    def get_head_start_date(self):
+        return DatetimeSetting.get('head_start_date').get_value()
 
     def get_system_formulas(self):
         """ Return formulas used by the meta wouso game.

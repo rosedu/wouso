@@ -49,6 +49,13 @@
         }
     },
     {
+        "pk": "head_start_date",
+        "model": "config.setting",
+        "fields": {
+            "value": "25/12/2016"
+        }
+    },
+    {
         "pk": "disable-Qproposal",
         "model": "config.setting",
         "fields": {
