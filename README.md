@@ -29,15 +29,15 @@ The following packages need to be installed:
 * libsasl2-dev
 * libssl-dev
 
-On a **Debian-based** system run the command:
+On **Debian-based** systems run the command:
 
     sudo apt-get install python2.7 python-pip python-django python-dev python-virtualenv libldap2-dev libsasl2-dev libssl-dev
 
-On a **Fedora 22** system run the command:
+On **Fedora 22 or higher** systems run the command:
 
     sudo dnf -y install python-pip python-django python-devel python-virtualenv openldap-devel libgsasl-devel openssl-devel
 
-On a **Fedora 21 or lower** system run the command:
+On **Fedora 21 or lower** systems run the command:
 
     sudo yum -y install python-pip python-django python-devel python-virtualenv openldap-devel libgsasl-devel openssl-devel
 
