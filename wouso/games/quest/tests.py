@@ -47,7 +47,7 @@ class QuestStatistics(WousoTest):
         self.quest.check_answer(self.quest_user2, 'second answer')
         self.assertTrue(self.quest_user1.finished)
         self.assertTrue(self.quest_user2.finished)
-        
+
     def test_only_one_player_finished(self):
         self.quest_user1.current_quest = self.quest
         self.quest_user2.current_quest = self.quest
@@ -55,7 +55,7 @@ class QuestStatistics(WousoTest):
         self.quest.check_answer(self.quest_user1, 'second answer')
         self.assertTrue(self.quest_user1.finished)
         self.assertFalse(self.quest_user2.finished)
-    
+
     def test_players_are_registered_if_they_start_a_quest(self):
         self.quest_user1.current_quest = self.quest
         self.quest_user2.current_quest = self.quest
@@ -90,31 +90,31 @@ class QuestTestCase(WousoTest):
         profile = self.user.get_profile()
         self.quest_user = profile.get_extension(QuestUser)
         scoring.setup_scoring()
- 
+
     def tearDown(self):
         #self.user.delete()
         pass
- 
+
     def test_check_answer(self):
         cat = Category.add('quest')
         question = Question.objects.create(text='test_q', answer_type='F',
                                            category=cat, active=True)
         answer1 = Answer.objects.create(text='test_a1', correct=True, question=question)
         answer2 = Answer.objects.create(text='test_a2', correct=True, question=question)
- 
+
         start = datetime.datetime.now()
         end = datetime.datetime.now() + timedelta(days=1)
         quest = Quest.objects.create(start=start, end=end)
- 
+
         quest.questions.add(question)
- 
+
         self.assertEqual(quest.count, 1)
- 
+
         self.quest_user.current_quest = quest
         #self.quest_user.current_level = 0
- 
+
         quest.check_answer(self.quest_user, 'Test_a2')
- 
+
         self.assertTrue(self.quest_user.finished)
 
     def test_check_bonus_for_quest(self):
@@ -138,7 +138,7 @@ class QuestTestCase(WousoTest):
         fact = RequestFactory()
         request = fact.get(reverse('register_results', args=[1]))
         request.user = admin
-        
+
         #get initial points
         initial_points = pl.points
 
@@ -187,7 +187,7 @@ class TestQuestViews(WousoTest):
         questuser2.current_quest = self.q
         self.q.check_answer(questuser1, 'first answer')
         self.q.check_answer(questuser2, 'first answer')
-        
+
         c = Client()
         c.login(username='testuser1', password='test')
         response = c.get(reverse('quest_history'))

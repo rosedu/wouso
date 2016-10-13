@@ -256,17 +256,17 @@ jQuery.autocomplete = function(input, options) {
 			return;
 		}
 		hidingResults = true;
-	
+
 		if (timeout) {
 			clearTimeout(timeout);
 		}
-		
+
 		var v = $input.removeClass(options.loadingClass).val();
-		
+
 		if ($results.is(":visible")) {
 			$results.hide();
 		}
-		
+
 		if (options.mustMatch) {
 			if (!input.lastSelected || input.lastSelected != v) {
 				selectItem(null);
@@ -337,16 +337,16 @@ jQuery.autocomplete = function(input, options) {
 			}
 			li.extra = extra;
 			ul.appendChild(li);
-			
+
 			$(li).hover(
 				function() { $("li", ul).removeClass("ac_over"); $(this).addClass("ac_over"); active = $("li", ul).indexOf($(this).get(0)); },
 				function() { $(this).removeClass("ac_over"); }
-			).click(function(e) { 
+			).click(function(e) {
 				e.preventDefault();
 				e.stopPropagation();
 				selectItem(this)
 			});
-			
+
 		}
 		$(ul).mousedown(function() {
 			mouseDownOnSelect = true;
@@ -376,7 +376,7 @@ jQuery.autocomplete = function(input, options) {
 	};
 
 	function makeUrl(q) {
-		var sep = options.url.indexOf('?') == -1 ? '?' : '&'; 
+		var sep = options.url.indexOf('?') == -1 ? '?' : '&';
 		var url = options.url + sep + "q=" + encodeURI(q);
 		for (var i in options.extraParams) {
 			url += "&" + i + "=" + encodeURI(options.extraParams[i]);

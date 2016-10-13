@@ -102,7 +102,7 @@ class TestSpecialQuestViews(WousoTest):
         # Button 'Invite' is displayed
         response = self.c.get(reverse('player_profile', args=[user2.pk]))
         self.assertContains(response, 'Invite in my Special Quest group')
-        
+
         # Button 'Special mate' is displayed
         user2.group = new_group
         user2.save()

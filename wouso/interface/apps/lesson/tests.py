@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from wouso.interface.apps.lesson.models import LessonCategory, LessonTag, Lesson
 
-class LessonCategoryTestCase(TestCase):  
+class LessonCategoryTestCase(TestCase):
 
     @raises(IntegrityError)
     def test_lesson_cateory_name_is_unique(self):
@@ -14,11 +14,11 @@ class LessonCategoryTestCase(TestCase):
         lesson_category2.save()
 
 
-class LessonTestCase(TestCase):  
+class LessonTestCase(TestCase):
 
     @raises(IntegrityError)
     def test_lesson_tag_is_unique(self):
-        lesson_tag = LessonTag.objects.create()	
+        lesson_tag = LessonTag.objects.create()
         lesson = Lesson.objects.create(tag=lesson_tag)
         lesson2 = Lesson.objects.create(tag=lesson_tag)
         lesson1.save()

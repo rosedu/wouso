@@ -23,7 +23,7 @@ class BazaarView(ListView):
     paginate_by = 40
 
     def get_queryset(self):
-        activity_list = Activity.objects.filter(Q(action='spell-buy') | Q(action='earned-ach') | 
+        activity_list = Activity.objects.filter(Q(action='spell-buy') | Q(action='earned-ach') |
                             Q(action__contains='gold') | Q(action='cast')).order_by('-timestamp')
         return activity_list
 

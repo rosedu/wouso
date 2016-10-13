@@ -175,7 +175,7 @@ class TestQotdViews(WousoTest):
 
         self.c = Client()
         self.c.login(username='testuser1', password='test')
-        
+
     def test_qotd_index(self):
         response = self.c.get(reverse('qotd_index_view'))
         self.assertContains(response, 'a 1')
