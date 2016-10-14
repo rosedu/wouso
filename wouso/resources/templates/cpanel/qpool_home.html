@@ -131,9 +131,13 @@
                         <div class="text-left">
                             <span class="question_preview" onclick="$('#qc_{{q.id}}').toggle();" title="Click for answers">{{ q|safe }}</span>
                             <div id="qc_{{ q.id }}" class="collapse">
-                                {% for a in q.answers %}
-                                    {% if a.correct %}+{% else %}-{% endif %}{{ a|safe }}<br/>
-                                {% endfor %}
+                                {% if q.answer_type == 'F' %}
+                                    <em>This question has a free text answer.</em>
+                                {% else %}
+                                    {% for a in q.answers %}
+                                        {% if a.correct %}+{% else %}-{% endif %}{{ a|safe }}<br/>
+                                    {% endfor %}
+                                {% endif %}
                             </div>
                         </div>
                         <span class="points">{% if not q.is_valid %}<span class="wrong">Invalid</span>{% endif %}</span>
