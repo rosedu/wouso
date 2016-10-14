@@ -135,7 +135,9 @@
                                     <em>This question has a free text answer.</em>
                                 {% else %}
                                     {% for a in q.answers %}
-                                        {% if a.correct %}+{% else %}-{% endif %}{{ a|safe }}<br/>
+                                        {% if a.active %}
+                                            {% if a.correct %}+{% else %}-{% endif %}{{ a|safe }}<br/>
+                                        {% endif %}
                                     {% endfor %}
                                 {% endif %}
                             </div>
