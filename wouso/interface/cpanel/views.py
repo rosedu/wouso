@@ -465,7 +465,8 @@ def question_switch(request, id):
     question = get_object_or_404(Question, pk=id)
 
     # qproposal - endorse part
-    proposed_cat = Category.objects.filter(name='proposed')[0]
+    categories = Category.objects.filter(name='proposed')
+    proposed_cat = categories[0] if categories else None
     if question.category == proposed_cat:
         player = question.proposed_by.get_profile()
         staff_user = request.user
