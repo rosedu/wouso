@@ -163,6 +163,8 @@ class Answer(models.Model):
     active = models.BooleanField(default=True)
 
     def __unicode__(self):
+        if not self.text and not self.rich_text:
+            return ''
         return self.text if self.text else self.rich_text
 
 
