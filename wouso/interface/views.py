@@ -122,7 +122,7 @@ def homepage(request, page=u'1'):
     for g in topgroups:
         g.position = TopHistory.get_user_position(topuser, relative_to=g)
 
-    if detect_mobile(request) and BoolSetting.get('disable-Mobile-Version').get_value() is False:
+    if detect_mobile(request) and BoolSetting.get('setting-mobile-version').get_value():
         template = 'mobile_index.html'
     else:
         template = 'site_index.html'

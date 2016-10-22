@@ -1,0 +1,79 @@
+[
+    {
+        "pk": "setting-challengegame",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-grandchallengegame",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-qotdgame",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-questgame",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-quizgame",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-qpecialchallengegame",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-specialquestgame",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-workshopgame",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-magic",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-bazaar",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-bazaar-exchange",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    }
+]

@@ -33,7 +33,7 @@ class BazaarView(ListView):
         spells = Spell.objects.all().order_by('-available', 'level_required')
 
         # Disable exchange for real
-        exchange_disabled = BoolSetting.get('disable-Bazaar-Exchange').get_value()
+        exchange_disabled = BoolSetting.get('setting-bazaar-exchange').get_value() is False
         try:
             rate = scoring.calculate('gold-points-rate', gold=1)['points']
             rate2 = round(1/scoring.calculate('points-gold-rate', points=1)['gold'])
@@ -65,7 +65,7 @@ def bazaar_exchange(request):
 
     player = request.user.get_profile()
     message, error = '', ''
-    if BoolSetting.get('disable-Bazaar-Exchange').get_value():
+    if BoolSetting.get('setting-bazaar-exchange').get_value() is False:
         error = _("Exchange is disabled")
     elif request.method == 'POST':
         try:
@@ -151,7 +151,7 @@ def magic_cast(request, destination=None, spell=None):
 
     error = ''
 
-    if Bazaar.disabled() or BoolSetting.get('disable-Magic').get_value():
+    if Bazaar.disabled() or BoolSetting.get('setting-magic').get_value() is False:
         error = _("Magic is disabled")
     elif request.method == 'POST':
         spell = get_object_or_404(Spell, pk=request.POST.get('spell', 0))

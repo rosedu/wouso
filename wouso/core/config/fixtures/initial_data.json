@@ -1,5 +1,215 @@
 [
     {
+        "pk": "setting-ChallengeGame",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-GrandChallengeGame",
+        "model": "config.setting",
+        "fields": {
+            "value": "False"
+        }
+    },
+    {
+        "pk": "setting-QotdGame",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-QuestGame",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-QuizGame",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-SpecialChallengeGame",
+        "model": "config.setting",
+        "fields": {
+            "value": "False"
+        }
+    },
+    {
+        "pk": "setting-SpecialQuestGame",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-WorkshopGame",
+        "model": "config.setting",
+        "fields": {
+            "value": "False"
+        }
+    },
+    {
+        "pk": "theme",
+        "model": "config.setting",
+        "fields": {
+            "value": "default"
+        }
+    },
+    {
+        "pk": "setting-question-proposal",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-top",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-magic",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-bazaar",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-bazaar-exchange",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-statistics",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-challenge-top",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-top-pyramid",
+        "model": "config.setting",
+        "fields": {
+            "value": "False"
+        }
+    },
+    {
+        "pk": "setting-lesson",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-messaging",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-file",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-mobile-version",
+        "model": "config.setting",
+        "fields": {
+            "value": "False"
+        }
+    },
+    {
+        "pk": "setting-staff-only-login",
+        "model": "config.setting",
+        "fields": {
+            "value": "False"
+        }
+    },
+    {
+        "pk": "setting-header-autoreload",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-random-challenge",
+        "model": "config.setting",
+        "fields": {
+            "value": "True"
+        }
+    },
+    {
+        "pk": "setting-top-coins",
+        "model": "config.setting",
+        "fields": {
+            "value": ""
+        }
+    },
+    {
+        "pk": "title",
+        "model": "config.setting",
+        "fields": {
+            "value": "World of USO - next\r\n"
+        }
+    },
+    {
+        "pk": "intro",
+        "model": "config.setting",
+        "fields": {
+            "value": "\"value\": \"World of USO e un joc simplu realizat pentru studenții cursului de USO (Utilizarea Sistemelor de Operare) din Facultatea de Automatică și Calculatoare a Universității Politehnica București.\\r\\n\\r\\nWorld of USO are 3 părți: Question of the Day, Challenge și The Quest\""
+        }
+    },
+    {
+        "pk": "extrainfo",
+        "model": "config.setting",
+        "fields": {
+            "value": ""
+        }
+    },
+    {
+        "pk": "hidden_footer",
+        "model": "config.setting",
+        "fields": {
+            "value": ""
+        }
+    },
+    {
+        "pk": "logo",
+        "model": "config.setting",
+        "fields": {
+            "value": ""
+        }
+    },
+    {
         "pk": "default_group",
         "model": "config.setting",
         "fields": {
@@ -14,27 +224,6 @@
         }
     },
     {
-        "pk": "test",
-        "model": "config.setting",
-        "fields": {
-            "value": "test"
-        }
-    },
-    {
-        "pk": "title",
-        "model": "config.setting",
-        "fields": {
-            "value": "World of USO - next"
-        }
-    },
-    {
-        "pk": "intro",
-        "model": "config.setting",
-        "fields": {
-            "value": "World of USO e un joc simplu realizat pentru studen\u021bii cursului de USO (Utilizarea Sistemelor de Operare) din Facultatea de Automatic\u0103 \u0219i Calculatoare a Universit\u0103\u021bii Politehnica Bucure\u0219ti.\r\n\r\nWorld of USO are 3 p\u0103r\u021bi: Question of the Day, Challenge \u0219i The Quest"
-        }
-    },
-    {
         "pk": "question_number_of_answers",
         "model": "config.setting",
         "fields": {
@@ -42,70 +231,14 @@
         }
     },
     {
-        "pk": "level_limits",
-        "model": "config.setting",
-        "fields": {
-            "value": "500 1000 1500 2000 2500 3000 3500"
-        }
-    },
-    {
         "pk": "head_start_date",
         "model": "config.setting",
         "fields": {
-            "value": "25/12/2016"
+            "value": "01/10/2016"
         }
     },
     {
-        "pk": "disable-Qproposal",
-        "model": "config.setting",
-        "fields": {
-            "value": ""
-        }
-    },
-    {
-        "pk": "theme",
-        "model": "config.setting",
-        "fields": {
-            "value": ""
-        }
-    },
-    {
-        "pk": "disable-QotdGame",
-        "model": "config.setting",
-        "fields": {
-            "value": ""
-        }
-    },
-    {
-        "pk": "disable-SpecialQuestGame",
-        "model": "config.setting",
-        "fields": {
-            "value": ""
-        }
-    },
-    {
-        "pk": "disable-Top",
-        "model": "config.setting",
-        "fields": {
-            "value": ""
-        }
-    },
-    {
-        "pk": "disable-chall-was-set-up-SecurityRule",
-        "model": "config.setting",
-        "fields": {
-            "value": ""
-        }
-    },
-    {
-        "pk": "disable-login-multiple-account-SecurityRule",
-        "model": "config.setting",
-        "fields": {
-            "value": ""
-        }
-    },
-    {
-        "pk": "disable-reported-user-SecurityRule",
+        "pk": "sidebar-order",
         "model": "config.setting",
         "fields": {
             "value": ""

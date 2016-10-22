@@ -4,6 +4,8 @@ from django.test import TestCase
 
 
 class WousoTest(TestCase):
+    fixtures = ['test_data.json']
+
     def setUp(self):
         cache.clear()
 

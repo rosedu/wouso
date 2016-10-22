@@ -4,6 +4,8 @@ from models import Setting, BoolSetting, HTMLSetting, ChoicesSetting
 
 
 class TestSettings(TestCase):
+    fixtures = ['test.json']
+
     def setUp(self):
         cache.clear()
 
