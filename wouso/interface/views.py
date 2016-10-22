@@ -15,6 +15,7 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 
 from wouso.core import signals
+from wouso.core.config.models import BoolSetting
 from wouso.interface import logger, detect_mobile
 from wouso.interface.apps.pages.models import NewsItem
 from wouso.core.game import get_games
@@ -121,7 +122,7 @@ def homepage(request, page=u'1'):
     for g in topgroups:
         g.position = TopHistory.get_user_position(topuser, relative_to=g)
 
-    if detect_mobile(request):
+    if detect_mobile(request) and BoolSetting.get('disable-Mobile-Version').get_value() is False:
         template = 'mobile_index.html'
     else:
         template = 'site_index.html'

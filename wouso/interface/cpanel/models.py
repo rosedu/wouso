@@ -41,7 +41,7 @@ class Switchboard(ConfigGroup):
         p = []
         for a in ('Qproposal', 'Top', 'Magic', 'Bazaar', 'Bazaar-Exchange',
                   'Statistics', 'Challenge-Top', 'Top-Pyramid', 'Lesson',
-                  'MessageApp', 'File'):
+                  'MessageApp', 'File', 'Mobile-Version'):
             p.append(BoolSetting.get('disable-%s' % a))
 
         staff_only_login = BoolSetting.get('staff-only-login')
