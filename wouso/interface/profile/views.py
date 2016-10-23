@@ -107,7 +107,7 @@ def user_profile(request, id, page=u'1'):
     challenge_launched_recently = Challenge.exist_last_day(date.today(),
                                         request.user.get_profile(), profile)
     specialquest_button = SpecialQuestGame.get_specialquest_user_button(request, profile)
-    config_disable_magic = BoolSetting.get('disable-Magic').get_value()
+    config_disable_magic = BoolSetting.get('setting-magic').get_value() is False
 
     return render_to_response('profile/profile.html',
                               {'profile': profile,

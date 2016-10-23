@@ -1,4 +1,5 @@
 from datetime import datetime
+from string import capwords
 
 from django.db import models
 from django.core.cache import cache
@@ -56,14 +57,19 @@ class Setting(models.Model):
 
     @property
     def title(self):
+        name = self.name
         """ Capitalize name to create a setting title for display """
-        if self.name.startswith('disable-'):
-            # Remove 'disable-', capitalize, remove '-' and add a space before
-            # game
-            # Ex: challengegame -> Challenge game
-            return self.name[8:].capitalize().replace('game', ' game').replace('-', ' ')
+        if 'Game' in self.name:
+            # add a space before game
+            # Ex: Challengegame -> Challenge game
+            name = self.name.replace('Game', ' Game')
 
-        return self.name.capitalize().replace('_', ' ')
+        if name.startswith('setting-'):
+            name = name[len('setting-'):]
+
+        name = name.replace('_', '-')
+
+        return capwords(name, '-').replace('-', ' ')
 
     def __unicode__(self):
         return self.name
@@ -84,7 +90,7 @@ class BoolSetting(Setting):
         if isinstance(b, bool):
             self.value = 'True' if b else 'False'
         else:
-            self.value = not b
+            self.value = b
         self.save()
 
     def get_value(self):
@@ -101,7 +107,7 @@ class BoolSetting(Setting):
             </div>
         </div>
         """ % (self.name, self.title, self.help_text if hasattr(self, 'help_text') else '',
-               self.name, self.name, '' if self.get_value() else 'checked')
+               self.name, self.name, 'checked' if self.get_value() else '')
 
 
 class ChoicesSetting(Setting):

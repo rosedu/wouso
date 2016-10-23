@@ -255,7 +255,7 @@ class Top(App):
                                  'is_top': is_top,
                                  'top': Top,
                                  'coin_top_setting': kls.coin_top_settings(),
-                                 'config_disable_challenge_top': BoolSetting.get('disable-Challenge-Top').get_value()
+                                 'config_disable_challenge_top': BoolSetting.get('setting-challenge-top').get_value() is False
                                 })
 
     @classmethod
@@ -341,7 +341,7 @@ class Top(App):
 
         Example: ['gold', 'karma']
         """
-        return [c for c in Setting.get('top-coins').get_value().split(',') if c] or []
+        return [c for c in Setting.get('setting-top-coins').get_value().split(',') if c] or []
 
     @classmethod
     def get_coin_position(cls, coin, user):

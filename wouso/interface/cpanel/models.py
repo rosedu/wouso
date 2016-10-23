@@ -39,17 +39,17 @@ class Switchboard(ConfigGroup):
     @staticmethod
     def props():
         p = []
-        for a in ('Qproposal', 'Top', 'Magic', 'Bazaar', 'Bazaar-Exchange',
-                  'Statistics', 'Challenge-Top', 'Top-Pyramid', 'Lesson',
-                  'MessageApp', 'File', 'Mobile-Version'):
-            p.append(BoolSetting.get('disable-%s' % a))
+        for a in ('question-proposal', 'top', 'magic', 'bazaar', 'bazaar-exchange',
+                  'statistics', 'challenge-top', 'top-pyramid', 'lesson',
+                  'messaging', 'file', 'mobile-version'):
+            p.append(BoolSetting.get('setting-%s' % a))
 
-        staff_only_login = BoolSetting.get('staff-only-login')
+        staff_only_login = BoolSetting.get('setting-staff-only-login')
         staff_only_login.help_text = 'Staff only login?'
         p.append(staff_only_login)
-        p.append(BoolSetting.get('header_autoreload'))
-        p.append(BoolSetting.get('random_challenge'))
-        coin_tops = Setting.get('top-coins')
+        p.append(BoolSetting.get('setting-header-autoreload'))
+        p.append(BoolSetting.get('setting-random-challenge'))
+        coin_tops = Setting.get('setting-top-coins')
         coin_tops.help_text = 'Coin names, comma separated'
         p.append(coin_tops)
 
@@ -62,6 +62,6 @@ class GamesSwitchboard(ConfigGroup):
     def props(self):
         p = []
         for g in get_games():
-            p.append(BoolSetting.get('disable-%s' % g.__name__))
+            p.append(BoolSetting.get('setting-%s' % g.__name__.lower()))
 
         return p

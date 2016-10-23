@@ -424,10 +424,10 @@ class CpanelViewsTest(WousoTest):
         self.assertContains(response, 'Games', status_code=200)
 
     def test_games_view_post(self):
-        data = {'disable-WorkshopGame': 'True'}
+        data = {'setting-workshopgame': 'True'}
         response = self.client.post(reverse('customization_games'), data)
         response = self.client.get(reverse('customization_games'))
-        self.assertContains(response, 'id="disable-WorkshopGame" checked')
+        self.assertContains(response, 'id="setting-workshopgame" checked')
 
     @unittest.skip  # TODO fixme
     def test_qpool_importer_view(self):

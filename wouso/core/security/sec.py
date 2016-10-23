@@ -83,7 +83,7 @@ class Security(App):
         rules = filter(lambda x: x[2] == action, cls.SECURITY_RULES)
         for rule in rules:
             # check if rule is not disabled
-            if not BoolSetting.objects.filter(pk__startswith='disable-%s' % rule[0]):
+            if not BoolSetting.objects.filter(pk__startswith='%s' % rule[0]):
                 (guilty, player, external_id) = SecurityInspector.check(rule[0], **kwargs)
                 if guilty:
                     formula = Formula.get('%s-infraction' % rule[0], 'general-infraction')

@@ -7,7 +7,7 @@ class App:
 
     @classmethod
     def name(kls):
-        return kls.__name__
+        return kls.__name__.lower()
 
     @classmethod
     def disabled(kls):
@@ -15,7 +15,7 @@ class App:
         """
         from wouso.core.config.models import BoolSetting
 
-        return BoolSetting.get('disable-%s' % kls.name()).get_value()
+        return BoolSetting.get('setting-%s' % kls.name()).get_value() is False
 
     @classmethod
     def get_modifiers(kls):
