@@ -48,6 +48,34 @@ class AddQuestionForm(forms.Form):
 
         self.instance = instance
 
+    def clean(self):
+        data = self.cleaned_data
+        num = IntegerSetting.get('question_number_of_answers').get_value()
+
+        # Check the question text. If the normal text is missing, check for the
+        # rich text. If that is missing too, something is wrong. Also, don't
+        # allow any empty active answers.
+        if 'text' in data and data['text'].strip() == '':
+            if 'rich_text' not in data or data['rich_text'].strip() == '':
+                raise forms.ValidationError("Invalid question text")
+            else:
+                for i in xrange(1, num + 1):
+                    if data['rich_active_%d' % i] is True and \
+                       data['rich_answer_%d' % i].strip() == '':
+                            raise forms.ValidationError("Empty active answer")
+        else:
+            for i in xrange(1, num + 1):
+                if data['active_%d' % i] is True and \
+                   data['answer_%d' % i].strip() == '':
+                        raise forms.ValidationError("Empty active answer")
+
+        # In case of QotD, check for a valid schedule.
+        if 'category' in data and data['category'] == 'qotd':
+            if 'schedule' not in data or data['schedule'] is None:
+                raise forms.ValidationError("Invalid schedule")
+
+        return self.cleaned_data
+
     def save(self):
         data = self.cleaned_data
 
@@ -141,6 +169,34 @@ class EditQuestionForm(forms.Form):
         self.fields['rich_text'] = forms.CharField(required=False, widget=CKEditorWidget(), initial=instance.rich_text)
 
         self.instance = instance
+
+    def clean(self):
+        data = self.cleaned_data
+        num = IntegerSetting.get('question_number_of_answers').get_value()
+
+        # Check the question text. If the normal text is missing, check for the
+        # rich text. If that is missing too, something is wrong. Also, don't
+        # allow any empty active answers.
+        if 'text' in data and data['text'].strip() == '':
+            if 'rich_text' not in data or data['rich_text'].strip() == '':
+                raise forms.ValidationError("Invalid question text")
+            else:
+                for i in xrange(1, num + 1):
+                    if data['rich_active_%d' % i] is True and \
+                       data['rich_answer_%d' % i].strip() == '':
+                            raise forms.ValidationError("Empty active answer")
+        else:
+            for i in xrange(1, num + 1):
+                if data['active_%d' % i] is True and \
+                   data['answer_%d' % i].strip() == '':
+                        raise forms.ValidationError("Empty active answer")
+
+        # In case of QotD, check for a valid schedule.
+        if 'category' in data and data['category'] == 'qotd':
+            if 'schedule' not in data or data['schedule'] is None:
+                raise forms.ValidationError("Invalid schedule")
+
+        return self.cleaned_data
 
     def save(self):
         data = self.cleaned_data

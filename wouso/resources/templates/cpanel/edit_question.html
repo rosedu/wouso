@@ -33,7 +33,12 @@
 
 {% block sectioncontent %}
     <form class="form-horizontal" method="post">
-        {{ form.errors }}
+        <div style="color: red;">
+            {% if form.errors %}
+                {{ form.errors }}
+            {% endif %}
+        </div>
+
         <p class="formfield">
             <label>Proposed by</label>
             {{ question.proposed_by }}
