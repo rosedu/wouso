@@ -1,6 +1,7 @@
 exclude_paths:
 - "**/migrations/**/*"
 
+max-line-length: 99
 engines:
   pep8:
     enabled: true
