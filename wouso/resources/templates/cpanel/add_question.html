@@ -52,6 +52,12 @@
 {% endblock %}
 
 {% block subsectioncontent %}
+    <div style="color: red;">
+        {% if form.errors %}
+            {{ form.errors }}
+        {% endif %}
+    </div>
+
     <form class="form-horizontal" method="post">
         <div class="form-group">
             <label for="text_type" class="control-label col-sm-3">Select question text type</label>

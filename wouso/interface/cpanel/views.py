@@ -411,28 +411,28 @@ def qpool_home(request, cat='qotd', page=u'1', tag=None):
                               context_instance=RequestContext(request))
 
 
-class AddQuestionView(FormView):
-    form_class = AddQuestionForm
-    template_name = 'cpanel/add_question.html'
+@permission_required('config.change_setting')
+def add_question(request):
+    context = {}
+    num = IntegerSetting.get('question_number_of_answers').get_value()
 
-    def get_form_kwargs(self):
-        return dict(data=self.request.POST)
+    if request.method == 'POST':
+        form = AddQuestionForm(request.POST)
+        if form.is_valid():
+            new_question = form.save()
+            return redirect('qpool_home', cat=new_question.category.name)
+    else:
+        form = AddQuestionForm()
 
-    def form_valid(self, form):
-        new_question = form.save()
-        return redirect('qpool_home', cat=new_question.category.name)
+    answers_range = [str(i) for i in xrange(1, num + 1)]
+    categories = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
+    context['categories'] = categories
+    context['answers_range'] = answers_range
+    context['form'] = form
 
-    def get_context_data(self, **kwargs):
-        context = super(AddQuestionView, self).get_context_data(**kwargs)
-        answers_range = [str(i) for i in range(1, IntegerSetting.get('question_number_of_answers').get_value() + 1)]
-        categories = [(c.name.capitalize(), c.name) for c in Category.objects.all()]
-        context['categories'] = categories
-        context['answers_range'] = answers_range
-        return context
-
-
-add_question = permission_required('config.change_setting')(
-    AddQuestionView.as_view())
+    return render_to_response('cpanel/add_question.html',
+                              context,
+                              context_instance=RequestContext(request))
 
 
 @permission_required('config.change_setting')
