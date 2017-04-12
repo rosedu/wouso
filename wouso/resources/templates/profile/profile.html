@@ -54,7 +54,7 @@
             {% else %}
                 <a class="button button-min" href="{% url magic_cast profile.id%}" title="{% trans 'Cast a spell on yourself' %}">✤</a>
             {% endif %}
-            
+
         {% endif %}
         {% if profile.user.id == user.id %}
             <a class="button button-min" href="{% url set_profile %}" title="{% trans 'Set your profile' %}">S</a>

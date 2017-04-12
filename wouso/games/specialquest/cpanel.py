@@ -27,7 +27,7 @@ class GroupsView(ListView):
     template_name = 'specialquest/cpanel_groups.html'
     context_object_name = 'groups'
 
-    
+
 groups = permission_required('specialquest.change_specialquestuser')(GroupsView.as_view())
 
 

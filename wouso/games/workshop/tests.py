@@ -103,7 +103,7 @@ class TestAssessment(WousoTest):
 
         r12 = Review.objects.create(answer=ans2, reviewer=p1, answer_grade=7)
         self.assertEqual(a2.reviews_grade, 7)
-        
+
         ar = Review.objects.create(answer=ans2, reviewer=p2, answer_grade=8)
         self.assertEqual(a2.reviews_grade, 7) # ignores reviews from non-reviewers
         ar.delete()
@@ -157,7 +157,7 @@ class TestWorkshopViews(WousoTest):
 
         # Check if it creates a semigroup
         self.assertTrue(Semigroup.objects.all())
-        
+
         # Check if duplicates are created
         response = self.c.post(reverse('ws_add_group'), data)
         self.assertEqual(len(Semigroup.objects.all()), 1)

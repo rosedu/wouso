@@ -42,7 +42,7 @@ body {
 
 #content {
 	position:absolute; left:0; right:0; top:18%; bottom:0;
-	overflow:auto; 
+	overflow:auto;
 	padding:20px; margin:10px;
     text-align: center;
 }

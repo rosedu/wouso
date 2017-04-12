@@ -21,7 +21,7 @@ class ChallengeForm(forms.Form):
         adding an empty list to dic in this case"""
         for field in self.visible_fields():
             id = int(field.html_name[len('answer_'):])
-            
+
             if not id in res:
                 res[id] = []
         return res
