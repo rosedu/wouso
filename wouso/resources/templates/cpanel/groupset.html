@@ -1,6 +1,8 @@
 {% extends 'cpanel/index.html' %}
 {% load user %}
 {% load i18n %}
+
+{% load bootstrap %}
 {% load django_bootstrap_breadcrumbs %}
 
 {% block sectiontitle %}Set groups{% endblock %}
@@ -13,23 +15,32 @@
 {% endblock %}
 
 {% block sectioncontent %}
+<div class="col-md-8">  
+    <form class="form-horizontal" method="post">
+        <div class="form-group">
+        <label for="userId" class="col-sm-2 control-label">User</label>
+            <div class="col-sm-10">
+                {% player to %}
+            </div>
+        </div>
+        <input type="hidden" name="to" value="{{to.id}}"/>
 
+    <form class="form-horizontal" method="post">
+        <div class="form-group">
+        <label for="groupId" class="col-sm-2 control-label">Group</label>
+            <div class="col-sm-6">
+                {{ to.group }}
+            </div>
+        </div>
+       
+        <table>
+            {{ form|bootstrap_horizontal }}
+        </table>
+        <button onclick="history.back(); return false;" class="btn btn-warning">{% trans 'Cancel' %}</button>
+        <button type="reset" class="btn btn-danger">{% trans 'Reset' %}</button>
+    </form>
+    <br/>
+</div>
 
-<form class="form-horizontal" method="post">
-    <input type="hidden" name="to" value="{{to.id}}"/>
-    <strong>User:</strong> {% player to %}
-    <!-- TODO: didn't know how to cancel auto new line before {% player to %} -->
-    <br/>
-    <strong>Group:</strong> {{ to.group }}
-    <br/>
-    
-    <table>
-        {{ form }}
-    </table>
-    <button class="btn btn-primary" type="submit">{% trans 'Save ' %}</button>
-    {% csrf_token %}
-</form>
-<br/>
-<a class="btn btn-primary" href="{% url manage_player to.pk %}">{% trans 'Back to user' %}</a>
 
 {% endblock %}
