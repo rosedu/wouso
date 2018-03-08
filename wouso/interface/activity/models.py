@@ -9,6 +9,7 @@ from wouso.core.user.models import Player
 from wouso.interface import logger
 from wouso.core.signals import addActivity, addedActivity
 
+
 class Activity(models.Model):
     timestamp = models.DateTimeField(default=datetime.now, blank=True)
     user_from = models.ForeignKey(Player, related_name='activity_from', blank=True, null=True)
@@ -124,6 +125,7 @@ class Activity(models.Model):
 
     def __unicode__(self):
         return u"#%d" % (self.id)
+
 
 def save_activity_handler(sender, **kwargs):
     """ Callback function for addActivity signal """

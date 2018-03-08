@@ -3,9 +3,11 @@
 import sys
 from django.core.management import setup_environ
 
+
 def init():
     import settings
     setup_environ(settings)
+
 
 def main():
     try:
@@ -21,6 +23,7 @@ def main():
     print 'Done.'
 
     return 0
+
 
 if __name__ == '__main__':
     sys.exit(main())

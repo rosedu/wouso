@@ -26,12 +26,12 @@ class QuestionForm(forms.ModelForm):
         data = data if data else {}
         if instance is None:
             for i in range(self.DEFAULT_ANSWERS):
-                self.fields['answer_%d' % i] = forms.CharField(max_length=400, required=False, initial=data.get('answer_%d' %i, ''))
-                self.fields['correct_%d' % i] = forms.BooleanField(required=False, label="Correct?", initial=data.get('correct_%d' %i, False))
+                self.fields['answer_%d' % i] = forms.CharField(max_length=400, required=False, initial=data.get('answer_%d' % i, ''))
+                self.fields['correct_%d' % i] = forms.BooleanField(required=False, label="Correct?", initial=data.get('correct_%d' % i, False))
         else:
             for i, a in enumerate(instance.answers):
-                self.fields['answer_%d' % i] = forms.CharField(max_length=400, required=False, initial=data.get('answer_%d' %i, a.text))
-                self.fields['correct_%d' % i] = forms.BooleanField(required=False, label="Correct?", initial=data.get('correct_%d' %i, a.correct))
+                self.fields['answer_%d' % i] = forms.CharField(max_length=400, required=False, initial=data.get('answer_%d' % i, a.text))
+                self.fields['correct_%d' % i] = forms.BooleanField(required=False, label="Correct?", initial=data.get('correct_%d' % i, a.correct))
         self.fields['answer_new'] = forms.CharField(max_length=400, required=False, initial=data.get('answer_new', ''))
         self.fields['correct_new'] = forms.BooleanField(required=False, label="Correct?", initial=data.get('correct_new', False))
 

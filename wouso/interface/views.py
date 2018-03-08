@@ -36,6 +36,7 @@ def get_wall(page=u'1'):
         activity = paginator.page(paginator.num_pages)
     return activity
 
+
 def anonymous_homepage(request):
     return render_to_response('splash.html', context_instance=RequestContext(request))
 
@@ -46,27 +47,27 @@ def login_view(request):
     if request.method != 'POST':
         form = AuthenticationForm(request)
         return render_to_response('registration/login.html', {'form': form, 'next': next},
-            context_instance=RequestContext(request))
+                                  context_instance=RequestContext(request))
     else:
         form = AuthenticationForm(data=request.POST)
         if not form.is_valid():
             return render_to_response('registration/login.html', {'form': form, 'next': next},
-                context_instance=RequestContext(request))
+                                      context_instance=RequestContext(request))
 
     user = authenticate(username=request.POST['username'], password=request.POST['password'])
     if user is not None:
         if user.is_active:
-            #Save username in session
+            # Save username in session
             PREFIX = "_user:"
-            MAX_TIME = 48*60*60 #48h in seconds
-            #Remove entries older than 48h
+            MAX_TIME = 48 * 60 * 60  # 48h in seconds
+            # Remove entries older than 48h
             for i in request.session.keys():
-                if PREFIX in i and (request.session.get(i) + datetime.timedelta(minutes = 2*24*60)) < datetime.datetime.now():
+                if PREFIX in i and (request.session.get(i) + datetime.timedelta(minutes=2 * 24 * 60)) < datetime.datetime.now():
                     request.session.__delitem__(i)
-            request.session.__setitem__(PREFIX+user.username, datetime.datetime.now())
+            request.session.__setitem__(PREFIX + user.username, datetime.datetime.now())
             request.session.set_expiry(MAX_TIME)
             login(request, user)
-            signals.addActivity.send(sender=None, user_from=user.get_profile(), action="login", game = None, public=False)
+            signals.addActivity.send(sender=None, user_from=user.get_profile(), action="login", game=None, public=False)
             if request.POST.get('next'):
                 return HttpResponseRedirect(request.POST.get('next'))
             return redirect(settings.LOGIN_REDIRECT_URL)
@@ -100,7 +101,8 @@ def hub(request):
         from wouso.interface.apps.pages.models import StaticPage
         try:
             story = StaticPage.objects.get(slug='poveste')
-        except: pass
+        except:
+            pass
         else:
             return HttpResponseRedirect(reverse('static_page', args=(story.slug,)))
     return homepage(request)
@@ -113,7 +115,7 @@ def homepage(request, page=u'1'):
 
     profile = request.user.get_profile()
     # gather users online in the last ten minutes
-    oldest = datetime.datetime.now() - datetime.timedelta(minutes = 10)
+    oldest = datetime.datetime.now() - datetime.timedelta(minutes=10)
     online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
     activity = get_wall(page)
 
@@ -135,13 +137,13 @@ def homepage(request, page=u'1'):
 
     return render_to_response(template,
                               {'last10': online_last10, 'activity': activity,
-                              'is_homepage': True,
-                              'top': topuser,
-                              'topgroups': topgroups,
-                              'games': get_games(),
-                              'news': news,
-                              'more': more,
-                              },
+                               'is_homepage': True,
+                               'top': topuser,
+                               'topgroups': topgroups,
+                               'games': get_games(),
+                               'news': news,
+                               'more': more,
+                               },
                               context_instance=RequestContext(request))
 
 
@@ -155,8 +157,7 @@ def search(request):
         if len(query.split()) == 1:
             if request.user.get_profile().in_staff_group():
                 searchresults = Player.objects.filter(Q(user__first_name__icontains=query) | Q(user__last_name__icontains=query) |
-                                                      Q(user__username__icontains=query) | Q(nickname__icontains=query)
-                )
+                                                      Q(user__username__icontains=query) | Q(nickname__icontains=query))
             else:
                 searchresults = Player.objects.filter(Q(nickname__icontains=query))
             # special queries
@@ -168,14 +169,13 @@ def search(request):
             if request.user.get_profile().in_staff_group():
                 for word in query:
                     r = Player.objects.filter(Q(user__first_name__icontains=word) | Q(user__last_name__icontains=word) |
-                                          Q(nickname__icontains=query)
-                    )
+                                              Q(nickname__icontains=query))
                     searchresults = searchresults.union(r)
             else:
                 searchresults = Player.objects.filter(Q(nickname__icontains=query))
 
         # search groups
-        group_results = PlayerGroup.objects.filter(Q(name__icontains=query)|Q(title__icontains=query))
+        group_results = PlayerGroup.objects.filter(Q(name__icontains=query) | Q(title__icontains=query))
 
         return render_to_response('interface/search_results.html',
                                   {'searchresults': searchresults,
@@ -237,7 +237,7 @@ def searchone(request):
 def ajax(request, name):
     if name == 'header':
         return render_to_response('interface/header.html',
-                                context_instance=RequestContext(request))
+                                  context_instance=RequestContext(request))
     raise Http404
 
 
@@ -297,7 +297,7 @@ def seen_24h(request):
     """
     Display all players seen in the last 24h
     """
-    oldest = datetime.datetime.now() - datetime.timedelta(minutes = 3600)
+    oldest = datetime.datetime.now() - datetime.timedelta(minutes=3600)
     online_last24h = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
 
     return render_to_response('activity/seen24h.html', {'seen_players': online_last24h}, context_instance=RequestContext(request))
@@ -311,7 +311,7 @@ def leaderboard_view(request):
     races = list(Race.objects.exclude(can_play=False))
     races.sort(key=lambda a: a.points, reverse=True)
     return render_to_response(('leaderboard.html'),
-                              {'races':races, 'toptengroups':toptengroups, 'top':Top},
+                              {'races': races, 'toptengroups': toptengroups, 'top': Top},
                               context_instance=RequestContext(request))
 
 

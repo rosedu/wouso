@@ -76,7 +76,6 @@ class NotificationRegister(TestCase):
         data = json.loads(response.content)
         self.assertEqual(data['error'], 'No registration_id provided')
 
-
     def test_notification_register_ok(self):
         response = self.client.post('/api/notifications/register/', {'registration_id': '1245'})
 

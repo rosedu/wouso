@@ -1,7 +1,8 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
 
-urlpatterns = patterns('wouso.games.specialquest.views',
+urlpatterns = patterns(
+    'wouso.games.specialquest.views',
     url(r'^$', 'index', name='specialquest_index_view'),
     url(r'^task/(?P<task_id>\d+)/$', 'task', name='specialquest_task_view'),
 

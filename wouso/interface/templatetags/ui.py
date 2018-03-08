@@ -3,6 +3,7 @@ from wouso.core.ui import get_sidebar, get_library
 from wouso.core.config.models import Setting
 register = template.Library()
 
+
 @register.simple_tag(takes_context=True)
 def render_zone(context, zone, glue):
     """
@@ -44,6 +45,7 @@ def render_header(context):
             content += '<sup class="unread-count">%s</sup>' % data.get('count')
         content += '</a></span> '
     return content
+
 
 @register.simple_tag(takes_context=True)
 def render_footer(context):

@@ -35,8 +35,8 @@ if __name__ == '__main__':
 
     print "done"
     # Assure each user has a level
-    #level = Artifact.get_level_1()
-    #for u in Player.objects.all():
+    # level = Artifact.get_level_1()
+    # for u in Player.objects.all():
     #    if u.level is None:
     #        u.level = level
     #        u.save()

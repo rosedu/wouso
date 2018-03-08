@@ -13,6 +13,7 @@ from wouso.core import scoring, signals
 from models import SpecialQuestTask, SpecialQuestUser, SpecialQuestGame, SpecialQuestGroup
 from forms import TaskForm
 
+
 class HomeView(ListView):
     model = SpecialQuestTask
     template_name = 'specialquest/cpanel_home.html'
@@ -27,7 +28,7 @@ class GroupsView(ListView):
     template_name = 'specialquest/cpanel_groups.html'
     context_object_name = 'groups'
 
-    
+
 groups = permission_required('specialquest.change_specialquestuser')(GroupsView.as_view())
 
 
@@ -92,16 +93,16 @@ def manage_player(request, player_id):
                 message = 'Successfully given bonus'
                 if request.POST.get('comment', None):
                     signal_msg = ugettext_noop('received {gold} gold bonus for {comment}')
-                    signals.addActivity.send(sender=None, user_from=player, user_to=player, message=signal_msg,
-                                        arguments=dict(gold=amount, comment=request.POST['comment']),
-                                        game=SpecialQuestGame.get_instance()
-                    )
+                    signals.addActivity.send(
+                        sender=None, user_from=player, user_to=player, message=signal_msg,
+                        arguments=dict(gold=amount, comment=request.POST['comment']),
+                        game=SpecialQuestGame.get_instance())
             else:
                 error = 'Invalid amount'
         elif request.POST.get('points', False):
             try:
                 amount = int(request.POST.get('points', 0))
-                #assert amount > 0
+                # assert amount > 0
             except (ValueError, AssertionError):
                 error = 'Invalid amount'
             else:
@@ -116,10 +117,10 @@ def manage_player(request, player_id):
     if messages:
         messages.success(request, message)
 
-    return render_to_response('specialquest/cpanel_manage.html',
-                    dict(mplayer=player, tasks_not_done=tasks_not_done,
-                         bonuses=bonuses, penalties=penalties),
-                    context_instance=RequestContext(request))
+    return render_to_response(
+        'specialquest/cpanel_manage.html',
+        dict(mplayer=player, tasks_not_done=tasks_not_done, bonuses=bonuses, penalties=penalties),
+        context_instance=RequestContext(request))
 
 
 @permission_required('specialquest.change_specialquestuser')
@@ -137,14 +138,14 @@ def manage_player_set(request, player_id, task_id):
         for member in members:
             if task not in member.done_tasks.all():
                 member.done_tasks.add(task)
-                scoring.score(member, SpecialQuestGame, 'specialquest-passed',external_id=task.id, value=task.value)
+                scoring.score(member, SpecialQuestGame, 'specialquest-passed', external_id=task.id, value=task.value)
 
                 signal_msg = ugettext_noop('completed special quest {task_name} and earned {value} gold')
                 action_msg = 'specialq-ok-gold'
-                signals.addActivity.send(sender=None, user_from=member, \
-                                         user_to=member, \
+                signals.addActivity.send(sender=None, user_from=member,
+                                         user_to=member,
                                          message=signal_msg,
-                                         arguments=dict(task_name=task.name, value=task.value), \
+                                         arguments=dict(task_name=task.name, value=task.value),
                                          game=SpecialQuestGame.get_instance(),
                                          action=action_msg)
 

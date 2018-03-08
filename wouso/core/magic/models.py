@@ -54,6 +54,7 @@ class Artifact(CachedItem, Modifier):
     but also personalization such as: image (icon) and title
     """
     CACHE_PART = 'full_name'
+
     class Meta:
         unique_together = ('name', 'group', 'percents')
 
@@ -265,5 +266,6 @@ class Bazaar(App):
 
             signals.postExpire.send(sender=None, psdue=s)
             s.delete()
+
 
 register_header_link('bazaar', Bazaar.get_header_link)

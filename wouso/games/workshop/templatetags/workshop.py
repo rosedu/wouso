@@ -5,6 +5,7 @@ from wouso.games.workshop.models import Review, ROOM_DEFAULT, WorkshopGame
 
 register = template.Library()
 
+
 @register.simple_tag
 def semigroup(sg):
     if not sg:
@@ -17,7 +18,7 @@ def semigroup(sg):
 
 @register.simple_tag
 def get_schedule(day, hour):
-   return '<br/> '.join([semigroup(s) for s in WorkshopGame.get_by_day_and_hour(day, hour)])
+    return '<br/> '.join([semigroup(s) for s in WorkshopGame.get_by_day_and_hour(day, hour)])
 
 
 @register.simple_tag
@@ -50,6 +51,7 @@ def get_answer_feedback(answer, player):
     if not qs.count():
         return ''
     return qs.get().feedback
+
 
 @register.simple_tag
 def get_final_grade(workshop, player):

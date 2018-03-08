@@ -3,6 +3,7 @@ from django.core.urlresolvers import reverse
 from wouso.core.tests import WousoTest
 from bs4 import BeautifulSoup
 
+
 class TestInterface(WousoTest):
     def test_homepage_anonymous(self):
         result = self.client.get('/')
@@ -43,6 +44,6 @@ class TestInterface(WousoTest):
         player = self._get_player()
         self.client.login(username=player.user.username, password='test')
         response = self.client.get('/hub')
-        soup  = BeautifulSoup(response.content, "html.parser")
+        soup = BeautifulSoup(response.content, "html.parser")
         button = soup.find_all(id="head-cpanel")
         self.assertEqual(len(button), 0)

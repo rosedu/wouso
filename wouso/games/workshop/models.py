@@ -18,8 +18,8 @@ DAY_CHOICES = (
     (3, 'Wednesday'),
     (4, 'Thursday'),
     (5, 'Friday'),
-#    (6, 'Saturday'),
-#    (7, 'Sunday'),
+    # (6, 'Saturday'),
+    # (7, 'Sunday'),
 )
 
 ROOM_CHOICES = (
@@ -226,7 +226,7 @@ class Assessment(models.Model):
         sum = Review.objects.filter(answer__assessment=self, reviewer__in=self.reviewers.all()).aggregate(sum=models.Sum('answer_grade'))['sum']
         if sum is None:
             return None
-        return int(sum/reviews_count) if reviews_count else 0
+        return int(sum / reviews_count) if reviews_count else 0
 
     def set_answered(self, answers=None):
         """ Set given answer dictionary.
@@ -266,7 +266,7 @@ class Assessment(models.Model):
                 8 * 10 + 16 * 5 / 16 = 10 = max(final_grade)
             """
             self.final_grade = ceil((self.grade * 10 + self.reviewer_grade * 5) * 1.0 / (4 * count))
-        except (ZeroDivisionError, TypeError): # one of the grades is None
+        except (ZeroDivisionError, TypeError):  # one of the grades is None
             self.final_grade = None
         self.save()
 
@@ -314,7 +314,8 @@ class Assessment(models.Model):
                 if r.reviewer not in list(self.reviewers.all()) and not r.reviewer.in_staff_group():
                     r.delete()
 
-    __unicode__ = lambda self: u"#%d" % self.id
+    def __unicode__(self):
+        return u"#%d" % self.id
 
 
 class Answer(models.Model):
@@ -345,7 +346,8 @@ class Answer(models.Model):
     def reviewers(self):
         return Player.objects.filter(id__in=Review.objects.filter(answer=self).values('reviewer'))
 
-    __unicode__ = lambda self: self.text
+    def __unicode__(self):
+        return self.text
 
 
 class Review(models.Model):
@@ -368,7 +370,8 @@ class Review(models.Model):
 
     workshop = property(lambda self: self.answer.assessment.workshop)
 
-    __unicode__ = lambda self: u"%s by %s" % (self.feedback, self.reviewer)
+    def __unicode__(self):
+        return u"%s by %s" % (self.feedback, self.reviewer)
 
 
 class WorkshopGame(Game):
@@ -397,8 +400,8 @@ class WorkshopGame(Game):
         """ Return the current laboratory as a day, hour pair
         """
         timestamp = timestamp if timestamp else datetime.now()
-        day = timestamp.weekday() + 1 # 1 = Monday, etc
-        hour = timestamp.hour - timestamp.hour % 2 # First lab starts at 8:00 AM
+        day = timestamp.weekday() + 1  # 1 = Monday, etc
+        hour = timestamp.hour - timestamp.hour % 2  # First lab starts at 8:00 AM
         return day, hour
 
     @classmethod
@@ -479,10 +482,10 @@ class WorkshopGame(Game):
 
          Returns: False if no error, string if error.
         """
-        #questions = cls.get_question_pool(date)
+        # questions = cls.get_question_pool(date)
         #
-        #if not questions or questions.count() < question_count:
-        #    return _("No questions for this date")
+        # if not questions or questions.count() < question_count:
+        #     return _("No questions for this date")
 
         if cls.get_workshop(semigroup, date):
             raise ValueError(_("Workshop already exists for group at date"))
@@ -504,23 +507,23 @@ class WorkshopGame(Game):
             return
 
         pp_rotated = [participating_players[-1]] + participating_players[:-1]
-        for i,a in enumerate(le_assessments):
+        for i, a in enumerate(le_assessments):
             a.reviewers.clear()
             a.reviewers.add(pp_rotated[i])
 
         # If there are more than two players, do this again
         if len(participating_players) > 2:
             pp_rotated = participating_players[-2:] + participating_players[:-2]
-            for i,a in enumerate(le_assessments):
+            for i, a in enumerate(le_assessments):
                 a.reviewers.add(pp_rotated[i])
 
-        workshop.status = 1 # reviewing
+        workshop.status = 1  # reviewing
         workshop.save()
 
         # send message to every player
         for player in participating_players:
             Message.send(None, player, _("Workshop to review!"),
-                    _("Hello, the reviewing stage for the latest workshop has begun."))
+                         _("Hello, the reviewing stage for the latest workshop has begun."))
 
     @classmethod
     def get_player_info(cls, player, workshop):
@@ -560,9 +563,11 @@ class WorkshopGame(Game):
             assessment = None
         sm = ws_player.semigroup in semigroups
 
-        return render_to_string('workshop/sidebar.html',
-                {'semigroups': semigroups, 'workshop': workshop, 'semigroup_member': sm, 'assessment': assessment,
-                 'id': 'workshop'})
+        return render_to_string(
+            'workshop/sidebar.html',
+            {'semigroups': semigroups, 'workshop': workshop, 'semigroup_member': sm, 'assessment': assessment,
+             'id': 'workshop'})
+
 
 register_sidebar_block('workshop', WorkshopGame.get_sidebar_widget)
 register_category(WorkshopGame.QPOOL_CATEGORY, WorkshopGame)

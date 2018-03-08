@@ -9,16 +9,17 @@ from wouso.core.tests import WousoTest
 from wouso.core import scoring
 from models import SpecialQuestUser, SpecialQuestGroup, SpecialQuestGame, SpecialQuestTask
 
+
 class TestSpecialQuestViews(WousoTest):
     def setUp(self):
         self.user = self._get_player(1).get_extension(SpecialQuestUser)
         self.admin = self._get_superuser()
         start = datetime.now()
         end = start + timedelta(days=1)
-        self.special_quest1= SpecialQuestTask.objects.create(start_date=start, end_date=end,
-                                                             name='special_quest1', value=400)
-        self.special_quest2= SpecialQuestTask.objects.create(start_date=start, end_date=end,
-                                                             name='special_quest2', value=800)
+        self.special_quest1 = SpecialQuestTask.objects.create(
+            start_date=start, end_date=end, name='special_quest1', value=400)
+        self.special_quest2 = SpecialQuestTask.objects.create(
+            start_date=start, end_date=end, name='special_quest2', value=800)
         self.c = Client()
 
     def test_cpanel_home_view(self):
@@ -102,7 +103,7 @@ class TestSpecialQuestViews(WousoTest):
         # Button 'Invite' is displayed
         response = self.c.get(reverse('player_profile', args=[user2.pk]))
         self.assertContains(response, 'Invite in my Special Quest group')
-        
+
         # Button 'Special mate' is displayed
         user2.group = new_group
         user2.save()
@@ -152,7 +153,7 @@ class SpecialQuestGroupTest(TestCase):
         group.remove(p.special_user)
         p = User.objects.get(username='_test_member')
         p.special_user = p.get_profile().get_extension(SpecialQuestUser)
-        self.assertTrue(p.special_user.group == None)
+        self.assertTrue(p.special_user.group is None)
 
         group = SpecialQuestGroup.objects.get(name='le group')
         self.assertFalse(p.get_profile() in group.players.all())

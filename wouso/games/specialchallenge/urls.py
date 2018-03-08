@@ -1,7 +1,8 @@
 from django.conf.urls.defaults import *
 from views import *
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^$', IndexView.as_view(), name='specialchallenge_index'),
     url(r'^create/$', CreateChallenge.as_view(), name='specialchallenge_create'),
     url(r'^challenge/(?P<pk>\d+)/$', ChallengeView.as_view(), name='specialchallenge_challenge'),

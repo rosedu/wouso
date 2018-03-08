@@ -5,7 +5,8 @@ from wouso.core import signals
 from wouso.core.common import App
 from wouso.core.user.models import Player
 
-CONSECUTIVE_LIMIT = 12 # in seconds
+CONSECUTIVE_LIMIT = 12  # in seconds
+
 
 class MessagingUser(Player):
     """ extension of the user profile, customized for messages """
@@ -52,9 +53,9 @@ class Message(models.Model):
     def __unicode__(self):
         sender = _('System') if not self.sender else self.sender.__unicode__()
 
-        return _(u"from {sender} to {receiver} @ {date}").format(sender=sender,
-                                                                       receiver=self.receiver.__unicode__(),
-                                                                       date=self.timestamp.strftime("%A, %d %B %Y %I:%M %p"))
+        return _(u"from {sender} to {receiver} @ {date}").format(
+            sender=sender, receiver=self.receiver.__unicode__(),
+            date=self.timestamp.strftime("%A, %d %B %Y %I:%M %p"))
 
     @classmethod
     def disable_check(cls):
@@ -70,7 +71,7 @@ class Message(models.Model):
         Check against scripts and spam
         """
         if not sender or not cls._CHECK:
-            return True # System message
+            return True  # System message
 
         sender = sender.get_extension(MessagingUser)
         seconds_since_last = (datetime.now() - sender.last_message_ts).seconds if sender.last_message_ts else 0
@@ -79,7 +80,6 @@ class Message(models.Model):
             return False
 
         return True
-
 
     @classmethod
     def send(cls, sender, receiver, subject, text, reply_to=None):

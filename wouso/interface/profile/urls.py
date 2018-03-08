@@ -1,11 +1,13 @@
 from django.conf.urls.defaults import patterns, url
 from django.core.urlresolvers import reverse_lazy
 
-urlpatterns = patterns('wouso.interface.profile.views',
+urlpatterns = patterns(
+    'wouso.interface.profile.views',
     url(r'^race/(?P<race_id>\d+)/.*$', 'player_race', name='race_view'),
 )
 
-urlpatterns += patterns('django.contrib.auth.views',
+urlpatterns += patterns(
+    'django.contrib.auth.views',
     url(r'^password_change/$',
         'password_change',
         {'template_name': 'registration/password_change_form.html',

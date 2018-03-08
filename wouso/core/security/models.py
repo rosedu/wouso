@@ -12,12 +12,12 @@ class Report(models.Model):
     )
 
     user_from = models.ForeignKey(Player, related_name="user_reporting")
-    user_to   = models.ForeignKey(Player, related_name="user_reported")
-    dibs      = models.ForeignKey(Player, related_name="dibs", null=True, blank=True)
+    user_to = models.ForeignKey(Player, related_name="user_reported")
+    dibs = models.ForeignKey(Player, related_name="dibs", null=True, blank=True)
     timestamp = models.DateTimeField()
-    status    = models.CharField(max_length=1, choices=STATUS, default='R')
-    text      = models.CharField(max_length=250)
-    extra     = models.CharField(max_length=250, blank=True)
+    status = models.CharField(max_length=1, choices=STATUS, default='R')
+    text = models.CharField(max_length=250)
+    extra = models.CharField(max_length=250, blank=True)
 
     def set_dibs(self, user_dibs):
         self.dibs = user_dibs.get_extension(Player)

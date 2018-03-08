@@ -36,19 +36,19 @@ class PlayerTestCase(TestCase):
             player.save()
             v.append(player)
 
-        #check neighbours for first player in top
+        # check neighbours for first player in top
         players = v[0].get_neighbours_from_top(2)
         self.assertEqual(len(players), 5)
         for i in range(0, 5):
             self.assertEqual(players[i], v[i])
 
-        #check neighbours for middle player in top
+        # check neighbours for middle player in top
         players = v[3].get_neighbours_from_top(2)
         self.assertEqual(len(players), 5)
         for i in range(0, 5):
             self.assertEqual(players[i], v[i + 1])
 
-        #check neighbours for last player in top
+        # check neighbours for last player in top
         players = v[6].get_neighbours_from_top(2)
         self.assertEqual(len(players), 5)
         for i in range(0, 5):
@@ -100,5 +100,5 @@ class PlayerCreateTest(WousoTest):
 
         player.nickname = 'altc3va'
         player.save()
-        #self.assertEqual(unicode(player), player.nickname)
+        # self.assertEqual(unicode(player), player.nickname)
         self.assertEqual(player.full_name, player.nickname)

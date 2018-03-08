@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import *
 
-urlpatterns = patterns('wouso.games.workshop.cpanel',
+urlpatterns = patterns(
+    'wouso.games.workshop.cpanel',
     url(r'^$', 'workshop_home', name='workshop_home'),
     url(r'^edit-spot/(?P<day>\d+)/(?P<hour>\d+)/$', 'edit_spot', name='ws_edit_spot'),
     url(r'^add-semigroup/$', 'add_group', name='ws_add_group'),

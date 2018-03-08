@@ -7,6 +7,7 @@ import sys
 import csv
 import wouso.utils.user_util
 
+
 def main():
     if len(sys.argv) != 2:
         print 'Usage: python remove_users.py <input-file>'
@@ -18,12 +19,12 @@ def main():
         try:
             ret = wouso.utils.user_util.remove_user(username)
         except Exception, e:
-            print "Failed removing user %s." %(username)
+            print "Failed removing user %s." % (username)
         else:
             if ret:
-                print "Successfully removed user %s." %(username)
+                print "Successfully removed user %s." % (username)
             else:
-                print "Failed removing user %s." %(username)
+                print "Failed removing user %s." % (username)
 
 
 if __name__ == "__main__":

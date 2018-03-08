@@ -73,6 +73,7 @@ START_CORRECT_ANSWER_MARK = "+"
 START_INCORRECT_ANSWER_MARK = "-"
 START_TAGS_MARK = "tags:"
 
+
 def import_questions_from_file(f, proposed_by=None, endorsed_by=None, category=None, tag=None, active=False):
     # read file and parse contents
     a_saved = True
@@ -110,7 +111,7 @@ def import_questions_from_file(f, proposed_by=None, endorsed_by=None, category=N
                 q['tag'] = tag
                 q['file_tags'] = file_tags
                 ret = add_question(q)
-                print "Added question id %d." %(ret.id)
+                print "Added question id %d." % (ret.id)
                 num_imported_questions += 1
                 q_saved = True
                 a_saved = True
@@ -152,12 +153,12 @@ def import_questions_from_file(f, proposed_by=None, endorsed_by=None, category=N
             else:
                 a['correct'] = True
                 a['text'] = line[len(START_CORRECT_ANSWER_MARK):].strip()
-                num_correct_answers +=1
+                num_correct_answers += 1
 
         else:
             # If nothing else, it's a continuation line.
             if state == 'question':
-                if q.has_key('text'):
+                if 'text' in q:
                     q['text'] += '\n' + line
                 else:
                     q['text'] = line
@@ -182,7 +183,7 @@ def import_questions_from_file(f, proposed_by=None, endorsed_by=None, category=N
         q['tag'] = tag
         q['file_tags'] = file_tags
         ret = add_question(q)
-        print "Added question id %d." %(ret.id)
+        print "Added question id %d." % (ret.id)
         num_imported_questions += 1
         q_saved = True
         a_saved = True
@@ -206,56 +207,56 @@ def main():
         proposed_by = User.objects.get(username=proposed_by_name)
     except Exception as e:
         print e
-        print >>sys.stderr, "Proposed by user %s does not exist." %(proposed_by_name)
+        print >>sys.stderr, "Proposed by user %s does not exist." % (proposed_by_name)
         sys.exit(1)
     if not proposed_by:
-        print >>sys.stderr, "Proposed by user %s does not exist." %(proposed_by_name)
+        print >>sys.stderr, "Proposed by user %s does not exist." % (proposed_by_name)
         sys.exit(1)
 
     try:
         endorsed_by = User.objects.get(username=endorsed_by_name)
     except Exception as e:
         print e
-        print >>sys.stderr, "Endorsed by user %s does not exist." %(endorsed_by_name)
+        print >>sys.stderr, "Endorsed by user %s does not exist." % (endorsed_by_name)
         sys.exit(1)
     if not endorsed_by:
-        print >>sys.stderr, "Endorsed by user %s does not exist." %(endorsed_by_name)
+        print >>sys.stderr, "Endorsed by user %s does not exist." % (endorsed_by_name)
         sys.exit(1)
 
     try:
         category = Category.objects.get(name=category_name)
     except Exception as e:
         print e
-        print >>sys.stderr, "Category %s does not exist." %(category_name)
+        print >>sys.stderr, "Category %s does not exist." % (category_name)
         sys.exit(1)
     if not category:
-        print >>sys.stderr, "Category %s does not exist." %(category_name)
+        print >>sys.stderr, "Category %s does not exist." % (category_name)
         sys.exit(1)
 
     try:
         tag = Tag.objects.get(name=tag_name)
     except Exception as e:
         print e
-        print >>sys.stderr, "Tag %s does not exist." %(tag_name)
+        print >>sys.stderr, "Tag %s does not exist." % (tag_name)
         sys.exit(1)
     if not tag:
-        print >>sys.stderr, "Tag %s does not exist." %(tag_name)
+        print >>sys.stderr, "Tag %s does not exist." % (tag_name)
         sys.exit(1)
 
     try:
         f = codecs.open(filename, 'r', 'utf-8')
     except:
-        print >>sys.stderr, "Cannot open file %s for reading questions." %(filename)
+        print >>sys.stderr, "Cannot open file %s for reading questions." % (filename)
         sys.exit(1)
 
-    print "Import questions from file %s." %(filename)
-    print "  Category: %s" %(category)
-    print "  Tag: %s" %(tag)
-    print "  Proposed by: %s" %(proposed_by)
-    print "  Endorsed by: %s" %(endorsed_by)
+    print "Import questions from file %s." % (filename)
+    print "  Category: %s" % (category)
+    print "  Tag: %s" % (tag)
+    print "  Proposed by: %s" % (proposed_by)
+    print "  Endorsed by: %s" % (endorsed_by)
 
     n = import_questions_from_file(f, proposed_by, endorsed_by, category, tag, active=True)
-    print "\nImported %d questions." %(n)
+    print "\nImported %d questions." % (n)
 
 
 if __name__ == '__main__':

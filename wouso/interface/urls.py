@@ -3,7 +3,8 @@ from django.conf import settings
 from django.contrib import admin
 admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     (r'^ckeditor/', include('ckeditor.urls')),
 
     url(r'^$', 'wouso.interface.views.homepage', name='homepage'),
@@ -20,12 +21,12 @@ urlpatterns = patterns('',
     url(r'^leaderboard/$', 'wouso.interface.views.leaderboard_view', name='leaderboard'),
     url(r'^division/$', 'wouso.interface.views.division_view', name='division'),
 
-    url(r'^user/login/$','wouso.interface.views.login_view', name='login_view'),
-    url(r'^user/logout/$','wouso.interface.views.logout_view', name='logout_view'),
+    url(r'^user/login/$', 'wouso.interface.views.login_view', name='login_view'),
+    url(r'^user/logout/$', 'wouso.interface.views.logout_view', name='logout_view'),
 
     url(r'^player/(?P<id>\d+)/$', 'wouso.interface.profile.views.user_profile', name='player_profile'),
     url(r'^player/set/$', 'wouso.interface.profile.views.set_profile', name='set_profile'),
-    url(r'^player/set/s/$','wouso.interface.profile.views.save_profile', name='player_profile'),
+    url(r'^player/set/s/$', 'wouso.interface.profile.views.save_profile', name='player_profile'),
     url(r'^player/(?P<id>\d*)/(?P<page>\d*)/$', 'wouso.interface.profile.views.user_profile', name="player_profile"),
     url(r'^player/(?P<id>\d*)/points-summary/$', 'wouso.interface.profile.views.player_points_history', name='player_points_history'),
     url(r'^player/cast/to-(?P<destination>\d+)/$', 'wouso.interface.apps.magic.views.magic_cast', name='magic_cast'),
@@ -46,14 +47,14 @@ urlpatterns = patterns('',
     (r'^searchone/$', 'wouso.interface.views.searchone'),
     url(r'^s/(.+)/$', 'wouso.interface.apps.pages.views.staticpage', name='static_page'),
 
-    #Lesson
+    # Lesson
     (r'^lessons/', include('wouso.interface.apps.lesson.urls')),
 
-    #Lesson
+    # Lesson
     (r'^files/', include('wouso.interface.apps.files.urls')),
 
-    #Report
-    url(r'^report/(?P<id>\d*)/$','wouso.core.security.views.report', name='report_player'),
+    # Report
+    url(r'^report/(?P<id>\d*)/$', 'wouso.core.security.views.report', name='report_player'),
 
     # Messaging
     (r'^m/', include('wouso.interface.apps.messaging.urls')),
@@ -84,7 +85,7 @@ urlpatterns = patterns('',
     # Admin related
     (r'^cpanel/', include('interface.cpanel.urls')),
     (r'^admin/', include(admin.site.urls)),
-    #(r'^admin/djangologdb/', include('djangologdb.urls')),
+    # (r'^admin/djangologdb/', include('djangologdb.urls')),
 
     # Static: not in a real deployment
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',

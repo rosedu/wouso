@@ -4,6 +4,7 @@ from piston.handler import BaseHandler
 from piston.utils import rc
 from models import Quest, QuestUser
 
+
 class QuestAdminHandler(BaseHandler):
     """
     Get information about the quest module: a list of quests

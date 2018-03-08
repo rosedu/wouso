@@ -7,6 +7,7 @@ import sys
 import csv
 import wouso.utils.user_util
 
+
 def main():
     if len(sys.argv) != 2:
         print 'Usage: python add_races.py <file.csv>'
@@ -19,9 +20,9 @@ def main():
         race_name, race_title = row
         ret = wouso.utils.user_util.add_race(race_name, race_title)
         if ret:
-            print "Successfully added race %s." %(race_name)
+            print "Successfully added race %s." % (race_name)
         else:
-            print "Failed adding race %s." %(race_name)
+            print "Failed adding race %s." % (race_name)
 
 
 if __name__ == "__main__":

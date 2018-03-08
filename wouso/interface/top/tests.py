@@ -1,6 +1,7 @@
 from wouso.core.tests import WousoTest
 from wouso.interface.top.models import TopUser
 
+
 class TopTest(WousoTest):
     def test_challenges(self):
         player = self._get_player()

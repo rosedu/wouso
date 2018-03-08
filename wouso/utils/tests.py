@@ -14,7 +14,6 @@ class ImportQuestion(TestCase):
         self.assertEqual(count, 22)
         self.assertEqual(Question.objects.all().count(), 22)
 
-
     def test_add_question(self):
         question = add({'text': "Question text"}, [{'text': 'answer 1'}])
 

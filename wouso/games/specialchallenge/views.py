@@ -55,6 +55,7 @@ class ChallengeMixin(object):
             return redirect('specialchallenge_index')
         return super(ChallengeMixin, self).dispatch(request, *args, **kwargs)
 
+
 class ChallengeQuestionAdd(ChallengeMixin, FormView):
     template_name = 'specialchallenge/challenge_add_question.html'
     form_class = QuestionForm

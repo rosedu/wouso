@@ -40,13 +40,14 @@ class WAForm(forms.ModelForm):
 @staff_required
 def workshop_home(request, **kwargs):
 
-    return render_to_response('workshop/cpanel/index.html',
-                        {'module': 'workshop',
-                         'days': DAY_CHOICES,
-                         'semigroups': Semigroup.objects.all().order_by('name'),
-                         'hours': range(MIN_HOUR, MAX_HOUR + 2, 2),
-                         'info': WorkshopGame},
-                        context_instance=RequestContext(request)
+    return render_to_response(
+        'workshop/cpanel/index.html',
+        {'module': 'workshop',
+         'days': DAY_CHOICES,
+         'semigroups': Semigroup.objects.all().order_by('name'),
+         'hours': range(MIN_HOUR, MAX_HOUR + 2, 2),
+         'info': WorkshopGame},
+        context_instance=RequestContext(request)
     )
 
 
@@ -64,6 +65,7 @@ class AddGroupView(CreateView):
         context = super(AddGroupView, self).get_context_data(**kwargs)
         context.update({'module': 'workshop'})
         return context
+
 
 add_group = staff_required(AddGroupView.as_view())
 
@@ -85,7 +87,9 @@ class EditGroupView(UpdateView):
         context.update({'module': 'workshop', 'instance': self.get_object()})
         return context
 
+
 edit_group = staff_required(EditGroupView.as_view())
+
 
 @staff_required
 def edit_spot(request, day, hour):
@@ -104,12 +108,12 @@ def edit_spot(request, day, hour):
         else:
             semigroup.add_player(player)
 
-    return render_to_response('workshop/cpanel/editspot.html',
-                        {'module': 'workshop',
-                         'semigroups': sgs,
-                         },
-                        context_instance=RequestContext(request)
+    return render_to_response(
+        'workshop/cpanel/editspot.html',
+        {'module': 'workshop', 'semigroups': sgs},
+        context_instance=RequestContext(request)
     )
+
 
 @staff_required
 def kick_off(request, player):
@@ -121,16 +125,18 @@ def kick_off(request, player):
 
     return redirect('workshop_home')
 
+
 @staff_required
 def schedule(request):
     schedules = Schedule.objects.all().order_by('start_date', 'name')
 
-    return render_to_response('workshop/cpanel/schedule.html',
-                        {'module': 'workshop',
-                         'schedules': schedules,
-                         'category': WorkshopGame.get_question_category(),
-                         'page': 'schedule'},
-                        context_instance=RequestContext(request)
+    return render_to_response(
+        'workshop/cpanel/schedule.html',
+        {'module': 'workshop',
+         'schedules': schedules,
+         'category': WorkshopGame.get_question_category(),
+         'page': 'schedule'},
+        context_instance=RequestContext(request)
     )
 
 
@@ -159,6 +165,7 @@ class ScheduleChangeView(UpdateView):
                        'page': 'schedule'})
         return context
 
+
 schedule_change = staff_required(ScheduleChangeView.as_view())
 
 
@@ -173,10 +180,12 @@ class WorkshopList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(WorkshopList, self).get_context_data(**kwargs)
-        context.update({'module': 'workshop', 'page': 'workshops', 'info': WorkshopGame,
-                        'integrity_check': self.request.GET.get('integrity_check', False)
+        context.update({
+            'module': 'workshop', 'page': 'workshops', 'info': WorkshopGame,
+            'integrity_check': self.request.GET.get('integrity_check', False)
         })
         return context
+
 
 workshops = staff_required(WorkshopList.as_view())
 
@@ -210,6 +219,7 @@ def workshop_update_grades(request, workshop):
 
     return redirect('ws_reviewers_map', workshop=workshop.id)
 
+
 @staff_required
 def workshop_reviewers(request, workshop):
     workshop = get_object_or_404(Workshop, pk=workshop)
@@ -219,14 +229,15 @@ def workshop_reviewers(request, workshop):
 
     assessments = workshop.assessment_set.all().order_by('player__user__last_name', 'player__user__first_name')
 
-    return render_to_response('workshop/cpanel/workshop_map.html',
-                        {'module': 'workshop',
-                         'workshop': workshop,
-                         'assessments': assessments,
-                         'page': 'workshops',
-                         'integrity_check': request.GET.get('integrity_check', False),
-                         },
-                        context_instance=RequestContext(request)
+    return render_to_response(
+        'workshop/cpanel/workshop_map.html',
+        {'module': 'workshop',
+         'workshop': workshop,
+         'assessments': assessments,
+         'page': 'workshops',
+         'integrity_check': request.GET.get('integrity_check', False),
+         },
+        context_instance=RequestContext(request)
     )
 
 
@@ -287,13 +298,14 @@ def workshop_grade_assessment(request, assessment):
             else:
                 return redirect('ws_reviewers_map', workshop=assessment.workshop.id)
 
-    return render_to_response('workshop/cpanel/workshop_grade_assessment.html',
-                        {'module': 'workshop',
-                         'assessment': assessment,
-                         'next_ass': next_ass,
-                         'page': 'workshops',
-                         },
-                         context_instance=RequestContext(request)
+    return render_to_response(
+        'workshop/cpanel/workshop_grade_assessment.html',
+        {'module': 'workshop',
+         'assessment': assessment,
+         'next_ass': next_ass,
+         'page': 'workshops',
+         },
+        context_instance=RequestContext(request)
     )
 
 
@@ -337,6 +349,7 @@ class AddWorkshopView(View):
 
 workshop_add = staff_required(AddWorkshopView.as_view())
 
+
 @staff_required
 def workshop_edit(request, workshop):
     workshop = get_object_or_404(Workshop, pk=workshop)
@@ -354,11 +367,13 @@ def workshop_edit(request, workshop):
     else:
         form = WForm(instance=workshop)
 
-    return render_to_response('workshop/cpanel/workshop_edit.html',
-                        {'module': 'workshop', 'form': form, 'info': WorkshopGame,
-                         'page': 'workshops'},
-                        context_instance=RequestContext(request)
+    return render_to_response(
+        'workshop/cpanel/workshop_edit.html',
+        {'module': 'workshop', 'form': form, 'info': WorkshopGame,
+         'page': 'workshops'},
+        context_instance=RequestContext(request)
     )
+
 
 @staff_required
 def workshop_delete(request, workshop):
@@ -366,17 +381,18 @@ def workshop_delete(request, workshop):
     workshop.delete()
     return redirect('ws_workshops')
 
+
 @staff_required
 def workshop_start(request, workshop):
     workshop = get_object_or_404(Workshop, pk=workshop)
-    workshop.start() # set start_at and active_until
+    workshop.start()  # set start_at and active_until
     return redirect('ws_status', pk=workshop.pk)
 
 
 @staff_required
 def workshop_stop(request, workshop):
     workshop = get_object_or_404(Workshop, pk=workshop)
-    workshop.stop() # set active_until
+    workshop.stop()  # set active_until
     return redirect('ws_status', pk=workshop.pk)
 
 
@@ -386,9 +402,10 @@ def workshop_assessments(request, workshop, assessment=None):
     if assessment:
         assessment = get_object_or_404(Assessment, pk=assessment)
 
-    return render_to_response('workshop/cpanel/workshop_assessments.html',
-                        {'module': 'workshop', 'page': 'workshops', 'workshop': workshop, 'assessment': assessment},
-                        context_instance=RequestContext(request)
+    return render_to_response(
+        'workshop/cpanel/workshop_assessments.html',
+        {'module': 'workshop', 'page': 'workshops', 'workshop': workshop, 'assessment': assessment},
+        context_instance=RequestContext(request)
     )
 
 
@@ -405,9 +422,10 @@ def workshop_assessment_edit(request, assessment, **kwargs):
             if text:
                 a.text = text
                 a.save()
-    return render_to_response('workshop/cpanel/workshop_assessment_change.html',
-                              {'module': 'workshop', 'page': 'workshops', 'workshop': assessment.workshop, 'assessment': assessment},
-                              context_instance=RequestContext(request)
+    return render_to_response(
+        'workshop/cpanel/workshop_assessment_change.html',
+        {'module': 'workshop', 'page': 'workshops', 'workshop': assessment.workshop, 'assessment': assessment},
+        context_instance=RequestContext(request)
     )
 
 
@@ -439,8 +457,8 @@ class GradebookView(ListView):
         context.update({'module': 'workshop', 'page': 'semigroups', 'semigroup': self.semigroup})
         return context
 
-gradebook = staff_required(GradebookView.as_view())
 
+gradebook = staff_required(GradebookView.as_view())
 
 
 @staff_required

@@ -63,7 +63,6 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
 
     nr_imported = 0
 
-
     state = 'question'
 
     for line in opened_file:
@@ -133,7 +132,7 @@ def import_from_file(opened_file, proposed_by=None, endorsed_by=None, category=N
         else:
             # continuation line
             if state == 'question':
-                if q.has_key('text'):
+                if 'text' in q:
                     q['text'] += '\n' + line
                 else:
                     q['text'] = line

@@ -1,14 +1,14 @@
 import datetime
 from django.db import models
 from django.core.urlresolvers import reverse, NoReverseMatch
-from wouso.core.user.models import Player ## this needs to be fixed to wouso.core.user.models
+from wouso.core.user.models import Player  # this needs to be fixed to wouso.core.user.models
 
 
 class StaticPage(models.Model):
-    position      = models.IntegerField(primary_key=True)
+    position = models.IntegerField(primary_key=True)
     slug = models.CharField(max_length=50, blank=False)
     name = models.CharField(max_length=100, blank=False)
-    title         = models.CharField(max_length=200, blank=False)
+    title = models.CharField(max_length=200, blank=False)
     html_contents = models.TextField()
     hidden = models.BooleanField(default=False, blank=True)
 
@@ -18,7 +18,7 @@ class StaticPage(models.Model):
     def html_link(self):
         try:
             return '<a href="%s" id="page-%s">%s</a>' % (reverse('static_page', args=(self.slug,)),
-                                        self.slug, self.name)
+                                                         self.slug, self.name)
         except NoReverseMatch:
             return ''
 

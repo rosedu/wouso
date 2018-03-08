@@ -4,11 +4,12 @@ from django.template.loader import render_to_string
 # Get a specific logger for this module
 logger = logging.getLogger('interface')
 
+
 def render_string(template, data=None):
     """ Provide game context render_to_string, used by widget generators """
 
-    return render_to_string(template,
-            dictionary=data)
+    return render_to_string(template, dictionary=data)
+
 
 def get_static_pages():
     """ Return a list of static pages ordered by position, for rendering in footer """
@@ -16,13 +17,15 @@ def get_static_pages():
 
     return StaticPage.get_links()
 
+
 def mobile_browser(request):
-    if request.META.has_key("HTTP_USER_AGENT"):
+    if "HTTP_USER_AGENT" in request.META:
         s = request.META["HTTP_USER_AGENT"].lower()
         for i in ('nokia', 'mobile'):
             if i in s:
                 return True
     return False
+
 
 def detect_mobile(request):
     if request.GET.get('mobile'):
@@ -33,6 +36,8 @@ def detect_mobile(request):
 
 
 _theme = None
+
+
 def get_theme():
     """
      Return the current theme
@@ -44,6 +49,7 @@ def get_theme():
         return Setting.get('theme').value
 
     return _theme
+
 
 def set_theme(value):
     """

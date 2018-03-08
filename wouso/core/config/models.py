@@ -154,13 +154,13 @@ class IntegerListSetting(Setting):
         self.save()
 
     def get_value(self):
-        l = []
+        return_list = []
         for n in self.value.split():
             try:
-                l.append(int(n))
+                return_list.append(int(n))
             except ValueError:
-                l.append(0)
-        return l
+                return_list.append(0)
+        return return_list
 
     def form(self):
         return ''

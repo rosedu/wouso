@@ -325,6 +325,7 @@ class CustomizationLevelsView(TemplateView):
 
         return context
 
+
 customization_levels = permission_required('config.change_setting')(
     CustomizationLevelsView.as_view())
 
@@ -554,8 +555,7 @@ def qpool_set_active_categories(request):
     form = TagsForm(tags=tags)
     return render_to_response('cpanel/qpool_setactivetags.html',
                               {'form': form, 'tags': tags},
-                              context_instance=RequestContext(request)
-    )
+                              context_instance=RequestContext(request))
 
 
 class QpoolImporterView(TemplateView):
@@ -581,7 +581,7 @@ def qpool_import_from_upload(request):
     tags = request.POST.getlist('tags')
 
     all_active = False
-    if request.POST.has_key('all_active'):
+    if 'all_active' in request.POST:
         all_active = True
         endorsed_by = request.user
     else:
@@ -986,13 +986,13 @@ def infraction_recheck(request):
     for p in all_participants:
         id = None
         if p.user_from.count():
-            if p.user_from.all()[0].status == 'P' and p.user_from.all()[
-                0].winner.id != p.user.id:
+            if (p.user_from.all()[0].status == 'P' and
+                    p.user_from.all()[0].winner.id != p.user.id):
                 user = p.user.player_ptr
                 id = p.user_from.all()[0].id
         if p.user_to.count():
-            if p.user_to.all()[0].status == 'P' and p.user_to.all()[
-                0].winner.id != p.user.id:
+            if (p.user_to.all()[0].status == 'P' and
+                    p.user_to.all()[0].winner.id != p.user.id):
                 user = p.user.player_ptr
                 id = p.user_to.all()[0].id
         if id:
@@ -1047,12 +1047,15 @@ class GroupsAdd(CreateView):
     def get_success_url(self):
         return reverse('races_groups')
 
+
 class GroupsEdit(CreateView):
     model = PlayerGroup
     template_name = 'cpanel/races/group_edit.html'
     form_class = PlayerGroupForm
+
     def get_success_url(self):
         return reverse('races_groups')
+
 
 races_groups = permission_required('config.change_setting')(
     RacesGroupsView.as_view()
@@ -1070,6 +1073,7 @@ races_edit = permission_required('config.change_setting')(
 group_edit = permission_required('config.change_setting')(
     GroupsEdit.as_view()
 )
+
 
 class RolesView(ListView):
     template_name = 'cpanel/roles.html'
@@ -1102,8 +1106,7 @@ def roles_update(request, id):
         user.groups.add(group)
 
     return render_to_response('cpanel/roles_update.html', {'role': group},
-                              context_instance=RequestContext(request)
-    )
+                              context_instance=RequestContext(request))
 
 
 @permission_required('superuser')
@@ -1315,10 +1318,11 @@ def bonus(request, player_id):
                               external_id=request.user.get_profile().id,
                               **{coin.name: amount})
                 if form.cleaned_data['reason']:
-                    add_activity(player, _(
-                        'received {amount} {coin} bonus for {reason}'),
-                                 amount=amount, coin=coin,
-                                 reason=form.cleaned_data['reason'])
+                    add_activity(
+                        player,
+                        _('received {amount} {coin} bonus for {reason}'),
+                        amount=amount, coin=coin,
+                        reason=form.cleaned_data['reason'])
                 messages.info(request, 'Successfully given bonus')
             return redirect('manage_player', pk=player.id)
     else:

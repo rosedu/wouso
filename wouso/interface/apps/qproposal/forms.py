@@ -5,7 +5,7 @@ from wouso.core.qpool.models import Tag, Category
 class QuestionForm(forms.Form):
 
     text = forms.CharField(max_length=500, widget=forms.Textarea)
-    answer_type = forms.ChoiceField(choices=(('R', 'Single'), ('C','Multiple')))
+    answer_type = forms.ChoiceField(choices=(('R', 'Single'), ('C', 'Multiple')))
     category = forms.ChoiceField(choices=[(cat.name, cat.name) for cat in Category.objects.all().exclude(name='proposed')], widget=forms.Select(attrs={
         'id': 'select-category'}))
 
@@ -13,14 +13,13 @@ class QuestionForm(forms.Form):
         super(QuestionForm, self).__init__(data)
         self.nr_ans = nr_ans
         for i in range(nr_ans):
-            self.fields['answer_%d' % i] = forms.CharField(max_length=100,
-                                    widget=forms.Textarea, required=False)
+            self.fields['answer_%d' % i] = forms.CharField(
+                max_length=100, widget=forms.Textarea, required=False)
             self.fields['correct_%d' % i] = forms.BooleanField(required=False, label="Correct?")
         alltags = Tag.objects.all().exclude(name__in=['qotd', 'challenge', 'quest'])
         self.fields['tags'] = forms.MultipleChoiceField(
-                        choices=[(tag.name, tag.name) for tag in alltags],
-                        widget=forms.SelectMultiple(attrs={
-                            'id': 'select-tags'}), required=False)
+            choices=[(tag.name, tag.name) for tag in alltags],
+            widget=forms.SelectMultiple(attrs={'id': 'select-tags'}), required=False)
 
     def clean(self):
         cleaned_data = self.cleaned_data

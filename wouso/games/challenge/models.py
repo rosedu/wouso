@@ -132,11 +132,11 @@ class ChallengeUser(Player):
         return self.get_all_challenges().filter(status=u'R')
 
     def get_win_percentage(self):
-        w = self.get_won_challenges().count()
-        d = self.get_draw_challenges().count()
-        l = self.get_lost_challenges().count()
+        won = self.get_won_challenges().count()
+        draw = self.get_draw_challenges().count()
+        lost = self.get_lost_challenges().count()
         # 1 draw counts as 1/2 win, 1/2 loss
-        return 0 if w + d == 0 else (w + d / 2.0) / (w + l + d) * 100
+        return 0 if won + draw == 0 else (won + draw / 2.0) / (won + lost + draw) * 100
 
     def get_random_opponent(self):
         players = ChallengeUser.objects.exclude(user=self.user)
@@ -203,6 +203,7 @@ class ChallengeUser(Player):
                      average_time=average_time, average_score=average_score,
                      win_percentage=win_percentage, opponents=result)
         return stats
+
 
 Player.register_extension('challenge', ChallengeUser)
 
@@ -420,7 +421,7 @@ class Challenge(models.Model):
             elif seconds == 60:
                 ret = _('1 minute')
             elif seconds % 60 == 0:
-                ret = _('{minutes} minutes').format(minutes=(seconds/60))
+                ret = _('{minutes} minutes').format(minutes=(seconds / 60))
             elif 60 < seconds < 120:
                 ret = _('1 minute and {s} seconds').format(s=seconds % 60)
             else:
@@ -825,4 +826,6 @@ def challenge_post_delete(sender, instance, **kwargs):
         instance.user_to.delete()
     except:
         pass
+
+
 models.signals.post_delete.connect(challenge_post_delete, Challenge)

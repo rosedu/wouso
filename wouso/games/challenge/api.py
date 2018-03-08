@@ -89,7 +89,7 @@ class ChallengeHandler(BaseHandler):
                     'questions': dict(
                         [(q.id, {'text': q, 'answers': dict([(a.id, a) for a in q.answers])}) for q in
                          challenge.questions.all()]),
-            }
+                    }
 
         if action == 'refuse':
             if challenge.user_to.user == challuser and challenge.is_launched():

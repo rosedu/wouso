@@ -3,6 +3,7 @@ from django import http
 
 KEYWORD = "_as"
 
+
 class ImpersonateMiddleware(object):
     def get_impersonation(self, request):
         if KEYWORD in request.GET:

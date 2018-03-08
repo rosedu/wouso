@@ -27,6 +27,7 @@ from wouso.interface.apps.lesson.models import LessonCategory, LessonTag
 
 from . import API_VERSION
 
+
 def get_fullpath(request):
     base = 'http://%s' % request.get_host()
     fullpath = request.get_full_path()
@@ -35,6 +36,7 @@ def get_fullpath(request):
     else:
         query = ''
     return base + fullpath, query
+
 
 class ApiRoot(BaseHandler):
     allowed_methods = ('GET',)
@@ -46,6 +48,7 @@ class ApiRoot(BaseHandler):
             'authenticated': request.user.is_authenticated()
         }
         return api
+
 
 class Search(BaseHandler):
     allowed_methods = ('GET',)
@@ -61,7 +64,7 @@ class OnlineUsers(BaseHandler):
     allowed_methods = ('GET',)
 
     def read(self, request, type=None):
-        oldest = datetime.now() - timedelta(minutes = 10)
+        oldest = datetime.now() - timedelta(minutes=10)
         online_last10 = Player.objects.filter(last_seen__gte=oldest).order_by('-last_seen')
 
         if type == 'list':
@@ -90,6 +93,7 @@ class NotificationsHandler(BaseHandler):
         else:
             return rc.BAD_REQUEST
 
+
 class NotificationsRegister(BaseHandler):
     allowed_methods = ('POST',)
 
@@ -104,12 +108,14 @@ class NotificationsRegister(BaseHandler):
         register_device(player, attrs['registration_id'])
         return {'success': True}
 
+
 class NotificationsDevices(BaseHandler):
     allowed_methods = ('GET',)
 
     def read(self, request):
         player = request.user.get_profile()
         return [dict(registration_id=d.registration_id) for d in player.device_set.all()]
+
 
 class InfoHandler(BaseHandler):
     allowed_methods = ('GET',)
@@ -131,7 +137,7 @@ class InfoHandler(BaseHandler):
             'title': player.level.title,
             'image': player.level.image,
             'id': player.level.id,
-            } if player.level else {}
+        } if player.level else {}
 
         group = player.group
         gold = player.coins['gold'] if 'gold' in player.coins.keys() else 0
@@ -227,8 +233,7 @@ class BazaarInventoryHandler(BazaarHandler):
                         'player_id': s.player.id, 'player': unicode(s.player), 'image_url': s.spell.image_url} for s in player.magic.spells_cast]
         return {'spells_available': spells_available,
                 'spells_onme': spells_onme,
-                'spells_cast': spells_cast
-        }
+                'spells_cast': spells_cast}
 
 
 class BazaarBuy(BaseHandler):
@@ -256,6 +261,7 @@ class BazaarBuy(BaseHandler):
                           price=spell.price)
             SpellHistory.bought(player, spell)
             return {'success': True}
+
 
 class BazaarExchange(BaseHandler):
     allowed_methods = ('POST',)
@@ -289,6 +295,7 @@ class BazaarExchange(BaseHandler):
 
         return {'success': True, 'coins': player.coins}
 
+
 class Messages(BaseHandler):
     LIMIT = 100
 
@@ -302,14 +309,13 @@ class Messages(BaseHandler):
                 'to': unicode(m.receiver), 'to_id': m.receiver_id,
                 'text': m.text,
                 'subject': m.subject, 'reply_to': m.reply_to.id if m.reply_to else None,
-                'read': m.read
-        }
+                'read': m.read}
 
     def read(self, request, type='all'):
         player = request.user.get_profile()
         msguser = player.get_extension(MessagingUser)
         if type == 'all':
-            qs = Message.objects.filter(Q(sender=msguser)|Q(receiver=msguser)).exclude(archived=True)[:self.LIMIT]
+            qs = Message.objects.filter(Q(sender=msguser) | Q(receiver=msguser)).exclude(archived=True)[:self.LIMIT]
         elif type == 'sent':
             qs = Message.objects.filter(sender=msguser)[:self.LIMIT]
         elif type == 'recv':
@@ -317,6 +323,7 @@ class Messages(BaseHandler):
         else:
             return []
         return [self.to_dict(m) for m in qs]
+
 
 class MessagesSender(BaseHandler):
     allowed_methods = ('POST',)
@@ -419,7 +426,7 @@ class CastHandler(BaseHandler):
             return {'success': False, 'error': 'Invalid days parameter'}
 
         due = datetime.now() + timedelta(days=days)
-        error =  destination.magic.cast_spell(spell, source=player, due=due)
+        error = destination.magic.cast_spell(spell, source=player, due=due)
         if error is not None:
             return {'succes': False, 'error': 'Cast failed, %s' % error}
 
@@ -479,6 +486,7 @@ class TopPlayers(BaseHandler):
         return [dict(first_name=p.user.first_name, last_name=p.user.last_name, id=p.id, points=p.points,
                      level=p.level_no, avatar=player_avatar(p), display_name=unicode(p)) for p in qs]
 
+
 class GroupHandler(BaseHandler):
     allowed_methods = ('GET',)
 
@@ -491,7 +499,7 @@ class GroupHandler(BaseHandler):
         gh = GroupHistory(group)
         fp, q = get_fullpath(request)
 
-        if type is None: # General information
+        if type is None:  # General information
             return {
                 'id': group.id,
                 'name': group.name,
@@ -499,8 +507,7 @@ class GroupHandler(BaseHandler):
                 'members': group.players.count(),
                 'rank': gh.position,
                 'activity': '%sactivity/%s' % (fp, q),
-                'evolution': '%sevolution/%s' % (fp, q),
-                }
+                'evolution': '%sevolution/%s' % (fp, q)}
         elif type == 'activity':
             qs = Activity.get_group_activiy(group)
             return [dict(user_from=unicode(a.user_from), user_to=unicode(a.user_to), message=a.message, date=a.timestamp) for a in qs]

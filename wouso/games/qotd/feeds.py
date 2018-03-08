@@ -8,7 +8,7 @@ class LatestQuestionsFeed(Feed):
     description = "WoUSO Question of the Day"
 
     def items(self):
-        #return Question.objects.order_by('-date')[:5]
+        # return Question.objects.order_by('-date')[:5]
         return Question.objects.all()[:5]
 
     def item_title(self, item):
@@ -19,4 +19,3 @@ class LatestQuestionsFeed(Feed):
 
     def item_link(self):
         return "/qotd/"
-

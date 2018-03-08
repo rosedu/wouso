@@ -74,7 +74,7 @@ class Security(App):
     @classmethod
     def penalise(cls, player, formula, external_id=None):
         coins = Coin.get('penalty')
-        if not coins is None:
+        if coins is not None:
             score(user=player, game=None, formula=formula, external_id=external_id)
 
     @classmethod
@@ -92,5 +92,6 @@ class Security(App):
 
 def do_security_check(sender, **kwargs):
     Security.activity_handler(sender, **kwargs)
+
 
 signals.addActivity.connect(do_security_check)

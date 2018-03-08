@@ -36,7 +36,7 @@ class QuizForm(forms.Form):
         adding an empty list to dic in this case"""
         for field in self.visible_fields():
             id = int(field.html_name[len('answer_'):])
-            if not res.has_key(id):
+            if id not in res:
                 res[id] = []
         return res
 
@@ -63,8 +63,7 @@ class AddQuizForm(forms.ModelForm):
         model = Quiz
 
         widgets = {'start': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"}),
-                   'end': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"})
-        }
+                   'end': widgets.DateTimePicker(options={"format": "YYYY-MM-DD HH:mm:ss"})}
         exclude = ['owner', 'players', 'status', 'tags']
 
     def __init__(self, *args, **kwargs):

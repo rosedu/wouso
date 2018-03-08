@@ -16,6 +16,7 @@ from wouso.games.challenge.models import Challenge, ChallengeManager
  STATUS_PLAYABLE,
  STATUS_DONE) = range(6)
 
+
 class SpecialChallenge(models.Model):
     STATUSES = (
         (STATUS_NEW, _('New, editing')),
@@ -70,7 +71,6 @@ class SpecialChallenge(models.Model):
                 self.status = STATUS_PLAYABLE
                 self.save()
 
-
     def __unicode__(self):
         return u"#%d against %s" % (self.id, self.player_to)
 
@@ -85,7 +85,7 @@ class SpecialChallengeManager(ChallengeManager):
             result = (self.challenge.user_to, self.challenge.user_from)
         elif self.challenge.user_from.score > self.challenge.user_to.score:
             result = (self.challenge.user_from, self.challenge.user_to)
-        else: #draw game
+        else:  # draw game
             result = 'draw'
         return result
 
@@ -119,6 +119,7 @@ class SpecialChallengeGame(Game):
     @classmethod
     def get_manager(cls, challenge):
         return SpecialChallengeManager(challenge)
+
 
 register_category(SpecialChallengeGame.QPOOL_CATEGORY, SpecialChallengeGame)
 register_sidebar_block('specialchallenge', SpecialChallengeGame.get_sidebar_widget)

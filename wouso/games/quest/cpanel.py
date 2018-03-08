@@ -29,7 +29,9 @@ class QuestHomeView(ListView):
                         'module': 'quest'})
         return context
 
+
 quest_home = permission_required('quest.change_quest')(QuestHomeView.as_view())
+
 
 @permission_required('quest.change_quest')
 def quest_edit(request, id=None):
@@ -54,6 +56,7 @@ def quest_edit(request, id=None):
                                'module': 'quest'},
                               context_instance=RequestContext(request))
 
+
 @permission_required('quest.change_quest')
 def quest_sort(request, id):
     quest = get_object_or_404(Quest, pk=id)
@@ -71,18 +74,20 @@ def quest_sort(request, id):
                                'module': 'quest'},
                               context_instance=RequestContext(request))
 
+
 @permission_required('quest.change_quest')
 def final_results(request):
     final = QuestGame.get_final()
     if not final:
         return render_to_response('quest/cpanel_final_results.html',
-                            context_instance=RequestContext(request))
+                                  context_instance=RequestContext(request))
     levels = final.fetch_levels()
     return render_to_response('quest/cpanel_final_results.html',
                               {'quest': final,
                                'module': 'quest',
                                'levels': levels},
                               context_instance=RequestContext(request))
+
 
 @permission_required('quest.change_quest')
 def final_score(request):
@@ -92,7 +97,8 @@ def final_score(request):
 
     return render_to_response('quest/cpanel_final_results.html',
                               {'quest': final, 'done': True},
-                            context_instance=RequestContext(request))
+                              context_instance=RequestContext(request))
+
 
 @permission_required('quest.change_quest')
 def create_finale(request):
@@ -109,6 +115,7 @@ def quest_bonus(request, id):
     quest = get_object_or_404(Quest, pk=id)
     quest.give_bonus()
     return redirect('quest_home')
+
 
 @permission_required('quest.change_quest')
 def register_results(request, id):
