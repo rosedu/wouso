@@ -38,7 +38,7 @@ def scoring_activity_stats():
               'player',
               'days',
               'days_positive'
-    ]
+              ]
     data.append(header)
     for p in Player.objects.all():
         day = None
@@ -78,7 +78,7 @@ def peruser_stats():
               'qotd_points',
               'quest_points',
               'special_gold',
-    ]
+              ]
     data.append(header)
     for p in Player.objects.all():
         chall = p.get_extension(ChallengeUser)
@@ -93,9 +93,10 @@ def peruser_stats():
                History.user_points_from_game(p.user, QotdGame)['points'],
                History.user_points_from_game(p.user, QuestGame)['points'],
                History.user_points_from_game(p.user, SpecialQuestGame)['gold'],
-        ]
+               ]
         data.append(row)
     return data
+
 
 def main(args):
     from django.db import models
@@ -109,7 +110,7 @@ def main(args):
     data = []
     print "Analyzing ", start_date, "-", end_date
     for single_date in daterange(start_date, end_date):
-        #print strftime("%Y-%m-%d", single_date.timetuple())
+        # print strftime("%Y-%m-%d", single_date.timetuple())
         print '.'
 
         singledata = {'date': single_date, 'data': []}
@@ -123,7 +124,7 @@ def main(args):
                 if hss:
                     player[formula.id] = hss
                     has_score = True
-                    #print formula.id, hss
+                    # print formula.id, hss
                 else:
                     player[formula.id] = 0
 
@@ -143,6 +144,7 @@ def main(args):
                 row.append("%d" % p.get(formula.id, 0))
             writer.writerow(row)
     print " done!"
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

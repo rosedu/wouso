@@ -22,7 +22,7 @@ class GrandChallengeTest(WousoTest):
         GrandChallengeGame.start()
         self.assertTrue(GrandChallengeGame.is_started())
 
-        c = Challenge.objects.filter(Q(user_from__user=u1, user_to__user=u2)|Q(user_from__user=u2, user_to__user=u1))
+        c = Challenge.objects.filter(Q(user_from__user=u1, user_to__user=u2) | Q(user_from__user=u2, user_to__user=u1))
         self.assertEqual(c.count(), 1)
 
     def _simulate_n_users(self, n):
@@ -68,6 +68,7 @@ class GrandChallengeTest(WousoTest):
     def test_16_players(self):
         self._simulate_n_users(17)
         self.assertEqual(GrandChallengeGame.get_winner().id, self._get_player(1).id)
+
 
 class GCUserTest(WousoTest):
     def setUp(self):

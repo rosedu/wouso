@@ -66,7 +66,7 @@ class QotdUser(Player):
     @property
     def has_answered(self):
         """ Check if last_answered was today """
-        #TODO: test this
+        # TODO: test this
         if self.last_answered is None:
             return False
         else:
@@ -154,5 +154,6 @@ class QotdGame(Game):
         today = datetime.now()
         qs = Schedule.objects.filter(day__lte=today).order_by('-day')[:7]
         return qs
+
 
 register_category(QotdGame.QPOOL_CATEGORY, QotdGame)

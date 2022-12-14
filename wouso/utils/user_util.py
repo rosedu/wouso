@@ -21,12 +21,14 @@ from wouso.core.user.models import Player
 UTF8Writer = codecs.getwriter('utf8')
 sys.stdout = UTF8Writer(sys.stdout)
 
+
 def _print_user(user):
     """Print information about an user.
     """
-    print "%s,%s,%s,%s,%s,%s,%s" %(user.username, user.first_name, \
-            user.last_name, user.email, user.is_active, user.is_staff, \
-            user.is_superuser)
+    print "%s,%s,%s,%s,%s,%s,%s" % (
+        user.username, user.first_name, user.last_name, user.email,
+        user.is_active, user.is_staff, user.is_superuser)
+
 
 def _print_player(player):
     """Print information about a player. Same as user but add race name.
@@ -34,14 +36,17 @@ def _print_player(player):
     user = player.user
     race_name = player.race.name if player.race else "None"
     race_title = player.race.title if player.race else "None"
-    print "%s,%s,%s,%s,%s,%s,%s,%s,%s" %(user.username, user.first_name, \
-            user.last_name, user.email, user.is_active, user.is_staff, \
-            user.is_superuser, race_name, race_title)
+    print "%s,%s,%s,%s,%s,%s,%s,%s,%s" % (
+        user.username, user.first_name, user.last_name, user.email,
+        user.is_active, user.is_staff, user.is_superuser, race_name,
+        race_title)
+
 
 def _print_race(race):
     """Print information about a race.
     """
-    print "%s,%s,%s" %(race.name, race.title, race.can_play)
+    print "%s,%s,%s" % (race.name, race.title, race.can_play)
+
 
 def list_users(race=None):
     """List users belonging to a particular race. In case race is missing,
@@ -50,7 +55,7 @@ def list_users(race=None):
     if race:
         users = []
         for p in players:
-            if p.race == None:
+            if p.race is None:
                 continue
             if p.race.name == race:
                 users.append(p.user)
@@ -59,6 +64,7 @@ def list_users(race=None):
     for u in users:
         _print_user(u)
 
+
 def list_players(race=None):
     """List players belonging to a particular race. In case race is missing,
     list all players. Add printing of race name."""
@@ -66,7 +72,7 @@ def list_players(race=None):
     if race:
         players = []
         for p in _players:
-            if p.race == None:
+            if p.race is None:
                 continue
             if p.race.name == race:
                 players.append(p)
@@ -75,11 +81,13 @@ def list_players(race=None):
     for p in players:
         _print_player(p)
 
+
 def list_races(race=None):
     """List all races.
     """
     for r in Race.objects.all():
         _print_race(r)
+
 
 def show_user(username):
     """Show information of user.
@@ -88,7 +96,8 @@ def show_user(username):
     if not p:
         return
     _print_user(p.user)
-    print "race: %s, %s" %(p.race.name, p.race.title)
+    print "race: %s, %s" % (p.race.name, p.race.title)
+
 
 def show_race(race_name):
     """Show information about race.
@@ -98,7 +107,9 @@ def show_race(race_name):
         return
     _print_race(r)
 
-def add_user(username, first_name, last_name, email, password, is_active=False, is_staff=False, is_superuser=False):
+
+def add_user(username, first_name, last_name, email, password,
+             is_active=False, is_staff=False, is_superuser=False):
     """Add user and return user object. In case user with given username
     already exists, return None.
     """
@@ -116,9 +127,10 @@ def add_user(username, first_name, last_name, email, password, is_active=False, 
     user.save()
     return user
 
+
 def remove_user(username):
-    """Remove user by username. Return True if successful. Return False if user
-    does not exist.
+    """Remove user by username. Return True if successful. Return False if
+    user does not exist.
     """
     user = User.objects.get(username=username)
     if not user:
@@ -127,36 +139,41 @@ def remove_user(username):
     user.delete()
     return True
 
-def update_user(username, first_name=None, last_name=None, email=None, password=None, is_active=None, is_staff=None, is_superuser=None):
-    """Update user by username. Return True if successful. Return False if user
-    does not exist.
+
+def update_user(username, first_name=None, last_name=None, email=None,
+                password=None, is_active=None, is_staff=None,
+                is_superuser=None):
+    """Update user by username. Return True if successful. Return False if
+    user does not exist.
     """
     user = User.objects.get(username=username)
     if not user:
         return False
 
-    if first_name != None:
+    if first_name is not None:
         user.first_name = first_name
-    if last_name != None:
+    if last_name is not None:
         user.last_name = last_name
-    if email != None:
+    if email is not None:
         user.email = email
-    if password != None:
+    if password is not None:
         user.set_password(password)
-    if is_active != None:
+    if is_active is not None:
         user.is_active = is_active
-    if is_staff != None:
+    if is_staff is not None:
         user.is_staff = is_staff
-    if is_superuser != None:
+    if is_superuser is not None:
         user.is_superuser = is_superuser
     user.save()
     return True
+
 
 def change_password(username, password):
     """Change user password. Return True on success. Return False if user does
     not exist.
     """
     return update_user(username, password=password)
+
 
 def add_race(name, title, can_play=False):
     """Add race and return race object. In case race already exists, return
@@ -171,6 +188,7 @@ def add_race(name, title, can_play=False):
     race.save()
     return race
 
+
 def remove_race(name):
     """Remove race by name. Return True if successful. Return False if race
     does not exist.
@@ -182,20 +200,22 @@ def remove_race(name):
     race.delete()
     return True
 
+
 def update_race(name, title=None, can_play=None):
-    """Update user by username. Return True if successful. Return False if user
-    does not exist.
+    """Update user by username. Return True if successful. Return False if
+    user does not exist.
     """
     race = Race.objects.get(name=name)
     if not race:
         return False
 
-    if title != None:
+    if title is not None:
         race.title = title
-    if can_play != None:
+    if can_play is not None:
         race.can_play = can_play
     race.save()
     return True
+
 
 def add_user_to_race(username, race_name):
     """Add user to race. Return True if successful. Return False if user or
@@ -210,6 +230,7 @@ def add_user_to_race(username, race_name):
     player.race = race
     player.save()
     return True
+
 
 def remove_user_from_race(username, race_name):
     """Remove user from race. Return True if successful. Return False if user

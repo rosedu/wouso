@@ -17,14 +17,16 @@ from wouso.core.magic.models import Spell, SpellHistory, PlayerSpellDue, Artifac
 from wouso.core import scoring, signals
 from wouso.interface.activity.models import Activity
 
+
 class BazaarView(ListView):
     template_name = 'magic/bazaar.html'
     context_object_name = 'activity'
     paginate_by = 40
 
     def get_queryset(self):
-        activity_list = Activity.objects.filter(Q(action='spell-buy') | Q(action='earned-ach') | 
-                            Q(action__contains='gold') | Q(action='cast')).order_by('-timestamp')
+        activity_list = Activity.objects.filter(
+            Q(action='spell-buy') | Q(action='earned-ach') |
+            Q(action__contains='gold') | Q(action='cast')).order_by('-timestamp')
         return activity_list
 
     def get_context_data(self, **kwargs):
@@ -36,7 +38,7 @@ class BazaarView(ListView):
         exchange_disabled = BoolSetting.get('setting-bazaar-exchange').get_value() is False
         try:
             rate = scoring.calculate('gold-points-rate', gold=1)['points']
-            rate2 = round(1/scoring.calculate('points-gold-rate', points=1)['gold'])
+            rate2 = round(1 / scoring.calculate('points-gold-rate', points=1)['gold'])
         except InvalidFormula:
             rate, rate2 = 1, 1
         rate_text = _('Rate: 1 gold = {rate} points, {rate2} points = 1 gold').format(rate=rate,
@@ -56,7 +58,9 @@ class BazaarView(ListView):
                         'exchange_disabled': exchange_disabled})
         return context
 
+
 bazaar = BazaarView.as_view()
+
 
 @login_required
 def bazaar_exchange(request):
@@ -103,22 +107,24 @@ def bazaar_exchange(request):
     if message:
         messages.success(request, message)
 
-    return render_to_response('magic/bazaar_buy.html',
-                {'tab': 'exchange'},
-                context_instance=RequestContext(request))
+    return render_to_response(
+        'magic/bazaar_buy.html',
+        {'tab': 'exchange'},
+        context_instance=RequestContext(request))
+
 
 @login_required
 def bazaar_buy(request, spell):
     spell = get_object_or_404(Spell, pk=spell)
 
     player = request.user.get_profile()
-    error, message = '',''
+    error, message = '', ''
 
     if Bazaar.disabled():
         error = _("Magic is disabled")
     elif spell.price > player.coins.get('gold', 0):
         error = _("Insufficient gold amount")
-    elif spell.available == False:
+    elif spell.available is False:
         error = _("Spell is not available")
     elif spell.level_required > player.level_no:
         error = _("Level {level} is required to buy this spell").format(level=spell.level_required)
@@ -128,12 +134,9 @@ def bazaar_buy(request, spell):
                       price=spell.price)
         signal_msg = ugettext_noop('bought a spell')
         action_msg = 'spell-buy'
-        signals.addActivity.send(sender=None, user_from=player,
-                        user_to=player,
-                        message=signal_msg,
-                        game=None,
-                        action=action_msg,
-                        public=False)
+        signals.addActivity.send(
+            sender=None, user_from=player, user_to=player, message=signal_msg,
+            game=None, action=action_msg, public=False)
         SpellHistory.bought(player, spell)
         message = _("Successfully acquired")
 
@@ -143,6 +146,7 @@ def bazaar_buy(request, spell):
         messages.success(request, message)
 
     return redirect('bazaar_home')
+
 
 @login_required
 def magic_cast(request, destination=None, spell=None):
@@ -198,11 +202,14 @@ def affected_players(request):
         destination = get_object_or_404(Player, pk=user_id)
         players = destination.get_neighbours_from_top(2, user.race, spell.type)
         players = user.magic.filter_players_by_spell(players, spell)
-    else :
+    else:
         user = get_object_or_404(Player, pk=user_id)
         players = [user]
 
-    return render_to_response('profile/mass_cast_players_list.html', { 'players':players }, context_instance=RequestContext(request))
+    return render_to_response(
+        'profile/mass_cast_players_list.html',
+        {'players': players},
+        context_instance=RequestContext(request))
 
 
 @login_required
@@ -215,5 +222,7 @@ def artifact_hof(request, artifact=None):
     artifacts = Artifact.objects.all().annotate(used=Count('playerartifactamount')).filter(group__name='Default').order_by('-used')
     players = Player.objects.all().annotate(owned=Count('playerartifactamount')).exclude(owned=0).order_by('-owned')[:10]
 
-    return render_to_response('magic/artifact_hof.html', {'artifacts': artifacts, 'players': players, 'artifact': artifact},
+    return render_to_response(
+        'magic/artifact_hof.html',
+        {'artifacts': artifacts, 'players': players, 'artifact': artifact},
         context_instance=RequestContext(request))

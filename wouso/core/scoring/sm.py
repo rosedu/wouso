@@ -38,7 +38,7 @@ PHI = (1 + 5**0.5) / 2
 
 
 def fib(n):
-    return int(round((PHI**n - (1-PHI)**n) / 5**0.5))
+    return int(round((PHI**n - (1 - PHI)**n) / 5**0.5))
 
 
 # Setup
@@ -110,7 +110,7 @@ def calculate_expression(expression, formula=None, **params):
                 result = 0
             ret[coin] = result
     except Exception as e:
-        #logging.exception(e)
+        # logging.exception(e)
         raise FormulaParsingError(formula)
     return ret
 
@@ -303,5 +303,6 @@ def first_login_check(sender, **kwargs):
             score(player, None, 'start-points')
         except InvalidFormula:
             logging.error('Formula start points is missing')
+
 
 signals.addActivity.connect(first_login_check)

@@ -17,7 +17,7 @@ class ScoringTestCase(TestCase):
         self.coin = Coin.add('_test')
 
     def tearDown(self):
-        #self.user.delete()
+        # self.user.delete()
         self.game.delete()
         self.coin.delete()
 
@@ -142,7 +142,7 @@ class UpdateScoringTest(WousoTest):
         player.points = level_up_points - 1
         player.save()
         update_points(player, None)
-        #Upgrade player's level back
+        # Upgrade player's level back
         player.points = level_up_points + 1
         player.save()
         update_points(player, None)
@@ -209,7 +209,7 @@ class ScoringFirstLogin(WousoTest):
         self.assertEqual(player.points, 0)
 
         # this won't work, since the activity is sent in our custom view
-        #self.client.login(username=player.user.username, password='test')
+        # self.client.login(username=player.user.username, password='test')
         # using this instead
         signals.addActivity.send(sender=None, user_from=player, action="login", game=None, public=False)
 

@@ -19,9 +19,10 @@ def index(request, extra_context=None):
                           'assessment': assessment, 'semigroup': Semigroup.get_by_player(player),
                           'history': player.assessments.all().order_by('-workshop__active_until')})
 
-    return render_to_response('workshop/index.html',
-                extra_context,
-                context_instance=RequestContext(request)
+    return render_to_response(
+        'workshop/index.html',
+        extra_context,
+        context_instance=RequestContext(request)
     )
 
 
@@ -57,12 +58,14 @@ def play(request):
 
     seconds_left = assessment.time_left()
 
-    return render_to_response('workshop/play.html',
-                {'assessment': assessment,
-                 'workshop': workshop,
-                 'seconds_left': seconds_left},
-                context_instance=RequestContext(request)
+    return render_to_response(
+        'workshop/play.html',
+        {'assessment': assessment,
+         'workshop': workshop,
+         'seconds_left': seconds_left},
+        context_instance=RequestContext(request)
     )
+
 
 @login_required
 def review(request, workshop):
@@ -88,12 +91,14 @@ def review(request, workshop):
                     review.answer_grade = answer_grade
                     review.save()
 
-    return render_to_response('workshop/review.html',
-                {'assessment': assessment,
-                 'workshop': workshop,
-                 'assessments': assessments},
-                context_instance=RequestContext(request)
+    return render_to_response(
+        'workshop/review.html',
+        {'assessment': assessment,
+         'workshop': workshop,
+         'assessments': assessments},
+        context_instance=RequestContext(request)
     )
+
 
 @login_required
 def review_change(request, review):
@@ -119,11 +124,13 @@ def review_change(request, review):
     else:
         form = RCForm(instance=review)
 
-    return render_to_response('workshop/review_change.html',
-                {'review': review,
-                 'form': form},
-                context_instance=RequestContext(request)
+    return render_to_response(
+        'workshop/review_change.html',
+        {'review': review,
+         'form': form},
+        context_instance=RequestContext(request)
     )
+
 
 @login_required
 def results(request, workshop):
@@ -135,8 +142,9 @@ def results(request, workshop):
     if not assessment:
         return do_error(request, _('Cannot view results for an workshop you did not participate to.'))
 
-    return render_to_response('workshop/results.html',
-                {'assessment': assessment,
-                 'workshop': workshop},
-                context_instance=RequestContext(request)
+    return render_to_response(
+        'workshop/results.html',
+        {'assessment': assessment,
+         'workshop': workshop},
+        context_instance=RequestContext(request)
     )

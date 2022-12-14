@@ -3,13 +3,14 @@ import ldap
 import logging
 
 LDAP_URL = 'ldaps://swarm.cs.pub.ro:636'
-LDAP_BINDNAME = '' # 'cn=admin,dc=swarm,dc=cs,dc=pub,dc=ro'
+LDAP_BINDNAME = ''  # 'cn=admin,dc=swarm,dc=cs,dc=pub,dc=ro'
 LDAP_BINDPASS = ''
 LDAP_BASECN = 'dc=swarm,dc=cs,dc=pub,dc=ro'
 LDAP_FILTER = '(uid=%s)'
 
 # Overwrite settings
 from wouso.settings import *
+
 
 class LDAPBackend:
     def authenticate(self, username=None, password=None):
@@ -21,11 +22,11 @@ class LDAPBackend:
             conn = ldap.initialize(LDAP_URL)
             if LDAP_BINDNAME != '':
                 conn.simple_bind_s(LDAP_BINDNAME, LDAP_BINDPASS)
-            result = conn.search_ext_s(LDAP_BASECN, ldap.SCOPE_SUBTREE, \
-                    LDAP_FILTER % username, None)
+            result = conn.search_ext_s(LDAP_BASECN, ldap.SCOPE_SUBTREE,
+                                       LDAP_FILTER % username, None)
             conn.unbind_s()
         except ldap.SERVER_DOWN:
-            #raise Exception('Authentication server is down')
+            # raise Exception('Authentication server is down')
             return None
 
         if len(result) == 0:
@@ -53,7 +54,8 @@ class LDAPBackend:
         except User.DoesNotExist:
             first_name = data['givenName'][0].decode('utf8')
             last_name = data['sn'][0].decode('utf8')
-            user = User(username=username, first_name=first_name, last_name=last_name, email=data['mail'][0])
+            user = User(username=username, first_name=first_name,
+                        last_name=last_name, email=data['mail'][0])
             user.is_staff = False
             user.is_superuser = False
             user.is_active = True

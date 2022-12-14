@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import *
 
-urlpatterns = patterns('wouso.interface.apps.messaging.views',
+urlpatterns = patterns(
+    'wouso.interface.apps.messaging.views',
     url(r'^$', 'home', name='messaging'),
     url(r'^create$', 'create', name='create'),
     url(r'^create/to=(?P<to>\d+)$', 'create', name='create_to'),

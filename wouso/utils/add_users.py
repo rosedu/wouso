@@ -7,6 +7,7 @@ import sys
 import csv
 import wouso.utils.user_util
 
+
 def main():
     if len(sys.argv) != 2:
         print 'Usage: python add_users.py <file.csv>'
@@ -19,9 +20,9 @@ def main():
         username, first_name, last_name, email, password = row
         ret = wouso.utils.user_util.add_user(username, first_name, last_name, email, password, is_active=1, is_staff=0, is_superuser=0)
         if ret:
-            print "Successfully added user %s." %(username)
+            print "Successfully added user %s." % (username)
         else:
-            print "Failed adding user %s." %(username)
+            print "Failed adding user %s." % (username)
 
 
 if __name__ == "__main__":

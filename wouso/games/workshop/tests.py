@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from models import *
 from wouso.core.tests import WousoTest
 
+
 class TestWorkshop(TestCase):
 
     def test_current_spot_semigroup(self):
@@ -53,6 +54,7 @@ class TestWorkshop(TestCase):
         self.assertEqual(i1['reviews'].count(), 0)
         self.assertEqual(i2['reviews'].count(), 0)
 
+
 class TestAssessment(WousoTest):
     def test_grading(self):
         p1 = self._get_player(1)
@@ -80,7 +82,7 @@ class TestAssessment(WousoTest):
 
         # Check questions
         self.assertEqual(a1.questions.all().count(), 4)
-        #self.assertEqual(a1.questions.all()[-1], q)
+        # self.assertEqual(a1.questions.all()[-1], q)
 
         a1.set_answered()
         a2.set_answered()
@@ -103,9 +105,9 @@ class TestAssessment(WousoTest):
 
         r12 = Review.objects.create(answer=ans2, reviewer=p1, answer_grade=7)
         self.assertEqual(a2.reviews_grade, 7)
-        
+
         ar = Review.objects.create(answer=ans2, reviewer=p2, answer_grade=8)
-        self.assertEqual(a2.reviews_grade, 7) # ignores reviews from non-reviewers
+        self.assertEqual(a2.reviews_grade, 7)  # ignores reviews from non-reviewers
         ar.delete()
 
         # Check the reset_reviews view
@@ -130,6 +132,7 @@ class TestAssessment(WousoTest):
         self.assertEqual(a1.reviewer_grade, 200)
         self.assertEqual(a1.final_grade, 69)
         self.assertEqual(a1.reviews_grade, 3)
+
 
 class TestWorkshopViews(WousoTest):
     def setUp(self):
@@ -157,7 +160,7 @@ class TestWorkshopViews(WousoTest):
 
         # Check if it creates a semigroup
         self.assertTrue(Semigroup.objects.all())
-        
+
         # Check if duplicates are created
         response = self.c.post(reverse('ws_add_group'), data)
         self.assertEqual(len(Semigroup.objects.all()), 1)

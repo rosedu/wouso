@@ -11,6 +11,7 @@ from wouso.interface.cpanel import get_cpanel_games
 from wouso.settings import FORCE_SCRIPT_NAME
 from . import set_theme
 
+
 def context(request):
     """ Make all configuration settings available as config_name
     and also define some game context
@@ -18,13 +19,14 @@ def context(request):
     settings_dict = {}
     settings_dict['basepath'] = FORCE_SCRIPT_NAME
     for s in Setting.objects.all():
-        settings_dict['config_' + s.name.replace('-','_').lower()] = s.get_value()
+        settings_dict['config_' + s.name.replace('-', '_').lower()] = s.get_value()
 
     for k, v in settings_dict.iteritems():
         if k.startswith('config_disable'):
             try:
                 settings_dict[k] = bool(v)
-            except ValueError: pass
+            except ValueError:
+                pass
 
     # user defined theme
     if request.user.is_authenticated():

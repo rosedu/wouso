@@ -16,6 +16,7 @@ from wouso.games.quest.models import Quest, QuestGame
 from wouso.interface.activity.models import Activity
 from models import Statistics
 
+
 def stats(request):
 
     data = {}
@@ -99,8 +100,10 @@ def stats(request):
 def footer_link(request):
     if Statistics.disabled():
         return ''
-    link = '<a id="page-special-statistics" href="'+ reverse('wouso.interface.apps.statistics.views.stats') +'">' + _('Live stats') + '</a>'
+    link = '<a id="page-special-statistics" href="' + reverse('wouso.interface.apps.statistics.views.stats') + '">' + _('Live stats') + '</a>'
     return link
+
+
 register_footer_link('statistics', footer_link)
 
 

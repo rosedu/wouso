@@ -10,6 +10,7 @@ from wouso.core.user.models import Player
 from wouso.core import scoring
 from wouso.core.qpool.models import Question, Schedule, Tag, Category
 
+
 class QotdTestCase(WousoTest):
     def setUp(self):
         super(QotdTestCase, self).setUp()
@@ -21,8 +22,12 @@ class QotdTestCase(WousoTest):
 
     def _get_foo_question(self, correct=2):
         """ Return a Question object selected for Today """
-        class Question: pass
-        class Answer: pass
+        class Question:
+            pass
+
+        class Answer:
+            pass
+
         q = Question()
         q.text = 'How many'
         q.answers = []
@@ -33,7 +38,7 @@ class QotdTestCase(WousoTest):
         return q
 
     def testUserCreate(self):
-        user,new = User.objects.get_or_create(username='_test2')
+        user, new = User.objects.get_or_create(username='_test2')
 
         profile = user.get_profile()
 
@@ -73,15 +78,17 @@ class QotdTestCase(WousoTest):
             a = QotdGame.get_for_today()
             self.assertTrue(a in (q1, q2))
 
+
 def _make_question_for_today(user, text):
     category = Category(name='qotd')
     question = Question(text=text, proposed_by=user, category=category, active=1)
     question.save()
     for i in range(4):
-        Answer.objects.create(question=question, correct=i==1, text='a %d'%i)
+        Answer.objects.create(question=question, correct=i == 1, text='a %d' % i)
     sched = Schedule(question=question)
     sched.save()
     return question
+
 
 class PageTests(WousoTest):
     def setUp(self):
@@ -153,7 +160,7 @@ class ApiTest(WousoTest):
         response = self.client.post('/api/qotd/today/', {'answer': wrong.id})
         data = json.loads(response.content)
 
-        self.assertFalse(data['success']) # because already answered
+        self.assertFalse(data['success'])  # because already answered
         self.assertEqual(data['error'], 'User already answered')
         qotduser.reset_answered()
 
@@ -162,6 +169,7 @@ class ApiTest(WousoTest):
 
         self.assertTrue(data['success'])
         self.assertFalse(data['correct'])
+
 
 class TestQotdViews(WousoTest):
     def setUp(self):
@@ -175,7 +183,7 @@ class TestQotdViews(WousoTest):
 
         self.c = Client()
         self.c.login(username='testuser1', password='test')
-        
+
     def test_qotd_index(self):
         response = self.c.get(reverse('qotd_index_view'))
         self.assertContains(response, 'a 1')
@@ -188,7 +196,7 @@ class TestQotdViews(WousoTest):
         a_id = Answer.objects.filter(question=self.question)[1].id
         data = {u'answers': [a_id]}
         self.c.post(reverse('qotd_index_view'), data)
-        q_user= QotdUser.objects.get(user__username='testuser1')
+        q_user = QotdUser.objects.get(user__username='testuser1')
         initial_last_answered = q_user.last_answered
         self.assertTrue(initial_last_answered)
 

@@ -103,8 +103,8 @@ class QuestUser(Player):
         Create a QuestResult entry for the QuestUser's current quest
         """
         if not self.finished:
-            qr, created = QuestResult.objects.get_or_create(user=self,
-                          quest=self.current_quest, level=self.current_level)
+            qr, created = QuestResult.objects.get_or_create(
+                user=self, quest=self.current_quest, level=self.current_level)
 
     def set_current(self, quest):
         self.started_time = datetime.datetime.now()
@@ -294,6 +294,7 @@ class Quest(models.Model):
     def __unicode__(self):
         return "%s - %s %s" % (self.start, self.end, self.title)
 
+
 class QuestGame(Game):
     """ Each game must extend Game """
     class Meta:
@@ -312,12 +313,12 @@ class QuestGame(Game):
     @classmethod
     def get_current(cls):
         try:
-            quest =  FinalQuest.objects.get(start__lte=datetime.datetime.now(),
-                end__gte=datetime.datetime.now())
+            quest = FinalQuest.objects.get(start__lte=datetime.datetime.now(),
+                                           end__gte=datetime.datetime.now())
         except:
             try:
                 quest = Quest.objects.get(start__lte=datetime.datetime.now(),
-                                end__gte=datetime.datetime.now())
+                                          end__gte=datetime.datetime.now())
             except:
                 quest = None
         return quest
@@ -331,30 +332,32 @@ class QuestGame(Game):
         """ Returns a list of formulas used by qotd """
         fs = []
         quest_game = kls.get_instance()
-        fs.append(dict(name='quest-ok', expression='points={level}',
+        fs.append(dict(
+            name='quest-ok', expression='points={level}',
             owner=quest_game.game,
-            description='Points earned when finishing a level. Arguments: level.')
-        )
-        fs.append(dict(name='quest-finish-ok', expression='points=10',
+            description='Points earned when finishing a level. Arguments: level.'
+        ))
+        fs.append(dict(
+            name='quest-finish-ok', expression='points=10', owner=quest_game.game,
+            description='Bonus points earned when finishing the entire quest. No arguments.'
+        ))
+        fs.append(dict(
+            name='quest-finish-bonus', expression='points=fib(12 - {position})',
             owner=quest_game.game,
-            description='Bonus points earned when finishing the entire quest. No arguments.')
-        )
-        fs.append(dict(name='quest-finish-bonus', expression='points=fib(12 - {position})',
+            description='Bonus points earned when finishing a quest. Given to first 10, argument: position.'
+        ))
+        fs.append(dict(
+            name='finalquest-ok', expression='points={level}+{level_users}',
             owner=quest_game.game,
-            description='Bonus points earned when finishing a quest. Given to first 10, argument: position.')
-        )
-        fs.append(dict(name='finalquest-ok', expression='points={level}+{level_users}',
-            owner=quest_game.game,
-            description='Bonus points earned when finishing the final quest. Arguments: level, level_users')
-        )
+            description='Bonus points earned when finishing the final quest. Arguments: level, level_users'
+        ))
         return fs
 
     @classmethod
     def get_api(kls):
         from api import QuestAdminHandler, QuestAdminUserHandler
         return {r'^quest/admin/$': QuestAdminHandler,
-                r'^quest/admin/quest=(?P<quest_id>\d+)/username=(?P<username>[^/]+)/$': QuestAdminUserHandler
-        }
+                r'^quest/admin/quest=(?P<quest_id>\d+)/username=(?P<username>[^/]+)/$': QuestAdminUserHandler}
 
     @classmethod
     def final_exists(cls):
@@ -367,7 +370,9 @@ class QuestGame(Game):
         except IndexError:
             return None
 
+
 register_category(QuestGame.QPOOL_CATEGORY, QuestGame)
+
 
 class FinalQuest(Quest):
     def give_level_bonus(self):
@@ -381,19 +386,12 @@ class FinalQuest(Quest):
             users = QuestUser.objects.filter(current_quest=final, current_level__gte=level, race__can_play=True)
 
             for user in users:
-                scoring.score(
-                        user,
-                        QuestGame,
-                        self.get_formula('finalquest-ok'),
-                        level=level,
-                        level_users=users.count()
-                )
+                scoring.score(user, QuestGame, self.get_formula('finalquest-ok'), level=level,
+                              level_users=users.count())
                 signal_msg = ugettext_noop("received bonus for reaching level {level} in the final quest")
-                signals.addActivity.send(sender=None, user_from=user,
-                    user_to=user, message=signal_msg,
-                    arguments=dict(level=level),
-                    game=QuestGame.get_instance()
-                )
+                signals.addActivity.send(sender=None, user_from=user, user_to=user,
+                                         message=signal_msg, arguments=dict(level=level),
+                                         game=QuestGame.get_instance())
 
     def fetch_levels(self):
         levels = []

@@ -45,7 +45,6 @@ def set_profile(request):
             self.cleaned_data['nickname'] = strip_tags(self.cleaned_data['nickname'].strip().replace(' ', '_'))
             return self.cleaned_data['nickname']
 
-
     if request.method == 'POST':
         form = SForm(request.POST, instance=user)
         if form.is_valid():
@@ -66,8 +65,8 @@ def save_profile(request):
     data = request.REQUEST
 
     try:
-        Player.objects.exclude(nickname = user.nickname).get(nickname = data['nickname'])
-        #print "exista!"
+        Player.objects.exclude(nickname=user.nickname).get(nickname=data['nickname'])
+        # print "exista!"
         return HttpResponseBadRequest()
     except:
         user.nickname = data['nickname']
@@ -97,15 +96,15 @@ def user_profile(request, id, page=u'1'):
         if hasattr(g, 'user_model'):
             model = getattr(g, 'user_model')
             setattr(profile, model.__name__.lower(), profile.get_extension(model))
-    #Fix to show succes message from report user form
+    # Fix to show succes message from report user form
     if 'report_msg' in request.session:
         message = request.session['report_msg']
         del request.session['report_msg']
     else:
-        message=''
+        message = ''
 
-    challenge_launched_recently = Challenge.exist_last_day(date.today(),
-                                        request.user.get_profile(), profile)
+    challenge_launched_recently = Challenge.exist_last_day(
+        date.today(), request.user.get_profile(), profile)
     specialquest_button = SpecialQuestGame.get_specialquest_user_button(request, profile)
     config_disable_magic = BoolSetting.get('setting-magic').get_value() is False
 
@@ -153,6 +152,7 @@ def player_group(request, id, page=u'1'):
                                },
                               context_instance=RequestContext(request))
 
+
 @login_required
 def player_race(request, race_id):
     race = get_object_or_404(Race, pk=race_id)
@@ -175,20 +175,19 @@ def player_race(request, race_id):
     # Get levels
     levels = []
     for i, limit in enumerate(God.get_level_limits()):
-        l = God.get_race_level(level_no=i + 1, race=race)
-        l.limit = limit
-        levels.append(l)
+        level = God.get_race_level(level_no=i + 1, race=race)
+        level.limit = limit
+        levels.append(level)
 
     return render_to_response('profile/race.html',
-                            {'race': race,
-                             'children': groups,
-                             'top_users': top_users,
-                             'top_rank': top_rank,
-                             'top': ObjectHistory(),
-                             'activity': activity,
-                             'levels': levels},
-                            context_instance=RequestContext(request)
-    )
+                              {'race': race,
+                               'children': groups,
+                               'top_users': top_users,
+                               'top_rank': top_rank,
+                               'top': ObjectHistory(),
+                               'activity': activity,
+                               'levels': levels},
+                              context_instance=RequestContext(request))
 
 
 @login_required
@@ -210,7 +209,7 @@ def magic_summary(request):
 
     return render_to_response('profile/spells.html',
                               {'cast': cast_spells,
-                              'theowner': player},
+                               'theowner': player},
                               context_instance=RequestContext(request))
 
 

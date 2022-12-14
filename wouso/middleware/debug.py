@@ -1,6 +1,7 @@
 import logging
 from django.conf import settings
 
+
 class DebugExceptionMiddleware(object):
     """ Throw 500 exceptions to the console.
     """

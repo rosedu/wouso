@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, url
 
-urlpatterns = patterns('wouso.interface.apps.lesson.cpanel_views',
+urlpatterns = patterns(
+    'wouso.interface.apps.lesson.cpanel_views',
     url(r'^$', 'lessons', name='lessons'),
     url(r'^add_lesson/$', 'add_lesson', name='add_lesson'),
     url(r'^edit_lesson/(?P<id>\d+)/$', 'edit_lesson', name='edit_lesson'),

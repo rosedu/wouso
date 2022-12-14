@@ -235,7 +235,10 @@ class History(models.Model):  # TODO: deprecate (maybe), check if NewHistory cov
             return 0
 
     def __unicode__(self):
-        return u"%s %s at %s, position: %d, points: %f" % ('[%s]' % self.relative_to if self.relative_to else '', self.user if self.user else self.group, self.date, self.position, self.points)
+        return u"%s %s at %s, position: %d, points: %f" % (
+            '[%s]' % self.relative_to if self.relative_to else '',
+            self.user if self.user else self.group,
+            self.date, self.position, self.points)
 
 
 class Top(App):
@@ -256,7 +259,7 @@ class Top(App):
                                  'top': Top,
                                  'coin_top_setting': kls.coin_top_settings(),
                                  'config_disable_challenge_top': BoolSetting.get('setting-challenge-top').get_value() is False
-                                })
+                                 })
 
     @classmethod
     def management_task(cls, now=None, stdout=sys.stdout):

@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import *
 
-urlpatterns = patterns('wouso.games.challenge.views',
+urlpatterns = patterns(
+    'wouso.games.challenge.views',
     url(r'^$', 'index', name='challenge_index_view'),
     url(r'^(?P<id>\d+)/$', 'challenge', name='view_challenge'),
     url(r'^launch/(?P<to_id>\d+)/$', 'launch', name='challenge_launch'),

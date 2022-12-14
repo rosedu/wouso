@@ -16,13 +16,14 @@ def request_token_ready(request, token=None):
     """
     error = request.GET.get('error', '')
     ctx = RequestContext(request, {
-        'error' : error,
-        'token' : token,
+        'error': error,
+        'token': token,
     })
     return render_to_response(
         'piston/request_token_ready.html',
-        context_instance = ctx
+        context_instance=ctx
     )
+
 
 @api_enabled_required
 def oauth_auth_view(request, token, callback, params):
@@ -36,10 +37,11 @@ def oauth_auth_view(request, token, callback, params):
     form = forms.OAuthAuthenticationForm(initial={
         'oauth_token': token.key,
         'oauth_callback': token.get_callback_url() or callback,
-        })
+    })
 
     consumer_key = request.GET.get('oauth_consumer_key', '')
     consumer = Consumer.objects.get(key=consumer_key)
 
-    return render_to_response('piston/authorize_token.html',
-            { 'form': form, 'consumer': consumer }, RequestContext(request))
+    return render_to_response(
+        'piston/authorize_token.html',
+        {'form': form, 'consumer': consumer}, RequestContext(request))

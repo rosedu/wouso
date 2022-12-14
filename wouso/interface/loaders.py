@@ -3,6 +3,7 @@ from django.conf import settings
 from django.template.loader import BaseLoader, TemplateDoesNotExist
 from . import get_theme
 
+
 class Loader(BaseLoader):
     """ Theme template loader: the selected theme can override
     templates

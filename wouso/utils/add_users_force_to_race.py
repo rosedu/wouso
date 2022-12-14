@@ -11,10 +11,11 @@ OP_SUCCESS = 0
 OP_EXCEPTION = -1
 OP_EXISTS = -2
 
+
 def try_using_index_no_recurse(username, first_name, last_name, email, password):
     ret = OP_EXISTS
-    for i in range(1,100):
-        _username = username+"%d" %(i)
+    for i in range(1, 100):
+        _username = username + "%d" % (i)
         ret = add_user_helper(_username, first_name, last_name, email, password)
         if ret == OP_SUCCESS:
             return (_username, ret)
@@ -23,20 +24,24 @@ def try_using_index_no_recurse(username, first_name, last_name, email, password)
             return (_username, ret)
     return (_username, ret)
 
+
 def truncate_username(username):
     parts = username.split('.')
     if len(parts) != 2:
         print >>sys.stderr, "Username %s should consist of two parts."
         return
-    return parts[0][0:1]+parts[1]
+    return parts[0][0:1] + parts[1]
+
 
 def try_using_truncate_no_recurse(username, first_name, last_name, email, password):
     username = truncate_username(username)
     return (username, add_user_helper(username, first_name, last_name, email, password))
 
+
 def try_using_cookie_no_recurse(username, first_name, last_name, email, password, cookie):
-    username = username+cookie
+    username = username + cookie
     return (username, add_user_helper(username, first_name, last_name, email, password))
+
 
 def try_using_truncate(username, first_name, last_name, email, password, cookie):
     (username, ret) = try_using_truncate_no_recurse(username, first_name, last_name, email, password)
@@ -136,13 +141,13 @@ def add_user_helper(username, first_name, last_name, email, password):
     try:
         ret = wouso.utils.user_util.add_user(username, first_name, last_name, email, password, is_active=1, is_staff=0, is_superuser=0)
     except Exception, e:
-        print "h: Exception when adding %s." %(username)
+        print "h: Exception when adding %s." % (username)
         return OP_EXCEPTION
     if ret:
-        print "h: Successfully added user %s." %(username)
+        print "h: Successfully added user %s." % (username)
         return OP_SUCCESS
     else:
-        print "h: Failed adding user %s. User already exists." %(username)
+        print "h: Failed adding user %s. User already exists." % (username)
     return OP_EXISTS
 
 
@@ -178,14 +183,14 @@ def main():
         username, first_name, last_name, email, password, cookie, race = row
         (_username, ret) = add_user_no_matter_what(username, first_name, last_name, email, password, cookie)
         if ret:
-            print "Successfully added user %s." %(_username)
+            print "Successfully added user %s." % (_username)
             ret2 = wouso.utils.user_util.add_user_to_race(_username, race)
             if ret2:
-                print "Successfully added user %s to race %s." %(_username, race)
+                print "Successfully added user %s to race %s." % (_username, race)
             else:
-                print "Failed adding user %s to race %s." %(_username, race)
+                print "Failed adding user %s to race %s." % (_username, race)
         if not ret:
-            print "Failed adding user %s. Nothing worked." %(_username)
+            print "Failed adding user %s. Nothing worked." % (_username)
 
 
 if __name__ == "__main__":

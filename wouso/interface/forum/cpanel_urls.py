@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, url
 
-urlpatterns = patterns('wouso.interface.forum.cpanel_views',
+urlpatterns = patterns(
+    'wouso.interface.forum.cpanel_views',
     url(r'^$', 'forum', name='forum'),
     url(r'^add_forum/$', 'add_forum', name='add_forum'),
     url(r'^edit_forum/(?P<pk>\d+)/$', 'edit_forum', name='edit_forum'),

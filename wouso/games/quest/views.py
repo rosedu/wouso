@@ -16,7 +16,7 @@ from forms import QuestForm
 def index(request):
     quest = QuestGame.get_current()
 
-    if quest == None:
+    if quest is None:
         return render_to_response('quest/none.html', context_instance=RequestContext(request))
 
     quest_user = request.user.get_profile().get_extension(QuestUser)
@@ -39,9 +39,10 @@ def index(request):
 
     form = QuestForm()
 
-    return render_to_response('quest/index.html',
-            {'quest': quest, 'progress': quest_user, 'form': form, 'error': error},
-            context_instance=RequestContext(request))
+    return render_to_response(
+        'quest/index.html',
+        {'quest': quest, 'progress': quest_user, 'form': form, 'error': error},
+        context_instance=RequestContext(request))
 
 
 def sidebar_widget(context):
@@ -49,7 +50,7 @@ def sidebar_widget(context):
     quest = QuestGame.get_current()
 
     if quest is None or user is None or not user.is_authenticated():
-       return ''
+        return ''
 
     quest_user = user.get_profile().get_extension(QuestUser)
     if not quest_user.started:
@@ -59,14 +60,16 @@ def sidebar_widget(context):
 
     if quest_user.finished and (quest_user.is_current(quest)):
         time_passed = datetime.now() - quest_user.finished_time
-        if time_passed > timedelta(seconds=600): # ten minutes
+        if time_passed > timedelta(seconds=600):  # ten minutes
             return ''
 
-    return render_to_string('quest/sidebar.html',
-            {'quest': quest, 'quser': quest_user,
-             'quest_progress': quest_progress,
-             'id': 'quest'
-             })
+    return render_to_string(
+        'quest/sidebar.html',
+        {'quest': quest, 'quser': quest_user,
+         'quest_progress': quest_progress,
+         'id': 'quest'})
+
+
 register_sidebar_block('quest', sidebar_widget)
 
 

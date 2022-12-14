@@ -1,5 +1,6 @@
 import os
 
+
 def get_themes():
     themes_dir = os.path.abspath(os.path.dirname(__file__) + '/../resources/static/themes/')
     themes = []

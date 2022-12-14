@@ -14,11 +14,10 @@ class ForumViewsTest(WousoTest):
 
     def test_forum_view(self):
         response = self.client.get(reverse('forums_overview'))
-        self.assertContains(response,"Forums")
+        self.assertContains(response, "Forums")
 
     def test_category_view(self):
-        category = Category.objects.create (name="aCategory")
+        category = Category.objects.create(name="aCategory")
         response = self.client.get(reverse('forums_overview'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'aCategory')
-

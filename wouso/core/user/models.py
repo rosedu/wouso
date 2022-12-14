@@ -153,14 +153,14 @@ class Player(models.Model):
             else:
                 allUsers = [user for user in allUsers if user.race.name != user_race.name]
 
-        if len(allUsers) <= 2*count+1:
+        if len(allUsers) <= 2 * count + 1:
             return allUsers
 
-        start = max(pos-count, 0)
+        start = max(pos - count, 0)
         if pos + count >= len(allUsers):
-            start = len(allUsers)-2*count-1
+            start = len(allUsers) - 2 * count - 1
 
-        players = allUsers[start:start+2*count+1]
+        players = allUsers[start:start + 2 * count + 1]
         return players
 
     def get_division(self, count):
@@ -248,7 +248,7 @@ class Player(models.Model):
         return avatar
 
     # special:
-    #@cached_method
+    # @cached_method
     def get_extension(self, cls):
         if self.__class__ is cls:
             return self
@@ -318,9 +318,9 @@ class Player(models.Model):
     def save(self, **kwargs):
         """ Clear cache for extensions
         """
-        #for k, v in self.EXTENSIONS.iteritems():
-        #    drop_cache(self.get_extension, self, v)
-        #drop_cache(self.get_extension, self, self.__class__)
+        # for k, v in self.EXTENSIONS.iteritems():
+        #     drop_cache(self.get_extension, self, v)
+        # drop_cache(self.get_extension, self, self.__class__)
         drop_cache(self._race_name, self)
         drop_cache(self._group, self)
         update_display_name(self, save=False)
@@ -358,6 +358,7 @@ def user_post_save(sender, instance, **kwargs):
         profile.nickname = profile.user.username
         profile.save()
     update_display_name(profile)
+
 
 models.signals.post_save.connect(user_post_save, User)
 

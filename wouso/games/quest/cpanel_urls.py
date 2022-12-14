@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import *
 
-urlpatterns = patterns('wouso.games.quest.cpanel',
+urlpatterns = patterns(
+    'wouso.games.quest.cpanel',
     url(r'^$', 'quest_home', name='quest_home'),
     url(r'^edit/(?P<id>\d*)/$', 'quest_edit', name='quest_edit'),
     url(r'^sort/(?P<id>\d*)/$', 'quest_sort', name='quest_sort'),

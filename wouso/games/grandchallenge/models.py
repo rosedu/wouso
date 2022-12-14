@@ -16,7 +16,11 @@ class GrandChallengeUser(Player):
         """
         Return a queryset of grandchallenges for this player
         """
-        return Challenge.objects.filter(id__in=GrandChallenge.objects.filter(Q(challenge__user_from__user__id=self.id)|Q(challenge__user_to__user__id=self.id)).order_by('round').values('challenge'))
+        return Challenge.objects.filter(
+            id__in=GrandChallenge.objects.filter(
+                Q(challenge__user_from__user__id=self.id) |
+                Q(challenge__user_to__user__id=self.id))
+            .order_by('round').values('challenge'))
 
     def get_active(self):
         """
@@ -38,13 +42,14 @@ class GrandChallengeUser(Player):
         self.last_round = round_number
         self.save()
 
+
 class GrandChallenge(models.Model):
     challenge = models.ForeignKey(Challenge, blank=True, null=True)
     round = models.IntegerField(blank=True, null=True)
 
     ALL = []
     OUT_PLAY = []
-    CHALLENGES= []
+    CHALLENGES = []
 
     def __oldinit__(self, user_from, user_to):
         # TODO: change this constructor to a classmethod
@@ -88,13 +93,13 @@ class GrandChallenge(models.Model):
     @classmethod
     def all_done(cls):
         for i in cls.CHALLENGES:
-            x = Challenge.objects.get(id = i)
+            x = Challenge.objects.get(id=i)
             if x.status != "P":
                 return False
         return True
 
     def play(self, round_number):
-        winner = Challenge.objects.get(id= self.challenge_id).winner #trebuie generat de joc
+        winner = Challenge.objects.get(id=self.challenge_id).winner  # trebuie generat de joc
 
         if winner.user == self.user_from.user:
             self.won = self.user_from
@@ -121,16 +126,15 @@ class GrandChallenge(models.Model):
     def joaca(cls, round_number):
         for c in GrandChallenge.active():
 
-            #numarul rundei...
+            # numarul rundei...
             c.play(round_number)
             if(c.lost.lost == 2):
                 cls.OUT_PLAY.append(c.lost)
-                #print c.lost
-
+                # print c.lost
 
     @classmethod
     def clasament(cls):
-        arb_win  = GrandChallengeGame.eligible(0)
+        arb_win = GrandChallengeGame.eligible(0)
         arb_lose = GrandChallengeGame.eligible(1)
         if(len(arb_win) == 1):
             cls.OUT_PLAY.append(arb_win[0])
@@ -167,8 +171,8 @@ class Round(object):
         Return a list of previous rounds, as an iterator
         """
         if self.round_number > 0:
-           for i in range(self.round_number):
-               yield Round(i + 1)
+            for i in range(self.round_number):
+                yield Round(i + 1)
 
     def __repr__(self):
         return '<' + 'Round ' + unicode(self.round_number) + '>'
@@ -242,7 +246,7 @@ class GrandChallengeGame(Game):
 
     @classmethod
     def is_final(cls):
-        arb_win  = cls.eligible(0)
+        arb_win = cls.eligible(0)
         arb_lose = cls.eligible(1)
         if (len(arb_win) == 1) and (len(arb_lose) == 1):
             return True
@@ -250,7 +254,7 @@ class GrandChallengeGame(Game):
 
     @classmethod
     def final_round(cls):
-        arb_win  = cls.eligible(0)
+        arb_win = cls.eligible(0)
         arb_lose = cls.eligible(1)
         GrandChallenge(arb_win[0], arb_lose[0])
 
@@ -260,7 +264,7 @@ class GrandChallengeGame(Game):
 
     @classmethod
     def is_winner(cls):
-        arb_win  = cls.eligible(0)
+        arb_win = cls.eligible(0)
         arb_lose = cls.eligible(1)
         if (len(arb_win) == 0) and (len(arb_lose) == 2):
             return False
@@ -268,7 +272,7 @@ class GrandChallengeGame(Game):
 
     @classmethod
     def is_finished(cls):
-        arb_win  = cls.eligible(0)
+        arb_win = cls.eligible(0)
         arb_lose = cls.eligible(1)
         if len(arb_win) == 0 or (len(arb_win) == 1 and len(arb_lose) != 1):
             return True
@@ -290,7 +294,7 @@ class GrandChallengeGame(Game):
             u = all[0]
             played_with = GrandChallenge.played_with(u)
 
-            adversari = [eu for eu in all if ((eu.lost == u.lost) and (eu != u) and ((eu not in played_with) or (eu == all[-1])) )]
+            adversari = [eu for eu in all if ((eu.lost == u.lost) and (eu != u) and ((eu not in played_with) or (eu == all[-1])))]
             if not len(adversari):
                 break
 
@@ -375,7 +379,7 @@ class GrandChallengeGame(Game):
         challenges = []
         if cls.is_final():
             # Only two players left in the game
-            arb_win  = cls.eligible(0)
+            arb_win = cls.eligible(0)
             arb_lose = cls.eligible(1)
             challenges.append(GrandChallenge.create(arb_win[0], arb_lose[0], round.round_number + 1))
         else:

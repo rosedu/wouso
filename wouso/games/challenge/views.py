@@ -20,6 +20,7 @@ import fcntl
 import logging
 from django.db import transaction
 
+
 @transaction.commit_manually
 def flush_transaction():
     """ Flush the current transaction so we don't read stale data
@@ -32,6 +33,7 @@ def flush_transaction():
     """
     transaction.commit()
 
+
 class PlayerViewMixin():
     def get_player(self):
         if 'player_id' in self.kwargs.keys() and self.request.user.get_profile().in_staff_group():
@@ -41,6 +43,7 @@ class PlayerViewMixin():
             current_player = self.request.user.get_profile().get_extension(ChallengeUser)
 
         return current_player
+
 
 @login_required
 def index(request):
@@ -54,9 +57,11 @@ def index(request):
     if not chall_user.is_eligible():
         messages.error(request, _('Your race can\'t play. Go home'))
 
-    return render_to_response('challenge/index.html',
-            {'challenges': challs, 'played': played, 'challuser': chall_user, 'challenge': ChallengeGame},
-            context_instance=RequestContext(request))
+    return render_to_response(
+        'challenge/index.html',
+        {'challenges': challs, 'played': played, 'challuser': chall_user, 'challenge': ChallengeGame},
+        context_instance=RequestContext(request))
+
 
 class ChallengeView(View):
     def dispatch(self, request, *args, **kwargs):
@@ -78,8 +83,8 @@ class ChallengeView(View):
             return redirect('challenge_index_view')
 
         if self.participant.played:
-            messages.error(request, _('You have already submitted this challenge'\
-                                       ' and scored %.2f points') % self.participant.score)
+            messages.error(request, _('You have already submitted this challenge'
+                                      ' and scored %.2f points') % self.participant.score)
             return redirect('challenge_index_view')
 
         return super(ChallengeView, self).dispatch(request, *args, **kwargs)
@@ -89,10 +94,11 @@ class ChallengeView(View):
             self.chall.set_start(self.chall_user)
         form = ChallengeForm(self.chall)
         seconds_left = self.chall.time_for_user(self.chall_user)
-        return render_to_response('challenge/challenge.html',
-                {'challenge': self.chall, 'form': form, 'challenge_user': self.chall_user,
-                'seconds_left': seconds_left},
-                context_instance=RequestContext(request))
+        return render_to_response(
+            'challenge/challenge.html',
+            {'challenge': self.chall, 'form': form, 'challenge_user': self.chall_user,
+             'seconds_left': seconds_left},
+            context_instance=RequestContext(request))
 
     def post(self, request, **kwargs):
         form = ChallengeForm(self.chall, request.POST)
@@ -104,12 +110,15 @@ class ChallengeView(View):
             questions_and_answers = zip(form.visible_fields(), results['results'])
         else:
             questions_and_answers = None
-        return render_to_response('challenge/result.html',
+        return render_to_response(
+            'challenge/result.html',
             {'challenge': self.chall, 'challenge_user': self.chall_user,
-            'points': results['points'], 'form' : form,  'questions_and_answers' : questions_and_answers},
+             'points': results['points'], 'form': form, 'questions_and_answers': questions_and_answers},
             context_instance=RequestContext(request))
 
+
 challenge = login_required(ChallengeView.as_view())
+
 
 class FileLock:
     def __init__(self, filename):
@@ -123,8 +132,9 @@ class FileLock:
         self.handle = None
 
     def __del__(self):
-        if self.handle != None:
+        if self.handle is not None:
             self.unlock()
+
 
 class NamedFileLock:
     def __init__(self, filename):
@@ -133,12 +143,14 @@ class NamedFileLock:
     def lock(self):
         return FileLock(self.filename)
 
+
 challengeLock = NamedFileLock("/tmp/wouso_challenge_launch_lock")
 
-#import logging
-#logger = logging.
+# import logging
+# logger = logging.
 
 # http://stackoverflow.com/questions/3346124/how-do-i-force-django-to-ignore-any-caches-and-reload-data
+
 
 @login_required
 def launch(request, to_id):
@@ -149,7 +161,6 @@ def launch(request, to_id):
     user_to = get_object_or_404(Player, pk=to_id)
     user_to = user_to.get_extension(ChallengeUser)
     user_from = request.user.get_profile().get_extension(ChallengeUser)
-
 
     if ChallengeGame.disabled():
         messages.error(request, _('Challenges have been disabled.'))
@@ -184,13 +195,13 @@ def launch(request, to_id):
     if user_from.can_challenge(user_to):
         try:
             chall = Challenge.create(user_from=user_from, user_to=user_to)
-            logging.info("Created challenge: %s" %(chall))
+            logging.info("Created challenge: %s" % (chall))
         except ChallengeException as e:
             # Some error occurred during question fetch. Clean up, and display error
             messages.error(request, e.message)
             lock.unlock()
             return redirect('challenge_index_view')
-        #Checking if user_to is stored in session
+        # Checking if user_to is stored in session
         PREFIX = "_user:"
         action_msg = "multiple-login"
         if (PREFIX + user_to.user.username) in request.session:
@@ -207,6 +218,7 @@ def launch(request, to_id):
         lock.unlock()
         return redirect('challenge_index_view')
 
+
 @login_required
 def accept(request, id):
     if ChallengeGame.disabled():
@@ -216,26 +228,28 @@ def accept(request, id):
     chall = get_object_or_404(Challenge, pk=id)
 
     user_to = request.user.get_profile().get_extension(ChallengeUser)
-    if (chall.user_to.user == user_to and chall.is_launched()) or \
-        request.user.is_superuser:
-            chall.accept()
-            return redirect('challenge_index_view')
+    if (chall.user_to.user == user_to and
+            chall.is_launched()) or request.user.is_superuser:
+        chall.accept()
+        return redirect('challenge_index_view')
 
     messages.error(request, _('Challenge cannot be accepted.'))
     return redirect('challenge_index_view')
+
 
 @login_required
 def refuse(request, id):
     chall = get_object_or_404(Challenge, pk=id)
 
     user_to = request.user.get_profile().get_extension(ChallengeUser)
-    if (chall.user_to.user == user_to and chall.is_launched()) or \
-        request.user.is_superuser:
-            chall.refuse()
-            return redirect('challenge_index_view')
+    if (chall.user_to.user == user_to and
+            chall.is_launched()) or request.user.is_superuser:
+        chall.refuse()
+        return redirect('challenge_index_view')
 
     messages.error(request, _('You cannot refuse this challenge.'))
     return redirect('challenge_index_view')
+
 
 @login_required
 def cancel(request, id):
@@ -248,6 +262,7 @@ def cancel(request, id):
 
     messages.error(request, _('You cannot cancel this challenge.'))
     return redirect('challenge_index_view')
+
 
 @login_required
 def setplayed(request, id):
@@ -269,6 +284,7 @@ def setplayed(request, id):
     chall.played()
     return redirect('challenge_index_view')
 
+
 @login_required
 def use_one_more(request):
     challuser = request.user.get_profile().get_extension(ChallengeUser)
@@ -279,6 +295,7 @@ def use_one_more(request):
         messages.error(request, _('You don\'t have the artifact'))
 
     return redirect('challenge_index_view')
+
 
 def header_link(context):
     user = context.get('user', None)
@@ -303,6 +320,8 @@ def header_link(context):
     url = reverse('wouso.games.challenge.views.index')
 
     return dict(link=url, count=count, text=_('Challenges'))
+
+
 register_header_link('challenges', header_link)
 
 
@@ -317,8 +336,11 @@ def sidebar_widget(context):
     # reduce noise, thanks
     if not challs:
         return ''
-    return render_to_string('challenge/sidebar.html', {'challenges': challs,
-                            'challenge': ChallengeGame,  'chall_user': chall_user, 'id': 'challenge'})
+    return render_to_string(
+        'challenge/sidebar.html',
+        {'challenges': challs, 'challenge': ChallengeGame, 'chall_user': chall_user, 'id': 'challenge'})
+
+
 register_sidebar_block('challenge', sidebar_widget)
 
 
@@ -337,7 +359,9 @@ class HistoryView(ListView):
         context.update({'challplayer': self.player})
         return context
 
+
 history = HistoryView.as_view()
+
 
 @login_required
 def challenge_player(request):
@@ -350,6 +374,7 @@ def challenge_player(request):
             messages.error(request, _('Player does not exist'))
             return redirect('challenge_index_view')
     return redirect('challenge_index_view')
+
 
 @login_required
 def challenge_random(request):
@@ -367,6 +392,7 @@ def challenge_random(request):
 
     return redirect('challenge_launch', player.id)
 
+
 class DetailedChallengeStatsView(ListView, PlayerViewMixin):
     template_name = 'challenge/statistics_detail.html'
     context_object_name = 'chall_total'
@@ -378,11 +404,13 @@ class DetailedChallengeStatsView(ListView, PlayerViewMixin):
     def get_context_data(self, **kwargs):
         context = super(DetailedChallengeStatsView, self).get_context_data(**kwargs)
         context.update({'current_player': self.get_player(),
-                       'target_player': self.target_user,
-                       'opponent': self.target_user})
+                        'target_player': self.target_user,
+                        'opponent': self.target_user})
         return context
 
+
 detailed_challenge_stats = login_required(DetailedChallengeStatsView.as_view())
+
 
 class ChallengeStatsView(TemplateView, PlayerViewMixin):
     """ Statistics for one user """
@@ -392,5 +420,6 @@ class ChallengeStatsView(TemplateView, PlayerViewMixin):
         context = super(ChallengeStatsView, self).get_context_data(**kwargs)
         context.update(self.get_player().get_stats())
         return context
+
 
 challenge_stats = login_required(ChallengeStatsView.as_view())

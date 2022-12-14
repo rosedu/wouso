@@ -12,6 +12,7 @@ from wouso.interface.apps.messaging.models import Message, MessagingUser, Messag
 from wouso.interface.apps.messaging.forms import ComposeForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+
 @login_required
 def home(request, quiet=None, box=None):
 
@@ -28,7 +29,7 @@ def home(request, quiet=None, box=None):
         messages = Message.objects.none()
 
     # working here
-    messages  = messages.order_by('-timestamp')
+    messages = messages.order_by('-timestamp')
     paginator = Paginator(messages, 20)
     page = request.GET.get('page')
 
@@ -69,22 +70,22 @@ def create(request, to=None, reply_to=None):
         form = ComposeForm(request.POST)
         if form.is_valid():
             m = Message.send(request.user.get_profile(),
-                            form.cleaned_data['to'],
-                            form.cleaned_data['subject'],
-                            form.cleaned_data['text'],
-                            reply_to=reply_to.id if reply_to else None,
-            )
+                             form.cleaned_data['to'],
+                             form.cleaned_data['subject'],
+                             form.cleaned_data['text'],
+                             reply_to=reply_to.id if reply_to else None)
             if m is None:
                 return HttpResponseRedirect(reverse('messaging'))
             else:
                 error = m
-        #else:
-        #   print form, form.is_valid(), request.POST
+        # else:
+        #    print form, form.is_valid(), request.POST
     return render_to_response('messaging/create.html',
                               {'error': error, 'to': to,
                                'reply_to': reply_to,
                                'subject': subject},
                               context_instance=RequestContext(request))
+
 
 @login_required
 def message(request, mid):

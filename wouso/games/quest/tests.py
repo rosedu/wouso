@@ -13,6 +13,7 @@ from wouso.core.tests import WousoTest
 from wouso.core.user.models import Race
 from wouso.games.quest.cpanel import quest_bonus
 
+
 class QuestStatistics(WousoTest):
     def setUp(self):
         super(QuestStatistics, self).setUp()
@@ -27,10 +28,10 @@ class QuestStatistics(WousoTest):
         scoring.setup_scoring()
         category = Category.add('quest')
         question1 = Question.objects.create(text='question1', answer_type='F',
-                                           category=category, active=True)
+                                            category=category, active=True)
         answer1 = Answer.objects.create(text='first answer', correct=True, question=question1)
         question2 = Question.objects.create(text='question2', answer_type='F',
-                                           category=category, active=True)
+                                            category=category, active=True)
         answer2 = Answer.objects.create(text='second answer', correct=True, question=question2)
         start = datetime.datetime.now()
         end = datetime.datetime.now() + timedelta(days=1)
@@ -47,7 +48,7 @@ class QuestStatistics(WousoTest):
         self.quest.check_answer(self.quest_user2, 'second answer')
         self.assertTrue(self.quest_user1.finished)
         self.assertTrue(self.quest_user2.finished)
-        
+
     def test_only_one_player_finished(self):
         self.quest_user1.current_quest = self.quest
         self.quest_user2.current_quest = self.quest
@@ -55,7 +56,7 @@ class QuestStatistics(WousoTest):
         self.quest.check_answer(self.quest_user1, 'second answer')
         self.assertTrue(self.quest_user1.finished)
         self.assertFalse(self.quest_user2.finished)
-    
+
     def test_players_are_registered_if_they_start_a_quest(self):
         self.quest_user1.current_quest = self.quest
         self.quest_user2.current_quest = self.quest
@@ -81,6 +82,7 @@ class QuestStatistics(WousoTest):
         self.quest_user1.register_quest_result()
         self.assertEqual(len(QuestResult.objects.all()), 1)
 
+
 class QuestTestCase(WousoTest):
     def setUp(self):
         super(QuestTestCase, self).setUp()
@@ -90,37 +92,37 @@ class QuestTestCase(WousoTest):
         profile = self.user.get_profile()
         self.quest_user = profile.get_extension(QuestUser)
         scoring.setup_scoring()
- 
+
     def tearDown(self):
-        #self.user.delete()
+        # self.user.delete()
         pass
- 
+
     def test_check_answer(self):
         cat = Category.add('quest')
         question = Question.objects.create(text='test_q', answer_type='F',
                                            category=cat, active=True)
         answer1 = Answer.objects.create(text='test_a1', correct=True, question=question)
         answer2 = Answer.objects.create(text='test_a2', correct=True, question=question)
- 
+
         start = datetime.datetime.now()
         end = datetime.datetime.now() + timedelta(days=1)
         quest = Quest.objects.create(start=start, end=end)
- 
+
         quest.questions.add(question)
- 
+
         self.assertEqual(quest.count, 1)
- 
+
         self.quest_user.current_quest = quest
-        #self.quest_user.current_level = 0
- 
+        # self.quest_user.current_level = 0
+
         quest.check_answer(self.quest_user, 'Test_a2')
- 
+
         self.assertTrue(self.quest_user.finished)
 
     def test_check_bonus_for_quest(self):
         category = Category.add('quest')
         question1 = Question.objects.create(text='question1', answer_type='F',
-                                           category=category, active=True)
+                                            category=category, active=True)
         answer1 = Answer.objects.create(text='first answer', correct=True, question=question1)
         start = datetime.datetime.now()
         end = datetime.datetime.now() + timedelta(days=1)
@@ -138,18 +140,19 @@ class QuestTestCase(WousoTest):
         fact = RequestFactory()
         request = fact.get(reverse('register_results', args=[1]))
         request.user = admin
-        
-        #get initial points
+
+        # get initial points
         initial_points = pl.points
 
-        #add quest bonus
+        # add quest bonus
         response = quest_bonus(request, quest.id)
 
-        #get final points
+        # get final points
         pl = User.objects.get(username=self.user.username)
         final_points = pl.get_profile().points
 
         self.assertTrue(final_points > initial_points)
+
 
 class TestQuestViews(WousoTest):
     def setUp(self):
@@ -158,13 +161,13 @@ class TestQuestViews(WousoTest):
         self.c = Client()
         self.c.login(username='admin', password='admin')
         now = datetime.datetime.now()
-        Quest.objects.create(start=now-timedelta(days=2), end=now-timedelta(days=1),
+        Quest.objects.create(start=now - timedelta(days=2), end=now - timedelta(days=1),
                              title='Quest no. 1')
         self.q = Quest.objects.create(start=now, end=now + timedelta(days=1),
-                             title='Quest no. 2')
-        Quest.objects.create(start=now+timedelta(days=1), end=now + timedelta(days=2),
+                                      title='Quest no. 2')
+        Quest.objects.create(start=now + timedelta(days=1), end=now + timedelta(days=2),
                              title='Quest no. 3')
-        FinalQuest.objects.create(start=now, end=now+timedelta(days=1),
+        FinalQuest.objects.create(start=now, end=now + timedelta(days=1),
                                   title='Final Quest')
         scoring.setup_scoring()
 
@@ -180,14 +183,14 @@ class TestQuestViews(WousoTest):
         questuser2 = self._get_player(2).get_extension(QuestUser)
         category = Category.add('quest')
         question1 = Question.objects.create(text='question1', answer_type='F',
-                                           category=category, active=True)
+                                            category=category, active=True)
         answer1 = Answer.objects.create(text='first answer', correct=True, question=question1)
         self.q.questions.add(question1)
         questuser1.current_quest = self.q
         questuser2.current_quest = self.q
         self.q.check_answer(questuser1, 'first answer')
         self.q.check_answer(questuser2, 'first answer')
-        
+
         c = Client()
         c.login(username='testuser1', password='test')
         response = c.get(reverse('quest_history'))
@@ -198,6 +201,7 @@ class TestQuestViews(WousoTest):
 
         # 'testuser2' appears only in overall gods and quest result table
         self.assertContains(response, '>testuser2<', count=2)
+
 
 class FinalQuestTestCase(WousoTest):
     def test_final_bonus(self):
@@ -214,9 +218,9 @@ class FinalQuestTestCase(WousoTest):
         question = Question.objects.create(text='test', answer_type='F')
         final.questions.add(question)
 
-        u1.current_level = 1; u1.race = r; u1.current_quest = final
+        u1.current_level, u1.race, u1.current_quest = 1, r, final
         u1.save()
-        u2.current_level = 1; u2.race = r; u2.current_quest = final
+        u2.current_level, u2.race, u2.current_quest = 1, r, final
         u2.save()
         final.give_level_bonus()
         u1 = QuestUser.objects.get(pk=u1.pk)
@@ -250,9 +254,9 @@ class FinalQuestTestCase(WousoTest):
         question = Question.objects.create(text='test', answer_type='F')
         final.questions.add(question)
 
-        u1.current_level = 1; u1.race = r; u1.current_quest = final
+        u1.current_level, u1.race, u1.current_quest = 1, r, final
         u1.save()
-        u2.current_level = 1; u2.race = r; u2.current_quest = final
+        u2.current_level, u2.race, u2.current_quest = 1, r, final
         u2.save()
 
         c = Client()
@@ -262,11 +266,12 @@ class FinalQuestTestCase(WousoTest):
         self.assertContains(response, 'testuser1')
         self.assertContains(response, 'testuser2')
 
+
 # API tests
 class QuestAPITestCase(WousoTest):
     def test_info(self):
         quser = self._get_player(1).get_extension(QuestUser)
-        quest = Quest.objects.create(start=datetime.datetime.now(), end=datetime.datetime.now()+timedelta(days=1))
+        quest = Quest.objects.create(start=datetime.datetime.now(), end=datetime.datetime.now() + timedelta(days=1))
         quser.set_current(quest)
 
         self._client_superuser()
@@ -277,7 +282,7 @@ class QuestAPITestCase(WousoTest):
 
     def test_level_increment(self):
         quser = self._get_player(1).get_extension(QuestUser)
-        quest = Quest.objects.create(start=datetime.datetime.now(), end=datetime.datetime.now()+timedelta(days=1))
+        quest = Quest.objects.create(start=datetime.datetime.now(), end=datetime.datetime.now() + timedelta(days=1))
         quser.set_current(quest)
         formula = Formula.add('quest-ok')
 

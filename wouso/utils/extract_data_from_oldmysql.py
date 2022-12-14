@@ -1,5 +1,6 @@
 import MySQLdb as mdb
 
+
 class Table:
     def __init__(self, db, name):
         self.db = db
@@ -12,8 +13,9 @@ class Table:
 
     def __len__(self):
         self.dbc.execute("select count(*) from %s" % (self.name))
-        l = int(self.dbc.fetchone()[0])
-        return l
+        length = int(self.dbc.fetchone()[0])
+        return length
+
 
 db = mdb.connect(db="baza", user='root', passwd='mihnea', charset='latin1')
 
@@ -24,7 +26,7 @@ for i in range(len(records)):
     b = unicode(a, 'utf-8')
     questions[int(records[i][0])] = b
 
-#print questions
+# print questions
 
 answers = {}
 records = Table(db, "anschall")
@@ -50,4 +52,3 @@ with codecs.open("chall.txt", 'w', 'utf-8') as f:
                 type = '-'
             f.write(type + ' ' + ans[0] + '\n')
         f.write('\n')
-

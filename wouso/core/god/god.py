@@ -121,7 +121,7 @@ class DefaultGod:
               'curse',  # prevent cast of positive spells, or cure and dispell
               'immunity',  # prevent cast of any spells, or cure and dispell
               'top-disguise',  # allow showing another number of points in top
-            ]
+              ]
 
         for g in get_games():
             ms.extend(g.get_modifiers())

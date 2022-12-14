@@ -53,7 +53,7 @@ def spell_due(psd):
     html = artifact(psd)
 
     return '<span class="artifact-container" title="%s until %s">%s<span class="sup">*</span></span>' % \
-                (psd.spell.title, psd.due, html)
+        (psd.spell.title, psd.due, html)
 
 
 @register.simple_tag

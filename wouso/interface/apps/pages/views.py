@@ -3,6 +3,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext, loader
 from wouso.interface.apps.pages.models import StaticPage, NewsItem
 
+
 def staticpage(request, slug):
     """ Perform regular search by either first or last name """
     staticpage = get_object_or_404(StaticPage, slug=slug)
@@ -16,6 +17,7 @@ def staticpage(request, slug):
                               {'staticpage': staticpage},
                               context_instance=RequestContext(request))
 
+
 def news_index(request, page=u'1'):
     all_news = NewsItem.objects.all().order_by('-date_pub')
 
@@ -26,12 +28,13 @@ def news_index(request, page=u'1'):
         news_page = paginator.page(paginator.num_pages)
 
     return render_to_response('pages/news_index.html',
-                            {'news_page': news_page},
+                              {'news_page': news_page},
                               context_instance=RequestContext(request))
+
 
 def news_item(request, item_id):
     n = get_object_or_404(NewsItem, pk=item_id)
 
     return render_to_response('pages/news_item.html',
-                            {'n': n},
+                              {'n': n},
                               context_instance=RequestContext(request))

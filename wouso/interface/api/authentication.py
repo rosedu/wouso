@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 
 __author__ = 'alex'
 
+
 # This code is copied from http://yml-blog.blogspot.com/2009/10/django-piston-authentication-against.html
 class SessionAuthentication(object):
     """
@@ -19,10 +20,11 @@ class SessionAuthentication(object):
         self.request = request
         return request.user.is_authenticated()
 
-    #TODO: A real challenge here would be nice
+    # TODO: A real challenge here would be nice
     def challenge(self):
         import piston
         return piston.authentication.OAuthAuthentication().challenge()
+
 
 class SimpleAuthentication(SessionAuthentication):
 

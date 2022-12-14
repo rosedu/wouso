@@ -81,8 +81,8 @@ def unique_users_pm(player, minutes):
     """
      Return the count of distinct source messages
     """
-    activities = Message.objects.filter(receiver=player,
-                                        timestamp__gt=datetime.now() - timedelta(minutes=minutes)
+    activities = Message.objects.filter(
+        receiver=player, timestamp__gt=datetime.now() - timedelta(minutes=minutes)
     ).values('sender').distinct().count()
     return activities
 
@@ -181,7 +181,7 @@ def challenges_played_today(player):
     activities = Activity.get_player_activity(player).filter(action__contains='chall', timestamp__gte=today)
     result = 0
     for a in activities:
-        if not 'refused' in a.action:
+        if 'refused' not in a.action:
             result += 1
     return result
 
@@ -251,7 +251,7 @@ def used_all_spells(player, mass):
     used_spells = [m.spell for m in magic_activity if m.spell.mass == mass]
 
     for s in all_spells:
-        if not s in used_spells:
+        if s not in used_spells:
             return False
     return True
 
@@ -264,8 +264,7 @@ class Achievements(App):
             message = ugettext_noop('earned {artifact}')
             action_msg = 'earned-ach'
             addActivity.send(sender=None, user_from=player, game=None, message=message,
-                             arguments=dict(artifact=result.artifact), action=action_msg
-            )
+                             arguments=dict(artifact=result.artifact), action=action_msg)
             Message.send(sender=None, receiver=player, subject="Achievement", text="You have just earned " + modifier)
         else:
             logging.debug('%s would have earned %s, but there was no artifact' % (player, modifier))
@@ -297,9 +296,9 @@ class Achievements(App):
             # Check if the number of refused challenges in the past week is 0
             # also check for minimum number of challenges played = 5
             if not player.magic.has_modifier('ach-this-is-sparta'):
-                if refused_challenges(player) == 0 and \
-                                challenge_count(player, days=7) >= 5 and \
-                                first_seen(player) >= 7:
+                if (refused_challenges(player) == 0 and
+                        challenge_count(player, days=7) >= 5 and
+                        first_seen(player) >= 7):
                     cls.earn_achievement(player, 'ach-this-is-sparta')
 
             # Check if player played 10 challenges in a day"
@@ -406,7 +405,6 @@ class Achievements(App):
                 if login_at_start(player, start_day=head_start_date.day, start_month=head_start_date.month):
                     cls.earn_achievement(player, 'ach-head-start')
 
-
     @classmethod
     def get_modifiers(self):
         return ['ach-login-10',
@@ -430,7 +428,7 @@ class Achievements(App):
                 'ach-use-all-mass',
                 'ach-spent-gold',
                 'ach-head-start',
-        ]
+                ]
 
 
 def check_for_achievements(sender, **kwargs):

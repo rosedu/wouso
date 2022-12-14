@@ -312,12 +312,11 @@ class CpanelViewsTest(WousoTest):
         p1 = self._get_player(1)
         self.assertTrue(p1.user.check_password('secret'))
 
-         # Check the view with an invalid form
+        # Check the view with an invalid form
         data = {'password': 'test'}
         response = self.client.post(reverse('change_password', args=[p1.pk]), data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'This field is required')
-
 
     def test_races_groups_view(self):
         """ Test adds races and groups and verifies the

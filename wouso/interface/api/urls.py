@@ -8,7 +8,8 @@ from handlers import *
 from authentication import SessionAuthentication, SimpleAuthentication
 
 # needed by oauth
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^oauth/request_token/$', csrf_exempt(oauth_request_token), name='oauth_request_token'),
     url(r'^oauth/authorize/$', csrf_exempt(oauth_user_auth), name='oauth_authorize'),
     url(r'^oauth/access_token/$', csrf_exempt(oauth_access_token), name='oauth_access_token'),
@@ -20,18 +21,20 @@ urlpatterns += patterns(
 
 # API:
 sessionauth = SessionAuthentication()
-#simple = SimpleAuthentication()
+# simple = SimpleAuthentication()
 authoauth = OAuthAuthentication(realm='Wouso')
-ad = {'authentication': [#simple,
-                         authoauth,
-                         sessionauth]
+ad = {'authentication': [
+    # simple,
+    authoauth,
+    sessionauth]
 }
 
 notifications_resource = Resource(handler=NotificationsHandler, **ad)
 
-urlpatterns += patterns('',
-    #url(r'^$', Resource(handler=ApiRoot, **ad)),
-    url(r'^$', Resource(handler=ApiRoot)), # no authentication for basic info
+urlpatterns += patterns(
+    '',
+    # url(r'^$', Resource(handler=ApiRoot, **ad)),
+    url(r'^$', Resource(handler=ApiRoot)),  # no authentication for basic info
     url(r'^notifications/register/$', Resource(handler=NotificationsRegister, **ad)),
     url(r'^notifications/devices/$', Resource(handler=NotificationsDevices, **ad)),
     url(r'^notifications/(?P<type>[^/]+)/$', notifications_resource),

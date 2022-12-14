@@ -51,6 +51,7 @@ class QuestionAdmin(admin.ModelAdmin):
 class Questions2(admin.ModelAdmin):
     list_display = ('text')
 
+
 admin.site.register(models.Question, QuestionAdmin)
 admin.site.register(models.Tag)
 admin.site.register(models.Category)

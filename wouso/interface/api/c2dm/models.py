@@ -1,10 +1,12 @@
 import logging
-import urllib, urllib2
+import urllib
+import urllib2
 from django.db import models
 from django.conf import settings
 from wouso.core.user.models import Player
 
 C2DM_URL = 'https://android.apis.google.com/c2dm/send'
+
 
 class Device(models.Model):
     player = models.ForeignKey(Player)
@@ -17,7 +19,7 @@ class Device(models.Model):
             'collapse_key': collapse_key,
         }
 
-        for key,value in kwargs.iteritems():
+        for key, value in kwargs.iteritems():
             values['data.%s' % key] = value
 
         headers = {
@@ -34,7 +36,7 @@ class Device(models.Model):
             parts = result.split('=')
 
             if 'Error' in parts:
-                #if result[1] == 'InvalidRegistration' or result[1] == 'NotRegistered':
+                # if result[1] == 'InvalidRegistration' or result[1] == 'NotRegistered':
                 raise Exception(result[1])
         except urllib2.URLError:
             return False
@@ -44,11 +46,13 @@ class Device(models.Model):
     def __unicode__(self):
         return 'Device #%d' % self.id
 
+
 def register_device(player, registration_id):
     """ Register a new device to the given player
     """
     device = Device.objects.create(player=player, registration_id=registration_id)
     device.send_message(payload='Registered')
+
 
 def notify_user(player, message, collapse_key='wouso'):
     """ Send push notifications to all devices registered to tis user
