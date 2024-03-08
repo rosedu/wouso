@@ -14,6 +14,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render_to_response
 from django.template import RequestContext
 from django.template.defaultfilters import slugify
+import time
 from django.utils.translation import ugettext_noop
 from django.utils.translation import ugettext as _
 from django.views.generic import UpdateView, CreateView, ListView, FormView, \
@@ -23,7 +24,7 @@ from wouso.core.decorators import staff_required
 from wouso.core.ui import get_sidebar
 from wouso.core.user.models import Player, PlayerGroup, Race
 from wouso.core.magic.models import Artifact, ArtifactGroup, Spell
-from wouso.core.qpool.models import Schedule, Question, Tag, Category, Answer
+from wouso.core.qpool.models import Schedule, Question, Tag, Category, Answer, ProposedQuestion
 from wouso.core.qpool import get_questions_with_category
 from wouso.core.god import God
 from wouso.core import scoring
@@ -37,6 +38,7 @@ from wouso.interface.apps.pages.models import StaticPage, NewsItem
 from wouso.interface.cpanel.models import Customization, Switchboard, \
     GamesSwitchboard
 from wouso.interface.forms import InstantSearchForm
+from wouso.interface.cpanel.forms import ProposedQuestionReviewForm
 from wouso.interface.apps.qproposal import QUEST_GOLD, CHALLENGE_GOLD, QOTD_GOLD
 from wouso.middleware.impersonation import ImpersonateMiddleware
 from wouso.utils.import_questions import import_from_file
@@ -44,6 +46,9 @@ from forms import TagsForm, UserForm, SpellForm, AddTagForm,\
     EditReportForm, RaceForm, PlayerGroupForm, RoleForm, \
     StaticPageForm, NewsForm, KarmaBonusForm, AddQuestionForm, EditQuestionForm, \
     FormulaForm, TagForm, ChangePasswordForm, AddUserForm
+from django.db.models import Q
+from StringIO import StringIO
+import json
 
 
 class StatusView(TemplateView):
@@ -1410,3 +1415,67 @@ def karma_group_view(request, id):
     return render_to_response('cpanel/karma_group.html',
                               {'form': form, 'group': group},
                               context_instance=RequestContext(request))
+
+class ProposedView(TemplateView):
+    """ Handle the get requests for Proposed
+        Question menu - control panel
+    """
+
+    template_name = 'cpanel/proposed_home.html'
+
+    def get_context_data(self, **kwargs):
+
+        context = super(ProposedView, self).get_context_data(**kwargs)
+        categories = Category.objects.filter(~Q(name='proposed'))
+        context.update({
+            'form':ProposedQuestionReviewForm(),
+            'categories':categories
+            })
+        return context
+
+proposed = permission_required("",'config.change_setting')(
+    ProposedView.as_view())
+
+@permission_required('config.change_setting')
+def accept_question(request,id):
+    """ Handle the requests for accepted questions
+    """
+
+    form = ProposedQuestionReviewForm(data=request.POST)
+    if form.is_valid():
+        feedback_dict = {}
+        pq = ProposedQuestion.objects.get(id=id)
+        feedback_text = str(request.POST['feedback'])
+        feedback_dict.update({
+                            'text':feedback_text,
+                            'time': str(time.strftime("%d/%m/%Y")) + " " +  str(time.strftime("%H:%M:%S")),
+                            })
+        pq.feedback = pq.feedback + ',' + str(feedback_dict)
+        pq.status = "A"
+        pq.save()
+        pq.toQuestion()
+        return HttpResponse("Question Accepted")
+
+    return HttpResponse("Error!")
+
+
+@permission_required('config.change_setting')
+def decline_question(request,id):
+    """ Handle the requests for declined questions
+    """
+
+    form = ProposedQuestionReviewForm(data=request.POST)
+    if form.is_valid():
+        feedback_dict = {}
+        pq = ProposedQuestion.objects.get(id=id)
+        feedback_text = str(request.POST['feedback'])
+        feedback_dict.update({
+                            'text':feedback_text,
+                            'time': str(time.strftime("%d/%m/%Y")) + " " +  str(time.strftime("%H:%M:%S")),
+                            })
+        pq.feedback = pq.feedback + ',' + str(feedback_dict)
+        pq.status = "D"
+        pq.save()
+        return HttpResponse("Question Declined")
+
+    return HttpResponse("Error!")

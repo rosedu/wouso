@@ -17,7 +17,8 @@
     <link href="{{ basepath }}/static/css/cpanel-style.css" rel="stylesheet">
     <link href="{{ basepath }}/static/css/dashboard.css" rel="stylesheet">
     <link href="{{ basepath }}/static/css/sticky-footer.css" rel="stylesheet">
-
+    <script type="text/javascript" src="{{ basepath }}/static/js/jquery-cp-1.12.2.min.js"></script>
+    <script type="text/javascript" src="{{ basepath }}/static/js/tabs.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery-1.8.1.min.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery-ui.min.js"></script>
     <script type="text/javascript" src="{{ basepath }}/static/js/jquery.autocomplete.js"></script>
@@ -134,6 +135,8 @@
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url karma %}">Karma</a></li>
                 {% url forum as url %}
                 <li {% if url in request.path %}class="active"{% endif %}><a href="{% url forum %}">Forum</a></li>
+                {% url proposed_home as url %}
+                <li {% if url in request.path %}class="active"{% endif %}><a href="{% url proposed_home %}">Proposed Questions</a></li>
             <!-- Games !-->
             <h4 class="text-center">Games</h4>
             {% for u, game in games_list.items %}

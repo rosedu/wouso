@@ -1,0 +1,95 @@
+{% extends 'cpanel/index.html' %}
+{% load i18n %}
+{% load user %}
+{% load django_bootstrap_breadcrumbs %}
+{% block sectiontitle %}
+  Proposed Question
+
+  {% block breadcrumbs %}
+
+    {{ block.super }}
+
+    {% breadcrumb "Proposed Questions" "proposed_home" %}
+
+  {% endblock %}
+
+{% endblock %}
+{% block bottomscripts %}
+    <script type="text/javascript" src="{{ basepath }}/static/js/cpanel/qpool/proposed_questions.js/"></script>
+{% endblock %}
+
+{% block sectioncontent %}
+
+  <div class="container">
+
+    <ul class="nav nav-tabs">
+        {% for category in categories %}
+            <li {% if forloop.first %} class="active {% endif %}"><a href="#{{ category.name }}">{{ category.name }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <div class="tab-content">
+      {% for category in categories %}
+          <div id="{{ category.name }}" class="tab-pane fade {% if forloop.first %} in {% endif %}  active">
+
+              {% for question in category.proposed_questions.all %}
+                  {% with status="P" %} <!-- Show only questions in "Pending"("P") state -->
+                      {% if question.status = status %}
+                          <table  class="table table-bordered table-striped pq-review">
+                              <tr><td>Question:<br>{{ question.text }}</td></tr>
+                              {% for answer in question.answers %}
+                                   <tr><td {% if answer.correct %} class="correct-answer" {% endif %}>Answer:<br>{{ answer.text }}</td></tr>
+                              {% endfor %}
+                              <tr> <td><button type="button" class="btn btn-info" data-toggle="collapse" data-target="#td_{{ question.id }}">Details</button></td></tr>
+                              <tr>
+                                  <td id="td_{{ question.id }}" class="collapse">
+                                      <div id="div_{{ question.id }}">
+                                          <form id="{{ question.id }}" action="" method="POST">
+                                              {{form.as_p}}
+                                              <button class="sub-button" id="acceptBtn" action="{% url accept_question question.id %}">Accept</button>
+                                              <button class="sub-button" id="declineBtn" action="{% url decline_question question.id %}">Decline</button>
+                                          </form>
+                                     </div>
+                                  </td>
+                              </tr>
+                          </table>
+                      {% endif %}
+                  {% endwith %}
+              {% endfor %}
+
+          </div>
+      {% endfor %}
+    </div>
+
+    <script type="text/javascript">
+
+      $(".sub-button").click(function(event){
+            event.preventDefault();
+            var form = $(this).parent();
+            var div_id = form.parent().attr( 'id' );
+            var feedback = form.find( 'textarea' );
+            $.ajax({
+                    type:"POST",
+                    url: $(this).attr( 'action' ),
+                    data: { 
+                            feedback: feedback.val(),
+                            csrfmiddlewaretoken: '{{ csrf_token }}',
+                    },
+
+                success: function(result){
+                $("#"+div_id).html(result);
+                         }
+            });
+      });
+
+  </script>
+
+  <script>
+      $(document).ready(function(){
+          $(".nav-tabs a").click(function(){
+              $(this).tab('show');
+          });
+      });
+  </script>
+
+{% endblock %}

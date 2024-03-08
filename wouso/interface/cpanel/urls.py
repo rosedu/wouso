@@ -36,6 +36,9 @@ upat = [
     url(r'^questions/del_tag/(?P<tag>\d+)/$', 'wouso.interface.cpanel.views.qpool_delete_tag', name='qpool_del_tag'),
     url(r'^questions/set_tag/$', 'wouso.interface.cpanel.views.qpool_settag', name='qpool_set_tag'),
     url(r'^questions/action/$', 'wouso.interface.cpanel.views.qpool_actions', name='qpool_actions'),
+    url(r'^questions/proposed_questions/(?P<id>\d+)/accept/$', 'wouso.interface.cpanel.views.accept_question', name='accept_question'),
+    url(r'^questions/proposed_questions/(?P<id>\d+)/decline/$', 'wouso.interface.cpanel.views.decline_question', name='decline_question'),
+
     url(r'^qpool/add_question/$', 'wouso.interface.cpanel.views.add_question', name='add_question'),
     url(r'^qpool/edit_question/(?P<id>\d+)/$', 'wouso.interface.cpanel.views.edit_question', name='edit_question'),
 
@@ -107,6 +110,10 @@ name='roles_create'),
     url(r'^news/add_news/$', 'wouso.interface.cpanel.views.add_news', name='add_news'),
     url(r'^news/edit_news/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.edit_news', name='edit_news'),
     url(r'^news/del_news/(?P<pk>\d+)/$', 'wouso.interface.cpanel.views.del_news', name='del_news'),
+
+    url(r'^proposed_home/$','wouso.interface.cpanel.views.proposed', name='proposed_home'),
+
+
 ]
 
 for g, trash in get_cpanel_games().items():

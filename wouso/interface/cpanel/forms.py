@@ -403,3 +403,5 @@ class KarmaBonusForm(forms.Form):
         for p in players:
             self.fields['%s' % p.user.username] = forms.IntegerField(label=unicode(p), initial=0, min_value=0,
                                                                      required=True, help_text=" ")
+class ProposedQuestionReviewForm(forms.Form):
+    text = forms.CharField(required=False, max_length=2000, widget=forms.Textarea)
