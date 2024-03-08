@@ -70,6 +70,21 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('qpool', ['Schedule'])
 
+        # Adding model 'Proposed question'
+        db.create_table('qpool_proposedquestion', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('text', self.gf('django.db.models.fields.TextField')(null=True, blank=True, default='')),
+            ('proposed_by', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='qpool_question_proposedby_related', null=True, to=orm['auth.User'])),
+            ('active', self.gf('django.db.models.fields.BooleanField')(default=True)),
+            ('category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['qpool.Category'], null=True)),
+            ('tags', self.gf('django.db.models.fields.ManyToManyField')(to=orm['qpool.Tag'], blank=True)),
+            ('date_proposed', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
+            ('answers', self.gf('django.db.models.fields.TextField')()),
+            ))
+        db.send_create_signal('qpool', ['ProposedQuestion'])
+            
+        #}
+
 
     def backwards(self, orm):
         # Deleting model 'Category'
@@ -89,6 +104,9 @@ class Migration(SchemaMigration):
 
         # Deleting model 'Schedule'
         db.delete_table('qpool_schedule')
+
+        # Deleting model 'ProposedQuestion'
+        db.delete_table('qpool_proposedquestion')
 
 
     models = {
@@ -171,6 +189,17 @@ class Migration(SchemaMigration):
             'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['qpool.Category']", 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '256'})
+        },
+        'qpool.proposedquestion': {
+        'Meta': {'object_name' : 'ProposedQuestion'},
+        'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+        'text': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True', 'default': "''"}),
+        'proposed_by': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'qpool_question_proposedby_related'", 'null': 'True', 'to': "orm['auth.User']"}),
+        'active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+        'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['qpool.Category']", 'null': 'True'}),
+        'tags': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['qpool.Tag']", 'symmetrical': 'False', 'blank': 'True'}),
+        'date_proposed': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+        'answers': ('django.db.models.fields.TextField', [], {'null' : 'True', 'blank' : 'True', 'default': "''"})
         }
     }
 

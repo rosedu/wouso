@@ -81,7 +81,7 @@
     </div>
 
 
-    <div id="footer" style="position:relative;bottom:0;width:100%;color:#fff;">
+    <div id="footer">
         {% block footer %}
         <div id="footer_links">
             {% render_footer %}
@@ -89,7 +89,7 @@
                 | {{ static_pages|join:" | " }}
             {% endautoescape %}
         <br/>
-        <span id="poweredby" >
+        <span id="poweredby">
         <br />{% trans 'Powered by:' %}<br />
         <a href="http://www.rosedu.org/"></a>
         </span>
@@ -110,6 +110,5 @@
     </div>
     {% endif %}
     {% block bottomscripts %}{% endblock %}
-</div>
 </BODY>
 </HTML>

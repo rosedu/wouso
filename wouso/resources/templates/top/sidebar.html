@@ -20,6 +20,8 @@
         </ol>
     {% endif %}
 
+    <script type="text/javascript" src="{{ basepath }}/static/js/ajaxify.js"></script>
+
     <!-- {# <a href="{% url wouso.interface.top.views.gettop %}" class="goto">{% trans 'Current top' %}</a> #} -->
     <!-- <br/> -->
     <a href="{% url leaderboard %}" class="goto">{% trans 'Leaderboard' %}</a>
@@ -33,6 +35,9 @@
     <a href="{% url quest_history %}" class="goto">{% trans 'Quest History' %}</a>
     <br/>
     <a href="{% url artifact_hof %}" class="goto">{% trans 'Achievements' %}</a>
+    <br/>
+    <!--<a href="{% url propose %}" class="goto">{% trans 'Propose a question' %}</a>-->
+    <a class="ajaxify_content goto" href="{% url propose %}">{% trans 'Propose a question' %}</a>
     <br/>
     {% if not config_disable_top_pyramid %}
     <!-- {# <a href="{% url wouso.interface.top.views.pyramid %}" class="goto">{% trans 'Pyramid' %}</a> #} -->
